@@ -1,0 +1,7 @@
+FROM busybox:latest
+
+RUN uname -a && busybox && /bin/sh --help
+
+WORKDIR /shellspec
+COPY ./ ./
+CMD [ "./shellspec", "--shell", "sh" ]

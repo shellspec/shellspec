@@ -1,0 +1,11 @@
+FROM debian:9
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_NOWARNINGS yes
+RUN apt-get update
+
+RUN apt-get -y install busybox
+RUN uname -a && cat /etc/debian_version && dpkg -l busybox
+
+WORKDIR /shellspec
+COPY ./ ./
+CMD [ "./shellspec", "--shell", "busybox ash" ]

@@ -1,0 +1,7 @@
+FROM alpine:edge
+
+RUN uname -a && cat /etc/alpine-release && apk info -q busybox && ls -al /bin/sh
+
+WORKDIR /shellspec
+COPY ./ ./
+CMD [ "./shellspec", "--shell", "sh" ]

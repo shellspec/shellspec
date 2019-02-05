@@ -1,0 +1,28 @@
+         888               888 888
+         888               888 888
+         888               888 888
+.d8888b  88888b.   .d88b.  888 888 .d8888b  88888b.   .d88b.   .d8888b
+88K      888 "88b d8P  Y8b 888 888 88K      888 "88b d8P  Y8b d88P"
+"Y8888b. 888  888 88888888 888 888 "Y8888b. 888  888 88888888 888
+     X88 888  888 Y8b.     888 888      X88 888 d88P Y8b.     Y88b.
+ 88888P' 888  888  "Y8888  888 888  88888P' 88888P"   "Y8888   "Y8888P
+                                            888
+                                            888
+                                            888
+
+Guide: If you want to file stat tests, you need to create files
+under the 'spec/fixture/stat directory'.
+You can create those files by executing the fixture:stat:prepare task.
+Some files require root privileges to create.
+This step is optional. If these files do not exist, tests are skipped.
+
+Example:
+
+# without root privileges
+$ shellspec --task fixture:stat:prepare
+
+# with root privileges
+$ sudo $(which shellspec) --task fixture:stat:prepare
+
+Note: This message can be hidden with --no-banner option.
+----------------------------------------------------------------------------

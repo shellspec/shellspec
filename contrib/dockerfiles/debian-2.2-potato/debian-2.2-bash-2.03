@@ -1,0 +1,7 @@
+FROM lpenz/debian-potato-i386
+
+RUN uname -a && cat /etc/debian_version && dpkg -l bash
+
+WORKDIR /shellspec
+COPY ./ ./
+CMD [ "./shellspec", "--shell", "bash" ]

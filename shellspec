@@ -1,0 +1,217 @@
+#!/bin/sh
+#shellcheck disable=SC2004,SC2016
+
+set -eu
+
+export SHELLSPEC_VERSION='0.5.0'
+
+export SHELLSPEC_ROOT
+export SHELLSPEC_LIB
+export SHELLSPEC_LIBEXEC
+export SHELLSPEC_TMPDIR
+export SHELLSPEC_SPECDIR
+export SHELLSPEC_LOAD_PATH
+
+export SHELLSPEC_SHELL=''
+export SHELLSPEC_TIME=''
+export SHELLSPEC_TMPBASE=''
+export SHELLSPEC_TIME_LOG=''
+export SHELLSPEC_TRANS_LOG=''
+export SHELLSPEC_FORMATTER='progress'
+export SHELLSPEC_COLOR=''
+export SHELLSPEC_REQUIRES=''
+export SHELLSPEC_SPEC_FAILURE_CODE=101
+export SHELLSPEC_SKIP_MESSAGE=none
+export SHELLSPEC_FAIL_FAST_COUNT=''
+
+[ -t 1 ] && SHELLSPEC_COLOR=1
+
+abort() {
+  if [ "$SHELLSPEC_COLOR" ]; then
+    printf '\033[31m%s\033[0m\n' "$@" >&2
+  else
+    printf '%s\n' "$@" >&2
+  fi
+  exit 1
+}
+
+warn() {
+  if [ "$SHELLSPEC_COLOR" ]; then
+    printf '\033[33m%s\033[0m\n' "$*" >&2
+  else
+    printf '%s\n' "$*" >&2
+  fi
+}
+
+output() {
+  while IFS= read -r line || [ "$line" ]; do
+    putsn "$line"
+  done
+}
+
+detect_shellspec_root() {
+  [ "${SHELLSPEC_ROOT:-}" ] && return 0
+  cwd=$PWD p=$0
+  while [ -L "$p" ]; do
+    [ "$p" = "${p%/*}" ] || cd "${p%/*}"
+    p="$(readlink "$p")" || return 1
+  done
+  [ "$p" = "${p%/*}" ] || cd "${p%/*}"
+  SHELLSPEC_ROOT=$PWD
+  cd "$cwd"
+}
+
+if ! detect_shellspec_root; then
+  abort "Detection of the shellspec root directory failed." \
+        "Specify SHELLSPEC_ROOT environment variable."
+fi
+
+if ! [ -x "$SHELLSPEC_ROOT/${0##*/}" ]; then
+  abort "'shellspec' not found in \$SHELLSPEC_ROOT ($SHELLSPEC_ROOT)"
+fi
+
+: "${SHELLSPEC_LIB:=$SHELLSPEC_ROOT/lib}"
+: "${SHELLSPEC_LIBEXEC:=$SHELLSPEC_ROOT/libexec}"
+: "${SHELLSPEC_TMPDIR:=${TMPDIR:-}}"
+: "${SHELLSPEC_TMPDIR:=/tmp}"
+
+SHELLSPEC_SPECDIR=$PWD/spec
+SHELLSPEC_LOAD_PATH=$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_LIB/formatters
+
+# shellcheck source=lib/general.sh
+. "$SHELLSPEC_LIB/general.sh"
+# shellcheck source=lib/libexec/shellspec.sh
+. "$SHELLSPEC_LIB/libexec/shellspec.sh"
+
+SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$(unixtime).$$"
+SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/time.log"
+SHELLSPEC_TRANS_LOG="$SHELLSPEC_TMPBASE/trans.log"
+
+if [ -z "$SHELLSPEC_TIME" ]; then
+  if command_path bash > /dev/null; then
+    SHELLSPEC_TIME="bash $SHELLSPEC_LIBEXEC/shellspec-time.sh"
+  elif command_path ksh > /dev/null; then
+    SHELLSPEC_TIME="ksh $SHELLSPEC_LIBEXEC/shellspec-time.sh"
+  elif command_path time > /dev/null; then
+    SHELLSPEC_TIME="time -p"
+  else
+    SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
+  fi
+fi
+
+usage() {
+output <<USAGE
+Usage: ${0##*/} [options] [files or directories]
+
+  -s, --shell SHELL                   Specify a path of shell.
+                                        default: current shell
+      --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures (1 by default).
+
+  **** Output ****
+
+      --[no-]banner                   Show banner if exist 'spec/banner'.
+  -f, --format FORMATTER              Choose a formatter.
+                                        [p]rogress (default - dots)
+                                        [d]ocumentation (group and example names)
+                                        [t]ap
+                                        debug (for developer)
+                                        custom formatter name
+      --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
+      --no-color, --no-colour         Force the output to not be in color, even if the output is a TTY
+      --skip-message VERBOSE          Mute skip message
+                                        none (default - do not mute any messages)
+                                        moderate (mute repeated messages)
+                                        quiet (mute repeated and conditional skip messages)
+
+  **** Utility ****
+
+      --init                          Initialize your project with shellspec
+      --task [TASK]                   Run task. If TASK is not specified, show the task list
+      --translate                     Output translated specfile
+  -v, --version                       Display the version
+  -h, --help                          You're looking at it
+USAGE
+exit
+}
+
+parse_options() {
+  i=1 PARAMS=''
+  while [ $# -gt 0 ]; do
+    skip=1
+    case $1 in
+      --banner) banner="show" ;;
+      --no-banner) banner= ;;
+      -f | --format)
+        [ $# -ge 2 ] || abort 'Require FORMATTER.'
+        case $2 in
+          p) SHELLSPEC_FORMATTER=progress ;;
+          d) SHELLSPEC_FORMATTER=documentation ;;
+          t) SHELLSPEC_FORMATTER=tap ;;
+          *) SHELLSPEC_FORMATTER=$2 ;;
+        esac
+        skip=2 ;;
+      --force-color | --force-colour) SHELLSPEC_COLOR=1 ;;
+      --no-color | --no-colour) SHELLSPEC_COLOR='' ;;
+      -s | --shell)
+        [ $# -ge 2 ] || abort 'Require SHELL.'
+        SHELLSPEC_SHELL=$2 skip=2 ;;
+      -r | --require)
+        [ $# -ge 2 ] || abort 'Require PATH.'
+        [ "$SHELLSPEC_REQUIRES" ] && SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES:"
+        SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES$2" skip=2 ;;
+      --skip-message)
+        [ $# -ge 2 ] || abort 'Require TYPE.'
+        SHELLSPEC_SKIP_MESSAGE="$2" skip=2 ;;
+      --fail-fast | --fail-fast=*)
+        SHELLSPEC_FAIL_FAST_COUNT=${1#*=}
+        case $SHELLSPEC_FAIL_FAST_COUNT in (*[!0-9]*)
+          SHELLSPEC_FAIL_FAST_COUNT=1
+        esac ;;
+      --no-fail-fast) SHELLSPEC_FAIL_FAST_COUNT='' ;;
+      --init) mode=init ;;
+      --task) mode=task ;;
+      --translate) mode=translator SHELLSPEC_TRANS_LOG='' ;;
+      -h | --help) usage ;;
+      -v | --version) echo "$SHELLSPEC_VERSION"; exit 0 ;;
+      -*) abort "Unknown option '$1'" ;;
+      *) PARAMS="${PARAMS:-} \"\${$i}\""
+    esac
+    shift $skip
+    i=$(($i + $skip))
+  done
+}
+
+banner="show" mode='runner'
+
+read_dot_file "${XDG_CONFIG_HOME:-}" "shellspec/options" parse_options
+read_dot_file "${HOME:-}" ".shellspec" parse_options
+read_dot_file "." ".shellspec" parse_options
+read_dot_file "." ".shellspec-local" parse_options
+if [ $# -gt 0 ]; then
+  parse_options "$@"
+  eval "set -- $PARAMS"
+fi
+
+if [ "$banner" ] && [ -e "$SHELLSPEC_SPECDIR/banner" ]; then
+  output < "$SHELLSPEC_SPECDIR/banner"
+fi
+
+[ "$SHELLSPEC_SHELL" ] || SHELLSPEC_SHELL=$(current_shell "$0")
+if [ -z "$SHELLSPEC_SHELL" ]; then
+  warn "Failed to detect the current shell," \
+       "because the ps command does not exist or not compatible."
+  warn "Use 'sh' instead. You can specify the shell with --shell option."
+fi
+
+shell=$(command_path "${SHELLSPEC_SHELL:-sh}") ||:
+if ! [ -x "${shell%% *}" ]; then
+  abort "Not found specified shell: $SHELLSPEC_SHELL"
+fi
+SHELLSPEC_SHELL=$shell
+
+if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
+  abort "Unsupported shell (require arithmetic expansion): $SHELLSPEC_SHELL"
+fi
+
+exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
+eval exec "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'}

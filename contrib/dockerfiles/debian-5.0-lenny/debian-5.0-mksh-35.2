@@ -1,0 +1,11 @@
+FROM lpenz/debian-lenny-i386
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_NOWARNINGS yes
+RUN apt-get update
+
+RUN apt-get -y --force-yes install mksh
+RUN uname -a && cat /etc/debian_version && dpkg -l mksh
+
+WORKDIR /shellspec
+COPY ./ ./
+CMD [ "./shellspec", "--shell", "mksh" ]

@@ -1,0 +1,11 @@
+FROM lpenz/debian-woody-i386
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_NOWARNINGS yes
+RUN apt-get update
+
+RUN apt-get -y --force-yes install ash
+RUN uname -a && cat /etc/debian_version && dpkg -l ash
+
+WORKDIR /shellspec
+COPY ./ ./
+CMD [ "./shellspec", "--shell", "ash" ]
