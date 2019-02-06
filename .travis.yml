@@ -1,0 +1,27 @@
+language: sh
+env:
+  global:
+    - HOMEBREW_NO_AUTO_UPDATE=1
+addons:
+  apt:
+    update: true
+  homebew:
+    update: true
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      env: SH=bash
+    - os: linux
+      dist: xenial
+      env: SH=zsh
+    - os: osx
+      osx_image: xcode10.1
+      env: SH=bash
+    - os: osx
+      osx_image: xcode10.1
+      env: SH=zsh
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install -y "$SH"; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install "$SH"; fi
+script: $SH shellspec
