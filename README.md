@@ -2,6 +2,8 @@
 
 BDD based testing framework for POSIX compatible shell scripts.
 
+[![Build Status](https://travis-ci.org/ko1nksm/shellspec.svg?branch=master)](https://travis-ci.org/ko1nksm/shellspec)
+
 ![preview](preview.png)
 
 *Table of Contents*
