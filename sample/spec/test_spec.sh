@@ -19,11 +19,6 @@ Describe 'example spec'
         The stdout should include 2
       End
 
-      # Example 'error'
-      #   When call error
-      #   The variable var should equal 100
-      # End
-
       Example 'variable matcher'
         When call set_var 100
         The variable var should equal 100

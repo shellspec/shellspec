@@ -18,13 +18,13 @@ Describe 'example spec'
 
   Describe 'foo()'
     Example '[pending] test'
-      Pending 'atode'
+      Pending 'failure implementation'
       When call false
       The exit status should be success
     End
 
     Example '[fixed] test'
-      Pending 'atode'
+      Pending 'fixed implementation'
       When call true
       The exit status should be success
     End
@@ -44,11 +44,7 @@ Describe 'example spec'
       Example '[skip] stdout matcher'
         When call calc 100 + 20 + 3
         The stdout should eq 1233
-        #Debug aaaa
       End
-    End
-
-    Example 'aaaaa'
     End
   End
 End
