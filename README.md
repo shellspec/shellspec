@@ -455,10 +455,11 @@ End
 
 You can skip or pending current execution block.
 
-| DSL     | Description            |
-| :------ | :--------------------- |
-| Skip    | Skip current block.    |
-| Pending | Pending current block. |
+| DSL                                            | Description                          |
+| :--------------------------------------------- | :----------------------------------- |
+| Skip `<REASON>`                                | Skip current block.                  |
+| Skip if `<REASON>` `<FUNCTION> [ARGUMENTS...]` | Skip current block with conditional. |
+| Pending  `<REASON>`                            | Pending current block.               |
 
 ## shellspec command
 
