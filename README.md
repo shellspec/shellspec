@@ -418,6 +418,7 @@ string
 | end with `<STRING>`   | The subject should end with `<STRING>`   |
 | equal `<STRING>`      | The subject should equal `<STRING>`      |
 | include `<STRING>`    | The subject should include `<STRING>`    |
+| match `<PATTERN>`     | The subject should match `<PATTERN>`     |
 
 other
 
