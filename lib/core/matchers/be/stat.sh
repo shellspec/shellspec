@@ -21,16 +21,16 @@ shellspec_syntax 'shellspec_matcher_be_charactor_device'
 shellspec_make_file_matcher() {
   eval "
     shellspec_matcher_be_$1() {
-      shellspec_matcher_match() {
+      shellspec_matcher__match() {
         [ $2 \"\${SHELLSPEC_SUBJECT:-}\" ]
       }
 
-      shellspec_matcher_failure_message() {
+      shellspec_matcher__failure_message() {
         shellspec_putsn \"The specified path ${4:-${3%% *} not ${3#* }}\"
         shellspec_putsn \"path: \$SHELLSPEC_SUBJECT\"
       }
 
-      shellspec_matcher_failure_message_when_negated() {
+      shellspec_matcher__failure_message_when_negated() {
         shellspec_putsn \"The specified path $3\"
         shellspec_putsn \"path: \$SHELLSPEC_SUBJECT\"
       }

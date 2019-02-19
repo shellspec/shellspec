@@ -4,15 +4,15 @@ shellspec_syntax 'shellspec_matcher_has_setgid'
 shellspec_syntax 'shellspec_matcher_has_setuid'
 
 shellspec_matcher_has_setgid() {
-  shellspec_matcher_match() {
+  shellspec_matcher__match() {
     [ -g "${SHELLSPEC_SUBJECT:-}" ]
   }
 
-  shellspec_matcher_failure_message() {
+  shellspec_matcher__failure_message() {
     shellspec_putsn "The $1 not have setgid flag"
   }
 
-  shellspec_matcher_failure_message_when_negated() {
+  shellspec_matcher__failure_message_when_negated() {
     shellspec_putsn "The $1 has setgid flag"
   }
 
@@ -22,15 +22,15 @@ shellspec_matcher_has_setgid() {
 }
 
 shellspec_matcher_has_setuid() {
-  shellspec_matcher_match() {
+  shellspec_matcher__match() {
     [ -u "${SHELLSPEC_SUBJECT:-}" ]
   }
 
-  shellspec_matcher_failure_message() {
+  shellspec_matcher__failure_message() {
     shellspec_putsn "The $1 not have setuid flag"
   }
 
-  shellspec_matcher_failure_message_when_negated() {
+  shellspec_matcher__failure_message_when_negated() {
     shellspec_putsn "The $1 has setuid flag"
   }
 

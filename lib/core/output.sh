@@ -46,13 +46,13 @@ shellspec_output_unless() {
 
 shellspec_output_failure_message() {
   shellspec_puts "${SHELLSPEC_US}failure_message:"
-  shellspec_matcher_failure_message \
+  shellspec_matcher__failure_message \
     "$(shellspec_output_subject)" "$(shellspec_output_expect)"
 }
 
 shellspec_output_failure_message_when_negated() {
   shellspec_puts "${SHELLSPEC_US}failure_message:"
-  shellspec_matcher_failure_message_when_negated \
+  shellspec_matcher__failure_message_when_negated \
     "$(shellspec_output_subject)" "$(shellspec_output_expect)"
 }
 

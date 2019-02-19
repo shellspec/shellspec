@@ -4,16 +4,16 @@
 
 shellspec_matcher() {
 
-  shellspec_proxy "shellspec_matcher_match_when_negated" \
-                  "! shellspec_matcher_match"
+  shellspec_proxy "shellspec_matcher__match_when_negated" \
+                  "! shellspec_matcher__match"
 
   # $1: formatted subject, $: formatted expect
-  shellspec_matcher_failure_message() {
+  shellspec_matcher__failure_message() {
     shellspec_putsn "subject: $1"
   }
 
-  shellspec_proxy "shellspec_matcher_failure_message_when_negated" \
-                  "shellspec_matcher_failure_message"
+  shellspec_proxy "shellspec_matcher__failure_message_when_negated" \
+                  "shellspec_matcher__failure_message"
 
   unset SHELLSPEC_EXPECT ||:
 
@@ -21,13 +21,13 @@ shellspec_matcher() {
 }
 
 shellspec_matcher_do_match_positive() {
-  if eval "shellspec_matcher_match ${1+\"\$@\"} &&:"; then
+  if eval "shellspec_matcher__match ${1+\"\$@\"} &&:"; then
     shellspec_on MATCHED
   fi
 }
 
 shellspec_matcher_do_match_negative() {
-  if ! eval "shellspec_matcher_match_when_negated ${1+\"\$@\"} &&:"; then
+  if ! eval "shellspec_matcher__match_when_negated ${1+\"\$@\"} &&:"; then
     shellspec_on MATCHED
   fi
 }
