@@ -42,6 +42,7 @@ BDD based testing framework for POSIX compatible shell scripts.
     - [spec/spec_helper.sh](#specspechelpersh)
     - [spec/support/](#specsupport)
     - [spec/banner](#specbanner)
+- [Version history](#version-history)
 
 ## Introduction
 
@@ -505,3 +506,13 @@ This directory use to create file for custom matchers, tasks and etc.
 
 If exists `spec/banner` file, shows banner when `shellspec` command executed.
 To disable shows banner with `--no-banner` option.
+
+## Version history
+
+0.6.0
+
+ * Added match matcher.
+
+0.5.0
+
+ * Initial public release.
