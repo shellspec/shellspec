@@ -132,6 +132,12 @@ Describe "general.sh"
       When call shellspec_puts -n
       The entire stdout should equal '-n'
     End
+
+    Example 'shellspec_puts join arguments with spaces'
+      Set IFS=@
+      When call shellspec_puts a b c
+      The entire stdout should equal 'a b c'
+    End
   End
 
   Describe 'putsn()'
@@ -154,6 +160,12 @@ Describe "general.sh"
       When call shellspec_putsn 'a\b'
       The entire stdout should equal "a\\b${SHELLSPEC_LF}"
       The length of entire stdout should equal 4
+    End
+
+    Example 'shellspec_putsn join arguments with spaces'
+      Set IFS=@
+      When call shellspec_putsn a b c
+      The entire stdout should equal "a b c${SHELLSPEC_LF}"
     End
   End
 

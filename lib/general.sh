@@ -108,13 +108,13 @@ shellspec_find_files__() {
 case $SHELLSPEC_SHELL_TYPE in
   zsh | ksh | mksh | pdksh)
     # some version of above shell does not implement 'printf' as built-in.
-    shellspec_puts() { print -nr -- "${*:-}"; }
+    shellspec_puts() { IFS=" $IFS"; print -nr -- "${*:-}"; IFS="${IFS#?}"; }
     ;;
   posh)
     # posh does not implement 'printf' or 'print' as built-in.
     shellspec_puts() {
       [ $# -eq 0 ] && return 0
-      set -- "$*"
+      IFS=" $IFS"; set -- "$*"; IFS="${IFS#?}"
       [ "$1" = -n ] && printf '%s' "$1" && return 0
       shellspec_reset_params '$1' "\\\\"
       eval "$SHELLSPEC_RESET_PARAMS"
@@ -122,9 +122,11 @@ case $SHELLSPEC_SHELL_TYPE in
       while [ $# -gt 0 ]; do eval 'echo -n "\\\\$1"' && shift; done
     }
     ;;
-  *) shellspec_puts() { printf '%s' "$*"; }
+  *) shellspec_puts() { IFS=" $IFS"; printf '%s' "$*"; IFS="${IFS#?}"; }
 esac
-shellspec_putsn() { shellspec_puts "${*:-}$SHELLSPEC_LF"; }
+shellspec_putsn() {
+  IFS=" $IFS"; shellspec_puts "${*:-}$SHELLSPEC_LF"; IFS="${IFS#?}"
+}
 
 shellspec_abort() { shellspec_putsn "$*" >&2; exit 1; }
 
