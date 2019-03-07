@@ -4,7 +4,7 @@ BDD based testing framework for POSIX compatible shell scripts.
 
 [![Build Status](https://travis-ci.org/ko1nksm/shellspec.svg?branch=master)](https://travis-ci.org/ko1nksm/shellspec)
 
-![preview](preview.png)
+![demo](demo.gif)
 
 *Table of Contents*
 
@@ -54,8 +54,8 @@ Describe 'sample' # Example group block
     add() { echo "$1 + $2" | bc; }
 
     Example 'perform addition' # Example block
-      When call add 2 2 # Evaluation
-      The output should eq 4  # Expectation
+      When call add 2 3 # Evaluation
+      The output should eq 5  # Expectation
     End
   End
 
@@ -63,8 +63,8 @@ Describe 'sample' # Example group block
     . ./mylib.sh # add() function defined
 
     Example 'perform addition'
-      When call add 2 2
-      The output should eq 4
+      When call add 2 3
+      The output should eq 5
     End
   End
 End
