@@ -18,6 +18,18 @@ Describe "core/utils.sh"
     End
   End
 
+  Describe 'shellspec_get_lines()'
+    Example 'get number of lines'
+      When call shellspec_get_lines var "a${SHELLSPEC_LF}b${SHELLSPEC_LF}c"
+      The variable var should equal 3
+    End
+
+    Example 'get number of lines (end with LF)'
+      When call shellspec_get_lines var "a${SHELLSPEC_LF}b${SHELLSPEC_LF}"
+      The variable var should equal 3
+    End
+  End
+
   Describe 'shellspec_is()'
     Describe 'number'
       Example 'succeeds with a numeric value'
