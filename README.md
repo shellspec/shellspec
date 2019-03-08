@@ -363,6 +363,7 @@ The first word of the second line of output should valid as a number
 | Modifier        | Description                                                  |
 | :-------------- | :----------------------------------------------------------- |
 | line `<NUMBER>` | The specified line of the subject.                           |
+| lines           | The number of lines of the subject.                          |
 | word `<NUMBER>` | The specified word of the subject.                           |
 | contents        | The contents of the file (current subject should be a file). |
 | length          | The length of the subject.                                   |
@@ -508,6 +509,10 @@ If exists `spec/banner` file, shows banner when `shellspec` command executed.
 To disable shows banner with `--no-banner` option.
 
 ## Version history
+
+0.7.0
+
+ * Added lines modifier.
 
 0.6.0
 
