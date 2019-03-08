@@ -8,5 +8,6 @@ shellspec_syntax_compound 'shellspec_modifier_entire'
 
 shellspec_import 'core/modifiers/length'
 shellspec_import 'core/modifiers/line'
+shellspec_import 'core/modifiers/lines'
 shellspec_import 'core/modifiers/word'
 shellspec_import 'core/modifiers/contents'
