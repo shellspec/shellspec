@@ -92,14 +92,14 @@ End
 
 `dash`, `bash`, `ksh`, `mksh`, `pdksh`, `zsh`, `posh`, `yash`, `busybox (ash)`
 
-Tested Platforms:
+Tested Platforms
 
 * Linux (ubuntu, debian, alpine)
 * Windows 10 (WSL, cygwin, Git Bash)
 * macOS Mojave
 * Solaris 11
 
-Confirmed version:
+Confirmed old version (It will work with this version or higher)
 
 * ash 0.3.8 (debian 3.0)
 * dash 0.5.3 (debian 4.0)
