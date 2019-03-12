@@ -1,6 +1,6 @@
 # shellspec
 
-BDD based testing framework for POSIX compatible shell scripts.
+BDD style testing framework for POSIX compatible shell script.
 
 [![Build Status](https://travis-ci.org/ko1nksm/shellspec.svg?branch=master)](https://travis-ci.org/ko1nksm/shellspec)
 
@@ -379,7 +379,7 @@ exit status (the subject expect exit status)
 | be success | The exit status should be success. |
 | be failure | The exit status should be failure. |
 
-stat (the subject expect file)
+stat (the subject expect file path)
 
 | Matcher             | Description                            |
 | :------------------ | :------------------------------------- |
