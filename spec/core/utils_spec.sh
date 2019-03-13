@@ -54,8 +54,13 @@ Describe "core/utils.sh"
     End
 
     Describe 'function'
-      Example 'succeeds with valid function name'
+      Example 'succeeds with valid function name foo_bar'
         When call shellspec_is funcname foo_bar
+        The exit status should be success
+      End
+
+      Example 'succeeds with valid function name foo123'
+        When call shellspec_is funcname foo123
         The exit status should be success
       End
 
