@@ -47,6 +47,11 @@ Describe "core/evaluation.sh"
       When invoke call shellspec_evaluation_call ret123
       The stdout should equal 'shellspec_evaluation_cleanup: 123'
     End
+
+    Example 'accepts evaluatable string'
+      When call 'echo "${*:-}"' 1 2 3
+      The stdout should equal '1 2 3'
+    End
   End
 
   Describe 'run evaluation'
@@ -95,6 +100,11 @@ Describe "core/evaluation.sh"
     Example 'call shellspec_evaluation_cleanup() after evaluation'
       When invoke call shellspec_evaluation_invoke ret123
       The stdout should equal 'shellspec_evaluation_cleanup: 123'
+    End
+
+    Example 'accepts evaluatable string'
+      When invoke 'echo "${*:-}"' 1 2 3
+      The stdout should equal '1 2 3'
     End
   End
 

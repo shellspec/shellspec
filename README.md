@@ -263,13 +263,15 @@ When call             echo hello world
 | :--- | :------------------- |
 | When | Define a evaluation. |
 
-| evaluation type | Description                                         |
-| :-------------- | :-------------------------------------------------- |
-| call            | Run shell function or external command.             |
-| invoke          | Run shell function or external command in subshell. |
-| run             | Run external command.                               |
+| evaluation type                    | Description                                             |
+| :--------------------------------- | :------------------------------------------------------ |
+| call `<FUNCTION> [ARGUMENTS...]`   | Execute shell function or external command.             |
+| call `<STRING> [ARGUMENTS...]`     | Eval string and execute.                                |
+| invoke `<FUNCTION> [ARGUMENTS...]` | Execute shell function or external command in subshell. |
+| invoke `<STRING> [ARGUMENTS...]`   | Eval string and execute in subshell.                    |
+| run `<FUNCTION> [ARGUMENTS...]`    | Execute external command.                               |
 
-Normally you will use `call`. `invoke` is similar to `call` but run in subshell.
+Normally you will use `call`. `invoke` is similar to `call` but execute in subshell.
 `invoke` usefull for *override function in evaluation only* and trap `exit`.
 
 ### Expectation

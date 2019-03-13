@@ -11,6 +11,11 @@ shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
 shellspec_evaluation_call() {
   shellspec_syntax_param count [ $# -gt 0 ] || return 0
+  if ! shellspec_is funcname "$1"; then
+    eval "shellspec_evaluation_eval() { $1; }"
+    shift
+    eval set -- shellspec_evaluation_eval ${1+'"$@"'}
+  fi
   "$@" >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
 }
@@ -21,6 +26,11 @@ shellspec_evaluation_run() {
 }
 
 shellspec_evaluation_invoke() {
+  if ! shellspec_is funcname "$1"; then
+    eval "shellspec_evaluation_eval() { $1; }"
+    shift
+    eval set -- shellspec_evaluation_eval ${1+'"$@"'}
+  fi
   ( "$@" ) >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
 }
