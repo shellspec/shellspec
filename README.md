@@ -200,14 +200,13 @@ See [sample directory](/sample), and run `shellspec sample` with in shellspec di
 
 You can write structured *Example* by below DSL.
 
-| DSL      | Description                                                                                  |
-| :------- | :------------------------------------------------------------------------------------------- |
-| Describe | Define a block for Example group. Example group is nestable.                                 |
-| Context  | Synonym for `Describe`.                                                                      |
-| Example  | Define a block for Example. write your example.                                              |
-| Specify  | Synonym for `Example`.                                                                       |
-| End      | End of Example group/Example block.                                                          |
-| Todo     | Same as empty example, but not a block. One-liner syntax that it means to be implementation. |
+| DSL              | Description                                                                                  |
+| :--------------- | :------------------------------------------------------------------------------------------- |
+| Describe ... End | Define a block for Example group. Example group is nestable.                                 |
+| Context ... End  | Synonym for `Describe`.                                                                      |
+| Example ... End  | Define a block for Example. write your example.                                              |
+| Specify ... End  | Synonym for `Example`.                                                                       |
+| Todo             | Same as empty example, but not a block. One-liner syntax that it means to be implementation. |
 
 ### Nestable groups and scope
 
