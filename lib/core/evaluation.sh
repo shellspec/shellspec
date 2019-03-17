@@ -1,5 +1,6 @@
 #shellcheck shell=sh
 
+SHELLSPEC_STDIN_FILE="$SHELLSPEC_TMPBASE/$$.stdin"
 SHELLSPEC_STDOUT_FILE="$SHELLSPEC_TMPBASE/$$.stdout"
 SHELLSPEC_STDERR_FILE="$SHELLSPEC_TMPBASE/$$.stderr"
 
@@ -16,12 +17,15 @@ shellspec_evaluation_call() {
     shift
     eval set -- shellspec_evaluation_eval ${1+'"$@"'}
   fi
+  [ "${SHELLSPEC_DATA:-}" ] && set -- shellspec_evaluation_with_data "$@"
   "$@" >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
 }
 
 shellspec_evaluation_run() {
-  command "$@" >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
+  set -- command "$@"
+  [ "${SHELLSPEC_DATA:-}" ] && set -- shellspec_evaluation_with_data "$@"
+  "$@" >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
 }
 
@@ -31,8 +35,14 @@ shellspec_evaluation_invoke() {
     shift
     eval set -- shellspec_evaluation_eval ${1+'"$@"'}
   fi
+  [ "${SHELLSPEC_DATA:-}" ] && set -- shellspec_evaluation_with_data "$@"
   ( "$@" ) >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
+}
+
+shellspec_evaluation_with_data() {
+  shellspec_data > "$SHELLSPEC_STDIN_FILE"
+  "$@" < "$SHELLSPEC_STDIN_FILE"
 }
 
 shellspec_evaluation_cleanup() {

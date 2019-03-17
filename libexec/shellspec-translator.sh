@@ -107,6 +107,35 @@ skip() {
   putsn "shellspec_skip ${skip_id}${1:-}"
 }
 
+data() {
+  data_line=${1:-}
+  trim data_line
+
+  putsn "shellspec_data() {"
+  case $data_line in
+    '' | '#'*)
+      putsn 'while IFS= read -r shellspec_here_document; do'
+      putsn '  shellspec_putsn "$shellspec_here_document"'
+      putsn 'done<<DATA'
+      while IFS= read -r line || [ "$line" ]; do
+        lineno=$(($lineno + 1))
+        trim line
+        case $line in
+          '#|'*) putsn "${line#??}" ;;
+          '#'*) ;;
+          End | End\ * ) break ;;
+          *) abort "Data texts should begin with '#|'"
+            break ;;
+        esac
+      done
+      putsn 'DATA'
+      ;;
+    *) putsn "  $data_line"
+  esac
+  putsn "}"
+  putsn "SHELLSPEC_DATA=1"
+}
+
 syntax_error() {
   putsn "shellspec_exit 2 \"Syntax error: ${*:-} in $specfile line $lineno\""
 }
@@ -142,6 +171,7 @@ translate() {
       Debug     | Debug\ *    )   control debug       "${work#Debug}"     ;;
       Pending   | Pending\ *  )   control pending     "${work#Pending}"   ;;
       Skip      | Skip\ *     )   skip                "${work#Skip}"      ;;
+      Data      | Data\ *     )   data                "${work#Data}"      ;;
       *) putsn "$line" ;;
     esac
     [ "$ABORT" ] && break
