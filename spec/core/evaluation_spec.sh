@@ -207,8 +207,24 @@ Describe "core/evaluation.sh"
         #|
       End
 
-      Example 'output read data'
+      Example 'call output read data'
         When call output
+        The first line of output should eq 'aaa'
+        The second line of output should eq 'bbb'
+        The third line of output should eq "ccc"
+        The lines of entire output should eq 4
+      End
+
+      Example 'invoke output read data'
+        When invoke output
+        The first line of output should eq 'aaa'
+        The second line of output should eq 'bbb'
+        The third line of output should eq "ccc"
+        The lines of entire output should eq 4
+      End
+
+      Example 'run cat read data'
+        When run cat -
         The first line of output should eq 'aaa'
         The second line of output should eq 'bbb'
         The third line of output should eq "ccc"
