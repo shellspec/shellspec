@@ -433,12 +433,14 @@ other
 
 ### Helper
 
-| DSL                 | Description                       |
-| :------------------ | :-------------------------------- |
-| Set                 | Set value to the variable.        |
-| Unset               | Unset the variable.               |
-| Path<br>File<br>Dir | Define [path alias](#path-alias). |
-| Debug               | Output debug message.             |
+| DSL                              | Description                                 |
+| :------------------------------- | :------------------------------------------ |
+| Set                              | Set value to the variable.                  |
+| Unset                            | Unset the variable.                         |
+| Path<br>File<br>Dir              | Define [path alias](#path-alias).           |
+| Data ... End                     | Define stdin data for evaluation.           |
+| Data `<FUNCTION> [ARGUMENTS...]` | Use function for stdin data for evaluation. |
+| Debug                            | Output debug message.                       |
 
 #### Path alias
 
@@ -516,6 +518,7 @@ To disable shows banner with `--no-banner` option.
 0.8.0 (not yet released)
 
  * Change behavior of line and lines modifier to like "grep -c" not "wc -l".
+ * Add Data helper
 
 0.7.0
 
