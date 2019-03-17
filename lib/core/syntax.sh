@@ -60,7 +60,7 @@ shellspec_syntax_param() {
     shellspec_syntax_param_check "$1" "shellspec_$2" "$3" "$4" && return 0
     shellspec_output SYNTAX_ERROR_PARAM_TYPE "$1" "$3"
   else
-    shellspec_abort "shellspec_syntax_param: wrong parameter '$1'"
+    shellspec_error "shellspec_syntax_param: wrong parameter '$1'"
   fi
 
   shellspec_on SYNTAX_ERROR

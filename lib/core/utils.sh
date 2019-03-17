@@ -22,7 +22,7 @@ shellspec_is() {
     funcname)
       case ${2:-} in ([a-zA-Z_]*) ;; (*) return 1; esac
       case ${2:-} in (*[!a-zA-Z0-9_]*) return 1; esac ;;
-    *) shellspec_abort "shellspec_is: invalid type name '$1'"
+    *) shellspec_error "shellspec_is: invalid type name '$1'"
   esac
   return 0
 }

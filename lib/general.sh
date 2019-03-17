@@ -62,7 +62,7 @@ shellspec_import() {
     shellspec_splice_params $# 1 1
     eval "$SHELLSPEC_RESET_PARAMS"
   done
-  shellspec_abort "Import failed, '$1' not found"
+  shellspec_error "Import failed, '$1' not found"
 }
 
 # shellcheck disable=SC1090
@@ -128,7 +128,7 @@ shellspec_putsn() {
   IFS=" $IFS"; shellspec_puts "${*:-}$SHELLSPEC_LF"; IFS="${IFS#?}"
 }
 
-shellspec_abort() { shellspec_putsn "$*" >&2; exit 1; }
+shellspec_error() { shellspec_putsn "$*" >&2; exit 1; }
 
 shellspec_reset_params() {
   SHELLSPEC_RESET_PARAMS="
