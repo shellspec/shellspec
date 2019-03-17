@@ -182,6 +182,31 @@ Describe "general.sh"
     End
   End
 
+  Describe 'shellspec_lines()'
+    callback() { printf '%s ' "$2:$1"; }
+    callback_with_cancel() { printf '%s ' "$2:$1"; return 1; }
+
+    Example 'do not calls callback with empty string'
+      When call shellspec_lines callback ""
+      The stdout should eq ""
+    End
+
+    Example 'calls callback by each line'
+      When call shellspec_lines callback "a${SHELLSPEC_LF}b"
+      The stdout should eq "1:a 2:b "
+    End
+
+    Example 'ignore last LF'
+      When call shellspec_lines callback "a${SHELLSPEC_LF}b${SHELLSPEC_LF}"
+      The stdout should eq "1:a 2:b "
+    End
+
+    Example 'can cancels calls of callback.'
+      When call shellspec_lines callback_with_cancel "a${SHELLSPEC_LF}b"
+      The stdout should eq "1:a "
+    End
+  End
+
   Describe "shellspec_padding()"
     Example "padding with @"
       When call shellspec_padding str "@" 10

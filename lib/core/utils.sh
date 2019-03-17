@@ -16,13 +16,6 @@ shellspec_get_nth() {
   eval "$1=\${$(($2 + 2)):-}"
 }
 
-shellspec_get_lines() {
-  set -- "$1" "$2_"
-  shellspec_reset_params '"$1" $2' "$SHELLSPEC_LF"
-  eval "$SHELLSPEC_RESET_PARAMS"
-  eval "$1=$(($# - 1))"
-}
-
 shellspec_is() {
   case $1 in
     number) case ${2:-} in ( '' | *[!0-9]* ) return 1; esac ;;

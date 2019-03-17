@@ -12,6 +12,30 @@ Describe "core/modifiers/line.sh"
       The entire stdout should equal bar
     End
 
+    Example 'last LF should ignored'
+      Set SHELLSPEC_SUBJECT="foo${SHELLSPEC_LF}"
+      When invoke modifier line 2 _modifier_
+      The status should be failure
+    End
+
+    Example 'only last LF should ignored'
+      Set SHELLSPEC_SUBJECT="foo${SHELLSPEC_LF}${SHELLSPEC_LF}"
+      When invoke modifier line 2 _modifier_
+      The entire stdout should equal ""
+    End
+
+    Example 'empty subject should be undefined'
+      Set SHELLSPEC_SUBJECT=""
+      When invoke modifier line 1 _modifier_
+      The status should be failure
+    End
+
+    Example 'LF only subject should equal ""'
+      Set SHELLSPEC_SUBJECT="${SHELLSPEC_LF}"
+      When invoke modifier line 1 _modifier_
+      The entire stdout should equal ""
+    End
+
     Example 'can not get number of line of undefined subject'
       Unset SHELLSPEC_SUBJECT
       When invoke modifier line 2 _modifier_

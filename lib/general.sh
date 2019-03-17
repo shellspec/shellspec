@@ -218,6 +218,18 @@ shellspec_escape_quote() {
   "
 }
 
+shellspec_lines() {
+  [ "${2:-}" ] || return 0
+  shellspec_lines_ "$1" "${2%$SHELLSPEC_LF}" 1
+}
+
+shellspec_lines_() {
+  "$1" "${2%%$SHELLSPEC_LF*}" "$3" || return 0
+  case $2 in (*"$SHELLSPEC_LF"*)
+    shellspec_lines_ "$1" "${2#*$SHELLSPEC_LF}" "$(($3 + 1))"
+  esac
+}
+
 # $1: variable, $2: string, $3 N times
 shellspec_padding() {
   eval "$1=''"

@@ -14,19 +14,25 @@ Describe "core/modifiers/lines.sh"
 
     Example 'example (end with newline)'
       When call get_text
-      The lines of entire stdout should equal 4
+      The lines of entire stdout should equal 3
     End
 
     Example 'get number of lines of subject'
-      Set SHELLSPEC_SUBJECT="foo${SHELLSPEC_LF}bar${SHELLSPEC_LF}baz"
+      Set SHELLSPEC_SUBJECT="foo${SHELLSPEC_LF}bar"
       When invoke modifier lines _modifier_
-      The stdout should equal 3
+      The stdout should equal 2
     End
 
-    Example 'get number of lines of subject that end with newline.'
+    Example 'get number of lines of subject that end with newline'
       Set SHELLSPEC_SUBJECT="foo${SHELLSPEC_LF}bar${SHELLSPEC_LF}"
       When invoke modifier lines _modifier_
-      The stdout should equal 3
+      The stdout should equal 2
+    End
+
+    Example 'get number of lines of empty string'
+      Set SHELLSPEC_SUBJECT=""
+      When invoke modifier lines _modifier_
+      The stdout should equal 0
     End
   End
 End

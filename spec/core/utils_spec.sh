@@ -16,17 +16,10 @@ Describe "core/utils.sh"
       When call shellspec_get_nth var 3 ',' "a,b,c,d,e"
       The variable var should equal c
     End
-  End
 
-  Describe 'shellspec_get_lines()'
-    Example 'get number of lines'
-      When call shellspec_get_lines var "a${SHELLSPEC_LF}b${SHELLSPEC_LF}c"
-      The variable var should equal 3
-    End
-
-    Example 'get number of lines (end with LF)'
-      When call shellspec_get_lines var "a${SHELLSPEC_LF}b${SHELLSPEC_LF}"
-      The variable var should equal 3
+    Example 'fetch nth seperate by space'
+      When call shellspec_get_nth var 3 " " "a   b c"
+      The variable var should equal c
     End
   End
 
