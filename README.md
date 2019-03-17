@@ -513,6 +513,10 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
+0.8.0 (not yet released)
+
+ * Change behavior of line and lines modifier to like "grep -c" not "wc -l".
+
 0.7.0
 
  * Added lines modifier.
