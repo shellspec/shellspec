@@ -1,5 +1,5 @@
 #!/bin/sh
-#shellcheck disable=SC2004
+#shellcheck disable=SC2004,SC2016
 
 set -eu
 
@@ -11,9 +11,15 @@ set -eu
 example_count=0 block_no=0 block_no_stack='' skip_id=0
 inside_of_example=''
 
+ABORT=''
+abort() {
+  ABORT=$*
+}
+
 block_example_group() {
   if [ "$inside_of_example" ]; then
-    syntax_error "Describe/Context cannot be defined inside of Example"
+    abort "Describe/Context cannot be defined inside of Example"
+    return 0
   fi
 
   increasese_id
@@ -29,7 +35,8 @@ block_example_group() {
 
 block_example() {
   if [ "$inside_of_example" ]; then
-    syntax_error "Example/Todo cannot be defined inside of Example"
+    abort "Example/Todo cannot be defined inside of Example"
+    return 0
   fi
 
   increasese_id
@@ -47,11 +54,16 @@ block_example() {
 
 block_end() {
   if [ -z "$block_no_stack" ]; then
-    syntax_error "unexpected 'End'"
+    abort "unexpected 'End'"
+    return 0
   fi
 
   decrease_id
-  putsn "}; SHELLSPEC_LINENO_END=$lineno"
+  if [ "$ABORT" ]; then
+    putsn "}; SHELLSPEC_LINENO_END="
+  else
+    putsn "}; SHELLSPEC_LINENO_END=$lineno"
+  fi
   putsn "shellspec_block${block_no_stack##* }) ${1# }"
   block_no_stack="${block_no_stack% *}"
   inside_of_example=""
@@ -66,7 +78,8 @@ todo() {
 
 statement() {
   if [ -z "$inside_of_example" ]; then
-    syntax_error "When/The/It cannot be defined outside of Example"
+    abort "When/The/It cannot be defined outside of Example"
+    return 0
   fi
 
   putsn "SHELLSPEC_SPECFILE=\"$specfile\" SHELLSPEC_LINENO=$lineno"
@@ -76,12 +89,14 @@ statement() {
 control() {
   case $1 in (set|unset)
     if [ -z "$inside_of_example" ]; then
-      syntax_error "Set/Unset cannot be defined outside of Example"
+      abort "Set/Unset cannot be defined outside of Example"
+      return 0
     fi
   esac
   case $1 in (before|after)
     if [ "$inside_of_example" ]; then
-      syntax_error "Before/After cannot be defined inside of Example"
+      abort "Before/After cannot be defined inside of Example"
+      return 0
     fi
   esac
   putsn "shellspec_$1$2"
@@ -101,7 +116,7 @@ translate() {
   lineno=1
   while IFS= read -r line || [ "$line" ]; do
     work=$line
-    while [ "$work" != "${work# }" ]; do work=${work# }; done
+    trim work
 
     case $work in
       Describe  | Describe\ * )   block_example_group "${work#Describe}"  ;;
@@ -129,6 +144,7 @@ translate() {
       Skip      | Skip\ *     )   skip                "${work#Skip}"      ;;
       *) putsn "$line" ;;
     esac
+    [ "$ABORT" ] && break
     lineno=$(($lineno + 1))
   done
 }
@@ -146,11 +162,16 @@ while IFS= read -r specfile; do
   putsn "SHELLSPEC_SPECFILE='$specfile'"
   translate < "$specfile"
 
+  [ "$ABORT" ] && syntax_error "$ABORT"
+
   if [ "$block_no_stack" ]; then
-    while [ "$block_no_stack" ]; do block_end ""; done
-    syntax_error "unexpected end of file (expecting 'End')"
-    exit 0
+    [ "$ABORT" ] || syntax_error "unexpected end of file (expecting 'End')"
+    while [ "$block_no_stack" ]; do
+      putsn "shellspec_abort"
+      block_end ""
+    done
   fi
+
 done <<HERE
 $(shellspec_find_files "*_spec.sh" "$@")
 HERE

@@ -54,6 +54,7 @@ shellspec_example() {
       shellspec_call_after_each_hooks
     }
 
+    shellspec_if ABORT && break
     shellspec_if SYNTAX_ERROR && shellspec_on FAILED
     shellspec_if SKIP && shellspec_output SKIPPED && break
     shellspec_output_if NOT_IMPLEMENTED && shellspec_output TODO && break
@@ -173,6 +174,10 @@ shellspec_pending() {
 shellspec_debug() {
   shellspec_if SKIP && return 0
   shellspec_output DEBUG "${*:-}"
+}
+
+shellspec_abort() {
+    shellspec_on ABORT
 }
 
 shellspec_exit() {

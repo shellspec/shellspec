@@ -1,5 +1,6 @@
 #shellcheck shell=sh disable=SC2004
 
+shellspec_constants
 shellspec_proxy find_files shellspec_find_files
 shellspec_proxy puts shellspec_puts
 shellspec_proxy putsn shellspec_putsn
@@ -24,4 +25,12 @@ increasese_id() {
 decrease_id() {
   [ "$id_state" = "end" ] && id=${id%:*}
   id_state="end"
+}
+
+trim() {
+  eval "
+    while :; do
+      case \${$1} in (' '* | '${TAB}'*) $1=\${$1#?} ;; (*) break ;; esac
+    done
+  "
 }

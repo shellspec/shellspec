@@ -159,7 +159,7 @@ fatal_error_format() {
   conclusion_append "${LF}${RED}Fatal error:" \
     "running specs aborted unexpectedly${LF}${RESET}"
   conclusion_append \
-    "  ${BOLD}${WHITE}The last EXECUTED statement was as follows${RESET}"
+    "  ${BOLD}${WHITE}NOTE: The last executed statement was as follows${RESET}"
   conclusion_append "${LF}  $example_index) ${field_description:-}${LF}"
   if [ "${field_evaluation:-}" ]; then
     conclusion_append "     ${BOLD}${CYAN}${field_evaluation:-}${RESET}"

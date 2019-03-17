@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 Describe "core/evaluation.sh"
   Before 'VAR=123'
