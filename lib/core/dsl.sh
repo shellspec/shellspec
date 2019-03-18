@@ -124,13 +124,6 @@ shellspec_it() {
 shellspec_before() { shellspec_before_each_hook "$@"; }
 shellspec_after()  { shellspec_after_each_hook "$@"; }
 
-shellspec_set() {
-  while [ $# -gt 0 ]; do eval "${1%%\=*}=\${1#*\\=}" && shift; done
-}
-shellspec_unset() {
-  while [ $# -gt 0 ]; do eval "unset $1 ||:" && shift; done
-}
-
 shellspec_path() {
   while [ $# -gt 0 ]; do
     SHELLSPEC_PATH_ALIAS="${SHELLSPEC_PATH_ALIAS}$1:"

@@ -26,3 +26,10 @@ shellspec_is() {
   esac
   return 0
 }
+
+shellspec_set() {
+  while [ $# -gt 0 ]; do eval "${1%%\=*}=\${1#*\\=}" && shift; done
+}
+shellspec_unset() {
+  while [ $# -gt 0 ]; do eval "unset $1 ||:" && shift; done
+}
