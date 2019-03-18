@@ -436,8 +436,6 @@ other
 
 | DSL                                           | Description                                 |
 | :-------------------------------------------- | :------------------------------------------ |
-| Set                                           | Set value to the variable.                  |
-| Unset                                         | Unset the variable.                         |
 | Path<br>File<br>Dir                           | Define [path alias](#path-alias).           |
 | Data `[ | FILTER ]`... End                    | Define stdin data for evaluation.           |
 | Data `<FUNCTION> [ARGUMENTS...] [ | FILTER ]` | Use function for stdin data for evaluation. |
@@ -520,6 +518,7 @@ To disable shows banner with `--no-banner` option.
 
  * Change behavior of line and lines modifier to like "grep -c" not "wc -l".
  * Add Data helper
+ * Remove Set/Unset helper
 
 0.7.0
 
