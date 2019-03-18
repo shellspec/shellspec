@@ -233,7 +233,7 @@ Describe "core/evaluation.sh"
     End
 
     Describe 'with block with tr'
-      Data | tr '[:lower:]' '[:upper:]' # comment
+      Data | tr 'abc' 'ABC' # comment
         #|aaa
         #|bbb
         #|ccc
@@ -262,7 +262,7 @@ Describe "core/evaluation.sh"
       End
 
       Example 'output read data with tr'
-        Data func a b c | tr '[:lower:]' '[:upper:]' # comment
+        Data func a b c | tr 'abc' 'ABC' # comment
         When call output
         The first line of output should eq 'A'
         The second line of output should eq 'B'
