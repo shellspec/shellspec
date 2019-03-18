@@ -8,17 +8,17 @@ Describe "core/subjects/value.sh"
     End
 
     Example "use parameter as subject"
-      When invoke subject value foo _modifier_
+      When invoke spy_shellspec_subject value foo _modifier_
       The stdout should equal 'foo'
     End
 
     Example 'output error if value is missing'
-      When invoke subject value
+      When invoke spy_shellspec_subject value
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
     Example 'output error if next word is missing'
-      When invoke subject value foo
+      When invoke spy_shellspec_subject value foo
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

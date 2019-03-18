@@ -12,7 +12,7 @@ Describe "core/modifiers/length.sh"
     Context 'when subject is abcde'
       subject() { shellspec_puts abcde; }
       Example 'its length should equal 5'
-        When invoke modifier length _modifier_
+        When invoke spy_shellspec_modifier length _modifier_
         The stdout should equal 5
       End
     End
@@ -20,13 +20,13 @@ Describe "core/modifiers/length.sh"
     Context 'when subject is undefined'
       subject() { false; }
       Example 'cant get length'
-        When invoke modifier length _modifier_
+        When invoke spy_shellspec_modifier length _modifier_
         The status should be failure
       End
     End
 
     Example 'output error if next modifier is missing'
-      When invoke modifier length
+      When invoke spy_shellspec_modifier length
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

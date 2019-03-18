@@ -15,18 +15,18 @@ Describe "core/matchers/satisfy.sh"
       subject() { shellspec_puts foo; }
 
       Example 'it should satisfy check foo'
-        When invoke matcher satisfy check foo
+        When invoke spy_shellspec_matcher satisfy check foo
         The status should be success
       End
 
       Example 'it should satisfy check bar'
-        When invoke matcher satisfy check bar
+        When invoke spy_shellspec_matcher satisfy check bar
         The status should be failure
       End
     End
 
     Example 'output error if parameters is missing'
-      When invoke matcher satisfy
+      When invoke spy_shellspec_matcher satisfy
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End

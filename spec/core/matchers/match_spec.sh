@@ -14,12 +14,12 @@ Describe "core/matchers/match.sh"
       subject() { shellspec_puts foobarbaz; }
 
       Example 'it should match "foo*"'
-        When invoke matcher match "foo*"
+        When invoke spy_shellspec_matcher match "foo*"
         The status should be success
       End
 
       Example 'it should match "FOO*"'
-        When invoke matcher match "FOO*"
+        When invoke spy_shellspec_matcher match "FOO*"
         The status should be failure
       End
     End
@@ -27,19 +27,19 @@ Describe "core/matchers/match.sh"
     Context 'when subject is undefined'
       subject() { false; }
       Example 'it should not match "*"'
-        When invoke matcher match "*"
+        When invoke spy_shellspec_matcher match "*"
         The status should be failure
       End
     End
 
     Example 'output error if parameters is missing'
-      When invoke matcher match
+      When invoke spy_shellspec_matcher match
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
 
     Example 'output error if parameters count is invalid'
-      When invoke matcher match "foo" "bar"
+      When invoke spy_shellspec_matcher match "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End

@@ -12,7 +12,7 @@ Describe "core/modifiers/line.sh"
     Context 'when subject is "foo<LF>bar<LF>baz"'
       subject() { shellspec_puts "foo${LF}bar${LF}baz"; }
       Example 'second line is bar'
-        When invoke modifier line 2 _modifier_
+        When invoke spy_shellspec_modifier line 2 _modifier_
         The entire stdout should equal bar
       End
     End
@@ -20,7 +20,7 @@ Describe "core/modifiers/line.sh"
     Context 'when subject is "foo<LF>"'
       subject() { shellspec_puts "foo${LF}"; }
       Example 'can not get second line'
-        When invoke modifier line 2 _modifier_
+        When invoke spy_shellspec_modifier line 2 _modifier_
         The status should be failure
       End
     End
@@ -28,7 +28,7 @@ Describe "core/modifiers/line.sh"
     Context 'when subject is "foo<LF><LF>"'
       subject() { shellspec_puts "foo${LF}${LF}"; }
       Example 'second line is ""'
-        When invoke modifier line 2 _modifier_
+        When invoke spy_shellspec_modifier line 2 _modifier_
         The entire stdout should equal ""
       End
     End
@@ -36,7 +36,7 @@ Describe "core/modifiers/line.sh"
     Context 'when subject is empty string'
       subject() { shellspec_puts ""; }
       Example 'can not get first line'
-        When invoke modifier line 1 _modifier_
+        When invoke spy_shellspec_modifier line 1 _modifier_
         The status should be failure
       End
     End
@@ -44,7 +44,7 @@ Describe "core/modifiers/line.sh"
     Context 'when subject is "<LF>"'
       subject() { shellspec_puts "${LF}"; }
       Example 'first line is ""'
-        When invoke modifier line 1 _modifier_
+        When invoke spy_shellspec_modifier line 1 _modifier_
         The entire stdout should equal ""
       End
     End
@@ -52,23 +52,23 @@ Describe "core/modifiers/line.sh"
     Context 'when subject is undefined'
       subject() { false; }
       Example 'can not get first line'
-        When invoke modifier line 2 _modifier_
+        When invoke spy_shellspec_modifier line 2 _modifier_
         The status should be failure
       End
     End
 
     Example 'output error if value is not a number'
-      When invoke modifier line ni
+      When invoke spy_shellspec_modifier line ni
       The stderr should equal SYNTAX_ERROR_PARAM_TYPE
     End
 
     Example 'output error if value is missing'
-      When invoke modifier line
+      When invoke spy_shellspec_modifier line
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
     Example 'output error if next word is missing'
-      When invoke modifier line 2
+      When invoke spy_shellspec_modifier line 2
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

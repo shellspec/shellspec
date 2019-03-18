@@ -14,7 +14,7 @@ Describe "core/matchers/be/variable.sh"
     Context 'when subject is empty string'
       subject() { shellspec_puts; }
       Example 'it should be success'
-        When invoke matcher be defined
+        When invoke spy_shellspec_matcher be defined
         The status should be success
       End
     End
@@ -22,13 +22,13 @@ Describe "core/matchers/be/variable.sh"
     Context 'when subject is undefined'
       subject() { false; }
       Example 'it should be failure'
-        When invoke matcher be defined
+        When invoke spy_shellspec_matcher be defined
         The status should be failure
       End
     End
 
     Example 'output error if parameters count is invalid'
-      When invoke matcher be defined foo
+      When invoke spy_shellspec_matcher be defined foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
@@ -44,7 +44,7 @@ Describe "core/matchers/be/variable.sh"
     Context 'when subject is undefined'
       subject() { false; }
       Example 'it should be success'
-        When invoke matcher be undefined
+        When invoke spy_shellspec_matcher be undefined
         The status should be success
       End
     End
@@ -52,13 +52,13 @@ Describe "core/matchers/be/variable.sh"
     Context 'when subject is empty string'
       subject() { shellspec_puts; }
       Example 'it should be failure'
-        When invoke matcher be undefined
+        When invoke spy_shellspec_matcher be undefined
         The status should be failure
       End
     End
 
     Example 'output error if parameters count is invalid'
-      When invoke matcher be undefined foo
+      When invoke spy_shellspec_matcher be undefined foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
@@ -74,7 +74,7 @@ Describe "core/matchers/be/variable.sh"
     Context 'when subject is non zero length string'
       subject() { shellspec_puts x; }
       Example 'it should be success'
-        When invoke matcher be present
+        When invoke spy_shellspec_matcher be present
         The status should be success
       End
     End
@@ -82,7 +82,7 @@ Describe "core/matchers/be/variable.sh"
     Context 'when subject is zero length string'
       subject() { shellspec_puts; }
       Example 'it should be failure'
-        When invoke matcher be present
+        When invoke spy_shellspec_matcher be present
         The status should be failure
       End
     End
@@ -90,13 +90,13 @@ Describe "core/matchers/be/variable.sh"
     Context 'when subject is undefind'
       subject() { false; }
       Example 'it should be failure'
-        When invoke matcher be present
+        When invoke spy_shellspec_matcher be present
         The status should be failure
       End
     End
 
     Example 'output error if parameters count is invalid'
-      When invoke matcher be present foo
+      When invoke spy_shellspec_matcher be present foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
@@ -112,7 +112,7 @@ Describe "core/matchers/be/variable.sh"
     Context 'when subject is zero length string'
       subject() { shellspec_puts; }
       Example 'it should be success'
-        When invoke matcher be blank
+        When invoke spy_shellspec_matcher be blank
         The status should be success
       End
     End
@@ -120,7 +120,7 @@ Describe "core/matchers/be/variable.sh"
     Context 'when subject is undefind'
       subject() { false; }
       Example 'it should be success'
-        When invoke matcher be blank
+        When invoke spy_shellspec_matcher be blank
         The status should be success
       End
     End
@@ -128,13 +128,13 @@ Describe "core/matchers/be/variable.sh"
     Context 'when subject is non zero length string'
       subject() { shellspec_puts x; }
       Example 'it should be failure'
-        When invoke matcher be blank
+        When invoke spy_shellspec_matcher be blank
         The status should be failure
       End
     End
 
     Example 'output error if parameters count is invalid'
-      When invoke matcher be blank foo
+      When invoke spy_shellspec_matcher be blank foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End

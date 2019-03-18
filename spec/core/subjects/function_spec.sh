@@ -10,17 +10,17 @@ Describe "core/subjects/function.sh"
     End
 
     Example "use parameter as subject"
-      When invoke subject function func _modifier_
+      When invoke spy_shellspec_subject function func _modifier_
       The stdout should equal 'foo'
     End
 
     Example 'output error if value is missing'
-      When invoke subject function
+      When invoke spy_shellspec_subject function
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
     Example 'output error if next word is missing'
-      When invoke subject function func
+      When invoke spy_shellspec_subject function func
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

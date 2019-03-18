@@ -23,7 +23,7 @@ Describe "core/modifiers/lines.sh"
     Context 'when subject is "foo<LF>bar"'
       subject() { shellspec_puts "foo${LF}bar"; }
       Example 'it number of lines should equal 2'
-        When invoke modifier lines _modifier_
+        When invoke spy_shellspec_modifier lines _modifier_
         The stdout should equal 2
       End
     End
@@ -31,7 +31,7 @@ Describe "core/modifiers/lines.sh"
     Context 'when subject is "foo<LF>bar<LF>"'
       subject() { shellspec_puts "foo${LF}bar${LF}"; }
       Example 'it number of lines should equal 2'
-        When invoke modifier lines _modifier_
+        When invoke spy_shellspec_modifier lines _modifier_
         The stdout should equal 2
       End
     End
@@ -39,7 +39,7 @@ Describe "core/modifiers/lines.sh"
     Context 'when subject is "foo<LF>bar<LF><LF>"'
       subject() { shellspec_puts "foo${LF}bar${LF}${LF}"; }
       Example 'it number of lines should equal 3'
-        When invoke modifier lines _modifier_
+        When invoke spy_shellspec_modifier lines _modifier_
         The stdout should equal 3
       End
     End
@@ -47,7 +47,7 @@ Describe "core/modifiers/lines.sh"
     Context 'when subject is empty string'
       subject() { shellspec_puts; }
       Example 'get number of lines of empty string'
-        When invoke modifier lines _modifier_
+        When invoke spy_shellspec_modifier lines _modifier_
         The stdout should equal 0
       End
     End

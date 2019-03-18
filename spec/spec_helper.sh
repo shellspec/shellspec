@@ -48,17 +48,17 @@ shellspec_spec_helper_configure() {
     shellspec_puts "$SHELLSPEC_SUBJECT"
   }
 
-  subject() {
+  spy_shellspec_subject() {
     shellspec_output() { shellspec_puts "$1" >&2; }
     shellspec_subject "$@"
   }
 
-  modifier() {
+  spy_shellspec_modifier() {
     shellspec_output() { shellspec_puts "$1" >&2; }
     shellspec_modifier "$@"
   }
 
-  matcher() {
+  spy_shellspec_matcher() {
     shellspec_output() { shellspec_puts "$1" >&2; }
     shellspec_is() { shellspec_puts "is:$*"; }
     shellspec_proxy "shellspec_matcher_do_match" \
