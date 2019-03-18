@@ -1,28 +1,35 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/match.sh"
+  Before set_subject
+  subject() { false; }
+
   Describe 'match matcher'
     Example 'example'
       The value "foobarbaz" should match "foo*"
       The value "foobarbaz" should not match "FOO*"
     End
 
-    Example 'matches subject'
-      Set SHELLSPEC_SUBJECT="foobarbaz"
-      When invoke matcher match "foo*"
-      The status should be success
+    Context 'when subject is foobarbaz'
+      subject() { shellspec_puts foobarbaz; }
+
+      Example 'it should match "foo*"'
+        When invoke matcher match "foo*"
+        The status should be success
+      End
+
+      Example 'it should match "FOO*"'
+        When invoke matcher match "FOO*"
+        The status should be failure
+      End
     End
 
-    Example 'not matches subject'
-      Set SHELLSPEC_SUBJECT="foobarbaz"
-      When invoke matcher match "FOO*"
-      The status should be failure
-    End
-
-    Example 'not matches undefined subject'
-      Unset SHELLSPEC_SUBJECT
-      When invoke matcher match "*"
-      The status should be failure
+    Context 'when subject is undefined'
+      subject() { false; }
+      Example 'it should not match "*"'
+        When invoke matcher match "*"
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters is missing'

@@ -7,7 +7,7 @@ Describe "core/utils.sh"
 
     Example 'read file as is'
       When call shellspec_readfile var "$file"
-      The variable var should equal "a${SHELLSPEC_LF}${SHELLSPEC_LF}"
+      The variable var should equal "a${LF}${LF}"
     End
   End
 

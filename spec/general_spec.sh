@@ -51,10 +51,12 @@ Describe "general.sh"
       The stdout should equal 'a b c f g'
     End
 
-    Example 'remove 2 parameters after offset 3, and insert list'
-      Set a=A b=B c=C
-      When call splice 3 2 a b c
-      The stdout should equal 'a b c A B C f g'
+    Context 'when a=A b=B c=C'
+      Before 'a=A b=B c=C'
+      Example 'remove 2 parameters after offset 3, and insert list'
+        When call splice 3 2 a b c
+        The stdout should equal 'a b c A B C f g'
+      End
     End
   End
 
@@ -63,7 +65,7 @@ Describe "general.sh"
 
     Example 'call callback with index and value'
       When call shellspec_each callback a b c
-      The stdout should equal "a:1:3${SHELLSPEC_LF}b:2:3${SHELLSPEC_LF}c:3:3"
+      The stdout should equal "a:1:3${LF}b:2:3${LF}c:3:3"
     End
 
     Example 'call callback with no params'
@@ -133,39 +135,43 @@ Describe "general.sh"
       The entire stdout should equal '-n'
     End
 
-    Example 'shellspec_puts join arguments with spaces'
-      Set IFS=@
-      When call shellspec_puts a b c
-      The entire stdout should equal 'a b c'
+    Context 'when IFS=@'
+      Before 'IFS=@'
+      Example 'shellspec_puts join arguments with spaces'
+        When call shellspec_puts a b c
+        The entire stdout should equal 'a b c'
+      End
     End
   End
 
   Describe 'putsn()'
     Example 'shellspec_putsn no outputs to stdout'
       When call shellspec_putsn
-      The entire stdout should equal "${SHELLSPEC_LF}"
+      The entire stdout should equal "${LF}"
     End
 
     Example 'shellspec_putsn outputs to stdout append with LF'
       When call shellspec_putsn "a"
-      The entire stdout should equal "a${SHELLSPEC_LF}"
+      The entire stdout should equal "a${LF}"
     End
 
     Example 'shellspec_putsn joins by space and outputs arguments append with LF'
       When call shellspec_putsn "a" "b"
-      The entire stdout should equal "a b${SHELLSPEC_LF}"
+      The entire stdout should equal "a b${LF}"
     End
 
     Example 'shellspec_putsn outputs with raw append with LF'
       When call shellspec_putsn 'a\b'
-      The entire stdout should equal "a\\b${SHELLSPEC_LF}"
+      The entire stdout should equal "a\\b${LF}"
       The length of entire stdout should equal 4
     End
 
-    Example 'shellspec_putsn join arguments with spaces'
-      Set IFS=@
-      When call shellspec_putsn a b c
-      The entire stdout should equal "a b c${SHELLSPEC_LF}"
+    Context 'when IFS=@'
+      Before 'IFS=@'
+      Example 'shellspec_putsn join arguments with spaces'
+        When call shellspec_putsn a b c
+        The entire stdout should equal "a b c${LF}"
+      End
     End
   End
 
@@ -192,17 +198,17 @@ Describe "general.sh"
     End
 
     Example 'calls callback by each line'
-      When call shellspec_lines callback "a${SHELLSPEC_LF}b"
+      When call shellspec_lines callback "a${LF}b"
       The stdout should eq "1:a 2:b "
     End
 
     Example 'ignore last LF'
-      When call shellspec_lines callback "a${SHELLSPEC_LF}b${SHELLSPEC_LF}"
+      When call shellspec_lines callback "a${LF}b${LF}"
       The stdout should eq "1:a 2:b "
     End
 
     Example 'can cancels calls of callback.'
-      When call shellspec_lines callback_with_cancel "a${SHELLSPEC_LF}b"
+      When call shellspec_lines callback_with_cancel "a${LF}b"
       The stdout should eq "1:a "
     End
   End

@@ -15,6 +15,32 @@ shellspec_mockable shellspec_callback
 shellspec_spec_helper_configure() {
   shellspec_import 'support/custom_matcher'
 
+  set_shellspec_special_variable() {
+    eval "
+      if $1=\"\$($2 && echo _)\"; then
+        $1=\${$1%_}
+      else
+        shellspec_unset $1
+      fi
+    "
+  }
+
+  set_subject() {
+    set_shellspec_special_variable SHELLSPEC_SUBJECT subject
+  }
+
+  set_exit_status() {
+    set_shellspec_special_variable SHELLSPEC_EXIT_STATUS exit_status
+  }
+
+  set_stdout() {
+    set_shellspec_special_variable SHELLSPEC_STDOUT stdout
+  }
+
+  set_stderr() {
+    set_shellspec_special_variable SHELLSPEC_STDERR stderr
+  }
+
   # modifier for test
   shellspec_syntax shellspec_modifier__modifier_
   shellspec_modifier__modifier_() {
@@ -40,4 +66,7 @@ shellspec_spec_helper_configure() {
     shellspec_matcher "$@"
     shellspec_if MATCHED
   }
+
+  LF="$SHELLSPEC_LF"
+  TAB="$SHELLSPEC_TAB"
 }

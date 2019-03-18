@@ -1,8 +1,9 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/be/stat.sh"
+  Before setup set_subject
   setup() { fixture="$SHELLSPEC_SPECDIR/fixture"; }
-  Before setup
+  subject() { false; }
 
   not_exist() { setup; [ ! -e "$fixture/$1" ]; }
   check_root() { [ "$(id -u)" = 0 ]; }
@@ -13,16 +14,20 @@ Describe "core/matchers/be/stat.sh"
       The path exist-file should be exist
     End
 
-    Example 'succeed if path exists'
-      Set SHELLSPEC_SUBJECT="$fixture/exist"
-      When invoke matcher be exist
-      The status should be success
+    Context 'when path exists'
+      subject() { shellspec_puts "$fixture/exist"; }
+      Example 'it should be success'
+        When invoke matcher be exist
+        The status should be success
+      End
     End
 
-    Example 'fail if path does not exist'
-      Set SHELLSPEC_SUBJECT="$fixture/exist.not-exists"
-      When invoke matcher be exist
-      The status should be failure
+    Context 'when path does not exist'
+      subject() { shellspec_puts "$fixture/exist.not-exists"; }
+      Example 'it should be failure'
+        When invoke matcher be exist
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -38,16 +43,20 @@ Describe "core/matchers/be/stat.sh"
       The path regular-file should be file
     End
 
-    Example 'succeed if path is regular file'
-      Set SHELLSPEC_SUBJECT="$fixture/file"
-      When invoke matcher be file
-      The status should be success
+    Context 'when path is regular file'
+      subject() { shellspec_puts "$fixture/file"; }
+      Example 'it should be success'
+        When invoke matcher be file
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not regular file'
-      Set SHELLSPEC_SUBJECT="$fixture/dir"
-      When invoke matcher be file
-      The status should be failure
+    Context 'when path is not regular file'
+      subject() { shellspec_puts "$fixture/dir"; }
+      Example 'it should be failure'
+        When invoke matcher be file
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -63,16 +72,20 @@ Describe "core/matchers/be/stat.sh"
       The path directory should be directory
     End
 
-    Example 'succeed if path is directory'
-      Set SHELLSPEC_SUBJECT="$fixture/dir"
-      When invoke matcher be directory
-      The status should be success
+    Context 'when path is directory'
+      subject() { shellspec_puts "$fixture/dir"; }
+      Example 'it should be success'
+        When invoke matcher be directory
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not directory'
-      Set SHELLSPEC_SUBJECT="$fixture/file"
-      When invoke matcher be directory
-      The status should be failure
+    Context 'when path is not directory'
+      subject() { shellspec_puts "$fixture/file"; }
+      Example 'it should be failure'
+        When invoke matcher be directory
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -88,16 +101,20 @@ Describe "core/matchers/be/stat.sh"
       The path empty-file should be empty
     End
 
-    Example 'succeed if path is empty'
-      Set SHELLSPEC_SUBJECT="$fixture/empty"
-      When invoke matcher be empty
-      The status should be success
+    Context 'when path is empty'
+      subject() { shellspec_puts "$fixture/empty"; }
+      Example 'it should be success'
+        When invoke matcher be empty
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not empty'
-      Set SHELLSPEC_SUBJECT="$fixture/file"
-      When invoke matcher be empty
-      The status should be failure
+    Context 'when path is not empty'
+      subject() { shellspec_puts "$fixture/file"; }
+      Example 'it should be failure'
+        When invoke matcher be empty
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -115,16 +132,20 @@ Describe "core/matchers/be/stat.sh"
       The path symlink should be symlink
     End
 
-    Example 'succeed if path is symlink'
-      Set SHELLSPEC_SUBJECT="$fixture/stat/symlink"
-      When invoke matcher be symlink
-      The status should be success
+    Context 'when path is symlink'
+      subject() { shellspec_puts "$fixture/stat/symlink"; }
+      Example 'it should be success'
+        When invoke matcher be symlink
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not symlink'
-      Set SHELLSPEC_SUBJECT="$fixture/file"
-      When invoke matcher be symlink
-      The status should be failure
+    Context 'when path is not symlink'
+      subject() { shellspec_puts "$fixture/file"; }
+      Example 'it should be failure'
+        When invoke matcher be symlink
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -142,16 +163,20 @@ Describe "core/matchers/be/stat.sh"
       The path pipe should be pipe
     End
 
-    Example 'succeed if path is pipe'
-      Set SHELLSPEC_SUBJECT="$fixture/stat/pipe"
-      When invoke matcher be pipe
-      The status should be success
+    Context 'when path is pipe'
+      subject() { shellspec_puts "$fixture/stat/pipe"; }
+      Example 'it should be success'
+        When invoke matcher be pipe
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not pipe'
-      Set SHELLSPEC_SUBJECT="$fixture/file"
-      When invoke matcher be pipe
-      The status should be failure
+    Context 'when path is not pipe'
+      subject() { shellspec_puts "$fixture/file"; }
+      Example 'it should be failure'
+        When invoke matcher be pipe
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -169,16 +194,20 @@ Describe "core/matchers/be/stat.sh"
       The path socket should be socket
     End
 
-    Example 'succeed if path is socket'
-      Set SHELLSPEC_SUBJECT="$fixture/stat/socket"
-      When invoke matcher be socket
-      The status should be success
+    Context 'when path is socket'
+      subject() { shellspec_puts "$fixture/stat/socket"; }
+      Example 'it should be success'
+        When invoke matcher be socket
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not socket'
-      Set SHELLSPEC_SUBJECT="$fixture/file"
-      When invoke matcher be socket
-      The status should be failure
+    Context 'when path is not socket'
+      subject() { shellspec_puts "$fixture/file"; }
+      Example 'it should be failure'
+        When invoke matcher be socket
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -196,17 +225,21 @@ Describe "core/matchers/be/stat.sh"
       The path readable should be readable
     End
 
-    Example 'succeed if path is readable'
-      Set SHELLSPEC_SUBJECT="$fixture/stat/readable"
-      When invoke matcher be readable
-      The status should be success
+    Context 'when path is readable'
+      subject() { shellspec_puts "$fixture/stat/readable"; }
+      Example 'it should be success'
+        When invoke matcher be readable
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not readable'
+    Context 'when path is not readable'
+      subject() { shellspec_puts "$fixture/stat/no-permission"; }
       Skip if "I am root" check_root
-      Set SHELLSPEC_SUBJECT="$fixture/stat/no-permission"
-      When invoke matcher be readable
-      The status should be failure
+      Example 'it should be failure'
+        When invoke matcher be readable
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -224,17 +257,21 @@ Describe "core/matchers/be/stat.sh"
       The path readable should be writable
     End
 
-    Example 'succeed if path is writable'
-      Set SHELLSPEC_SUBJECT="$fixture/stat/writable"
-      When invoke matcher be writable
-      The status should be success
+    Context 'when path is writable'
+      subject() { shellspec_puts "$fixture/stat/writable"; }
+      Example 'it should be success'
+        When invoke matcher be writable
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not writable'
+    Context 'when path is not writable'
+      subject() { shellspec_puts "$fixture/stat/no-permission"; }
       Skip if "I am root" check_root
-      Set SHELLSPEC_SUBJECT="$fixture/stat/no-permission"
-      When invoke matcher be writable
-      The status should be failure
+      Example 'it should be failure'
+        When invoke matcher be writable
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -252,16 +289,20 @@ Describe "core/matchers/be/stat.sh"
       The path executable should be executable
     End
 
-    Example 'succeed if path is executable'
-      Set SHELLSPEC_SUBJECT="$fixture/stat/executable"
-      When invoke matcher be executable
-      The status should be success
+    Context 'when path is executable'
+      subject() { shellspec_puts "$fixture/stat/executable"; }
+      Example 'it should be success'
+        When invoke matcher be executable
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not executable'
-      Set SHELLSPEC_SUBJECT="$fixture/stat/no-permission"
-      When invoke matcher be executable
-      The status should be failure
+    Context 'when path is not executable'
+      subject() { shellspec_puts "$fixture/stat/no-permission"; }
+      Example 'it should be failure'
+        When invoke matcher be executable
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -279,16 +320,20 @@ Describe "core/matchers/be/stat.sh"
       The path block-device should be block device
     End
 
-    Example 'succeed if path is block device'
-      Set SHELLSPEC_SUBJECT="$fixture/stat/block-device"
-      When invoke matcher be block device
-      The status should be success
+    Context 'when path is block device'
+      subject() { shellspec_puts "$fixture/stat/block-device"; }
+      Example 'it should be success'
+        When invoke matcher be block device
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not block device'
-      Set SHELLSPEC_SUBJECT="$fixture/file"
-      When invoke matcher be block device
-      The status should be failure
+    Context 'when path is not block device'
+      subject() { shellspec_puts "$fixture/file"; }
+      Example 'it should be failure'
+        When invoke matcher be block device
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -306,16 +351,20 @@ Describe "core/matchers/be/stat.sh"
       The path charactor-device should be charactor device
     End
 
-    Example 'succeed if path is charactor device'
-      Set SHELLSPEC_SUBJECT="$fixture/stat/charactor-device"
-      When invoke matcher be charactor device
-      The status should be success
+    Context 'when path is charactor device'
+      subject() { shellspec_puts "$fixture/stat/charactor-device"; }
+      Example 'it should be success'
+        When invoke matcher be charactor device
+        The status should be success
+      End
     End
 
-    Example 'fail if path is not charactor device'
-      Set SHELLSPEC_SUBJECT="$fixture/file"
-      When invoke matcher be charactor device
-      The status should be failure
+    Context 'when path is not charactor device'
+      subject() { shellspec_puts "$fixture/file"; }
+      Example 'it should be failure'
+        When invoke matcher be charactor device
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'

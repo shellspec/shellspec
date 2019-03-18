@@ -1,40 +1,53 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/be/exit_status.sh"
+  Before set_subject
+  subject() { false; }
+
   Describe 'be success matcher'
     Example 'example'
       The value 0 should be success
       The value 1 should not be success
     End
 
-    Example 'matches 0'
-      Set SHELLSPEC_SUBJECT=0
-      When invoke matcher be success
-      The status should be success
+    Context 'when subject is 0'
+      subject() { shellspec_puts 0; }
+      Example 'should matches'
+        When invoke matcher be success
+        The status should be success
+      End
     End
 
-    Example 'not matches 1'
-      Set SHELLSPEC_SUBJECT=1
-      When invoke matcher be success
-      The status should be failure
+    Context 'when subject is 1'
+      subject() { shellspec_puts 1; }
+      Example 'should not matches'
+        When invoke matcher be success
+        The status should be failure
+      End
     End
 
-    Example 'not matches non number values'
-      Set SHELLSPEC_SUBJECT=a
-      When invoke matcher be success
-      The status should be failure
+    Context 'when subject is a (non number values)'
+      subject() { shellspec_puts a; }
+      Example 'should not matches'
+        When invoke matcher be success
+        The status should be failure
+      End
     End
 
-    Example 'not matches zero length string'
-      Set SHELLSPEC_SUBJECT=
-      When invoke matcher be success
-      The status should be failure
+    Context 'when subject is zero length string'
+      subject() { shellspec_puts; }
+      Example 'should not matches'
+        When invoke matcher be success
+        The status should be failure
+      End
     End
 
-    Example 'not matches undefined variable'
-      Unset SHELLSPEC_SUBJECT
-      When invoke matcher be success
-      The status should be failure
+    Context 'when subject is undefined'
+      subject() { false; }
+      Example 'should not matches'
+        When invoke matcher be success
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -50,52 +63,68 @@ Describe "core/matchers/be/exit_status.sh"
       The value 0 should not be failure
     End
 
-    Example 'matches 1'
-      Set SHELLSPEC_SUBJECT=1
-      When invoke matcher be failure
-      The status should be success
+    Context 'when subject is 1'
+      subject() { shellspec_puts 1; }
+      Example 'should matches'
+        When invoke matcher be failure
+        The status should be success
+      End
     End
 
-    Example 'not matches 0'
-      Set SHELLSPEC_SUBJECT=0
-      When invoke matcher be failure
-      The status should be failure
+    Context 'when subject is 0'
+      subject() { shellspec_puts 0; }
+      Example 'should not matches'
+        When invoke matcher be failure
+        The status should be failure
+      End
     End
 
-    Example 'not matches -1'
-      Set SHELLSPEC_SUBJECT=-1
-      When invoke matcher be failure
-      The status should be failure
+    Context 'when subject is -1'
+      subject() { shellspec_puts -1; }
+      Example 'should not matches'
+        When invoke matcher be failure
+        The status should be failure
+      End
     End
 
-    Example 'matches 255'
-      Set SHELLSPEC_SUBJECT=255
-      When invoke matcher be failure
-      The status should be success
+    Context 'when subject is 255'
+      subject() { shellspec_puts 255; }
+      Example 'should matches'
+        When invoke matcher be failure
+        The status should be success
+      End
     End
 
-    Example 'not matches value >= 256'
-      Set SHELLSPEC_SUBJECT=256
-      When invoke matcher be failure
-      The status should be failure
+    Context 'when subject is 256'
+      subject() { shellspec_puts 256; }
+      Example 'should not matches'
+        When invoke matcher be failure
+        The status should be failure
+      End
     End
 
-    Example 'not matches non numeric values'
-      Set SHELLSPEC_SUBJECT=a
-      When invoke matcher be failure
-      The status should be failure
+    Context 'when subject is a (non numeric values)'
+      subject() { shellspec_puts a; }
+      Example 'should not matches'
+        When invoke matcher be failure
+        The status should be failure
+      End
     End
 
-    Example 'not matches zero length string'
-      Set SHELLSPEC_SUBJECT=
-      When invoke matcher be failure
-      The status should be failure
+    Context 'when subject is zero length string'
+      subject() { shellspec_puts; }
+      Example 'should not matches'
+        When invoke matcher be failure
+        The status should be failure
+      End
     End
 
-    Example 'not matches undefined variable'
-      Unset SHELLSPEC_SUBJECT
-      When invoke matcher be failure
-      The status should be failure
+    Context 'when subject is undefined'
+      subject() { false; }
+      Example 'should not matches'
+        When invoke matcher be failure
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'

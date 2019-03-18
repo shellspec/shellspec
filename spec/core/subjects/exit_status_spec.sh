@@ -2,23 +2,30 @@
 
 Describe "core/subjects/exit_status.sh"
   Describe "exit status subject"
+    Before set_exit_status
+    exit_status() { false; }
+
     Example 'example'
-      exit_status() { return 12; }
-      When call exit_status
+      func() { return 12; }
+      When call func
       The exit status should equal 12
       The status should equal 12 # alias for exit status
     End
 
-    Example 'retrives SHELLSPEC_EXIT_STATUS'
-      Set SHELLSPEC_EXIT_STATUS=123
-      When invoke subject exit status _modifier_
-      The stdout should equal 123
+    Context 'when exit status is 123'
+      exit_status() { shellspec_puts 123; }
+      Example 'it should equal 123'
+        When invoke subject exit status _modifier_
+        The stdout should equal 123
+      End
     End
 
-    Example 'retrives undefined SHELLSPEC_EXIT_STATUS'
-      Unset SHELLSPEC_EXIT_STATUS
-      When invoke subject exit status _modifier_
-      The status should be failure
+    Context 'when exit status is undefind'
+      exit_status() { false; }
+      Example 'it should be failure'
+        When invoke subject exit status _modifier_
+        The status should be failure
+      End
     End
 
     Example 'output error if next word is missing'

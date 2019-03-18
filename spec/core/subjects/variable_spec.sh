@@ -2,27 +2,35 @@
 
 Describe "core/subjects/variable.sh"
   Describe "variable subject"
-    Example 'exampe'
-      Set var=foo
-      The variable var should equal foo
+    Context 'when var is foo'
+      Before 'shellspec_set var=foo'
+      Example 'exampe'
+        The variable var should equal foo
+      End
     End
 
-    Example "retrive variable should equal test with newline"
-      Set var="test${SHELLSPEC_LF}"
-      When invoke subject variable var _modifier_
-      The entire stdout should equal "test${SHELLSPEC_LF}"
+    Context 'when var is "test<LF>"'
+      Before 'shellspec_set var="test${LF}"'
+      Example 'it should equal "test<LF>"'
+        When invoke subject variable var _modifier_
+        The entire stdout should equal "test${LF}"
+      End
     End
 
-    Example "retrive variable should equal '' if empty string"
-      Set var=
-      When invoke subject variable var _modifier_
-      The entire stdout should equal ''
+    Context 'when var is zero length string'
+      Before 'shellspec_set var='
+      Example 'it should equal ""'
+        When invoke subject variable var _modifier_
+        The entire stdout should equal ''
+      End
     End
 
-    Example "retrive variable should be undefined if unset variable"
-      Unset var
-      When invoke subject variable var _modifier_
-      The status should be failure
+    Context 'when var is undefined'
+      Before 'shellspec_unset var'
+      Example 'it should be failure'
+        When invoke subject variable var _modifier_
+        The status should be failure
+      End
     End
 
     Example 'output error if value is missing'

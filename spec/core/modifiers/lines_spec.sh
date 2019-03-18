@@ -2,6 +2,9 @@
 
 Describe "core/modifiers/lines.sh"
   Describe "lines modifier"
+    Before set_subject
+    subject() { false; }
+
     get_text() {
       echo foo
       echo bar
@@ -17,22 +20,36 @@ Describe "core/modifiers/lines.sh"
       The lines of entire stdout should equal 3
     End
 
-    Example 'get number of lines of subject'
-      Set SHELLSPEC_SUBJECT="foo${SHELLSPEC_LF}bar"
-      When invoke modifier lines _modifier_
-      The stdout should equal 2
+    Context 'when subject is "foo<LF>bar"'
+      subject() { shellspec_puts "foo${LF}bar"; }
+      Example 'it number of lines should equal 2'
+        When invoke modifier lines _modifier_
+        The stdout should equal 2
+      End
     End
 
-    Example 'get number of lines of subject that end with newline'
-      Set SHELLSPEC_SUBJECT="foo${SHELLSPEC_LF}bar${SHELLSPEC_LF}"
-      When invoke modifier lines _modifier_
-      The stdout should equal 2
+    Context 'when subject is "foo<LF>bar<LF>"'
+      subject() { shellspec_puts "foo${LF}bar${LF}"; }
+      Example 'it number of lines should equal 2'
+        When invoke modifier lines _modifier_
+        The stdout should equal 2
+      End
     End
 
-    Example 'get number of lines of empty string'
-      Set SHELLSPEC_SUBJECT=""
-      When invoke modifier lines _modifier_
-      The stdout should equal 0
+    Context 'when subject is "foo<LF>bar<LF><LF>"'
+      subject() { shellspec_puts "foo${LF}bar${LF}${LF}"; }
+      Example 'it number of lines should equal 3'
+        When invoke modifier lines _modifier_
+        The stdout should equal 3
+      End
+    End
+
+    Context 'when subject is empty string'
+      subject() { shellspec_puts; }
+      Example 'get number of lines of empty string'
+        When invoke modifier lines _modifier_
+        The stdout should equal 0
+      End
     End
   End
 End

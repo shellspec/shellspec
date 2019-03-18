@@ -5,16 +5,20 @@ Describe "libexec/translator.sh"
   . "$SHELLSPEC_LIB/libexec/translator.sh"
 
   Describe "trim()"
-    Example 'trim left space'
-      Set value="  abc"
-      When call trim value
-      The variable value should eq 'abc'
+    Context 'When value is abc'
+      Before 'value="  abc"'
+      Example 'trim left space'
+        When call trim value
+        The variable value should eq 'abc'
+      End
     End
 
-    Example 'trim left tab'
-      Set value="${SHELLSPEC_TAB}${SHELLSPEC_TAB}abc"
-      When call trim value
-      The variable value should eq 'abc'
+    Context 'When value is abc'
+      Before 'value="${TAB}${TAB}abc"'
+      Example 'trim left tab'
+        When call trim value
+        The variable value should eq 'abc'
+      End
     End
   End
 End

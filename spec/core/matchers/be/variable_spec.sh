@@ -1,24 +1,30 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/be/variable.sh"
+  Before set_subject
+  subject() { false; }
+
   Describe 'be defined matcher'
+    Before 'shellspec_set var1=1' 'shellspec_unset var2'
     Example 'example'
-      Set var1=1
-      Unset var2
       The variable var1 should be defined
       The variable var2 should not be defined
     End
 
-    Example 'matches defined variable'
-      Set SHELLSPEC_SUBJECT=
-      When invoke matcher be defined
-      The status should be success
+    Context 'when subject is empty string'
+      subject() { shellspec_puts; }
+      Example 'it should be success'
+        When invoke matcher be defined
+        The status should be success
+      End
     End
 
-    Example 'not matches undefined variable'
-      Unset SHELLSPEC_SUBJECT
-      When invoke matcher be defined
-      The status should be failure
+    Context 'when subject is undefined'
+      subject() { false; }
+      Example 'it should be failure'
+        When invoke matcher be defined
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -29,23 +35,26 @@ Describe "core/matchers/be/variable.sh"
   End
 
   Describe 'be undefined matcher'
+    Before 'shellspec_unset var1' 'shellspec_set var2=1'
     Example 'example'
-      Unset var1
-      Set var2=1
       The variable var1 should be undefined
       The variable var2 should not be undefined
     End
 
-    Example 'matches undefined variable'
-      Unset SHELLSPEC_SUBJECT
-      When invoke matcher be undefined
-      The status should be success
+    Context 'when subject is undefined'
+      subject() { false; }
+      Example 'it should be success'
+        When invoke matcher be undefined
+        The status should be success
+      End
     End
 
-    Example 'not matches defined variable'
-      Set SHELLSPEC_SUBJECT=
-      When invoke matcher be undefined
-      The status should be failure
+    Context 'when subject is empty string'
+      subject() { shellspec_puts; }
+      Example 'it should be failure'
+        When invoke matcher be undefined
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -56,28 +65,34 @@ Describe "core/matchers/be/variable.sh"
   End
 
   Describe 'be present matcher'
+    Before 'shellspec_set var1="x" var2=""'
     Example 'example'
-      Set var1="x" var2=""
       The variable var1 should be present
       The variable var2 should not be present
     End
 
-    Example 'matches non zero length string'
-      Set SHELLSPEC_SUBJECT="x"
-      When invoke matcher be present
-      The status should be success
+    Context 'when subject is non zero length string'
+      subject() { shellspec_puts x; }
+      Example 'it should be success'
+        When invoke matcher be present
+        The status should be success
+      End
     End
 
-    Example 'not matches zero length string'
-      Set SHELLSPEC_SUBJECT=""
-      When invoke matcher be present
-      The status should be failure
+    Context 'when subject is zero length string'
+      subject() { shellspec_puts; }
+      Example 'it should be failure'
+        When invoke matcher be present
+        The status should be failure
+      End
     End
 
-    Example 'not matches undefind variable'
-      Unset SHELLSPEC_SUBJECT
-      When invoke matcher be present
-      The status should be failure
+    Context 'when subject is undefind'
+      subject() { false; }
+      Example 'it should be failure'
+        When invoke matcher be present
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -88,28 +103,34 @@ Describe "core/matchers/be/variable.sh"
   End
 
   Describe 'be blank matcher'
+    Before 'shellspec_set var1="" var2="x"'
     Example 'example'
-      Set var1="" var2="x"
       The variable var1 should be blank
       The variable var2 should not be blank
     End
 
-    Example 'matches zero length string'
-      Set SHELLSPEC_SUBJECT=""
-      When invoke matcher be blank
-      The status should be success
+    Context 'when subject is zero length string'
+      subject() { shellspec_puts; }
+      Example 'it should be success'
+        When invoke matcher be blank
+        The status should be success
+      End
     End
 
-    Example 'matches undefind variable'
-      Unset SHELLSPEC_SUBJECT
-      When invoke matcher be blank
-      The status should be success
+    Context 'when subject is undefind'
+      subject() { false; }
+      Example 'it should be success'
+        When invoke matcher be blank
+        The status should be success
+      End
     End
 
-    Example 'not matches non zero length string'
-      Set SHELLSPEC_SUBJECT="x"
-      When invoke matcher be blank
-      The status should be failure
+    Context 'when subject is non zero length string'
+      subject() { shellspec_puts x; }
+      Example 'it should be failure'
+        When invoke matcher be blank
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters count is invalid'

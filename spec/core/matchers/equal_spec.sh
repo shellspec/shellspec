@@ -2,6 +2,9 @@
 
 Describe "core/matchers/eq.sh"
   Describe 'equal matcher'
+    Before set_subject
+    subject() { false; }
+
     Example 'example'
       The value "test" should equal "test"
       The value "test" should eq "test" # alias for equal
@@ -9,22 +12,26 @@ Describe "core/matchers/eq.sh"
       The value "test" should not eq "TEST" # alias for equal
     End
 
-    Example 'matches subject'
-      Set SHELLSPEC_SUBJECT="foo bar"
-      When invoke matcher equal "foo bar"
-      The status should be success
+    Context 'when subject is "foo bar"'
+      subject() { shellspec_puts "foo bar"; }
+
+      Example 'it should equal "foo bar"'
+        When invoke matcher equal "foo bar"
+        The status should be success
+      End
+
+      Example 'it should not equal "foo"'
+        When invoke matcher equal "foo"
+        The status should be failure
+      End
     End
 
-    Example 'not matches subject'
-      Set SHELLSPEC_SUBJECT="foo bar"
-      When invoke matcher equal "foo"
-      The status should be failure
-    End
-
-    Example 'not matches undefined subject'
-      Unset SHELLSPEC_SUBJECT
-      When invoke matcher equal ""
-      The status should be failure
+    Context 'when subject is undefined'
+      subject() { false; }
+      Example 'it should not equal ""'
+        When invoke matcher equal ""
+        The status should be failure
+      End
     End
 
     Example 'output error if parameters is missing'

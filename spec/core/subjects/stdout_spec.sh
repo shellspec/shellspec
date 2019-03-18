@@ -1,24 +1,32 @@
 #shellcheck shell=sh
 
 Describe "core/subjects/stdout.sh"
+  Before set_stdout
+  stdout() { false; }
+
   Describe "stdout subject"
+
     Example 'example'
-      echo_to_stdout() { echo "foo"; }
-      When call echo_to_stdout
+      func() { echo "foo"; }
+      When call func
       The stdout should equal "foo"
       The output should equal "foo" # alias for stdout
     End
 
-    Example "retrives SHELLSPEC_STDOUT"
-      Set SHELLSPEC_STDOUT="test${SHELLSPEC_LF}"
-      When invoke subject stdout _modifier_
-      The entire stdout should equal 'test'
+    Context 'when stdout is "test<LF>"'
+      stdout() { shellspec_puts "test${LF}"; }
+      Example "it should equal test"
+        When invoke subject stdout _modifier_
+        The entire stdout should equal 'test'
+      End
     End
 
-    Example 'retrives undefined SHELLSPEC_STDOUT'
-      Unset SHELLSPEC_STDOUT
-      When invoke subject stdout _modifier_
-      The status should be failure
+    Context 'when stdout is undefined'
+      stdout() { false; }
+      Example "it should be failure"
+        When invoke subject stdout _modifier_
+        The status should be failure
+      End
     End
 
     Example 'output outor if next word is missing'
@@ -29,22 +37,26 @@ Describe "core/subjects/stdout.sh"
 
   Describe "entire stdout subject"
     Example 'example'
-      echo_to_stdout() { echo "foo"; }
-      When call echo_to_stdout
-      The entire stdout should equal "foo${SHELLSPEC_LF}"
-      The entire output should equal "foo${SHELLSPEC_LF}" # alias for entire stdout
+      func() { echo "foo"; }
+      When call func
+      The entire stdout should equal "foo${LF}"
+      The entire output should equal "foo${LF}" # alias for entire stdout
     End
 
-    Example "retrives SHELLSPEC_STDOUT with newline"
-      Set SHELLSPEC_STDOUT="test${SHELLSPEC_LF}"
-      When invoke subject entire stdout _modifier_
-      The entire stdout should equal "test${SHELLSPEC_LF}"
+    Context 'when stdout is "test<LF>"'
+      stdout() { shellspec_puts "test${LF}"; }
+      Example "it should equal test<LF>"
+        When invoke subject entire stdout _modifier_
+        The entire stdout should equal "test${LF}"
+      End
     End
 
-    Example 'retrives undefined SHELLSPEC_STDOUT'
-      Unset SHELLSPEC_STDOUT
-      When invoke subject entire stdout _modifier_
-      The status should be failure
+    Context 'when stdout is undefined'
+      stdout() { false; }
+      Example "it should be failure"
+        When invoke subject entire stdout _modifier_
+        The status should be failure
+      End
     End
 
     Example 'output outor if next word is missing'

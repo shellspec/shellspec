@@ -1,6 +1,9 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/be/valid.sh"
+  Before set_subject
+  subject() { false; }
+
   Describe 'be a number matcher'
     Example 'example'
       The value "123" should be valid number
@@ -13,16 +16,20 @@ Describe "core/matchers/be/valid.sh"
       The value "abc" should not be valid as a number
     End
 
-    Example 'call shellspec_is number'
-      Set SHELLSPEC_SUBJECT=123
-      When invoke matcher be valid as a number
-      The stdout should equal "is:number 123"
+    Context 'when subject is 123'
+      subject() { shellspec_puts 123; }
+      Example 'it should be valid'
+        When invoke matcher be valid as a number
+        The stdout should equal "is:number 123"
+      End
     End
 
-    Example 'call shellspec_is number with undefined subject'
-      Unset SHELLSPEC_SUBJECT
-      When invoke matcher be valid as number
-      The stdout should equal "is:number "
+    Context 'when subject is undefined'
+      subject() { false; }
+      Example 'it should be invalid'
+        When invoke matcher be valid as number
+        The stdout should equal "is:number "
+      End
     End
 
     Example 'output error if parameters count is invalid'
@@ -44,16 +51,20 @@ Describe "core/matchers/be/valid.sh"
       The value "123" should not be valid as a funcname
     End
 
-    Example 'call shellspec_is function'
-      Set SHELLSPEC_SUBJECT=foo_bar
-      When invoke matcher be valid as a funcname
-      The stdout should equal "is:funcname foo_bar"
+    Context 'when subject is foo_bar'
+      subject() { shellspec_puts foo_bar; }
+      Example 'it should be valid'
+        When invoke matcher be valid as a funcname
+        The stdout should equal "is:funcname foo_bar"
+      End
     End
 
-    Example 'call shellspec_is function with undefined subject'
-      Unset SHELLSPEC_SUBJECT
-      When invoke matcher be valid as funcname
-      The stdout should equal "is:funcname "
+    Context 'when subject is undefined'
+      subject() { false; }
+      Example 'it should be invalid'
+        When invoke matcher be valid as funcname
+        The stdout should equal "is:funcname "
+      End
     End
 
     Example 'output error if parameters count is invalid'
