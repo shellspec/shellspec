@@ -159,7 +159,9 @@ each_line() {
 parse_lines each_line
 
 if [ -z "$interrupt" ]; then
-  wait_for_log_exists "$SHELLSPEC_TIME_LOG" 1000 ||:
+  if [ ! "$fail_fast" ]; then
+    wait_for_log_exists "$SHELLSPEC_TIME_LOG" 30 ||:
+  fi
   read_log "time" "$SHELLSPEC_TIME_LOG"
   read_log "trans" "$SHELLSPEC_TRANS_LOG"
 fi
