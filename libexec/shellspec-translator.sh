@@ -87,12 +87,6 @@ statement() {
 }
 
 control() {
-  case $1 in (set|unset)
-    if [ -z "$inside_of_example" ]; then
-      abort "Set/Unset cannot be defined outside of Example"
-      return 0
-    fi
-  esac
   case $1 in (before|after)
     if [ "$inside_of_example" ]; then
       abort "Before/After cannot be defined inside of Example"
@@ -161,8 +155,6 @@ translate() {
       When      | When\ *     )   statement when      "${work#When}"      ;;
       The       | The\ *      )   statement the       "${work#The}"       ;;
       It        | It\ *       )   statement it        "${work#It}"        ;;
-      Set       | Set\ *      )   control set         "${work#Set}"       ;;
-      Unset     | Unset\ *    )   control unset       "${work#Unset}"     ;;
       Path      | Path\ *     )   control path        "${work#Path}"      ;;
       File      | File\ *     )   control path        "${work#File}"      ;;
       Dir       | Dir\ *      )   control path        "${work#Dir}"       ;;
