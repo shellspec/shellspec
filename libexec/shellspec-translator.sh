@@ -113,10 +113,10 @@ data() {
 
   putsn "shellspec_data() {"
   case $data_line in
-    '' | '#'*)
+    '' | '#'* | '|'*)
       putsn 'while IFS= read -r shellspec_here_document; do'
       putsn '  shellspec_putsn "$shellspec_here_document"'
-      putsn 'done<<DATA'
+      putsn "done<<DATA $data_line"
       while IFS= read -r line || [ "$line" ]; do
         lineno=$(($lineno + 1))
         trim line
