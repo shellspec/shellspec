@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2034
 
 Describe 'evaluation'
   addition () { echo "$*" | bc; }

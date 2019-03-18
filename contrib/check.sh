@@ -18,6 +18,7 @@ sources() {
 
 specs() {
   find spec -name '*.sh'
+  find sample/spec -name '*.sh'
 }
 
 count() {

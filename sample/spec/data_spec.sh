@@ -20,7 +20,7 @@ Describe 'Data helper'
     End
 
     Example 'output read data with tr'
-      Data | tr '[a-z]' '[A-Z]'
+      Data | tr '[:lower:]' '[:upper:]'
         #|aaa
         #|bbb
         #|ccc
@@ -48,7 +48,7 @@ Describe 'Data helper'
     End
 
     Example 'output read data with tr'
-      Data func a b c | tr '[a-z]' '[A-Z]' # comment
+      Data func a b c | tr '[:lower:]' '[:upper:]' # comment
       When call output
       The first line of output should eq 'A'
       The second line of output should eq 'B'
