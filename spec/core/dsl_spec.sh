@@ -237,6 +237,7 @@ Describe "core/dsl.sh" # comment
       echo "skip_id:${SHELLSPEC_SKIP_ID-<unset>}"
       echo "skip_reason:${SHELLSPEC_SKIP_REASON-<unset>}"
       echo "conditional_skip:${SHELLSPEC_CONDITIONAL_SKIP-<unset>}"
+      echo "example_no:${SHELLSPEC_EXAMPLE_NO-<unset>}"
     }
 
     Example 'turns on SKIP switch'

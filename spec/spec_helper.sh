@@ -67,6 +67,6 @@ shellspec_spec_helper_configure() {
     shellspec_if MATCHED
   }
 
-  LF="$SHELLSPEC_LF"
-  TAB="$SHELLSPEC_TAB"
+  # shellcheck disable=SC2034
+  LF="$SHELLSPEC_LF" TAB="$SHELLSPEC_TAB"
 }

@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 Describe "libexec/translator.sh"
   # shellcheck source=lib/libexec/translator.sh

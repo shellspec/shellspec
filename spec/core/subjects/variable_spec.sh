@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 Describe "core/subjects/variable.sh"
   Describe "variable subject"
