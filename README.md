@@ -82,6 +82,7 @@ End
 * Nestable groups with scope like lexical scope
 * Before / After hooks
 * Skip / Pending
+* Data helper that easy to input from stdin
 * Mocking and stubbing (temporary function override)
 * Built-in simple task runner
 * Modern reporting (colorize, failure line number)
@@ -433,14 +434,14 @@ other
 
 ### Helper
 
-| DSL                              | Description                                 |
-| :------------------------------- | :------------------------------------------ |
-| Set                              | Set value to the variable.                  |
-| Unset                            | Unset the variable.                         |
-| Path<br>File<br>Dir              | Define [path alias](#path-alias).           |
-| Data ... End                     | Define stdin data for evaluation.           |
-| Data `<FUNCTION> [ARGUMENTS...]` | Use function for stdin data for evaluation. |
-| Debug                            | Output debug message.                       |
+| DSL                                           | Description                                 |
+| :-------------------------------------------- | :------------------------------------------ |
+| Set                                           | Set value to the variable.                  |
+| Unset                                         | Unset the variable.                         |
+| Path<br>File<br>Dir                           | Define [path alias](#path-alias).           |
+| Data `[ | FILTER ]`... End                    | Define stdin data for evaluation.           |
+| Data `<FUNCTION> [ARGUMENTS...] [ | FILTER ]` | Use function for stdin data for evaluation. |
+| Debug                                         | Output debug message.                       |
 
 #### Path alias
 
