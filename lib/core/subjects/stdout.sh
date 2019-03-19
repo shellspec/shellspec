@@ -12,7 +12,7 @@ shellspec_subject_stdout() {
   if [ ${SHELLSPEC_STDOUT+x} ]; then
     SHELLSPEC_SUBJECT=$(shellspec_putsn "${SHELLSPEC_STDOUT:-}")
   else
-    unset SHELLSPEC_STDOUT ||:
+    unset SHELLSPEC_SUBJECT ||:
   fi
 
   shellspec_off UNHANDLED_STDOUT
@@ -24,7 +24,7 @@ shellspec_subject_entire_stdout() {
   if [ ${SHELLSPEC_STDOUT+x} ]; then
     SHELLSPEC_SUBJECT=${SHELLSPEC_STDOUT:-}
   else
-    unset SHELLSPEC_STDOUT ||:
+    unset SHELLSPEC_SUBJECT ||:
   fi
 
   shellspec_off UNHANDLED_STDOUT

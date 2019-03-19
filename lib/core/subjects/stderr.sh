@@ -12,7 +12,7 @@ shellspec_subject_stderr() {
   if [ ${SHELLSPEC_STDERR+x} ]; then
     SHELLSPEC_SUBJECT=$(shellspec_putsn "${SHELLSPEC_STDERR:-}")
   else
-    unset SHELLSPEC_STDERR ||:
+    unset SHELLSPEC_SUBJECT ||:
   fi
 
   shellspec_off UNHANDLED_STDERR
@@ -24,7 +24,7 @@ shellspec_subject_entire_stderr() {
   if [ ${SHELLSPEC_STDERR+x} ]; then
     SHELLSPEC_SUBJECT=${SHELLSPEC_STDERR:-}
   else
-    unset SHELLSPEC_STDERR ||:
+    unset SHELLSPEC_SUBJECT ||:
   fi
 
   shellspec_off UNHANDLED_STDERR
