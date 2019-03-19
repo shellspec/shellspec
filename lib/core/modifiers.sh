@@ -6,8 +6,9 @@ shellspec_syntax_alias 'shellspec_modifier_should' \
   'shellspec_syntax_dispatch verb should'
 shellspec_syntax_compound 'shellspec_modifier_entire'
 
+shellspec_import 'core/modifiers/contents'
 shellspec_import 'core/modifiers/length'
 shellspec_import 'core/modifiers/line'
 shellspec_import 'core/modifiers/lines'
+shellspec_import 'core/modifiers/output'
 shellspec_import 'core/modifiers/word'
-shellspec_import 'core/modifiers/contents'

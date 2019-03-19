@@ -40,7 +40,7 @@ Describe "core/evaluation.sh"
     Example 'not restore mock function after evaluation'
       mock_foo() { echo_foo() { echo 'FOO'; }; }
       When call mock_foo
-      The function echo_foo should equal 'FOO'
+      The output of value echo_foo should equal 'FOO'
     End
 
     Example 'call shellspec_evaluation_cleanup() after evaluation'
