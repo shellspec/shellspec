@@ -9,7 +9,7 @@ Describe 'example spec'
   Describe
     Example '[pending] test'
       When call true
-      The exit status should be success
+      The status should be success
     End
   End
 End

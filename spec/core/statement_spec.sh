@@ -21,7 +21,7 @@ Describe "core/statement.sh"
     Example "If missing 'the', raise error"
       When invoke it should equal A
       The stdout should equal "SYNTAX_ERROR"
-      The exit status should be failure
+      The status should be failure
     End
   End
 

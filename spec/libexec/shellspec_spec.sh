@@ -18,13 +18,13 @@ Describe "libexec/shellspec.sh"
     Example "read dot file"
       When call read_dot_file "$SHELLSPEC_SPECDIR" "$dot_shellspec" parser
       The stdout should equal "ok"
-      The exit status should be success
+      The status should be success
     End
 
     Example "do not read dot file if not specified directory"
       When call read_dot_file "" "$dot_shellspec" parser
       The stdout should be blank
-      The exit status should be success
+      The status should be success
     End
   End
 

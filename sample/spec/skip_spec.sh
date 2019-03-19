@@ -8,7 +8,7 @@ Describe 'example spec'
 
     Example '[success] test'
       When call true
-      The exit status should be success
+      The status should be success
     End
 
     Example '[warn] test'
@@ -20,19 +20,19 @@ Describe 'example spec'
     Example '[pending] test'
       Pending 'failure implementation'
       When call false
-      The exit status should be success
+      The status should be success
     End
 
     Example '[fixed] test'
       Pending 'fixed implementation'
       When call true
-      The exit status should be success
+      The status should be success
     End
 
     Example '[fail] test'
       Skip
       When call true
-      The exit status should be failure
+      The status should be failure
     End
 
     Context 'when second'

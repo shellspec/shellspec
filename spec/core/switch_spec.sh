@@ -35,7 +35,7 @@ Describe "core/switch.sh"
 
       Example "exit status is success"
         When call shellspec_if DUMMY
-        The exit status should be success
+        The status should be success
       End
     End
 
@@ -44,14 +44,14 @@ Describe "core/switch.sh"
 
       Example "exit status is error"
         When call shellspec_if DUMMY
-        The exit status should be failure
+        The status should be failure
       End
     End
 
     Context 'when switch is undefined'
       Example "exit status is error"
         When call shellspec_if DUMMY
-        The exit status should be failure
+        The status should be failure
       End
     End
   End
@@ -62,7 +62,7 @@ Describe "core/switch.sh"
 
       Example "exit status is error"
         When call shellspec_unless DUMMY
-        The exit status should be failure
+        The status should be failure
       End
     End
 
@@ -71,14 +71,14 @@ Describe "core/switch.sh"
 
       Example "exit status is sussess"
         When call shellspec_unless DUMMY
-        The exit status should be success
+        The status should be success
       End
     End
 
     Context 'when switch is undefined'
       Example "exit status is sussess"
         When call shellspec_unless DUMMY
-        The exit status should be success
+        The status should be success
       End
     End
   End

@@ -15,7 +15,7 @@ Describe "libexec/runner.sh"
     Example "make tempdir"
       When call example
       The first word of stdout should start with 'drwx------'
-      The exit status should be success
+      The status should be success
     End
   End
 
@@ -29,7 +29,7 @@ Describe "libexec/runner.sh"
 
     Example "delete tempdir"
       When call example
-      The exit status should be success
+      The status should be success
     End
   End
 
@@ -37,24 +37,24 @@ Describe "libexec/runner.sh"
     Example "parse real 0.01 as time result"
       When call time_result "real   0.01"
       The stdout should equal "real   0.01"
-      The exit status should be success
+      The status should be success
     End
 
     Example "parse user 0.01 as time result"
       When call time_result "user   0.01"
       The stdout should equal "user   0.01"
-      The exit status should be success
+      The status should be success
     End
 
     Example "parse sys 0.01 as time result"
       When call time_result "sys   0.01"
       The stdout should equal "sys   0.01"
-      The exit status should be success
+      The status should be success
     End
 
     Example "does not parse real 0.01a as time result"
       When call time_result "real   0.01a"
-      The exit status should be failure
+      The status should be failure
     End
   End
 End

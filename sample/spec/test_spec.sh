@@ -26,12 +26,12 @@ Describe 'example spec'
 
       Example 'should be success'
         When call true
-        The exit status should be success
+        The status should be success
       End
 
       Example 'should be failure'
         When call false
-        The exit status should be failure
+        The status should be failure
       End
     End
 

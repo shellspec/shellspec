@@ -17,12 +17,12 @@ Describe "libexec/reporter.sh"
     Example "return error if file missing"
       When call wait_for_log_exists "$file.not-exits" 10
       The variable unixtime should equal 11
-      The exit status should be failure
+      The status should be failure
     End
 
     Example "return success if file exits"
       When call wait_for_log_exists "$file" 10
-      The exit status should be success
+      The status should be success
     End
   End
 
@@ -31,14 +31,14 @@ Describe "libexec/reporter.sh"
       When call read_log prefix "$file.not-exits"
       The variable prefix_name1 should be undefined
       The variable prefix_name2 should be undefined
-      The exit status should be success
+      The status should be success
     End
 
     Example "read log data if file exists"
       When call read_log prefix "$file"
       The variable prefix_name1 should equal value1
       The variable prefix_name2 should equal value2
-      The exit status should be success
+      The status should be success
     End
   End
 End
