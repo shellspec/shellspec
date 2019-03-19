@@ -1,10 +1,10 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/start_with.sh"
-  Describe 'start with matcher'
-    Before set_subject
-    subject() { false; }
+  Before set_subject
+  subject() { false; }
 
+  Describe 'start with matcher'
     Example 'example'
       The value "foobarbaz" should start with "foo"
       The value "foobarbaz" should not start with "FOO"

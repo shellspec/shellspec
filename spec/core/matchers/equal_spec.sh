@@ -1,10 +1,10 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/eq.sh"
-  Describe 'equal matcher'
-    Before set_subject
-    subject() { false; }
+  Before set_subject
+  subject() { false; }
 
+  Describe 'equal matcher'
     Example 'example'
       The value "test" should equal "test"
       The value "test" should eq "test" # alias for equal

@@ -1,9 +1,10 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/satisfy.sh"
+  Before set_subject
+  subject() { false; }
+
   Describe 'satisfy matcher'
-    Before set_subject
-    subject() { false; }
     check() { [ "$SHELLSPEC_SUBJECT" = "$1" ]; }
 
     Example 'example'

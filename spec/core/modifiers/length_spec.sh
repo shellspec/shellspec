@@ -1,10 +1,10 @@
 #shellcheck shell=sh
 
 Describe "core/modifiers/length.sh"
-  Describe "length modifier"
-    Before set_subject
-    subject() { false; }
+  Before set_subject
+  subject() { false; }
 
+  Describe "length modifier"
     Example 'example'
       The length of value foobarbaz should equal 9
     End

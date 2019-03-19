@@ -1,10 +1,10 @@
 #shellcheck shell=sh
 
 Describe "core/modifiers/line.sh"
-  Describe "line modifier"
-    Before set_subject
-    subject() { false; }
+  Before set_subject
+  subject() { false; }
 
+  Describe "line modifier"
     Example 'example'
       The line 1 of value foobarbaz should equal foobarbaz
     End

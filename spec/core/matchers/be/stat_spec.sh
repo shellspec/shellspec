@@ -2,10 +2,11 @@
 
 Describe "core/matchers/be/stat.sh"
   Before setup set_subject
-  setup() { fixture="$SHELLSPEC_SPECDIR/fixture"; }
+  setup() { fixture=$(fixture); }
   subject() { false; }
 
-  not_exist() { setup; [ ! -e "$fixture/$1" ]; }
+  fixture() { echo "$SHELLSPEC_SPECDIR/fixture"; }
+  not_exist() { [ ! -e "$(fixture)/$1" ]; }
   check_root() { [ "$(id -u)" = 0 ]; }
 
   Describe 'be exist matcher'

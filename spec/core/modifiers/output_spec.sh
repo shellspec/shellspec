@@ -1,9 +1,10 @@
 #shellcheck shell=sh
 
 Describe "core/modifiers/output.sh"
+  Before set_subject
+  subject() { false; }
+
   Describe "output modifier"
-    Before set_subject
-    subject() { false; }
     foo() { shellspec_puts ok; }
 
     Example 'example'

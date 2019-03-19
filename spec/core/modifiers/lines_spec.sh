@@ -1,10 +1,10 @@
 #shellcheck shell=sh
 
 Describe "core/modifiers/lines.sh"
-  Describe "lines modifier"
-    Before set_subject
-    subject() { false; }
+  Before set_subject
+  subject() { false; }
 
+  Describe "lines modifier"
     get_text() {
       echo foo
       echo bar

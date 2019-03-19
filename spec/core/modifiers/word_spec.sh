@@ -1,10 +1,10 @@
 #shellcheck shell=sh
 
 Describe "core/modifiers/word.sh"
-  Describe "word modifier"
-    Before set_subject
-    subject() { false; }
+  Before set_subject
+  subject() { false; }
 
+  Describe "word modifier"
     Example 'example'
       The word 2 of value "foo bar baz" should equal bar
     End

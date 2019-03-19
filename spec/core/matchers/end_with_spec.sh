@@ -1,10 +1,10 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/end_with.sh"
-  Describe "end with matcher"
-    Before set_subject
-    subject() { false; }
+  Before set_subject
+  subject() { false; }
 
+  Describe "end with matcher"
     Example 'example'
       The value "foobarbaz" should end with "baz"
       The value "foobarbaz" should not end with "BAZ"
