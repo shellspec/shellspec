@@ -11,7 +11,7 @@ Describe "core/modifiers/line.sh"
 
     Context 'when subject is "foo<LF>bar<LF>baz"'
       subject() { shellspec_puts "foo${LF}bar${LF}baz"; }
-      Example 'second line is bar'
+      Example 'second line should equal "bar"'
         When invoke spy_shellspec_modifier line 2 _modifier_
         The entire stdout should equal bar
       End
@@ -27,7 +27,7 @@ Describe "core/modifiers/line.sh"
 
     Context 'when subject is "foo<LF><LF>"'
       subject() { shellspec_puts "foo${LF}${LF}"; }
-      Example 'second line is ""'
+      Example 'second line should equal ""'
         When invoke spy_shellspec_modifier line 2 _modifier_
         The entire stdout should equal ""
       End
@@ -43,7 +43,7 @@ Describe "core/modifiers/line.sh"
 
     Context 'when subject is "<LF>"'
       subject() { shellspec_puts "${LF}"; }
-      Example 'first line is ""'
+      Example 'first line should equal ""'
         When invoke spy_shellspec_modifier line 1 _modifier_
         The entire stdout should equal ""
       End
@@ -51,23 +51,23 @@ Describe "core/modifiers/line.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'can not get first line'
+      Example 'cannot get first line'
         When invoke spy_shellspec_modifier line 2 _modifier_
         The status should be failure
       End
     End
 
-    Example 'output error if value is not a number'
+    Example 'outputs error if value is not a number'
       When invoke spy_shellspec_modifier line ni
       The stderr should equal SYNTAX_ERROR_PARAM_TYPE
     End
 
-    Example 'output error if value is missing'
+    Example 'outputs error if value is missing'
       When invoke spy_shellspec_modifier line
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
-    Example 'output error if next word is missing'
+    Example 'outputs error if next word is missing'
       When invoke spy_shellspec_modifier line 2
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

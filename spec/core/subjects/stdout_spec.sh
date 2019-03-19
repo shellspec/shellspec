@@ -5,7 +5,6 @@ Describe "core/subjects/stdout.sh"
   stdout() { false; }
 
   Describe "stdout subject"
-
     Example 'example'
       func() { echo "foo"; }
       When call func
@@ -15,7 +14,7 @@ Describe "core/subjects/stdout.sh"
 
     Context 'when stdout is "test<LF>"'
       stdout() { shellspec_puts "test${LF}"; }
-      Example "it should equal test"
+      Example "should equal test"
         When invoke spy_shellspec_subject stdout _modifier_
         The entire stdout should equal 'test'
       End
@@ -23,13 +22,13 @@ Describe "core/subjects/stdout.sh"
 
     Context 'when stdout is undefined'
       stdout() { false; }
-      Example "it should be failure"
+      Example "should be failure"
         When invoke spy_shellspec_subject stdout _modifier_
         The status should be failure
       End
     End
 
-    Example 'output outor if next word is missing'
+    Example 'outputs error if next word is missing'
       When invoke spy_shellspec_subject stdout
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
@@ -45,7 +44,7 @@ Describe "core/subjects/stdout.sh"
 
     Context 'when stdout is "test<LF>"'
       stdout() { shellspec_puts "test${LF}"; }
-      Example "it should equal test<LF>"
+      Example "should equal test<LF>"
         When invoke spy_shellspec_subject entire stdout _modifier_
         The entire stdout should equal "test${LF}"
       End
@@ -53,13 +52,13 @@ Describe "core/subjects/stdout.sh"
 
     Context 'when stdout is undefined'
       stdout() { false; }
-      Example "it should be failure"
+      Example "should be failure"
         When invoke spy_shellspec_subject entire stdout _modifier_
         The status should be failure
       End
     End
 
-    Example 'output outor if next word is missing'
+    Example 'output error if next word is missing'
       When invoke spy_shellspec_subject entire stdout
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

@@ -26,8 +26,8 @@ Describe "core/matchers/be/exit_status.sh"
       End
     End
 
-    Context 'when subject is a (non number values)'
-      subject() { shellspec_puts a; }
+    Context 'when subject is non number values'
+      subject() { shellspec_puts "a"; }
       Example 'should not matches'
         When invoke spy_shellspec_matcher be success
         The status should be failure
@@ -50,7 +50,7 @@ Describe "core/matchers/be/exit_status.sh"
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be success foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -103,7 +103,7 @@ Describe "core/matchers/be/exit_status.sh"
       End
     End
 
-    Context 'when subject is a (non numeric values)'
+    Context 'when subject is "a" (non numeric values)'
       subject() { shellspec_puts a; }
       Example 'should not matches'
         When invoke spy_shellspec_matcher be failure
@@ -127,7 +127,7 @@ Describe "core/matchers/be/exit_status.sh"
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be failure foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure

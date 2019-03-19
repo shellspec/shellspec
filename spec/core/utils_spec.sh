@@ -45,7 +45,7 @@ Describe "core/utils.sh"
       End
     End
 
-    Describe 'function'
+    Describe 'funcname'
       Example 'succeeds with valid function name foo_bar'
         When call shellspec_is funcname foo_bar
         The status should be success
@@ -79,23 +79,23 @@ Describe "core/utils.sh"
   End
 
   Describe 'shellspec_capture()'
-    Context 'func outputs "ok"'
+    Context 'when function outputs "ok"'
       func() { shellspec_puts ok; }
-      Example 'capture ok'
+      Example 'capture "ok"'
         When call shellspec_capture var func
         The variable var should equal ok
       End
     End
 
-    Context 'func outputs "ok<LF>"'
+    Context 'when function outputs "ok<LF>"'
       func() { echo ok; }
-      Example 'capture ok<LF>'
+      Example 'capture "ok<LF>"'
         When call shellspec_capture var func
         The variable var should equal "ok${LF}"
       End
     End
 
-    Context 'func return false'
+    Context 'when function return false'
       func() { false; }
       Example 'variable should be undefined'
         When call shellspec_capture var func

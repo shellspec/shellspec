@@ -14,7 +14,7 @@ Describe "core/subjects/stderr.sh"
 
     Context 'when stderr is "test<LF>"'
       stderr() { shellspec_puts "test${LF}"; }
-      Example "it should equal test"
+      Example "should equal test"
         When invoke spy_shellspec_subject stderr _modifier_
         The entire stdout should equal 'test'
       End
@@ -22,13 +22,13 @@ Describe "core/subjects/stderr.sh"
 
     Context 'when stderr is undefined'
       stderr() { false; }
-      Example "it should be failure"
+      Example "should be failure"
         When invoke spy_shellspec_subject stderr _modifier_
         The status should be failure
       End
     End
 
-    Example 'output error if next word is missing'
+    Example 'outputs error if next word is missing'
       When invoke spy_shellspec_subject stderr
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
@@ -44,7 +44,7 @@ Describe "core/subjects/stderr.sh"
 
     Context 'when stderr is "test<LF>"'
       stderr() { shellspec_puts "test${LF}"; }
-      Example "it should equal test"
+      Example "should equal test"
         When invoke spy_shellspec_subject entire stderr _modifier_
         The entire stdout should equal "test${LF}"
       End
@@ -52,13 +52,13 @@ Describe "core/subjects/stderr.sh"
 
     Context 'when stderr is undefined'
       stderr() { false; }
-      Example "it should be failure"
+      Example "should be failure"
         When invoke spy_shellspec_subject entire stderr _modifier_
         The status should be failure
       End
     End
 
-    Example 'output error if next word is missing'
+    Example 'outputs error if next word is missing'
       When invoke spy_shellspec_subject entire stderr
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

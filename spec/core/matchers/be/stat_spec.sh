@@ -17,7 +17,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path exists'
       subject() { shellspec_puts "$fixture/exist"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be exist
         The status should be success
       End
@@ -25,13 +25,13 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path does not exist'
       subject() { shellspec_puts "$fixture/exist.not-exists"; }
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be exist
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be exist foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -60,7 +60,7 @@ Describe "core/matchers/be/stat.sh"
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be file foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -75,7 +75,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is directory'
       subject() { shellspec_puts "$fixture/dir"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be directory
         The status should be success
       End
@@ -83,13 +83,13 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is not directory'
       subject() { shellspec_puts "$fixture/file"; }
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be directory
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be directory foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -104,7 +104,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is empty'
       subject() { shellspec_puts "$fixture/empty"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be empty
         The status should be success
       End
@@ -112,13 +112,13 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is not empty'
       subject() { shellspec_puts "$fixture/file"; }
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be empty
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be empty foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -135,7 +135,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is symlink'
       subject() { shellspec_puts "$fixture/stat/symlink"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be symlink
         The status should be success
       End
@@ -143,13 +143,13 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is not symlink'
       subject() { shellspec_puts "$fixture/file"; }
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be symlink
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be symlink foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -166,7 +166,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is pipe'
       subject() { shellspec_puts "$fixture/stat/pipe"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be pipe
         The status should be success
       End
@@ -174,13 +174,13 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is not pipe'
       subject() { shellspec_puts "$fixture/file"; }
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be pipe
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be pipe foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -197,7 +197,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is socket'
       subject() { shellspec_puts "$fixture/stat/socket"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be socket
         The status should be success
       End
@@ -205,13 +205,13 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is not socket'
       subject() { shellspec_puts "$fixture/file"; }
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be socket
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be socket foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -228,7 +228,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is readable'
       subject() { shellspec_puts "$fixture/stat/readable"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be readable
         The status should be success
       End
@@ -237,13 +237,13 @@ Describe "core/matchers/be/stat.sh"
     Context 'when path is not readable'
       subject() { shellspec_puts "$fixture/stat/no-permission"; }
       Skip if "I am root" check_root
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be readable
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be readable foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -260,7 +260,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is writable'
       subject() { shellspec_puts "$fixture/stat/writable"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be writable
         The status should be success
       End
@@ -269,13 +269,13 @@ Describe "core/matchers/be/stat.sh"
     Context 'when path is not writable'
       subject() { shellspec_puts "$fixture/stat/no-permission"; }
       Skip if "I am root" check_root
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be writable
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be writable foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -292,7 +292,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is executable'
       subject() { shellspec_puts "$fixture/stat/executable"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be executable
         The status should be success
       End
@@ -300,13 +300,13 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is not executable'
       subject() { shellspec_puts "$fixture/stat/no-permission"; }
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be executable
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be executable foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -323,7 +323,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is block device'
       subject() { shellspec_puts "$fixture/stat/block-device"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be block device
         The status should be success
       End
@@ -331,13 +331,13 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is not block device'
       subject() { shellspec_puts "$fixture/file"; }
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be block device
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be block device foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -354,7 +354,7 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is charactor device'
       subject() { shellspec_puts "$fixture/stat/charactor-device"; }
-      Example 'it should be success'
+      Example 'should be success'
         When invoke spy_shellspec_matcher be charactor device
         The status should be success
       End
@@ -362,13 +362,13 @@ Describe "core/matchers/be/stat.sh"
 
     Context 'when path is not charactor device'
       subject() { shellspec_puts "$fixture/file"; }
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_matcher be charactor device
         The status should be failure
       End
     End
 
-    Example 'output error if parameters count is invalid'
+    Example 'outputs error if parameters count is invalid'
       When invoke spy_shellspec_matcher be charactor device foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure

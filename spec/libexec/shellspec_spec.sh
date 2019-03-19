@@ -14,13 +14,13 @@ Describe "libexec/shellspec.sh"
       echo ok
     }
 
-    Example "read dot file"
+    Example "reads dot file"
       When call read_dot_file "$SHELLSPEC_SPECDIR" "$dot_shellspec" parser
       The stdout should equal "ok"
       The status should be success
     End
 
-    Example "do not read dot file if not specified directory"
+    Example "does not read dot file if not specified directory"
       When call read_dot_file "" "$dot_shellspec" parser
       The stdout should be blank
       The status should be success
@@ -28,7 +28,7 @@ Describe "libexec/shellspec.sh"
   End
 
   Describe "current_shell()"
-    Context "parse procps format"
+    Context "when procps format"
       fake_ps() {
         echo "PID TTY      STAT   TIME COMMAND"
         echo "  1 pts/0    Ss     0:00 -bash"
@@ -38,13 +38,13 @@ Describe "libexec/shellspec.sh"
         echo " $$ pts/0    S      0:00 /bin/sh /usr/local/bin/shellspec"
       }
 
-      Example "and detect shell"
+      Example "cant parses and detects shell"
         When call current_shell "/usr/local/bin/shellspec" fake_ps
         The stdout should equal "/bin/sh"
       End
     End
 
-    Context "parse busybox ps format"
+    Context "when busybox ps format 1"
       fake_ps() {
         echo "  PID USER       VSZ STAT COMMAND"
         echo "    1 root      1548 S    /sbin/init"
@@ -52,13 +52,13 @@ Describe "libexec/shellspec.sh"
         echo "   $$ root      1460 S    /bin/sh /usr/local/bin/shellspec"
       }
 
-      Example "and detect shell"
+      Example "can parses and detects shell"
         When call current_shell "/usr/local/bin/shellspec" fake_ps
         The stdout should equal "/bin/sh"
       End
     End
 
-    Context "parse busybox ps format 2"
+    Context "when busybox ps format 2"
       fake_ps() {
         echo "  PID USER    TIME COMMAND"
         echo "    1 root    0:00 /bin/sh"
@@ -66,7 +66,7 @@ Describe "libexec/shellspec.sh"
         echo "   $$ root    0:00 {shellspec} /bin/sh /usr/local/bin/shellspec"
       }
 
-      Example "and detect shell"
+      Example "can parses and detects shell"
         When call current_shell "/usr/local/bin/shellspec" fake_ps
         The stdout should equal "/bin/sh"
       End

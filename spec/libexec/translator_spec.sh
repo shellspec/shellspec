@@ -5,7 +5,7 @@ Describe "libexec/translator.sh"
   . "$SHELLSPEC_LIB/libexec/translator.sh"
 
   Describe "trim()"
-    Context 'When value is abc'
+    Context 'when value is abc'
       Before 'value="  abc"'
       Example 'trim left space'
         When call trim value
@@ -13,7 +13,7 @@ Describe "libexec/translator.sh"
       End
     End
 
-    Context 'When value is abc'
+    Context 'when value is abc'
       Before 'value="${TAB}${TAB}abc"'
       Example 'trim left tab'
         When call trim value

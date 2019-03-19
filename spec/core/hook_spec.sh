@@ -3,7 +3,7 @@
 Describe "core/hook.sh"
   Describe "shellspec_before_each_hook()"
     Context 'if no hooks'
-      Example "do nothong"
+      Example "do nothing"
         When call shellspec_call_before_each_hooks
         The stdout should be blank
       End
@@ -17,7 +17,7 @@ Describe "core/hook.sh"
         shellspec_call_before_each_hooks
       }
 
-      Example "call hooks in registration order"
+      Example "calls hooks in registration order"
         When invoke before_each_hooks
         The stdout should equal 123
       End
@@ -26,7 +26,7 @@ Describe "core/hook.sh"
 
   Describe "shellspec_after_each_hook()"
     Context 'if no hooks'
-      Example "do nothong"
+      Example "do nothing"
         When call shellspec_call_after_each_hooks
         The stdout should be blank
       End
@@ -40,7 +40,7 @@ Describe "core/hook.sh"
         shellspec_call_after_each_hooks
       }
 
-      Example "call hooks in reverse registration order"
+      Example "calls hooks in reverse registration order"
         When invoke after_each_hooks
         The stdout should equal 321
       End

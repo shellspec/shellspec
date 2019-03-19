@@ -11,14 +11,14 @@ Describe "core/verb.sh"
   }
 
   Describe "should verb"
-    Example "outputs MATCHED when matcher matched"
+    Example "outputs MATCHED if matcher matched"
       When invoke spy_shellspec_verb_should _matched_
       The first line of stdout should equal '[MATCHED]'
       The second line of stdout should equal 'syntax ok'
       The third line of stdout should equal 'succeeded'
     End
 
-    Example "outputs UNMATCHED when matcher unmatched"
+    Example "outputs UNMATCHED if matcher unmatched"
       When invoke spy_shellspec_verb_should _unmatched_
       The first line of stdout should equal '[UNMATCHED]'
       The second line of stdout should equal "message"
@@ -26,14 +26,14 @@ Describe "core/verb.sh"
       The fourth line of stdout should equal 'failed'
     End
 
-    Example "outputs SYNTAX_ERROR_MATCHER_REQUIRED when matcher missing"
+    Example "outputs SYNTAX_ERROR_MATCHER_REQUIRED if matcher missing"
       When invoke spy_shellspec_verb_should
       The first line of stdout should equal '[SYNTAX_ERROR_MATCHER_REQUIRED]'
       The second line of stdout should equal 'syntax error'
       The third line of stdout should equal 'failed'
     End
 
-    Example "return if SYNTAX_ERROR"
+    Example "returns if SYNTAX_ERROR"
       When invoke spy_shellspec_verb_should _syntax_error_matcher_
       The first line of stdout should equal 'syntax error'
       The second line of stdout should equal 'failed'
@@ -41,7 +41,7 @@ Describe "core/verb.sh"
   End
 
   Describe "should not verb"
-    Example "outputs UNMATCHED when matcher matched"
+    Example "outputs UNMATCHED if matcher matched"
       When invoke spy_shellspec_verb_should not _matched_
       The first line of stdout should equal '[UNMATCHED]'
       The second line of stdout should equal 'negated_message'
@@ -49,21 +49,21 @@ Describe "core/verb.sh"
       The fourth line of stdout should equal 'failed'
     End
 
-    Example "outputs MATCHED when matcher unmatched"
+    Example "outputs MATCHED if matcher unmatched"
       When invoke spy_shellspec_verb_should not _unmatched_
       The first line of stdout should equal '[MATCHED]'
       The second line of stdout should equal 'syntax ok'
       The third line of stdout should equal 'succeeded'
     End
 
-    Example "outputs SYNTAX_ERROR_MATCHER_REQUIRED when matcher missing"
+    Example "outputs SYNTAX_ERROR_MATCHER_REQUIRED if matcher missing"
       When invoke spy_shellspec_verb_should not
       The first line of stdout should equal '[SYNTAX_ERROR_MATCHER_REQUIRED]'
       The second line of stdout should equal 'syntax error'
       The third line of stdout should equal 'failed'
     End
 
-    Example "return if SYNTAX_ERROR"
+    Example "returns if SYNTAX_ERROR"
       When invoke spy_shellspec_verb_should _syntax_error_matcher_
       The first line of stdout should equal 'syntax error'
       The second line of stdout should equal 'failed'

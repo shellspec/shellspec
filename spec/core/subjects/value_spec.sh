@@ -12,12 +12,12 @@ Describe "core/subjects/value.sh"
       The stdout should equal 'foo'
     End
 
-    Example 'output error if value is missing'
+    Example 'outputs error if value is missing'
       When invoke spy_shellspec_subject value
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
-    Example 'output error if next word is missing'
+    Example 'outputs error if next word is missing'
       When invoke spy_shellspec_subject value foo
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

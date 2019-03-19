@@ -57,6 +57,10 @@ shellspec_spec_helper_configure() {
     shellspec_if MATCHED
   }
 
+  shellspec_syntax_alias 'shellspec_subject_switch' 'shellspec_subject_value'
+  switch_on() { shellspec_if "$SHELLSPEC_SUBJECT"; }
+  switch_off() { shellspec_unless "$SHELLSPEC_SUBJECT"; }
+
   # shellcheck disable=SC2034
   LF="$SHELLSPEC_LF" TAB="$SHELLSPEC_TAB"
 }

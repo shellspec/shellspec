@@ -14,7 +14,7 @@ Describe "core/subjects/exit_status.sh"
 
     Context 'when exit status is 123'
       exit_status() { shellspec_puts 123; }
-      Example 'it should equal 123'
+      Example 'should equal 123'
         When invoke spy_shellspec_subject status _modifier_
         The stdout should equal 123
       End
@@ -22,13 +22,13 @@ Describe "core/subjects/exit_status.sh"
 
     Context 'when exit status is undefind'
       exit_status() { false; }
-      Example 'it should be failure'
+      Example 'should be failure'
         When invoke spy_shellspec_subject status _modifier_
         The status should be failure
       End
     End
 
-    Example 'output error if next word is missing'
+    Example 'outputs error if next word is missing'
       When invoke spy_shellspec_subject status
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

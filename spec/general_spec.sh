@@ -8,14 +8,14 @@ Describe "general.sh"
       printf '%s\n' "$@"
     }
 
-    Example "separate by '"
+    Example "separates by \"'\""
       When call reset_params '$3' "'" "a'b'c"
       The first  line of stdout should equal 'a'
       The second line of stdout should equal 'b'
       The third  line of stdout should equal 'c'
     End
 
-    Example 'separate by : fourth args only'
+    Example 'separates by ":" (fourth argument only)'
       When call reset_params '"$3" $4' : "1:2:3" "a:b:c"
       The stdout line 1 should equal '1:2:3'
       The stdout line 2 should end with 'a'
@@ -25,9 +25,9 @@ Describe "general.sh"
   End
 
   Describe 'shellspec_splice_params()'
-    readonly params="a b c d e f g"
-
     splice() {
+      params=$1
+      shift
       args=$*
       eval "set -- $params"
       eval "shellspec_splice_params $# $args"
@@ -35,25 +35,31 @@ Describe "general.sh"
       echo "${*:-}"
     }
 
-    Example 'remove all parameters after offset 0'
-      When call splice 0
-      The stdout should equal ""
+    Context 'when offset is 0'
+      Example 'removes all parameters'
+        When call splice "a b c d e f g" 0
+        The stdout should equal ""
+      End
     End
 
-    Example 'remove all parameters after offset 2'
-      When call splice 2
-      The stdout should equal 'a b'
+    Context 'when offset is 2'
+      Example 'removes all parameters after offset 2'
+        When call splice "a b c d e f g" 2
+        The stdout should equal 'a b'
+      End
     End
 
-    Example 'remove 2 parameters after offset 3'
-      When call splice 3 2
-      The stdout should equal 'a b c f g'
+    Context 'when offset is 3 and length is 2'
+      Example 'removes 2 parameters after offset 3'
+        When call splice "a b c d e f g" 3 2
+        The stdout should equal 'a b c f g'
+      End
     End
 
-    Context 'when a=A b=B c=C'
+    Context 'when offset is 3 and length is 2 and list specified'
       Before 'a=A b=B c=C'
-      Example 'remove 2 parameters after offset 3, and insert list'
-        When call splice 3 2 a b c
+      Example 'removes 2 parameters after offset 3 and inserts list'
+        When call splice "a b c d e f g" 3 2 a b c
         The stdout should equal 'a b c A B C f g'
       End
     End
@@ -62,12 +68,12 @@ Describe "general.sh"
   Describe 'shellspec_each()'
     callback() { echo "$1:$2:$3"; }
 
-    Example 'call callback with index and value'
+    Example 'calls callback with index and value'
       When call shellspec_each callback a b c
       The stdout should equal "a:1:3${LF}b:2:3${LF}c:3:3"
     End
 
-    Example 'call callback with no params'
+    Example 'calls callback with no params'
       When call shellspec_each callback
       The stdout should equal ""
     End
@@ -82,7 +88,7 @@ Describe "general.sh"
       shellspec_puts "$@"
     }
 
-    Example 'call callback with index and value'
+    Example 'calls callback with index and value'
       When call _find a1 b1 c1 a2 b2 c2 a3 b3 c3
       The stdout should equal "a1 a2 a3"
     End
@@ -91,83 +97,88 @@ Describe "general.sh"
   Describe 'shellspec_sequence()'
     callback() { shellspec_puts "$1,"; }
 
-    Example 'calling with "1 to 5" returns 1, 2, 3, 4, 5'
+    Example 'calls callback with sequence of numbers'
       When call shellspec_sequence callback 1 5
       The stdout should equal "1,2,3,4,5,"
     End
 
-    Example 'calling with "1 to 5 step 2" returns 1, 3, 5'
+    Example 'calls callback with sequence of numbers with step N'
       When call shellspec_sequence callback 1 5 2
       The stdout should equal "1,3,5,"
     End
 
-    Example 'calling with "5 to 1" returns 5, 4, 3, 2, 1'
+    Example 'calls callback with reversed sequence of numbers'
       When call shellspec_sequence callback 5 1
       The stdout should equal "5,4,3,2,1,"
+    End
+
+    Example 'calls callback with reversed sequence of numbers with step N'
+      When call shellspec_sequence callback 5 1 -2
+      The stdout should equal "5,3,1,"
     End
   End
 
   Describe 'shellspec_puts()'
-    Example 'shellspec_puts no outputs to stdout'
+    Example 'does not output anything without arguments'
       When call shellspec_puts
       The entire stdout should equal ''
     End
 
-    Example 'shellspec_puts outputs to stdout'
+    Example 'outputs arguments'
       When call shellspec_puts 'a'
       The entire stdout should equal 'a'
     End
 
-    Example 'shellspec_puts joins by space and outputs arguments'
+    Example 'joins arguments with space and outputs'
       When call shellspec_puts 'a' 'b'
       The entire stdout should equal 'a b'
     End
 
-    Example 'shellspec_puts outputs with raw'
+    Example 'outputs with raw string'
       When call shellspec_puts 'a\b'
       The entire stdout should equal 'a\b'
       The length of entire stdout should equal 3
     End
 
-    Example 'shellspec_puts outputs -n'
+    Example 'outputs "-n"'
       When call shellspec_puts -n
       The entire stdout should equal '-n'
     End
 
-    Context 'when IFS=@'
+    Context 'when change IFS'
       Before 'IFS=@'
-      Example 'shellspec_puts join arguments with spaces'
+      Example 'joins arguments with spaces'
         When call shellspec_puts a b c
         The entire stdout should equal 'a b c'
       End
     End
   End
 
-  Describe 'putsn()'
-    Example 'shellspec_putsn no outputs to stdout'
+  Describe 'shellspec_putsn()'
+    Example 'does not output anything without arguments'
       When call shellspec_putsn
       The entire stdout should equal "${LF}"
     End
 
-    Example 'shellspec_putsn outputs to stdout append with LF'
+    Example 'outputs append with LF'
       When call shellspec_putsn "a"
       The entire stdout should equal "a${LF}"
     End
 
-    Example 'shellspec_putsn joins by space and outputs arguments append with LF'
+    Example 'joins arguments with space and outputs append with LF'
       When call shellspec_putsn "a" "b"
       The entire stdout should equal "a b${LF}"
     End
 
-    Example 'shellspec_putsn outputs with raw append with LF'
+    Example 'outputs with raw string append with LF'
       When call shellspec_putsn 'a\b'
       The entire stdout should equal "a\\b${LF}"
       The length of entire stdout should equal 4
     End
 
-    Context 'when IFS=@'
+    Context 'when change IFS'
       Before 'IFS=@'
-      Example 'shellspec_putsn join arguments with spaces'
+      Example 'joins arguments with spaces'
         When call shellspec_putsn a b c
         The entire stdout should equal "a b c${LF}"
       End
@@ -181,7 +192,7 @@ Describe "general.sh"
       eval "ret='$var'"
     }
 
-    Example 'escaped string is evaluatable by eval'
+    Example 'returns escaped string that evaluatable by eval'
       When call example "te'st"
       The variable ret should equal "te'st"
     End
@@ -191,7 +202,7 @@ Describe "general.sh"
     callback() { printf '%s ' "$2:$1"; }
     callback_with_cancel() { printf '%s ' "$2:$1"; return 1; }
 
-    Example 'do not calls callback with empty string'
+    Example 'does not call callback with empty string'
       When call shellspec_lines callback ""
       The stdout should eq ""
     End
@@ -201,7 +212,7 @@ Describe "general.sh"
       The stdout should eq "1:a 2:b "
     End
 
-    Example 'ignore last LF'
+    Example 'ignores last LF'
       When call shellspec_lines callback "a${LF}b${LF}"
       The stdout should eq "1:a 2:b "
     End
@@ -213,19 +224,19 @@ Describe "general.sh"
   End
 
   Describe "shellspec_padding()"
-    Example "padding with @"
+    Example "paddings with @"
       When call shellspec_padding str "@" 10
       The variable str should equal '@@@@@@@@@@'
     End
   End
 
   Describe "shellspec_includes()"
-    Example "return success if includes value"
+    Example "returns success if includes value"
       When call shellspec_includes "abc" "b"
       The status should be success
     End
 
-    Example "return failure if not includes value"
+    Example "returns failure if not includes value"
       When call shellspec_includes "abc" "d"
       The status should be failure
     End
