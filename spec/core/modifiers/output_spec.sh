@@ -7,7 +7,7 @@ Describe "core/modifiers/output.sh"
     foo() { echo ok; }
 
     Example 'example'
-      The output of value foo should equal ok
+      The output of 'foo()' should equal ok
     End
 
     Context 'when subject is abcde'

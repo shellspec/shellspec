@@ -84,7 +84,7 @@ Describe "core/evaluation.sh"
     Example 'restore mock function after evaluation'
       mock_foo() { echo_foo() { echo 'FOO'; }; }
       When invoke mock_foo
-      The function echo_foo should equal 'foo'
+      The output of 'echo_foo()' should equal 'foo'
     End
 
     Example 'prevent exit.'

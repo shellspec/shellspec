@@ -5,6 +5,7 @@ Describe "core/subjects/value.sh"
     Example 'example'
       The value foo should equal foo
       The string foo should equal foo # alias for value
+      The function foo should equal foo # alias for value
     End
 
     Example "use parameter as subject"
