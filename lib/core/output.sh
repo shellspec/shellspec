@@ -76,6 +76,7 @@ shellspec_output_following_words() {
 }
 
 shellspec_output_syntax_name() {
+  [ "${SHELLSPEC_SYNTAX_NAME:-}" ] || return 0
   shellspec_reset_params '${SHELLSPEC_SYNTAX_NAME#shellspec_}' '_'
   eval "$SHELLSPEC_RESET_PARAMS"
   eval "shift; shellspec_putsn \"\$*\" \"$1\""

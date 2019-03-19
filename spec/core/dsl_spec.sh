@@ -108,15 +108,6 @@ Describe "core/dsl.sh" # comment
       The stdout line 4 should equal 'EXAMPLE_END'
     End
 
-    Example 'output FAILED if syntax error inside of yield'
-      block() { shellspec_on SYNTAX_ERROR; }
-      When invoke example block
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'yield'
-      The stdout line 3 should equal 'FAILED'
-      The stdout line 4 should equal 'EXAMPLE_END'
-    End
-
     Example 'output SUCCEEDED'
       block() { :; }
       When invoke example block
@@ -191,6 +182,45 @@ Describe "core/dsl.sh" # comment
         The stdout line 2 should equal 'on:[EVALUATION]'
         The stdout line 3 should equal 'SYNTAX_ERROR'
         The stdout line 4 should equal 'on:[FAILED]'
+      End
+    End
+  End
+
+  Describe "shellspec_statement()"
+    prepare() { :; }
+    spy_shellspec_statement() {
+      prepare
+      shellspec_statement fake_statement dummy
+      shellspec_if SYNTAX_ERROR && echo 'syntax_error' || echo 'not syntax_error'
+      shellspec_if FAILED && echo 'failed' || echo 'not failed'
+    }
+
+    Context 'When execute statement exit normally'
+      shellspec_fake_statement() { echo called; }
+      Example 'it not syntax_error and not failed'
+        When invoke spy_shellspec_statement
+        The stdout should include 'not syntax_error'
+        The stdout should include 'not failed'
+        The stdout should include called
+      End
+    End
+
+    Context 'When execute statement exit normally'
+      shellspec_fake_statement() { shellspec_on SYNTAX_ERROR ; echo called; }
+      Example 'it not syntax_error and not failed'
+        When invoke spy_shellspec_statement
+        The stdout should include 'syntax_error'
+        The stdout should include 'failed'
+        The stdout should include called
+      End
+    End
+
+    Context 'When if skipped'
+      prepare() { shellspec_on SKIP; }
+      shellspec_fake_statement() { echo called; }
+      Example 'statement not called'
+        When invoke spy_shellspec_statement
+        The stdout should not include called
       End
     End
   End

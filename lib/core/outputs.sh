@@ -158,7 +158,7 @@ shellspec_output_FIXED() {
 }
 
 shellspec_output_SKIPPED() {
-  shellspec_output_raw result "tag:skipped" "skipid:${SHELLSPEC_SKIP_ID}" \
+  shellspec_output_raw result "tag:skipped" "skipid:${SHELLSPEC_SKIP_ID:-}" \
     "conditional:${SHELLSPEC_CONDITIONAL_SKIP:+yes}" "note:SKIPPED"
 }
 
