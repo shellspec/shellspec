@@ -9,6 +9,7 @@ shellspec_proxy padding shellspec_padding
 shellspec_proxy each shellspec_each
 
 shellspec_import posix
+shellspec_proxy unixtime shellspec_unixtime
 
 reset_params() {
   shellspec_reset_params "$@"
@@ -17,10 +18,10 @@ reset_params() {
 
 # $1: filename $2: timeout
 wait_for_log_exists() {
-  shellspec_unixtime start_time
+  unixtime start_time
   while [ ! -s "$1" ]; do
     [ "${2:-}" ] || return 1
-    shellspec_unixtime current_time
+    unixtime current_time
     # shellcheck disable=SC2154
     [ $(($current_time - $start_time)) -lt "$2" ] || return 1
   done

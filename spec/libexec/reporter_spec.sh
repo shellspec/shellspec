@@ -8,7 +8,7 @@ Describe "libexec/reporter.sh"
 
   Describe "wait_for_log_exists()"
     Before 'unixtime=0'
-    shellspec_unixtime() {
+    unixtime() {
       unixtime=$((${unixtime:-0} + 1))
       eval "$1=$unixtime"
     }
