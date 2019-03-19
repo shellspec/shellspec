@@ -5,8 +5,7 @@ Describe "libexec/shellspec.sh"
   . "$SHELLSPEC_LIB/libexec/shellspec.sh"
 
   Describe "read_dot_file()"
-    setup() { dot_shellspec="fixture/dot-shellspec"; }
-    Before setup
+    readonly dot_shellspec="fixture/dot-shellspec"
 
     parser() {
       [ "$1" = "--require" ] && [ "$2" = "spec_helper" ] &&

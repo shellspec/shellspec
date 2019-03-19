@@ -1,12 +1,13 @@
 #shellcheck shell=sh
 
 Describe "core/modifiers/contents.sh"
-  Before setup set_contents set_subject
-  setup() { file="$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"; }
+  readonly file="$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
+
+  Before set_subject
   subject() { false; }
 
   Describe "contents modifier"
-    set_contents() { contents="a"; }
+    readonly contents="a"
 
     Example 'example'
       The contents of file "$file" should equal "$contents"
@@ -46,7 +47,7 @@ Describe "core/modifiers/contents.sh"
   End
 
   Describe "entire contents modifier"
-    set_contents() { contents="a${LF}${LF}"; }
+    readonly contents="a${LF}${LF}"
 
     Example 'example'
       The entire contents of file "$file" should equal "$contents"

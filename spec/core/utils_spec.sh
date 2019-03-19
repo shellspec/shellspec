@@ -2,8 +2,7 @@
 
 Describe "core/utils.sh"
   Describe 'shellspec_readfile()'
-    setup() { file="$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"; }
-    Before setup
+    readonly file="$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
 
     Example 'read file as is'
       When call shellspec_readfile var "$file"

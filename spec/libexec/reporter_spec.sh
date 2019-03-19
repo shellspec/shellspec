@@ -4,8 +4,7 @@ Describe "libexec/reporter.sh"
   # shellcheck source=lib/libexec/reporter.sh
   . "$SHELLSPEC_LIB/libexec/reporter.sh"
 
-  set_file() { file="$SHELLSPEC_SPECDIR/fixture/read_log.txt"; }
-  Before set_file
+  readonly file="$SHELLSPEC_SPECDIR/fixture/read_log.txt"
 
   Describe "wait_for_log_exists()"
     Before 'unixtime=0'

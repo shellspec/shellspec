@@ -1,11 +1,9 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/has/stat.sh"
-  Before setup
-  setup() { fixture=$(fixture); }
+  readonly fixture="$SHELLSPEC_SPECDIR/fixture/stat"
 
-  fixture() { echo "$SHELLSPEC_SPECDIR/fixture/stat"; }
-  not_exist() { [ ! -e "$(fixture)/$1" ]; }
+  not_exist() { [ ! -e "$fixture/$1" ]; }
 
   Describe 'has setgid matcher'
     Skip if "not exist setgid file" not_exist setgid

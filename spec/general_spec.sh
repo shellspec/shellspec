@@ -25,8 +25,7 @@ Describe "general.sh"
   End
 
   Describe 'shellspec_splice_params()'
-    set_params() { params="a b c d e f g"; }
-    Before set_params
+    readonly params="a b c d e f g"
 
     splice() {
       args=$*

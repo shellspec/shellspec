@@ -1,12 +1,12 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/be/stat.sh"
-  Before setup set_subject
-  setup() { fixture=$(fixture); }
+  readonly fixture="$SHELLSPEC_SPECDIR/fixture"
+
+  Before set_subject
   subject() { false; }
 
-  fixture() { echo "$SHELLSPEC_SPECDIR/fixture"; }
-  not_exist() { [ ! -e "$(fixture)/$1" ]; }
+  not_exist() { [ ! -e "$fixture/$1" ]; }
   check_root() { [ "$(id -u)" = 0 ]; }
 
   Describe 'be exist matcher'
