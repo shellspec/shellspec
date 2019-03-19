@@ -104,13 +104,15 @@ skip() {
 data() {
   data_line=${1:-}
   trim data_line
+  now=$(unixtime)
+  delimiter="DATA${now}$$"
 
   putsn "shellspec_data() {"
   case $data_line in
     '' | '#'* | '|'*)
       putsn 'while IFS= read -r shellspec_here_document; do'
       putsn '  shellspec_putsn "$shellspec_here_document"'
-      putsn "done<<DATA $data_line"
+      putsn "done<<$delimiter $data_line"
       while IFS= read -r line || [ "$line" ]; do
         lineno=$(($lineno + 1))
         trim line
@@ -122,7 +124,7 @@ data() {
             break ;;
         esac
       done
-      putsn 'DATA'
+      putsn "$delimiter"
       ;;
     *) putsn "  $data_line"
   esac

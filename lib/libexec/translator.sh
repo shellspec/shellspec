@@ -6,6 +6,9 @@ shellspec_proxy puts shellspec_puts
 shellspec_proxy putsn shellspec_putsn
 shellspec_proxy escape_quote shellspec_escape_quote
 
+shellspec_import posix
+shellspec_proxy unixtime shellspec_unixtime
+
 initialize_id() {
   id='' id_state='begin'
 }
