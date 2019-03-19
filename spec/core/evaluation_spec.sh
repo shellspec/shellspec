@@ -3,35 +3,21 @@
 Describe "core/evaluation.sh"
   Before 'VAR=123'
 
-  output_stdout() { echo ok; ret; }
-  output_stderr() { echo err >&2; ret; }
-  output_both() { echo ok; echo err >&2; ret; }
-  output_none() { ret; }
-  change_variable() { VAR=$1; }
-  do_exit() { exit "$1"; }
-  ret() { return 0; }
-  ret123() { return 123; }
-
-  call() {
-    shellspec_evaluation_cleanup() {
-      echo "shellspec_evaluation_cleanup: $1"
-    }
-    "$@"
-  }
-
   switch_on() { shellspec_if "$SHELLSPEC_SUBJECT"; }
   switch_off() { shellspec_unless "$SHELLSPEC_SUBJECT"; }
 
   Describe 'call evaluation'
     Example 'output stdout and stderr'
-      When call output_both
+      evaluation() { echo ok; echo err >&2; return 0; }
+      When call evaluation
       The output should equal 'ok'
       The error should equal 'err'
       The status should equal 0
     End
 
     Example 'can able to change variable.'
-      When call change_variable 456
+      evaluation() { VAR=456; }
+      When call evaluation
       The value "$VAR" should equal 456
     End
 
@@ -39,12 +25,18 @@ Describe "core/evaluation.sh"
       echo_foo() { shellspec_puts 'foo'; }
       mock_foo() { echo_foo() { shellspec_puts 'FOO'; }; }
       When call mock_foo
-      The output of value echo_foo should equal 'FOO'
+      The output of 'echo_foo()' should equal 'FOO'
     End
 
     Example 'call shellspec_evaluation_cleanup() after evaluation'
-      When invoke call shellspec_evaluation_call ret123
-      The stdout should equal 'shellspec_evaluation_cleanup: 123'
+      spy_shellspec_evaluation_call() {
+        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
+        shellspec_evaluation_call "$@"
+      }
+      evaluation() { return 123; }
+
+      When invoke spy_shellspec_evaluation_call evaluation
+      The stdout should equal 'cleanup: 123'
     End
 
     Example 'accepts evaluatable string'
@@ -62,22 +54,29 @@ Describe "core/evaluation.sh"
     End
 
     Example 'call shellspec_evaluation_cleanup() after evaluation'
-      When invoke call shellspec_evaluation_call ret123
-      The stdout should equal 'shellspec_evaluation_cleanup: 123'
+      spy_shellspec_evaluation_run() {
+        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
+        shellspec_evaluation_run "$@"
+      }
+
+      When invoke spy_shellspec_evaluation_run false
+      The stdout should equal 'cleanup: 1'
     End
   End
 
   Describe 'invoke evaluation'
     Example 'called then retrive stdout and stderr'
-      When invoke output_both
+      evaluation() { echo ok; echo err >&2; return 0; }
+      When invoke evaluation
       The stdout should equal 'ok'
       The stderr should equal 'err'
       The status should equal 0
     End
 
     Example 'can not able to change variable.'
-      When invoke change_variable 456
-      The variable VAR should equal 123
+      evaluation() { VAR=456; }
+      When invoke evaluation
+      The value "$VAR" should equal 123
     End
 
     Example 'restore mock function after evaluation'
@@ -93,13 +92,21 @@ Describe "core/evaluation.sh"
         (exit 123) &&:; [ $? -ne 123 ]
       }
       Skip if "can not get the exit status" shell_has_bug
+
+      do_exit() { exit "$1"; }
       When invoke do_exit 12
       The status should equal 12
     End
 
     Example 'call shellspec_evaluation_cleanup() after evaluation'
-      When invoke call shellspec_evaluation_invoke ret123
-      The stdout should equal 'shellspec_evaluation_cleanup: 123'
+      spy_shellspec_evaluation_invoke() {
+        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
+        shellspec_evaluation_invoke "$@"
+      }
+      evaluation() { return 123; }
+
+      When invoke spy_shellspec_evaluation_invoke evaluation
+      The stdout should equal 'cleanup: 123'
     End
 
     Example 'accepts evaluatable string'
@@ -111,7 +118,8 @@ Describe "core/evaluation.sh"
   Describe 'shellspec_evaluation_cleanup()'
     Context 'calls a function that returns success'
       Example 'with do not output anything'
-        When call output_none
+        evaluation() { return 0; }
+        When call evaluation
         The value UNHANDLED_STATUS should satisfy switch_off
         The value UNHANDLED_STDOUT should satisfy switch_off
         The value UNHANDLED_STDERR should satisfy switch_off
@@ -121,7 +129,8 @@ Describe "core/evaluation.sh"
       End
 
       Example 'with output to stdout'
-        When call output_stdout
+        evaluation() { echo ok; return 0; }
+        When call evaluation
         The value UNHANDLED_STATUS should satisfy switch_off
         The value UNHANDLED_STDOUT should satisfy switch_on
         The value UNHANDLED_STDERR should satisfy switch_off
@@ -131,17 +140,19 @@ Describe "core/evaluation.sh"
       End
 
       Example 'with output to stderr'
-        When call output_stderr
-        The value UNHANDLED_STATUS should satisfy switch_off
+        evaluation() { echo err >&2; return 1; }
+        When call evaluation
+        The value UNHANDLED_STATUS should satisfy switch_on
         The value UNHANDLED_STDOUT should satisfy switch_off
         The value UNHANDLED_STDERR should satisfy switch_on
         The stdout should equal ''
         The stderr should equal 'err'
-        The status should equal 0
+        The status should equal 1
       End
 
       Example 'with output to stdout and stderr'
-        When call output_both
+        evaluation() { echo ok; echo err >&2; return 0; }
+        When call evaluation
         The value UNHANDLED_STATUS should satisfy switch_off
         The value UNHANDLED_STDOUT should satisfy switch_on
         The value UNHANDLED_STDERR should satisfy switch_on
@@ -152,10 +163,9 @@ Describe "core/evaluation.sh"
     End
 
     Context 'calls a function that returns error'
-      ret() { return 123; }
-
       Example 'with do not output anything'
-        When call output_none
+        evaluation() { return 123; }
+        When call evaluation
         The value UNHANDLED_STATUS should satisfy switch_on
         The value UNHANDLED_STDOUT should satisfy switch_off
         The value UNHANDLED_STDERR should satisfy switch_off
@@ -165,17 +175,19 @@ Describe "core/evaluation.sh"
       End
 
       Example 'with output to stdout'
-        When call output_stdout
-        The value UNHANDLED_STATUS should satisfy switch_on
+        evaluation() { echo ok; return 0; }
+        When call evaluation
+        The value UNHANDLED_STATUS should satisfy switch_off
         The value UNHANDLED_STDOUT should satisfy switch_on
         The value UNHANDLED_STDERR should satisfy switch_off
         The stdout should equal 'ok'
         The stderr should equal ''
-        The status should equal 123
+        The status should equal 0
       End
 
       Example 'with output to stderr'
-        When call output_stderr
+        evaluation() { echo err >&2; return 123; }
+        When call evaluation
         The value UNHANDLED_STATUS should satisfy switch_on
         The value UNHANDLED_STDOUT should satisfy switch_off
         The value UNHANDLED_STDERR should satisfy switch_on
@@ -185,7 +197,8 @@ Describe "core/evaluation.sh"
       End
 
       Example 'with output to stdout and stderr'
-        When call output_both
+        evaluation() { echo ok; echo err >&2; return 123; }
+        When call evaluation
         The value UNHANDLED_STATUS should satisfy switch_on
         The value UNHANDLED_STDOUT should satisfy switch_on
         The value UNHANDLED_STDERR should satisfy switch_on
