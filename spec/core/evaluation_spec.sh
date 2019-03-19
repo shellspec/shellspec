@@ -12,8 +12,6 @@ Describe "core/evaluation.sh"
   ret() { return 0; }
   ret123() { return 123; }
 
-  echo_foo() { echo 'foo'; }
-
   call() {
     shellspec_evaluation_cleanup() {
       echo "shellspec_evaluation_cleanup: $1"
@@ -38,7 +36,8 @@ Describe "core/evaluation.sh"
     End
 
     Example 'not restore mock function after evaluation'
-      mock_foo() { echo_foo() { echo 'FOO'; }; }
+      echo_foo() { shellspec_puts 'foo'; }
+      mock_foo() { echo_foo() { shellspec_puts 'FOO'; }; }
       When call mock_foo
       The output of value echo_foo should equal 'FOO'
     End
@@ -82,7 +81,8 @@ Describe "core/evaluation.sh"
     End
 
     Example 'restore mock function after evaluation'
-      mock_foo() { echo_foo() { echo 'FOO'; }; }
+      echo_foo() { shellspec_puts 'foo'; }
+      mock_foo() { echo_foo() { shellspec_puts 'FOO'; }; }
       When invoke mock_foo
       The output of 'echo_foo()' should equal 'foo'
     End

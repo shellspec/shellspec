@@ -78,4 +78,30 @@ Describe "core/utils.sh"
       End
     End
   End
+
+  Describe 'shellspec_capture()'
+    Context 'func outputs "ok"'
+      func() { shellspec_puts ok; }
+      Example 'capture ok'
+        When call shellspec_capture var func
+        The variable var should equal ok
+      End
+    End
+
+    Context 'func outputs "ok<LF>"'
+      func() { echo ok; }
+      Example 'capture ok<LF>'
+        When call shellspec_capture var func
+        The variable var should equal "ok${LF}"
+      End
+    End
+
+    Context 'func return false'
+      func() { false; }
+      Example 'variable should be undefined'
+        When call shellspec_capture var func
+        The variable var should be undefined
+      End
+    End
+  End
 End

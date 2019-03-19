@@ -33,3 +33,13 @@ shellspec_set() {
 shellspec_unset() {
   while [ $# -gt 0 ]; do eval "unset $1 ||:" && shift; done
 }
+
+shellspec_capture() {
+  eval "
+    if $1=\"\$($2 && echo _)\"; then
+      $1=\${$1%_}
+    else
+      unset $1 ||:
+    fi
+  "
+}

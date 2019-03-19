@@ -4,7 +4,7 @@ Describe "core/modifiers/output.sh"
   Describe "output modifier"
     Before set_subject
     subject() { false; }
-    foo() { echo ok; }
+    foo() { shellspec_puts ok; }
 
     Example 'example'
       The output of 'foo()' should equal ok

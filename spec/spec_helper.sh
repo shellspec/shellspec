@@ -15,30 +15,20 @@ shellspec_mockable shellspec_callback
 shellspec_spec_helper_configure() {
   shellspec_import 'support/custom_matcher'
 
-  set_shellspec_special_variable() {
-    eval "
-      if $1=\"\$($2 && echo _)\"; then
-        $1=\${$1%_}
-      else
-        shellspec_unset $1
-      fi
-    "
-  }
-
   set_subject() {
-    set_shellspec_special_variable SHELLSPEC_SUBJECT subject
+    shellspec_capture SHELLSPEC_SUBJECT subject
   }
 
   set_exit_status() {
-    set_shellspec_special_variable SHELLSPEC_EXIT_STATUS exit_status
+    shellspec_capture SHELLSPEC_EXIT_STATUS exit_status
   }
 
   set_stdout() {
-    set_shellspec_special_variable SHELLSPEC_STDOUT stdout
+    shellspec_capture SHELLSPEC_STDOUT stdout
   }
 
   set_stderr() {
-    set_shellspec_special_variable SHELLSPEC_STDERR stderr
+    shellspec_capture SHELLSPEC_STDERR stderr
   }
 
   # modifier for test
