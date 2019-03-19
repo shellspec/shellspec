@@ -27,6 +27,13 @@ shellspec_syntax_alias() {
 
 # $1:<syntax-type> $2:<name> $3-:<parameters>
 shellspec_syntax_dispatch() {
+  if [ "$1" = "subject" ]; then
+    case $2 in
+      *"()") eval "shift 2; set -- subject function \"${2%??}\" \"\$@\"" ;;
+      '$'*) eval "shift 2; set -- subject variable \"${2#?}\" \"\$@\"" ;;
+    esac
+  fi
+
   if ! shellspec_includes "$SHELLSPEC_COMPOUNDS" "|shellspec_$1|"; then
     eval "
       shift

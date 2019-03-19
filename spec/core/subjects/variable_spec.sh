@@ -6,6 +6,7 @@ Describe "core/subjects/variable.sh"
       Before 'shellspec_set var=foo'
       Example 'exampe'
         The variable var should equal foo
+        The '$var' should equal foo # shorthand
       End
     End
 
