@@ -4,7 +4,6 @@
 : "${SHELLSPEC_SUBJECT:-}"
 
 shellspec_syntax 'shellspec_subject_value'
-shellspec_syntax_alias 'shellspec_subject_string' 'shellspec_subject_value'
 shellspec_syntax_alias 'shellspec_subject_function' 'shellspec_subject_value'
 
 shellspec_subject_value() {
