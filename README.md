@@ -352,14 +352,14 @@ The first word of the second line of output should valid as a number
 
 ### Subject
 
-| Subject                                                   | Description                                                  |
-| :-------------------------------------------------------- | :----------------------------------------------------------- |
-| output<br>stdout                                          | Use the stdout of *Evaluation* as subject.                   |
-| error<br>stderr                                           | Use the stderr of *Evaluation* as subject.                   |
-| status<br>exit status                                     | Use the exit status of *Evaluation* as subject.              |
-| path `<PATH>`<br> file `<PATH>`<br>dir `<PATH>`           | Use the ([alias resolved](#path-alias)) path as the subject. |
-| value `<VALUE>`<br>string `<VALUE>`<br>function `<VALUE>` | Use the value as the subject.                                |
-| variable `<NAME>`                                         | Use the value of the variable as the subject.                |
+| Subject                                         | Description                                                  |
+| :---------------------------------------------- | :----------------------------------------------------------- |
+| output<br>stdout                                | Use the stdout of *Evaluation* as subject.                   |
+| error<br>stderr                                 | Use the stderr of *Evaluation* as subject.                   |
+| status<br>exit status                           | Use the exit status of *Evaluation* as subject.              |
+| path `<PATH>`<br> file `<PATH>`<br>dir `<PATH>` | Use the ([alias resolved](#path-alias)) path as the subject. |
+| value `<VALUE>`<br>function `<VALUE>`           | Use the value as the subject.                                |
+| variable `<NAME>`                               | Use the value of the variable as the subject.                |
 
 ### Modifier
 
@@ -517,6 +517,7 @@ To disable shows banner with `--no-banner` option.
 0.8.0 (not yet released)
 
  * Remove Set/Unset helper
+ * Remove string subject
  * Change behavior of line and lines modifier to like "grep -c" not "wc -l".
  * Change function subject to alias for value subject
  * Add Data helper
