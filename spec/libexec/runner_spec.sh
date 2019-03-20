@@ -5,31 +5,34 @@ Describe "libexec/runner.sh"
   . "$SHELLSPEC_LIB/libexec/runner.sh"
 
   Describe "mktempdir()"
-    example() {
-      dir="$SHELLSPEC_TMPBASE/$$.mktempdir_test"
-      mktempdir "$dir"
-      ls -dl "$dir"
-      [ -d "$dir" ] && [ -w "$dir" ]
-    }
+    readonly dir="$SHELLSPEC_TMPBASE/$$.mktempdir_test"
+
+    entry() { ls -dl "$dir"; }
+    check_perm() { [ -d "$dir" ] && [ -w "$dir" ]; }
 
     Example "make tempdir"
-      When call example
-      The first word of stdout should start with 'drwx------'
+      When call mktempdir "$dir"
       The status should be success
+      The output of 'entry()' should start with 'drwx------'
+      The status of 'check_perm()' should be success
     End
   End
 
   Describe "rmtempdir()"
-    example() {
-      dir="$SHELLSPEC_TMPBASE/$$.rmtempdir_test"
+    readonly dir="$SHELLSPEC_TMPBASE/$$.rmtempdir_test"
+
+    prepare() {
       mktempdir "$dir"
-      rmtempdir "$dir"
-      ! [ -e "$dir" ]
+      [ -d "$dir" ] && [ -w "$dir" ]
     }
+    Before prepare
+
+    exists_tempdir() { [ -e "$dir" ]; }
 
     Example "delete tempdir"
-      When call example
+      When call rmtempdir "$dir"
       The status should be success
+      The status of 'exists_tempdir()' should be failure
     End
   End
 
