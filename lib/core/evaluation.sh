@@ -34,6 +34,8 @@ shellspec_evaluation_run() {
   shellspec_evaluation_cleanup $?
 }
 
+shellspec_around_invoke() { "$@"; }
+
 shellspec_evaluation_invoke() {
   if ! shellspec_is funcname "$1"; then
     eval "shellspec_evaluation_eval() { $1; }"
@@ -41,7 +43,7 @@ shellspec_evaluation_invoke() {
     eval set -- shellspec_evaluation_eval ${1+'"$@"'}
   fi
   [ "${SHELLSPEC_DATA:-}" ] && set -- shellspec_evaluation_with_data "$@"
-  ( "$@" ) >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
+  ( shellspec_around_invoke "$@" ) >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
 }
 

@@ -2,37 +2,35 @@
 
 Describe "core/dsl.sh" # comment
   Describe "shellspec_example_group()"
-    Example 'yield block' # comment
-      example_group() {
-        shellspec_off EXAMPLE
+    Example 'calls yield block'
+      shellspec_around_invoke() {
         shellspec_output() { echo "$1"; }
         shellspec_yield() { echo 'yield'; }
-        shellspec_example_group
+        "$@"
       }
-      When invoke example_group
+      When invoke shellspec_example_group
       The stdout should include 'yield'
     End
   End
 
   Describe "shellspec_example()"
-    example() {
+    prepare() { :; }
+    shellspec_around_invoke() {
+      prepare
       shellspec_output() { echo "$1"; }
       shellspec_yield() { echo yield; }
-      if [ "${1:-}" ]; then
+      if [ "${2:-}" ]; then
         eval "shellspec_yield() {
-          echo yield; shellspec_off NOT_IMPLEMENTED; $1;
+          echo yield; shellspec_off NOT_IMPLEMENTED; $2;
         }"
       fi
-      shellspec_example
+      "$@"
     }
 
     Example 'do not yield if skipped outside of example'
-      skipped_example() {
-        shellspec_on SKIP
-        example "$@"
-      }
+      prepare() { shellspec_on SKIP; }
       block() { :; }
-      When invoke skipped_example block
+      When invoke shellspec_example block
       The stdout should not include 'yield'
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'SKIP'
@@ -42,7 +40,7 @@ Describe "core/dsl.sh" # comment
 
     Example 'outpus SKIPPED if skipped inside of example'
       block() { shellspec_skip 1; }
-      When invoke example block
+      When invoke shellspec_example block
       The stdout should include 'yield'
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'yield'
@@ -52,7 +50,7 @@ Describe "core/dsl.sh" # comment
     End
 
     Example 'outputs NOT_IMPLEMENTED, TODO if example not implementd'
-      When invoke example
+      When invoke shellspec_example
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'NOT_IMPLEMENTED'
@@ -62,7 +60,7 @@ Describe "core/dsl.sh" # comment
 
     Example 'outputs FAILED if example is failed'
       block() { shellspec_on FAILED; }
-      When invoke example block
+      When invoke shellspec_example block
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'FAILED'
@@ -71,7 +69,7 @@ Describe "core/dsl.sh" # comment
 
     Example 'outputs UNHANDLED_STATUS, WARNED if unhandled status'
       block() { shellspec_on UNHANDLED_STATUS; }
-      When invoke example block
+      When invoke shellspec_example block
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STATUS'
@@ -81,7 +79,7 @@ Describe "core/dsl.sh" # comment
 
     Example 'outputs UNHANDLED_STDOUT, WARNED if unhandled stdout'
       block() { shellspec_on UNHANDLED_STDOUT; }
-      When invoke example block
+      When invoke shellspec_example block
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STDOUT'
@@ -91,7 +89,7 @@ Describe "core/dsl.sh" # comment
 
     Example 'outputs UNHANDLED_STDERR, WARNED if unhandled stderr'
       block() { shellspec_on UNHANDLED_STDERR; }
-      When invoke example block
+      When invoke shellspec_example block
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STDERR'
@@ -101,7 +99,7 @@ Describe "core/dsl.sh" # comment
 
     Example 'outputs FAILED if failed inside of yield'
       block() { shellspec_on FAILED; }
-      When invoke example block
+      When invoke shellspec_example block
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'FAILED'
@@ -110,7 +108,7 @@ Describe "core/dsl.sh" # comment
 
     Example 'outputs SUCCEEDED'
       block() { :; }
-      When invoke example block
+      When invoke shellspec_example block
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'SUCCEEDED'
@@ -119,7 +117,7 @@ Describe "core/dsl.sh" # comment
 
     Example 'outputs TODO if failed and pending inside of yield'
       block() { shellspec_on FAILED PENDING; }
-      When invoke example block
+      When invoke shellspec_example block
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'TODO'
@@ -128,7 +126,7 @@ Describe "core/dsl.sh" # comment
 
     Example 'outputs FIXED if not failed and pending inside of yield'
       block() { shellspec_on PENDING; }
-      When invoke example block
+      When invoke shellspec_example block
       The stdout line 1 should equal 'EXAMPLE_BEGIN'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'FIXED'
@@ -138,7 +136,7 @@ Describe "core/dsl.sh" # comment
 
   Describe "shellspec_when()"
     prepare() { :; }
-    spy_shellspec_when() {
+    shellspec_around_invoke() {
       shellspec_off EVALUATION EXPECTATION
       shellspec_on NOT_IMPLEMENTED
       prepare
@@ -146,18 +144,18 @@ Describe "core/dsl.sh" # comment
       shellspec_statement_evaluation() { :; }
       shellspec_on() { echo "on:[$*]"; }
       shellspec_off() { echo "off:[$*]"; }
-      eval shellspec_when ${1+'"$@"'}
+      "$@"
     }
 
     Example 'turns off the NOT_IMPLEMENTED switch'
-      When invoke spy_shellspec_when call true
+      When invoke shellspec_when call true
       The stdout line 1 should equal 'off:[NOT_IMPLEMENTED]'
       The stdout line 2 should equal 'on:[EVALUATION]'
       The stdout line 3 should equal 'EVALUATION'
     End
 
     Example 'outputs SYNTAX_ERROR if missing Evaluation'
-      When invoke spy_shellspec_when
+      When invoke shellspec_when
       The stdout line 1 should equal 'off:[NOT_IMPLEMENTED]'
       The stdout line 2 should equal 'on:[EVALUATION]'
       The stdout line 3 should equal 'SYNTAX_ERROR'
@@ -167,7 +165,7 @@ Describe "core/dsl.sh" # comment
     Context 'when already executed Evaluation'
       prepare() { shellspec_on EVALUATION; }
       Example 'outputs SYNTAX_ERROR'
-        When invoke spy_shellspec_when call true
+        When invoke shellspec_when call true
         The stdout line 1 should equal 'off:[NOT_IMPLEMENTED]'
         The stdout line 2 should equal 'SYNTAX_ERROR'
         The stdout line 3 should equal 'on:[FAILED]'
@@ -177,7 +175,7 @@ Describe "core/dsl.sh" # comment
     Context 'when already executed Expectation'
       prepare() { shellspec_on EXPECTATION; }
       Example 'outputs SYNTAX_ERROR'
-        When invoke spy_shellspec_when call true
+        When invoke shellspec_when call true
         The stdout line 1 should equal 'off:[NOT_IMPLEMENTED]'
         The stdout line 2 should equal 'on:[EVALUATION]'
         The stdout line 3 should equal 'SYNTAX_ERROR'
@@ -188,17 +186,17 @@ Describe "core/dsl.sh" # comment
 
   Describe "shellspec_statement()"
     prepare() { :; }
-    spy_shellspec_statement() {
+    shellspec__statement_() { echo called; }
+    shellspec_around_invoke() {
       prepare
-      shellspec_statement fake_statement dummy
+      "$@"
       shellspec_if SYNTAX_ERROR && echo 'syntax_error' || echo 'not syntax_error'
       shellspec_if FAILED && echo 'failed' || echo 'not failed'
     }
 
     Context 'When execute statement exit normally'
-      shellspec_fake_statement() { echo called; }
       Example 'it not syntax_error and not failed'
-        When invoke spy_shellspec_statement
+        When invoke shellspec_statement _statement_ dummy
         The stdout should include 'not syntax_error'
         The stdout should include 'not failed'
         The stdout should include called
@@ -206,9 +204,9 @@ Describe "core/dsl.sh" # comment
     End
 
     Context 'When execute statement exit normally'
-      shellspec_fake_statement() { shellspec_on SYNTAX_ERROR ; echo called; }
+      prepare() { shellspec_on SYNTAX_ERROR; }
       Example 'it not syntax_error and not failed'
-        When invoke spy_shellspec_statement
+        When invoke shellspec_statement _statement_ dummy
         The stdout should include 'syntax_error'
         The stdout should include 'failed'
         The stdout should include called
@@ -217,41 +215,40 @@ Describe "core/dsl.sh" # comment
 
     Context 'When if skipped'
       prepare() { shellspec_on SKIP; }
-      shellspec_fake_statement() { echo called; }
       Example 'statement not called'
-        When invoke spy_shellspec_statement
+        When invoke shellspec_statement _statement_ dummy
         The stdout should not include called
       End
     End
   End
 
   Describe "shellspec_the()"
-    spy_shellspec_the() {
+    shellspec_around_invoke() {
       shellspec_on NOT_IMPLEMENTED
       shellspec_statement_preposition() { :; }
       shellspec_on() { echo "on:[$*]"; }
       shellspec_off() { echo "off:[$*]"; }
-      shellspec_the dummy
+      "$@"
     }
 
     Example 'turns off the NOT_IMPLEMENTED switch'
-      When invoke spy_shellspec_the
+      When invoke shellspec_the dummy
       The stdout line 1 should equal 'off:[NOT_IMPLEMENTED]'
       The stdout line 2 should equal 'on:[EXPECTATION]'
     End
   End
 
   Describe "shellspec_it()"
-    spy_shellspec_it() {
+    shellspec_around_invoke() {
       shellspec_on NOT_IMPLEMENTED
       shellspec_statement_advance_subject() { :; }
       shellspec_on() { echo "on:[$*]"; }
       shellspec_off() { echo "off:[$*]"; }
-      shellspec_it dummy
+      "$@"
     }
 
     Example 'turns off the NOT_IMPLEMENTED switch'
-      When invoke spy_shellspec_it
+      When invoke shellspec_it dummy
       The stdout line 1 should equal 'off:[NOT_IMPLEMENTED]'
       The stdout line 2 should equal 'on:[EXPECTATION]'
     End
@@ -259,10 +256,10 @@ Describe "core/dsl.sh" # comment
 
   Describe "shellspec_skip()"
     prepare() { SHELLSPEC_EXAMPLE_NO=1; }
-    spy_shellspec_skip() {
+    shellspec_around_invoke() {
       prepare
       shellspec_output() { echo "$1"; }
-      shellspec_skip "$@"
+      "$@"
       shellspec_if SKIP && echo 'skip' || echo 'not skip'
       echo "skip_id:${SHELLSPEC_SKIP_ID-<unset>}"
       echo "skip_reason:${SHELLSPEC_SKIP_REASON-<unset>}"
@@ -271,7 +268,7 @@ Describe "core/dsl.sh" # comment
     }
 
     Example 'turns on SKIP switch'
-      When invoke spy_shellspec_skip 123 "reason"
+      When invoke shellspec_skip 123 "reason"
       The stdout line 1 should equal 'SKIP'
       The stdout line 2 should equal 'skip'
       The stdout line 3 should equal 'skip_id:123'
@@ -282,7 +279,7 @@ Describe "core/dsl.sh" # comment
     Context 'when currently outside of Example'
       prepare() { SHELLSPEC_EXAMPLE_NO=; }
       Example 'do not outputs SKIP'
-        When invoke spy_shellspec_skip 123 "skip reason"
+        When invoke shellspec_skip 123 "skip reason"
         The stdout line 1 should equal 'skip'
       End
     End
@@ -290,7 +287,7 @@ Describe "core/dsl.sh" # comment
     Context 'when already skipped'
       prepare() { shellspec_on SKIP; }
       Example 'do nothing'
-        When invoke spy_shellspec_skip 123 "skip reason"
+        When invoke shellspec_skip 123 "skip reason"
         The stdout line 1 should equal 'skip'
         The stdout line 2 should equal 'skip_id:<unset>'
         The stdout line 3 should equal 'skip_reason:<unset>'
@@ -300,7 +297,7 @@ Describe "core/dsl.sh" # comment
 
     Describe "with conditional"
       Example 'skips if satisfy condition'
-        When invoke spy_shellspec_skip 123 if "reason" true
+        When invoke shellspec_skip 123 if "reason" true
         The stdout line 1 should equal 'SKIP'
         The stdout line 2 should equal 'skip'
         The stdout line 3 should equal 'skip_id:123'
@@ -309,7 +306,7 @@ Describe "core/dsl.sh" # comment
       End
 
       Example 'do not skips if not satisfy condition'
-        When invoke spy_shellspec_skip 123 if "reason" false
+        When invoke shellspec_skip 123 if "reason" false
         The stdout line 1 should equal 'not skip'
         The stdout line 2 should equal 'skip_id:123'
         The stdout line 3 should equal 'skip_reason:reason'
@@ -320,15 +317,15 @@ Describe "core/dsl.sh" # comment
 
   Describe "shellspec_pending()"
     prepare() { SHELLSPEC_EXAMPLE_NO=1; }
-    spy_shellspec_pending() {
+    shellspec_around_invoke() {
       prepare
       shellspec_output() { echo "$1"; }
-      shellspec_pending
+      "$@"
       shellspec_if PENDING && echo 'pending' || echo 'not pending'
     }
 
     Example 'outputs PENDING'
-      When invoke spy_shellspec_pending
+      When invoke shellspec_pending
       The stdout line 1 should equal 'PENDING'
       The stdout line 2 should equal 'pending'
     End
@@ -336,7 +333,7 @@ Describe "core/dsl.sh" # comment
     Context 'when already failed'
       prepare() { shellspec_on FAILED; }
       Example 'do not outputs PENDING'
-        When invoke spy_shellspec_pending
+        When invoke shellspec_pending
         The stdout line 1 should equal 'PENDING'
         The stdout line 2 should equal 'not pending'
       End
@@ -345,7 +342,7 @@ Describe "core/dsl.sh" # comment
     Context 'when already skipped'
       prepare() { shellspec_on SKIP; }
       Example 'do nothing'
-        When invoke spy_shellspec_pending
+        When invoke shellspec_pending
         The stdout line 1 should equal 'not pending'
       End
     End
@@ -353,7 +350,7 @@ Describe "core/dsl.sh" # comment
     Context 'when currently outside of Example'
       prepare() { SHELLSPEC_EXAMPLE_NO=; }
       Example 'do not outputs PENDING'
-        When invoke spy_shellspec_pending
+        When invoke shellspec_pending
         The stdout line 1 should equal 'pending'
       End
     End
@@ -361,21 +358,21 @@ Describe "core/dsl.sh" # comment
 
   Describe "shellspec_debug()"
     prepare() { :; }
-    spy_shellspec_debug() {
+    shellspec_around_invoke() {
       prepare
       shellspec_output() { echo "$1"; }
-      shellspec_debug
+      "$@"
     }
 
     Example 'outputs DEBUG'
-      When invoke spy_shellspec_debug
+      When invoke shellspec_debug
       The stdout line 1 should equal 'DEBUG'
     End
 
     Context 'when skipped'
       prepare() { shellspec_on SKIP; }
       Example 'do not outputs DEBUG'
-        When invoke spy_shellspec_debug
+        When invoke shellspec_debug
         The stdout should be blank
       End
     End

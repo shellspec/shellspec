@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/be/valid.sh"
-  Before set_subject
+  Before set_subject intercept_shellspec_matcher
   subject() { false; }
 
   Describe 'be a number matcher'
@@ -19,7 +19,7 @@ Describe "core/matchers/be/valid.sh"
     Context 'when subject is 123'
       subject() { shellspec_puts 123; }
       Example 'should be valid'
-        When invoke spy_shellspec_matcher be valid as a number
+        When invoke shellspec_matcher be valid as a number
         The stdout should equal "is:number 123"
       End
     End
@@ -27,13 +27,13 @@ Describe "core/matchers/be/valid.sh"
     Context 'when subject is undefined'
       subject() { false; }
       Example 'should be invalid'
-        When invoke spy_shellspec_matcher be valid as number
+        When invoke shellspec_matcher be valid as number
         The stdout should equal "is:number "
       End
     End
 
     Example 'outputs error if parameters count is invalid'
-      When invoke spy_shellspec_matcher be valid number foo
+      When invoke shellspec_matcher be valid number foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
@@ -54,7 +54,7 @@ Describe "core/matchers/be/valid.sh"
     Context 'when subject is foo_bar'
       subject() { shellspec_puts foo_bar; }
       Example 'should be valid'
-        When invoke spy_shellspec_matcher be valid as a funcname
+        When invoke shellspec_matcher be valid as a funcname
         The stdout should equal "is:funcname foo_bar"
       End
     End
@@ -62,13 +62,13 @@ Describe "core/matchers/be/valid.sh"
     Context 'when subject is undefined'
       subject() { false; }
       Example 'should be invalid'
-        When invoke spy_shellspec_matcher be valid as funcname
+        When invoke shellspec_matcher be valid as funcname
         The stdout should equal "is:funcname "
       End
     End
 
     Example 'outputs error if parameters count is invalid'
-      When invoke spy_shellspec_matcher be valid funcname foo
+      When invoke shellspec_matcher be valid funcname foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End

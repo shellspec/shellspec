@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/start_with.sh"
-  Before set_subject
+  Before set_subject intercept_shellspec_matcher
   subject() { false; }
 
   Describe 'start with matcher'
@@ -14,24 +14,24 @@ Describe "core/matchers/start_with.sh"
       subject() { shellspec_puts abcdef; }
 
       Example 'should start with "abc"'
-        When invoke spy_shellspec_matcher start with "abc"
+        When invoke shellspec_matcher start with "abc"
         The status should be success
       End
 
       Example 'should start with "ABC"'
-        When invoke spy_shellspec_matcher start with "ABC"
+        When invoke shellspec_matcher start with "ABC"
         The status should be failure
       End
     End
 
     Example 'outputs error if parameters is missing'
-      When invoke spy_shellspec_matcher start with
+      When invoke shellspec_matcher start with
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
 
     Example 'outputs error if parameters count is invalid'
-      When invoke spy_shellspec_matcher start with "foo" "bar"
+      When invoke shellspec_matcher start with "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End

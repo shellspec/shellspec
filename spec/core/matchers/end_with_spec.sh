@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/end_with.sh"
-  Before set_subject
+  Before set_subject intercept_shellspec_matcher
   subject() { false; }
 
   Describe "end with matcher"
@@ -14,24 +14,24 @@ Describe "core/matchers/end_with.sh"
       subject() { shellspec_puts abcdef; }
 
       Example 'should end with "def"'
-        When invoke spy_shellspec_matcher end with "def"
+        When invoke shellspec_matcher end with "def"
         The status should be success
       End
 
       Example 'should not end with "DEF"'
-        When invoke spy_shellspec_matcher end with "DEF"
+        When invoke shellspec_matcher end with "DEF"
         The status should be failure
       End
     End
 
     Example 'outputs error if parameters is missing'
-      When invoke spy_shellspec_matcher end with
+      When invoke shellspec_matcher end with
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
 
     Example 'outputs error if parameters count is invalid'
-      When invoke spy_shellspec_matcher end with "foo" "bar"
+      When invoke shellspec_matcher end with "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End

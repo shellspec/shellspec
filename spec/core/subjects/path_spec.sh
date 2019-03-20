@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/subjects/path.sh"
-  Before 'shellspec_path bar=/tmp/bar'
+  Before 'shellspec_path bar=/tmp/bar' intercept_shellspec_subject
 
   Describe "path subject"
     Example 'example'
@@ -13,22 +13,22 @@ Describe "core/subjects/path.sh"
     End
 
     Example "use parameter as subject"
-      When invoke spy_shellspec_subject path foo _modifier_
+      When invoke shellspec_subject path foo _modifier_
       The stdout should equal 'foo'
     End
 
     Example "use alias as subject"
-      When invoke spy_shellspec_subject path bar _modifier_
+      When invoke shellspec_subject path bar _modifier_
       The stdout should equal '/tmp/bar'
     End
 
     Example 'outputs error if path is missing'
-      When invoke spy_shellspec_subject path
+      When invoke shellspec_subject path
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
     Example 'outputs error if next word is missing'
-      When invoke spy_shellspec_subject path bar
+      When invoke shellspec_subject path bar
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

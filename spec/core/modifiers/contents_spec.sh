@@ -3,7 +3,7 @@
 Describe "core/modifiers/contents.sh"
   readonly file="$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
 
-  Before set_subject
+  Before set_subject intercept_shellspec_modifier
   subject() { false; }
 
   Describe "contents modifier"
@@ -19,7 +19,7 @@ Describe "core/modifiers/contents.sh"
     Context 'when file exists'
       subject() { shellspec_puts "$file"; }
       Example 'reads the contents of the file'
-        When invoke spy_shellspec_modifier contents _modifier_
+        When invoke shellspec_modifier contents _modifier_
         The entire stdout should equal "$contents"
       End
     End
@@ -27,7 +27,7 @@ Describe "core/modifiers/contents.sh"
     Context 'when file not exists'
       subject() { shellspec_puts "$file.not-exists"; }
       Example 'cannot reads the contents of the file'
-        When invoke spy_shellspec_modifier contents _modifier_
+        When invoke shellspec_modifier contents _modifier_
         The status should be failure
       End
     End
@@ -35,13 +35,13 @@ Describe "core/modifiers/contents.sh"
     Context 'when file not specified'
       subject() { false; }
       Example 'cannot reads the contents of the file'
-        When invoke spy_shellspec_modifier contents _modifier_
+        When invoke shellspec_modifier contents _modifier_
         The status should be failure
       End
     End
 
     Example 'outputs error if next modifier is missing'
-      When invoke spy_shellspec_modifier contents
+      When invoke shellspec_modifier contents
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End
@@ -59,7 +59,7 @@ Describe "core/modifiers/contents.sh"
     Context 'when file exists'
       subject() { shellspec_puts "$file"; }
       Example 'reads the entire contents of the file'
-        When invoke spy_shellspec_modifier entire contents _modifier_
+        When invoke shellspec_modifier entire contents _modifier_
         The entire stdout should equal "$contents"
       End
     End
@@ -67,7 +67,7 @@ Describe "core/modifiers/contents.sh"
     Context 'when file not exists'
       subject() { shellspec_puts "$file.not-exists"; }
       Example 'cannot reads the entire contents of the file'
-        When invoke spy_shellspec_modifier entire contents _modifier_
+        When invoke shellspec_modifier entire contents _modifier_
         The status should be failure
       End
     End
@@ -75,13 +75,13 @@ Describe "core/modifiers/contents.sh"
     Context 'when file not specified'
       subject() { false; }
       Example 'cannot read the entire contents of the file'
-        When invoke spy_shellspec_modifier entire contents _modifier_
+        When invoke shellspec_modifier entire contents _modifier_
         The status should be failure
       End
     End
 
     Example 'outputs error if next modifier is missing'
-      When invoke spy_shellspec_modifier entire contents
+      When invoke shellspec_modifier entire contents
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

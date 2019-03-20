@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/subjects/stderr.sh"
-  Before set_stderr
+  Before set_stderr intercept_shellspec_subject
   stderr() { false; }
 
   Describe "stderr subject"
@@ -15,7 +15,7 @@ Describe "core/subjects/stderr.sh"
     Context 'when stderr is "test<LF>"'
       stderr() { shellspec_puts "test${LF}"; }
       Example "should equal test"
-        When invoke spy_shellspec_subject stderr _modifier_
+        When invoke shellspec_subject stderr _modifier_
         The entire stdout should equal 'test'
       End
     End
@@ -23,13 +23,13 @@ Describe "core/subjects/stderr.sh"
     Context 'when stderr is undefined'
       stderr() { false; }
       Example "should be failure"
-        When invoke spy_shellspec_subject stderr _modifier_
+        When invoke shellspec_subject stderr _modifier_
         The status should be failure
       End
     End
 
     Example 'outputs error if next word is missing'
-      When invoke spy_shellspec_subject stderr
+      When invoke shellspec_subject stderr
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End
@@ -45,7 +45,7 @@ Describe "core/subjects/stderr.sh"
     Context 'when stderr is "test<LF>"'
       stderr() { shellspec_puts "test${LF}"; }
       Example "should equal test"
-        When invoke spy_shellspec_subject entire stderr _modifier_
+        When invoke shellspec_subject entire stderr _modifier_
         The entire stdout should equal "test${LF}"
       End
     End
@@ -53,13 +53,13 @@ Describe "core/subjects/stderr.sh"
     Context 'when stderr is undefined'
       stderr() { false; }
       Example "should be failure"
-        When invoke spy_shellspec_subject entire stderr _modifier_
+        When invoke shellspec_subject entire stderr _modifier_
         The status should be failure
       End
     End
 
     Example 'outputs error if next word is missing'
-      When invoke spy_shellspec_subject entire stderr
+      When invoke shellspec_subject entire stderr
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

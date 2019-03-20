@@ -3,6 +3,11 @@
 Describe "core/evaluation.sh"
   Before 'VAR=123'
 
+  shellspec_around_invoke() {
+    shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
+    "$@"
+  }
+
   Describe 'call evaluation'
     Example 'output stdout and stderr'
       evaluation() { echo ok; echo err >&2; return 0; }
@@ -26,13 +31,8 @@ Describe "core/evaluation.sh"
     End
 
     Example 'calls shellspec_evaluation_cleanup() after evaluation'
-      spy_shellspec_evaluation_call() {
-        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
-        shellspec_evaluation_call "$@"
-      }
       evaluation() { return 123; }
-
-      When invoke spy_shellspec_evaluation_call evaluation
+      When invoke shellspec_evaluation_call evaluation
       The stdout should equal 'cleanup: 123'
     End
 
@@ -51,12 +51,7 @@ Describe "core/evaluation.sh"
     End
 
     Example 'calls shellspec_evaluation_cleanup() after evaluation'
-      spy_shellspec_evaluation_run() {
-        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
-        shellspec_evaluation_run "$@"
-      }
-
-      When invoke spy_shellspec_evaluation_run false
+      When invoke shellspec_evaluation_run false
       The stdout should equal 'cleanup: 1'
     End
   End
@@ -96,13 +91,8 @@ Describe "core/evaluation.sh"
     End
 
     Example 'calls shellspec_evaluation_cleanup() after evaluation'
-      spy_shellspec_evaluation_invoke() {
-        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
-        shellspec_evaluation_invoke "$@"
-      }
       evaluation() { return 123; }
-
-      When invoke spy_shellspec_evaluation_invoke evaluation
+      When invoke shellspec_evaluation_invoke evaluation
       The stdout should equal 'cleanup: 123'
     End
 

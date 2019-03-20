@@ -1,6 +1,8 @@
 #shellcheck shell=sh
 
 Describe "core/subjects/value.sh"
+  Before intercept_shellspec_subject
+
   Describe "value subject"
     Example 'example'
       The value foo should equal foo
@@ -8,17 +10,17 @@ Describe "core/subjects/value.sh"
     End
 
     Example "use parameter as subject"
-      When invoke spy_shellspec_subject value foo _modifier_
+      When invoke shellspec_subject value foo _modifier_
       The stdout should equal 'foo'
     End
 
     Example 'outputs error if value is missing'
-      When invoke spy_shellspec_subject value
+      When invoke shellspec_subject value
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
     Example 'outputs error if next word is missing'
-      When invoke spy_shellspec_subject value foo
+      When invoke shellspec_subject value foo
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

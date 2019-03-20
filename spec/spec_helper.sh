@@ -38,23 +38,29 @@ shellspec_spec_helper_configure() {
     shellspec_puts "$SHELLSPEC_SUBJECT"
   }
 
-  spy_shellspec_subject() {
-    shellspec_output() { shellspec_puts "$1" >&2; }
-    shellspec_subject "$@"
+  intercept_shellspec_subject() {
+    shellspec_around_invoke() {
+      shellspec_output() { shellspec_puts "$1" >&2; }
+      "$@"
+    }
   }
 
-  spy_shellspec_modifier() {
-    shellspec_output() { shellspec_puts "$1" >&2; }
-    shellspec_modifier "$@"
+  intercept_shellspec_modifier() {
+    shellspec_around_invoke() {
+      shellspec_output() { shellspec_puts "$1" >&2; }
+      "$@"
+    }
   }
 
-  spy_shellspec_matcher() {
-    shellspec_output() { shellspec_puts "$1" >&2; }
-    shellspec_is() { shellspec_puts "is:$*"; }
-    shellspec_proxy "shellspec_matcher_do_match" \
-                    "shellspec_matcher_do_match_positive"
-    shellspec_matcher "$@"
-    shellspec_if MATCHED
+  intercept_shellspec_matcher() {
+    shellspec_around_invoke() {
+      shellspec_output() { shellspec_puts "$1" >&2; }
+      shellspec_is() { shellspec_puts "is:$*"; }
+      shellspec_proxy "shellspec_matcher_do_match" \
+                      "shellspec_matcher_do_match_positive"
+      "$@"
+      shellspec_if MATCHED
+    }
   }
 
   shellspec_syntax_alias 'shellspec_subject_switch' 'shellspec_subject_value'

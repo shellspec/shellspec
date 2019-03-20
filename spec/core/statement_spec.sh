@@ -65,13 +65,13 @@ Describe "core/statement.sh"
   End
 
   Describe "shellspec_statement_subject()"
-    statement_subject() {
+    shellspec_around_invoke() {
       shellspec_subject() { echo "$@"; }
-      shellspec_statement_subject "$@"
+      "$@"
     }
 
     Example "dispatches to shellspec_subject"
-      When invoke statement_subject a b c
+      When invoke shellspec_statement_subject a b c
       The stdout should equal "a b c"
     End
   End

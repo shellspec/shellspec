@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/modifiers/output.sh"
-  Before set_subject
+  Before set_subject intercept_shellspec_modifier
   subject() { false; }
 
   Describe "output modifier"
@@ -14,7 +14,7 @@ Describe "core/modifiers/output.sh"
     Context 'when subject is abcde'
       subject() { shellspec_puts foo; }
       Example 'its output should equal "ok"'
-        When invoke spy_shellspec_modifier output _modifier_
+        When invoke shellspec_modifier output _modifier_
         The stdout should equal ok
       End
     End
@@ -22,13 +22,13 @@ Describe "core/modifiers/output.sh"
     Context 'when subject is undefined'
       subject() { false; }
       Example 'cannot get output'
-        When invoke spy_shellspec_modifier output _modifier_
+        When invoke shellspec_modifier output _modifier_
         The status should be failure
       End
     End
 
     Example 'outputs error if next modifier is missing'
-      When invoke spy_shellspec_modifier output
+      When invoke shellspec_modifier output
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

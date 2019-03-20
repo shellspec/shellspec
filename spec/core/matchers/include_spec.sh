@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/include.sh"
-  Before set_subject
+  Before set_subject intercept_shellspec_matcher
   subject() { false; }
 
   Describe 'include matcher'
@@ -13,7 +13,7 @@ Describe "core/matchers/include.sh"
     Context 'when subject is foo<LF>bar<LF>baz<LF>'
       subject() { shellspec_puts "foo${LF}bar${LF}baz${LF}"; }
       Example 'should include bar'
-        When invoke spy_shellspec_matcher include "bar"
+        When invoke shellspec_matcher include "bar"
         The status should be success
       End
     End
@@ -21,19 +21,19 @@ Describe "core/matchers/include.sh"
     Context 'when subject is foo<LF>BAR<LF>baz<LF>'
       subject() { shellspec_puts "foo${LF}BAR${LF}baz${LF}"; }
       Example 'should not include bar'
-        When invoke spy_shellspec_matcher include "bar"
+        When invoke shellspec_matcher include "bar"
         The status should be failure
       End
     End
 
     Example 'outputs error if parameters is missing'
-      When invoke spy_shellspec_matcher include
+      When invoke shellspec_matcher include
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
 
     Example 'outputs error if parameters count is invalid'
-      When invoke spy_shellspec_matcher include "foo" "bar"
+      When invoke shellspec_matcher include "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End

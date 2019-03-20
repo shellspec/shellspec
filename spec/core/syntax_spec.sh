@@ -29,20 +29,20 @@ Describe "core/syntax.sh"
   End
 
   Describe "shellspec_syntax_param()"
-    syntax_param() {
+    shellspec_around_invoke() {
       shellspec_output() { echo "$*"; }
       shellspec_on() { echo "[$1]"; }
-      shellspec_syntax_param "$@"
+      "$@"
     }
 
     Describe 'number'
       Example "succeeds when the parameters count satisfies the condition"
-        When invoke syntax_param count [ 1 -gt 0 ]
+        When invoke shellspec_syntax_param count [ 1 -gt 0 ]
         The status should be success
       End
 
       Example "fails when the parameters count not satisfies the condition"
-        When invoke syntax_param count [ 0 -gt 0 ]
+        When invoke shellspec_syntax_param count [ 0 -gt 0 ]
         The status should be failure
         The stdout should include 'SYNTAX_ERROR_WRONG_PARAMETER_COUNT'
         The stdout should include '[SYNTAX_ERROR]'
@@ -51,12 +51,12 @@ Describe "core/syntax.sh"
 
     Describe 'N (parameter position)'
       Example "succeeds when the parameter is number"
-        When invoke syntax_param 1 is number 123
+        When invoke shellspec_syntax_param 1 is number 123
         The status should be success
       End
 
       Example "fails when the parameter is not number"
-        When invoke syntax_param 2 is number abc
+        When invoke shellspec_syntax_param 2 is number abc
         The status should be failure
         The stdout should include 'SYNTAX_ERROR_PARAM_TYPE 2'
         The stdout should include '[SYNTAX_ERROR]'
