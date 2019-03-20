@@ -524,6 +524,7 @@ To disable shows banner with `--no-banner` option.
  * Add Data helper
  * Add output and status modifier
  * Add shorthand for function subject and variable subject
+ * Add failed message for before/after each hook
 
 0.7.0
 
