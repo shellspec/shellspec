@@ -48,9 +48,9 @@ shellspec_output_NOT_IMPLEMENTED() {
 
 shellspec_output_UNHANDLED_STATUS() {
   shellspec_output_raw statement "tag:warn" \
-    "message:It was exits with exit status non-zero but not found expectation"
-  shellspec_output_raw_append "failure_message:exit status:" \
-    "$SHELLSPEC_EXIT_STATUS"
+    "message:It was exits with status non-zero but not found expectation"
+  shellspec_output_raw_append "failure_message:status:" \
+    "$SHELLSPEC_STATUS"
 }
 
 shellspec_output_UNHANDLED_STDOUT() {

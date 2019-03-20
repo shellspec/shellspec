@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-Describe "core/matchers/be/exit_status.sh"
+Describe "core/matchers/be/status.sh"
   Before set_subject intercept_shellspec_matcher
   subject() { false; }
 

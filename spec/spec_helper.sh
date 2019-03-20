@@ -19,8 +19,8 @@ shellspec_spec_helper_configure() {
     shellspec_capture SHELLSPEC_SUBJECT subject
   }
 
-  set_exit_status() {
-    shellspec_capture SHELLSPEC_EXIT_STATUS exit_status
+  set_status() {
+    shellspec_capture SHELLSPEC_STATUS status
   }
 
   set_stdout() {

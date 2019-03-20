@@ -356,7 +356,7 @@ The first word of the second line of output should valid as a number
 | :---------------------------------------------- | :----------------------------------------------------------- |
 | output<br>stdout                                | Use the stdout of *Evaluation* as subject.                   |
 | error<br>stderr                                 | Use the stderr of *Evaluation* as subject.                   |
-| status<br>exit status                           | Use the exit status of *Evaluation* as subject.              |
+| status                                          | Use the status of *Evaluation* as subject.                   |
 | path `<PATH>`<br> file `<PATH>`<br>dir `<PATH>` | Use the ([alias resolved](#path-alias)) path as the subject. |
 | value `<VALUE>`<br>function `<VALUE>`           | Use the value as the subject.                                |
 | variable `<NAME>`                               | Use the value of the variable as the subject.                |
@@ -375,12 +375,12 @@ The first word of the second line of output should valid as a number
 
 ### Matcher
 
-exit status (the subject expect exit status)
+status (the subject expect status)
 
-| Matcher    | Description                        |
-| :--------- | :--------------------------------- |
-| be success | The exit status should be success. |
-| be failure | The exit status should be failure. |
+| Matcher    | Description                   |
+| :--------- | :---------------------------- |
+| be success | The status should be success. |
+| be failure | The status should be failure. |
 
 stat (the subject expect file path)
 

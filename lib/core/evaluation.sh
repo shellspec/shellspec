@@ -53,10 +53,10 @@ shellspec_evaluation_with_data() {
 }
 
 shellspec_evaluation_cleanup() {
-  SHELLSPEC_EXIT_STATUS=$1
+  SHELLSPEC_STATUS=$1
   shellspec_readfile SHELLSPEC_STDOUT "$SHELLSPEC_STDOUT_FILE"
   shellspec_readfile SHELLSPEC_STDERR "$SHELLSPEC_STDERR_FILE"
-  shellspec_toggle UNHANDLED_STATUS [ "$SHELLSPEC_EXIT_STATUS" -ne 0 ]
+  shellspec_toggle UNHANDLED_STATUS [ "$SHELLSPEC_STATUS" -ne 0 ]
   shellspec_toggle UNHANDLED_STDOUT [ "$SHELLSPEC_STDOUT" ]
   shellspec_toggle UNHANDLED_STDERR [ "$SHELLSPEC_STDERR" ]
 }
