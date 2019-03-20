@@ -371,6 +371,7 @@ The first word of the second line of output should valid as a number
 | contents        | The contents of the file (current subject should be a file). |
 | length          | The length of the subject.                                   |
 | output          | The output of the function subject.                          |
+| status          | The status of the function subject.                          |
 
 ### Matcher
 
@@ -521,6 +522,7 @@ To disable shows banner with `--no-banner` option.
  * Change behavior of line and lines modifier to like "grep -c" not "wc -l".
  * Change function subject to alias for value subject
  * Add Data helper
+ * Add output and status modifier
  * Add shorthand for function subject and variable subject
 
 0.7.0
