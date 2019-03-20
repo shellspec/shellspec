@@ -22,17 +22,20 @@ shellspec_after_each_hook() {
 shellspec_call_before_each_hooks() {
   set -- "${1:-1}"
   [ "$1" -gt "$SHELLSPEC_BEFORE_EACH_INDEX" ] && return 0
-  shellspec_call_hook "SHELLSPEC_BEFORE_$1"
+  shellspec_call_hook "SHELLSPEC_BEFORE_$1" || return $?
   shellspec_call_before_each_hooks $(($1 + 1))
 }
 
 shellspec_call_after_each_hooks() {
   set -- "${1:-$SHELLSPEC_AFTER_EACH_INDEX}"
   [ "$1" -lt 1 ] && return 0
-  shellspec_call_hook "SHELLSPEC_AFTER_$1"
+  shellspec_call_hook "SHELLSPEC_AFTER_$1" || return $?
   shellspec_call_after_each_hooks $(($1 - 1))
 }
 
 shellspec_call_hook() {
-  eval "eval \${$1}"
+  eval "SHELLSPEC_HOOK=\${$1}"
+  eval "$SHELLSPEC_HOOK" &&:
+  SHELLSPEC_HOOK_STATUS=$?
+  return $SHELLSPEC_HOOK_STATUS
 }

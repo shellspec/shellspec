@@ -48,10 +48,18 @@ shellspec_example() {
 
     # Output SKIP message if skipped in outer group.
     shellspec_output_if SKIP || {
-      shellspec_call_before_each_hooks
+      if ! shellspec_call_before_each_hooks; then
+        shellspec_output FAILED_BEFORE_EACH_HOOK
+        shellspec_output FAILED
+        break
+      fi
       shellspec_output_if PENDING ||:
       shellspec_yield
-      shellspec_call_after_each_hooks
+      if ! shellspec_call_after_each_hooks; then
+        shellspec_output FAILED_AFTER_EACH_HOOK
+        shellspec_output FAILED
+        break
+      fi
     }
 
     shellspec_if ABORT && break
