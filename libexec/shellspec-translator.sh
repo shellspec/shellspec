@@ -126,7 +126,8 @@ data() {
       done
       putsn "$delimiter"
       ;;
-    *) putsn "  $data_line"
+    "'"* | '"'*) putsn "  shellspec_putsn $data_line" ;;
+    *) putsn "  $data_line" ;;
   esac
   putsn "}"
   putsn "SHELLSPEC_DATA=1"

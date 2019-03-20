@@ -282,5 +282,25 @@ Describe "core/evaluation.sh"
         The lines of entire output should eq 3
       End
     End
+
+    Describe 'with string'
+      Example 'reads data from double quoted string'
+        Data "abc"
+        When call output
+        The output should eq 'abc'
+      End
+
+      Example 'reads data from quoted string'
+        Data 'abc'
+        When call output
+        The output should eq 'abc'
+      End
+
+      Example 'reads data from string with filter'
+        Data "abc" | tr 'abc' 'ABC' # comment
+        When call output
+        The output should eq 'ABC'
+      End
+    End
   End
 End

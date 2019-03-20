@@ -56,4 +56,12 @@ Describe 'Data helper'
       The lines of entire output should eq 3
     End
   End
+
+  Describe 'with string'
+    Example 'reads data from string'
+      Data '1 + 2'
+      When call bc
+      The output should eq 3
+    End
+  End
 End
