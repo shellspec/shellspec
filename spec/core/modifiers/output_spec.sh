@@ -11,7 +11,7 @@ Describe "core/modifiers/output.sh"
       The output of 'foo()' should equal ok
     End
 
-    Context 'when subject is abcde'
+    Context 'when subject is foo'
       subject() { shellspec_puts foo; }
       Example 'its output should equal "ok"'
         When invoke shellspec_modifier output _modifier_
