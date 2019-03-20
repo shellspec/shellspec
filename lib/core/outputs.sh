@@ -123,8 +123,8 @@ shellspec_output_SYNTAX_ERROR_DISPATCH_FAILED() {
       "The correct word is one of the following."
   else
     shellspec_output_raw_append "failure_message:A word is required after" \
-    "$(shellspec_output_syntax_name)." \
-    "The correct word is one of the following."
+      "$(shellspec_output_syntax_name)." \
+      "The correct word is one of the following."
   fi
   shellspec_output_following_words "shellspec_${1%/verb}"
 }
