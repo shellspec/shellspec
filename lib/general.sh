@@ -57,8 +57,8 @@ shellspec_import() {
   shellspec_reset_params '"$1" $SHELLSPEC_LOAD_PATH' ':'
   eval "$SHELLSPEC_RESET_PARAMS"
   while [ $# -gt 1 ]; do
-    shellspec_source "${2%/}/$1.sh" && return 0
-    shellspec_source "${2%/}/$1/${1##*/}.sh" && return 0
+    shellspec_import_ "${2%/}/$1.sh" && return 0
+    shellspec_import_ "${2%/}/$1/${1##*/}.sh" && return 0
     shellspec_splice_params $# 1 1
     eval "$SHELLSPEC_RESET_PARAMS"
   done
@@ -66,7 +66,7 @@ shellspec_import() {
 }
 
 # shellcheck disable=SC1090
-shellspec_source() { [ -e "$1" ] && . "$1"; }
+shellspec_import_() { [ -e "$1" ] && . "$1"; }
 
 if [ "$SHELLSPEC_SHELL_TYPE" = "zsh" ]; then
   shellspec_find_files() {
