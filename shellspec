@@ -215,7 +215,7 @@ fi
 
 exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
 
-if [ "$mode" = "runner" ]; then
+if [ "$mode" = "runner" ] && [ $# -gt 0 ]; then
   for specfile in "$@"; do
     case $specfile in (*:*)
       warn "Filtering feature is not currently supported. ($specfile)"
