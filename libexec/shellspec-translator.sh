@@ -9,12 +9,9 @@ set -eu
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
 
 example_count=0 block_no=0 block_no_stack='' skip_id=0
-inside_of_example=''
 
 ABORT=''
-abort() {
-  ABORT=$*
-}
+abort() { ABORT=$*; }
 
 block_example_group() {
   if [ "$inside_of_example" ]; then
@@ -166,43 +163,43 @@ syntax_error() {
 
 translate() {
   initialize_id
-  lineno=1 inside_of_text=''
+  lineno=0 inside_of_example='' inside_of_text=''
   while IFS= read -r line || [ "$line" ]; do
-    work=$line
+    lineno=$(($lineno + 1)) work=$line
     trim work
 
-    [ "$inside_of_text" ] && text "$work" && lineno=$(($lineno + 1)) && continue
+    [ "$inside_of_text" ] && text "$work" && continue
 
-    case $work in
-      Describe  | Describe\ * )   block_example_group "${work#Describe}"  ;;
-      xDescribe | xDescribe\ *) x block_example_group "${work#xDescribe}" ;;
-      Context   | Context\ *  )   block_example_group "${work#Context}"   ;;
-      xContext  | xContext\ * ) x block_example_group "${work#xContext}"  ;;
-      Example   | Example\ *  )   block_example       "${work#Example}"   ;;
-      xExample  | xExample\ * ) x block_example       "${work#xExample}"  ;;
-      Specify   | Specify\ *  )   block_example       "${work#Specify}"   ;;
-      xSpecify  | xSpecify\ * ) x block_example       "${work#xSpecify}"  ;;
-      End       | End\ *      )   block_end           "${work#End}"       ;;
-      Todo      | Todo\ *     )   todo                "${work#Todo}"      ;;
-      When      | When\ *     )   statement when      "${work#When}"      ;;
-      The       | The\ *      )   statement the       "${work#The}"       ;;
-      It        | It\ *       )   statement it        "${work#It}"        ;;
-      Path      | Path\ *     )   control path        "${work#Path}"      ;;
-      File      | File\ *     )   control path        "${work#File}"      ;;
-      Dir       | Dir\ *      )   control path        "${work#Dir}"       ;;
-      Before    | Before\ *   )   control before      "${work#Before}"    ;;
-      After     | After\ *    )   control after       "${work#After}"     ;;
-      Debug     | Debug\ *    )   control debug       "${work#Debug}"     ;;
-      Pending   | Pending\ *  )   control pending     "${work#Pending}"   ;;
-      Skip      | Skip\ *     )   skip                "${work#Skip}"      ;;
-      Data      | Data\ *     )   data expand         "${work#Data}"      ;;
-      Data:raw  | Data:raw\ * )   data raw            "${work#Data:raw}"  ;;
-      %text     | %text\ *    )   text_begin expand   "${work#"%text"}"   ;;
-      %text:raw | %text:raw\ *)   text_begin raw      "${work#"%text:raw"}"  ;;
+    dsl=${work%% *}
+    case $dsl in
+      Describe )   block_example_group "${work#$dsl}" ;;
+      xDescribe) x block_example_group "${work#$dsl}" ;;
+      Context  )   block_example_group "${work#$dsl}" ;;
+      xContext ) x block_example_group "${work#$dsl}" ;;
+      Example  )   block_example       "${work#$dsl}" ;;
+      xExample ) x block_example       "${work#$dsl}" ;;
+      Specify  )   block_example       "${work#$dsl}" ;;
+      xSpecify ) x block_example       "${work#$dsl}" ;;
+      End      )   block_end           "${work#$dsl}" ;;
+      Todo     )   todo                "${work#$dsl}" ;;
+      When     )   statement when      "${work#$dsl}" ;;
+      The      )   statement the       "${work#$dsl}" ;;
+      It       )   statement it        "${work#$dsl}" ;;
+      Path     )   control path        "${work#$dsl}" ;;
+      File     )   control path        "${work#$dsl}" ;;
+      Dir      )   control path        "${work#$dsl}" ;;
+      Before   )   control before      "${work#$dsl}" ;;
+      After    )   control after       "${work#$dsl}" ;;
+      Debug    )   control debug       "${work#$dsl}" ;;
+      Pending  )   control pending     "${work#$dsl}" ;;
+      Skip     )   skip                "${work#$dsl}" ;;
+      Data     )   data expand         "${work#$dsl}" ;;
+      Data:raw )   data raw            "${work#$dsl}" ;;
+      %text    )   text_begin expand   "${work#$dsl}" ;;
+      %text:raw)   text_begin raw      "${work#$dsl}" ;;
       *) putsn "$line" ;;
     esac
-    [ "$ABORT" ] && break
-    lineno=$(($lineno + 1))
+    if [ "$ABORT" ]; then break; fi
   done
 }
 
