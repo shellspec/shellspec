@@ -102,7 +102,7 @@ skip() {
 }
 
 data() {
-  data_line=${1:-}
+  data_line=${2:-}
   trim data_line
   now=$(unixtime)
   delimiter="DATA${now}$$"
@@ -112,7 +112,10 @@ data() {
     '' | '#'* | '|'*)
       putsn 'while IFS= read -r shellspec_here_document; do'
       putsn '  shellspec_putsn "$shellspec_here_document"'
-      putsn "done<<$delimiter $data_line"
+      case $1 in
+        expand) putsn "done<<$delimiter $data_line" ;;
+        raw)    putsn "done<<'$delimiter' $data_line" ;;
+      esac
       while IFS= read -r line || [ "$line" ]; do
         lineno=$(($lineno + 1))
         trim line
@@ -192,7 +195,8 @@ translate() {
       Debug     | Debug\ *    )   control debug       "${work#Debug}"     ;;
       Pending   | Pending\ *  )   control pending     "${work#Pending}"   ;;
       Skip      | Skip\ *     )   skip                "${work#Skip}"      ;;
-      Data      | Data\ *     )   data                "${work#Data}"      ;;
+      Data      | Data\ *     )   data expand         "${work#Data}"      ;;
+      Data:raw  | Data:raw\ * )   data raw            "${work#Data:raw}"  ;;
       %text     | %text\ *    )   text_begin expand   "${work#"%text"}"   ;;
       %text:raw | %text:raw\ *)   text_begin raw      "${work#"%text:raw"}"  ;;
       *) putsn "$line" ;;

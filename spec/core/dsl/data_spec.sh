@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 Describe 'Data helper'
   output() { cat -; }
@@ -93,5 +93,27 @@ Describe 'Data helper'
       When call output
       The output should eq 'ABC'
     End
+  End
+
+  Example 'expands the variable'
+    readonly name="world"
+
+    Data
+      #|Hello $name
+    End
+
+    When call output
+    The output should eq 'Hello world'
+  End
+
+  Example ':raw not expands the variable'
+    readonly name="world"
+
+    Data:raw
+      #|Hello $name
+    End
+
+    When call output
+    The output should eq 'Hello $name'
   End
 End
