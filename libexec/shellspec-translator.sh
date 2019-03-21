@@ -133,16 +133,42 @@ data() {
   putsn "SHELLSPEC_DATA=1"
 }
 
+text_begin() {
+  now=$(unixtime)
+  delimiter="DATA${now}$$"
+
+  putsn 'while IFS= read -r shellspec_here_document; do'
+  putsn '  shellspec_putsn "$shellspec_here_document"'
+  case $1 in
+    expand) putsn "done<<$delimiter ${2}" ;;
+    raw)    putsn "done<<'$delimiter' ${2}" ;;
+  esac
+  inside_of_text=1
+}
+
+text() {
+  case $1 in ('#|'*) putsn "${1#??}"; return 0; esac
+  text_end
+  return 1
+}
+
+text_end() {
+  putsn "$delimiter"
+  inside_of_text=''
+}
+
 syntax_error() {
   putsn "shellspec_exit 2 \"Syntax error: ${*:-} in $specfile line $lineno\""
 }
 
 translate() {
   initialize_id
-  lineno=1
+  lineno=1 inside_of_text=''
   while IFS= read -r line || [ "$line" ]; do
     work=$line
     trim work
+
+    [ "$inside_of_text" ] && text "$work" && lineno=$(($lineno + 1)) && continue
 
     case $work in
       Describe  | Describe\ * )   block_example_group "${work#Describe}"  ;;
@@ -167,6 +193,8 @@ translate() {
       Pending   | Pending\ *  )   control pending     "${work#Pending}"   ;;
       Skip      | Skip\ *     )   skip                "${work#Skip}"      ;;
       Data      | Data\ *     )   data                "${work#Data}"      ;;
+      %text     | %text\ *    )   text_begin expand   "${work#"%text"}"   ;;
+      %text:raw | %text:raw\ *)   text_begin raw      "${work#"%text:raw"}"  ;;
       *) putsn "$line" ;;
     esac
     [ "$ABORT" ] && break
