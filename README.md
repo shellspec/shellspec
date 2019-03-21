@@ -35,7 +35,9 @@ BDD style testing framework for POSIX compatible shell script.
   - [Matcher](#matcher)
   - [Helper](#helper)
     - [Path alias](#path-alias)
+    - [Data helper](#data-helper)
   - [Skip and Pending](#skip-and-pending)
+  - [Embedded text](#embedded-text)
 - [shellspec command](#shellspec-command)
   - [Configure default options](#configure-default-options)
   - [Task runner](#task-runner)
@@ -440,6 +442,7 @@ other
 | Path<br>File<br>Dir                           | Define [path alias](#path-alias).           |
 | Data `[ | FILTER ]`... End                    | Define stdin data for evaluation.           |
 | Data `<FUNCTION> [ARGUMENTS...] [ | FILTER ]` | Use function for stdin data for evaluation. |
+| Data `"<STRING>"`<br>Data `'<STRING>'`        | Use string for stdin data for evaluation.   |
 | Debug                                         | Output debug message.                       |
 
 #### Path alias
@@ -448,7 +451,7 @@ You can define short path name for long path for readability.
 
 for example
 
-```
+```sh
 Example 'not use path alias'
   The file "/etc/hosts" should be exist
 End
@@ -456,6 +459,57 @@ End
 Example 'use path alias'
   File hosts="/etc/hosts"
   The file hosts should be exist
+End
+```
+
+#### Data helper
+
+Data helper is easy way to input data from stdin for evaluation.
+
+Removes `#|` from the beginning of the each line in the Data helper, the rest is the input data.
+
+```sh
+Describe 'sample1'
+  Data
+    #|item1 123
+    #|item2 246
+    #|item3 369
+  End
+
+  Example 'sum the second field by awk'
+    When call awk '{total+=$2} END{print total}'
+    The output should eq 738
+  End
+End
+
+Describe 'sample2'
+  Data '123 + 246 + 369'
+  Example 'calculate by bc'
+    When call bc
+    The output should eq 738
+  End
+End
+
+Describe 'sample3'
+  data() {
+    echo 123
+    echo 246
+    echo 369
+  }
+
+  sum() {
+    total=0
+    while read value; do
+      total=$((total + value))
+    done
+    echo "$total"
+  }
+
+  Data data
+  Example 'calculate by sum function from data function'
+    When call sum
+    The output should eq 738
+  End
 End
 ```
 
@@ -468,6 +522,41 @@ You can skip or pending current execution block.
 | Skip `<REASON>`                                | Skip current block.                  |
 | Skip if `<REASON>` `<FUNCTION> [ARGUMENTS...]` | Skip current block with conditional. |
 | Pending  `<REASON>`                            | Pending current block.               |
+
+### Embedded text
+
+You can use the `embedded text` instead of `here document` in specfile.
+The `embedded text` is converted by specfile transration process so you can only use it within specfile.
+
+The `embedded text` is start with `%text` and follows are begin with `#|`.
+Removes `#|` from the beginning of the line, the rest is the text.
+
+```sh
+  here_document() {
+    cat<<HERE
+here document is
+hard to indent
+also expand $variable
+HERE
+
+    cat<<"HERE"
+do not expand $variable with "HERE"
+HERE
+  }
+
+  embedded_text() {
+    %text
+    #|embedded text is
+    #|easy to indent
+    #|also expand $variable
+
+    %text:raw
+    #|do not expand $variable with :raw
+
+    %text | tr '[:lower:]' '[:upper:]'
+    #|you can use it with the filter
+  }
+```
 
 ## shellspec command
 
@@ -517,14 +606,15 @@ To disable shows banner with `--no-banner` option.
 
 0.8.0 (not yet released)
 
- * Remove Set/Unset helper
- * Remove string subject
+ * Remove Set/Unset helper.
+ * Remove string subject.
+ * Remove `exit status` subject. (use `status` subject)
  * Change behavior of line and lines modifier to like "grep -c" not "wc -l".
- * Change function subject to alias for value subject
- * Add Data helper
- * Add output and status modifier
- * Add shorthand for function subject and variable subject
- * Add failed message for before/after each hook
+ * Change function subject to alias for value subject.
+ * Add Data helper, Embedded text.
+ * Add output and status modifier.
+ * Add shorthand for function subject and variable subject.
+ * Add failed message for before/after each hook.
 
 0.7.0
 

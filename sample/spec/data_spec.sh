@@ -3,6 +3,49 @@
 Describe 'Data helper'
   output() { cat -; }
 
+  Describe 'sample1'
+    Data
+      #|item1 123
+      #|item2 246
+      #|item3 369
+    End
+
+    Example 'sum the second field by awk'
+      When call awk '{total+=$2} END{print total}'
+      The output should eq 738
+    End
+  End
+
+  Describe 'sample2'
+    Data '123 + 246 + 369'
+    Example 'calculate by bc'
+      When call bc
+      The output should eq 738
+    End
+  End
+
+  Describe 'sample3'
+    data() {
+      echo 123
+      echo 246
+      echo 369
+    }
+
+    sum() {
+      total=0
+      while read value; do
+        total=$((total + value))
+      done
+      echo "$total"
+    }
+
+    Data data
+    Example 'calculate by sum function from data function'
+      When call sum
+      The output should eq 738
+    End
+  End
+
   Describe 'with block'
     Example 'output read data'
       Data
