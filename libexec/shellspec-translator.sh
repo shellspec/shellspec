@@ -207,7 +207,8 @@ is_specfile() {
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_metadata"
 each_file() {
-  is_specfile "$1" && specfile=$1 || return 0
+  ! is_specfile "$1" && return 0
+  specfile=$1
   escape_quote specfile
   putsn "SHELLSPEC_SPECFILE='$specfile'"
   translate < "$specfile"
