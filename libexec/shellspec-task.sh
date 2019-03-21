@@ -47,12 +47,11 @@ run_tasks() {
   done
 }
 
-while IFS= read -r task_file; do
+each_file() {
   # shellcheck disable=SC1090
-  . "$task_file"
-done <<TASKS
-$(find_files "*_task.sh" "$SHELLSPEC_SPECDIR/support")
-TASKS
+  case $1 in (*_task.sh) task_file=$1 && . "$task_file"; esac
+}
+find_files each_file "$SHELLSPEC_SPECDIR/support"
 
 if [ $# -eq 0 ]; then
   list_tasks "$SHELLSPEC_TASKS"

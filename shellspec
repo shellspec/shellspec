@@ -214,4 +214,16 @@ if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
 fi
 
 exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
+
+if [ "$mode" = "runner" ]; then
+  for specfile in "$@"; do
+    case $specfile in (*:*)
+      warn "Filtering feature is not currently supported. ($specfile)"
+      specfile=${specfile%:*}
+    esac
+    shift
+    set -- "$@" "$specfile"
+  done
+fi
+
 eval exec "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'}

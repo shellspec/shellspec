@@ -174,32 +174,28 @@ translate() {
   done
 }
 
+is_specfile() {
+  case $1 in (*_spec.sh) return 0; esac
+  return 1
+}
+
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_metadata"
-while IFS= read -r specfile; do
-  [ "$specfile" ] || continue
-  case $specfile in (*:*)
-    echo "Filtering feature is not currently supported." >&2
-    specfile=${specfile%:*}
-  esac
-
+each_file() {
+  is_specfile "$1" && specfile=$1 || return 0
   escape_quote specfile
   putsn "SHELLSPEC_SPECFILE='$specfile'"
   translate < "$specfile"
 
   [ "$ABORT" ] && syntax_error "$ABORT"
-
-  if [ "$block_no_stack" ]; then
-    [ "$ABORT" ] || syntax_error "unexpected end of file (expecting 'End')"
-    while [ "$block_no_stack" ]; do
-      putsn "shellspec_abort"
-      block_end ""
-    done
-  fi
-
-done <<HERE
-$(shellspec_find_files "*_spec.sh" "$@")
-HERE
+  [ "$block_no_stack" ] || return 0
+  [ "$ABORT" ] || syntax_error "unexpected end of file (expecting 'End')"
+  while [ "$block_no_stack" ]; do
+    putsn "shellspec_abort"
+    block_end ""
+  done
+}
+find_files each_file "$@"
 putsn "SHELLSPEC_SPECFILE=\"\""
 putsn "shellspec_end"
 putsn "# example count: $example_count"

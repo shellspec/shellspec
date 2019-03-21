@@ -89,7 +89,7 @@ shellspec_find_files_() {
       if [ -d \"\$1\" ]; then
         shellspec_find_files__ \"$1\" \"\${1%/}\"
       else
-        case \$1 in ($1) echo \"\$1\"; esac
+        \"$1\" \"\$1\"
       fi
       shift
     done
