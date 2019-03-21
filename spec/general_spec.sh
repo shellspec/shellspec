@@ -266,4 +266,20 @@ Describe "general.sh"
       The status should be success
     End
   End
+
+  Describe 'shellspec_passthrough()'
+    passthrough() {
+      shellspec_puts "$1" | shellspec_passthrough
+    }
+
+    Example "passes through to stdout from stdin"
+      When call passthrough "a${SHELLSPEC_LF}b${SHELLSPEC_LF}"
+      The entire output should equal "a${SHELLSPEC_LF}b${SHELLSPEC_LF}"
+    End
+
+    Example "passes through data that not end with LF"
+      When call passthrough "a${SHELLSPEC_LF}b"
+      The entire output should equal "a${SHELLSPEC_LF}b"
+    End
+  End
 End

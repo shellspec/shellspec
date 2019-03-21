@@ -107,11 +107,9 @@ data() {
   putsn "shellspec_data() {"
   case $data_line in
     '' | '#'* | '|'*)
-      putsn 'while IFS= read -r shellspec_here_document; do'
-      putsn '  shellspec_putsn "$shellspec_here_document"'
       case $1 in
-        expand) putsn "done<<$delimiter $data_line" ;;
-        raw)    putsn "done<<'$delimiter' $data_line" ;;
+        expand) putsn "shellspec_passthrough<<$delimiter $data_line" ;;
+        raw)    putsn "shellspec_passthrough<<'$delimiter' $data_line" ;;
       esac
       while IFS= read -r line || [ "$line" ]; do
         lineno=$(($lineno + 1))
@@ -137,11 +135,9 @@ text_begin() {
   now=$(unixtime)
   delimiter="DATA${now}$$"
 
-  putsn 'while IFS= read -r shellspec_here_document; do'
-  putsn '  shellspec_putsn "$shellspec_here_document"'
   case $1 in
-    expand) putsn "done<<$delimiter ${2}" ;;
-    raw)    putsn "done<<'$delimiter' ${2}" ;;
+    expand) putsn "shellspec_passthrough<<$delimiter ${2}" ;;
+    raw)    putsn "shellspec_passthrough<<'$delimiter' ${2}" ;;
   esac
   inside_of_text=1
 }

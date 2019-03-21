@@ -286,3 +286,13 @@ if [ "$SHELLSPEC_SHELL_TYPE" = "posh" ]; then
     }
   fi
 fi
+
+shellspec_passthrough() {
+  while IFS= read -r shellspec_passthrough_buffer; do
+    shellspec_putsn "$shellspec_passthrough_buffer"
+  done
+  if [ "$shellspec_passthrough_buffer" ]; then
+    shellspec_puts "$shellspec_passthrough_buffer"
+  fi
+  unset shellspec_passthrough_buffer
+}
