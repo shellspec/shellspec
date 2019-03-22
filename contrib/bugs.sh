@@ -98,4 +98,14 @@ return_true() { false; }
   }
 )
 
+(
+  title="12: cat not ignore set -e (zsh = around 5.4.2)"
+  (
+    set -e
+    nagative() { false; }
+    if false; then :; else nagative && : || :; fi
+  )
+  [ $? -eq 0 ] && no_problem || affect
+)
+
 echo Done
