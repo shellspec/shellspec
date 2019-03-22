@@ -90,6 +90,7 @@ control() {
       return 0
     fi
   esac
+  putsn "SHELLSPEC_AUX_LINENO=$lineno"
   putsn "shellspec_$1$2"
 }
 

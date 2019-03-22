@@ -1,40 +1,44 @@
 #shellcheck shell=sh disable=SC2004
 
-SHELLSPEC_BEFORE_EACH_INDEX=0
-SHELLSPEC_AFTER_EACH_INDEX=0
+SHELLSPEC_BEFORE_INDEX=0
+SHELLSPEC_AFTER_INDEX=0
 
-shellspec_before_each_hook() {
+shellspec_before_hook() {
   while [ $# -gt 0 ]; do
-    SHELLSPEC_BEFORE_EACH_INDEX=$(($SHELLSPEC_BEFORE_EACH_INDEX + 1))
-    eval "SHELLSPEC_BEFORE_${SHELLSPEC_BEFORE_EACH_INDEX}=\$1"
+    SHELLSPEC_BEFORE_INDEX=$(($SHELLSPEC_BEFORE_INDEX + 1))
+    shellspec_register_hook BEFORE $SHELLSPEC_BEFORE_INDEX "$1"
     shift
   done
 }
 
-shellspec_after_each_hook() {
+shellspec_after_hook() {
   while [ $# -gt 0 ]; do
-    SHELLSPEC_AFTER_EACH_INDEX=$(($SHELLSPEC_AFTER_EACH_INDEX + 1))
-    eval "SHELLSPEC_AFTER_${SHELLSPEC_AFTER_EACH_INDEX}=\$1"
+    SHELLSPEC_AFTER_INDEX=$(($SHELLSPEC_AFTER_INDEX + 1))
+    shellspec_register_hook AFTER $SHELLSPEC_AFTER_INDEX "$1"
     shift
   done
 }
 
-shellspec_call_before_each_hooks() {
+shellspec_register_hook() {
+  eval "SHELLSPEC_$1_$2=\$3:\${SHELLSPEC_AUX_LINENO:-}"
+}
+
+shellspec_call_before_hooks() {
   set -- "${1:-1}"
-  [ "$1" -gt "$SHELLSPEC_BEFORE_EACH_INDEX" ] && return 0
+  [ "$1" -gt "$SHELLSPEC_BEFORE_INDEX" ] && return 0
   shellspec_call_hook "SHELLSPEC_BEFORE_$1" || return $?
-  shellspec_call_before_each_hooks $(($1 + 1))
+  shellspec_call_before_hooks $(($1 + 1))
 }
 
-shellspec_call_after_each_hooks() {
-  set -- "${1:-$SHELLSPEC_AFTER_EACH_INDEX}"
+shellspec_call_after_hooks() {
+  set -- "${1:-$SHELLSPEC_AFTER_INDEX}"
   [ "$1" -lt 1 ] && return 0
   shellspec_call_hook "SHELLSPEC_AFTER_$1" || return $?
-  shellspec_call_after_each_hooks $(($1 - 1))
+  shellspec_call_after_hooks $(($1 - 1))
 }
 
 shellspec_call_hook() {
-  eval "SHELLSPEC_HOOK=\${$1}"
+  eval "SHELLSPEC_HOOK=\${$1%:*} SHELLSPEC_HOOK_LINENO=\${$1#*:}"
   eval "$SHELLSPEC_HOOK" &&:
   SHELLSPEC_HOOK_STATUS=$?
   return $SHELLSPEC_HOOK_STATUS

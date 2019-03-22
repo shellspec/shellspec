@@ -72,18 +72,18 @@ shellspec_output_EVALUATION() {
   shellspec_output_raw statement "$@"
 }
 
-shellspec_output_FAILED_BEFORE_EACH_HOOK() {
-  set -- "tag:bad" "message:[BEFORE_EACH_HOOK] $SHELLSPEC_HOOK"
+shellspec_output_FAILED_BEFORE_HOOK() {
+  set -- "tag:bad" "message:Before hook '$SHELLSPEC_HOOK' failed"
   shellspec_output_raw statement "$@"
-  shellspec_output_raw_append "failure_message:'$SHELLSPEC_HOOK'" \
-    "before each hook returned $SHELLSPEC_HOOK_STATUS"
+  shellspec_output_raw_append "failure_message:The before hook registered" \
+    "at line $SHELLSPEC_HOOK_LINENO returned $SHELLSPEC_HOOK_STATUS"
 }
 
-shellspec_output_FAILED_AFTER_EACH_HOOK() {
-  set -- "tag:bad" "message:[AFTER_EACH_HOOK] $SHELLSPEC_HOOK"
+shellspec_output_FAILED_AFTER_HOOK() {
+  set -- "tag:bad" "message:After hook '$SHELLSPEC_HOOK' failed"
   shellspec_output_raw statement "$@"
-  shellspec_output_raw_append "failure_message:'$SHELLSPEC_HOOK'" \
-    "after each hook returned $SHELLSPEC_HOOK_STATUS"
+  shellspec_output_raw_append "failure_message:The after hook registered" \
+    "at line $SHELLSPEC_HOOK_LINENO returned $SHELLSPEC_HOOK_STATUS"
 }
 
 shellspec_output_MATCHED() {

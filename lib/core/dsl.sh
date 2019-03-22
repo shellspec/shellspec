@@ -6,6 +6,7 @@ SHELLSPEC_PATH_ALIAS=:
 # to suppress shellcheck SC2034
 : "${SHELLSPEC_EXPECTATION:-}" "${SHELLSPEC_EVALUATION:-}"
 : "${SHELLSPEC_SKIP_REASON:-}" "${SHELLSPEC_CONDITIONAL_SKIP:-}"
+: "${SHELLSPEC_LINENO:-}"
 
 shellspec_metadata() { shellspec_output METADATA; }
 shellspec_end() { shellspec_output END; }
@@ -48,15 +49,17 @@ shellspec_example() {
 
     # Output SKIP message if skipped in outer group.
     shellspec_output_if SKIP || {
-      if ! shellspec_call_before_each_hooks; then
-        shellspec_output FAILED_BEFORE_EACH_HOOK
+      if ! shellspec_call_before_hooks; then
+        SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
+        shellspec_output FAILED_BEFORE_HOOK
         shellspec_output FAILED
         break
       fi
       shellspec_output_if PENDING ||:
       shellspec_yield
-      if ! shellspec_call_after_each_hooks; then
-        shellspec_output FAILED_AFTER_EACH_HOOK
+      if ! shellspec_call_after_hooks; then
+        SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
+        shellspec_output FAILED_AFTER_HOOK
         shellspec_output FAILED
         break
       fi
@@ -130,8 +133,8 @@ shellspec_it() {
   shellspec_statement_advance_subject "$@"
 }
 
-shellspec_before() { shellspec_before_each_hook "$@"; }
-shellspec_after()  { shellspec_after_each_hook "$@"; }
+shellspec_before() { shellspec_before_hook "$@"; }
+shellspec_after()  { shellspec_after_hook "$@"; }
 
 shellspec_path() {
   while [ $# -gt 0 ]; do
