@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 Describe 'Data helper'
   output() { cat -; }
@@ -33,7 +33,7 @@ Describe 'Data helper'
 
     sum() {
       total=0
-      while read value; do
+      while read -r value; do
         total=$((total + value))
       done
       echo "$total"
