@@ -211,15 +211,18 @@ each_file() {
   specfile=$1
   escape_quote specfile
   putsn "SHELLSPEC_SPECFILE='$specfile'"
-  translate < "$specfile"
 
+  putsn '('
+  translate < "$specfile"
   [ "$ABORT" ] && syntax_error "$ABORT"
-  [ "$block_no_stack" ] || return 0
-  [ "$ABORT" ] || syntax_error "unexpected end of file (expecting 'End')"
-  while [ "$block_no_stack" ]; do
-    putsn "shellspec_abort"
-    block_end ""
-  done
+  if [ "$block_no_stack" ]; then
+    [ "$ABORT" ] || syntax_error "unexpected end of file (expecting 'End')"
+    while [ "$block_no_stack" ]; do
+      putsn "shellspec_abort"
+      block_end ""
+    done
+  fi
+  putsn ')'
 }
 find_files each_file "$@"
 putsn "SHELLSPEC_SPECFILE=\"\""
