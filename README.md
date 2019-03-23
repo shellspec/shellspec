@@ -28,7 +28,6 @@ BDD style testing framework for POSIX compatible shell script.
   - [Evaluation](#evaluation)
   - [Expectation](#expectation)
     - [The statement](#the-statement)
-    - [It statement](#it-statement)
     - [Language chains](#language-chains)
   - [Subject](#subject)
   - [Modifier](#modifier)
@@ -284,7 +283,6 @@ Defines the verifications.
 | DSL  | Description             |
 | :--- | :---------------------- |
 | The  | Define *The statement*. |
-| It   | Define *It statement*.  |
 
 #### The statement
 
@@ -314,21 +312,6 @@ If modifier's first argument is number, you can use names for ordinal numbers.
 ```
 The second line of output        should equal 4
     <- modofier -> <- subject ->
-```
-
-#### It statement
-
-*It statement* is syntax sugar for *The statement*. Use to avoid top-heavy sentences.
-
-Note: Unlike rspec, `It` is not alias of `Example`.
-
-The following two sentences are the same meaning.
-
-```
-The word 1 of line 2 of output should equal 4
-```
-```
-It should equal 4 the word 1 of line 2 of output
 ```
 
 #### Language chains
@@ -623,6 +606,7 @@ To disable shows banner with `--no-banner` option.
 
 0.8.0 (not yet released)
 
+ * Remove It statement.
  * Remove Set/Unset helper.
  * Remove string subject.
  * Remove `exit status` subject. (use `status` subject)
