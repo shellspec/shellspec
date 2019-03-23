@@ -1,12 +1,12 @@
 #shellcheck shell=sh
 
+% DOT_SHELLSPEC: "fixture/dot-shellspec"
+
 Describe "libexec/shellspec.sh"
   # shellcheck source=lib/libexec/shellspec.sh
   . "$SHELLSPEC_LIB/libexec/shellspec.sh"
 
   Describe "read_dot_file()"
-    readonly dot_shellspec="fixture/dot-shellspec"
-
     parser() {
       [ "$1" = "--require" ] && [ "$2" = "spec_helper" ] &&
       [ "$3" = "--format" ] && [ "$4" = "progress" ] &&
@@ -15,13 +15,13 @@ Describe "libexec/shellspec.sh"
     }
 
     Example "reads dot file"
-      When call read_dot_file "$SHELLSPEC_SPECDIR" "$dot_shellspec" parser
+      When call read_dot_file "$SHELLSPEC_SPECDIR" "$DOT_SHELLSPEC" parser
       The stdout should equal "ok"
       The status should be success
     End
 
     Example "does not read dot file if not specified directory"
-      When call read_dot_file "" "$dot_shellspec" parser
+      When call read_dot_file "" "$DOT_SHELLSPEC" parser
       The stdout should be blank
       The status should be success
     End

@@ -1,11 +1,12 @@
 #shellcheck shell=sh disable=SC2016
 
+% FILE: "$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
+
 Describe "core/utils.sh"
   Describe 'shellspec_readfile()'
-    readonly file="$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
 
     Example 'read file as is'
-      When call shellspec_readfile var "$file"
+      When call shellspec_readfile var "$FILE"
       The variable var should equal "a${LF}${LF}"
     End
   End

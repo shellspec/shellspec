@@ -1,22 +1,22 @@
 #shellcheck shell=sh
 
-Describe "core/matchers/be/stat.sh"
-  readonly fixture="$SHELLSPEC_SPECDIR/fixture"
+% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 
+Describe "core/matchers/be/stat.sh"
   Before set_subject intercept_shellspec_matcher
   subject() { false; }
 
-  not_exist() { [ ! -e "$fixture/$1" ]; }
+  not_exist() { [ ! -e "$FIXTURE/$1" ]; }
   check_root() { [ "$(id -u)" = 0 ]; }
 
   Describe 'be exist matcher'
     Example 'example'
-      Path exist-file="$fixture/exist"
+      Path exist-file="$FIXTURE/exist"
       The path exist-file should be exist
     End
 
     Context 'when path exists'
-      subject() { shellspec_puts "$fixture/exist"; }
+      subject() { shellspec_puts "$FIXTURE/exist"; }
       Example 'should be success'
         When invoke shellspec_matcher be exist
         The status should be success
@@ -24,7 +24,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path does not exist'
-      subject() { shellspec_puts "$fixture/exist.not-exists"; }
+      subject() { shellspec_puts "$FIXTURE/exist.not-exists"; }
       Example 'should be failure'
         When invoke shellspec_matcher be exist
         The status should be failure
@@ -40,12 +40,12 @@ Describe "core/matchers/be/stat.sh"
 
   Describe 'be file matcher'
     Example 'example'
-      Path regular-file="$fixture/file"
+      Path regular-file="$FIXTURE/file"
       The path regular-file should be file
     End
 
     Context 'when path is regular file'
-      subject() { shellspec_puts "$fixture/file"; }
+      subject() { shellspec_puts "$FIXTURE/file"; }
       Example 'it should be success'
         When invoke shellspec_matcher be file
         The status should be success
@@ -53,7 +53,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not regular file'
-      subject() { shellspec_puts "$fixture/dir"; }
+      subject() { shellspec_puts "$FIXTURE/dir"; }
       Example 'it should be failure'
         When invoke shellspec_matcher be file
         The status should be failure
@@ -69,12 +69,12 @@ Describe "core/matchers/be/stat.sh"
 
   Describe 'be directory matcher'
     Example 'example'
-      Path directory="$fixture/dir"
+      Path directory="$FIXTURE/dir"
       The path directory should be directory
     End
 
     Context 'when path is directory'
-      subject() { shellspec_puts "$fixture/dir"; }
+      subject() { shellspec_puts "$FIXTURE/dir"; }
       Example 'should be success'
         When invoke shellspec_matcher be directory
         The status should be success
@@ -82,7 +82,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not directory'
-      subject() { shellspec_puts "$fixture/file"; }
+      subject() { shellspec_puts "$FIXTURE/file"; }
       Example 'should be failure'
         When invoke shellspec_matcher be directory
         The status should be failure
@@ -98,12 +98,12 @@ Describe "core/matchers/be/stat.sh"
 
   Describe 'be empty matcher'
     Example 'example'
-      Path empty-file="$fixture/empty"
+      Path empty-file="$FIXTURE/empty"
       The path empty-file should be empty
     End
 
     Context 'when path is empty'
-      subject() { shellspec_puts "$fixture/empty"; }
+      subject() { shellspec_puts "$FIXTURE/empty"; }
       Example 'should be success'
         When invoke shellspec_matcher be empty
         The status should be success
@@ -111,7 +111,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not empty'
-      subject() { shellspec_puts "$fixture/file"; }
+      subject() { shellspec_puts "$FIXTURE/file"; }
       Example 'should be failure'
         When invoke shellspec_matcher be empty
         The status should be failure
@@ -129,12 +129,12 @@ Describe "core/matchers/be/stat.sh"
     Skip if "not exist symlink file" not_exist "stat/symlink"
 
     Example 'example'
-      Path symlink="$fixture/stat/symlink"
+      Path symlink="$FIXTURE/stat/symlink"
       The path symlink should be symlink
     End
 
     Context 'when path is symlink'
-      subject() { shellspec_puts "$fixture/stat/symlink"; }
+      subject() { shellspec_puts "$FIXTURE/stat/symlink"; }
       Example 'should be success'
         When invoke shellspec_matcher be symlink
         The status should be success
@@ -142,7 +142,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not symlink'
-      subject() { shellspec_puts "$fixture/file"; }
+      subject() { shellspec_puts "$FIXTURE/file"; }
       Example 'should be failure'
         When invoke shellspec_matcher be symlink
         The status should be failure
@@ -160,12 +160,12 @@ Describe "core/matchers/be/stat.sh"
     Skip if "not exist pipe file" not_exist "stat/pipe"
 
     Example 'example'
-      Path pipe="$fixture/stat/pipe"
+      Path pipe="$FIXTURE/stat/pipe"
       The path pipe should be pipe
     End
 
     Context 'when path is pipe'
-      subject() { shellspec_puts "$fixture/stat/pipe"; }
+      subject() { shellspec_puts "$FIXTURE/stat/pipe"; }
       Example 'should be success'
         When invoke shellspec_matcher be pipe
         The status should be success
@@ -173,7 +173,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not pipe'
-      subject() { shellspec_puts "$fixture/file"; }
+      subject() { shellspec_puts "$FIXTURE/file"; }
       Example 'should be failure'
         When invoke shellspec_matcher be pipe
         The status should be failure
@@ -191,12 +191,12 @@ Describe "core/matchers/be/stat.sh"
     Skip if "not exist socket file" not_exist "stat/socket"
 
     Example 'example'
-      Path socket="$fixture/stat/socket"
+      Path socket="$FIXTURE/stat/socket"
       The path socket should be socket
     End
 
     Context 'when path is socket'
-      subject() { shellspec_puts "$fixture/stat/socket"; }
+      subject() { shellspec_puts "$FIXTURE/stat/socket"; }
       Example 'should be success'
         When invoke shellspec_matcher be socket
         The status should be success
@@ -204,7 +204,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not socket'
-      subject() { shellspec_puts "$fixture/file"; }
+      subject() { shellspec_puts "$FIXTURE/file"; }
       Example 'should be failure'
         When invoke shellspec_matcher be socket
         The status should be failure
@@ -222,12 +222,12 @@ Describe "core/matchers/be/stat.sh"
     Skip if "not exist readable file" not_exist "stat/readable"
 
     Example 'example'
-      Path readable="$fixture/stat/readable"
+      Path readable="$FIXTURE/stat/readable"
       The path readable should be readable
     End
 
     Context 'when path is readable'
-      subject() { shellspec_puts "$fixture/stat/readable"; }
+      subject() { shellspec_puts "$FIXTURE/stat/readable"; }
       Example 'should be success'
         When invoke shellspec_matcher be readable
         The status should be success
@@ -235,7 +235,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not readable'
-      subject() { shellspec_puts "$fixture/stat/no-permission"; }
+      subject() { shellspec_puts "$FIXTURE/stat/no-permission"; }
       Skip if "I am root" check_root
       Example 'should be failure'
         When invoke shellspec_matcher be readable
@@ -254,12 +254,12 @@ Describe "core/matchers/be/stat.sh"
     Skip if "not exist writable file" not_exist "stat/writable"
 
     Example 'example'
-      Path readable="$fixture/stat/writable"
+      Path readable="$FIXTURE/stat/writable"
       The path readable should be writable
     End
 
     Context 'when path is writable'
-      subject() { shellspec_puts "$fixture/stat/writable"; }
+      subject() { shellspec_puts "$FIXTURE/stat/writable"; }
       Example 'should be success'
         When invoke shellspec_matcher be writable
         The status should be success
@@ -267,7 +267,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not writable'
-      subject() { shellspec_puts "$fixture/stat/no-permission"; }
+      subject() { shellspec_puts "$FIXTURE/stat/no-permission"; }
       Skip if "I am root" check_root
       Example 'should be failure'
         When invoke shellspec_matcher be writable
@@ -286,12 +286,12 @@ Describe "core/matchers/be/stat.sh"
     Skip if "not exist executable file" not_exist "stat/executable"
 
     Example 'example'
-      Path executable="$fixture/stat/executable"
+      Path executable="$FIXTURE/stat/executable"
       The path executable should be executable
     End
 
     Context 'when path is executable'
-      subject() { shellspec_puts "$fixture/stat/executable"; }
+      subject() { shellspec_puts "$FIXTURE/stat/executable"; }
       Example 'should be success'
         When invoke shellspec_matcher be executable
         The status should be success
@@ -299,7 +299,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not executable'
-      subject() { shellspec_puts "$fixture/stat/no-permission"; }
+      subject() { shellspec_puts "$FIXTURE/stat/no-permission"; }
       Example 'should be failure'
         When invoke shellspec_matcher be executable
         The status should be failure
@@ -317,12 +317,12 @@ Describe "core/matchers/be/stat.sh"
     Skip if "not exist block-device file" not_exist "stat/block-device"
 
     Example 'example'
-      Path block-device="$fixture/stat/block-device"
+      Path block-device="$FIXTURE/stat/block-device"
       The path block-device should be block device
     End
 
     Context 'when path is block device'
-      subject() { shellspec_puts "$fixture/stat/block-device"; }
+      subject() { shellspec_puts "$FIXTURE/stat/block-device"; }
       Example 'should be success'
         When invoke shellspec_matcher be block device
         The status should be success
@@ -330,7 +330,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not block device'
-      subject() { shellspec_puts "$fixture/file"; }
+      subject() { shellspec_puts "$FIXTURE/file"; }
       Example 'should be failure'
         When invoke shellspec_matcher be block device
         The status should be failure
@@ -348,12 +348,12 @@ Describe "core/matchers/be/stat.sh"
     Skip if "not exist charactor-device file" not_exist "stat/charactor-device"
 
     Example 'example'
-      Path charactor-device="$fixture/stat/charactor-device"
+      Path charactor-device="$FIXTURE/stat/charactor-device"
       The path charactor-device should be charactor device
     End
 
     Context 'when path is charactor device'
-      subject() { shellspec_puts "$fixture/stat/charactor-device"; }
+      subject() { shellspec_puts "$FIXTURE/stat/charactor-device"; }
       Example 'should be success'
         When invoke shellspec_matcher be charactor device
         The status should be success
@@ -361,7 +361,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not charactor device'
-      subject() { shellspec_puts "$fixture/file"; }
+      subject() { shellspec_puts "$FIXTURE/file"; }
       Example 'should be failure'
         When invoke shellspec_matcher be charactor device
         The status should be failure

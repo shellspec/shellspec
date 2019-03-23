@@ -95,25 +95,26 @@ Describe 'Data helper'
     End
   End
 
-  Example 'expands the variable'
-    readonly name="world"
 
-    Data
-      #|Hello $name
+  Describe 'variable expandation'
+    Before name="world"
+
+    Example 'expands the variable'
+      Data
+        #|Hello $name
+      End
+
+      When call output
+      The output should eq 'Hello world'
     End
 
-    When call output
-    The output should eq 'Hello world'
-  End
+    Example ':raw not expands the variable'
+      Data:raw
+        #|Hello $name
+      End
 
-  Example ':raw not expands the variable'
-    readonly name="world"
-
-    Data:raw
-      #|Hello $name
+      When call output
+      The output should eq 'Hello $name'
     End
-
-    When call output
-    The output should eq 'Hello $name'
   End
 End

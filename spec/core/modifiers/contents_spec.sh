@@ -1,23 +1,22 @@
 #shellcheck shell=sh
 
-Describe "core/modifiers/contents.sh"
-  readonly file="$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
+% FILE: "$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
 
-  Before set_subject intercept_shellspec_modifier
+Describe "core/modifiers/contents.sh"
+  Before set_subject set_contents intercept_shellspec_modifier
   subject() { false; }
 
   Describe "contents modifier"
-    readonly contents="a"
+    set_contents() { contents="a"; }
 
     Example 'example'
-      The contents of file "$file" should equal "$contents"
-      The contents of the file "$file" should equal "$contents"
-      The file "$file" contents should equal "$contents"
-      The the file "$file" contents should equal "$contents"
+      The contents of file "$FILE" should equal "$contents"
+      The contents of the file "$FILE" should equal "$contents"
+      The file "$FILE" contents should equal "$contents"
     End
 
     Context 'when file exists'
-      subject() { shellspec_puts "$file"; }
+      subject() { shellspec_puts "$FILE"; }
       Example 'reads the contents of the file'
         When invoke shellspec_modifier contents _modifier_
         The entire stdout should equal "$contents"
@@ -25,7 +24,7 @@ Describe "core/modifiers/contents.sh"
     End
 
     Context 'when file not exists'
-      subject() { shellspec_puts "$file.not-exists"; }
+      subject() { shellspec_puts "$FILE.not-exists"; }
       Example 'cannot reads the contents of the file'
         When invoke shellspec_modifier contents _modifier_
         The status should be failure
@@ -47,17 +46,16 @@ Describe "core/modifiers/contents.sh"
   End
 
   Describe "entire contents modifier"
-    readonly contents="a${LF}${LF}"
+    set_contents() { contents="a${LF}${LF}"; }
 
     Example 'example'
-      The entire contents of file "$file" should equal "$contents"
-      The entire contents of the file "$file" should equal "$contents"
-      The file "$file" entire contents should equal "$contents"
-      The the file "$file" entire contents should equal "$contents"
+      The entire contents of file "$FILE" should equal "$contents"
+      The entire contents of the file "$FILE" should equal "$contents"
+      The file "$FILE" entire contents should equal "$contents"
     End
 
     Context 'when file exists'
-      subject() { shellspec_puts "$file"; }
+      subject() { shellspec_puts "$FILE"; }
       Example 'reads the entire contents of the file'
         When invoke shellspec_modifier entire contents _modifier_
         The entire stdout should equal "$contents"
@@ -65,7 +63,7 @@ Describe "core/modifiers/contents.sh"
     End
 
     Context 'when file not exists'
-      subject() { shellspec_puts "$file.not-exists"; }
+      subject() { shellspec_puts "$FILE.not-exists"; }
       Example 'cannot reads the entire contents of the file'
         When invoke shellspec_modifier entire contents _modifier_
         The status should be failure

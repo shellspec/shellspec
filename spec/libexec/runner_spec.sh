@@ -5,28 +5,24 @@ Describe "libexec/runner.sh"
   . "$SHELLSPEC_LIB/libexec/runner.sh"
 
   Describe "mktempdir()"
-    readonly dir="$SHELLSPEC_TMPBASE/$$.mktempdir_test"
-
+    Before prepare
+    prepare() { dir="$SHELLSPEC_TMPBASE/$$.mktempdir_test"; }
     entry() { ls -dl "$dir"; }
-    check_perm() { [ -d "$dir" ] && [ -w "$dir" ]; }
 
     Example "make tempdir"
       When call mktempdir "$dir"
       The status should be success
       The output of 'entry()' should start with 'drwx------'
-      The status of 'check_perm()' should be success
     End
   End
 
   Describe "rmtempdir()"
-    readonly dir="$SHELLSPEC_TMPBASE/$$.rmtempdir_test"
-
+    Before prepare
     prepare() {
+      dir="$SHELLSPEC_TMPBASE/$$.rmtempdir_test"
       mktempdir "$dir"
       [ -d "$dir" ] && [ -w "$dir" ]
     }
-    Before prepare
-
     exists_tempdir() { [ -e "$dir" ]; }
 
     Example "delete tempdir"
