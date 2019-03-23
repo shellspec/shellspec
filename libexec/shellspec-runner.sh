@@ -88,10 +88,16 @@ error_handler() {
   | {
       read -r xs1; read -r xs2; read -r xs3
       xs="[$xs1] [$xs2] [$xs3]"
-      if [ "$xs" != "[0] [0] [0]" ]; then
-        error "An unexpected error occurred in the runner or the reporter. $xs"
-        exit 1
-      fi
+      case $xs in
+        '[0] [0] [0]') exit 0 ;;
+        "[$SHELLSPEC_SPEC_FAILURE_CODE] [0] [0]") ;;
+        "[0] [$SHELLSPEC_SPEC_FAILURE_CODE] [0]") ;;
+        "[0] [0] [$SHELLSPEC_SPEC_FAILURE_CODE]") ;;
+        *)
+          error "An unexpected error occurred in the runner or the reporter. $xs"
+          exit 1
+      esac
+      exit "$SHELLSPEC_SPEC_FAILURE_CODE"
     }
 ) 3>&1 4>&2 &&:
 exit_status=$?
