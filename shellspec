@@ -22,6 +22,7 @@ export SHELLSPEC_COLOR=''
 export SHELLSPEC_REQUIRES=''
 export SHELLSPEC_SPEC_FAILURE_CODE=101
 export SHELLSPEC_SKIP_MESSAGE=none
+export SHELLSPEC_WARNINGS=error
 export SHELLSPEC_FAIL_FAST_COUNT=''
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
@@ -105,14 +106,19 @@ Usage: ${0##*/} [options] [files or directories]
 
   -s, --shell SHELL                   Specify a path of shell.
                                         default: current shell
-      --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures (1 by default).
+      --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]).
   -e, --env NAME=VALUE                Set environment variable
+  -w, --warnings LEVEL                Set warnings level
+                                        none (do not show warnings)
+                                        notice (show warnings but not treats as error)
+                                        error (show warnings and treats as error [default])
+                                        failure (treats warnings as failures)
 
   **** Output ****
 
       --[no-]banner                   Show banner if exist 'spec/banner'.
   -f, --format FORMATTER              Choose a formatter.
-                                        [p]rogress (default - dots)
+                                        [p]rogress (dots [default])
                                         [d]ocumentation (group and example names)
                                         [t]ap
                                         debug (for developer)
@@ -120,7 +126,7 @@ Usage: ${0##*/} [options] [files or directories]
       --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
       --no-color, --no-colour         Force the output to not be in color, even if the output is a TTY
       --skip-message VERBOSE          Mute skip message
-                                        none (default - do not mute any messages)
+                                        none (do not mute any messages [default])
                                         moderate (mute repeated messages)
                                         quiet (mute repeated and conditional skip messages)
 
@@ -171,6 +177,13 @@ parse_options() {
         [ $# -ge 2 ] || abort 'Require PATH.'
         [ "$SHELLSPEC_REQUIRES" ] && SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES:"
         SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES$2" skip=2 ;;
+      -w | --warnings)
+        [ $# -ge 2 ] || abort 'Require LEVEL.'
+        case $2 in
+          none|notice|error|failure) ;;
+          *) abort 'Invalid LEVEL.'
+        esac
+        SHELLSPEC_WARNINGS="$2" skip=2 ;;
       --skip-message)
         [ $# -ge 2 ] || abort 'Require VERBOSE.'
         case $2 in
