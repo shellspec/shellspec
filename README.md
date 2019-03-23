@@ -37,6 +37,7 @@ BDD style testing framework for POSIX compatible shell script.
     - [Path alias](#path-alias)
     - [Data helper](#data-helper)
   - [Skip and Pending](#skip-and-pending)
+  - [Constant definition](#constant-definition)
   - [Embedded text](#embedded-text)
 - [shellspec command](#shellspec-command)
   - [Configure default options](#configure-default-options)
@@ -523,6 +524,22 @@ You can skip or pending current execution block.
 | Skip if `<REASON>` `<FUNCTION> [ARGUMENTS...]` | Skip current block with conditional. |
 | Pending  `<REASON>`                            | Pending current block.               |
 
+### Constant definition
+
+You can define constant variables for each specfile.
+The `Constant definition` is converted by specfile transration process.
+Therefore you can use variable of shellspec like `SHELLSPEC_SPECDIR` as value
+but you can not use run time variable like defined in specfile or spec_helper.sh.
+
+```sh
+% NAME1: 'value1'
+% NAME2: "$SHELLSPEC_SPECDIR/some_dir"
+
+Describe 'foo'
+  ...
+End
+```
+
 ### Embedded text
 
 You can use the `embedded text` instead of `here document` in specfile.
@@ -611,6 +628,7 @@ To disable shows banner with `--no-banner` option.
  * Remove `exit status` subject. (use `status` subject)
  * Change behavior of line and lines modifier to like "grep -c" not "wc -l".
  * Change function subject to alias for value subject.
+ * Add Constant definition.
  * Add Data helper, Embedded text.
  * Add output and status modifier.
  * Add shorthand for function subject and variable subject.
