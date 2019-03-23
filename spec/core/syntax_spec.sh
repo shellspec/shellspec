@@ -19,13 +19,6 @@ Describe "core/syntax.sh"
     The 2nd word of line 2 of stdout should equal "BAR"
     The 2nd word of the line 2 of the stdout should equal "BAR"
     The 2nd word of the line 4 of the stdout should equal "the"
-
-    It should equal "bar" the value "bar"
-    It should equal 3 the length of value "bar"
-    It should equal "bar" the word 2 of value "foo bar baz"
-    It should equal "bar" the second word of value "foo bar baz"
-    It should equal "bar" the 2nd word of value "foo bar baz"
-    It should equal "BAR" the 2nd word of the line 2 of the stdout
   End
 
   Describe "shellspec_syntax_param()"

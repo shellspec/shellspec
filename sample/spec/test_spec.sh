@@ -11,7 +11,6 @@ Describe 'example spec'
         When call calc 100 + 20 + 3
         The stdout should eq 1234
         The stdout should eq 1235
-        It should equal 123 the stdout
       End
 
       Example 'include'

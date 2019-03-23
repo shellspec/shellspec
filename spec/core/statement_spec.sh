@@ -1,30 +1,6 @@
 #shellcheck shell=sh
 
 Describe "core/statement.sh"
-  Describe "shellspec_statement_advance_subject()"
-    it() {
-      shellspec_statement_preposition() { echo "the $*"; }
-      shellspec_output() { echo "$1"; }
-      shellspec_statement_advance_subject "$@"
-    }
-
-    Example "reorders include 'the'"
-      When invoke it should equal A the stdout
-      The stdout should equal "the stdout should equal A"
-    End
-
-    Example "reorders include multiple 'the'"
-      When invoke it should equal A the line 2 of the stdout
-      The stdout should equal "the line 2 of the stdout should equal A"
-    End
-
-    Example "outputs error if missing 'the'"
-      When invoke it should equal A
-      The stdout should equal "SYNTAX_ERROR"
-      The status should be failure
-    End
-  End
-
   Describe "shellspec_statement_preposition()"
     the() {
       shellspec_statement_ordinal() { echo "the $*"; }

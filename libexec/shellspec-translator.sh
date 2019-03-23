@@ -68,7 +68,7 @@ todo() {
 
 statement() {
   if [ -z "$inside_of_example" ]; then
-    syntax_error "When/The/It cannot be defined outside of Example"
+    syntax_error "When/The cannot be defined outside of Example"
     return 0
   fi
 
@@ -200,7 +200,6 @@ translate() {
       Todo     )   todo                "${work#$dsl}" ;;
       When     )   statement when      "${work#$dsl}" ;;
       The      )   statement the       "${work#$dsl}" ;;
-      It       )   statement it        "${work#$dsl}" ;;
       Path     )   control path        "${work#$dsl}" ;;
       File     )   control path        "${work#$dsl}" ;;
       Dir      )   control path        "${work#$dsl}" ;;

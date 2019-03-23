@@ -125,13 +125,6 @@ shellspec_the() {
   shellspec_statement_preposition "$@"
 }
 
-shellspec_it() {
-  SHELLSPEC_EXPECTATION="It ${*:-}"
-  shellspec_off NOT_IMPLEMENTED
-  shellspec_on EXPECTATION
-  shellspec_statement_advance_subject "$@"
-}
-
 shellspec_before() { shellspec_before_hook "$@"; }
 shellspec_after()  { shellspec_after_hook "$@"; }
 

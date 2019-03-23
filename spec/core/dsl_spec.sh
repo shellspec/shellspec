@@ -238,22 +238,6 @@ Describe "core/dsl.sh" # comment
     End
   End
 
-  Describe "shellspec_it()"
-    shellspec_around_invoke() {
-      shellspec_on NOT_IMPLEMENTED
-      shellspec_statement_advance_subject() { :; }
-      shellspec_on() { echo "on:[$*]"; }
-      shellspec_off() { echo "off:[$*]"; }
-      "$@"
-    }
-
-    Example 'turns off the NOT_IMPLEMENTED switch'
-      When invoke shellspec_it dummy
-      The stdout line 1 should equal 'off:[NOT_IMPLEMENTED]'
-      The stdout line 2 should equal 'on:[EXPECTATION]'
-    End
-  End
-
   Describe "shellspec_skip()"
     prepare() { SHELLSPEC_EXAMPLE_NO=1; }
     shellspec_around_invoke() {
