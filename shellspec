@@ -172,7 +172,11 @@ parse_options() {
         [ "$SHELLSPEC_REQUIRES" ] && SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES:"
         SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES$2" skip=2 ;;
       --skip-message)
-        [ $# -ge 2 ] || abort 'Require TYPE.'
+        [ $# -ge 2 ] || abort 'Require VERBOSE.'
+        case $2 in
+          none|moderate|quiet) ;;
+          *) abort 'Invalid VERBOSE.'
+        esac
         SHELLSPEC_SKIP_MESSAGE="$2" skip=2 ;;
       --fail-fast | --fail-fast=*)
         SHELLSPEC_FAIL_FAST_COUNT=${1#*=}
