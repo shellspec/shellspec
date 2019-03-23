@@ -3,7 +3,7 @@
 Describe 'Data helper'
   output() { cat -; }
 
-  Describe 'with block'
+  Describe 'block style'
     Data #comment
       #|aaa
       #|bbb
@@ -11,7 +11,7 @@ Describe 'Data helper'
       #|
     End
 
-    Example 'reads data as stdin with call evaluation type'
+    It 'reads data as stdin with call evaluation type'
       When call output
       The first line of output should eq 'aaa'
       The second line of output should eq 'bbb'
@@ -19,7 +19,7 @@ Describe 'Data helper'
       The lines of entire output should eq 4
     End
 
-    Example 'reads data as stdin with invoke evaluation type'
+    It 'reads data as stdin with invoke evaluation type'
       When invoke output
       The first line of output should eq 'aaa'
       The second line of output should eq 'bbb'
@@ -27,36 +27,53 @@ Describe 'Data helper'
       The lines of entire output should eq 4
     End
 
-    Example 'reads data as stdin with run evaluation type'
+    It 'reads data as stdin with run evaluation type'
       When run cat -
       The first line of output should eq 'aaa'
       The second line of output should eq 'bbb'
       The third line of output should eq "ccc"
       The lines of entire output should eq 4
     End
-  End
 
-  Describe 'with block with tr filter'
-    Data | tr 'abc' 'ABC' # comment
-      #|aaa
-      #|bbb
-      #|ccc
-      #|
-    End
-
-    Example 'reads data as stdin with filter'
+    It 'reads data as stdin with filter'
+      Data | tr 'abc' 'ABC' # comment
+        #|aaa
+        #|bbb
+        #|ccc
+        #|
+      End
       When call output
       The first line of output should eq 'AAA'
       The second line of output should eq 'BBB'
       The third line of output should eq "CCC"
       The lines of entire output should eq 4
     End
+
+    Describe 'variable expansion'
+      Before name="world"
+
+      It 'expands the variable'
+        Data
+          #|Hello $name
+        End
+        When call output
+        The output should eq 'Hello world'
+      End
+
+      It ':raw not expands the variable'
+        Data:raw
+          #|Hello $name
+        End
+        When call output
+        The output should eq 'Hello $name'
+      End
+    End
   End
 
-  Describe 'with name'
+  Describe 'function style'
     func() { printf '%s\n' "$@"; }
 
-    Example 'reads data from function'
+    It 'reads data as stdin from function'
       Data func a b c
       When call output
       The first line of output should eq 'a'
@@ -65,7 +82,7 @@ Describe 'Data helper'
       The lines of entire output should eq 3
     End
 
-    Example 'reads data from function with filter'
+    It 'reads data as stdin from function with filter'
       Data func a b c | tr 'abc' 'ABC' # comment
       When call output
       The first line of output should eq 'A'
@@ -75,46 +92,23 @@ Describe 'Data helper'
     End
   End
 
-  Describe 'with string'
-    Example 'reads data from string'
+  Describe 'string style'
+    It 'reads data as stdin from string'
       Data "abc"
       When call output
       The output should eq 'abc'
     End
 
-    Example 'reads data from quoted string'
+    It 'reads data as stdin from quoted string'
       Data 'abc'
       When call output
       The output should eq 'abc'
     End
 
-    Example 'reads data from string with filter'
+    It 'reads data as stdin from string with filter'
       Data "abc" | tr 'abc' 'ABC' # comment
       When call output
       The output should eq 'ABC'
-    End
-  End
-
-
-  Describe 'variable expandation'
-    Before name="world"
-
-    Example 'expands the variable'
-      Data
-        #|Hello $name
-      End
-
-      When call output
-      The output should eq 'Hello world'
-    End
-
-    Example ':raw not expands the variable'
-      Data:raw
-        #|Hello $name
-      End
-
-      When call output
-      The output should eq 'Hello $name'
     End
   End
 End

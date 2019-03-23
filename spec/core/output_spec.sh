@@ -9,7 +9,7 @@ Describe "core/output.sh"
       "$@"
     }
 
-    Example "outputs syntax name"
+    It "outputs syntax name"
       When invoke shellspec_output_syntax_name
       The stdout should equal 'foo bar baz syntaxtype'
     End

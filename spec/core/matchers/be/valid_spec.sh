@@ -18,7 +18,7 @@ Describe "core/matchers/be/valid.sh"
 
     Context 'when subject is 123'
       subject() { shellspec_puts 123; }
-      Example 'should be valid'
+      It 'matches'
         When invoke shellspec_matcher be valid as a number
         The stdout should equal "is:number 123"
       End
@@ -26,13 +26,13 @@ Describe "core/matchers/be/valid.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'should be invalid'
+      It 'does not match'
         When invoke shellspec_matcher be valid as number
         The stdout should equal "is:number "
       End
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher be valid number foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -53,7 +53,7 @@ Describe "core/matchers/be/valid.sh"
 
     Context 'when subject is foo_bar'
       subject() { shellspec_puts foo_bar; }
-      Example 'should be valid'
+      It 'matches'
         When invoke shellspec_matcher be valid as a funcname
         The stdout should equal "is:funcname foo_bar"
       End
@@ -61,13 +61,13 @@ Describe "core/matchers/be/valid.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'should be invalid'
+      It 'does not match'
         When invoke shellspec_matcher be valid as funcname
         The stdout should equal "is:funcname "
       End
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher be valid funcname foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure

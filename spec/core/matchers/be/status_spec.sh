@@ -12,7 +12,7 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is 0'
       subject() { shellspec_puts 0; }
-      Example 'should matches'
+      It 'matches'
         When invoke shellspec_matcher be success
         The status should be success
       End
@@ -20,15 +20,15 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is 1'
       subject() { shellspec_puts 1; }
-      Example 'should not matches'
+      It 'does not match'
         When invoke shellspec_matcher be success
         The status should be failure
       End
     End
 
-    Context 'when subject is non number values'
+    Context 'when subject is non numeric values'
       subject() { shellspec_puts "a"; }
-      Example 'should not matches'
+      It 'does not match'
         When invoke shellspec_matcher be success
         The status should be failure
       End
@@ -36,7 +36,7 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is zero length string'
       subject() { shellspec_puts; }
-      Example 'should not matches'
+      It 'does not match'
         When invoke shellspec_matcher be success
         The status should be failure
       End
@@ -44,13 +44,13 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'should not matches'
+      It 'does not match'
         When invoke shellspec_matcher be success
         The status should be failure
       End
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher be success foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -65,7 +65,7 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is 1'
       subject() { shellspec_puts 1; }
-      Example 'should matches'
+      It 'matches'
         When invoke shellspec_matcher be failure
         The status should be success
       End
@@ -73,7 +73,7 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is 0'
       subject() { shellspec_puts 0; }
-      Example 'should not matches'
+      It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure
       End
@@ -81,7 +81,7 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is -1'
       subject() { shellspec_puts -1; }
-      Example 'should not matches'
+      It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure
       End
@@ -89,7 +89,7 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is 255'
       subject() { shellspec_puts 255; }
-      Example 'should matches'
+      It 'matches'
         When invoke shellspec_matcher be failure
         The status should be success
       End
@@ -97,15 +97,15 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is 256'
       subject() { shellspec_puts 256; }
-      Example 'should not matches'
+      It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure
       End
     End
 
-    Context 'when subject is "a" (non numeric values)'
+    Context 'when subject is non numeric values'
       subject() { shellspec_puts a; }
-      Example 'should not matches'
+      It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure
       End
@@ -113,7 +113,7 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is zero length string'
       subject() { shellspec_puts; }
-      Example 'should not matches'
+      It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure
       End
@@ -121,13 +121,13 @@ Describe "core/matchers/be/status.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'should not matches'
+      It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure
       End
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher be failure foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure

@@ -11,9 +11,9 @@ Describe "core/modifiers/output.sh"
       The output of 'foo()' should equal ok
     End
 
-    Context 'when subject is foo'
+    Context 'when subject is function'
       subject() { shellspec_puts foo; }
-      Example 'its output should equal "ok"'
+      It 'calls function and gets stdout'
         When invoke shellspec_modifier output _modifier_
         The stdout should equal ok
       End
@@ -21,13 +21,13 @@ Describe "core/modifiers/output.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'cannot get output'
+      It 'can not calls function'
         When invoke shellspec_modifier output _modifier_
         The status should be failure
       End
     End
 
-    Example 'outputs error if next modifier is missing'
+    It 'outputs error if next modifier is missing'
       When invoke shellspec_modifier output
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

@@ -12,9 +12,9 @@ Describe "core/subjects/stdout.sh"
       The output should equal "foo" # alias for stdout
     End
 
-    Context 'when stdout is "test<LF>"'
+    Context 'when stdout is defined'
       stdout() { shellspec_puts "test${LF}"; }
-      Example "should equal test"
+      It "uses stdout as subject"
         When invoke shellspec_subject stdout _modifier_
         The entire stdout should equal 'test'
       End
@@ -22,13 +22,13 @@ Describe "core/subjects/stdout.sh"
 
     Context 'when stdout is undefined'
       stdout() { false; }
-      Example "should be failure"
+      It "uses undefined as subject"
         When invoke shellspec_subject stdout _modifier_
         The status should be failure
       End
     End
 
-    Example 'outputs error if next word is missing'
+    It 'outputs error if next word is missing'
       When invoke shellspec_subject stdout
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
@@ -42,9 +42,9 @@ Describe "core/subjects/stdout.sh"
       The entire output should equal "foo${LF}" # alias for entire stdout
     End
 
-    Context 'when stdout is "test<LF>"'
+    Context 'when stdout is defined'
       stdout() { shellspec_puts "test${LF}"; }
-      Example "should equal test<LF>"
+      It "uses stdout including last LF as subject"
         When invoke shellspec_subject entire stdout _modifier_
         The entire stdout should equal "test${LF}"
       End
@@ -52,13 +52,13 @@ Describe "core/subjects/stdout.sh"
 
     Context 'when stdout is undefined'
       stdout() { false; }
-      Example "should be failure"
+      It "uses undefined as subject"
         When invoke shellspec_subject entire stdout _modifier_
         The status should be failure
       End
     End
 
-    Example 'output error if next word is missing'
+    It 'output error if next word is missing'
       When invoke shellspec_subject entire stdout
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

@@ -9,15 +9,15 @@ Describe "libexec/translator.sh"
 
     Context 'when value is abc'
       set_value() { value="  abc"; }
-      Example 'trim left space'
+      It 'trims left space'
         When call trim value
         The value "$value" should eq 'abc'
       End
     End
 
-    Context 'when value is abc'
+    Context 'when value is <TAB><TAB>abc'
       set_value() { value="${TAB}${TAB}abc"; }
-      Example 'trim left tab'
+      It 'trims left tab'
         When call trim value
         The value "$value" should eq 'abc'
       End

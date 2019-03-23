@@ -2,71 +2,71 @@
 
 Describe "core/verb.sh"
   shellspec_around_invoke() {
-    shellspec_output() { echo "[$1]"; }
+    shellspec_output() { echo "output:$1"; }
     shellspec_output_failure_message() { echo message; }
     shellspec_output_failure_message_when_negated() { echo negated_message; }
     "$@"
-    shellspec_if SYNTAX_ERROR && echo "syntax error" || echo "syntax ok"
-    shellspec_if FAILED && echo "failed" || echo "succeeded"
+    shellspec_if SYNTAX_ERROR && echo "SYNTAX_ERROR:on" || echo "SYNTAX_ERROR:off"
+    shellspec_if FAILED && echo "FAILED:on" || echo "FAILED:off"
   }
 
   Describe "should verb"
-    Example "outputs MATCHED if matcher matched"
+    It "outputs MATCHED if matcher matched"
       When invoke shellspec_verb_should _matched_
-      The first line of stdout should equal '[MATCHED]'
-      The second line of stdout should equal 'syntax ok'
-      The third line of stdout should equal 'succeeded'
+      The stdout should include 'output:MATCHED'
+      The stdout should include 'SYNTAX_ERROR:off'
+      The stdout should include 'FAILED:off'
     End
 
-    Example "outputs UNMATCHED if matcher unmatched"
+    It "outputs UNMATCHED if matcher unmatched"
       When invoke shellspec_verb_should _unmatched_
-      The first line of stdout should equal '[UNMATCHED]'
-      The second line of stdout should equal "message"
-      The third line of stdout should equal 'syntax ok'
-      The fourth line of stdout should equal 'failed'
+      The stdout should include 'output:UNMATCHED'
+      The stdout should include "message"
+      The stdout should include 'SYNTAX_ERROR:off'
+      The stdout should include 'FAILED:on'
     End
 
-    Example "outputs SYNTAX_ERROR_MATCHER_REQUIRED if matcher missing"
+    It "outputs SYNTAX_ERROR_MATCHER_REQUIRED if matcher missing"
       When invoke shellspec_verb_should
-      The first line of stdout should equal '[SYNTAX_ERROR_MATCHER_REQUIRED]'
-      The second line of stdout should equal 'syntax error'
-      The third line of stdout should equal 'failed'
+      The stdout should include 'output:SYNTAX_ERROR_MATCHER_REQUIRED'
+      The stdout should include 'SYNTAX_ERROR:on'
+      The stdout should include 'FAILED:on'
     End
 
-    Example "returns if SYNTAX_ERROR"
+    It "returns if SYNTAX_ERROR"
       When invoke shellspec_verb_should _syntax_error_matcher_
-      The first line of stdout should equal 'syntax error'
-      The second line of stdout should equal 'failed'
+      The stdout should include 'SYNTAX_ERROR:on'
+      The stdout should include 'FAILED:on'
     End
   End
 
   Describe "should not verb"
-    Example "outputs UNMATCHED if matcher matched"
+    It "outputs UNMATCHED if matcher matched"
       When invoke shellspec_verb_should not _matched_
-      The first line of stdout should equal '[UNMATCHED]'
-      The second line of stdout should equal 'negated_message'
-      The third line of stdout should equal 'syntax ok'
-      The fourth line of stdout should equal 'failed'
+      The stdout should include 'output:UNMATCHED'
+      The stdout should include 'negated_message'
+      The stdout should include 'SYNTAX_ERROR:off'
+      The stdout should include 'FAILED:on'
     End
 
-    Example "outputs MATCHED if matcher unmatched"
+    It "outputs MATCHED if matcher unmatched"
       When invoke shellspec_verb_should not _unmatched_
-      The first line of stdout should equal '[MATCHED]'
-      The second line of stdout should equal 'syntax ok'
-      The third line of stdout should equal 'succeeded'
+      The stdout should include 'output:MATCHED'
+      The stdout should include 'SYNTAX_ERROR:off'
+      The stdout should include 'FAILED:off'
     End
 
-    Example "outputs SYNTAX_ERROR_MATCHER_REQUIRED if matcher missing"
+    It "outputs SYNTAX_ERROR_MATCHER_REQUIRED if matcher missing"
       When invoke shellspec_verb_should not
-      The first line of stdout should equal '[SYNTAX_ERROR_MATCHER_REQUIRED]'
-      The second line of stdout should equal 'syntax error'
-      The third line of stdout should equal 'failed'
+      The stdout should include 'output:SYNTAX_ERROR_MATCHER_REQUIRED'
+      The stdout should include 'SYNTAX_ERROR:on'
+      The stdout should include 'FAILED:on'
     End
 
-    Example "returns if SYNTAX_ERROR"
+    It "returns if SYNTAX_ERROR"
       When invoke shellspec_verb_should _syntax_error_matcher_
-      The first line of stdout should equal 'syntax error'
-      The second line of stdout should equal 'failed'
+      The stdout should include 'SYNTAX_ERROR:on'
+      The stdout should include 'FAILED:on'
     End
   End
 End

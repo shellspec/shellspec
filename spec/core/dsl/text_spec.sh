@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2016
 
 Describe '%text'
-  Example 'outputs to stdout'
+  It 'outputs to stdout'
     func() {
       %text
       #|aaa
@@ -18,7 +18,7 @@ Describe '%text'
     The lines of entire output should eq 4
   End
 
-  Example 'using to set variable'
+  It 'outputs to variable'
     func() {
       value=$(
         %text
@@ -36,7 +36,7 @@ Describe '%text'
     The lines of value "$value" should eq 3
   End
 
-  Example 'expands the variable'
+  It 'expands the variable'
     hello() {
       %text
       #|Hello $1
@@ -46,7 +46,7 @@ Describe '%text'
     The output should eq 'Hello world'
   End
 
-  Example ':raw not expands the variable'
+  It ':raw not expands the variable'
     hello() {
       %text:raw
       #|Hello $1
@@ -56,7 +56,7 @@ Describe '%text'
     The output should eq 'Hello $1'
   End
 
-  Example 'outputs with filter'
+  It 'outputs to stdout and expands the variable with filter'
     hello() {
       %text | tr 'a-z_' 'A-Z_'
       #|Hello $1
@@ -66,7 +66,7 @@ Describe '%text'
     The output should eq 'HELLO WORLD'
   End
 
-  Example ':raw outputs with filter'
+  It ':raw outputs to stdout and not expands the variable with filter'
     hello() {
       %text:raw | tr 'a-z_' 'A-Z_'
       #|Hello $1

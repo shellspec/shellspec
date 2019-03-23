@@ -13,12 +13,12 @@ Describe "core/matchers/match.sh"
     Context 'when subject is foobarbaz'
       subject() { shellspec_puts foobarbaz; }
 
-      Example 'should match "foo*"'
+      It 'matches with pattern "foo*"'
         When invoke shellspec_matcher match "foo*"
         The status should be success
       End
 
-      Example 'should match "FOO*"'
+      It 'does not match with pattern "FOO*"'
         When invoke shellspec_matcher match "FOO*"
         The status should be failure
       End
@@ -26,19 +26,19 @@ Describe "core/matchers/match.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'should not match "*"'
+      It 'does not match with pattern "*"'
         When invoke shellspec_matcher match "*"
         The status should be failure
       End
     End
 
-    Example 'outputs error if parameters is missing'
+    It 'outputs error if parameters is missing'
       When invoke shellspec_matcher match
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher match "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure

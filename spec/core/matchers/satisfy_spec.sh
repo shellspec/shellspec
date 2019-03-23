@@ -5,28 +5,28 @@ Describe "core/matchers/satisfy.sh"
   subject() { false; }
 
   Describe 'satisfy matcher'
-    check() { [ "$SHELLSPEC_SUBJECT" = "$1" ]; }
+    greater_than() { [ "$SHELLSPEC_SUBJECT" -gt "$1" ]; }
 
     Example 'example'
-      The value foo should satisfy check foo
-      The value foo should not satisfy check bar
+      The value 10 should satisfy greater_than 5
+      The value 10 should not satisfy greater_than 20
     End
 
-    Context 'when subject is foo'
-      subject() { shellspec_puts foo; }
+    Context 'when subject is 10'
+      subject() { shellspec_puts 10; }
 
-      Example 'should satisfy check foo'
-        When invoke shellspec_matcher satisfy check foo
+      It 'satisfies greater than 5'
+        When invoke shellspec_matcher satisfy greater_than 5
         The status should be success
       End
 
-      Example 'should satisfy check bar'
-        When invoke shellspec_matcher satisfy check bar
+      It 'does not satisfies greater than 20'
+        When invoke shellspec_matcher satisfy greater_than 20
         The status should be failure
       End
     End
 
-    Example 'outputs error if parameters is missing'
+    It 'outputs error if parameters is missing'
       When invoke shellspec_matcher satisfy
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure

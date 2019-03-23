@@ -14,13 +14,13 @@ Describe "libexec/shellspec.sh"
       echo ok
     }
 
-    Example "reads dot file"
+    It "reads dot file"
       When call read_dot_file "$SHELLSPEC_SPECDIR" "$DOT_SHELLSPEC" parser
       The stdout should equal "ok"
       The status should be success
     End
 
-    Example "does not read dot file if not specified directory"
+    It "does not read dot file if not specified directory"
       When call read_dot_file "" "$DOT_SHELLSPEC" parser
       The stdout should be blank
       The status should be success
@@ -38,7 +38,7 @@ Describe "libexec/shellspec.sh"
         echo " $$ pts/0    S      0:00 /bin/sh /usr/local/bin/shellspec"
       }
 
-      Example "cant parses and detects shell"
+      It "parses and detects shell"
         When call current_shell "/usr/local/bin/shellspec" fake_ps
         The stdout should equal "/bin/sh"
       End
@@ -52,7 +52,7 @@ Describe "libexec/shellspec.sh"
         echo "   $$ root      1460 S    /bin/sh /usr/local/bin/shellspec"
       }
 
-      Example "can parses and detects shell"
+      It "parses and detects shell"
         When call current_shell "/usr/local/bin/shellspec" fake_ps
         The stdout should equal "/bin/sh"
       End
@@ -66,7 +66,7 @@ Describe "libexec/shellspec.sh"
         echo "   $$ root    0:00 {shellspec} /bin/sh /usr/local/bin/shellspec"
       }
 
-      Example "can parses and detects shell"
+      It "parses and detects shell"
         When call current_shell "/usr/local/bin/shellspec" fake_ps
         The stdout should equal "/bin/sh"
       End

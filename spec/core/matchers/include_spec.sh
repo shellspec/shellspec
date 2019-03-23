@@ -12,7 +12,7 @@ Describe "core/matchers/include.sh"
 
     Context 'when subject is foo<LF>bar<LF>baz<LF>'
       subject() { shellspec_puts "foo${LF}bar${LF}baz${LF}"; }
-      Example 'should include bar'
+      It 'matches that include "bar"'
         When invoke shellspec_matcher include "bar"
         The status should be success
       End
@@ -20,19 +20,19 @@ Describe "core/matchers/include.sh"
 
     Context 'when subject is foo<LF>BAR<LF>baz<LF>'
       subject() { shellspec_puts "foo${LF}BAR${LF}baz${LF}"; }
-      Example 'should not include bar'
+      It 'does not matches that include "bar"'
         When invoke shellspec_matcher include "bar"
         The status should be failure
       End
     End
 
-    Example 'outputs error if parameters is missing'
+    It 'outputs error if parameters is missing'
       When invoke shellspec_matcher include
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher include "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure

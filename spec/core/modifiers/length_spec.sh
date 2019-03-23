@@ -9,9 +9,9 @@ Describe "core/modifiers/length.sh"
       The length of value foobarbaz should equal 9
     End
 
-    Context 'when subject is "abcde"'
+    Context 'when subject is defined'
       subject() { shellspec_puts abcde; }
-      Example 'its length should equal 5'
+      It 'counts length'
         When invoke shellspec_modifier length _modifier_
         The stdout should equal 5
       End
@@ -19,13 +19,13 @@ Describe "core/modifiers/length.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'cannot get length'
+      It 'can not counts length'
         When invoke shellspec_modifier length _modifier_
         The status should be failure
       End
     End
 
-    Example 'outputs error if next modifier is missing'
+    It 'outputs error if next modifier is missing'
       When invoke shellspec_modifier length
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

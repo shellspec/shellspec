@@ -29,12 +29,12 @@ Describe "core/syntax.sh"
     }
 
     Describe 'number'
-      Example "succeeds when the parameters count satisfies the condition"
+      It "succeeds if the parameters count satisfies the condition"
         When invoke shellspec_syntax_param count [ 1 -gt 0 ]
         The status should be success
       End
 
-      Example "fails when the parameters count not satisfies the condition"
+      It "fails if the parameters count not satisfies the condition"
         When invoke shellspec_syntax_param count [ 0 -gt 0 ]
         The status should be failure
         The stdout should include 'SYNTAX_ERROR_WRONG_PARAMETER_COUNT'
@@ -43,12 +43,12 @@ Describe "core/syntax.sh"
     End
 
     Describe 'N (parameter position)'
-      Example "succeeds when the parameter is number"
+      It "succeeds if the parameter is number"
         When invoke shellspec_syntax_param 1 is number 123
         The status should be success
       End
 
-      Example "fails when the parameter is not number"
+      It "fails if the parameter is not number"
         When invoke shellspec_syntax_param 2 is number abc
         The status should be failure
         The stdout should include 'SYNTAX_ERROR_PARAM_TYPE 2'

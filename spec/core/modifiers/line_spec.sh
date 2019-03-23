@@ -11,7 +11,7 @@ Describe "core/modifiers/line.sh"
 
     Context 'when subject is "foo<LF>bar<LF>baz"'
       subject() { shellspec_puts "foo${LF}bar${LF}baz"; }
-      Example 'second line should equal "bar"'
+      It 'get the second line as "bar"'
         When invoke shellspec_modifier line 2 _modifier_
         The entire stdout should equal bar
       End
@@ -19,7 +19,7 @@ Describe "core/modifiers/line.sh"
 
     Context 'when subject is "foo<LF>"'
       subject() { shellspec_puts "foo${LF}"; }
-      Example 'can not get second line'
+      It 'can not get the second line'
         When invoke shellspec_modifier line 2 _modifier_
         The status should be failure
       End
@@ -27,7 +27,7 @@ Describe "core/modifiers/line.sh"
 
     Context 'when subject is "foo<LF><LF>"'
       subject() { shellspec_puts "foo${LF}${LF}"; }
-      Example 'second line should equal ""'
+      It 'get the second line as ""'
         When invoke shellspec_modifier line 2 _modifier_
         The entire stdout should equal ""
       End
@@ -35,7 +35,7 @@ Describe "core/modifiers/line.sh"
 
     Context 'when subject is empty string'
       subject() { shellspec_puts ""; }
-      Example 'can not get first line'
+      It 'can not get the first line'
         When invoke shellspec_modifier line 1 _modifier_
         The status should be failure
       End
@@ -43,7 +43,7 @@ Describe "core/modifiers/line.sh"
 
     Context 'when subject is "<LF>"'
       subject() { shellspec_puts "${LF}"; }
-      Example 'first line should equal ""'
+      It 'get the second line as ""'
         When invoke shellspec_modifier line 1 _modifier_
         The entire stdout should equal ""
       End
@@ -51,23 +51,23 @@ Describe "core/modifiers/line.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'cannot get first line'
+      It 'can not get the first line'
         When invoke shellspec_modifier line 2 _modifier_
         The status should be failure
       End
     End
 
-    Example 'outputs error if value is not a number'
+    It 'outputs error if value is not a number'
       When invoke shellspec_modifier line ni
       The stderr should equal SYNTAX_ERROR_PARAM_TYPE
     End
 
-    Example 'outputs error if value is missing'
+    It 'outputs error if value is missing'
       When invoke shellspec_modifier line
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
-    Example 'outputs error if next word is missing'
+    It 'outputs error if next word is missing'
       When invoke shellspec_modifier line 2
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

@@ -11,9 +11,9 @@ Describe "core/subjects/status.sh"
       The status should equal 12
     End
 
-    Context 'when status is 123'
+    Context 'when status is defined'
       status() { shellspec_puts 123; }
-      Example 'should equal 123'
+      It 'uses status as subject'
         When invoke shellspec_subject status _modifier_
         The stdout should equal 123
       End
@@ -21,13 +21,13 @@ Describe "core/subjects/status.sh"
 
     Context 'when status is undefind'
       status() { false; }
-      Example 'should be failure'
+      It 'uses undefined as subject'
         When invoke shellspec_subject status _modifier_
         The status should be failure
       End
     End
 
-    Example 'outputs error if next word is missing'
+    It 'outputs error if next word is missing'
       When invoke shellspec_subject status
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

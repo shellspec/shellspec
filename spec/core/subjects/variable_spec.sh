@@ -6,42 +6,34 @@ Describe "core/subjects/variable.sh"
   Describe "variable subject"
     Context 'when var is foo'
       Before 'shellspec_set var=foo'
-      Example 'exampe'
+      Example 'example'
         The variable var should equal foo
         The '$var' should equal foo # shorthand
       End
     End
 
-    Context 'when var is "test<LF>"'
+    Context 'when the variable exists'
       Before 'shellspec_set var="test${LF}"'
-      Example 'should equal "test<LF>"'
+      It 'uses the value of variable as subject'
         When invoke shellspec_subject variable var _modifier_
         The entire stdout should equal "test${LF}"
       End
     End
 
-    Context 'when var is zero length string'
-      Before 'shellspec_set var='
-      Example 'should equal ""'
-        When invoke shellspec_subject variable var _modifier_
-        The entire stdout should equal ''
-      End
-    End
-
-    Context 'when var is undefined'
+    Context 'when the variable not exists'
       Before 'shellspec_unset var'
-      Example 'should be failure'
+      It 'uses undefined as subject'
         When invoke shellspec_subject variable var _modifier_
         The status should be failure
       End
     End
 
-    Example 'outputs error if value is missing'
+    It 'outputs error if value is missing'
       When invoke shellspec_subject variable
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
-    Example 'outputs error if next word is missing'
+    It 'outputs error if next word is missing'
       When invoke shellspec_subject variable var
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

@@ -15,12 +15,12 @@ Describe "core/matchers/eq.sh"
     Context 'when subject is "foo bar"'
       subject() { shellspec_puts "foo bar"; }
 
-      Example 'should equal "foo bar"'
+      It 'matches string "foo bar"'
         When invoke shellspec_matcher equal "foo bar"
         The status should be success
       End
 
-      Example 'should not equal "foo"'
+      It 'does not match string "foo"'
         When invoke shellspec_matcher equal "foo"
         The status should be failure
       End
@@ -28,19 +28,19 @@ Describe "core/matchers/eq.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'should not equal ""'
+      It 'does not match string ""'
         When invoke shellspec_matcher equal ""
         The status should be failure
       End
     End
 
-    Example 'outputs error if parameters is missing'
+    It 'outputs error if parameters is missing'
       When invoke shellspec_matcher equal
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher equal "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure

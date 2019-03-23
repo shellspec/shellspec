@@ -13,17 +13,17 @@ Describe "core/modifiers/status.sh"
       The status of 'foo()' should be success
     End
 
-    Context 'when subject is ok'
+    Context 'when subject is function that returns success'
       subject() { shellspec_puts ok; }
-      Example 'its status should be success'
+      It 'outputs success'
         When invoke shellspec_modifier status _modifier_
         The stdout should be success
       End
     End
 
-    Context 'when subject is not_ok'
+    Context 'when subject is function that returns failure'
       subject() { shellspec_puts not_ok; }
-      Example 'its status should be success'
+      It 'outputs failure'
         When invoke shellspec_modifier status _modifier_
         The stdout should be failure
       End
@@ -31,13 +31,13 @@ Describe "core/modifiers/status.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'cannot get status'
+      It 'does not outputs anything'
         When invoke shellspec_modifier status _modifier_
         The status should be failure
       End
     End
 
-    Example 'outputs error if next modifier is missing'
+    It 'outputs error if next modifier is missing'
       When invoke shellspec_modifier status
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

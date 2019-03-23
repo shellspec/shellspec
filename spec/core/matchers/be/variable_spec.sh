@@ -13,7 +13,7 @@ Describe "core/matchers/be/variable.sh"
 
     Context 'when subject is empty string'
       subject() { shellspec_puts; }
-      Example 'should be success'
+      It 'matches'
         When invoke shellspec_matcher be defined
         The status should be success
       End
@@ -21,13 +21,13 @@ Describe "core/matchers/be/variable.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'should be failure'
+      It 'does not match'
         When invoke shellspec_matcher be defined
         The status should be failure
       End
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher be defined foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -43,7 +43,7 @@ Describe "core/matchers/be/variable.sh"
 
     Context 'when subject is undefined'
       subject() { false; }
-      Example 'should be success'
+      It 'matches'
         When invoke shellspec_matcher be undefined
         The status should be success
       End
@@ -51,13 +51,13 @@ Describe "core/matchers/be/variable.sh"
 
     Context 'when subject is empty string'
       subject() { shellspec_puts; }
-      Example 'should be failure'
+      It 'does not match'
         When invoke shellspec_matcher be undefined
         The status should be failure
       End
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher be undefined foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -73,7 +73,7 @@ Describe "core/matchers/be/variable.sh"
 
     Context 'when subject is non zero length string'
       subject() { shellspec_puts x; }
-      Example 'should be success'
+      It 'matches'
         When invoke shellspec_matcher be present
         The status should be success
       End
@@ -81,7 +81,7 @@ Describe "core/matchers/be/variable.sh"
 
     Context 'when subject is zero length string'
       subject() { shellspec_puts; }
-      Example 'should be failure'
+      It 'does not match'
         When invoke shellspec_matcher be present
         The status should be failure
       End
@@ -89,13 +89,13 @@ Describe "core/matchers/be/variable.sh"
 
     Context 'when subject is undefind'
       subject() { false; }
-      Example 'should be failure'
+      It 'does not match'
         When invoke shellspec_matcher be present
         The status should be failure
       End
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher be present foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure
@@ -111,7 +111,7 @@ Describe "core/matchers/be/variable.sh"
 
     Context 'when subject is zero length string'
       subject() { shellspec_puts; }
-      Example 'should be success'
+      It 'matches'
         When invoke shellspec_matcher be blank
         The status should be success
       End
@@ -119,7 +119,7 @@ Describe "core/matchers/be/variable.sh"
 
     Context 'when subject is undefind'
       subject() { false; }
-      Example 'should be success'
+      It 'matches'
         When invoke shellspec_matcher be blank
         The status should be success
       End
@@ -127,13 +127,13 @@ Describe "core/matchers/be/variable.sh"
 
     Context 'when subject is non zero length string'
       subject() { shellspec_puts x; }
-      Example 'should be failure'
+      It 'does not match'
         When invoke shellspec_matcher be blank
         The status should be failure
       End
     End
 
-    Example 'outputs error if parameters count is invalid'
+    It 'outputs error if parameters count is invalid'
       When invoke shellspec_matcher be blank foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
       The status should be failure

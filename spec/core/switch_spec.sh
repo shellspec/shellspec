@@ -2,7 +2,7 @@
 
 Describe "core/switch.sh"
   Describe 'shellspec_on()'
-    Example "called then the switch should be on"
+    It "turns on the switch"
       When call shellspec_on DUMMY
       The switch DUMMY should satisfy switch_on
     End
@@ -11,19 +11,19 @@ Describe "core/switch.sh"
   Describe 'shellspec_off()'
     Before "SHELLSPEC_DUMMY=1"
 
-    Example "called then the switch should be off"
+    It "turns off the switch"
       When call shellspec_off DUMMY
       The switch DUMMY should satisfy switch_off
     End
   End
 
   Describe 'shellspec_toggle()'
-    Example "called then the switch should be on if condition is succeed"
+    It "turns on the switch if condition is succeed"
       When call shellspec_toggle DUMMY true
       The switch DUMMY should satisfy switch_on
     End
 
-    Example "called then the switch should be off if condition is failed"
+    It "turns off the switch if condition is failed"
       When call shellspec_toggle DUMMY false
       The switch DUMMY should satisfy switch_off
     End
@@ -32,7 +32,7 @@ Describe "core/switch.sh"
   Describe 'shellspec_if()'
     Context 'when switch is on'
       Before "shellspec_on DUMMY"
-      Example "returns true"
+      It "returns true"
         When call shellspec_if DUMMY
         The status should be success
       End
@@ -40,14 +40,14 @@ Describe "core/switch.sh"
 
     Context 'when switch is off'
       Before "shellspec_off DUMMY"
-      Example "returns false"
+      It "returns false"
         When call shellspec_if DUMMY
         The status should be failure
       End
     End
 
     Context 'when switch is undefined'
-      Example "returns false"
+      It "returns false"
         When call shellspec_if DUMMY
         The status should be failure
       End
@@ -57,7 +57,7 @@ Describe "core/switch.sh"
   Describe 'shellspec_unless()'
     Context 'when switch is on'
       Before "shellspec_on DUMMY"
-      Example "returns false"
+      It "returns false"
         When call shellspec_unless DUMMY
         The status should be failure
       End
@@ -65,14 +65,14 @@ Describe "core/switch.sh"
 
     Context 'when switch is off'
       Before "shellspec_off DUMMY"
-      Example "returns true"
+      It "returns true"
         When call shellspec_unless DUMMY
         The status should be success
       End
     End
 
     Context 'when switch is undefined'
-      Example "returns true"
+      It "returns true"
         When call shellspec_unless DUMMY
         The status should be success
       End

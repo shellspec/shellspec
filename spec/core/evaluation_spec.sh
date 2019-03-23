@@ -9,7 +9,7 @@ Describe "core/evaluation.sh"
   }
 
   Describe 'call evaluation'
-    Example 'output stdout and stderr'
+    It 'outputs to stdout and stderr'
       evaluation() { echo ok; echo err >&2; return 0; }
       When call evaluation
       The output should equal 'ok'
@@ -17,26 +17,26 @@ Describe "core/evaluation.sh"
       The status should equal 0
     End
 
-    Example 'can able to change variable.'
+    It 'can able to change variable.'
       evaluation() { VAR=456; }
       When call evaluation
       The value "$VAR" should equal 456
     End
 
-    Example 'not restore mocked function after evaluation'
+    It 'not restore mocked function after evaluation'
       echo_foo() { shellspec_puts 'foo'; }
       mock_foo() { echo_foo() { shellspec_puts 'FOO'; }; }
       When call mock_foo
       The output of 'echo_foo()' should equal 'FOO'
     End
 
-    Example 'calls shellspec_evaluation_cleanup() after evaluation'
+    It 'calls shellspec_evaluation_cleanup() after evaluation'
       evaluation() { return 123; }
       When invoke shellspec_evaluation_call evaluation
       The stdout should equal 'cleanup: 123'
     End
 
-    Example 'accepts evaluatable string'
+    It 'accepts evaluatable string'
       When call 'echo "${*:-}"' 1 2 3
       The stdout should equal '1 2 3'
     End
@@ -45,19 +45,19 @@ Describe "core/evaluation.sh"
   Describe 'run evaluation'
     cat() { echo "fake cat"; return 1; }
 
-    Example 'call external command'
+    It 'calls external command'
       When run cat /dev/null
       The status should equal 0
     End
 
-    Example 'calls shellspec_evaluation_cleanup() after evaluation'
+    It 'calls shellspec_evaluation_cleanup() after evaluation'
       When invoke shellspec_evaluation_run false
       The stdout should equal 'cleanup: 1'
     End
   End
 
   Describe 'invoke evaluation'
-    Example 'called then retrive stdout and stderr'
+    It 'called then retrives stdout and stderr'
       evaluation() { echo ok; echo err >&2; return 0; }
       When invoke evaluation
       The stdout should equal 'ok'
@@ -65,20 +65,20 @@ Describe "core/evaluation.sh"
       The status should equal 0
     End
 
-    Example 'can not able to change variable.'
+    It 'can not able to change variable.'
       evaluation() { VAR=456; }
       When invoke evaluation
       The value "$VAR" should equal 123
     End
 
-    Example 'restore mocked function after evaluation'
+    It 'restore mocked function after evaluation'
       echo_foo() { shellspec_puts 'foo'; }
       mock_foo() { echo_foo() { shellspec_puts 'FOO'; }; }
       When invoke mock_foo
       The output of 'echo_foo()' should equal 'foo'
     End
 
-    Example 'prevent exit.'
+    It 'prevents exit'
       shell_has_bug() {
         # I confirmed zsh 4.2.0. (there may be other things)
         (exit 123) &&:; [ $? -ne 123 ]
@@ -90,121 +90,105 @@ Describe "core/evaluation.sh"
       The status should equal 12
     End
 
-    Example 'calls shellspec_evaluation_cleanup() after evaluation'
+    It 'calls shellspec_evaluation_cleanup() after evaluation'
       evaluation() { return 123; }
       When invoke shellspec_evaluation_invoke evaluation
       The stdout should equal 'cleanup: 123'
     End
 
-    Example 'accepts evaluatable string'
+    It 'accepts evaluatable string'
       When invoke 'echo "${*:-}"' 1 2 3
       The stdout should equal '1 2 3'
     End
   End
 
   Describe 'shellspec_evaluation_cleanup()'
-    Context 'called with do not outputs anything and returns success'
+    It 'does not outputs anything and returns success'
       evaluation() { return 0; }
-      Example 'the switches and outputs are as follows'
-        When call evaluation
-        The switch UNHANDLED_STATUS should satisfy switch_off
-        The switch UNHANDLED_STDOUT should satisfy switch_off
-        The switch UNHANDLED_STDERR should satisfy switch_off
-        The stdout should equal ''
-        The stderr should equal ''
-        The status should equal 0
-      End
+      When call evaluation
+      The switch UNHANDLED_STATUS should satisfy switch_off
+      The switch UNHANDLED_STDOUT should satisfy switch_off
+      The switch UNHANDLED_STDERR should satisfy switch_off
+      The stdout should equal ''
+      The stderr should equal ''
+      The status should equal 0
     End
 
-    Context 'called with outputs to stdout and returns success'
+    It 'outputs to stdout and returns success'
       evaluation() { echo ok; return 0; }
-      Example 'the switches and outputs are as follows'
-        When call evaluation
-        The switch UNHANDLED_STATUS should satisfy switch_off
-        The switch UNHANDLED_STDOUT should satisfy switch_on
-        The switch UNHANDLED_STDERR should satisfy switch_off
-        The stdout should equal ok
-        The stderr should equal ''
-        The status should equal 0
-      End
+      When call evaluation
+      The switch UNHANDLED_STATUS should satisfy switch_off
+      The switch UNHANDLED_STDOUT should satisfy switch_on
+      The switch UNHANDLED_STDERR should satisfy switch_off
+      The stdout should equal ok
+      The stderr should equal ''
+      The status should equal 0
     End
 
-    Context 'called with outputs to stderr and returns success'
+    It 'outputs to stderr and returns success'
       evaluation() { echo err >&2; return 0; }
-      Example 'the switches and outputs are as follows'
-        When call evaluation
-        The switch UNHANDLED_STATUS should satisfy switch_off
-        The switch UNHANDLED_STDOUT should satisfy switch_off
-        The switch UNHANDLED_STDERR should satisfy switch_on
-        The stdout should equal ''
-        The stderr should equal 'err'
-        The status should equal 0
-      End
+      When call evaluation
+      The switch UNHANDLED_STATUS should satisfy switch_off
+      The switch UNHANDLED_STDOUT should satisfy switch_off
+      The switch UNHANDLED_STDERR should satisfy switch_on
+      The stdout should equal ''
+      The stderr should equal 'err'
+      The status should equal 0
     End
 
-    Context 'called with outputs to stdout and stderr and returns success'
+    It 'outputs to stdout and stderr and returns success'
       evaluation() { echo ok; echo err >&2; return 0; }
-      Example 'the switches and outputs are as follows'
-        When call evaluation
-        The switch UNHANDLED_STATUS should satisfy switch_off
-        The switch UNHANDLED_STDOUT should satisfy switch_on
-        The switch UNHANDLED_STDERR should satisfy switch_on
-        The stdout should equal 'ok'
-        The stderr should equal 'err'
-        The status should equal 0
-      End
+      When call evaluation
+      The switch UNHANDLED_STATUS should satisfy switch_off
+      The switch UNHANDLED_STDOUT should satisfy switch_on
+      The switch UNHANDLED_STDERR should satisfy switch_on
+      The stdout should equal 'ok'
+      The stderr should equal 'err'
+      The status should equal 0
     End
 
-    Context 'called with do not outputs anything and returns error'
+    It 'does not output anything and returns error'
       evaluation() { return 123; }
-      Example 'the switches and outputs are as follows'
-        When call evaluation
-        The switch UNHANDLED_STATUS should satisfy switch_on
-        The switch UNHANDLED_STDOUT should satisfy switch_off
-        The switch UNHANDLED_STDERR should satisfy switch_off
-        The stdout should equal ''
-        The stderr should equal ''
-        The status should equal 123
-      End
+      When call evaluation
+      The switch UNHANDLED_STATUS should satisfy switch_on
+      The switch UNHANDLED_STDOUT should satisfy switch_off
+      The switch UNHANDLED_STDERR should satisfy switch_off
+      The stdout should equal ''
+      The stderr should equal ''
+      The status should equal 123
     End
 
-    Context 'called with output to stdout and returns error'
+    It 'outputs to stdout and returns error'
       evaluation() { echo ok; return 123; }
-      Example 'the switches and outputs are as follows'
-        When call evaluation
-        The switch UNHANDLED_STATUS should satisfy switch_on
-        The switch UNHANDLED_STDOUT should satisfy switch_on
-        The switch UNHANDLED_STDERR should satisfy switch_off
-        The stdout should equal 'ok'
-        The stderr should equal ''
-        The status should equal 123
-      End
+      When call evaluation
+      The switch UNHANDLED_STATUS should satisfy switch_on
+      The switch UNHANDLED_STDOUT should satisfy switch_on
+      The switch UNHANDLED_STDERR should satisfy switch_off
+      The stdout should equal 'ok'
+      The stderr should equal ''
+      The status should equal 123
     End
 
-    Context 'called with output to stderr and returns error'
+    It 'outputs to stderr and returns error'
       evaluation() { echo err >&2; return 123; }
-      Example 'the switches and outputs are as follows'
-        When call evaluation
-        The switch UNHANDLED_STATUS should satisfy switch_on
-        The switch UNHANDLED_STDOUT should satisfy switch_off
-        The switch UNHANDLED_STDERR should satisfy switch_on
-        The stdout should equal ''
-        The stderr should equal 'err'
-        The status should equal 123
-      End
+      When call evaluation
+      The switch UNHANDLED_STATUS should satisfy switch_on
+      The switch UNHANDLED_STDOUT should satisfy switch_off
+      The switch UNHANDLED_STDERR should satisfy switch_on
+      The stdout should equal ''
+      The stderr should equal 'err'
+      The status should equal 123
     End
 
-    Context 'called with output to stdout and stderr and returns error'
+    It 'outputs to stdout and stderr and returns error'
       evaluation() { echo ok; echo err >&2; return 123; }
-      Example 'the switches and outputs are as follows'
-        When call evaluation
-        The switch UNHANDLED_STATUS should satisfy switch_on
-        The switch UNHANDLED_STDOUT should satisfy switch_on
-        The switch UNHANDLED_STDERR should satisfy switch_on
-        The stdout should equal 'ok'
-        The stderr should equal 'err'
-        The status should equal 123
-      End
+      When call evaluation
+      The switch UNHANDLED_STATUS should satisfy switch_on
+      The switch UNHANDLED_STDOUT should satisfy switch_on
+      The switch UNHANDLED_STDERR should satisfy switch_on
+      The stdout should equal 'ok'
+      The stderr should equal 'err'
+      The status should equal 123
     End
   End
 End
