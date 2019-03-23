@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+#shellcheck shell=sh
 
 % FILE: "$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
 
