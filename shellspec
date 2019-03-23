@@ -106,6 +106,7 @@ Usage: ${0##*/} [options] [files or directories]
   -s, --shell SHELL                   Specify a path of shell.
                                         default: current shell
       --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures (1 by default).
+  -e, --env NAME=VALUE                Set environment variable
 
   **** Output ****
 
@@ -155,6 +156,17 @@ parse_options() {
       -s | --shell)
         [ $# -ge 2 ] || abort 'Require SHELL.'
         SHELLSPEC_SHELL=$2 skip=2 ;;
+      -e | --env)
+        [ $# -ge 2 ] || abort 'Require NAME=VALUE.'
+        #shellcheck disable=SC2034
+        case $2 in
+          *=*) name=${2%%=*} value=${2#*=} ;;
+          *) name=$2 value= ;;
+        esac
+        case $name in ([!a-zA-Z_]*) abort 'Invalid environment name.'; esac
+        case $name in (*[!a-zA-Z0-9_]*) abort 'Invalid environment name.'; esac
+        eval "$name=\$value"
+        export "${name?}"; skip=2 ;;
       -r | --require)
         [ $# -ge 2 ] || abort 'Require PATH.'
         [ "$SHELLSPEC_REQUIRES" ] && SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES:"
