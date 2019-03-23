@@ -49,12 +49,7 @@ runner() {
 }
 
 reporter() {
-  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-reporter.sh" &&:
-  ret=$?
-  if [ $ret -ne 0 ] && [ $ret -ne "$SHELLSPEC_SPEC_FAILURE_CODE" ]; then
-    error "Raised error in reporter."
-  fi
-  return $ret
+  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-reporter.sh"
 }
 
 trans_log() {
@@ -75,6 +70,10 @@ error_handler() {
       error "$line"
     fi
   done
+  if [ "${first_error+x}" ]; then
+    error "The runner output error that can not handle by the reporter."
+    exit 1
+  fi
 }
 
 # I want to process with non-blocking output
@@ -85,10 +84,14 @@ error_handler() {
 [ $# -eq 0 ] && set -- 'spec'
 ( ( ( ( ( set -e; runner "$@"); echo $? >&5) \
   | reporter >&3; echo $? >&5) 2>&1 \
-  | error_handler >&4) 5>&1 \
+  | error_handler >&4; echo $? >&5) 5>&1 \
   | {
-      read -r xs1; read -r xs2
-      if [ "$xs2" -gt 0 ]; then exit "$xs2"; else exit "$xs1"; fi
+      read -r xs1; read -r xs2; read -r xs3
+      xs="[$xs1] [$xs2] [$xs3]"
+      if [ "$xs" != "[0] [0] [0]" ]; then
+        error "An unexpected error occurred in the runner or the reporter. $xs"
+        exit 1
+      fi
     }
 ) 3>&1 4>&2 &&:
 exit_status=$?

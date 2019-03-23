@@ -10,12 +10,9 @@ set -eu
 
 example_count=0 block_no=0 block_no_stack='' skip_id=0
 
-ABORT=''
-abort() { ABORT=$*; }
-
 block_example_group() {
   if [ "$inside_of_example" ]; then
-    abort "Describe/Context cannot be defined inside of Example"
+    syntax_error "Describe/Context cannot be defined inside of Example"
     return 0
   fi
 
@@ -32,7 +29,7 @@ block_example_group() {
 
 block_example() {
   if [ "$inside_of_example" ]; then
-    abort "Example/Todo cannot be defined inside of Example"
+    syntax_error "Example/Todo cannot be defined inside of Example"
     return 0
   fi
 
@@ -51,16 +48,12 @@ block_example() {
 
 block_end() {
   if [ -z "$block_no_stack" ]; then
-    abort "unexpected 'End'"
+    syntax_error "unexpected 'End'"
     return 0
   fi
 
   decrease_id
-  if [ "$ABORT" ]; then
-    putsn "}; SHELLSPEC_LINENO_END="
-  else
-    putsn "}; SHELLSPEC_LINENO_END=$lineno"
-  fi
+  putsn "}; SHELLSPEC_LINENO_END=$lineno"
   putsn "shellspec_block${block_no_stack##* }) ${1# }"
   block_no_stack="${block_no_stack% *}"
   inside_of_example=""
@@ -75,7 +68,7 @@ todo() {
 
 statement() {
   if [ -z "$inside_of_example" ]; then
-    abort "When/The/It cannot be defined outside of Example"
+    syntax_error "When/The/It cannot be defined outside of Example"
     return 0
   fi
 
@@ -86,7 +79,7 @@ statement() {
 control() {
   case $1 in (before|after)
     if [ "$inside_of_example" ]; then
-      abort "Before/After cannot be defined inside of Example"
+      syntax_error "Before/After cannot be defined inside of Example"
       return 0
     fi
   esac
@@ -119,7 +112,7 @@ data() {
           '#|'*) putsn "${line#??}" ;;
           '#'*) ;;
           End | End\ * ) break ;;
-          *) abort "Data texts should begin with '#|'"
+          *) syntax_error "Data texts should begin with '#|'"
             break ;;
         esac
       done
@@ -152,6 +145,10 @@ text() {
 text_end() {
   putsn "$delimiter"
   inside_of_text=''
+}
+
+error() {
+  syntax_error "${*:-}"
 }
 
 syntax_error() {
@@ -194,9 +191,9 @@ translate() {
       Data:raw )   data raw            "${work#$dsl}" ;;
       %text    )   text_begin expand   "${work#$dsl}" ;;
       %text:raw)   text_begin raw      "${work#$dsl}" ;;
+      Error    )   error               "${work#$dsl}" ;;
       *) putsn "$line" ;;
     esac
-    if [ "$ABORT" ]; then break; fi
   done
 }
 
@@ -209,17 +206,15 @@ putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_metadata"
 each_file() {
   ! is_specfile "$1" && return 0
+  putsn '('
   specfile=$1
   escape_quote specfile
   putsn "SHELLSPEC_SPECFILE='$specfile'"
-
-  putsn '('
   translate < "$specfile"
-  [ "$ABORT" ] && syntax_error "$ABORT"
   if [ "$block_no_stack" ]; then
-    [ "$ABORT" ] || syntax_error "unexpected end of file (expecting 'End')"
+    syntax_error "unexpected end of file (expecting 'End')"
+    lineno=
     while [ "$block_no_stack" ]; do
-      putsn "shellspec_abort"
       block_end ""
     done
   fi

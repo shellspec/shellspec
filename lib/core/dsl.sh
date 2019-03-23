@@ -65,7 +65,6 @@ shellspec_example() {
       fi
     }
 
-    shellspec_if ABORT && break
     shellspec_if SKIP && shellspec_output SKIPPED && break
     shellspec_output_if NOT_IMPLEMENTED && shellspec_output TODO && break
     shellspec_output_if UNHANDLED_STATUS && shellspec_on WARNED
@@ -179,10 +178,6 @@ shellspec_pending() {
 shellspec_debug() {
   shellspec_if SKIP && return 0
   shellspec_output DEBUG "${*:-}"
-}
-
-shellspec_abort() {
-    shellspec_on ABORT
 }
 
 shellspec_exit() {
