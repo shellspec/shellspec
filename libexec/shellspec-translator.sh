@@ -196,6 +196,8 @@ translate() {
       xExample ) x block_example       "${work#$dsl}" ;;
       Specify  )   block_example       "${work#$dsl}" ;;
       xSpecify ) x block_example       "${work#$dsl}" ;;
+      It       )   block_example       "${work#$dsl}" ;;
+      xIt      ) x block_example       "${work#$dsl}" ;;
       End      )   block_end           "${work#$dsl}" ;;
       Todo     )   todo                "${work#$dsl}" ;;
       When     )   statement when      "${work#$dsl}" ;;
