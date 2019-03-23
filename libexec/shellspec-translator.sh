@@ -16,6 +16,12 @@ block_example_group() {
     return 0
   fi
 
+  error=$(syntax_check ": $1") &&:
+  if [ $? -ne 0 ]; then
+    syntax_error "Describe/Context has occurred an error" "$error"
+    return 0
+  fi
+
   increasese_id
   block_no=$(($block_no + 1))
   putsn "(" \
@@ -29,7 +35,13 @@ block_example_group() {
 
 block_example() {
   if [ "$inside_of_example" ]; then
-    syntax_error "Example/Todo cannot be defined inside of Example"
+    syntax_error "It/Example/Specify/Todo cannot be defined inside of Example"
+    return 0
+  fi
+
+  error=$(syntax_check ": $1") &&:
+  if [ $? -ne 0 ]; then
+    syntax_error "It/Example/Specify/Todo has occurred an error" "$error"
     return 0
   fi
 
@@ -173,8 +185,14 @@ error() {
   syntax_error "${*:-}"
 }
 
+syntax_check() {
+  (eval "syntax_check_temporary_function() {
+    $1
+  }") 2>&1
+}
+
 syntax_error() {
-  putsn "shellspec_exit 2 \"Syntax error: ${*:-} in $specfile line $lineno\""
+  putsn "shellspec_exit 2 \"Syntax error: $1 in $specfile line $lineno\" \"${2:-}\""
 }
 
 translate() {

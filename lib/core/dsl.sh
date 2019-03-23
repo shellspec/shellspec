@@ -176,5 +176,6 @@ shellspec_debug() {
 shellspec_exit() {
   echo "${SHELLSPEC_LF}${SHELLSPEC_CAN}"
   echo "${2:-}" >&2
+  [ "${3:-}" ] && echo "${3:-}" >&2
   exit "${1:-1}"
 }
