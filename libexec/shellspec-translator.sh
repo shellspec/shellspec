@@ -147,6 +147,28 @@ text_end() {
   inside_of_text=''
 }
 
+is_constant_name() {
+  case $1 in ([!A-Z_]*) return 1; esac
+  case $1 in (*[!A-Z0-9_]*) return 1; esac
+}
+
+constant() {
+  if [ "$block_no_stack" ]; then
+    syntax_error "Constant should be defined outside of Example Group/Example"
+  return 0
+  fi
+
+  line=$1
+  trim line
+  name=${line%%:*} value=${line#*:}
+  trim value
+  if is_constant_name "$name"; then
+    ( eval "putsn $name=\\'$value\\'" ) ||:
+  else
+    syntax_error "Constant name should match pattern [A-Z_][A-Z0-9_]*"
+  fi
+}
+
 error() {
   syntax_error "${*:-}"
 }
@@ -191,6 +213,7 @@ translate() {
       Data:raw )   data raw            "${work#$dsl}" ;;
       %text    )   text_begin expand   "${work#$dsl}" ;;
       %text:raw)   text_begin raw      "${work#$dsl}" ;;
+      %)           constant            "${work#$dsl}" ;;
       Error    )   error               "${work#$dsl}" ;;
       *) putsn "$line" ;;
     esac
