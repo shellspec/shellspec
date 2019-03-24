@@ -250,6 +250,7 @@ if [ "$mode" = "runner" ] && [ $# -gt 0 ]; then
       warn "Filtering feature is not currently supported. ($specfile)"
       specfile=${specfile%:*}
     esac
+    [ -e "$specfile" ] || abort "Not found path: $specfile"
     shift
     set -- "$@" "$specfile"
   done
