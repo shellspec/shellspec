@@ -52,12 +52,12 @@ Describe 'Data helper'
     Describe 'variable expansion'
       Before name="world"
 
-      It 'expands the variable'
+      It 'not expands the variable'
         Data
           #|Hello $name
         End
         When call output
-        The output should eq 'Hello world'
+        The output should eq 'Hello $name'
       End
 
       It ':raw not expands the variable'
@@ -66,6 +66,14 @@ Describe 'Data helper'
         End
         When call output
         The output should eq 'Hello $name'
+      End
+
+      It ':expand expands the variable'
+        Data:expand
+          #|Hello $name
+        End
+        When call output
+        The output should eq 'Hello world'
       End
     End
   End

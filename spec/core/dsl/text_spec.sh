@@ -36,14 +36,14 @@ Describe '%text'
     The lines of value "$value" should eq 3
   End
 
-  It 'expands the variable'
+  It 'not expands the variable'
     hello() {
       %text
       #|Hello $1
     }
 
     When call hello world
-    The output should eq 'Hello world'
+    The output should eq 'Hello $1'
   End
 
   It ':raw not expands the variable'
@@ -56,14 +56,24 @@ Describe '%text'
     The output should eq 'Hello $1'
   End
 
-  It 'outputs to stdout and expands the variable with filter'
+  It ':expand expands the variable'
+    hello() {
+      %text:expand
+      #|Hello $1
+    }
+
+    When call hello world
+    The output should eq 'Hello world'
+  End
+
+  It 'outputs to stdout and not expands the variable with filter'
     hello() {
       %text | tr 'a-z_' 'A-Z_'
       #|Hello $1
     }
 
     When call hello world
-    The output should eq 'HELLO WORLD'
+    The output should eq 'HELLO $1'
   End
 
   It ':raw outputs to stdout and not expands the variable with filter'
@@ -74,5 +84,15 @@ Describe '%text'
 
     When call hello world
     The output should eq 'HELLO $1'
+  End
+
+  It 'outputs to stdout and expands the variable with filter'
+    hello() {
+      %text:expand | tr 'a-z_' 'A-Z_'
+      #|Hello $1
+    }
+
+    When call hello world
+    The output should eq 'HELLO WORLD'
   End
 End
