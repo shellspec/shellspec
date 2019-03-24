@@ -44,7 +44,7 @@ parse_lines() {
         buf=${line#?} ;;
       $STX)
         while IFS= read -r line && [ "$line" != "$ETX" ]; do
-          putsn "${WHITE}${UNDERLINE}$line${RESET}" >&2
+          putsn "${WHITE}${UNDERLINE}$line${RESET}"
         done ;;
       $CAN)
         [ -z "$buf" ] || parse_fields canceled "$buf"
