@@ -4,21 +4,21 @@
 . "$SHELLSPEC_LIB/general.sh"
 
 # Workaround for ksh (Version AJM 93u+ 2012-08-01)
-# ksh can not override existing function in some cases inside of sub shell.
+# ksh can not redefine existing function in some cases inside of sub shell.
 #
 # ```ksh
 # foo() { echo foo1; }
 # ( foo() { echo foo2; }; foo) # => output 'foo1', not 'foo2'
 # ````
 #
-# If you want to mocking function on ksh, use shellspec_mockable in spec helper
+# If you want to redefine function on ksh, use shellspec_redefinable in spec helper
 #
 if [ "$SHELLSPEC_SHELL_TYPE" = ksh ]; then
   # $1: function name
-  shellspec_mockable() { eval "alias $1='shellspec_mockable_ $1'"; }
-  shellspec_mockable_() { "$@"; }
+  shellspec_redefinable() { eval "alias $1='shellspec_redefinable_ $1'"; }
+  shellspec_redefinable_() { "$@"; }
 else
-  shellspec_mockable() { :; }
+  shellspec_redefinable() { :; }
 fi
 
 shellspec_terminate() {
