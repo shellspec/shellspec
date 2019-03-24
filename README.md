@@ -57,7 +57,7 @@ Describe 'sample' # Example group block
   Describe 'bc command'
     add() { echo "$1 + $2" | bc; }
 
-    Example 'perform addition' # Example block
+    It 'performs addition' # Example block
       When call add 2 3 # Evaluation
       The output should eq 5  # Expectation
     End
@@ -66,7 +66,7 @@ Describe 'sample' # Example group block
   Describe 'implemented by shell function'
     . ./mylib.sh # add() function defined
 
-    Example 'perform addition'
+    It 'performs addition'
       When call add 2 3
       The output should eq 5
     End
@@ -170,7 +170,7 @@ $ shellspec --init
 $ cat<<'HERE'>spec/hello_spec.sh
 Describe 'hello.sh'
   . lib/hello.sh
-  Example 'hello'
+  It 'says hello'
     When call hello shellspec
     The output should equal 'Hello shellspec!'
   End
@@ -209,6 +209,7 @@ You can write structured *Example* by below DSL.
 | Context ... End  | Synonym for `Describe`.                                                                      |
 | Example ... End  | Define a block for Example. write your example.                                              |
 | Specify ... End  | Synonym for `Example`.                                                                       |
+| It ... End       | Synonym for `Example`.                                                                       |
 | Todo             | Same as empty example, but not a block. One-liner syntax that it means to be implementation. |
 
 ### Nestable groups and scope
@@ -226,8 +227,8 @@ If you are interested in how to translate, use the `--translate` option.
 
 ### Temporarily skip block
 
-You want to temporary skip `Describe`, `Context`, `Example`, `Specify` block,
-add prefixing `x` and modify to `xDescribe`, `xContext`, `xExample`, `xSpecify`.
+You want to temporary skip `Describe`, `Context`, `Example`, `Specify`, `It` block,
+add prefixing `x` and modify to `xDescribe`, `xContext`, `xExample`, `xSpecify`, `xIt`.
 
 ### Hooks
 
@@ -244,7 +245,7 @@ Currentry, shellspec is not provide special function for mocking/stubbing.
 But redefine shell function can override existing shell function or external command.
 It can use as substitute as mocking/stubbing.
 
-Remember to `Describe`, `Context`, `Example`, `Specify` block running in subshell.
+Remember to `Describe`, `Context`, `Example`, `Specify`, `It` block running in subshell.
 When going out of the block will restore overridden function.
 
 ## Example
@@ -254,11 +255,13 @@ It constitute by maximum of one *Evaluation* and multiple *Expectations*.
 
 ### Evaluation
 
-Defines the action for verification. Maximum of one *Evaluation* for each *Example*.
+Defines the action for verification.  The evaluation is start with `When`
+Maximum of one *Evaluation* for each *Example*.
 
 ```
-When call             echo hello world
+When         call          echo hello world
      <- evaluation type ->
+<--------------- evaluation --------------->
 ```
 
 | DSL  | Description          |
@@ -278,7 +281,7 @@ Normally you will use `call`. `invoke` is similar to `call` but execute in subsh
 
 ### Expectation
 
-Defines the verifications.
+Defines the verifications. The expectation is start with `The`
 
 | DSL  | Description             |
 | :--- | :---------------------- |
@@ -289,29 +292,29 @@ Defines the verifications.
 This is the most basic Expectation. Evaluate the subject is the expected value.
 
 ```
-The output        should equal         4
+The    output     should      equal          4
     <- subject ->        <- matcher -> <- expected value ->
 ```
 
 *modifier* is modify *subject* before expectation.
 
 ```
-The line 2  of     output        should equal 4
-    <- modofier -> <- subject ->
+The     line 2     of    output      should equal 4
+    <- modofier ->    <- subject ->
 ```
 
 *modifier* is chainable.
 
 ```
-The word 1 of line 2  of    output        should equal 4
-    <- multiple modifier -> <- subject ->
+The     word 1     of      line 2    of    output     should equal 4
+    <- modifier ->    <- modifier ->    <- subject ->
 ```
 
 If modifier's first argument is number, you can use names for ordinal numbers.
 
 ```
-The second line of output        should equal 4
-    <- modofier -> <- subject ->
+The second line    of    output     should equal 4
+    <- modofier ->    <- subject ->
 ```
 
 #### Language chains
@@ -436,11 +439,11 @@ You can define short path name for long path for readability.
 for example
 
 ```sh
-Example 'not use path alias'
+It 'does not use path alias'
   The file "/etc/hosts" should be exist
 End
 
-Example 'use path alias'
+It 'uses path alias'
   File hosts="/etc/hosts"
   The file hosts should be exist
 End
@@ -460,7 +463,7 @@ Describe 'sample1'
     #|item3 369
   End
 
-  Example 'sum the second field by awk'
+  It 'sums the second field by awk'
     When call awk '{total+=$2} END{print total}'
     The output should eq 738
   End
@@ -468,7 +471,7 @@ End
 
 Describe 'sample2'
   Data '123 + 246 + 369'
-  Example 'calculate by bc'
+  It 'calculates by bc'
     When call bc
     The output should eq 738
   End
@@ -490,7 +493,7 @@ Describe 'sample3'
   }
 
   Data data
-  Example 'calculate by sum function from data function'
+  It 'calculates by sum function from data function'
     When call sum
     The output should eq 738
   End
@@ -606,25 +609,25 @@ To disable shows banner with `--no-banner` option.
 
 0.8.0 (not yet released)
 
- * Remove It statement.
- * Remove Set/Unset helper.
- * Remove string subject.
+ * Remove `It` statement and change `It` is alias of `Example` now.
+ * Remove `Set` / `Unset` helper.
+ * Remove `string` subject.
  * Remove `exit status` subject. (use `status` subject)
- * Change behavior of line and lines modifier to like "grep -c" not "wc -l".
- * Change function subject to alias for value subject.
- * Add Constant definition.
- * Add Data helper, Embedded text.
- * Add output and status modifier.
- * Add shorthand for function subject and variable subject.
- * Add failed message for before/after each hook.
+ * Change behavior of `line` and `lines` modifier to like "grep -c" not "wc -l".
+ * Change `function` subject to alias for `value` subject.
+ * Add `Constant definition`.
+ * Add `Data` helper, `Embedded text`.
+ * Add `output` and `status` modifier.
+ * Add shorthand for `function` subject and `variable` subject.
+ * Add failed message for `Before`/`After` each hook.
 
 0.7.0
 
- * Added lines modifier.
+ * Added `lines` modifier.
 
 0.6.0
 
- * Added match matcher.
+ * Added `match` matcher.
 
 0.5.0
 
