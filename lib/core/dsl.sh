@@ -169,7 +169,7 @@ shellspec_pending() {
 }
 
 shellspec_include() {
-  shellspec_before_hook ". $@"
+  shellspec_before_hook ". ${*:-}"
 }
 
 shellspec_debug() {

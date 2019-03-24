@@ -41,3 +41,18 @@ trim() {
 syntax_check() {
   (eval "{${LF}exit 0${LF}${1:-}${LF}}") 2>&1
 }
+
+is_constant_name() {
+  case $1 in ([!A-Z_]*) return 1; esac
+  case $1 in (*[!A-Z0-9_]*) return 1; esac
+}
+
+is_function_name() {
+  case $1 in ([!a-zA-Z_]*) return 1; esac
+  case $1 in (*[!a-zA-Z0-9_]*) return 1; esac
+}
+
+is_specfile() {
+  case $1 in (*_spec.sh) return 0; esac
+  return 1
+}

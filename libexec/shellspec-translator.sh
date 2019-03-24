@@ -16,8 +16,7 @@ block_example_group() {
     return 0
   fi
 
-  error=$(syntax_check ": $1") &&:
-  if [ $? -ne 0 ]; then
+  if ! error=$(syntax_check ": $1"); then
     syntax_error "Describe/Context has occurred an error" "$error"
     return 0
   fi
@@ -39,8 +38,7 @@ block_example() {
     return 0
   fi
 
-  error=$(syntax_check ": $1") &&:
-  if [ $? -ne 0 ]; then
+  if ! error=$(syntax_check ": $1"); then
     syntax_error "It/Example/Specify/Todo has occurred an error" "$error"
     return 0
   fi
@@ -159,16 +157,6 @@ text_end() {
   inside_of_text=''
 }
 
-is_constant_name() {
-  case $1 in ([!A-Z_]*) return 1; esac
-  case $1 in (*[!A-Z0-9_]*) return 1; esac
-}
-
-is_function_name() {
-  case $1 in ([!a-zA-Z_]*) return 1; esac
-  case $1 in (*[!a-zA-Z0-9_]*) return 1; esac
-}
-
 constant() {
   if [ "$block_no_stack" ]; then
     syntax_error "Constant should be defined outside of Example Group/Example"
@@ -198,8 +186,7 @@ define() {
   fi
 
   func="$name() {${LF}shellspec_puts $value${LF}}"
-  error=$(syntax_check "$func") &&:
-  if [ $? -ne 0 ]; then
+  if ! error=$(syntax_check "$func"); then
     syntax_error "Def has occurred an error" "$error"
     return 0
   fi
@@ -213,8 +200,7 @@ include() {
     return 0
   fi
 
-  error=$(syntax_check ": $1") &&:
-  if [ $? -ne 0 ]; then
+  if ! error=$(syntax_check ": $1"); then
     syntax_error "Include has occurred an error" "$error"
     return 0
   fi
@@ -271,16 +257,11 @@ translate() {
       %text       )   text_begin raw      "${work#$dsl}" ;;
       %text:raw   )   text_begin raw      "${work#$dsl}" ;;
       %text:expand)   text_begin expand   "${work#$dsl}" ;;
-      %)           constant            "${work#$dsl}" ;;
-      Error    )   error               "${work#$dsl}" ;;
+      %           )   constant            "${work#$dsl}" ;;
+      Error       )   error               "${work#$dsl}" ;;
       *) putsn "$line" ;;
     esac
   done
-}
-
-is_specfile() {
-  case $1 in (*_spec.sh) return 0; esac
-  return 1
 }
 
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
