@@ -168,6 +168,10 @@ shellspec_pending() {
   shellspec_if FAILED || shellspec_on PENDING
 }
 
+shellspec_include() {
+  shellspec_before_hook ". $@"
+}
+
 shellspec_debug() {
   shellspec_if SKIP && return 0
   shellspec_output DEBUG "${*:-}"

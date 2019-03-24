@@ -207,6 +207,21 @@ define() {
   putsn "$func"
 }
 
+include() {
+  if [ "$inside_of_example" ]; then
+    syntax_error "Include cannot be defined inside of Example"
+    return 0
+  fi
+
+  error=$(syntax_check ": $1") &&:
+  if [ $? -ne 0 ]; then
+    syntax_error "Include has occurred an error" "$error"
+    return 0
+  fi
+
+  putsn "shellspec_include $1"
+}
+
 error() {
   syntax_error "${*:-}"
 }
@@ -256,6 +271,7 @@ translate() {
       Data:raw    )   data raw            "${work#$dsl}" ;;
       Data:expand )   data expand         "${work#$dsl}" ;;
       Def         )   define              "${work#$dsl}" ;;
+      Include     )   include             "${work#$dsl}" ;;
       %text       )   text_begin raw      "${work#$dsl}" ;;
       %text:raw   )   text_begin raw      "${work#$dsl}" ;;
       %text:expand)   text_begin expand   "${work#$dsl}" ;;
