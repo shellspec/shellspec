@@ -39,5 +39,5 @@ trim() {
 }
 
 syntax_check() {
-  (eval "syntax_check_temporary_function() {${LF}${1:-}${LF}}") 2>&1
+  (eval "{${LF}exit 0${LF}${1:-}${LF}}") 2>&1
 }
