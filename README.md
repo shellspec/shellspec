@@ -64,7 +64,7 @@ Describe 'sample' # Example group block
   End
 
   Describe 'implemented by shell function'
-    . ./mylib.sh # add() function defined
+    Include ./mylib.sh # add() function defined
 
     It 'performs addition'
       When call add 2 3
@@ -169,7 +169,7 @@ $ shellspec --init
 # Write your first specfile (of course you can use your favorite editor)
 $ cat<<'HERE'>spec/hello_spec.sh
 Describe 'hello.sh'
-  . lib/hello.sh
+  Include lib/hello.sh
   It 'says hello'
     When call hello shellspec
     The output should equal 'Hello shellspec!'
@@ -426,6 +426,7 @@ other
 
 | DSL                                           | Description                                 |
 | :-------------------------------------------- | :------------------------------------------ |
+| Include `<NAME>`                              | Include other files per each example.       |
 | Path<br>File<br>Dir                           | Define [path alias](#path-alias).           |
 | Data `[ | FILTER ]`... End                    | Define stdin data for evaluation.           |
 | Data `<FUNCTION> [ARGUMENTS...] [ | FILTER ]` | Use function for stdin data for evaluation. |
