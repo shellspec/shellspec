@@ -164,6 +164,11 @@ is_constant_name() {
   case $1 in (*[!A-Z0-9_]*) return 1; esac
 }
 
+is_function_name() {
+  case $1 in ([!a-zA-Z_]*) return 1; esac
+  case $1 in (*[!a-zA-Z0-9_]*) return 1; esac
+}
+
 constant() {
   if [ "$block_no_stack" ]; then
     syntax_error "Constant should be defined outside of Example Group/Example"
@@ -181,14 +186,33 @@ constant() {
   fi
 }
 
+define() {
+  line=$1
+  trim line
+  name="${line%% *}"
+  case $line in (*" "*) value="${line#* }" ;; (*) value= ;; esac
+
+  if ! is_function_name "$name"; then
+    syntax_error "Def name should match pattern [a-zA-Z_][a-zA-Z0-9_]*"
+    return 0
+  fi
+
+  func="$name() {${LF}shellspec_puts $value${LF}}"
+  error=$(syntax_check "$func") &&:
+  if [ $? -ne 0 ]; then
+    syntax_error "Def has occurred an error" "$error"
+    return 0
+  fi
+
+  putsn "$func"
+}
+
 error() {
   syntax_error "${*:-}"
 }
 
 syntax_check() {
-  (eval "syntax_check_temporary_function() {
-    $1
-  }") 2>&1
+  (eval "syntax_check_temporary_function() {${LF}${1}${LF}}") 2>&1
 }
 
 syntax_error() {
@@ -231,6 +255,7 @@ translate() {
       Data        )   data raw            "${work#$dsl}" ;;
       Data:raw    )   data raw            "${work#$dsl}" ;;
       Data:expand )   data expand         "${work#$dsl}" ;;
+      Def         )   define              "${work#$dsl}" ;;
       %text       )   text_begin raw      "${work#$dsl}" ;;
       %text:raw   )   text_begin raw      "${work#$dsl}" ;;
       %text:expand)   text_begin expand   "${work#$dsl}" ;;
