@@ -11,7 +11,7 @@ Describe "core/matchers/match.sh"
     End
 
     Context 'when subject is foobarbaz'
-      subject() { shellspec_puts foobarbaz; }
+      Def subject "foobarbaz"
 
       It 'matches with pattern "foo*"'
         When invoke shellspec_matcher match "foo*"
@@ -25,7 +25,6 @@ Describe "core/matchers/match.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'does not match with pattern "*"'
         When invoke shellspec_matcher match "*"
         The status should be failure

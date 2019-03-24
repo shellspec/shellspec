@@ -10,7 +10,7 @@ Describe "core/modifiers/word.sh"
     End
 
     Context 'when subject is "foo  bar <TAB> baz <LF> qux"'
-      subject() { shellspec_puts "foo  bar $TAB baz $LF qux"; }
+      Def subject "foo  bar $TAB baz $LF qux"
 
       It 'get the second word as "bar"'
         When invoke shellspec_modifier word 2 _modifier_
@@ -29,7 +29,6 @@ Describe "core/modifiers/word.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'can not the get word'
         When invoke shellspec_modifier word 1 _modifier_
         The status should be failure

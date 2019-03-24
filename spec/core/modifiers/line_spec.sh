@@ -10,7 +10,7 @@ Describe "core/modifiers/line.sh"
     End
 
     Context 'when subject is "foo<LF>bar<LF>baz"'
-      subject() { shellspec_puts "foo${LF}bar${LF}baz"; }
+      Def subject "foo${LF}bar${LF}baz"
       It 'get the second line as "bar"'
         When invoke shellspec_modifier line 2 _modifier_
         The entire stdout should equal bar
@@ -18,7 +18,7 @@ Describe "core/modifiers/line.sh"
     End
 
     Context 'when subject is "foo<LF>"'
-      subject() { shellspec_puts "foo${LF}"; }
+      Def subject "foo${LF}"
       It 'can not get the second line'
         When invoke shellspec_modifier line 2 _modifier_
         The status should be failure
@@ -26,7 +26,7 @@ Describe "core/modifiers/line.sh"
     End
 
     Context 'when subject is "foo<LF><LF>"'
-      subject() { shellspec_puts "foo${LF}${LF}"; }
+      Def subject "foo${LF}${LF}"
       It 'get the second line as ""'
         When invoke shellspec_modifier line 2 _modifier_
         The entire stdout should equal ""
@@ -34,7 +34,7 @@ Describe "core/modifiers/line.sh"
     End
 
     Context 'when subject is empty string'
-      subject() { shellspec_puts ""; }
+      Def subject ""
       It 'can not get the first line'
         When invoke shellspec_modifier line 1 _modifier_
         The status should be failure
@@ -42,7 +42,7 @@ Describe "core/modifiers/line.sh"
     End
 
     Context 'when subject is "<LF>"'
-      subject() { shellspec_puts "${LF}"; }
+      Def subject "${LF}"
       It 'get the second line as ""'
         When invoke shellspec_modifier line 1 _modifier_
         The entire stdout should equal ""
@@ -50,7 +50,6 @@ Describe "core/modifiers/line.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'can not get the first line'
         When invoke shellspec_modifier line 2 _modifier_
         The status should be failure

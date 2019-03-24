@@ -13,7 +13,7 @@ Describe "core/subjects/stdout.sh"
     End
 
     Context 'when stdout is defined'
-      stdout() { shellspec_puts "test${LF}"; }
+      Def stdout "test${LF}"
       It "uses stdout as subject"
         When invoke shellspec_subject stdout _modifier_
         The entire stdout should equal 'test'
@@ -21,7 +21,6 @@ Describe "core/subjects/stdout.sh"
     End
 
     Context 'when stdout is undefined'
-      stdout() { false; }
       It "uses undefined as subject"
         When invoke shellspec_subject stdout _modifier_
         The status should be failure
@@ -43,7 +42,7 @@ Describe "core/subjects/stdout.sh"
     End
 
     Context 'when stdout is defined'
-      stdout() { shellspec_puts "test${LF}"; }
+      Def stdout "test${LF}"
       It "uses stdout including last LF as subject"
         When invoke shellspec_subject entire stdout _modifier_
         The entire stdout should equal "test${LF}"
@@ -51,7 +50,6 @@ Describe "core/subjects/stdout.sh"
     End
 
     Context 'when stdout is undefined'
-      stdout() { false; }
       It "uses undefined as subject"
         When invoke shellspec_subject entire stdout _modifier_
         The status should be failure

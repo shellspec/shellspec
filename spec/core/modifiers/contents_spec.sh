@@ -16,7 +16,7 @@ Describe "core/modifiers/contents.sh"
     End
 
     Context 'when file exists'
-      subject() { shellspec_puts "$FILE"; }
+      Def subject "$FILE"
       It 'reads the contents of the file'
         When invoke shellspec_modifier contents _modifier_
         The entire stdout should equal "$contents"
@@ -24,7 +24,7 @@ Describe "core/modifiers/contents.sh"
     End
 
     Context 'when file not exists'
-      subject() { shellspec_puts "$FILE.not-exists"; }
+      Def subject "$FILE.not-exists"
       It 'cannot reads the contents of the file'
         When invoke shellspec_modifier contents _modifier_
         The status should be failure
@@ -32,7 +32,6 @@ Describe "core/modifiers/contents.sh"
     End
 
     Context 'when file not specified'
-      subject() { false; }
       It 'cannot reads the contents of the file'
         When invoke shellspec_modifier contents _modifier_
         The status should be failure
@@ -55,7 +54,7 @@ Describe "core/modifiers/contents.sh"
     End
 
     Context 'when file exists'
-      subject() { shellspec_puts "$FILE"; }
+      Def subject "$FILE"
       It 'reads the entire contents of the file'
         When invoke shellspec_modifier entire contents _modifier_
         The entire stdout should equal "$contents"
@@ -63,7 +62,7 @@ Describe "core/modifiers/contents.sh"
     End
 
     Context 'when file not exists'
-      subject() { shellspec_puts "$FILE.not-exists"; }
+      Def subject "$FILE.not-exists"
       It 'can not reads the entire contents of the file'
         When invoke shellspec_modifier entire contents _modifier_
         The status should be failure
@@ -71,7 +70,6 @@ Describe "core/modifiers/contents.sh"
     End
 
     Context 'when file not specified'
-      subject() { false; }
       It 'can not read the entire contents of the file'
         When invoke shellspec_modifier entire contents _modifier_
         The status should be failure

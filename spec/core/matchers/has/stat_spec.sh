@@ -17,7 +17,7 @@ Describe "core/matchers/has/stat.sh"
     End
 
     Context 'when path has setgid flag'
-      subject() { shellspec_puts "$FIXTURE/stat/setgid"; }
+      Def subject "$FIXTURE/stat/setgid"
       It 'matches'
         When invoke shellspec_matcher has setgid
         The status should be success
@@ -25,7 +25,7 @@ Describe "core/matchers/has/stat.sh"
     End
 
     Context 'when path does not have setgid flag'
-      subject() { shellspec_puts "$FIXTURE/file"; }
+      Def subject "$FIXTURE/file"
       It 'does not match'
         When invoke shellspec_matcher has setgid
         The status should be failure
@@ -49,7 +49,7 @@ Describe "core/matchers/has/stat.sh"
     End
 
     Context 'when path has setuid flag'
-      subject() { shellspec_puts "$FIXTURE/stat/setuid"; }
+      Def subject "$FIXTURE/stat/setuid"
       It 'matches'
         When invoke shellspec_matcher has setuid
         The status should be success
@@ -57,7 +57,7 @@ Describe "core/matchers/has/stat.sh"
     End
 
     Context 'when path does not have setuid flag'
-      subject() { shellspec_puts "$FIXTURE/file"; }
+      Def subject "$FIXTURE/file"
       It 'does not match'
         When invoke shellspec_matcher has setuid
         The status should be failure

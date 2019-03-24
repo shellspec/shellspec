@@ -10,7 +10,7 @@ Describe "core/modifiers/length.sh"
     End
 
     Context 'when subject is defined'
-      subject() { shellspec_puts abcde; }
+      Def subject "abcde"
       It 'counts length'
         When invoke shellspec_modifier length _modifier_
         The stdout should equal 5
@@ -18,7 +18,6 @@ Describe "core/modifiers/length.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'can not counts length'
         When invoke shellspec_modifier length _modifier_
         The status should be failure

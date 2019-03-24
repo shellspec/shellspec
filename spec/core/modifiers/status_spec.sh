@@ -14,7 +14,7 @@ Describe "core/modifiers/status.sh"
     End
 
     Context 'when subject is function that returns success'
-      subject() { shellspec_puts ok; }
+      Def subject "ok"
       It 'outputs success'
         When invoke shellspec_modifier status _modifier_
         The stdout should be success
@@ -22,7 +22,7 @@ Describe "core/modifiers/status.sh"
     End
 
     Context 'when subject is function that returns failure'
-      subject() { shellspec_puts not_ok; }
+      Def subject "not_ok"
       It 'outputs failure'
         When invoke shellspec_modifier status _modifier_
         The stdout should be failure
@@ -30,7 +30,6 @@ Describe "core/modifiers/status.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'does not outputs anything'
         When invoke shellspec_modifier status _modifier_
         The status should be failure

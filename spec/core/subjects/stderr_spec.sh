@@ -13,7 +13,7 @@ Describe "core/subjects/stderr.sh"
     End
 
     Context 'when stderr is defined'
-      stderr() { shellspec_puts "test${LF}"; }
+      Def stderr "test${LF}"
       It 'uses stderr as subject'
         When invoke shellspec_subject stderr _modifier_
         The entire stdout should equal 'test'
@@ -21,7 +21,6 @@ Describe "core/subjects/stderr.sh"
     End
 
     Context 'when stderr is undefined'
-      stderr() { false; }
       It 'uses undefined as subject'
         When invoke shellspec_subject stderr _modifier_
         The status should be failure
@@ -43,7 +42,7 @@ Describe "core/subjects/stderr.sh"
     End
 
     Context 'when stderr is defined'
-      stderr() { shellspec_puts "test${LF}"; }
+      Def stderr "test${LF}"
       It 'uses stderr including last LF as subject'
         When invoke shellspec_subject entire stderr _modifier_
         The entire stdout should equal "test${LF}"
@@ -51,7 +50,6 @@ Describe "core/subjects/stderr.sh"
     End
 
     Context 'when stderr is undefined'
-      stderr() { false; }
       It 'uses undefined as subject'
         When invoke shellspec_subject entire stderr _modifier_
         The status should be failure

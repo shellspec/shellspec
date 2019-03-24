@@ -12,7 +12,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is empty string'
-      subject() { shellspec_puts; }
+      Def subject ""
       It 'matches'
         When invoke shellspec_matcher be defined
         The status should be success
@@ -20,7 +20,6 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'does not match'
         When invoke shellspec_matcher be defined
         The status should be failure
@@ -41,19 +40,18 @@ Describe "core/matchers/be/variable.sh"
       The variable var2 should not be undefined
     End
 
-    Context 'when subject is undefined'
-      subject() { false; }
-      It 'matches'
-        When invoke shellspec_matcher be undefined
-        The status should be success
-      End
-    End
-
     Context 'when subject is empty string'
-      subject() { shellspec_puts; }
+      Def subject ""
       It 'does not match'
         When invoke shellspec_matcher be undefined
         The status should be failure
+      End
+    End
+
+    Context 'when subject is undefined'
+      It 'matches'
+        When invoke shellspec_matcher be undefined
+        The status should be success
       End
     End
 
@@ -72,7 +70,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is non zero length string'
-      subject() { shellspec_puts x; }
+      Def subject "x"
       It 'matches'
         When invoke shellspec_matcher be present
         The status should be success
@@ -80,7 +78,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is zero length string'
-      subject() { shellspec_puts; }
+      Def subject ""
       It 'does not match'
         When invoke shellspec_matcher be present
         The status should be failure
@@ -88,7 +86,6 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is undefind'
-      subject() { false; }
       It 'does not match'
         When invoke shellspec_matcher be present
         The status should be failure
@@ -110,7 +107,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is zero length string'
-      subject() { shellspec_puts; }
+      Def subject ""
       It 'matches'
         When invoke shellspec_matcher be blank
         The status should be success
@@ -118,7 +115,6 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is undefind'
-      subject() { false; }
       It 'matches'
         When invoke shellspec_matcher be blank
         The status should be success
@@ -126,7 +122,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is non zero length string'
-      subject() { shellspec_puts x; }
+      Def subject "x"
       It 'does not match'
         When invoke shellspec_matcher be blank
         The status should be failure

@@ -17,7 +17,7 @@ Describe "core/matchers/be/valid.sh"
     End
 
     Context 'when subject is 123'
-      subject() { shellspec_puts 123; }
+      Def subject 123
       It 'matches'
         When invoke shellspec_matcher be valid as a number
         The stdout should equal "is:number 123"
@@ -25,7 +25,6 @@ Describe "core/matchers/be/valid.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'does not match'
         When invoke shellspec_matcher be valid as number
         The stdout should equal "is:number "
@@ -52,7 +51,7 @@ Describe "core/matchers/be/valid.sh"
     End
 
     Context 'when subject is foo_bar'
-      subject() { shellspec_puts foo_bar; }
+      Def subject "foo_bar"
       It 'matches'
         When invoke shellspec_matcher be valid as a funcname
         The stdout should equal "is:funcname foo_bar"
@@ -60,7 +59,6 @@ Describe "core/matchers/be/valid.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'does not match'
         When invoke shellspec_matcher be valid as funcname
         The stdout should equal "is:funcname "

@@ -12,7 +12,7 @@ Describe "core/modifiers/output.sh"
     End
 
     Context 'when subject is function'
-      subject() { shellspec_puts foo; }
+      Def subject "foo"
       It 'calls function and gets stdout'
         When invoke shellspec_modifier output _modifier_
         The stdout should equal ok
@@ -20,7 +20,6 @@ Describe "core/modifiers/output.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'can not calls function'
         When invoke shellspec_modifier output _modifier_
         The status should be failure

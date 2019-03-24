@@ -12,7 +12,7 @@ Describe "core/subjects/status.sh"
     End
 
     Context 'when status is defined'
-      status() { shellspec_puts 123; }
+      Def status 123
       It 'uses status as subject'
         When invoke shellspec_subject status _modifier_
         The stdout should equal 123
@@ -20,7 +20,6 @@ Describe "core/subjects/status.sh"
     End
 
     Context 'when status is undefind'
-      status() { false; }
       It 'uses undefined as subject'
         When invoke shellspec_subject status _modifier_
         The status should be failure

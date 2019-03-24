@@ -16,7 +16,7 @@ Describe "core/modifiers/lines.sh"
     End
 
     Context 'when subject is "foo<LF>bar<LF>" (without last LF)'
-      subject() { shellspec_puts "foo${LF}bar${LF}"; }
+      Def subject "foo${LF}bar${LF}"
       It 'counts as 2 lines'
         When invoke shellspec_modifier lines _modifier_
         The stdout should equal 2
@@ -24,7 +24,7 @@ Describe "core/modifiers/lines.sh"
     End
 
     Context 'when subject is "foo<LF>bar" (without last LF)'
-      subject() { shellspec_puts "foo${LF}bar"; }
+      Def subject "foo${LF}bar"
       It 'counts as 2 lines'
         When invoke shellspec_modifier lines _modifier_
         The stdout should equal 2
@@ -32,7 +32,7 @@ Describe "core/modifiers/lines.sh"
     End
 
     Context 'when subject is "foo<LF>bar<LF><LF>"'
-      subject() { shellspec_puts "foo${LF}bar${LF}${LF}"; }
+      Def subject "foo${LF}bar${LF}${LF}"
       It 'counts as 3 lines'
         When invoke shellspec_modifier lines _modifier_
         The stdout should equal 3
@@ -40,7 +40,7 @@ Describe "core/modifiers/lines.sh"
     End
 
     Context 'when subject is empty string'
-      subject() { shellspec_puts; }
+      Def subject ""
       It 'counts as 0 lines'
         When invoke shellspec_modifier lines _modifier_
         The stdout should equal 0
@@ -48,7 +48,6 @@ Describe "core/modifiers/lines.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'can not counts lines'
         When invoke shellspec_modifier lines _modifier_
         The status should be failure

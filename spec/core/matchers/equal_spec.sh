@@ -13,7 +13,7 @@ Describe "core/matchers/eq.sh"
     End
 
     Context 'when subject is "foo bar"'
-      subject() { shellspec_puts "foo bar"; }
+      Def subject "foo bar"
 
       It 'matches string "foo bar"'
         When invoke shellspec_matcher equal "foo bar"
@@ -27,7 +27,6 @@ Describe "core/matchers/eq.sh"
     End
 
     Context 'when subject is undefined'
-      subject() { false; }
       It 'does not match string ""'
         When invoke shellspec_matcher equal ""
         The status should be failure

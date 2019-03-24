@@ -430,6 +430,7 @@ other
 | Data `[ | FILTER ]`... End                    | Define stdin data for evaluation.           |
 | Data `<FUNCTION> [ARGUMENTS...] [ | FILTER ]` | Use function for stdin data for evaluation. |
 | Data `"<STRING>"`<br>Data `'<STRING>'`        | Use string for stdin data for evaluation.   |
+| Def `<NAME>` `<VALUE>`                        | Define function that output VALUE.          |
 | Debug                                         | Output debug message.                       |
 
 #### Path alias
@@ -617,6 +618,7 @@ To disable shows banner with `--no-banner` option.
  * Change `function` subject to alias for `value` subject.
  * Add `Constant definition`.
  * Add `Data` helper, `Embedded text`.
+ * Add `Def` helper.
  * Add `output` and `status` modifier.
  * Add shorthand for `function` subject and `variable` subject.
  * Add failed message for `Before`/`After` each hook.
