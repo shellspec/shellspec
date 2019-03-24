@@ -23,4 +23,18 @@ Describe "libexec/translator.sh"
       End
     End
   End
+
+  Describe "syntax_check()"
+    It 'succeeds with valid syntax'
+      When call syntax_check :
+      The status should be success
+      The stdout should not be present
+    End
+
+    It 'fail with invalid syntax'
+      When call syntax_check "'Unterminated quoted string"
+      The status should be failure
+      The stdout should be present
+    End
+  End
 End

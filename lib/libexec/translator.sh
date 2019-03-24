@@ -37,3 +37,7 @@ trim() {
     done
   "
 }
+
+syntax_check() {
+  (eval "syntax_check_temporary_function() {${LF}${1:-}${LF}}") 2>&1
+}

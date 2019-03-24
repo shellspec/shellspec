@@ -226,10 +226,6 @@ error() {
   syntax_error "${*:-}"
 }
 
-syntax_check() {
-  (eval "syntax_check_temporary_function() {${LF}${1}${LF}}") 2>&1
-}
-
 syntax_error() {
   putsn "shellspec_exit 2 \"Syntax error: $1 in $specfile line $lineno\" \"${2:-}\""
 }
