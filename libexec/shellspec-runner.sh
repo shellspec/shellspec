@@ -69,9 +69,11 @@ error_handler() {
     else
       case $line in
         ${SHELLSPEC_SYN}shellspec_marker:*)
-          line=${line#${SHELLSPEC_SYN}shellspec_marker:}
-          marker=${line%%${SHELLSPEC_TAB}*}
-          error_file=${line#*${SHELLSPEC_TAB}}
+          if [ "${first_error-1}" ]; then
+            line=${line#${SHELLSPEC_SYN}shellspec_marker:}
+            marker=${line%%${SHELLSPEC_TAB}*}
+            error_file=${line#*${SHELLSPEC_TAB}}
+          fi
           ;;
         *)
           [ "${first_error-1}" ] && first_error='' && error
