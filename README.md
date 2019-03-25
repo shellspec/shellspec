@@ -432,7 +432,7 @@ other
 | Data `<FUNCTION> [ARGUMENTS...] [ | FILTER ]` | Use function for stdin data for evaluation. |
 | Data `"<STRING>"`<br>Data `'<STRING>'`        | Use string for stdin data for evaluation.   |
 | Def `<NAME>` `<VALUE>`                        | Define function that output VALUE.          |
-| Debug                                         | Output debug message.                       |
+| Logger `<MESSAGE>`                            | Output log message.                         |
 
 #### Path alias
 
@@ -613,13 +613,16 @@ To disable shows banner with `--no-banner` option.
 
  * Remove `It` statement and change `It` is alias of `Example` now.
  * Remove `Set` / `Unset` helper.
+ * Remove `Debug` helper.
  * Remove `string` subject.
  * Remove `exit status` subject. (use `status` subject)
  * Change behavior of `line` and `lines` modifier to like "grep -c" not "wc -l".
  * Change `function` subject to alias for `value` subject.
+ * Improve handling unexpected errors.
  * Add `Constant definition`.
  * Add `Data` helper, `Embedded text`.
  * Add `Def` helper.
+ * Add `Logger` helper.
  * Add `output` and `status` modifier.
  * Add shorthand for `function` subject and `variable` subject.
  * Add failed message for `Before`/`After` each hook.
