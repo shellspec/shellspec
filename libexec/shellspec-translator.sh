@@ -27,6 +27,7 @@ block_example_group() {
     "SHELLSPEC_BLOCK_NO=$block_no" \
     "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
     "SHELLSPEC_LINENO_BEGIN=$lineno"
+  putsn "shellspec_marker \"$specfile\":$lineno"
   putsn "shellspec_block${block_no}() { shellspec_example_group $1"
   putsn "}; shellspec_yield${block_no}() { :;"
   block_no_stack="$block_no_stack $block_no"
@@ -48,8 +49,9 @@ block_example() {
   putsn "(" \
     "SHELLSPEC_BLOCK_NO=$block_no" \
     "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
-    "SHELLSPEC_EXAMPLE_NO=$example_count" \
-    "SHELLSPEC_LINENO_BEGIN=$lineno"
+    "SHELLSPEC_LINENO_BEGIN=$lineno" \
+    "SHELLSPEC_EXAMPLE_NO=$example_count"
+  putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { shellspec_example $1"
   putsn "}; shellspec_yield${block_no}() { :;"
   block_no_stack="$block_no_stack $block_no"
@@ -63,6 +65,7 @@ block_end() {
   fi
 
   decrease_id
+  putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "}; SHELLSPEC_LINENO_END=$lineno"
   putsn "shellspec_block${block_no_stack##* }) ${1# }"
   block_no_stack="${block_no_stack% *}"
@@ -218,7 +221,7 @@ syntax_error() {
 
 translate() {
   initialize_id
-  lineno=0 inside_of_example='' inside_of_text=''
+  inside_of_example='' inside_of_text=''
   while IFS= read -r line || [ "$line" ]; do
     lineno=$(($lineno + 1)) work=$line
     trim work
@@ -269,10 +272,12 @@ putsn "shellspec_metadata"
 each_file() {
   ! is_specfile "$1" && return 0
   putsn '('
-  specfile=$1
+  specfile=$1 lineno=0
   escape_quote specfile
   putsn "SHELLSPEC_SPECFILE='$specfile'"
+  putsn "shellspec_marker \"$specfile\" BOF"
   translate < "$specfile"
+  putsn "shellspec_marker \"$specfile\" EOF"
   if [ "$block_no_stack" ]; then
     syntax_error "unexpected end of file (expecting 'End')"
     lineno=

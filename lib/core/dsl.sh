@@ -176,6 +176,10 @@ shellspec_logger() {
   shellspec_output LOG "${*:-}"
 }
 
+shellspec_marker() {
+  shellspec_putsn "${SHELLSPEC_SYN}shellspec_marker:${*:-}${TAB}${SHELLSPEC_STDERR_FILE}" >&2
+}
+
 shellspec_exit() {
   echo "${SHELLSPEC_LF}${SHELLSPEC_CAN}"
   echo "${2:-}" >&2
