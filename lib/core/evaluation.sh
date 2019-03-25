@@ -11,7 +11,6 @@ shellspec_syntax 'shellspec_evaluation_invoke'
 shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
 shellspec_evaluation_call() {
-  shellspec_syntax_param count [ $# -gt 0 ] || return 0
   if ! shellspec_is funcname "$1"; then
     eval "shellspec_evaluation_eval() { $1; }"
     shift

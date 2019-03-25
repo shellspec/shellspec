@@ -96,24 +96,31 @@ shellspec_when() {
   shellspec_off NOT_IMPLEMENTED
 
   shellspec_if EVALUATION && {
-    shellspec_output SYNTAX_ERROR "Evaluation has already been executed"
+    shellspec_output SYNTAX_ERROR_EVALUATION \
+      "Evaluation has already been executed"
     shellspec_on FAILED
     return 0
   }
   shellspec_on EVALUATION
 
   shellspec_if EXPECTATION && {
-    shellspec_output SYNTAX_ERROR "Expectation has already been executed"
+    shellspec_output SYNTAX_ERROR_EVALUATION "Expectation has already been executed"
     shellspec_on FAILED
     return 0
   }
 
-  # shellcheck disable=SC2034
   if [ $# -eq 0 ]; then
-    shellspec_output SYNTAX_ERROR "missing Evaluation"
+    shellspec_output SYNTAX_ERROR_EVALUATION "Missing evaluation"
     shellspec_on FAILED
     return 0
   fi
+
+  if [ $# -eq 1 ]; then
+    shellspec_output SYNTAX_ERROR_EVALUATION "Missing evaluation type"
+    shellspec_on FAILED
+    return 0
+  fi
+
   shellspec_statement_evaluation "$@"
   shellspec_output EVALUATION
 }

@@ -119,9 +119,15 @@ shellspec_output_SYNTAX_ERROR() {
   shellspec_output_raw_append "failure_message:${1:-unknown syntax error}"
 }
 
+shellspec_output_SYNTAX_ERROR_EVALUATION() {
+  shellspec_output_raw statement "tag:bad" \
+    "message:${SHELLSPEC_EVALUATION:-}"
+  shellspec_output_raw_append "failure_message:${1:-unknown syntax error}"
+}
+
 shellspec_output_SYNTAX_ERROR_MATCHER_REQUIRED() {
   shellspec_output_raw statement "tag:bad" \
-    "message:[SYNTAX ERROR] ${SHELLSPEC_EXPECTATION:-}"
+    "message:${SHELLSPEC_EXPECTATION:-}"
   shellspec_output_raw_append "failure_message:A word is required after" \
     "$(shellspec_output_syntax_name)." \
     "The correct word is one of the following."
@@ -130,7 +136,7 @@ shellspec_output_SYNTAX_ERROR_MATCHER_REQUIRED() {
 
 shellspec_output_SYNTAX_ERROR_DISPATCH_FAILED() {
   shellspec_output_raw statement "tag:bad" \
-    "message:[SYNTAX ERROR] ${SHELLSPEC_EXPECTATION:-}"
+    "message:${SHELLSPEC_EXPECTATION:-}"
   [ "$1" = modifier ] && set -- "$1/verb" "${2:-}"
   if [ "${2:-}" ]; then
     shellspec_output_raw_append "failure_message:Unknown word '$2' after" \
@@ -146,7 +152,7 @@ shellspec_output_SYNTAX_ERROR_DISPATCH_FAILED() {
 
 shellspec_output_SYNTAX_ERROR_COMPOUND_WORD() {
   shellspec_output_raw statement "tag:bad" \
-    "message:[SYNTAX ERROR] ${SHELLSPEC_EXPECTATION:-}"
+    "message:${SHELLSPEC_EXPECTATION:-}"
   shellspec_output_raw_append "failure_message:The next word of" \
     "'${1##*_}' should be one of the following."
   shellspec_output_following_words "$1"
@@ -154,14 +160,14 @@ shellspec_output_SYNTAX_ERROR_COMPOUND_WORD() {
 
 shellspec_output_SYNTAX_ERROR_WRONG_PARAMETER_COUNT() {
   shellspec_output_raw statement "tag:bad" \
-    "message:[SYNTAX ERROR] ${SHELLSPEC_EXPECTATION:-}"
+    "message:${SHELLSPEC_EXPECTATION:-}"
   shellspec_output_raw_append "failure_message:Wrong parameter $1 of" \
     "$(shellspec_output_syntax_name)"
 }
 
 shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
   shellspec_output_raw statement "tag:bad" \
-    "message:[SYNTAX ERROR] ${SHELLSPEC_EXPECTATION:-}"
+    "message:${SHELLSPEC_EXPECTATION:-}"
   shellspec_output_raw_append "failure_message:The parameter #$1 of" \
     "$(shellspec_output_syntax_name) is not a $2"
 }

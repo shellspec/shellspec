@@ -182,7 +182,7 @@ Describe "core/dsl.sh"
       It 'is syntax error'
         When invoke shellspec_when call true
         The stdout line 1 should equal 'off:NOT_IMPLEMENTED'
-        The stdout line 2 should equal 'output:SYNTAX_ERROR'
+        The stdout line 2 should equal 'output:SYNTAX_ERROR_EVALUATION'
         The stdout line 3 should equal 'on:FAILED'
       End
     End
