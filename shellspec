@@ -129,7 +129,7 @@ Usage: ${0##*/} [options] [files or directories]
       --skip-message VERBOSE          Mute skip message
                                         none (do not mute any messages [default])
                                         moderate (mute repeated messages)
-                                        quiet (mute repeated and conditional skip messages)
+                                        quiet (mute repeated messages and non-temporarily messages)
 
   **** Utility ****
 

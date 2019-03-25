@@ -30,6 +30,7 @@ shellspec_output_EXAMPLE_END() {
 shellspec_output_SKIP() {
   if [ "${SHELLSPEC_SKIP_REASON:-}" ]; then
     set -- "message:Skipped because $SHELLSPEC_SKIP_REASON"
+    SHELLSPEC_CONDITIONAL_SKIP=1
   else
     set -- "message:Temporarily skipped"
   fi
