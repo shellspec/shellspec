@@ -254,6 +254,7 @@ translate() {
       Data:expand )   data expand         "${work#$dsl}" ;;
       Def         )   define              "${work#$dsl}" ;;
       Include     )   include             "${work#$dsl}" ;;
+      Logger      )   control logger      "${work#$dsl}" ;;
       %text       )   text_begin raw      "${work#$dsl}" ;;
       %text:raw   )   text_begin raw      "${work#$dsl}" ;;
       %text:expand)   text_begin expand   "${work#$dsl}" ;;

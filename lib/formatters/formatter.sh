@@ -45,7 +45,7 @@ methods() {
 
 conclusion_format() {
   [ "$field_type" = "statement" ] || return 0
-  [ "$field_tag" = "evaluation" ] && return 0
+  case $field_tag in (evaluation|log) return 0; esac
   [ "$example_index" ] || return 0
 
   conclusion_set_if_empty "${LF}Examples:${LF}"

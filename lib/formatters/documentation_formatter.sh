@@ -17,9 +17,16 @@ documentation_formatter() {
       esac
     fi
 
-    [ "$field_type" = "result" ] || return 0
-    set -- "${_indent}${field_color}${field_desc}"
-    [ "$example_index" ] && set -- "$@" "(${field_note:-} - $example_index)"
-    putsn "$*${RESET}"
+    case $field_type in
+      statement)
+        [ "$field_tag" = "log" ] || return 0
+        putsn "${_indent}${field_color}${field_message}${RESET}"
+        ;;
+      result)
+        set -- "${_indent}${field_color}${field_desc}"
+        [ "$example_index" ] && set -- "$@" "(${field_note:-} - $example_index)"
+        putsn "$*${RESET}"
+        ;;
+    esac
   }
 }

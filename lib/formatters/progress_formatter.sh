@@ -11,6 +11,7 @@ progress_formatter() {
       failed    ) puts "${field_color}F${RESET}" ;;
       todo      ) puts "${field_color}P${RESET}" ;;
       fixed     ) puts "${field_color}p${RESET}" ;;
+      log       ) puts "${field_color}${field_message}${RESET}${LF}" ;;
     esac
   }
 

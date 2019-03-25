@@ -4,7 +4,11 @@
 
 tap_formatter() {
   formatter_results_format() {
-    [ "${field_type:-}" = "result" ] || return 0
+    case ${field_type:-} in
+      statement) [ "${field_tag:-}" = "log" ] || return 0 ;;
+      result) ;;
+      *) return 0 ;;
+    esac
 
     : "${_buffering=1}"
 
@@ -28,6 +32,8 @@ tap_formatter() {
         _line="ok $field_example_no - $field_description # pending" ;;
       fixed)
         _line="not ok $field_example_no - $field_description # fixed" ;;
+      log)
+        _line="# $field_message" ;;
     esac
 
     if [ "$_buffering" ]; then

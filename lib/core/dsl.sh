@@ -172,6 +172,10 @@ shellspec_include() {
   shellspec_before_hook ". ${*:-}"
 }
 
+shellspec_logger() {
+  shellspec_output LOG "${*:-}"
+}
+
 shellspec_debug() {
   shellspec_if SKIP && return 0
   shellspec_output DEBUG "${*:-}"
