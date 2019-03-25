@@ -1,16 +1,6 @@
 #shellcheck shell=sh
 
-% FILE: "$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
-
 Describe "core/utils.sh"
-  Describe 'shellspec_readfile()'
-
-    It 'reads the file as is'
-      When call shellspec_readfile var "$FILE"
-      The variable var should equal "a${LF}${LF}"
-    End
-  End
-
   Describe 'shellspec_get_nth()'
     It 'fetch nth value seperate by ,'
       When call shellspec_get_nth var 3 ',' "a,b,c,d,e"

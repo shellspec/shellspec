@@ -1,6 +1,10 @@
 #shellcheck shell=sh
 
 shellspec_proxy includes shellspec_includes
+shellspec_proxy readfile shellspec_readfile
+shellspec_proxy trim shellspec_trim
+shellspec_proxy puts shellspec_puts
+shellspec_proxy putsn shellspec_putsn
 
 mktempdir() {
   (umask 0077; mkdir "$1"; chmod 0700 "$1")

@@ -1,5 +1,7 @@
 #shellcheck shell=sh disable=SC2016
 
+% FILE: "$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
+
 Describe "general.sh"
   Describe 'shellspec_reset_params()'
     reset_params() {
@@ -280,6 +282,33 @@ Describe "general.sh"
     It "passes through data that not end with LF"
       When call passthrough "a${SHELLSPEC_LF}b"
       The entire output should equal "a${SHELLSPEC_LF}b"
+    End
+  End
+
+  Describe 'shellspec_readfile()'
+    It 'reads the file as is'
+      When call shellspec_readfile var "$FILE"
+      The variable var should equal "a${LF}${LF}"
+    End
+  End
+
+  Describe "shellspec_trim()"
+    Before set_value
+
+    Context 'when value is abc'
+      set_value() { value="  abc"; }
+      It 'trims left space'
+        When call shellspec_trim value
+        The value "$value" should eq 'abc'
+      End
+    End
+
+    Context 'when value is <TAB><TAB>abc'
+      set_value() { value="${TAB}${TAB}abc"; }
+      It 'trims left tab'
+        When call shellspec_trim value
+        The value "$value" should eq 'abc'
+      End
     End
   End
 End

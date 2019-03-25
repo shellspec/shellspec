@@ -1,15 +1,5 @@
 #shellcheck shell=sh disable=SC2016
 
-shellspec_readfile() {
-  eval "$1=''"
-  # shellcheck disable=SC2034
-  while IFS= read -r shellspec_buf; do
-    eval "$1=\"\${$1}\$shellspec_buf$SHELLSPEC_LF\""
-  done < "$2"
-  eval "$1=\"\${$1}\$shellspec_buf\""
-  unset shellspec_buf
-}
-
 shellspec_get_nth() {
   shellspec_reset_params '"$1" "$2" $4' "$3"
   eval "$SHELLSPEC_RESET_PARAMS"

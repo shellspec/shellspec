@@ -296,3 +296,24 @@ shellspec_passthrough() {
   fi
   unset shellspec_passthrough_buffer
 }
+
+shellspec_readfile() {
+  eval "$1=''"
+  # shellcheck disable=SC2034
+  while IFS= read -r shellspec_buf; do
+    eval "$1=\"\${$1}\$shellspec_buf$SHELLSPEC_LF\""
+  done < "$2"
+  eval "$1=\"\${$1}\$shellspec_buf\""
+  unset shellspec_buf
+}
+
+shellspec_trim() {
+  eval "
+    while :; do
+      case \${$1} in
+        ' '* | '${SHELLSPEC_TAB}'*) $1=\${$1#?} ;;
+        *) break ;;
+      esac
+    done
+  "
+}

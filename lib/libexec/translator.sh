@@ -5,6 +5,7 @@ shellspec_proxy find_files shellspec_find_files
 shellspec_proxy puts shellspec_puts
 shellspec_proxy putsn shellspec_putsn
 shellspec_proxy escape_quote shellspec_escape_quote
+shellspec_proxy trim shellspec_trim
 
 shellspec_import posix
 shellspec_proxy unixtime shellspec_unixtime
@@ -28,14 +29,6 @@ increasese_id() {
 decrease_id() {
   [ "$id_state" = "end" ] && id=${id%:*}
   id_state="end"
-}
-
-trim() {
-  eval "
-    while :; do
-      case \${$1} in (' '* | '${TAB}'*) $1=\${$1#?} ;; (*) break ;; esac
-    done
-  "
 }
 
 syntax_check() {
