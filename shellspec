@@ -253,7 +253,11 @@ if [ "$mode" = "runner" ] && [ $# -gt 0 ]; then
     esac
     [ -e "$specfile" ] || abort "Not found path: $specfile"
     shift
-    set -- "$@" "$specfile"
+    if [ $# -eq 0 ]; then
+      set -- "$specfile"
+    else
+      set -- "$@" "$specfile"
+    fi
   done
 fi
 

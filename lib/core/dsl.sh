@@ -86,7 +86,7 @@ shellspec_example() {
 shellspec_statement() {
   shellspec_off SYNTAX_ERROR
   shellspec_if SKIP && return 0
-  eval "shift; shellspec_$1 \"\$@\""
+  eval "shift; shellspec_$1 ${2+\"\$@\"}"
   shellspec_if SYNTAX_ERROR && shellspec_on FAILED
   return 0
 }
@@ -129,11 +129,18 @@ shellspec_the() {
   SHELLSPEC_EXPECTATION="The ${*:-}"
   shellspec_off NOT_IMPLEMENTED
   shellspec_on EXPECTATION
+
+  if [ $# -eq 0 ]; then
+    shellspec_output SYNTAX_ERROR_EXPECTATION "Missing expectation"
+    shellspec_on FAILED
+    return 0
+  fi
+
   shellspec_statement_preposition "$@"
 }
 
-shellspec_before() { shellspec_before_hook "$@"; }
-shellspec_after()  { shellspec_after_hook "$@"; }
+shellspec_before() { eval shellspec_before_hook ${1+'"$@"'}; }
+shellspec_after()  { eval shellspec_after_hook ${1+'"$@"'}; }
 
 shellspec_path() {
   while [ $# -gt 0 ]; do

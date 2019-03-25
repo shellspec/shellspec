@@ -125,6 +125,12 @@ shellspec_output_SYNTAX_ERROR_EVALUATION() {
   shellspec_output_raw_append "failure_message:${1:-unknown syntax error}"
 }
 
+shellspec_output_SYNTAX_ERROR_EXPECTATION() {
+  shellspec_output_raw statement "tag:bad" \
+    "message:${SHELLSPEC_EXPECTATION:-}"
+  shellspec_output_raw_append "failure_message:${1:-unknown syntax error}"
+}
+
 shellspec_output_SYNTAX_ERROR_MATCHER_REQUIRED() {
   shellspec_output_raw statement "tag:bad" \
     "message:${SHELLSPEC_EXPECTATION:-}"
