@@ -164,7 +164,7 @@ text_end() {
 constant() {
   if [ "$block_no_stack" ]; then
     syntax_error "Constant should be defined outside of Example Group/Example"
-  return 0
+    return 0
   fi
 
   line=$1
