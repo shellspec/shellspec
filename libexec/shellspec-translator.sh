@@ -102,6 +102,7 @@ control() {
 
 skip() {
   skip_id=$(($skip_id + 1))
+  putsn "SHELLSPEC_SPECFILE=\"$specfile\" SHELLSPEC_LINENO=$lineno"
   putsn "shellspec_skip ${skip_id}${1:-}"
 }
 
