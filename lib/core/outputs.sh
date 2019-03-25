@@ -197,12 +197,6 @@ shellspec_output_SKIPPED() {
     "conditional:${SHELLSPEC_CONDITIONAL_SKIP:+yes}" "note:SKIPPED"
 }
 
-shellspec_output_DEBUG() {
-  shellspec_putsn "${shellspec_output_buf:-}$SHELLSPEC_STX"
-  shellspec_putsn "${@:-}"
-  shellspec_putsn "$SHELLSPEC_ETX"
-}
-
 shellspec_output_LOG() {
   shellspec_output_raw statement "tag:log" "message:${*:-}"
 }

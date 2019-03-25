@@ -22,10 +22,6 @@ debug_formatter() {
     putsn "${RESET}"
   }
 
-  formatter_debug() {
-    putsn "${BOLD}${BLACK}<STX>${RESET}${LF}$*${BOLD}${BLACK}<ETX>${RESET}"
-  }
-
   formatter_conclusion_format() { :; }
   formatter_conclusion_end() { :; }
   formatter_references_format() { :; }

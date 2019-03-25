@@ -176,11 +176,6 @@ shellspec_logger() {
   shellspec_output LOG "${*:-}"
 }
 
-shellspec_debug() {
-  shellspec_if SKIP && return 0
-  shellspec_output DEBUG "${*:-}"
-}
-
 shellspec_exit() {
   echo "${SHELLSPEC_LF}${SHELLSPEC_CAN}"
   echo "${2:-}" >&2

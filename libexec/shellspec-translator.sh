@@ -246,7 +246,6 @@ translate() {
       Dir         )   control path        "${work#$dsl}" ;;
       Before      )   control before      "${work#$dsl}" ;;
       After       )   control after       "${work#$dsl}" ;;
-      Debug       )   control debug       "${work#$dsl}" ;;
       Pending     )   control pending     "${work#$dsl}" ;;
       Skip        )   skip                "${work#$dsl}" ;;
       Data        )   data raw            "${work#$dsl}" ;;

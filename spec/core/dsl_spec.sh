@@ -448,27 +448,4 @@ Describe "core/dsl.sh"
       End
     End
   End
-
-  Describe "shellspec_debug()"
-    prepare() { :; }
-    shellspec_around_invoke() {
-      prepare
-      shellspec_output() { echo "output:$1"; }
-      "$@"
-    }
-
-    It 'outputs DEBUG'
-      When invoke shellspec_debug
-      The stdout should include 'output:DEBUG'
-    End
-
-    Context 'when skipped'
-      prepare() { shellspec_on SKIP; }
-
-      It 'does not outputs DEBUG'
-        When invoke shellspec_debug
-        The stdout should not include 'output:DEBUG'
-      End
-    End
-  End
 End
