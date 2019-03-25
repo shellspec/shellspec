@@ -191,7 +191,7 @@ shellspec_logger() {
 }
 
 shellspec_marker() {
-  shellspec_putsn "${SHELLSPEC_SYN}shellspec_marker:${*:-}${TAB}${SHELLSPEC_STDERR_FILE}" >&2
+  shellspec_putsn "${SHELLSPEC_SYN}shellspec_marker:${*:-}${SHELLSPEC_TAB}${SHELLSPEC_STDERR_FILE}" >&2
 }
 
 shellspec_exit() {
