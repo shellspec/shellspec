@@ -359,7 +359,7 @@ Describe 'mock stub sample'
   End
 
   Example 'use the date command'
-    # Date is not redefined because this is another subshell
+    # date is not redefined because this is another subshell
     When call unixtime
     The stdout should not eq 1546268400
   End
