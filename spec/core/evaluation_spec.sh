@@ -27,7 +27,7 @@ Describe "core/evaluation.sh"
       echo_foo() { shellspec_puts 'foo'; }
       mock_foo() { echo_foo() { shellspec_puts 'FOO'; }; }
       When call mock_foo
-      The output of 'echo_foo()' should equal 'FOO'
+      The result of 'echo_foo()' should equal 'FOO'
     End
 
     It 'calls shellspec_evaluation_cleanup() after evaluation'
@@ -75,7 +75,7 @@ Describe "core/evaluation.sh"
       echo_foo() { shellspec_puts 'foo'; }
       mock_foo() { echo_foo() { shellspec_puts 'FOO'; }; }
       When invoke mock_foo
-      The output of 'echo_foo()' should equal 'foo'
+      The result of 'echo_foo()' should equal 'foo'
     End
 
     It 'prevents exit'

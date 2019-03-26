@@ -12,7 +12,7 @@ Describe "libexec/runner.sh"
     It "makes tempdir"
       When call mktempdir "$dir"
       The status should be success
-      The output of 'entry()' should start with 'drwx------'
+      The result of 'entry()' should start with 'drwx------'
     End
   End
 
@@ -23,12 +23,12 @@ Describe "libexec/runner.sh"
       mktempdir "$dir"
       [ -d "$dir" ] && [ -w "$dir" ]
     }
-    exists_tempdir() { [ -e "$dir" ]; }
 
     It "deletes tempdir"
+      Path tempdir="$dir"
       When call rmtempdir "$dir"
       The status should be success
-      The status of 'exists_tempdir()' should be failure
+      The path tempdir should not be exist
     End
   End
 
