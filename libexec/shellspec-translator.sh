@@ -261,7 +261,7 @@ translate() {
       %text       )   text_begin raw      "${work#$dsl}" ;;
       %text:raw   )   text_begin raw      "${work#$dsl}" ;;
       %text:expand)   text_begin expand   "${work#$dsl}" ;;
-      %           )   constant            "${work#$dsl}" ;;
+      % | %const  )   constant            "${work#$dsl}" ;;
       Error       )   error               "${work#$dsl}" ;;
       *) putsn "$line" ;;
     esac
