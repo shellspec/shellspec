@@ -214,7 +214,7 @@ If you are interested in how to translate, use the `--translate` option.
 
 ### Samples
 
-**The best place to learn DSL is [sample](/sample) directory. You must see it!**
+**The best place to learn DSL is [sample/spec](/sample/spec) directory. You must see it!**
 
 *Be ware that those specfiles includes failure examples.*
 
@@ -429,7 +429,7 @@ There is more *subject*, *modifier*, *matcher*. please refer to the
 shellspec has extensible architecture. So you can create custom matcher,
 custom modifier, custom formatter, etc...
 
-see [sample](sample/spec/support/custom_matcher.sh) for custom matcher.
+see [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
 
 ## shellspec command
 
