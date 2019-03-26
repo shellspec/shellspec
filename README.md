@@ -30,7 +30,7 @@ BDD style testing framework for POSIX compatible shell script.
     - [Input from stdin (Data)](#input-from-stdin-data)
   - [Mock and Stub](#mock-and-stub)
   - [Directive](#directive)
-    - [Constant difinition (%const)](#constant-difinition-const)
+    - [Constant definition (%const)](#constant-definition-const)
     - [Embedded text (%text)](#embedded-text-text)
   - [More syntax (subject/modifier/matcher/etc.)](#more-syntax-subjectmodifiermatcheretc)
   - [Custom matcher](#custom-matcher)
@@ -368,7 +368,7 @@ End
 
 ### Directive
 
-#### Constant difinition (%const)
+#### Constant definition (%const)
 
 `%const` (`%` is short hand) directive is define constant value. The characters
 that can be used for variable name is upper capital, number and underscore only.
@@ -467,7 +467,7 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
-0.8.0 (not yet released)
+0.8.0
 
  * Remove `It` statement and change `It` is alias of `Example` now.
  * Remove `Set` / `Unset` helper.
