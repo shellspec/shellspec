@@ -1,8 +1,8 @@
 #shellcheck shell=sh disable=SC2004
 
-shellspec_callback() { eval "SHELLSPEC_ORDINAL_$1=$2"; }
+shellspec_callback() { eval "SHELLSPEC_ORDINAL_$1=$(($2 - 1))"; }
 shellspec_each shellspec_callback \
-  first second third fourth fifth sixth seventh eighth ninth tenth \
+  zeroth first second third fourth fifth sixth seventh eighth ninth tenth \
   eleventh twelfth thirteenth fourteenth fifteenth \
   sixteenth seventeenth eighteenth nineteenth twentieth
 
