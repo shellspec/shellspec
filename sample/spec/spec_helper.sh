@@ -9,6 +9,5 @@
 #  If you have trouble in redefine function on ksh, try using shellspec_redefinable.
 
 shellspec_spec_helper_configure() {
-  # shellspec_import 'support/custom_matcher'
-  :
+  shellspec_import 'support/custom_matcher'
 }
