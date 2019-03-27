@@ -19,12 +19,15 @@ You can write structured *Example* by below DSL.
 | :--------------- | :------------------------------------------------------------------------------------------- |
 | Describe ... End | Define a block for Example group. Example group is nestable.                                 |
 | Context ... End  | Synonym for `Describe`.                                                                      |
+
+## Example
+
+| DSL              | Description                                                                                  |
+| :--------------- | :------------------------------------------------------------------------------------------- |
 | Example ... End  | Define a block for Example. write your example.                                              |
 | Specify ... End  | Synonym for `Example`.                                                                       |
 | It ... End       | Synonym for `Example`.                                                                       |
 | Todo             | Same as empty example, but not a block. One-liner syntax that it means to be implementation. |
-
-## Example
 
 ### Evaluation
 
