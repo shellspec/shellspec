@@ -252,6 +252,7 @@ putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_metadata"
 each_file() {
   ! is_specfile "$1" && return 0
+  [ "$SHELLSPEC_SYNTAX_CHECK" ] && $SHELLSPEC_SHELL -n "$1"
   putsn '('
   specfile=$1 lineno=0
   escape_quote specfile

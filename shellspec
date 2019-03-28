@@ -25,6 +25,7 @@ export SHELLSPEC_UNEXPECTED_STDERR=102
 export SHELLSPEC_SKIP_MESSAGE=none
 export SHELLSPEC_WARNINGS=error
 export SHELLSPEC_FAIL_FAST_COUNT=''
+export SHELLSPEC_SYNTAX_CHECK=1
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
@@ -114,6 +115,7 @@ Usage: ${0##*/} [options] [files or directories]
                                         notice (show warnings but not treats as error)
                                         error (show warnings and treats as error [default])
                                         failure (treats warnings as failures)
+      --[no-]syntax-check             Auto syntax check of specfile
 
   **** Output ****
 
@@ -185,6 +187,8 @@ parse_options() {
           *) abort 'Invalid LEVEL.'
         esac
         SHELLSPEC_WARNINGS="$2" skip=2 ;;
+      --syntax-check) SHELLSPEC_SYNTAX_CHECK=1 ;;
+      --no-syntax-check) SHELLSPEC_SYNTAX_CHECK= ;;
       --skip-message)
         [ $# -ge 2 ] || abort 'Require VERBOSE.'
         case $2 in
@@ -241,6 +245,14 @@ SHELLSPEC_SHELL=$shell
 
 if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
   abort "Unsupported shell (require arithmetic expansion): $SHELLSPEC_SHELL"
+fi
+
+if [ "$SHELLSPEC_SYNTAX_CHECK" ]; then
+  if ! $SHELLSPEC_SHELL -n -c ':' 2>/dev/null; then
+    warn "The current shell does not support the -n option: $SHELLSPEC_SHELL"
+    warn "The syntax check feature is disabled"
+    SHELLSPEC_SYNTAX_CHECK=''
+  fi
 fi
 
 exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
