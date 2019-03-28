@@ -138,7 +138,6 @@ detect_range() {
 # and capture stderr both of the runner and the reporter
 # and the stderr streams to error hander
 # and also handle both exit status. As a result of
-[ $# -eq 0 ] && set -- 'spec'
 ( ( ( ( ( set -e; runner "$@"); echo $? >&5) \
   | reporter >&3; echo $? >&5) 2>&1 \
   | error_handler >&4; echo $? >&5) 5>&1 \

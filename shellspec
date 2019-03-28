@@ -257,7 +257,8 @@ fi
 
 exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
 
-if [ "$mode" = "runner" ] && [ $# -gt 0 ]; then
+case $mode in (runner|translator)
+  [ $# -eq 0 ] && set -- 'spec'
   for specfile in "$@"; do
     case $specfile in (*:*)
       warn "Filtering feature is not currently supported. ($specfile)"
@@ -271,6 +272,6 @@ if [ "$mode" = "runner" ] && [ $# -gt 0 ]; then
       set -- "$@" "$specfile"
     fi
   done
-fi
+esac
 
 eval exec "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'}
