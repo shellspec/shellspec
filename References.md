@@ -15,19 +15,19 @@
 
 You can write structured *Example* by below DSL.
 
-| DSL              | Description                                                                                  |
-| :--------------- | :------------------------------------------------------------------------------------------- |
-| Describe ... End | Define a block for Example group. Example group is nestable.                                 |
-| Context ... End  | Synonym for `Describe`.                                                                      |
+| DSL              | Description                                                  |
+| :--------------- | :----------------------------------------------------------- |
+| Describe ... End | Define a block for Example group. Example group is nestable. |
+| Context ... End  | Synonym for `Describe`.                                      |
 
 ## Example
 
-| DSL              | Description                                                                                  |
-| :--------------- | :------------------------------------------------------------------------------------------- |
-| Example ... End  | Define a block for Example. write your example.                                              |
-| Specify ... End  | Synonym for `Example`.                                                                       |
-| It ... End       | Synonym for `Example`.                                                                       |
-| Todo             | Same as empty example, but not a block. One-liner syntax that it means to be implementation. |
+| DSL             | Description                                                                                  |
+| :-------------- | :------------------------------------------------------------------------------------------- |
+| Example ... End | Define a block for Example. write your example.                                              |
+| Specify ... End | Synonym for `Example`.                                                                       |
+| It ... End      | Synonym for `Example`.                                                                       |
+| Todo            | Same as empty example, but not a block. One-liner syntax that it means to be implementation. |
 
 ### Evaluation
 
@@ -134,7 +134,7 @@ other
 
 | DSL                                            | Description                                       |
 | :--------------------------------------------- | :------------------------------------------------ |
-| Include `<NAME>`                               | Include other files per each example.             |
+| Include `<NAME>`                               | Include other files.                              |
 | Before                                         | Define a hook called before running each example. |
 | After                                          | Define a hook called after running each example.  |
 | Path<br>File<br>Dir                            | Define path alias.                                |
