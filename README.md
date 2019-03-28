@@ -484,6 +484,7 @@ To disable shows banner with `--no-banner` option.
  * Add `Def` helper.
  * Add `Logger` helper.
  * Add `result` modifier.
+ * Add `Include` helper.
  * Add shorthand for `function` subject and `variable` subject.
  * Add failed message for `Before`/`After` each hook.
 
