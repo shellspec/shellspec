@@ -16,11 +16,6 @@ block_example_group() {
     return 0
   fi
 
-  if ! error=$(syntax_check ": $1"); then
-    syntax_error "Describe/Context has occurred an error" "$error"
-    return 0
-  fi
-
   increasese_id
   block_no=$(($block_no + 1))
   putsn "(" \
@@ -36,11 +31,6 @@ block_example_group() {
 block_example() {
   if [ "$inside_of_example" ]; then
     syntax_error "It/Example/Specify/Todo cannot be defined inside of Example"
-    return 0
-  fi
-
-  if ! error=$(syntax_check ": $1"); then
-    syntax_error "It/Example/Specify/Todo has occurred an error" "$error"
     return 0
   fi
 
@@ -190,22 +180,12 @@ define() {
   fi
 
   func="$name() {${LF}shellspec_puts $value${LF}}"
-  if ! error=$(syntax_check "$func"); then
-    syntax_error "Def has occurred an error" "$error"
-    return 0
-  fi
-
   putsn "$func"
 }
 
 include() {
   if [ "$inside_of_example" ]; then
     syntax_error "Include cannot be defined inside of Example"
-    return 0
-  fi
-
-  if ! error=$(syntax_check ": $1"); then
-    syntax_error "Include has occurred an error" "$error"
     return 0
   fi
 

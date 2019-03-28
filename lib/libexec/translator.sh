@@ -31,10 +31,6 @@ decrease_id() {
   id_state="end"
 }
 
-syntax_check() {
-  (eval "{${LF}exit 0${LF}${1:-}${LF}}") 2>&1
-}
-
 is_constant_name() {
   case $1 in ([!A-Z_]*) return 1; esac
   case $1 in (*[!A-Z0-9_]*) return 1; esac
