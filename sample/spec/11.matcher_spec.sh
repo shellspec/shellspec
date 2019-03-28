@@ -46,7 +46,7 @@ Describe 'matcher sample'
     Describe 'be defined'
       prepare() { var=''; }
       It 'checks if variable is defined'
-        The variable var should be defined
+        The value "$var" should be defined
       End
     End
 
@@ -60,14 +60,14 @@ Describe 'matcher sample'
     Describe 'be present'
       prepare() { var=123; }
       It 'checks if variable is present'
-        The variable var should be present # non-zero length string
+        The value "$var" should be present # non-zero length string
       End
     End
 
     Describe 'be blank'
       prepare() { var=""; }
       It 'checks if variable is blank'
-        The variable var should be blank # unset or zero length string
+        The value "$var" should be blank # unset or zero length string
       End
     End
   End

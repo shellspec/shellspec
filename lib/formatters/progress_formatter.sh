@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-: "${field_tag:-}" "${field_color:-}"
+: "${field_tag:-}" "${field_color:-}" "${field_message:-}"
 
 progress_formatter() {
   formatter_results_format() {

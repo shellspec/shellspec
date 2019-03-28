@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2034
+#shellcheck shell=sh
 
 Describe 'include helper sample'
   Describe 'include helper'

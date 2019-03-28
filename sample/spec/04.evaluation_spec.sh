@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2034
+#shellcheck shell=sh disable=SC2016
 
 Describe 'evaluation sample'
   Describe 'call evaluation'
@@ -58,7 +58,7 @@ Describe 'evaluation sample'
     It 'can not modify variable because it run with in subshell'
       set_value() { SHELLSPEC_VERSION=$1; }
       When invoke set_value 'no-version'
-      The variable SHELLSPEC_VERSION should not eq 'no-version'
+      The value "$SHELLSPEC_VERSION" should not eq 'no-version'
     End
 
     It 'calls shellspec_around_invoke hook'

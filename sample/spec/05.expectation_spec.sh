@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2034
+#shellcheck shell=sh
 
 Describe 'expectation sample'
   It 'is succeeds because expectation is successful'
@@ -21,7 +21,7 @@ Describe 'expectation sample'
     }
     When call foo
     The output should eq "foo"
-    The variable value should eq 123
+    The value "$value" should eq 123
     The status should eq 1
   End
 End

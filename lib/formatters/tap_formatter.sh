@@ -1,6 +1,7 @@
 #shellcheck shell=sh
 
 : "${field_example_no:-}"  "${field_tag:-}" "${field_description:-}"
+: "${field_message:-}"
 
 tap_formatter() {
   formatter_results_format() {

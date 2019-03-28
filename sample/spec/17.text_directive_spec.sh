@@ -72,9 +72,11 @@ Describe '%text directive'
   It 'outputs texts with more complex code'
     output() {
       if true; then
-        for i in 1 2 3 4 5; do
+        set -- 1 2 3 4 5
+        while [ $# -gt 0 ]; do
           %text:expand | tr 'a-z_' 'A-Z_'
-          #|value $((i * 10))
+          #|value $(($1 * 10))
+          shift
         done
       else
         %text

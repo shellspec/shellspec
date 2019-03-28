@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+#shellcheck shell=sh
 
 Describe 'mock stub sample'
   unixtime() { date +%s; }

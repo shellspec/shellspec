@@ -1,4 +1,5 @@
 #!/bin/sh
+#shellcheck disable=SC2004
 
 set -eu
 
@@ -117,7 +118,7 @@ is_block_statement() {
 }
 
 detect_range() {
-  lineno_begin=$1 lineno_end= lineno=0
+  lineno_begin=$1 lineno_end='' lineno=0
   while IFS= read -r line || [ "$line" ]; do
     trim line
     line=${line%% *}

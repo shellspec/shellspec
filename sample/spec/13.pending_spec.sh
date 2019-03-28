@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2034
+#shellcheck shell=sh
 
 # Pending is better than skip in some case. Skip is just only skips,
 # but Pending is runs example and decide the success or failure.

@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+#shellcheck shell=sh
 
 %const NAME: value
 % MAJOR_VERSION: "${SHELLSPEC_VERSION%%.*}"

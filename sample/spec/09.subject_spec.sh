@@ -67,7 +67,6 @@ Describe 'subject sample'
     It 'uses the variable as the subject'
       When call func
       The variable var should eq 456
-      The '$var' should eq 456 # shorthand for function
     End
   End
 

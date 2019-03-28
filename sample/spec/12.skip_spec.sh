@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2034
+#shellcheck shell=sh
 
 Describe 'skip sample'
   Describe 'calc()'

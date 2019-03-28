@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 : "${example_index:-}" "${field_tag:-}" "${field_type:-}" "${field_note:-}"
-: "${field_desc:-}" "${field_color:-}"
+: "${field_desc:-}" "${field_color:-}" "${field_message:-}"
 
 documentation_formatter() {
   formatter_results_format() {
