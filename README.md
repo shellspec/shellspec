@@ -470,7 +470,8 @@ To disable shows banner with `--no-banner` option.
 
 0.9.0 (not yet released)
 
-* Change timing of loading external script by 'Include'. (breaking change)
+* Remove shorthand of the variable subject.
+* Change timing of loading external script by 'Include'. [breaking change]
 * Fix for translation speed slowdown.
 * Add auto syntax check of specfile.
 
