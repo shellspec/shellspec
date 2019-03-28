@@ -183,7 +183,7 @@ shellspec_pending() {
 }
 
 shellspec_include() {
-  shellspec_before_hook ". ${*:-}"
+  eval . ${1+'"$@"'};
 }
 
 shellspec_logger() {
