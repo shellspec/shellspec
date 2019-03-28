@@ -468,34 +468,40 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
+0.9.0 (not yet released)
+
+* Change timing of loading external script by 'Include'. (breaking change)
+* Fix for translation speed slowdown.
+* Add auto syntax check of specfile.
+
 0.8.0
 
- * Remove `It` statement and change `It` is alias of `Example` now.
- * Remove `Set` / `Unset` helper.
- * Remove `Debug` helper.
- * Remove `string` subject.
- * Remove `exit status` subject. (use `status` subject)
- * Change behavior of `line` and `lines` modifier to like "grep -c" not "wc -l".
- * Change `function` subject to alias for `value` subject.
- * Improve handling unexpected errors.
- * Improve samples.
- * Add `Constant definition`.
- * Add `Data` helper, `Embedded text`.
- * Add `Def` helper.
- * Add `Logger` helper.
- * Add `result` modifier.
- * Add `Include` helper.
- * Add shorthand for `function` subject and `variable` subject.
- * Add failed message for `Before`/`After` each hook.
+* Remove `It` statement and change `It` is alias of `Example` now.
+* Remove `Set` / `Unset` helper.
+* Remove `Debug` helper.
+* Remove `string` subject.
+* Remove `exit status` subject. (use `status` subject)
+* Change behavior of `line` and `lines` modifier to like "grep -c" not "wc -l".
+* Change `function` subject to alias for `value` subject.
+* Improve handling unexpected errors.
+* Improve samples.
+* Add `Constant definition`.
+* Add `Data` helper, `Embedded text`.
+* Add `Def` helper.
+* Add `Logger` helper.
+* Add `result` modifier.
+* Add `Include` helper.
+* Add shorthand for `function` subject and `variable` subject.
+* Add failed message for `Before`/`After` each hook.
 
 0.7.0
 
- * Added `lines` modifier.
+* Added `lines` modifier.
 
 0.6.0
 
- * Added `match` matcher.
+* Added `match` matcher.
 
 0.5.0
 
- * Initial public release.
+* Initial public release.

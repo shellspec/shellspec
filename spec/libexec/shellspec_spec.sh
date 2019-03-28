@@ -3,8 +3,7 @@
 % DOT_SHELLSPEC: "fixture/dot-shellspec"
 
 Describe "libexec/shellspec.sh"
-  # shellcheck source=lib/libexec/shellspec.sh
-  . "$SHELLSPEC_LIB/libexec/shellspec.sh"
+  Include "$SHELLSPEC_LIB/libexec/shellspec.sh"
 
   Describe "read_dot_file()"
     parser() {

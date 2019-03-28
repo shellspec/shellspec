@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "libexec/runner.sh"
-  # shellcheck source=lib/libexec/runner.sh
-  . "$SHELLSPEC_LIB/libexec/runner.sh"
+  Include "$SHELLSPEC_LIB/libexec/runner.sh"
 
   Describe "mktempdir()"
     Before prepare

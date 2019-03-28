@@ -3,8 +3,7 @@
 % FILE: "$SHELLSPEC_SPECDIR/fixture/read_log.txt"
 
 Describe "libexec/reporter.sh"
-  # shellcheck source=lib/libexec/reporter.sh
-  . "$SHELLSPEC_LIB/libexec/reporter.sh"
+  Include "$SHELLSPEC_LIB/libexec/reporter.sh"
 
   Describe "wait_for_log_exists()"
     Before 'unixtime=0'
