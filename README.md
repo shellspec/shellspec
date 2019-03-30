@@ -1,6 +1,6 @@
 # shellspec
 
-BDD style testing framework for POSIX compatible shell script.
+BDD style unit testing framework for POSIX compatible shell script.
 
 [![Build Status](https://travis-ci.org/ko1nksm/shellspec.svg?branch=master)](https://travis-ci.org/ko1nksm/shellspec)
 
