@@ -25,7 +25,7 @@ export SHELLSPEC_UNEXPECTED_STDERR=102
 export SHELLSPEC_SKIP_MESSAGE=none
 export SHELLSPEC_WARNINGS=error
 export SHELLSPEC_FAIL_FAST_COUNT=''
-export SHELLSPEC_SYNTAX_CHECK=1
+export SHELLSPEC_SYNTAX_CHECK=''
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
@@ -106,22 +106,21 @@ usage() {
 output <<USAGE
 Usage: ${0##*/} [options] [files or directories]
 
-  -s, --shell SHELL                   Specify a path of shell.
-                                        default: current shell
-      --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]).
+  -s, --shell SHELL                   Specify a path of shell [default: current shell]
+      --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]
   -e, --env NAME=VALUE                Set environment variable
   -w, --warnings LEVEL                Set warnings level
                                         none (do not show warnings)
                                         notice (show warnings but not treats as error)
-                                        error (show warnings and treats as error [default])
+                                        error (show warnings and treats as error) [default]
                                         failure (treats warnings as failures)
-      --[no-]syntax-check             Auto syntax check of specfile
+      --[no-]syntax-check             Auto syntax check of specfile [default: disabled]
 
   **** Output ****
 
-      --[no-]banner                   Show banner if exist 'spec/banner'.
+      --[no-]banner                   Show banner if exist 'spec/banner' [default: enabled]
   -f, --format FORMATTER              Choose a formatter.
-                                        [p]rogress (dots [default])
+                                        [p]rogress (dots) [default]
                                         [d]ocumentation (group and example names)
                                         [t]ap
                                         debug (for developer)
@@ -129,7 +128,7 @@ Usage: ${0##*/} [options] [files or directories]
       --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
       --no-color, --no-colour         Force the output to not be in color, even if the output is a TTY
       --skip-message VERBOSE          Mute skip message
-                                        none (do not mute any messages [default])
+                                        none (do not mute any messages) [default]
                                         moderate (mute repeated messages)
                                         quiet (mute repeated messages and non-temporarily messages)
 

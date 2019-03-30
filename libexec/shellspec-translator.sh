@@ -248,11 +248,18 @@ translate() {
   done
 }
 
+if [ "$SHELLSPEC_SYNTAX_CHECK" ]; then
+  each_file() {
+  ! is_specfile "$1" && return 0
+    $SHELLSPEC_SHELL -n "$1" || exit 1
+  }
+  find_files each_file "$@"
+fi
+
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_metadata"
 each_file() {
   ! is_specfile "$1" && return 0
-  [ "$SHELLSPEC_SYNTAX_CHECK" ] && $SHELLSPEC_SHELL -n "$1"
   putsn '('
   specfile=$1 lineno=0
   escape_quote specfile
