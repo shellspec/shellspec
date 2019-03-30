@@ -3,7 +3,7 @@
 
 set -eu
 
-export SHELLSPEC_VERSION='0.8.0'
+export SHELLSPEC_VERSION='0.9.0'
 
 export SHELLSPEC_ROOT
 export SHELLSPEC_LIB
@@ -114,7 +114,7 @@ Usage: ${0##*/} [options] [files or directories]
                                         notice (show warnings but not treats as error)
                                         error (show warnings and treats as error) [default]
                                         failure (treats warnings as failures)
-      --[no-]syntax-check             Auto syntax check of specfile [default: disabled]
+      --[no-]syntax-check             Syntax check of the specfile [default: disabled]
 
   **** Output ****
 

@@ -468,12 +468,12 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
-0.9.0 (not yet released)
+0.9.0
 
 * Remove shorthand of the variable subject.
 * Change timing of loading external script by 'Include'. [breaking change]
 * Fix for translation speed slowdown.
-* Add auto syntax check of specfile.
+* Add `--syntax-check` option for syntax check of the specfile.
 
 0.8.0
 
