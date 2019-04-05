@@ -264,6 +264,7 @@ each_file() {
   specfile=$1 lineno=0 block_no=0 block_no_stack='' example_no=0 skip_id=0
   escape_quote specfile
   putsn "SHELLSPEC_SPECFILE='$specfile'"
+  putsn "shellspec_specfile begin"
   putsn "shellspec_marker \"$specfile\" BOF"
   translate < "$specfile"
   putsn "shellspec_marker \"$specfile\" EOF"
@@ -274,6 +275,7 @@ each_file() {
       block_end ""
     done
   fi
+  putsn "shellspec_specfile end"
   putsn ')'
 }
 find_files each_file "$@"

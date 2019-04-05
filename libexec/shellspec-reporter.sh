@@ -3,6 +3,8 @@
 
 set -eu
 
+: "${SHELLSPEC_SPEC_FAILURE_CODE:=101}"
+
 # shellcheck source=lib/general.sh
 . "${SHELLSPEC_LIB:-./lib}/general.sh"
 # shellcheck source=lib/libexec/reporter.sh
@@ -45,7 +47,7 @@ parse_lines() {
       $CAN)
         [ -z "$buf" ] || parse_fields canceled "$buf"
         buf=''
-        exit_status=${SHELLSPEC_SPEC_FAILURE_CODE:-101}
+        exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
         ;;
       *) buf="$buf${buf:+$LF}${line}"
     esac
@@ -86,33 +88,33 @@ formatter_begin
 
 # shellcheck disable=SC2034
 {
-  total_count=0 succeeded='' failed_count='' warned_count=''
+  current_example_index=0 example_index='' detail_index=0
+  last_block_no='' last_example_no='' last_skip_id='' last_skipped_id=''
+  total_count=0 succeeded='' succeeded_count='' failed_count='' warned_count=''
   todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
-  example_index='' field_example_no='' field_tag='' field_type=''
+  field_example_no='' field_tag='' field_type=''
 }
 
 each_line() {
-  : "${current_example_index:=0}" "${last_example_no:=}" "${detail_index:=0}"
-  : "${last_skip_id:=}" "${last_skipped_id:=}"
-  : "${last_skip_specfile:=}" "${last_skipped_specfile:=}"
   example_index=$current_example_index
 
   if [ "$field_type" = "begin" ]; then
-    if [ "${field_specfile:-}" != "${last_specfile:-}" ]; then
-      last_block_no=0
-      last_specfile=$field_specfile
+    if [ "$field_tag" = "specfile" ]; then
+      last_block_no='' last_example_no=''
+      eval last_skip_id='' last_skipped_id=''
+    else
+      if [ "${field_block_no:-0}" -le "${last_block_no:-0}" ]; then
+        syntax_error "Illegal executed the same block"
+        echo "(For example, do not include blocks in a loop)" >&2
+        exit 1
+      fi
+      last_block_no=$field_block_no
     fi
-    if [ "${field_block_no:-0}" -le "${last_block_no:-0}" ]; then
-      syntax_error "Illegal executed the same block"
-      echo "(For example, do not include blocks in a loop)" >&2
-      exit 1
-    fi
-    last_block_no=$field_block_no
   fi
 
   # Do not add references if example_index is blank
   case $field_tag in (good|succeeded)
-    [ -z "${field_pending:-}" ] && example_index=''
+    [ "${field_pending:-}" ] || example_index=''
   esac
 
   case $field_tag in (skip|skipped)
@@ -121,10 +123,6 @@ each_line() {
     esac
     case ${SHELLSPEC_SKIP_MESSAGE:-} in (moderate|quiet)
       eval "
-        if [ \"\${field_specfile:-}\" != \"\$last_${field_tag}_specfile\" ]; then
-          last_${field_tag}_specfile=''
-        fi
-
         if [ \"\${field_skipid:-}\" = \"\$last_${field_tag}_id\" ]; then
           example_index=''
         fi
@@ -136,29 +134,25 @@ each_line() {
   if [ "$example_index" ]; then
     case $field_tag in (good|bad|warn|skip|pending)
       # Increment example_index if change example_no
-      if [ "${field_specfile:-}" != "${last_example_specfile:-}" ]; then
-        last_example_no=''
-        last_example_specfile=$field_specfile
-      fi
       if [ "$field_example_no" != "$last_example_no" ];then
-        current_example_index=$(($current_example_index + 1))
-        example_index=$current_example_index
-        detail_index=0 last_example_no=$field_example_no
+        current_example_index=$(($current_example_index + 1)) detail_index=0
+        example_index=$current_example_index last_example_no=$field_example_no
       fi
+      detail_index=$(($detail_index + 1))
     esac
   fi
 
   if [ "$field_type" = "result" ]; then
     total_count=$(($total_count + 1))
-    eval "${field_tag}_count=\$((\${${field_tag}_count:-0} + 1))"
+    eval "${field_tag}_count=\$((\$${field_tag}_count + 1))"
     if [ "$field_tag" = "skipped" ] && [ -z "$example_index" ]; then
       suppressed_skipped_count=$((${suppressed_skipped_count:-0} + 1))
     fi
   fi
 
-  [ "${field_error:-}" ] && exit_status=${SHELLSPEC_SPEC_FAILURE_CODE:-101}
+  [ "${field_error:-}" ] && exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 
-  if [ "$fail_fast_count" ] ; then
+  if [ "$fail_fast_count" ]; then
     [ "${failed_count:-0}" -ge "$fail_fast_count" ] && fail_fast="yes"
   fi
 

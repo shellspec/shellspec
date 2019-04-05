@@ -17,6 +17,13 @@ shellspec_yield() {
   SHELLSPEC_LINENO=''
 }
 
+shellspec_specfile() {
+  case $1 in
+    begin) shellspec_output SPECFILE_BEGIN ;;
+    end)   shellspec_output SPECFILE_END ;;
+  esac
+}
+
 shellspec_desc() {
   if [ "$2" ]; then
     SHELLSPEC_DESC=$2

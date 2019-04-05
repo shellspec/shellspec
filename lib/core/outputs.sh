@@ -11,6 +11,16 @@ shellspec_output_END() {
   shellspec_putsn
 }
 
+shellspec_output_SPECFILE_BEGIN() {
+  shellspec_output_raw "type:begin" "tag:specfile" \
+    "specfile:${SHELLSPEC_SPECFILE:-}"
+}
+
+shellspec_output_SPECFILE_END() {
+  shellspec_output_raw "type:end" "tag:specfile" \
+    "specfile:${SHELLSPEC_SPECFILE:-}"
+}
+
 shellspec_output_EXAMPLE_GROUP_BEGIN() {
   shellspec_output_raw begin "tag:example_group"
 }

@@ -1,8 +1,9 @@
 #shellcheck shell=sh disable=SC2004
 
 : "${meta_shell:-}" "${meta_shell_type:-}" "${meta_shell_version:-}"
+: "${example_index:-}" "${detail_index:-}"
 : "${field_specfile:-}" "${field_type:-}" "${field_tag:-}" "${field_range:-}"
-: "${field_lineno:-}" "${field_color:-}" "${example_index:-}"
+: "${field_lineno:-}" "${field_color:-}"
 
 buffer conclusion notable_examples failure_examples fatal_errors
 
@@ -51,14 +52,13 @@ conclusion_format() {
   conclusion_set_if_empty "${LF}Examples:${LF}"
   label="  $example_index) " indent=''
   padding indent ' ' ${#label}
-  if [ "$detail_index" -eq 0 ]; then
+  if [ "$detail_index" -eq 1 ]; then
     conclusion_append "${WHITE}${label}${field_description:-}${RESET}"
     if [ "${field_evaluation:-}" ]; then
       conclusion_append "${BOLD}${CYAN}${indent}${field_evaluation:-}${RESET}"
       conclusion_append
     fi
   fi
-  detail_index=$(($detail_index + 1))
 
   label="${indent}${example_index}.${detail_index}) " indent=''
   padding indent ' ' ${#label}
