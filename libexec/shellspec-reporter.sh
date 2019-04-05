@@ -94,9 +94,14 @@ formatter_begin
 each_line() {
   : "${current_example_index:=0}" "${last_example_no:=}" "${detail_index:=0}"
   : "${last_skip_id:=}" "${last_skipped_id:=}"
+  : "${last_skip_specfile:=}" "${last_skipped_specfile:=}"
   example_index=$current_example_index
 
   if [ "$field_type" = "begin" ]; then
+    if [ "${field_specfile:-}" != "${last_specfile:-}" ]; then
+      last_block_no=0
+      last_specfile=$field_specfile
+    fi
     if [ "${field_block_no:-0}" -le "${last_block_no:-0}" ]; then
       syntax_error "Illegal executed the same block"
       echo "(For example, do not include blocks in a loop)" >&2
@@ -116,10 +121,14 @@ each_line() {
     esac
     case ${SHELLSPEC_SKIP_MESSAGE:-} in (moderate|quiet)
       eval "
-        if [ \"${field_skipid:-}\" = \"\$last_${field_tag}_id\" ]; then
+        if [ \"\${field_specfile:-}\" != \"\$last_${field_tag}_specfile\" ]; then
+          last_${field_tag}_specfile=''
+        fi
+
+        if [ \"\${field_skipid:-}\" = \"\$last_${field_tag}_id\" ]; then
           example_index=''
         fi
-        last_${field_tag}_id=${field_skipid:-}
+        last_${field_tag}_id=\${field_skipid:-}
       "
     esac
   esac
@@ -127,6 +136,10 @@ each_line() {
   if [ "$example_index" ]; then
     case $field_tag in (good|bad|warn|skip|pending)
       # Increment example_index if change example_no
+      if [ "${field_specfile:-}" != "${last_example_specfile:-}" ]; then
+        last_example_no=''
+        last_example_specfile=$field_specfile
+      fi
       if [ "$field_example_no" != "$last_example_no" ];then
         current_example_index=$(($current_example_index + 1))
         example_index=$current_example_index

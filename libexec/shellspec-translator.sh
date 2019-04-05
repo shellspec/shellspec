@@ -8,7 +8,7 @@ set -eu
 # shellcheck source=lib/libexec/translator.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
 
-example_count=0 block_no=0 block_no_stack='' skip_id=0
+example_count=0
 
 block_example_group() {
   if [ "$inside_of_example" ]; then
@@ -35,12 +35,12 @@ block_example() {
   fi
 
   increasese_id
-  block_no=$(($block_no + 1)) example_count=$(($example_count + 1))
+  block_no=$(($block_no + 1)) example_no=$(($example_no + 1)) example_count=$(($example_count + 1))
   putsn "(" \
     "SHELLSPEC_BLOCK_NO=$block_no" \
     "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
     "SHELLSPEC_LINENO_BEGIN=$lineno" \
-    "SHELLSPEC_EXAMPLE_NO=$example_count"
+    "SHELLSPEC_EXAMPLE_NO=$example_no"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { shellspec_example $1"
   putsn "}; shellspec_yield${block_no}() { :;"
@@ -261,7 +261,7 @@ putsn "shellspec_metadata"
 each_file() {
   ! is_specfile "$1" && return 0
   putsn '('
-  specfile=$1 lineno=0
+  specfile=$1 lineno=0 block_no=0 block_no_stack='' example_no=0 skip_id=0
   escape_quote specfile
   putsn "SHELLSPEC_SPECFILE='$specfile'"
   putsn "shellspec_marker \"$specfile\" BOF"
