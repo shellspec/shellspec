@@ -3,14 +3,13 @@
 : "${field_tag:-}" "${field_description:-}" "${field_message:-}"
 
 tap_formatter() {
+  # shellcheck disable=SC2034
+  SHELLSPEC_EXAMPLES_LOG=
+  # shellcheck disable=SC2086
+  _examples=$($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-examples.sh" "$@")
+
   formatter_results_begin() {
     _example_no=0
-
-    # shellcheck disable=SC2034
-    SHELLSPEC_EXAMPLES_LOG=
-    # shellcheck disable=SC2086
-    _examples=$($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-examples.sh" "$@")
-
     putsn "1..${_examples}"
   }
 

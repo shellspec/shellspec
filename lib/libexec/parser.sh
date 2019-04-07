@@ -1,5 +1,10 @@
 #shellcheck shell=sh
 
+is_specfile() {
+  case $1 in (*_spec.sh) return 0; esac
+  return 1
+}
+
 is_block_statement() {
   case $1 in (Describe | Context | Example | Specify | It | End)
     return 0

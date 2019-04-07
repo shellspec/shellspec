@@ -40,8 +40,3 @@ is_function_name() {
   case $1 in ([!a-zA-Z_]*) return 1; esac
   case $1 in (*[!a-zA-Z0-9_]*) return 1; esac
 }
-
-is_specfile() {
-  case $1 in (*_spec.sh) return 0; esac
-  return 1
-}

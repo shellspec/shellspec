@@ -1,0 +1,5 @@
+#shellcheck shell=sh disable=SC2004
+
+shellspec_proxy find_files shellspec_find_files
+shellspec_proxy puts shellspec_puts
+shellspec_proxy putsn shellspec_putsn
