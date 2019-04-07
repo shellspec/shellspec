@@ -14,6 +14,6 @@ HERE
 if [ "$SHELLSPEC_EXAMPLES_LOG" ]; then
   echo "$i" > "${SHELLSPEC_EXAMPLES_LOG}#"
   mv "${SHELLSPEC_EXAMPLES_LOG}#" "$SHELLSPEC_EXAMPLES_LOG"
-else
-  echo "$i"
 fi
+
+echo "$i"
