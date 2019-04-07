@@ -1,11 +1,12 @@
 #!/bin/sh
 
+# shellcheck source=lib/libexec/parser.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec/parser.sh"
+
 i=0
 while IFS= read -r filename; do
   while read -r line; do
-    case ${line%% *} in
-      Example | Specify | It) i=$((i+1))
-    esac
+    is_example "${line%% *}" && i=$((i+1))
   done < "$filename"
 done <<HERE
 $(find spec -name "*_spec.sh")

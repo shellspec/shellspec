@@ -11,6 +11,8 @@ set -eu
 . "${SHELLSPEC_LIB:-./lib}/general.sh"
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
+# shellcheck source=lib/libexec/parser.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec/parser.sh"
 
 error() {
   if [ "$SHELLSPEC_COLOR" ]; then
@@ -79,7 +81,7 @@ error_handler() {
         *)
           [ "${first_error-1}" ] && first_error='' && error
           error "$line"
-        ;;
+          ;;
       esac
     fi
   done
@@ -97,7 +99,6 @@ display_unexpected_error() {
   case $lineno in
     BOF) lineno=1 ;;
     EOF) return 0 ;; # no error
-    *) ;;
   esac
 
   range=$(detect_range "$lineno" < "$specfile")
@@ -108,30 +109,6 @@ display_unexpected_error() {
   fi
   error "The specfile aborted at line $range in '$specfile'"
   error
-}
-
-is_block_statement() {
-  case $1 in (Describe | Context | Example | Specify | It | End)
-    return 0
-  esac
-  return 1
-}
-
-detect_range() {
-  lineno_begin=$1 lineno_end='' lineno=0
-  while IFS= read -r line || [ "$line" ]; do
-    trim line
-    line=${line%% *}
-    line=${line#x}
-    lineno=$(($lineno + 1))
-    [ "$lineno" -lt "$1" ] && continue
-    if [ "$lineno" -eq "$1" ]; then
-      is_block_statement "$line" && lineno_begin=$(($lineno + 1))
-    else
-      is_block_statement "$line" && lineno_end=$(($lineno - 1)) && break
-    fi
-  done
-  echo "${lineno_begin}-${lineno_end:-$lineno}"
 }
 
 # I want to process with non-blocking output
