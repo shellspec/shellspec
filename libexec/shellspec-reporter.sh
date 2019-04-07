@@ -22,7 +22,7 @@ color_constants "${SHELLSPEC_COLOR:-}"
 
 import "formatter"
 import "${SHELLSPEC_FORMATTER}_formatter"
-"${SHELLSPEC_FORMATTER##*/}_formatter"
+"${SHELLSPEC_FORMATTER##*/}_formatter" "$@"
 
 syntax_error() {
   putsn "Syntax error: ${*:-} in ${field_specfile:-} line ${field_range:-}" >&2

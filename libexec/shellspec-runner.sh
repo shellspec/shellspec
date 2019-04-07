@@ -50,7 +50,7 @@ runner() {
 }
 
 reporter() {
-  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-reporter.sh"
+  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-reporter.sh" "$@"
 }
 
 trans_log() {
@@ -140,7 +140,7 @@ detect_range() {
 # and the stderr streams to error hander
 # and also handle both exit status. As a result of
 ( ( ( ( ( set -e; runner "$@"); echo $? >&5) \
-  | reporter >&3; echo $? >&5) 2>&1 \
+  | reporter "$@" >&3; echo $? >&5) 2>&1 \
   | error_handler >&4; echo $? >&5) 5>&1 \
   | {
       read -r xs1; read -r xs2; read -r xs3
