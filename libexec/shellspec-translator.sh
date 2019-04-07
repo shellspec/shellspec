@@ -8,8 +8,6 @@ set -eu
 # shellcheck source=lib/libexec/translator.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
 
-example_count=0
-
 block_example_group() {
   if [ "$inside_of_example" ]; then
     syntax_error "Describe/Context cannot be defined inside of Example"
@@ -35,7 +33,7 @@ block_example() {
   fi
 
   increasese_id
-  block_no=$(($block_no + 1)) example_no=$(($example_no + 1)) example_count=$(($example_count + 1))
+  block_no=$(($block_no + 1)) example_no=$(($example_no + 1))
   putsn "(" \
     "SHELLSPEC_BLOCK_NO=$block_no" \
     "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
@@ -281,8 +279,3 @@ each_file() {
 find_files each_file "$@"
 putsn "SHELLSPEC_SPECFILE=\"\""
 putsn "shellspec_end"
-putsn "# example count: $example_count"
-
-if [ "${SHELLSPEC_TRANS_LOG:-}" ]; then
-  putsn "examples $example_count" >> "$SHELLSPEC_TRANS_LOG"
-fi
