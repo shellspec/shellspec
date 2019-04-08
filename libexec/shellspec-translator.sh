@@ -3,12 +3,8 @@
 
 set -eu
 
-# shellcheck source=lib/general.sh
-. "${SHELLSPEC_LIB:-./lib}/general.sh"
 # shellcheck source=lib/libexec/translator.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
-# shellcheck source=lib/libexec/parser.sh
-. "${SHELLSPEC_LIB:-./lib}/libexec/parser.sh"
 
 block_example_group() {
   if [ "$inside_of_example" ]; then

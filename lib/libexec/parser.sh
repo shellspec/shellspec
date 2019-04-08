@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2004
 
 is_specfile() {
   case $1 in (*_spec.sh) return 0; esac

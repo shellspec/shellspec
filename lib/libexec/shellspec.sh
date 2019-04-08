@@ -1,8 +1,8 @@
 #shellcheck shell=sh disable=SC2004,SC2016
 
-shellspec_import posix
-shellspec_proxy putsn shellspec_putsn
-shellspec_proxy unixtime shellspec_unixtime
+# shellcheck source=lib/libexec.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+use putsn unixtime reset_params
 
 read_dot_file() {
   [ "$1" ] || return 0
@@ -24,14 +24,14 @@ current_shell() {
 
   eval "${2:-ps w}" 2>/dev/null | {
     IFS= read -r line
-    shellspec_reset_params '$line'
-    eval "$SHELLSPEC_RESET_PARAMS"
+    reset_params '$line'
+    eval "$RESET_PARAMS"
     for name in "$@"; do
       case $name in (CMD | COMMAND) break; esac
       i=$(($i+1))
     done
     while IFS= read -r line; do
-      eval "$SHELLSPEC_RESET_PARAMS"
+      eval "$RESET_PARAMS"
       [ "$1" = "$$" ] && shift $i && line="$*" && break
     done
     line=${line#'{'"${self##*/}"'} '}
@@ -44,8 +44,8 @@ command_path() {
     */*) [ -x "$1" ] && echo "$1" ;;
     *)
       command=$1
-      shellspec_reset_params '$PATH' ':'
-      eval "$SHELLSPEC_RESET_PARAMS"
+      reset_params '$PATH' ':'
+      eval "$RESET_PARAMS"
       for p in "$@"; do
         [ -x "${p%/}/${command%% *}" ] && echo "${p%/}/$command" && break
       done

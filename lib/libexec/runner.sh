@@ -1,10 +1,10 @@
 #shellcheck shell=sh
 
-shellspec_proxy includes shellspec_includes
-shellspec_proxy readfile shellspec_readfile
-shellspec_proxy trim shellspec_trim
-shellspec_proxy puts shellspec_puts
-shellspec_proxy putsn shellspec_putsn
+# shellcheck source=lib/libexec.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+use includes readfile trim puts putsn
+# shellcheck source=lib/libexec/parser.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec/parser.sh"
 
 mktempdir() {
   (umask 0077; mkdir "$1"; chmod 0700 "$1")

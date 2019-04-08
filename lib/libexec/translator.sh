@@ -1,14 +1,10 @@
 #shellcheck shell=sh disable=SC2004
 
-shellspec_constants
-shellspec_proxy find_files shellspec_find_files
-shellspec_proxy puts shellspec_puts
-shellspec_proxy putsn shellspec_putsn
-shellspec_proxy escape_quote shellspec_escape_quote
-shellspec_proxy trim shellspec_trim
-
-shellspec_import posix
-shellspec_proxy unixtime shellspec_unixtime
+# shellcheck source=lib/libexec.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+use constants find_files puts putsn escape_quote trim unixtime
+# shellcheck source=lib/libexec/parser.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec/parser.sh"
 
 initialize_id() {
   id='' id_state='begin'

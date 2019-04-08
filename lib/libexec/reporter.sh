@@ -1,20 +1,8 @@
 #shellcheck shell=sh disable=SC2004
 
-shellspec_constants
-shellspec_proxy proxy shellspec_proxy
-shellspec_proxy import shellspec_import
-shellspec_proxy putsn shellspec_putsn
-shellspec_proxy puts shellspec_puts
-shellspec_proxy padding shellspec_padding
-shellspec_proxy each shellspec_each
-
-shellspec_import posix
-shellspec_proxy unixtime shellspec_unixtime
-
-reset_params() {
-  shellspec_reset_params "$@"
-  eval 'RESET_PARAMS=$SHELLSPEC_RESET_PARAMS'
-}
+# shellcheck source=lib/libexec.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+use constants proxy import puts putsn padding each reset_params unixtime
 
 # $1: filename $2: timeout
 wait_for_log_exists() {

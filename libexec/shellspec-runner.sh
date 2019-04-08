@@ -7,12 +7,8 @@ set -eu
 
 : "${SHELLSPEC_TIME:=time -p}"
 
-# shellcheck source=lib/general.sh
-. "${SHELLSPEC_LIB:-./lib}/general.sh"
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
-# shellcheck source=lib/libexec/parser.sh
-. "${SHELLSPEC_LIB:-./lib}/libexec/parser.sh"
 
 error() {
   if [ "$SHELLSPEC_COLOR" ]; then

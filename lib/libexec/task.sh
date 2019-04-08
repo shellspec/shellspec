@@ -1,12 +1,8 @@
 #shellcheck shell=sh disable=SC2016
 
-shellspec_proxy putsn shellspec_putsn
-shellspec_proxy find_files shellspec_find_files
-
-reset_params() {
-  shellspec_reset_params "$@"
-  eval 'RESET_PARAMS=$SHELLSPEC_RESET_PARAMS'
-}
+# shellcheck source=lib/libexec.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+use find_files putsn reset_params
 
 task() { :; }
 

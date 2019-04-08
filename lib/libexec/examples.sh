@@ -1,5 +1,8 @@
-#shellcheck shell=sh disable=SC2004
+#shellcheck shell=sh
 
-shellspec_proxy find_files shellspec_find_files
-shellspec_proxy puts shellspec_puts
-shellspec_proxy putsn shellspec_putsn
+# shellcheck source=lib/libexec.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+use find_files puts putsn
+
+# shellcheck source=lib/libexec/parser.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec/parser.sh"

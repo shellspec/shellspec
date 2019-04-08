@@ -82,8 +82,6 @@ fi
 SHELLSPEC_SPECDIR=$PWD/spec
 SHELLSPEC_LOAD_PATH=$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_LIB/formatters
 
-# shellcheck source=lib/general.sh
-. "$SHELLSPEC_LIB/general.sh"
 # shellcheck source=lib/libexec/shellspec.sh
 . "$SHELLSPEC_LIB/libexec/shellspec.sh"
 

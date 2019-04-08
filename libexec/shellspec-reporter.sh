@@ -5,8 +5,6 @@ set -eu
 
 : "${SHELLSPEC_SPEC_FAILURE_CODE:=101}"
 
-# shellcheck source=lib/general.sh
-. "${SHELLSPEC_LIB:-./lib}/general.sh"
 # shellcheck source=lib/libexec/reporter.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/reporter.sh"
 
