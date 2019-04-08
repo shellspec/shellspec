@@ -3,10 +3,6 @@
 
 set -eu
 
-[ "${ZSH_VERSION:-}" ] && setopt shwordsplit
-
-: "${SHELLSPEC_TIME:=time -p}"
-
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
 
@@ -40,46 +36,29 @@ interrupt() {
 if (trap '' INT) 2>/dev/null; then trap 'interrupt' INT; fi
 if (trap '' TERM) 2>/dev/null; then trap 'exit 143' TERM; fi
 
-runner() {
-  translator="$SHELLSPEC_LIBEXEC/shellspec-translator.sh"
-  # shellcheck disable=SC2086
-  ( (command $SHELLSPEC_TIME $SHELLSPEC_SHELL "$translator" "$@" 2>&1 >&3 ) \
-    | trans_log >&2) 3>&1 | command $SHELLSPEC_TIME $SHELLSPEC_SHELL
+executer() {
+  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-executer.sh" "$@"
 }
 
 reporter() {
   $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-reporter.sh" "$@"
 }
 
-trans_log() {
-  while IFS= read -r line; do
-    time_result "$line" >> "$SHELLSPEC_TRANS_LOG" && continue
-    echo "$line"
-  done
-}
-
 error_handler() {
   marker='' error_file=''
   while IFS= read -r line; do
-    if time_result "$line" >> "$SHELLSPEC_TIME_LOG.tmp"; then
-      if includes "$line" "sys "; then
-        mv "$SHELLSPEC_TIME_LOG.tmp" "$SHELLSPEC_TIME_LOG"
-      fi
-    else
-      case $line in
-        ${SHELLSPEC_SYN}shellspec_marker:*)
-          if [ "${first_error-1}" ]; then
-            line=${line#${SHELLSPEC_SYN}shellspec_marker:}
-            marker=${line%%${SHELLSPEC_TAB}*}
-            error_file=${line#*${SHELLSPEC_TAB}}
-          fi
-          ;;
-        *)
-          [ "${first_error-1}" ] && first_error='' && error
-          error "$line"
-          ;;
-      esac
-    fi
+    case $line in
+      ${SHELLSPEC_SYN}shellspec_marker:*)
+        [ "${first_error-1}" ] || continue
+        line=${line#${SHELLSPEC_SYN}shellspec_marker:}
+        marker=${line%%${SHELLSPEC_TAB}*}
+        error_file=${line#*${SHELLSPEC_TAB}}
+        ;;
+      *)
+        [ "${first_error-1}" ] && first_error='' && error
+        error "$line"
+        ;;
+    esac
   done
 
   display_unexpected_error "$marker" "$error_file"
@@ -90,7 +69,7 @@ error_handler() {
 }
 
 display_unexpected_error() {
-  specfile=${1% *} lineno=${1##* } error_file=$2
+  specfile=${1% *} lineno=${1##* } error_file=$2 error=''
   [ "$specfile" ] || return 0
   case $lineno in
     BOF) lineno=1 ;;
@@ -100,8 +79,7 @@ display_unexpected_error() {
   range=$(detect_range "$lineno" < "$specfile")
   if [ -e "$error_file" ]; then
     readfile error "$error_file"
-    error=$(puts "$error")
-    error "$error"
+    error "$(puts "$error")"
   fi
   error "The specfile aborted at line $range in '$specfile'"
   error
@@ -112,9 +90,9 @@ display_unexpected_error() {
 # and capture stderr both of the runner and the reporter
 # and the stderr streams to error hander
 # and also handle both exit status. As a result of
-( ( ( ( ( set -e; runner "$@"); echo $? >&5) \
-  | reporter "$@" >&3; echo $? >&5) 2>&1 \
-  | error_handler >&4; echo $? >&5) 5>&1 \
+{ { { { set -e; executer "$@"; echo $? >&5; } \
+  | reporter "$@" >&3; echo $? >&5; } 2>&1 \
+  | error_handler >&4; echo $? >&5; } 5>&1 \
   | {
       read -r xs1; read -r xs2; read -r xs3
       for xs in "$xs1" "$xs2" "$xs3"; do
@@ -129,10 +107,8 @@ display_unexpected_error() {
       done
       exit "$xs"
     }
-) 3>&1 4>&2 &&:
+} 3>&1 4>&2 &&:
 exit_status=$?
-
-wait
 
 case $exit_status in
   0) exit 0;; # Running specs exit with successfully.
