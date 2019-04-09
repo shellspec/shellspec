@@ -31,8 +31,9 @@ parse_metadata() {
   set -- "${metadata#?}"
   reset_params '$1' "$US"
   eval "$RESET_PARAMS"
-  callback() { eval "meta_${1%%:*}=\${1#*:}"; }
-  each callback "$@"
+  for meta_name in "$@"; do
+    eval "meta_${meta_name%%:*}=\${meta_name#*:}"
+  done
 }
 
 parse_lines() {
@@ -62,17 +63,17 @@ parse_fields() {
 
   reset_params '$2' "$US"
   eval "$RESET_PARAMS"
-  callback() {
-    field_names="$field_names ${1%%:*}"
-    eval "field_${1%%:*}=\${1#*:}"
-  }
-  each callback "$@"
+  for field_name in "$@"; do
+    field_names="$field_names ${field_name%%:*}"
+    eval "field_${field_name%%:*}=\${field_name#*:}"
+  done
 
   eval "set -- $field_names"
   "$callback" "$@"
 
-  callback() { eval "unset field_$1 ||:"; }
-  each callback "$@"
+  for field_name in "$@"; do
+    eval "unset field_$field_name ||:"
+  done
 }
 
 canceled() {

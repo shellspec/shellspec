@@ -33,6 +33,7 @@ worker() {
   while [ $i -lt $jobs ]; do
     if mv "$SHELLSPEC_JOBDIR/$i.job" "$SHELLSPEC_JOBDIR/$i.job#" 2>/dev/null; then
       IFS= read -r specfile < "$SHELLSPEC_JOBDIR/$i.job#"
+      #echo "$1: $SHELLSPEC_JOBDIR/$i.job $specfile" >/dev/tty1
       {
         if [ $i -eq 0 ]; then
           translator --metadata "$specfile" | shell
@@ -61,6 +62,7 @@ reduce() {
     if [ ! -e "$SHELLSPEC_JOBDIR/$i.status" ]; then
       continue
     fi
+    #echo $SHELLSPEC_JOBDIR/$i >/dev/tty1
     cat "$SHELLSPEC_JOBDIR/$i.stdout"
     cat "$SHELLSPEC_JOBDIR/$i.stderr" >&2
     i=$((i+1))
