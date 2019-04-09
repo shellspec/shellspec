@@ -18,7 +18,7 @@ block_example_group() {
     "SHELLSPEC_BLOCK_NO=$block_no" \
     "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
     "SHELLSPEC_LINENO_BEGIN=$lineno"
-  putsn "shellspec_marker \"$specfile\":$lineno"
+  putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { shellspec_example_group $1"
   putsn "}; shellspec_yield${block_no}() { :;"
   block_no_stack="$block_no_stack $block_no"
