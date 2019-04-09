@@ -52,6 +52,7 @@ BDD style unit testing framework for POSIX compatible shell script.
 * The specfile is a valid shell script language syntax
 * Pure shell script implementation
 * Minimum Dependencies (Use only a few POSIX compliant command)
+* Parallel execution (experimental)
 * Nestable groups with scope like lexical scope
 * Before / After hooks
 * Skip / Pending
@@ -95,7 +96,7 @@ the target shell and few POSIX compliant command.
 
 Currently used external command:
 
-`date`, `mkdir`, `rm`, `mv` (recommends: `printf`, `ps`, `readlink`, `time`)
+`date`, `mkdir`, `rm`, `mv`, `cat` (recommends: `printf`, `ps`, `readlink`, `time`)
 
 ## Tutorial
 
@@ -467,6 +468,10 @@ To disable shows banner with `--no-banner` option.
 
 
 ## Version history
+
+0.10.0 (not yet released)
+
+* Support parallel execution. (`--jobs` option)
 
 0.9.0
 
