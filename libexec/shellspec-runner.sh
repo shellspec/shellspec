@@ -3,6 +3,8 @@
 
 set -eu
 
+[ "${ZSH_VERSION:-}" ] && setopt shwordsplit
+
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
 
@@ -37,8 +39,12 @@ if (trap '' INT) 2>/dev/null; then trap 'interrupt' INT; fi
 if (trap '' TERM) 2>/dev/null; then trap 'exit 143' TERM; fi
 
 executor() {
-  executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
-  { { $SHELLSPEC_SHELL "$executor" "$@" 2>&1 >&3; } \
+  if [ "$SHELLSPEC_JOBS" ]; then
+    executor="$SHELLSPEC_LIBEXEC/shellspec-parallel-executor.sh"
+  else
+    executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
+  fi
+  { { command $SHELLSPEC_TIME $SHELLSPEC_SHELL "$executor" "$@" 2>&1 >&3; } \
     | time_log "$SHELLSPEC_TIME_LOG" >&2; } 3>&1
 }
 

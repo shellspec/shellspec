@@ -253,7 +253,11 @@ if [ "$SHELLSPEC_SYNTAX_CHECK" ]; then
 fi
 
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
-putsn "shellspec_metadata"
+if [ "${1:-}" = "--metadata" ]; then
+  putsn "shellspec_metadata"
+  shift
+fi
+
 each_file() {
   ! is_specfile "$1" && return 0
   putsn '('

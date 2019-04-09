@@ -10,7 +10,7 @@ translator() {
 
 shell() {
   # shellcheck disable=SC2086
-  eval "command $SHELLSPEC_TIME $SHELLSPEC_SHELL"
+  eval "$SHELLSPEC_SHELL"
 }
 
-translator "$@" | shell
+translator --metadata "$@" | shell
