@@ -16,7 +16,6 @@ export SHELLSPEC_SHELL=''
 export SHELLSPEC_TIME=''
 export SHELLSPEC_TMPBASE=''
 export SHELLSPEC_TIME_LOG=''
-export SHELLSPEC_TRANS_LOG=''
 export SHELLSPEC_EXAMPLES_LOG=''
 export SHELLSPEC_FORMATTER='progress'
 export SHELLSPEC_COLOR=''
@@ -87,7 +86,6 @@ SHELLSPEC_LOAD_PATH=$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_LIB/formatters
 
 SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$(unixtime).$$"
 SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/time.log"
-SHELLSPEC_TRANS_LOG="$SHELLSPEC_TMPBASE/trans.log"
 SHELLSPEC_EXAMPLES_LOG="$SHELLSPEC_TMPBASE/examples.log"
 
 if [ -z "$SHELLSPEC_TIME" ]; then
@@ -203,7 +201,7 @@ parse_options() {
       --no-fail-fast) SHELLSPEC_FAIL_FAST_COUNT='' ;;
       --init) mode=init ;;
       --task) mode=task ;;
-      --translate) mode=translator SHELLSPEC_TRANS_LOG='' ;;
+      --translate) mode=translator ;;
       -h | --help) usage ;;
       -v | --version) echo "$SHELLSPEC_VERSION"; exit 0 ;;
       -*) abort "Unknown option '$1'" ;;

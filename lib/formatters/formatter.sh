@@ -91,17 +91,8 @@ conclusion_end() {
 }
 
 finished_end() {
-  if [ "${trans_user:-}" ] && [ "${trans_sys:-}" ]; then
-    trans_time=$(printf '%d.%02d' \
-      $((${trans_user%.*}+${trans_sys%.*} +
-        (1${trans_user#*.}+1${trans_sys#*.}-200) / 100 )) \
-      $(( (1${trans_user#*.}+1${trans_sys#*.}-200) % 100 ))
-    )
-  else
-    trans_time="?"
-  fi
   putsn "Finished in ${time_real:-?} seconds" \
-    "(files took ${trans_time:-?} seconds to translate)"
+    "(user ${time_user:-?} seconds, sys ${time_sys:-?} seconds)"
 }
 
 summary_end() {

@@ -7,14 +7,14 @@ set -eu
 
 translator() {
   translator="$SHELLSPEC_LIBEXEC/shellspec-translator.sh"
-  shell "$translator" "$@"
+  # shellcheck disable=SC2086
+  eval "$SHELLSPEC_SHELL \"\$translator\" \"\$@\""
 }
 
 shell() {
   # shellcheck disable=SC2086
-  eval "command $SHELLSPEC_TIME $SHELLSPEC_SHELL ${1+\"\$@\"}"
+  eval "command $SHELLSPEC_TIME $SHELLSPEC_SHELL"
 }
 
-{ { translator "$@" 2>&1 >&3; } | trans_log "$SHELLSPEC_TRANS_LOG" >&2; } 3>&1 \
-  | \
-{ { shell 2>&1 >&3; } | executer_log "$SHELLSPEC_TIME_LOG" >&2; } 3>&1
+translator "$@" \
+  | { { shell 2>&1 >&3; } | executer_log "$SHELLSPEC_TIME_LOG" >&2; } 3>&1

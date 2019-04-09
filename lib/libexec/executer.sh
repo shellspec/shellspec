@@ -12,13 +12,6 @@ time_result() {
   return 1
 }
 
-trans_log() {
-  while IFS= read -r line; do
-    time_result "$line" >> "$1" && continue
-    putsn "$line"
-  done
-}
-
 executer_log() {
   while IFS= read -r line; do
     if time_result "$line" >> "$1.tmp"; then
