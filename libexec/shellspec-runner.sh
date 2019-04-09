@@ -37,7 +37,9 @@ if (trap '' INT) 2>/dev/null; then trap 'interrupt' INT; fi
 if (trap '' TERM) 2>/dev/null; then trap 'exit 143' TERM; fi
 
 executor() {
-  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-executor.sh" "$@"
+  executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
+  { { $SHELLSPEC_SHELL "$executor" "$@" 2>&1 >&3; } \
+    | time_log "$SHELLSPEC_TIME_LOG" >&2; } 3>&1
 }
 
 reporter() {

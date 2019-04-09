@@ -2,13 +2,10 @@
 
 set -eu
 
-# shellcheck source=lib/libexec/executor.sh
-. "${SHELLSPEC_LIB:-./lib}/libexec/executor.sh"
-
 translator() {
   translator="$SHELLSPEC_LIBEXEC/shellspec-translator.sh"
   # shellcheck disable=SC2086
-  eval "$SHELLSPEC_SHELL \"\$translator\" \"\$@\""
+  eval "$SHELLSPEC_SHELL \"$translator\" \"\$@\""
 }
 
 shell() {
@@ -16,5 +13,4 @@ shell() {
   eval "command $SHELLSPEC_TIME $SHELLSPEC_SHELL"
 }
 
-translator "$@" \
-  | { { shell 2>&1 >&3; } | time_log "$SHELLSPEC_TIME_LOG" >&2; } 3>&1
+translator "$@" | shell
