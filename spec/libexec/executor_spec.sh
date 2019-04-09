@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 Describe "libexec/executer.sh"
-  Include "$SHELLSPEC_LIB/libexec/executer.sh"
+  Include "$SHELLSPEC_LIB/libexec/executor.sh"
 
   Describe "time_result()"
     It "parses real 0.01 as time result"

@@ -2,8 +2,8 @@
 
 set -eu
 
-# shellcheck source=lib/libexec/executer.sh
-. "${SHELLSPEC_LIB:-./lib}/libexec/executer.sh"
+# shellcheck source=lib/libexec/executor.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec/executor.sh"
 
 translator() {
   translator="$SHELLSPEC_LIBEXEC/shellspec-translator.sh"
@@ -17,4 +17,4 @@ shell() {
 }
 
 translator "$@" \
-  | { { shell 2>&1 >&3; } | executer_log "$SHELLSPEC_TIME_LOG" >&2; } 3>&1
+  | { { shell 2>&1 >&3; } | time_log "$SHELLSPEC_TIME_LOG" >&2; } 3>&1

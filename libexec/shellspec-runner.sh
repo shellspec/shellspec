@@ -36,8 +36,8 @@ interrupt() {
 if (trap '' INT) 2>/dev/null; then trap 'interrupt' INT; fi
 if (trap '' TERM) 2>/dev/null; then trap 'exit 143' TERM; fi
 
-executer() {
-  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-executer.sh" "$@"
+executor() {
+  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-executor.sh" "$@"
 }
 
 reporter() {
@@ -90,7 +90,7 @@ display_unexpected_error() {
 # and capture stderr both of the runner and the reporter
 # and the stderr streams to error hander
 # and also handle both exit status. As a result of
-{ { { { set -e; executer "$@"; echo $? >&5; } \
+{ { { { set -e; executor "$@"; echo $? >&5; } \
   | reporter "$@" >&3; echo $? >&5; } 2>&1 \
   | error_handler >&4; echo $? >&5; } 5>&1 \
   | {

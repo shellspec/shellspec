@@ -12,7 +12,7 @@ time_result() {
   return 1
 }
 
-executer_log() {
+time_log() {
   while IFS= read -r line; do
     if time_result "$line" >> "$1.tmp"; then
       includes "$line" "sys " && mv "$1.tmp" "$1"
