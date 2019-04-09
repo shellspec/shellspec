@@ -40,7 +40,7 @@ worker() {
         else
           translator "$specfile" | shell
         fi
-      } > "$SHELLSPEC_JOBDIR/$i.stdout#" 2> "$SHELLSPEC_JOBDIR/$i.stderr#"
+      } > "$SHELLSPEC_JOBDIR/$i.stdout#" 2> "$SHELLSPEC_JOBDIR/$i.stderr#" &&:
       echo "$?" > "$SHELLSPEC_JOBDIR/$i.status#"
       for ext in stdout stderr status; do
         mv "$SHELLSPEC_JOBDIR/$i.$ext#" "$SHELLSPEC_JOBDIR/$i.$ext"
@@ -65,6 +65,8 @@ reduce() {
     #echo $SHELLSPEC_JOBDIR/$i >/dev/tty1
     cat "$SHELLSPEC_JOBDIR/$i.stdout"
     cat "$SHELLSPEC_JOBDIR/$i.stderr" >&2
+    IFS= read -r status < "$SHELLSPEC_JOBDIR/$i.status"
+    [ "$status" -ne 0 ] && exit "$status"
     i=$((i+1))
   done
 }

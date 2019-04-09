@@ -91,6 +91,7 @@ display_unexpected_error() {
   fi
   error "The specfile aborted at line $range in '$specfile'"
   error
+  first_error=''
 }
 
 # I want to process with non-blocking output
