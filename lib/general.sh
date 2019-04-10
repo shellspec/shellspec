@@ -115,7 +115,7 @@ case $SHELLSPEC_SHELL_TYPE in
     shellspec_puts() {
       [ $# -eq 0 ] && return 0
       IFS=" $IFS"; set -- "$*"; IFS="${IFS#?}"
-      [ "$1" = -n ] && printf '%s' "$1" && return 0
+      [ "$1" = -n ] && echo -n - && echo -n n && return 0
       shellspec_reset_params '$1' "\\\\"
       eval "$SHELLSPEC_RESET_PARAMS"
       [ $# -gt 0 ] && eval 'echo -n "$1"' && shift
