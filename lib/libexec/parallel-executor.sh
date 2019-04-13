@@ -1,21 +1,6 @@
-#!/bin/sh
-#shellcheck disable=SC2004
+#shellcheck shell=sh disable=SC2004
 
-set -eu
-
-# shellcheck source=lib/libexec/executor.sh
-. "${SHELLSPEC_LIB:-./lib}/libexec/executor.sh"
-
-SHELLSPEC_JOBDIR="$SHELLSPEC_TMPBASE/jobs"
-
-mkdir "$SHELLSPEC_JOBDIR"
-
-jobs=0
-specfile() {
-  putsn "$1" > "$SHELLSPEC_JOBDIR/$jobs.job"
-  jobs=$(($jobs + 1))
-}
-find_specfiles specfile "$@"
+use puts putsn sequence
 
 worker() {
   job() {
@@ -36,9 +21,6 @@ worker() {
   sequence job 0 $(($jobs - 1))
 }
 
-callback() { worker "$1" & }
-sequence callback 0 $(($SHELLSPEC_JOBS-1))
-
 reduce() {
   i=0
   while [ $i -lt $jobs ]; do
@@ -50,6 +32,23 @@ reduce() {
     i=$(($i + 1))
   done
 }
-reduce &
 
-wait
+executor() {
+  SHELLSPEC_JOBDIR="$SHELLSPEC_TMPBASE/jobs"
+
+  mkdir "$SHELLSPEC_JOBDIR"
+
+  jobs=0
+  specfile() {
+    putsn "$1" > "$SHELLSPEC_JOBDIR/$jobs.job"
+    jobs=$(($jobs + 1))
+  }
+  find_specfiles specfile "$@"
+
+  callback() { worker "$1" & }
+  sequence callback 0 $(($SHELLSPEC_JOBS-1))
+
+  reduce &
+
+  wait
+}

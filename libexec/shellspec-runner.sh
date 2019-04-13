@@ -48,11 +48,8 @@ trap 'interrupt' INT
 trap ':' TERM
 
 executor() {
-  if [ "$SHELLSPEC_JOBS" -gt 0 ]; then
-    executor="$SHELLSPEC_LIBEXEC/shellspec-parallel-executor.sh"
-  else
-    executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
-  fi
+  executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
+
   # shellcheck disable=SC2086
   { { command $SHELLSPEC_TIME $SHELLSPEC_SHELL "$executor" "$@" 2>&1 >&3; } \
     | time_log "$SHELLSPEC_TIME_LOG" >&2; } 3>&1
