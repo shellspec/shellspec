@@ -21,13 +21,6 @@ else
   shellspec_redefinable() { :; }
 fi
 
-shellspec_terminate() {
-  [ "${SHELLSPEC_SPECFILE:-}" ] || return 0
-  echo "${SHELLSPEC_LF}${SHELLSPEC_CAN}"
-  echo "${SHELLSPEC_LF}Running spec '$SHELLSPEC_SPECFILE' aborted." >&2
-}
-trap 'shellspec_terminate' EXIT
-
 shellspec_load_requires() {
   shellspec_reset_params '$1' ':'
   eval "$SHELLSPEC_RESET_PARAMS"
