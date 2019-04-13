@@ -117,16 +117,16 @@ set_exit_status() {
   | error_handler >&4; echo $? >&5 ) 5>&1 \
   | (
       read -r xs1; read -r xs2; read -r xs3
-      for xs in "$xs1" "$xs2" "$xs3"; do
-        case $xs in
-          0 | "") ;;
-          $SHELLSPEC_SPEC_FAILURE_CODE) break ;;
-          *)
-            error "An unexpected error occurred or output to the stderr." \
-              "[$xs1] [$xs2] [$xs3]"
-            break
-        esac
-      done
+      if [ "$xs2" = "$SHELLSPEC_SPEC_FAILURE_CODE" ]; then
+        xs=$SHELLSPEC_SPEC_FAILURE_CODE
+      else
+        for xs in "$xs1" "$xs2" "$xs3"; do
+          case $xs in (0 | "") continue; esac
+          error "An unexpected error occurred or output to the stderr." \
+            "[$xs1] [$xs2] [$xs3]"
+          break
+        done
+      fi
       set_exit_status "${xs:-1}"
     )
 ) 3>&1 4>&2 &&:
