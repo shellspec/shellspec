@@ -46,12 +46,6 @@ warn() {
   fi
 }
 
-output() {
-  while IFS= read -r line || [ "$line" ]; do
-    putsn "$line"
-  done
-}
-
 detect_shellspec_root() {
   [ "${SHELLSPEC_ROOT:-}" ] && return 0
   cwd=$PWD p=$0
@@ -101,7 +95,7 @@ if [ -z "$SHELLSPEC_TIME" ]; then
 fi
 
 usage() {
-output <<USAGE
+cat <<USAGE
 Usage: ${0##*/} [options] [files or directories]
 
   -s, --shell SHELL                   Specify a path of shell [default: current shell]
@@ -227,7 +221,7 @@ if [ $# -gt 0 ]; then
 fi
 
 if [ "$banner" ] && [ -e "$SHELLSPEC_SPECDIR/banner" ]; then
-  output < "$SHELLSPEC_SPECDIR/banner"
+  cat "$SHELLSPEC_SPECDIR/banner"
 fi
 
 [ "$SHELLSPEC_SHELL" ] || SHELLSPEC_SHELL=$(current_shell "$0")
