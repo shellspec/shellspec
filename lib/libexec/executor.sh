@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use find_files puts putsn
+use find_files puts putsn sequence
 
 # shellcheck source=lib/libexec/parser.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/parser.sh"

@@ -16,16 +16,24 @@ error() {
   fi
 }
 
+wait_reporter_finished() {
+  [ -e "$1" ] || return 0
+  read -r reporter_pid < "$1"
+  start=$(unixtime)
+  while kill -0 "$reporter_pid" 2>/dev/null; do
+    current=$(unixtime)
+    [ $(($current - $start)) -gt 5 ] && break # timeout
+    sleep 0
+  done
+}
+
 mktempdir "$SHELLSPEC_TMPBASE"
 cleanup() {
+  trap '' INT
   [ "$SHELLSPEC_TMPBASE" ] || return 0
   tmpbase="$SHELLSPEC_TMPBASE"
   SHELLSPEC_TMPBASE=''
-  reporter_pid=''
-  read -r reporter_pid < "$tmpbase/reporter_pid"
-  while kill -0 "$reporter_pid" 2>/dev/null; do
-    (:;)
-  done
+  wait_reporter_finished "$tmpbase/reporter_pid"
   rmtempdir "$tmpbase"
 }
 trap 'cleanup' EXIT

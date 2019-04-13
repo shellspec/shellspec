@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use includes readfile trim puts putsn
+use includes readfile trim puts putsn unixtime
 # shellcheck source=lib/libexec/parser.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/parser.sh"
 
