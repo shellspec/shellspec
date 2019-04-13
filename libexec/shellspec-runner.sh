@@ -113,9 +113,9 @@ set_exit_status() {
 # and capture stderr both of the runner and the reporter
 # and the stderr streams to error hander
 # and also handle both exit status. As a result of
-( ( ( ( set -e; executor "$@"; echo $? >&5; ) \
-  | reporter "$@" >&3; echo $? >&5; ) 2>&1 \
-  | error_handler >&4; echo $? >&5; ) 5>&1 \
+( ( ( ( set -e; executor "$@"; echo $? >&5 ) \
+  | reporter "$@" >&3; echo $? >&5 ) 2>&1 \
+  | error_handler >&4; echo $? >&5 ) 5>&1 \
   | (
       read -r xs1; read -r xs2; read -r xs3
       for xs in "$xs1" "$xs2" "$xs3"; do
