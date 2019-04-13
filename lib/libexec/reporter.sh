@@ -2,18 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants unixtime
-
-# $1: filename $2: timeout
-wait_for_log_exists() {
-  unixtime start_time
-  while [ ! -s "$1" ]; do
-    [ "${2:-}" ] || return 1
-    unixtime current_time
-    # shellcheck disable=SC2154
-    [ $(($current_time - $start_time)) -lt "$2" ] || return 1
-  done
-}
+use constants
 
 # $1: prefix, $2: filename
 read_log() {

@@ -5,25 +5,6 @@
 Describe "libexec/reporter.sh"
   Include "$SHELLSPEC_LIB/libexec/reporter.sh"
 
-  Describe "wait_for_log_exists()"
-    Before 'unixtime=0'
-    unixtime() {
-      unixtime=$((${unixtime:-0} + 1))
-      eval "$1=$unixtime"
-    }
-
-    It "returns error if file missing"
-      When call wait_for_log_exists "$FILE.not-exits" 10
-      The variable unixtime should equal 11
-      The status should be failure
-    End
-
-    It "returns success if file exits"
-      When call wait_for_log_exists "$FILE" 10
-      The status should be success
-    End
-  End
-
   Describe "read_log()"
     It "does not read anything if file missing"
       When call read_log prefix "$FILE.not-exits"
