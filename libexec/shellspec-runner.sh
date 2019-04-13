@@ -40,7 +40,7 @@ trap 'interrupt' INT
 trap ':' TERM
 
 executor() {
-  if [ "$SHELLSPEC_JOBS" ]; then
+  if [ "$SHELLSPEC_JOBS" -gt 0 ]; then
     executor="$SHELLSPEC_LIBEXEC/shellspec-parallel-executor.sh"
   else
     executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"

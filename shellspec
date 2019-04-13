@@ -26,7 +26,7 @@ export SHELLSPEC_SKIP_MESSAGE=none
 export SHELLSPEC_WARNINGS=error
 export SHELLSPEC_FAIL_FAST_COUNT=''
 export SHELLSPEC_SYNTAX_CHECK=''
-export SHELLSPEC_JOBS=''
+export SHELLSPEC_JOBS=0
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
@@ -113,7 +113,7 @@ Usage: ${0##*/} [options] [files or directories]
                                         notice (show warnings but not treats as error)
                                         error (show warnings and treats as error) [default]
                                         failure (treats warnings as failures)
-  -j, --jobs JOBS                     Number of parallel jobs to run (experimental)
+  -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
       --[no-]syntax-check             Syntax check of the specfile [default: disabled]
 
   **** Output ****

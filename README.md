@@ -52,7 +52,7 @@ BDD style unit testing framework for POSIX compatible shell script.
 * The specfile is a valid shell script language syntax
 * Pure shell script implementation
 * Minimum Dependencies (Use only a few POSIX compliant command)
-* Parallel execution (experimental)
+* Parallel execution
 * Nestable groups with scope like lexical scope
 * Before / After hooks
 * Skip / Pending
