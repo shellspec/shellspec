@@ -147,31 +147,12 @@ references_end() {
 
 fatal_error_format() {
   example_index=$((${example_index:-0} + 1))
-  conclusion_append "${LF}${RED}Fatal error:" \
-    "running specs aborted unexpectedly${LF}${RESET}"
-  conclusion_append \
-    "  ${BOLD}${WHITE}NOTE: The last executed statement was as follows${RESET}"
-  conclusion_append "${LF}  $example_index) ${field_description:-}${LF}"
-  if [ "${field_evaluation:-}" ]; then
-    conclusion_append "     ${BOLD}${CYAN}${field_evaluation:-}${RESET}"
-  fi
-
-  if [ "${field_type:-}" = "statement" ]; then
-    conclusion_append \
-      "     ${field_color:-}${field_message:-} (${field_tag:-})${RESET}"
-  else
-    conclusion_append "     (${field_tag:-} ${field_type:-})"
-  fi
 
   if [ "${field_lineno:-}" ]; then
-    conclusion_append \
-      "     ${CYAN}# ${field_specfile}:${field_lineno}${RESET}"
     set -- "${BOLD}${RED}shellspec" \
       "${field_specfile}:${field_lineno}${RESET}" \
       "${CYAN}# $example_index)" "${field_description}${RESET}"
   else
-    conclusion_append \
-      "     ${CYAN}# ${field_specfile:-}:${field_range:-}${RESET}"
     set -- "${BOLD}${RED}shellspec" \
       "${field_specfile}:${field_range%-*}${RESET}" \
       "${CYAN}# $example_index)" "${field_description}${RESET}"
