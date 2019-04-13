@@ -164,12 +164,7 @@ parse_lines each_line
 
 [ "$interrupt" ] && exit_status=130
 
-if [ -z "$interrupt" ]; then
-  if [ ! "$fail_fast" ]; then
-    wait_for_log_exists "$SHELLSPEC_TIME_LOG" 30 ||:
-  fi
-  read_log "time" "$SHELLSPEC_TIME_LOG"
-fi
+read_log "time" "$SHELLSPEC_TIME_LOG"
 
 formatter_end
 

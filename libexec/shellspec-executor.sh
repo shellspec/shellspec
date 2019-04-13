@@ -19,4 +19,4 @@ shell() {
   eval "$SHELLSPEC_SHELL" ${1+'"$@"'}
 }
 
-executor "$@"
+executor "$@" 2>&3
