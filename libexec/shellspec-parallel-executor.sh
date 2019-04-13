@@ -62,11 +62,10 @@ reduce() {
     if [ ! -e "$SHELLSPEC_JOBDIR/$i.status" ]; then
       continue
     fi
-    #echo $SHELLSPEC_JOBDIR/$i >/dev/tty1
     cat "$SHELLSPEC_JOBDIR/$i.stdout"
     cat "$SHELLSPEC_JOBDIR/$i.stderr" >&2
-    IFS= read -r status < "$SHELLSPEC_JOBDIR/$i.status"
-    [ "$status" -ne 0 ] && exit "$status"
+    IFS= read -r exit_status < "$SHELLSPEC_JOBDIR/$i.status"
+    [ "$exit_status" -ne 0 ] && exit "$exit_status"
     i=$((i+1))
   done
 }

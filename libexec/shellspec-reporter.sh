@@ -3,15 +3,16 @@
 
 set -eu
 
+echo $$ > "$SHELLSPEC_TMPBASE/reporter_pid"
+
 : "${SHELLSPEC_SPEC_FAILURE_CODE:=101}"
 
 # shellcheck source=lib/libexec/reporter.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/reporter.sh"
 
 interrupt=''
-if (trap '' INT) 2>/dev/null; then
-  trap 'if [ "$interrupt" ]; then exit 130; else interrupt=1; fi' INT
-fi
+trap 'interrupt=1' INT
+trap '' TERM
 
 import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
@@ -159,6 +160,8 @@ each_line() {
   formatter_format "$@"
 }
 parse_lines each_line
+
+[ "$interrupt" ] && exit_status=130
 
 if [ -z "$interrupt" ]; then
   if [ ! "$fail_fast" ]; then

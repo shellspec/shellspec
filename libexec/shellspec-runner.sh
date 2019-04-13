@@ -19,24 +19,25 @@ error() {
 mktempdir "$SHELLSPEC_TMPBASE"
 cleanup() {
   [ "$SHELLSPEC_TMPBASE" ] || return 0
-  rmtempdir "$SHELLSPEC_TMPBASE"
+  tmpbase="$SHELLSPEC_TMPBASE"
   SHELLSPEC_TMPBASE=''
+  reporter_pid=''
+  read -r reporter_pid < "$tmpbase/reporter_pid"
+  while kill -0 "$reporter_pid" 2>/dev/null; do
+    (:;)
+  done
+  rmtempdir "$tmpbase"
 }
 trap 'cleanup' EXIT
 
-interrupt=''
 interrupt() {
-  if ! [ "$interrupt" ]; then
-    interrupt=1
-    echo
-    echo "shellspec is shutting down and will print the summary report..." \
-         "Interrupt again to force quit."
-    sleep 2
-    exit 130
-  fi
+  trap '' TERM # posh: Prevent display 'Terminated'.
+  kill -TERM 0
+  cleanup
+  exit 130
 }
-if (trap '' INT) 2>/dev/null; then trap 'interrupt' INT; fi
-if (trap '' TERM) 2>/dev/null; then trap 'exit 143' TERM; fi
+trap 'interrupt' INT
+trap ':' TERM
 
 executor() {
   if [ "$SHELLSPEC_JOBS" ]; then
@@ -94,19 +95,23 @@ display_unexpected_error() {
   first_error=''
 }
 
+set_exit_status() {
+  return "$1"
+}
+
 # I want to process with non-blocking output
 # and the stdout of runner streams to the reporter
 # and capture stderr both of the runner and the reporter
 # and the stderr streams to error hander
 # and also handle both exit status. As a result of
-{ { { { set -e; executor "$@"; echo $? >&5; } \
-  | reporter "$@" >&3; echo $? >&5; } 2>&1 \
-  | error_handler >&4; echo $? >&5; } 5>&1 \
-  | {
+( ( ( ( set -e; executor "$@"; echo $? >&5; ) \
+  | reporter "$@" >&3; echo $? >&5; ) 2>&1 \
+  | error_handler >&4; echo $? >&5; ) 5>&1 \
+  | (
       read -r xs1; read -r xs2; read -r xs3
       for xs in "$xs1" "$xs2" "$xs3"; do
         case $xs in
-          0) ;;
+          0 | "") ;;
           $SHELLSPEC_SPEC_FAILURE_CODE) break ;;
           *)
             error "An unexpected error occurred or output to the stderr." \
@@ -114,9 +119,9 @@ display_unexpected_error() {
             break
         esac
       done
-      exit "$xs"
-    }
-} 3>&1 4>&2 &&:
+      exit "${xs:-1}"
+    )
+) 3>&1 4>&2 &&:
 exit_status=$?
 
 case $exit_status in

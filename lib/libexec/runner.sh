@@ -11,7 +11,7 @@ mktempdir() {
 }
 
 rmtempdir() {
-  rm -rf "$1" >/dev/null 2>&1
+  rm -rf "$1"
 }
 
 time_result() {
