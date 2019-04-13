@@ -7,22 +7,11 @@ set -eu
 
 SHELLSPEC_JOBDIR="$SHELLSPEC_TMPBASE/jobs"
 
-translator() {
-  translator="$SHELLSPEC_LIBEXEC/shellspec-translator.sh"
-  # shellcheck disable=SC2086
-  eval "$SHELLSPEC_SHELL \"$translator\" \"\$@\""
-}
-
-shell() {
-  # shellcheck disable=SC2086
-  $SHELLSPEC_SHELL
-}
-
-mkdir $SHELLSPEC_JOBDIR
+mkdir "$SHELLSPEC_JOBDIR"
 
 jobs=0
 each_file() {
-  ! is_specfile "$1" && return 0
+  is_specfile "$1" || return 0
   putsn "$1" > "$SHELLSPEC_JOBDIR/$jobs.job"
   jobs=$((jobs+1))
 }
@@ -33,7 +22,6 @@ worker() {
   while [ $i -lt $jobs ]; do
     if mv "$SHELLSPEC_JOBDIR/$i.job" "$SHELLSPEC_JOBDIR/$i.job#" 2>/dev/null; then
       IFS= read -r specfile < "$SHELLSPEC_JOBDIR/$i.job#"
-      #echo "$1: $SHELLSPEC_JOBDIR/$i.job $specfile" >/dev/tty1
       {
         if [ $i -eq 0 ]; then
           translator --metadata "$specfile" | shell
@@ -50,8 +38,8 @@ worker() {
   done
 }
 
-i=0 workers="$SHELLSPEC_JOBS"
-while [ $i -lt $workers ]; do
+i=0
+while [ $i -lt "$SHELLSPEC_JOBS" ]; do
   worker "$i" &
   i=$((i+1))
 done
@@ -59,12 +47,10 @@ done
 reduce() {
   i=0
   while [ $i -lt $jobs ]; do
-    if [ ! -e "$SHELLSPEC_JOBDIR/$i.status" ]; then
-      continue
-    fi
+    [ -e "$SHELLSPEC_JOBDIR/$i.status" ] || continue
     cat "$SHELLSPEC_JOBDIR/$i.stdout"
     cat "$SHELLSPEC_JOBDIR/$i.stderr" >&2
-    IFS= read -r exit_status < "$SHELLSPEC_JOBDIR/$i.status"
+    read -r exit_status < "$SHELLSPEC_JOBDIR/$i.status"
     [ "$exit_status" -ne 0 ] && exit "$exit_status"
     i=$((i+1))
   done

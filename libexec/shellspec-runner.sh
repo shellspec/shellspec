@@ -45,6 +45,7 @@ executor() {
   else
     executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
   fi
+  # shellcheck disable=SC2086
   { { command $SHELLSPEC_TIME $SHELLSPEC_SHELL "$executor" "$@" 2>&1 >&3; } \
     | time_log "$SHELLSPEC_TIME_LOG" >&2; } 3>&1
 }
@@ -119,13 +120,13 @@ set_exit_status() {
             break
         esac
       done
-      exit "${xs:-1}"
+      set_exit_status "${xs:-1}"
     )
 ) 3>&1 4>&2 &&:
 exit_status=$?
 
 case $exit_status in
-  0) exit 0;; # Running specs exit with successfully.
+  0) ;; # Running specs exit with successfully.
   $SHELLSPEC_SPEC_FAILURE_CODE) ;; # Running specs exit with failure.
   *) error "Fatal error occurred, terminated with exit status $exit_status."
 esac

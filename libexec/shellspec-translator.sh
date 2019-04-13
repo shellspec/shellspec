@@ -246,7 +246,7 @@ translate() {
 
 if [ "$SHELLSPEC_SYNTAX_CHECK" ]; then
   each_file() {
-  ! is_specfile "$1" && return 0
+    is_specfile "$1" || return 0
     $SHELLSPEC_SHELL -n "$1" || exit 1
   }
   find_files each_file "$@"
@@ -259,7 +259,7 @@ if [ "${1:-}" = "--metadata" ]; then
 fi
 
 each_file() {
-  ! is_specfile "$1" && return 0
+  is_specfile "$1" || return 0
   putsn '('
   specfile=$1 lineno=0 block_no=0 block_no_stack='' example_no=0 skip_id=0
   escape_quote specfile

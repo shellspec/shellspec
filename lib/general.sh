@@ -112,14 +112,15 @@ case $SHELLSPEC_SHELL_TYPE in
     ;;
   posh)
     # posh does not implement 'printf' or 'print' as built-in.
+    # shellcheck disable=SC2039
     shellspec_puts() {
       [ $# -eq 0 ] && return 0
       IFS=" $IFS"; set -- "$*"; IFS="${IFS#?}"
       [ "$1" = -n ] && echo -n - && echo -n n && return 0
       shellspec_reset_params '$1' "\\\\"
       eval "$SHELLSPEC_RESET_PARAMS"
-      [ $# -gt 0 ] && eval 'echo -n "$1"' && shift
-      while [ $# -gt 0 ]; do eval 'echo -n "\\\\$1"' && shift; done
+      [ $# -gt 0 ] && echo -n "$1" && shift
+      while [ $# -gt 0 ]; do echo -n "\\\\$1" && shift; done
     }
     ;;
   *) shellspec_puts() { IFS=" $IFS"; printf '%s' "$*"; IFS="${IFS#?}"; }
