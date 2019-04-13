@@ -25,7 +25,6 @@ export SHELLSPEC_UNEXPECTED_STDERR=102
 export SHELLSPEC_SKIP_MESSAGE=none
 export SHELLSPEC_WARNINGS=error
 export SHELLSPEC_FAIL_FAST_COUNT=''
-export SHELLSPEC_SYNTAX_CHECK=''
 export SHELLSPEC_JOBS=0
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
@@ -114,7 +113,6 @@ Usage: ${0##*/} [options] [files or directories]
                                         error (show warnings and treats as error) [default]
                                         failure (treats warnings as failures)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
-      --[no-]syntax-check             Syntax check of the specfile [default: disabled]
 
   **** Output ****
 
@@ -135,6 +133,7 @@ Usage: ${0##*/} [options] [files or directories]
   **** Utility ****
 
       --init                          Initialize your project with shellspec
+      --syntax-check                  Syntax check of the specfiles
       --task [TASK]                   Run task. If TASK is not specified, show the task list
       --translate                     Output translated specfile
   -v, --version                       Display the version
@@ -189,8 +188,6 @@ parse_options() {
           *) abort 'Invalid LEVEL.'
         esac
         SHELLSPEC_WARNINGS="$2" skip=2 ;;
-      --syntax-check) SHELLSPEC_SYNTAX_CHECK=1 ;;
-      --no-syntax-check) SHELLSPEC_SYNTAX_CHECK= ;;
       --skip-message)
         [ $# -ge 2 ] || abort 'Require VERBOSE.'
         case $2 in
@@ -207,6 +204,7 @@ parse_options() {
       --init) mode=init ;;
       --task) mode=task ;;
       --translate) mode=translator ;;
+      --syntax-check) mode=syntax-check ;;
       -h | --help) usage ;;
       -v | --version) echo "$SHELLSPEC_VERSION"; exit 0 ;;
       -*) abort "Unknown option '$1'" ;;
@@ -249,17 +247,9 @@ if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
   abort "Unsupported shell (require arithmetic expansion): $SHELLSPEC_SHELL"
 fi
 
-if [ "$SHELLSPEC_SYNTAX_CHECK" ]; then
-  if ! $SHELLSPEC_SHELL -n -c ':' 2>/dev/null; then
-    warn "The current shell does not support the -n option: $SHELLSPEC_SHELL"
-    warn "The syntax check feature is disabled"
-    SHELLSPEC_SYNTAX_CHECK=''
-  fi
-fi
-
 exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
 
-case $mode in (runner|translator)
+case $mode in (runner|translator|syntax-check)
   [ $# -eq 0 ] && set -- 'spec'
   for specfile in "$@"; do
     case $specfile in (*:*)

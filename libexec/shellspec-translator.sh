@@ -244,22 +244,13 @@ translate() {
   done
 }
 
-if [ "$SHELLSPEC_SYNTAX_CHECK" ]; then
-  each_file() {
-    is_specfile "$1" || return 0
-    $SHELLSPEC_SHELL -n "$1" || exit 1
-  }
-  find_files each_file "$@"
-fi
-
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 if [ "${1:-}" = "--metadata" ]; then
   putsn "shellspec_metadata"
   shift
 fi
 
-each_file() {
-  is_specfile "$1" || return 0
+specfile() {
   putsn '('
   specfile=$1 lineno=0 block_no=0 block_no_stack='' example_no=0 skip_id=0
   escape_quote specfile
@@ -278,6 +269,7 @@ each_file() {
   putsn "shellspec_specfile end"
   putsn ')'
 }
-find_files each_file "$@"
+find_specfiles specfile "$@"
+
 putsn "SHELLSPEC_SPECFILE=\"\""
 putsn "shellspec_end"

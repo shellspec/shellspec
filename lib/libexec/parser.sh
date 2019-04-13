@@ -35,3 +35,8 @@ detect_range() {
   done
   echo "${lineno_begin}-${lineno_end:-$lineno}"
 }
+
+find_specfiles() {
+  eval "find_specfiles_() { if is_specfile \"\$1\"; then \"$1\" \"\$@\"; fi; }"
+  find_files find_specfiles_ "$@"
+}
