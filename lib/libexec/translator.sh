@@ -2,9 +2,6 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants find_files puts putsn escape_quote trim unixtime
-# shellcheck source=lib/libexec/parser.sh
-. "${SHELLSPEC_LIB:-./lib}/libexec/parser.sh"
 
 initialize_id() {
   id='' id_state='begin'

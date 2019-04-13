@@ -1,6 +1,8 @@
 #shellcheck shell=sh disable=SC2004
 
-use puts putsn sequence
+# shellcheck source=lib/libexec.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+use sequence
 
 worker() {
   job() {
@@ -23,7 +25,7 @@ worker() {
 
 reduce() {
   i=0
-  while [ $i -lt $jobs ]; do
+  while [ $i -lt "$jobs" ]; do
     [ -e "$SHELLSPEC_JOBDIR/$i.status" ] || continue
     cat "$SHELLSPEC_JOBDIR/$i.stdout"
     cat "$SHELLSPEC_JOBDIR/$i.stderr" >&2

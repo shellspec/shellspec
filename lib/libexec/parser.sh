@@ -1,10 +1,5 @@
 #shellcheck shell=sh disable=SC2004
 
-is_specfile() {
-  case $1 in (*_spec.sh) return 0; esac
-  return 1
-}
-
 is_block_statement() {
   case $1 in (Describe | Context | Example | Specify | It | End)
     return 0
@@ -34,9 +29,4 @@ detect_range() {
     fi
   done
   echo "${lineno_begin}-${lineno_end:-$lineno}"
-}
-
-find_specfiles() {
-  eval "find_specfiles_() { if is_specfile \"\$1\"; then \"$1\" \"\$@\"; fi; }"
-  find_files find_specfiles_ "$@"
 }

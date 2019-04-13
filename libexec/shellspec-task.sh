@@ -5,6 +5,7 @@ set -eu
 
 # shellcheck source=lib/libexec/task.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/task.sh"
+use find_files reset_params
 
 export SHELLSPEC_TASKS
 SHELLSPEC_TASKS='|'

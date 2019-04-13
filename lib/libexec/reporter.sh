@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants proxy import puts putsn padding each reset_params unixtime
+use constants unixtime
 
 # $1: filename $2: timeout
 wait_for_log_exists() {

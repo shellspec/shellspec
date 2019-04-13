@@ -77,6 +77,7 @@ SHELLSPEC_LOAD_PATH=$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_LIB/formatters
 
 # shellcheck source=lib/libexec/shellspec.sh
 . "$SHELLSPEC_LIB/libexec/shellspec.sh"
+use unixtime
 
 SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$(unixtime).$$"
 SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/time.log"

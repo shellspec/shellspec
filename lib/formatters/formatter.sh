@@ -5,6 +5,8 @@
 : "${field_specfile:-}" "${field_type:-}" "${field_tag:-}" "${field_range:-}"
 : "${field_lineno:-}" "${field_color:-}"
 
+use proxy padding each
+
 buffer conclusion notable_examples failure_examples fatal_errors
 
 proxy formatter_methods methods

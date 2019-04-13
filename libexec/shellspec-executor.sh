@@ -2,7 +2,21 @@
 
 set -eu
 
-# shellcheck source=lib/libexec/executor.sh
-. "${SHELLSPEC_LIB:-./lib}/libexec/executor.sh"
+if [ "$SHELLSPEC_JOBS" -gt 0 ]; then
+  # shellcheck source=lib/libexec/parallel-executor.sh
+  . "${SHELLSPEC_LIB:-./lib}/libexec/parallel-executor.sh"
+else
+  # shellcheck source=lib/libexec/serial-executor.sh
+  . "${SHELLSPEC_LIB:-./lib}/libexec/serial-executor.sh"
+fi
 
-translator --metadata "$@" | shell
+translator() {
+  translator="$SHELLSPEC_LIBEXEC/shellspec-translator.sh"
+  shell "$translator" "$@"
+}
+
+shell() {
+  eval "$SHELLSPEC_SHELL" ${1+'"$@"'}
+}
+
+executor "$@"

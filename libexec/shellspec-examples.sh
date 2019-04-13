@@ -1,8 +1,9 @@
 #!/bin/sh
 #shellcheck disable=SC2004
 
-# shellcheck source=lib/libexec/examples.sh
-. "${SHELLSPEC_LIB:-./lib}/libexec/examples.sh"
+# shellcheck source=lib/libexec.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+load parser
 
 i=0
 specfile() {

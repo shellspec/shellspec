@@ -5,6 +5,8 @@ set -eu
 
 # shellcheck source=lib/libexec/translator.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
+use constants escape_quote trim unixtime
+load parser
 
 block_example_group() {
   if [ "$inside_of_example" ]; then

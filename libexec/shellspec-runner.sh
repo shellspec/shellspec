@@ -7,6 +7,8 @@ set -eu
 
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
+use readfile unixtime trim
+load parser
 
 error() {
   if [ "$SHELLSPEC_COLOR" ]; then

@@ -9,6 +9,7 @@ echo $$ > "$SHELLSPEC_TMPBASE/reporter_pid"
 
 # shellcheck source=lib/libexec/reporter.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/reporter.sh"
+use import reset_params
 
 interrupt=''
 trap 'interrupt=1' INT

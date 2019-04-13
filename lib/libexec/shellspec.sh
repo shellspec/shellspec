@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use putsn unixtime reset_params
+use reset_params
 
 read_dot_file() {
   [ "$1" ] || return 0

@@ -20,7 +20,10 @@ color_constants() {
     MAGENTA="${ESC}[35m" BG_MAGENTA="${ESC}[45m" \
     CYAN="${ESC}[36m"    BG_CYAN="${ESC}[46m" \
     WHITE="${ESC}[37m"   BG_WHITE="${ESC}[47m"
-  each callback "$@"
+  while [ $# -gt 0 ]; do
+    callback "$1"
+    shift
+  done
 }
 
 color_schema() {

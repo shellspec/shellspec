@@ -21,3 +21,22 @@ use() {
     shift
   done
 }
+
+load() {
+  while [ "$#" -gt 0 ]; do
+    . "${SHELLSPEC_LIB:-./lib}/libexec/$1.sh"
+    shift
+  done
+}
+
+is_specfile() {
+  case $1 in (*_spec.sh) return 0; esac
+  return 1
+}
+
+find_specfiles() {
+  eval "find_specfiles_() { if is_specfile \"\$1\"; then \"$1\" \"\$@\"; fi; }"
+  shellspec_find_files find_specfiles_ "$@"
+}
+
+use puts putsn
