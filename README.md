@@ -472,6 +472,10 @@ To disable shows banner with `--no-banner` option.
 0.10.0 (not yet released)
 
 * Support parallel execution. (`--jobs` option)
+* Separete syntax checker into tools.
+* Improve syntax checker.
+* Improve error handling.
+* Improve ctrl-c handling.
 
 0.9.0
 
