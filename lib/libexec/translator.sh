@@ -5,6 +5,18 @@
 use trim
 load parser
 
+initialize() {
+  lineno=0 block_no=0 block_no_stack='' example_no=0 skip_id=0
+}
+
+finalize() {
+  if [ "$block_no_stack" ]; then
+    syntax_error "unexpected end of file (expecting 'End')"
+    lineno=
+    while [ "$block_no_stack" ]; do block_end ""; done
+  fi
+}
+
 initialize_id() {
   id='' id_state='begin'
 }

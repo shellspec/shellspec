@@ -131,21 +131,17 @@ if [ "${1:-}" = "--metadata" ]; then
 fi
 
 specfile() {
-  putsn '('
-  specfile=$1 lineno=0 block_no=0 block_no_stack='' example_no=0 skip_id=0
+  specfile=$1
   escape_quote specfile
+
+  putsn '('
   putsn "SHELLSPEC_SPECFILE='$specfile'"
   putsn "shellspec_specfile begin"
+  initialize
   putsn "shellspec_marker \"$specfile\" BOF"
   translate < "$specfile"
   putsn "shellspec_marker \"$specfile\" EOF"
-  if [ "$block_no_stack" ]; then
-    syntax_error "unexpected end of file (expecting 'End')"
-    lineno=
-    while [ "$block_no_stack" ]; do
-      block_end ""
-    done
-  fi
+  finalize
   putsn "shellspec_specfile end"
   putsn ')'
 }
