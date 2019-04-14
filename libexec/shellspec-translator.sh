@@ -8,14 +8,11 @@ set -eu
 use constants escape_quote trim unixtime
 load parser
 
-block_example_group() {
-  if [ "$inside_of_example" ]; then
-    syntax_error "Describe/Context cannot be defined inside of Example"
-    return 0
-  fi
+trans() {
+  "trans_$@"
+}
 
-  increasese_id
-  block_no=$(($block_no + 1))
+trans_block_example_group() {
   putsn "(" \
     "SHELLSPEC_BLOCK_NO=$block_no" \
     "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
@@ -23,17 +20,9 @@ block_example_group() {
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { shellspec_example_group $1"
   putsn "}; shellspec_yield${block_no}() { :;"
-  block_no_stack="$block_no_stack $block_no"
 }
 
-block_example() {
-  if [ "$inside_of_example" ]; then
-    syntax_error "It/Example/Specify/Todo cannot be defined inside of Example"
-    return 0
-  fi
-
-  increasese_id
-  block_no=$(($block_no + 1)) example_no=$(($example_no + 1))
+trans_block_example() {
   putsn "(" \
     "SHELLSPEC_BLOCK_NO=$block_no" \
     "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
@@ -42,208 +31,98 @@ block_example() {
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { shellspec_example $1"
   putsn "}; shellspec_yield${block_no}() { :;"
-  block_no_stack="$block_no_stack $block_no"
-  inside_of_example="yes"
 }
 
-block_end() {
-  if [ -z "$block_no_stack" ]; then
-    syntax_error "unexpected 'End'"
-    return 0
-  fi
-
-  decrease_id
+trans_block_end() {
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "}; SHELLSPEC_LINENO_END=$lineno"
   putsn "shellspec_block${block_no_stack##* }) ${1# }"
-  block_no_stack="${block_no_stack% *}"
-  inside_of_example=""
 }
 
-x() { "$@"; skip; }
-
-todo() {
-  block_example "$1"
-  block_end ""
-}
-
-statement() {
-  if [ -z "$inside_of_example" ]; then
-    syntax_error "When/The cannot be defined outside of Example"
-    return 0
-  fi
-
+trans_statement() {
   putsn "SHELLSPEC_SPECFILE=\"$specfile\" SHELLSPEC_LINENO=$lineno"
   putsn "shellspec_statement $1$2"
 }
 
-control() {
-  case $1 in (before|after)
-    if [ "$inside_of_example" ]; then
-      syntax_error "Before/After cannot be defined inside of Example"
-      return 0
-    fi
-  esac
+trans_control() {
   putsn "SHELLSPEC_AUX_LINENO=$lineno"
   putsn "shellspec_$1$2"
 }
 
-skip() {
-  skip_id=$(($skip_id + 1))
+trans_skip() {
   putsn "SHELLSPEC_SPECFILE=\"$specfile\" SHELLSPEC_LINENO=$lineno"
   putsn "shellspec_skip ${skip_id}${1:-}"
 }
 
-data() {
-  data_line=${2:-}
-  trim data_line
+trans_data_begin() {
   now=$(unixtime)
   delimiter="DATA${now}$$"
-
   putsn "shellspec_data() {"
-  case $data_line in
-    '' | '#'* | '|'*)
-      case $1 in
-        expand) putsn "shellspec_passthrough<<$delimiter $data_line" ;;
-        raw)    putsn "shellspec_passthrough<<'$delimiter' $data_line" ;;
-      esac
-      while IFS= read -r line || [ "$line" ]; do
-        lineno=$(($lineno + 1))
-        trim line
-        case $line in
-          '#|'*) putsn "${line#??}" ;;
-          '#'*) ;;
-          End | End\ * ) break ;;
-          *) syntax_error "Data texts should begin with '#|'"
-            break ;;
-        esac
-      done
-      putsn "$delimiter"
-      ;;
-    "'"* | '"'*) putsn "  shellspec_putsn $data_line" ;;
-    *) putsn "  $data_line" ;;
+}
+
+trans_data_here_begin() {
+  case $1 in
+    expand) putsn "shellspec_passthrough<<$delimiter $2" ;;
+    raw)    putsn "shellspec_passthrough<<'$delimiter' $2" ;;
   esac
+}
+
+trans_data_here_line() {
+  putsn "${1#??}"
+}
+
+trans_data_here_end() {
+  putsn "$delimiter"
+}
+
+trans_data_text() {
+  putsn "  shellspec_putsn $1"
+}
+
+trans_data_func() {
+  putsn "  $1"
+}
+
+trans_data_end() {
   putsn "}"
   putsn "SHELLSPEC_DATA=1"
 }
 
-text_begin() {
+trans_text_begin() {
   now=$(unixtime)
   delimiter="DATA${now}$$"
-
   case $1 in
     expand) putsn "shellspec_passthrough<<$delimiter ${2}" ;;
     raw)    putsn "shellspec_passthrough<<'$delimiter' ${2}" ;;
   esac
-  inside_of_text=1
 }
 
-text() {
-  case $1 in ('#|'*) putsn "${1#??}"; return 0; esac
-  text_end
-  return 1
+trans_text() {
+  putsn "${1#??}"
 }
 
-text_end() {
+trans_text_end() {
   putsn "$delimiter"
-  inside_of_text=''
 }
 
-constant() {
-  if [ "$block_no_stack" ]; then
-    syntax_error "Constant should be defined outside of Example Group/Example"
-    return 0
-  fi
-
-  line=$1
-  trim line
-  name=${line%%:*} value=${line#*:}
-  trim value
-  if is_constant_name "$name"; then
-    ( eval "putsn $name=\\'$value\\'" ) ||:
-  else
-    syntax_error "Constant name should match pattern [A-Z_][A-Z0-9_]*"
-  fi
+trans_constant() {
+  ( eval "putsn $1=\\'$2\\'" ) ||:
 }
 
-define() {
-  line=$1
-  trim line
-  name="${line%% *}"
-  case $line in (*" "*) value="${line#* }" ;; (*) value= ;; esac
-
-  if ! is_function_name "$name"; then
-    syntax_error "Def name should match pattern [a-zA-Z_][a-zA-Z0-9_]*"
-    return 0
-  fi
-
-  func="$name() {${LF}shellspec_puts $value${LF}}"
-  putsn "$func"
+trans_define() {
+  putsn "$1() {${LF}shellspec_puts $2${LF}}"
 }
 
-include() {
-  if [ "$inside_of_example" ]; then
-    syntax_error "Include cannot be defined inside of Example"
-    return 0
-  fi
-
+trans_include() {
   putsn "shellspec_include $1"
 }
 
-error() {
-  syntax_error "${*:-}"
+trans_line() {
+  putsn "$1"
 }
 
 syntax_error() {
   putsn "shellspec_exit 2 \"Syntax error: $1 in $specfile line $lineno\" \"${2:-}\""
-}
-
-translate() {
-  initialize_id
-  inside_of_example='' inside_of_text=''
-  while IFS= read -r line || [ "$line" ]; do
-    lineno=$(($lineno + 1)) work=$line
-    trim work
-
-    [ "$inside_of_text" ] && text "$work" && continue
-
-    dsl=${work%% *}
-    case $dsl in
-      Describe    )   block_example_group "${work#$dsl}" ;;
-      xDescribe   ) x block_example_group "${work#$dsl}" ;;
-      Context     )   block_example_group "${work#$dsl}" ;;
-      xContext    ) x block_example_group "${work#$dsl}" ;;
-      Example     )   block_example       "${work#$dsl}" ;;
-      xExample    ) x block_example       "${work#$dsl}" ;;
-      Specify     )   block_example       "${work#$dsl}" ;;
-      xSpecify    ) x block_example       "${work#$dsl}" ;;
-      It          )   block_example       "${work#$dsl}" ;;
-      xIt         ) x block_example       "${work#$dsl}" ;;
-      End         )   block_end           "${work#$dsl}" ;;
-      Todo        )   todo                "${work#$dsl}" ;;
-      When        )   statement when      "${work#$dsl}" ;;
-      The         )   statement the       "${work#$dsl}" ;;
-      Path        )   control path        "${work#$dsl}" ;;
-      File        )   control path        "${work#$dsl}" ;;
-      Dir         )   control path        "${work#$dsl}" ;;
-      Before      )   control before      "${work#$dsl}" ;;
-      After       )   control after       "${work#$dsl}" ;;
-      Pending     )   control pending     "${work#$dsl}" ;;
-      Skip        )   skip                "${work#$dsl}" ;;
-      Data        )   data raw            "${work#$dsl}" ;;
-      Data:raw    )   data raw            "${work#$dsl}" ;;
-      Data:expand )   data expand         "${work#$dsl}" ;;
-      Def         )   define              "${work#$dsl}" ;;
-      Include     )   include             "${work#$dsl}" ;;
-      Logger      )   control logger      "${work#$dsl}" ;;
-      %text       )   text_begin raw      "${work#$dsl}" ;;
-      %text:raw   )   text_begin raw      "${work#$dsl}" ;;
-      %text:expand)   text_begin expand   "${work#$dsl}" ;;
-      % | %const  )   constant            "${work#$dsl}" ;;
-      Error       )   error               "${work#$dsl}" ;;
-      *) putsn "$line" ;;
-    esac
-  done
 }
 
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
