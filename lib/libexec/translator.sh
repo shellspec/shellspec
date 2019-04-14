@@ -1,20 +1,19 @@
-#shellcheck shell=sh disable=SC2004
+#shellcheck shell=sh disable=SC2004,SC2119,SC2120
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use trim
+use constants trim
 load parser
 
 initialize() {
-  lineno=0 block_no=0 block_no_stack='' example_no=0 skip_id=0
+  lineno=0 block_no=0 block_no_stack='' example_no=0 skip_id=0 error=''
 }
 
 finalize() {
-  if [ "$block_no_stack" ]; then
-    syntax_error "unexpected end of file (expecting 'End')"
-    lineno=
-    while [ "$block_no_stack" ]; do block_end ""; done
-  fi
+  [ "$block_no_stack" ] || return 0
+  syntax_error "unexpected end of file (expecting 'End')"
+  lineno=
+  while [ "$block_no_stack" ]; do block_end ""; done
 }
 
 initialize_id() {
@@ -38,6 +37,8 @@ decrease_id() {
   id_state="end"
 }
 
+one_line_syntax_check() { :; }
+
 is_constant_name() {
   case $1 in ([!A-Z_]*) return 1; esac
   case $1 in (*[!A-Z0-9_]*) return 1; esac
@@ -54,9 +55,14 @@ block_example_group() {
     return 0
   fi
 
+  if ! one_line_syntax_check error ": $1"; then
+    syntax_error "Describe/Context has occurred an error" "$error"
+    return 0
+  fi
+
   increasese_id
   block_no=$(($block_no + 1))
-  trans block_example_group "$@"
+  eval trans block_example_group ${1+'"$@"'}
   block_no_stack="$block_no_stack $block_no"
 }
 
@@ -66,9 +72,14 @@ block_example() {
     return 0
   fi
 
+  if ! one_line_syntax_check error ": $1"; then
+    syntax_error "It/Example/Specify/Todo has occurred an error" "$error"
+    return 0
+  fi
+
   increasese_id
   block_no=$(($block_no + 1)) example_no=$(($example_no + 1))
-  trans block_example "$@"
+  eval trans block_example ${1+'"$@"'}
   block_no_stack="$block_no_stack $block_no"
   inside_of_example="yes"
 }
@@ -80,7 +91,7 @@ block_end() {
   fi
 
   decrease_id
-  trans block_end "$@"
+  eval trans block_end ${1+'"$@"'}
   block_no_stack="${block_no_stack% *}"
   inside_of_example=""
 }
@@ -97,7 +108,7 @@ statement() {
     syntax_error "When/The cannot be defined outside of Example"
     return 0
   fi
-  trans statement "$@"
+  eval trans statement ${1+'"$@"'}
 }
 
 control() {
@@ -107,19 +118,19 @@ control() {
       return 0
     fi
   esac
-  trans control "$@"
+  eval trans control ${1+'"$@"'}
 }
 
 skip() {
   skip_id=$(($skip_id + 1))
-  trans skip "$@"
+  eval trans skip ${1+'"$@"'}
 }
 
 data() {
   data_line=${2:-}
   trim data_line
 
-  trans data_begin "$@"
+  eval trans data_begin ${1+'"$@"'}
   case $data_line in
     '' | '#'* | '|'*)
       trans data_here_begin "$1" "$data_line"
@@ -137,23 +148,23 @@ data() {
     "'"* | '"'*) trans data_text "$data_line" ;;
     *) trans data_func "$data_line" ;;
   esac
-  trans data_end "$@"
+  eval trans data_end ${1+'"$@"'}
 }
 
 text_begin() {
-  trans text_begin "$@"
+  eval trans text_begin ${1+'"$@"'}
   inside_of_text=1
 }
 
 text() {
   case $1 in
-    '#|'*) trans text "$@"; return 0 ;;
+    '#|'*) eval trans text ${1+'"$@"'}; return 0 ;;
     *) text_end; return 1 ;;
   esac
 }
 
 text_end() {
-  trans text_end "$@"
+  eval trans text_end ${1+'"$@"'}
   inside_of_text=''
 }
 
@@ -180,6 +191,11 @@ define() {
   name="${line%% *}"
   case $line in (*" "*) value="${line#* }" ;; (*) value= ;; esac
 
+  if ! one_line_syntax_check error ": $1"; then
+    syntax_error "Def has occurred an error" "$error"
+    return 0
+  fi
+
   if is_function_name "$name"; then
     trans define "$name" "$value"
   else
@@ -193,7 +209,12 @@ include() {
     return 0
   fi
 
-  trans include "$@"
+  if ! one_line_syntax_check error ": $1"; then
+    syntax_error "Include has occurred an error" "$error"
+    return 0
+  fi
+
+  eval trans include ${1+'"$@"'}
 }
 
 error() {

@@ -1,5 +1,4 @@
 #!/bin/sh
-#shellcheck disable=SC2004,SC2016
 
 set -eu
 
@@ -7,7 +6,10 @@ set -eu
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
 use constants escape_quote unixtime
 
+delimiter="DATA-$(unixtime)-$$"
+
 trans() {
+  # shellcheck disable=SC2145
   "trans_$@"
 }
 
@@ -54,8 +56,6 @@ trans_skip() {
 }
 
 trans_data_begin() {
-  now=$(unixtime)
-  delimiter="DATA${now}$$"
   putsn "shellspec_data() {"
 }
 
@@ -88,8 +88,6 @@ trans_data_end() {
 }
 
 trans_text_begin() {
-  now=$(unixtime)
-  delimiter="DATA${now}$$"
   case $1 in
     expand) putsn "shellspec_passthrough<<$delimiter ${2}" ;;
     raw)    putsn "shellspec_passthrough<<'$delimiter' ${2}" ;;
