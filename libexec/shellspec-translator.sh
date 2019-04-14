@@ -5,8 +5,7 @@ set -eu
 
 # shellcheck source=lib/libexec/translator.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
-use constants escape_quote trim unixtime
-load parser
+use constants escape_quote unixtime
 
 trans() {
   "trans_$@"

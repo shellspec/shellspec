@@ -2,6 +2,8 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+use trim
+load parser
 
 initialize_id() {
   id='' id_state='begin'
@@ -196,40 +198,6 @@ translate() {
     [ "$inside_of_text" ] && text "$work" && continue
 
     dsl=${work%% *}
-    case $dsl in
-      Describe    )   block_example_group "${work#$dsl}" ;;
-      xDescribe   ) x block_example_group "${work#$dsl}" ;;
-      Context     )   block_example_group "${work#$dsl}" ;;
-      xContext    ) x block_example_group "${work#$dsl}" ;;
-      Example     )   block_example       "${work#$dsl}" ;;
-      xExample    ) x block_example       "${work#$dsl}" ;;
-      Specify     )   block_example       "${work#$dsl}" ;;
-      xSpecify    ) x block_example       "${work#$dsl}" ;;
-      It          )   block_example       "${work#$dsl}" ;;
-      xIt         ) x block_example       "${work#$dsl}" ;;
-      End         )   block_end           "${work#$dsl}" ;;
-      Todo        )   todo                "${work#$dsl}" ;;
-      When        )   statement when      "${work#$dsl}" ;;
-      The         )   statement the       "${work#$dsl}" ;;
-      Path        )   control path        "${work#$dsl}" ;;
-      File        )   control path        "${work#$dsl}" ;;
-      Dir         )   control path        "${work#$dsl}" ;;
-      Before      )   control before      "${work#$dsl}" ;;
-      After       )   control after       "${work#$dsl}" ;;
-      Pending     )   control pending     "${work#$dsl}" ;;
-      Skip        )   skip                "${work#$dsl}" ;;
-      Data        )   data raw            "${work#$dsl}" ;;
-      Data:raw    )   data raw            "${work#$dsl}" ;;
-      Data:expand )   data expand         "${work#$dsl}" ;;
-      Def         )   define              "${work#$dsl}" ;;
-      Include     )   include             "${work#$dsl}" ;;
-      Logger      )   control logger      "${work#$dsl}" ;;
-      %text       )   text_begin raw      "${work#$dsl}" ;;
-      %text:raw   )   text_begin raw      "${work#$dsl}" ;;
-      %text:expand)   text_begin expand   "${work#$dsl}" ;;
-      % | %const  )   constant            "${work#$dsl}" ;;
-      Error       )   error               "${work#$dsl}" ;;
-      *) trans line "$line" ;;
-    esac
+    dsl_mapping "$dsl" "${work#$dsl}" || trans line "$line"
   done
 }
