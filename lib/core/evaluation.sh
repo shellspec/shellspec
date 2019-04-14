@@ -22,14 +22,14 @@ shellspec_evaluation_call() {
 }
 
 shellspec_evaluation_run() {
-  {
+  (
     if [ "${SHELLSPEC_DATA:-}" ]; then
       shellspec_data > "$SHELLSPEC_STDIN_FILE"
       command "$@" < "$SHELLSPEC_STDIN_FILE"
     else
       command "$@"
     fi
-  } >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
+  ) >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
 }
 
