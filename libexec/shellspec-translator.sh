@@ -55,14 +55,29 @@ trans_skip() {
   putsn "shellspec_skip ${skip_id}${1:-}"
 }
 
+here() {
+  putsn "shellspec_passthrough<<$1 $2"
+}
+
+# ash 0.3.8 (with posh) workaround
+old_ash_bug_detection() {
+  old_ash_bug_detection_() { read -r old_ash_bug_detection; }
+  eval "old_ash_bug_detection_<<HERE${SHELLSPEC_LF}\$1${SHELLSPEC_LF}HERE"
+  [ "$old_ash_bug_detection" ] && return 0
+  here() {
+    putsn "shellspec_passthrough \"\$@\"<<$1 $2"
+  }
+}
+old_ash_bug_detection 1
+
 trans_data_begin() {
   putsn "shellspec_data() {"
 }
 
 trans_data_here_begin() {
   case $1 in
-    expand) putsn "shellspec_passthrough<<$delimiter $2" ;;
-    raw)    putsn "shellspec_passthrough<<'$delimiter' $2" ;;
+    expand) here "$delimiter" "$2" ;;
+    raw)    here "'$delimiter'" "$2" ;;
   esac
 }
 
@@ -89,8 +104,8 @@ trans_data_end() {
 
 trans_text_begin() {
   case $1 in
-    expand) putsn "shellspec_passthrough<<$delimiter ${2}" ;;
-    raw)    putsn "shellspec_passthrough<<'$delimiter' ${2}" ;;
+    expand) here "$delimiter" "$2" ;;
+    raw)    here "'$delimiter'" "$2" ;;
   esac
 }
 
