@@ -12,8 +12,8 @@ echo $$ > "$SHELLSPEC_TMPBASE/reporter_pid"
 use import reset_params
 
 interrupt=''
-trap 'interrupt=1' INT
-trap '' TERM
+if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
+if (trap - INT) 2>/dev/null; then trap '' TERM; fi
 
 import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"

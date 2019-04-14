@@ -31,7 +31,7 @@ wait_reporter_finished() {
 
 mktempdir "$SHELLSPEC_TMPBASE"
 cleanup() {
-  trap '' INT
+  if (trap - INT) 2>/dev/null; then trap '' INT; fi
   [ "$SHELLSPEC_TMPBASE" ] || return 0
   tmpbase="$SHELLSPEC_TMPBASE"
   SHELLSPEC_TMPBASE=''
@@ -46,8 +46,9 @@ interrupt() {
   cleanup
   exit 130
 }
-trap 'interrupt' INT
-trap ':' TERM
+
+if (trap - INT) 2>/dev/null; then trap 'interrupt' INT; fi
+if (trap - TERM) 2>/dev/null; then trap ':' TERM; fi
 
 executor() {
   executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
