@@ -35,20 +35,22 @@ Describe "core/modifiers/result.sh"
 
     Context 'when subject is function that returns failure'
       Context 'when subject output to stdout'
-        Def subject "success_with_stdout"
+        Def subject "failure_with_stdout"
         failure_with_stdout() { echo ok; false; }
         It 'gets stdout'
           When invoke shellspec_modifier result _modifier_
           The status should be failure
+          The stdout should be blank
         End
       End
 
       Context 'when subject output to stdout'
-        Def subject "success_with_stderr"
+        Def subject "failure_with_stderr"
         failure_with_stderr() { echo ng >&2; false; }
         It 'gets stderr'
           When invoke shellspec_modifier result _modifier_
           The status should be failure
+          The stderr should be blank
         End
       End
     End
