@@ -7,7 +7,7 @@ shellspec_matcher_match() {
     # shellcheck disable=SC2034
     SHELLSPEC_EXPECT=$1
     [ "${SHELLSPEC_SUBJECT+x}" ] || return 1
-    eval "case \$SHELLSPEC_SUBJECT in ($1) true;; (*) false;; esac"
+    eval "case \$SHELLSPEC_SUBJECT in ($1) true;; (*) false;; esac &&:"
   }
 
   shellspec_matcher__failure_message() {
