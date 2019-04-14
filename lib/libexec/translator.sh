@@ -132,20 +132,20 @@ data() {
 
   eval trans data_begin ${1+'"$@"'}
   case $data_line in
-    '' | '#'* | '|'*)
+    '' | \#* | \|*)
       trans data_here_begin "$1" "$data_line"
       while IFS= read -r line || [ "$line" ]; do
         lineno=$(($lineno + 1))
         trim line
         case $line in
-          '#|'*) trans data_here_line "$line" ;;
-          '#'*) ;;
+          \#\|*) trans data_here_line "$line" ;;
+          \#*) ;;
           End | End\ * ) break ;;
           *) syntax_error "Data texts should begin with '#|'"; break ;;
         esac
       done
       trans data_here_end ;;
-    "'"* | '"'*) trans data_text "$data_line" ;;
+    \'* | \"*) trans data_text "$data_line" ;;
     *) trans data_func "$data_line" ;;
   esac
   eval trans data_end ${1+'"$@"'}
@@ -158,7 +158,7 @@ text_begin() {
 
 text() {
   case $1 in
-    '#|'*) eval trans text ${1+'"$@"'}; return 0 ;;
+    \#\|*) eval trans text ${1+'"$@"'}; return 0 ;;
     *) text_end; return 1 ;;
   esac
 }
@@ -189,7 +189,7 @@ define() {
   line=$1
   trim line
   name="${line%% *}"
-  case $line in (*" "*) value="${line#* }" ;; (*) value= ;; esac
+  case $line in (*\ *) value="${line#* }" ;; (*) value= ;; esac
 
   if ! one_line_syntax_check error ": $1"; then
     syntax_error "Def has occurred an error" "$error"

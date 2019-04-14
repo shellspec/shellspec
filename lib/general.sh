@@ -97,7 +97,10 @@ shellspec_find_files_() {
 }
 shellspec_find_files__() {
   eval "
-    set -- \"\$2\"/*
+    SHELLSPEC_IFSORIG=\$IFS
+    IFS=''
+    set -- \$2/*
+    IFS=\$SHELLSPEC_IFSORIG
     if [ \$# -gt 0 ]; then shellspec_find_files_ \"$1\" \"\$@\"; fi
   "
 }
