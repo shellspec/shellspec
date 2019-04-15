@@ -34,11 +34,23 @@ matrix:
       dist: xenial
       env: PKG=busybox SH="busybox ash"
     - os: osx
-      osx_image: xcode10.1
+      osx_image: xcode10.2
+      env: PKG=dash SH=dash
+    - os: osx
+      osx_image: xcode10.2
       env: PKG=bash SH=bash
     - os: osx
-      osx_image: xcode10.1
+      osx_image: xcode10.2
       env: PKG=zsh SH=zsh
+    - os: osx
+      osx_image: xcode10.2
+      env: PKG=ksh SH=ksh
+    - os: osx
+      osx_image: xcode10.2
+      env: PKG=mksh SH=mksh
+    - os: osx
+      osx_image: xcode10.2
+      env: PKG=yash SH=yash
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install -y "$PKG"; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install "$PKG"; fi
