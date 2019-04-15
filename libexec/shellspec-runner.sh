@@ -7,8 +7,7 @@ set -eu
 
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
-use readfile unixtime trim
-load parser
+use unixtime
 
 error() {
   if [ "$SHELLSPEC_COLOR" ]; then
@@ -63,45 +62,16 @@ reporter() {
 }
 
 error_handler() {
-  marker='' error_file=''
+  error_occurred=''
+
   while IFS= read -r line; do
-    case $line in
-      ${SHELLSPEC_SYN}shellspec_marker:*)
-        [ "${first_error-1}" ] || continue
-        line=${line#${SHELLSPEC_SYN}shellspec_marker:}
-        marker=${line%%${SHELLSPEC_TAB}*}
-        error_file=${line#*${SHELLSPEC_TAB}}
-        ;;
-      *)
-        [ "${first_error-1}" ] && first_error='' && error
-        error "$line"
-        ;;
-    esac
+    error_occurred=1
+    error "$line"
   done
 
-  display_unexpected_error "$marker" "$error_file"
-
-  if [ "${first_error+x}" ]; then
+  if [ "$error_occurred" ]; then
     exit "$SHELLSPEC_UNEXPECTED_STDERR"
   fi
-}
-
-display_unexpected_error() {
-  specfile=${1% *} lineno=${1##* } error_file=$2 error=''
-  [ "$specfile" ] || return 0
-  case $lineno in
-    BOF) lineno=1 ;;
-    EOF) return 0 ;; # no error
-  esac
-
-  range=$(detect_range "$lineno" < "$specfile")
-  if [ -e "$error_file" ]; then
-    readfile error "$error_file"
-    error "$(puts "$error")"
-  fi
-  error "The specfile aborted at line $range in '$specfile'"
-  error
-  first_error=''
 }
 
 set_exit_status() {

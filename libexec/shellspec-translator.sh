@@ -147,6 +147,7 @@ specfile() {
   specfile=$1
   escape_quote specfile
 
+  putsn "shellspec_marker \"$specfile\" ---"
   putsn '('
   putsn "SHELLSPEC_SPECFILE='$specfile'"
   putsn "shellspec_specfile begin"
