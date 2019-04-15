@@ -70,24 +70,33 @@ BDD style unit testing framework for POSIX compatible shell script.
 
 Tested Platforms
 
-* Linux (ubuntu, debian, alpine)
-* Windows 10 (WSL, cygwin, Git Bash)
-* macOS Mojave
-* Solaris 11
+| Platform                              | Test   | Shells                                            |
+| ------------------------------------- | ------ | ------------------------------------------------- |
+| Ubuntu 16.04 xenial                   | CI     | bash, busybox, dash, ksh93, mksh, posh, yash, zsh |
+| macOS 10.4 Mojave                     | CI     | bash, dash, ksh93, mksh, ~~posh~~, yash, zsh      |
+| macOS 10.4 Mojave                     | manual | bash, dash, ksh93, mksh, ~~posh~~, yash, zsh      |
+| Windows 10 1809 (Ubuntu 18.04 on WSL) | manual | bash, busybox, dash, ksh93, mksh, posh, yash, zsh |
+| Solaris 11                            | manual | ksh88, ksh93                                      |
 
-Confirmed old version (It will work with this version or higher)
+Confirmed version (tested with docker [contrib/dockerfiles](/contrib/dockerfiles))
 
-* ash 0.3.8 (debian 3.0)
-* dash 0.5.3 (debian 4.0)
-* busybox ash 1.1.3 (debian 4.0)
-* bash 2.03 (debian 2.2)
-* zsh 3.1.9 (debian 2.2)
-* pdksh 5.2.14 (debian 2.2)
-* mksh 28 (debian 4.0)
-* ksh93 93q (debian 3.1)
-* ksh88 0.5.11 (solaris 11)
-* posh 0.3.14 (debian 3.1)
-* yash 2.30 (debian 7)
+| Platform      | ash   | bash  | busybox    | dash     | ksh93 | mksh | pdksh  | posh   | yash | zsh    |
+| ------------- | ----- | ----- | ---------- | -------- | ----- | ---- | ------ | ------ | ---- | ------ |
+| alpine latest |       |       | 1.29.3     |          |       |      |        |        |      |        |
+| alpine edge   |       |       | 1.30.1     |          |       |      |        |        |      |        |
+| busybox       |       |       | 1.30.1     |          |       |      |        |        |      |        |
+| debian 2.2    |       | 2.03  |            |          |       |      | 5.2.14 |        |      | 3.1.9  |
+| debian 3.0    | 0.3.8 | 2.05a | ~~0.60.2~~ |          |       |      | 5.2.14 |        |      | 4.0.4  |
+| debian 3.1    |       | 2.05b | ~~0.60.5~~ | 0.5.2    | 93q   |      | 5.2.14 | 0.3.14 |      | 4.2.5  |
+| debian 4.0    |       | 3.1   | 1.1.3      | 0.5.3    | 93r   | 28   | 5.2.14 | 0.5.4  |      | 4.3.2  |
+| debian 5.0    |       | 3.2   | 1.10.2     | 0.5.4    | 93s   | 35.2 | 5.2.14 | 0.6.13 |      | 4.3.6  |
+| debian 6      |       | 4.1.5 | 1.17.1     | 0.5.5.1  | 93s   | 39   | 5.2.14 | 0.8.5  |      | 4.3.10 |
+| debian 7      |       | 4.2   | 1.20.0     | 0.5.7    | 93u   | 40.9 |        | 0.10.2 | 2.30 | 4.3.17 |
+| debian 8      |       | 4.3   | 1.22.0     | 0.5.7    | 93u   | 50d  |        | 0.12.3 | 2.36 | 5.0.7  |
+| debian 9      |       | 4.4   | 1.22.0     | 0.5.8    | 93u   | 54   |        | 0.12.6 | 2.43 | 5.3.1  |
+| debian buster |       | 5.0.2 | 1.30.1     | 0.5.10.2 | 93u   | 57   |        | 0.13.2 | 2.48 | 5.7.1  |
+
+**The version of strikethrough is does NOT work**
 
 ### Requires
 
