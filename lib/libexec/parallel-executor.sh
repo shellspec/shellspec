@@ -10,9 +10,9 @@ worker() {
     IFS= read -r specfile < "$SHELLSPEC_JOBDIR/$1.job#"
     {
       if [ "$1" -eq 0 ]; then
-        translator --metadata "$specfile" | shell
-      else
         translator "$specfile" | shell
+      else
+        translator --no-metadata "$specfile" | shell
       fi
     } > "$SHELLSPEC_JOBDIR/$1.stdout#" 2> "$SHELLSPEC_JOBDIR/$1.stderr#" &&:
     echo "$?" > "$SHELLSPEC_JOBDIR/$1.status#"

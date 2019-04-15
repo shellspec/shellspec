@@ -138,9 +138,10 @@ syntax_error() {
 }
 
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
-if [ "${1:-}" = "--metadata" ]; then
-  putsn "shellspec_metadata"
+if [ "${1:-}" = "--no-metadata" ]; then
   shift
+else
+  putsn "shellspec_metadata"
 fi
 
 specfile() {
