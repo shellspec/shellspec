@@ -74,7 +74,9 @@ parse_fields() {
   "$callback" "$@"
 
   for field_name in "$@"; do
-    eval "unset field_$field_name ||:"
+    # mksh @(#)MIRBSD KSH R39 2010/07/25: Many unset cause a Segmentation fault
+    # eval "unset field_$field_name ||:"
+    eval "field_$field_name="
   done
 }
 
