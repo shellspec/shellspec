@@ -231,6 +231,9 @@ translate() {
     [ "$inside_of_text" ] && text "$work" && continue
 
     dsl=${work%% *}
-    dsl_mapping "$dsl" "${work#$dsl}" || trans line "$line"
+    # Do not one line. ksh 93r does not work properly.
+    if ! dsl_mapping "$dsl" "${work#$dsl}"; then
+      trans line "$line"
+    fi
   done
 }
