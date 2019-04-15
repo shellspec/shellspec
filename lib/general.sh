@@ -229,7 +229,7 @@ shellspec_lines() {
 
 shellspec_lines_() {
   "$1" "${2%%$SHELLSPEC_LF*}" "$3" || return 0
-  case $2 in (*"$SHELLSPEC_LF"*)
+  case $2 in (*$SHELLSPEC_LF*)
     shellspec_lines_ "$1" "${2#*$SHELLSPEC_LF}" "$(($3 + 1))"
   esac
 }
@@ -315,7 +315,7 @@ shellspec_trim() {
   eval "
     while :; do
       case \${$1} in
-        ' '* | '${SHELLSPEC_TAB}'*) $1=\${$1#?} ;;
+        \ * | \${SHELLSPEC_TAB}*) $1=\${$1#?} ;;
         *) break ;;
       esac
     done
