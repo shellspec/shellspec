@@ -8,7 +8,7 @@ task() { :; }
 
 invoke() {
   while :; do
-    case $SHELLSPEC_TASKS in (*"|$1|"*) ;; (*) break; esac
+    case $SHELLSPEC_TASKS in (*\|$1\|*) ;; (*) break; esac
     reset_params '$1' ":"
     eval "$RESET_PARAMS"
     IFSORIG=$IFS && IFS=_ && task="$*" && IFS=$IFSORIG
