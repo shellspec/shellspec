@@ -9,9 +9,11 @@
 # Example of use
 #   contrib/bugs.sh
 #   bash contrib/bugs.sh
+#   contrib/test_in_docker.sh [Dockerfile] -- bash contrib/bugs.sh
 
-affect() {      echo "[affect] $title"; }
+affect()      { echo "[affect] $title"; }
 no_problem()  { echo "[------] $title"; }
+skip()        { echo "[skip  ] $title [skip reason: $reason]"; }
 
 (
   title="01: set -e option is reset (posh)"
@@ -92,10 +94,15 @@ return_true() { false; }
 
 (
   title="11: command time -p output LF at first (solaris)"
-  command time -p printf '' 2>&1 | {
-    IFS= read -r line
-    if [ "$line" ]; then no_problem; else affect; fi
-  }
+  if (command time) >/dev/null 2>/dev/null; then
+    command time -p printf '' 2>&1 | {
+      IFS= read -r line
+      if [ "$line" ]; then no_problem; else affect; fi
+    }
+  else
+    reason='time command not found'
+    skip
+  fi
 )
 
 (
@@ -106,6 +113,45 @@ return_true() { false; }
     if false; then :; else nagative && : || :; fi
   )
   [ $? -eq 0 ] && no_problem || affect
+)
+
+(
+  title="13: many unset cause a Segmentation fault (mksh = around 39)"
+  (
+    i=0
+    while [ $i -lt 30000 ]; do
+      unset v ||:
+      i=$(($i+1))
+    done
+  ) 2>/dev/null
+  [ $? -eq 0 ] && no_problem || affect
+)
+
+(
+  title="14: here document does not expand parameters (ash = around 0.3.8)"
+  set -- value
+  foo() { cat; }
+  result=$(foo<<HERE
+$1
+HERE
+  )
+  [ "$result" = value ] && no_problem || affect
+)
+
+(
+  title="15: glob not working (posh <= around 0.12.6)"
+  files=$(echo "/"*)
+  [ "$files" != "/*" ] && no_problem || affect
+)
+
+(
+  title="16: 'command' can not prevent error (bash = 2.03)"
+  ret=$(
+    set -e
+    command false &&:
+    echo ok
+  )
+  [ "$ret" = "ok" ] && no_problem || affect
 )
 
 echo Done
