@@ -18,6 +18,9 @@ sources() {
 
 specs() {
   find spec -name '*.sh'
+}
+
+samples() {
   find sample/spec -name '*.sh'
 }
 
@@ -26,17 +29,18 @@ count() {
   shift
   cat $@ | wc -lc | {
     read -r lines bytes
-    printf '%3s files, %s lines, %s KiB\n' $# $lines $((bytes / 1024))
+    printf '%3s files, %4s lines, %3s KiB\n' $# $lines $((bytes / 1024))
   }
 }
 
-echo '     #  lines bytes name'
-wc -lc $(sources; specs) | nl | sed '$d'
+echo '     #   lines  bytes name'
+wc -lc $(sources; specs; samples) | nl | sed '$d'
 echo
 
 count source $(sources)
 count spec $(specs)
-count total $(sources; specs)
+count sample $(samples)
+count total $(sources; specs; samples)
 echo
 
 echo "Checking scripts..."
@@ -46,6 +50,6 @@ if ! which shellcheck > /dev/null; then
   exit 1
 fi
 
-shellcheck $(sources; specs) || exit 1
+shellcheck $(sources; specs; samples) || exit 1
 
 echo "Done"
