@@ -315,7 +315,7 @@ shellspec_trim() {
   eval "
     while :; do
       case \${$1} in
-        \ * | \${SHELLSPEC_TAB}*) $1=\${$1#?} ;;
+        \\ * | \${SHELLSPEC_TAB}*) $1=\${$1#?} ;;
         *) break ;;
       esac
     done
