@@ -84,14 +84,13 @@ SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/time.log"
 SHELLSPEC_EXAMPLES_LOG="$SHELLSPEC_TMPBASE/examples.log"
 
 if [ -z "$SHELLSPEC_TIME" ]; then
-  if command_path bash > /dev/null; then
-    SHELLSPEC_TIME="bash $SHELLSPEC_LIBEXEC/shellspec-time.sh"
-  elif command_path ksh > /dev/null; then
-    SHELLSPEC_TIME="ksh $SHELLSPEC_LIBEXEC/shellspec-time.sh"
-  elif command_path time > /dev/null; then
+  SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
+  if command_path time > /dev/null; then
     SHELLSPEC_TIME="time -p"
-  else
-    SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
+  elif command_path bash > /dev/null; then
+    SHELLSPEC_TIME="bash $SHELLSPEC_TIME"
+  elif command_path ksh > /dev/null; then
+    SHELLSPEC_TIME="ksh $SHELLSPEC_TIME"
   fi
 fi
 
