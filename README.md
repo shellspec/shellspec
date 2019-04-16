@@ -480,6 +480,7 @@ To disable shows banner with `--no-banner` option.
 
 0.10.0 (not yet released)
 
+* Remove `Def` helper. (use `%putsn`, `%puts` directive instead)
 * Support parallel execution. (`--jobs` option)
 * Separete syntax checker into tools.
 * Improve syntax checker.

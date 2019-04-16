@@ -141,7 +141,6 @@ other
 | Data `[ | FILTER ]`... End                     | Define stdin data for evaluation.                 |
 | Data `<FUNCTION> [ARGUMENTS...] [ | FILTER ]`  | Use function for stdin data for evaluation.       |
 | Data `"<STRING>"`<br>Data `'<STRING>'`         | Use string for stdin data for evaluation.         |
-| Def `<NAME>` `<VALUE>`                         | Define function that output VALUE.                |
 | Skip `<REASON>`                                | Skip current block.                               |
 | Skip if `<REASON>` `<FUNCTION> [ARGUMENTS...]` | Skip current block with conditional.              |
 | Pending  `<REASON>`                            | Pending current block.                            |
@@ -149,10 +148,12 @@ other
 
 ## Directive
 
-| Directive | Description                                   |
-| :-------- | :-------------------------------------------- |
-| %const    | Define a constant variable.                   |
-| %text     | Define a multiline texts to output to stdout. |
+| Directive  | Description                                   |
+| :--------- | :-------------------------------------------- |
+| %const, %  | Define a constant variable.                   |
+| %text      | Define a multiline texts to output to stdout. |
+| %putsn, %= | Output arguments with the newline.            |
+| %puts, %-  | Output arguments.                             |
 
 ## Envronment Variables
 
