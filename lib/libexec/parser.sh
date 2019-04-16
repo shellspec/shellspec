@@ -40,7 +40,6 @@ dsl_mapping() {
     Data        )   data raw            "$2" ;;
     Data:raw    )   data raw            "$2" ;;
     Data:expand )   data expand         "$2" ;;
-    Def         )   define              "$2" ;;
     Include     )   include             "$2" ;;
     Logger      )   control logger      "$2" ;;
     %text       )   text_begin raw      "$2" ;;

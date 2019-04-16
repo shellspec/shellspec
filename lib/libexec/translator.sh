@@ -189,24 +189,6 @@ constant() {
   fi
 }
 
-define() {
-  line=$1
-  trim line
-  name="${line%% *}"
-  case $line in (*\ *) value="${line#* }" ;; (*) value= ;; esac
-
-  if ! one_line_syntax_check error ": $1"; then
-    syntax_error "Def has occurred an error" "$error"
-    return 0
-  fi
-
-  if is_function_name "$name"; then
-    trans define "$name" "$value"
-  else
-    syntax_error "Def name should match pattern [a-zA-Z_][a-zA-Z0-9_]*"
-  fi
-}
-
 include() {
   if [ "$inside_of_example" ]; then
     syntax_error "Include cannot be defined inside of Example"

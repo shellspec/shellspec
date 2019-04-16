@@ -128,10 +128,6 @@ trans_constant() {
   ( eval "putsn $1=\\'$2\\'" ) ||:
 }
 
-trans_define() {
-  putsn "$1() {${LF}shellspec_puts $2${LF}}"
-}
-
 trans_include() {
   putsn "shellspec_include $1"
 }
