@@ -11,7 +11,7 @@ Describe "core/matchers/start_with.sh"
     End
 
     Context 'when subject is abcdef'
-      Def subject "abcdef"
+      subject() { %- "abcdef"; }
 
       It 'matches string that start with "abc"'
         When invoke shellspec_matcher start with "abc"

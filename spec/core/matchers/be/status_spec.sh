@@ -11,7 +11,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is 0'
-      Def subject 0
+      subject() { %- 0; }
       It 'matches'
         When invoke shellspec_matcher be success
         The status should be success
@@ -19,7 +19,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is 1'
-      Def subject 1
+      subject() { %- 1; }
       It 'does not match'
         When invoke shellspec_matcher be success
         The status should be failure
@@ -27,7 +27,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is non numeric values'
-      Def subject "a"
+      subject() { %- "a"; }
       It 'does not match'
         When invoke shellspec_matcher be success
         The status should be failure
@@ -35,7 +35,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is zero length string'
-      Def subject ""
+      subject() { %- ""; }
       It 'does not match'
         When invoke shellspec_matcher be success
         The status should be failure
@@ -64,7 +64,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is 1'
-      Def subject 1
+      subject() { %- 1; }
       It 'matches'
         When invoke shellspec_matcher be failure
         The status should be success
@@ -72,7 +72,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is 0'
-      Def subject 0
+      subject() { %- 0; }
       It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure
@@ -80,7 +80,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is -1'
-      Def subject -1
+      subject() { %- -1; }
       It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure
@@ -88,7 +88,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is 255'
-      Def subject 255
+      subject() { %- 255; }
       It 'matches'
         When invoke shellspec_matcher be failure
         The status should be success
@@ -96,7 +96,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is 256'
-      Def subject 256
+      subject() { %- 256; }
       It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure
@@ -104,7 +104,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is non numeric values'
-      Def subject "a"
+      subject() { %- "a"; }
       It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure
@@ -112,7 +112,7 @@ Describe "core/matchers/be/status.sh"
     End
 
     Context 'when subject is zero length string'
-      Def subject ""
+      subject() { %- ""; }
       It 'does not match'
         When invoke shellspec_matcher be failure
         The status should be failure

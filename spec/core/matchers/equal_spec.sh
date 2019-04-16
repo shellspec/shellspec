@@ -13,7 +13,7 @@ Describe "core/matchers/eq.sh"
     End
 
     Context 'when subject is "foo bar"'
-      Def subject "foo bar"
+      subject() { %- "foo bar"; }
 
       It 'matches string "foo bar"'
         When invoke shellspec_matcher equal "foo bar"

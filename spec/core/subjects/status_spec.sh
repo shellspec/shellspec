@@ -12,7 +12,7 @@ Describe "core/subjects/status.sh"
     End
 
     Context 'when status is defined'
-      Def status 123
+      status() { %- 123; }
       It 'uses status as subject'
         When invoke shellspec_subject status _modifier_
         The stdout should equal 123

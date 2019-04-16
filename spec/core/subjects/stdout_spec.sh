@@ -13,7 +13,7 @@ Describe "core/subjects/stdout.sh"
     End
 
     Context 'when stdout is defined'
-      Def stdout "test${LF}"
+      stdout() { %= "test"; }
       It "uses stdout as subject"
         When invoke shellspec_subject stdout _modifier_
         The entire stdout should equal 'test'
@@ -42,7 +42,7 @@ Describe "core/subjects/stdout.sh"
     End
 
     Context 'when stdout is defined'
-      Def stdout "test${LF}"
+      stdout() { %= "test"; }
       It "uses stdout including last LF as subject"
         When invoke shellspec_subject entire stdout _modifier_
         The entire stdout should equal "test${LF}"

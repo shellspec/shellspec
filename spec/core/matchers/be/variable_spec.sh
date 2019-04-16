@@ -12,7 +12,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is empty string'
-      Def subject ""
+      subject() { %- ""; }
       It 'matches'
         When invoke shellspec_matcher be defined
         The status should be success
@@ -41,7 +41,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is empty string'
-      Def subject ""
+      subject() { %- ""; }
       It 'does not match'
         When invoke shellspec_matcher be undefined
         The status should be failure
@@ -70,7 +70,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is non zero length string'
-      Def subject "x"
+      subject() { %- "x"; }
       It 'matches'
         When invoke shellspec_matcher be present
         The status should be success
@@ -78,7 +78,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is zero length string'
-      Def subject ""
+      subject() { %- ""; }
       It 'does not match'
         When invoke shellspec_matcher be present
         The status should be failure
@@ -107,7 +107,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is zero length string'
-      Def subject ""
+      subject() { %- ""; }
       It 'matches'
         When invoke shellspec_matcher be blank
         The status should be success
@@ -122,7 +122,7 @@ Describe "core/matchers/be/variable.sh"
     End
 
     Context 'when subject is non zero length string'
-      Def subject "x"
+      subject() { %- "x"; }
       It 'does not match'
         When invoke shellspec_matcher be blank
         The status should be failure

@@ -11,7 +11,7 @@ Describe "core/matchers/end_with.sh"
     End
 
     Context 'when subject is abcdef'
-      Def subject "abcdef"
+      subject() { %- "abcdef"; }
 
       It 'matches string that end with "def"'
         When invoke shellspec_matcher end with "def"

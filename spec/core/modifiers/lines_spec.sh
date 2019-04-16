@@ -15,8 +15,8 @@ Describe "core/modifiers/lines.sh"
       The lines of stdout should equal 3
     End
 
-    Context 'when subject is "foo<LF>bar<LF>" (without last LF)'
-      Def subject "foo${LF}bar${LF}"
+    Context 'when subject is "foo<LF>bar<LF>" (with last LF)'
+      subject() { %= "foo${LF}bar"; }
       It 'counts as 2 lines'
         When invoke shellspec_modifier lines _modifier_
         The stdout should equal 2
@@ -24,7 +24,7 @@ Describe "core/modifiers/lines.sh"
     End
 
     Context 'when subject is "foo<LF>bar" (without last LF)'
-      Def subject "foo${LF}bar"
+      subject() { %- "foo${LF}bar"; }
       It 'counts as 2 lines'
         When invoke shellspec_modifier lines _modifier_
         The stdout should equal 2
@@ -32,7 +32,7 @@ Describe "core/modifiers/lines.sh"
     End
 
     Context 'when subject is "foo<LF>bar<LF><LF>"'
-      Def subject "foo${LF}bar${LF}${LF}"
+      subject() { %= "foo${LF}bar${LF}"; }
       It 'counts as 3 lines'
         When invoke shellspec_modifier lines _modifier_
         The stdout should equal 3
@@ -40,7 +40,7 @@ Describe "core/modifiers/lines.sh"
     End
 
     Context 'when subject is empty string'
-      Def subject ""
+      subject() { %- ""; }
       It 'counts as 0 lines'
         When invoke shellspec_modifier lines _modifier_
         The stdout should equal 0

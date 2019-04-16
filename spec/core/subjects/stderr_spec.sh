@@ -13,7 +13,7 @@ Describe "core/subjects/stderr.sh"
     End
 
     Context 'when stderr is defined'
-      Def stderr "test${LF}"
+      stderr() { %= "test"; }
       It 'uses stderr as subject'
         When invoke shellspec_subject stderr _modifier_
         The entire stdout should equal 'test'
@@ -42,7 +42,7 @@ Describe "core/subjects/stderr.sh"
     End
 
     Context 'when stderr is defined'
-      Def stderr "test${LF}"
+      stderr() { %= "test"; }
       It 'uses stderr including last LF as subject'
         When invoke shellspec_subject entire stderr _modifier_
         The entire stdout should equal "test${LF}"

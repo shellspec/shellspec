@@ -17,7 +17,7 @@ Describe "core/matchers/be/valid.sh"
     End
 
     Context 'when subject is 123'
-      Def subject 123
+      subject() { %= 123; }
       It 'matches'
         When invoke shellspec_matcher be valid as a number
         The stdout should equal "is:number 123"
@@ -51,7 +51,7 @@ Describe "core/matchers/be/valid.sh"
     End
 
     Context 'when subject is foo_bar'
-      Def subject "foo_bar"
+      subject() { %= "foo_bar"; }
       It 'matches'
         When invoke shellspec_matcher be valid as a funcname
         The stdout should equal "is:funcname foo_bar"

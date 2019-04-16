@@ -15,7 +15,7 @@ Describe "core/modifiers/result.sh"
 
     Context 'when subject is function that returns success'
       Context 'when subject output to stdout'
-        Def subject "success_with_stdout"
+        subject() { %- "success_with_stdout"; }
         success_with_stdout() { echo ok; true; }
         It 'gets stdout'
           When invoke shellspec_modifier result _modifier_
@@ -24,7 +24,7 @@ Describe "core/modifiers/result.sh"
       End
 
       Context 'when subject output to stdout'
-        Def subject "success_with_stderr"
+        subject() { %- "success_with_stderr"; }
         success_with_stderr() { echo ng >&2; true; }
         It 'gets stderr'
           When invoke shellspec_modifier result _modifier_
@@ -35,7 +35,7 @@ Describe "core/modifiers/result.sh"
 
     Context 'when subject is function that returns failure'
       Context 'when subject output to stdout'
-        Def subject "failure_with_stdout"
+        subject() { %- "failure_with_stdout"; }
         failure_with_stdout() { echo ok; false; }
         It 'gets stdout'
           When invoke shellspec_modifier result _modifier_
@@ -45,7 +45,7 @@ Describe "core/modifiers/result.sh"
       End
 
       Context 'when subject output to stdout'
-        Def subject "failure_with_stderr"
+        subject() { %- "failure_with_stderr"; }
         failure_with_stderr() { echo ng >&2; false; }
         It 'gets stderr'
           When invoke shellspec_modifier result _modifier_

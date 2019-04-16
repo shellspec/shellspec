@@ -71,7 +71,7 @@ Describe "core/utils.sh"
 
   Describe 'shellspec_capture()'
     Context 'when function outputs "ok"'
-      Def func "ok"
+      func() { %- "ok"; }
       It 'captures "ok"'
         When call shellspec_capture var func
         The variable var should equal ok
@@ -79,7 +79,7 @@ Describe "core/utils.sh"
     End
 
     Context 'when function outputs "ok<LF>"'
-      Def func "ok${LF}"
+      func() { %= "ok"; }
       It 'captures "ok<LF>"'
         When call shellspec_capture var func
         The variable var should equal "ok${LF}"

@@ -13,7 +13,7 @@ Describe "core/matchers/satisfy.sh"
     End
 
     Context 'when subject is 10'
-      Def subject 10
+      subject() { %- 10; }
 
       It 'satisfies greater than 5'
         When invoke shellspec_matcher satisfy greater_than 5

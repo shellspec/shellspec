@@ -11,7 +11,7 @@ Describe "core/matchers/include.sh"
     End
 
     Context 'when subject is foo<LF>bar<LF>baz<LF>'
-      Def subject "foo${LF}bar${LF}baz${LF}"
+      subject() { %= "foo${LF}bar${LF}baz"; }
       It 'matches that include "bar"'
         When invoke shellspec_matcher include "bar"
         The status should be success
@@ -19,7 +19,7 @@ Describe "core/matchers/include.sh"
     End
 
     Context 'when subject is foo<LF>BAR<LF>baz<LF>'
-      Def subject "foo${LF}BAR${LF}baz${LF}"
+      subject() { %= "foo${LF}BAR${LF}baz"; }
       It 'does not matches that include "bar"'
         When invoke shellspec_matcher include "bar"
         The status should be failure

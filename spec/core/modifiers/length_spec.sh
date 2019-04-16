@@ -10,7 +10,7 @@ Describe "core/modifiers/length.sh"
     End
 
     Context 'when subject is defined'
-      Def subject "abcde"
+      subject() { %- "abcde"; }
       It 'counts length'
         When invoke shellspec_modifier length _modifier_
         The stdout should equal 5

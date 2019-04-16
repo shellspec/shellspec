@@ -16,7 +16,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path exists'
-      Def subject "$FIXTURE/exist"
+      subject() { %- "$FIXTURE/exist"; }
       It 'matches'
         When invoke shellspec_matcher be exist
         The status should be success
@@ -24,7 +24,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path does not exist'
-      Def subject "$FIXTURE/exist.not-exists"
+      subject() { %- "$FIXTURE/exist.not-exists"; }
       It 'does not match'
         When invoke shellspec_matcher be exist
         The status should be failure
@@ -45,7 +45,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is regular file'
-      Def subject "$FIXTURE/file"
+      subject() { %- "$FIXTURE/file"; }
       It 'matches'
         When invoke shellspec_matcher be file
         The status should be success
@@ -53,7 +53,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not regular file'
-      Def subject "$FIXTURE/dir"
+      subject() { %- "$FIXTURE/dir"; }
       It 'does not match'
         When invoke shellspec_matcher be file
         The status should be failure
@@ -74,7 +74,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is directory'
-      Def subject "$FIXTURE/dir"
+      subject() { %- "$FIXTURE/dir"; }
       It 'matches'
         When invoke shellspec_matcher be directory
         The status should be success
@@ -82,7 +82,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not directory'
-      Def subject "$FIXTURE/file"
+      subject() { %- "$FIXTURE/file"; }
       It 'does not match'
         When invoke shellspec_matcher be directory
         The status should be failure
@@ -103,7 +103,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is empty'
-      Def subject "$FIXTURE/empty"
+      subject() { %- "$FIXTURE/empty"; }
       It 'matches'
         When invoke shellspec_matcher be empty
         The status should be success
@@ -111,7 +111,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not empty'
-      Def subject "$FIXTURE/file"
+      subject() { %- "$FIXTURE/file"; }
       It 'does not match'
         When invoke shellspec_matcher be empty
         The status should be failure
@@ -134,7 +134,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is symlink'
-      Def subject "$FIXTURE/stat/symlink"
+      subject() { %- "$FIXTURE/stat/symlink"; }
       It 'matches'
         When invoke shellspec_matcher be symlink
         The status should be success
@@ -142,7 +142,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not symlink'
-      Def subject "$FIXTURE/file"
+      subject() { %- "$FIXTURE/file"; }
       It 'does not match'
         When invoke shellspec_matcher be symlink
         The status should be failure
@@ -165,7 +165,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is pipe'
-      Def subject "$FIXTURE/stat/pipe"
+      subject() { %- "$FIXTURE/stat/pipe"; }
       It 'matches'
         When invoke shellspec_matcher be pipe
         The status should be success
@@ -173,7 +173,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not pipe'
-      Def subject "$FIXTURE/file"
+      subject() { %- "$FIXTURE/file"; }
       It 'does not match'
         When invoke shellspec_matcher be pipe
         The status should be failure
@@ -196,7 +196,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is socket'
-      Def subject "$FIXTURE/stat/socket"
+      subject() { %- "$FIXTURE/stat/socket"; }
       It 'matches'
         When invoke shellspec_matcher be socket
         The status should be success
@@ -204,7 +204,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not socket'
-      Def subject "$FIXTURE/file"
+      subject() { %- "$FIXTURE/file"; }
       It 'does not match'
         When invoke shellspec_matcher be socket
         The status should be failure
@@ -227,7 +227,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is readable'
-      Def subject "$FIXTURE/stat/readable"
+      subject() { %- "$FIXTURE/stat/readable"; }
       It 'matches'
         When invoke shellspec_matcher be readable
         The status should be success
@@ -235,7 +235,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not readable'
-      Def subject "$FIXTURE/stat/no-permission"
+      subject() { %- "$FIXTURE/stat/no-permission"; }
       Skip if "I am root" check_root
       It 'does not match'
         When invoke shellspec_matcher be readable
@@ -259,7 +259,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is writable'
-      Def subject "$FIXTURE/stat/writable"
+      subject() { %- "$FIXTURE/stat/writable"; }
       It 'matches'
         When invoke shellspec_matcher be writable
         The status should be success
@@ -267,7 +267,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not writable'
-      Def subject "$FIXTURE/stat/no-permission"
+      subject() { %- "$FIXTURE/stat/no-permission"; }
       Skip if "I am root" check_root
       It 'does not match'
         When invoke shellspec_matcher be writable
@@ -291,7 +291,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is executable'
-      Def subject "$FIXTURE/stat/executable"
+      subject() { %- "$FIXTURE/stat/executable"; }
       It 'matches'
         When invoke shellspec_matcher be executable
         The status should be success
@@ -299,7 +299,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not executable'
-      Def subject "$FIXTURE/stat/no-permission"
+      subject() { %- "$FIXTURE/stat/no-permission"; }
       It 'does not match'
         When invoke shellspec_matcher be executable
         The status should be failure
@@ -322,7 +322,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is block device'
-      Def subject "$FIXTURE/stat/block-device"
+      subject() { %- "$FIXTURE/stat/block-device"; }
       It 'matches'
         When invoke shellspec_matcher be block device
         The status should be success
@@ -330,7 +330,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not block device'
-      Def subject "$FIXTURE/file"
+      subject() { %- "$FIXTURE/file"; }
       It 'does not match'
         When invoke shellspec_matcher be block device
         The status should be failure
@@ -353,7 +353,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is charactor device'
-      Def subject "$FIXTURE/stat/charactor-device"
+      subject() { %- "$FIXTURE/stat/charactor-device"; }
       It 'matches'
         When invoke shellspec_matcher be charactor device
         The status should be success
@@ -361,7 +361,7 @@ Describe "core/matchers/be/stat.sh"
     End
 
     Context 'when path is not charactor device'
-      Def subject "$FIXTURE/file"
+      subject() { %- "$FIXTURE/file"; }
       It 'does not match'
         When invoke shellspec_matcher be charactor device
         The status should be failure

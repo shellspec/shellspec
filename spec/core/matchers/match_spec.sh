@@ -11,7 +11,7 @@ Describe "core/matchers/match.sh"
     End
 
     Context 'when subject is foobarbaz'
-      Def subject "foobarbaz"
+      subject() { %- "foobarbaz"; }
 
       It 'matches with pattern "foo*"'
         When invoke shellspec_matcher match "foo*"
