@@ -169,5 +169,4 @@ specfile() {
 }
 find_specfiles specfile "$@"
 
-putsn "SHELLSPEC_SPECFILE=\"\""
 putsn "shellspec_end"
