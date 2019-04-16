@@ -5,11 +5,13 @@
 use constants
 
 # $1: prefix, $2: filename
-read_log() {
+read_time_log() {
   [ -r "$2" ] || return 0
   # shellcheck disable=SC2034
-  while read -r read_log_name read_log_value; do
-    eval "$1_${read_log_name}=\"\$read_log_value\""
+  while read -r time_log_name time_log_value; do
+    case $time_log_name in (real|user|sys) ;; (*) continue; esac
+    case $time_log_value in (*[!0-9.]*) continue; esac
+    eval "$1_${time_log_name}=\"\$time_log_value\""
   done < "$2"
 }
 

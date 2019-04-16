@@ -166,7 +166,7 @@ parse_lines each_line
 
 [ "$interrupt" ] && exit_status=130
 
-read_log "time" "$SHELLSPEC_TIME_LOG"
+read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 formatter_end
 
