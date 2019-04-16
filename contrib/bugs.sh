@@ -94,7 +94,7 @@ return_true() { false; }
 
 (
   title="11: command time -p output LF at first (solaris)"
-  if (command time) >/dev/null 2>/dev/null; then
+  if (command time echo) >/dev/null 2>/dev/null; then
     command time -p printf '' 2>&1 | {
       IFS= read -r line
       if [ "$line" ]; then no_problem; else affect; fi
