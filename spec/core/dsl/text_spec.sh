@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+#shellcheck shell=sh disable=SC2016,SC2021
 
 Describe '%text'
   It 'outputs to stdout'
@@ -68,7 +68,7 @@ Describe '%text'
 
   It 'outputs to stdout and not expands the variable with filter'
     hello() {
-      %text | tr 'a-z_' 'A-Z_'
+      %text | tr '[a-z]' '[A-Z]'
       #|Hello $1
     }
 
@@ -78,7 +78,7 @@ Describe '%text'
 
   It ':raw outputs to stdout and not expands the variable with filter'
     hello() {
-      %text:raw | tr 'a-z_' 'A-Z_'
+      %text:raw | tr '[a-z]' '[A-Z]'
       #|Hello $1
     }
 
@@ -88,7 +88,7 @@ Describe '%text'
 
   It 'outputs to stdout and expands the variable with filter'
     hello() {
-      %text:expand | tr 'a-z_' 'A-Z_'
+      %text:expand | tr '[a-z]' '[A-Z]'
       #|Hello $1
     }
 
