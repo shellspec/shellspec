@@ -76,7 +76,7 @@ Tested Platforms
 | macOS 10.4 Mojave                     | CI     | bash, dash, ksh93, mksh, ~~posh~~, yash, zsh      |
 | macOS 10.4 Mojave                     | manual | bash, dash, ksh93, mksh, ~~posh~~, yash, zsh      |
 | Windows 10 1809 (Ubuntu 18.04 on WSL) | manual | bash, busybox, dash, ksh93, mksh, posh, yash, zsh |
-| Solaris 11                            | manual | ksh88, ksh93                                      |
+| Solaris 11                            | manual | ~~Bourne Shell~~, ksh88, ksh93                    |
 
 Confirmed version (tested with docker [contrib/dockerfiles](/contrib/dockerfiles))
 
