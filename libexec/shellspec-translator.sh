@@ -117,6 +117,13 @@ trans_text_end() {
   putsn "$delimiter"
 }
 
+trans_out() {
+  case $1 in
+    putsn) putsn "shellspec_putsn $2" ;;
+    puts)  putsn "shellspec_puts $2" ;;
+  esac
+}
+
 trans_constant() {
   ( eval "putsn $1=\\'$2\\'" ) ||:
 }
@@ -131,6 +138,10 @@ trans_include() {
 
 trans_line() {
   putsn "$1"
+}
+
+trans_with_function() {
+  putsn "$1 { "
 }
 
 syntax_error() {

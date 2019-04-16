@@ -168,6 +168,10 @@ text_end() {
   inside_of_text=''
 }
 
+out() {
+  eval trans out ${1+'"$@"'}
+}
+
 constant() {
   if [ "$block_no_stack" ]; then
     syntax_error "Constant should be defined outside of Example Group/Example"
@@ -221,6 +225,12 @@ error() {
   syntax_error "${*:-}"
 }
 
+with_function() {
+  trans with_function "$1"
+  shift
+  "$@"
+}
+
 translate() {
   initialize_id
   inside_of_example='' inside_of_text=''
@@ -232,7 +242,7 @@ translate() {
 
     dsl=${work%% *}
     # Do not one line. ksh 93r does not work properly.
-    if ! dsl_mapping "$dsl" "${work#$dsl}"; then
+    if ! dsl_mapping "$dsl" "${work#"$dsl"}"; then
       trans line "$line"
     fi
   done

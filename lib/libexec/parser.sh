@@ -47,7 +47,23 @@ dsl_mapping() {
     %text:raw   )   text_begin raw      "$2" ;;
     %text:expand)   text_begin expand   "$2" ;;
     % | %const  )   constant            "$2" ;;
+    %= | %putsn )   out putsn           "$2" ;;
+    %- | %puts  )   out puts            "$2" ;;
     Error       )   error               "$2" ;;
-    *           ) return 1
+    *)
+      case $1 in (*\(\))
+        is_function_name "${1%??}" || return 1
+        case ${2%%\%*} in (*[!\ {]*) ;; (*)
+          set -- "$1" "${2#"${2%%\%*}"}"
+          set -- "$1" "${2%% *}" "${2#* }"
+          case $2 in
+            %= | %putsn) with_function "$1" out putsn "$3" ;;
+            %- | %puts ) with_function "$1" out puts  "$3" ;;
+            *) return 1
+          esac
+          return 0
+        esac
+      esac
+      return 1
   esac
 }
