@@ -48,7 +48,7 @@ warn() {
 
 detect_shellspec_root() {
   [ "${SHELLSPEC_ROOT:-}" ] && return 0
-  cwd=$PWD p=$0
+  cwd=$PWD p=$1
   while [ -L "$p" ]; do
     [ "$p" = "${p%/*}" ] || cd "${p%/*}"
     p="$(readlink "$p")" || return 1
@@ -58,7 +58,7 @@ detect_shellspec_root() {
   cd "$cwd"
 }
 
-if ! detect_shellspec_root; then
+if ! detect_shellspec_root "$0"; then
   abort "Detection of the shellspec root directory failed." \
         "Specify SHELLSPEC_ROOT environment variable."
 fi
