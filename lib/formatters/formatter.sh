@@ -114,8 +114,11 @@ summary_end() {
     summary="${summary})"
   fi
   each callback "${todo_count:-} pending"   "${fixed_count:-} fix"
-  [ "${aborted:-}" ] && summary="${summary}, aborted by an unexpected error"
-  [ "${interrupt:-}" ] && summary="${summary}, aborted by an interrupt"
+  if [ "${interrupt:-}" ]; then
+    summary="${summary}, aborted by an interrupt"
+  elif [ "${aborted:-}" ]; then
+    summary="${summary}, aborted by an unexpected error"
+  fi
 
   [ "${warned_count:-}" ] && color=$YELLOW || color=$GREEN
   [ "${failed_count:-}${aborted}${interrupt}" ] && color=$RED
