@@ -26,6 +26,7 @@ export SHELLSPEC_SKIP_MESSAGE=none
 export SHELLSPEC_WARNINGS=error
 export SHELLSPEC_FAIL_FAST_COUNT=''
 export SHELLSPEC_JOBS=0
+export SHELLSPEC_DRYRUN=''
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
@@ -107,6 +108,8 @@ Usage: ${0##*/} [options] [files or directories]
                                         error (show warnings and treats as error) [default]
                                         failure (treats warnings as failures)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
+      --dry-run                       Print the formatter output of your suite without
+                                        running any examples or hooks
 
   **** Output ****
 
@@ -160,6 +163,7 @@ parse_options() {
       -j | --jobs)
         [ $# -ge 2 ] || abort 'Require JOBS.'
         SHELLSPEC_JOBS=$2 skip=2 ;;
+      --dry-run) SHELLSPEC_DRYRUN=1 ;;
       -e | --env)
         [ $# -ge 2 ] || abort 'Require NAME=VALUE.'
         #shellcheck disable=SC2034

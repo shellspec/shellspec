@@ -49,45 +49,50 @@ shellspec_example() {
   shellspec_desc "example" "${1:-}"
   shellspec_output EXAMPLE_BEGIN
 
-  while :; do
-    shellspec_on NOT_IMPLEMENTED
-    shellspec_off FAILED WARNED
-    shellspec_off UNHANDLED_STATUS UNHANDLED_STDOUT UNHANDLED_STDERR
-
-    # Output SKIP message if skipped in outer group.
-    shellspec_output_if SKIP || {
-      if ! shellspec_call_before_hooks; then
-        SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
-        shellspec_output FAILED_BEFORE_HOOK
-        shellspec_output FAILED
-        break
-      fi
-      shellspec_output_if PENDING ||:
-      shellspec_yield
-      if ! shellspec_call_after_hooks; then
-        SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
-        shellspec_output FAILED_AFTER_HOOK
-        shellspec_output FAILED
-        break
-      fi
-    }
-
-    shellspec_if SKIP && shellspec_output SKIPPED && break
-    shellspec_output_if NOT_IMPLEMENTED && shellspec_output TODO && break
-    shellspec_output_if UNHANDLED_STATUS && shellspec_on WARNED
-    shellspec_output_if UNHANDLED_STDOUT && shellspec_on WARNED
-    shellspec_output_if UNHANDLED_STDERR && shellspec_on WARNED
-
-    shellspec_if PENDING && {
-      shellspec_if FAILED && shellspec_output TODO && break
-      shellspec_output FIXED && break
-    }
-    shellspec_output_if FAILED && break
-    shellspec_output_if WARNED || shellspec_output SUCCEEDED
-    break
-  done
+  if [ "$SHELLSPEC_DRYRUN" ]; then
+    shellspec_output SUCCEEDED
+  else
+    shellspec_invoke_example
+  fi
 
   shellspec_output EXAMPLE_END
+}
+
+shellspec_invoke_example() {
+  shellspec_on NOT_IMPLEMENTED
+  shellspec_off FAILED WARNED
+  shellspec_off UNHANDLED_STATUS UNHANDLED_STDOUT UNHANDLED_STDERR
+
+  # Output SKIP message if skipped in outer group.
+  shellspec_output_if SKIP || {
+    if ! shellspec_call_before_hooks; then
+      SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
+      shellspec_output FAILED_BEFORE_HOOK
+      shellspec_output FAILED
+      return
+    fi
+    shellspec_output_if PENDING ||:
+    shellspec_yield
+    if ! shellspec_call_after_hooks; then
+      SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
+      shellspec_output FAILED_AFTER_HOOK
+      shellspec_output FAILED
+      return
+    fi
+  }
+
+  shellspec_if SKIP && shellspec_output SKIPPED && return
+  shellspec_output_if NOT_IMPLEMENTED && shellspec_output TODO && return
+  shellspec_output_if UNHANDLED_STATUS && shellspec_on WARNED
+  shellspec_output_if UNHANDLED_STDOUT && shellspec_on WARNED
+  shellspec_output_if UNHANDLED_STDERR && shellspec_on WARNED
+
+  shellspec_if PENDING && {
+    shellspec_if FAILED && shellspec_output TODO && return
+    shellspec_output FIXED && return
+  }
+  shellspec_output_if FAILED && return
+  shellspec_output_if WARNED || shellspec_output SUCCEEDED
 }
 
 shellspec_statement() {
