@@ -26,7 +26,7 @@ worker() {
 reduce() {
   i=0
   while [ $i -lt "$jobs" ]; do
-    [ -e "$SHELLSPEC_JOBDIR/$i.status" ] || continue
+    [ -e "$SHELLSPEC_JOBDIR/$i.status" ] || { sleep 0; continue; }
     cat "$SHELLSPEC_JOBDIR/$i.stdout"
     cat "$SHELLSPEC_JOBDIR/$i.stderr" >&2
     read -r exit_status < "$SHELLSPEC_JOBDIR/$i.status"
