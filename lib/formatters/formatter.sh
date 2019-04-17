@@ -7,7 +7,7 @@
 
 use proxy padding each
 
-buffer conclusion notable_examples failure_examples fatal_errors
+buffer conclusion notable_examples failure_examples
 
 proxy formatter_methods methods
 proxy formatter_conclusion_format conclusion_format
@@ -16,7 +16,6 @@ proxy formatter_finished finished_end
 proxy formatter_summary summary_end
 proxy formatter_references_format references_format
 proxy formatter_references_end references_end
-proxy formatter_fatal_error fatal_error_format
 
 formatter_results_begin() { :; }
 formatter_results_format() { :; }
@@ -114,12 +113,12 @@ summary_end() {
     [ "$suppressed_skipped_count" -ne 1 ] && summary="${summary}s"
     summary="${summary})"
   fi
-  each callback "${todo_count:-} pending"   "${fixed_count:-} fix" \
-                "${fatal_error_count:-} fatal error"
+  each callback "${todo_count:-} pending"   "${fixed_count:-} fix"
+  [ "${aborted:-}" ] && summary="${summary}, aborted by an unexpected error"
   [ "${interrupt:-}" ] && summary="${summary}, aborted by an interrupt"
 
   [ "${warned_count:-}" ] && color=$YELLOW || color=$GREEN
-  [ "${failed_count:-}${fatal_error_count:-}${interrupt}" ] && color=$RED
+  [ "${failed_count:-}${aborted}${interrupt}" ] && color=$RED
   putsn "${color}${summary}${RESET}${LF}"
 }
 
@@ -144,23 +143,4 @@ references_format() {
 references_end() {
   notable_examples_flush
   failure_examples_flush
-  fatal_errors_flush
-}
-
-fatal_error_format() {
-  example_index=$((${example_index:-0} + 1))
-
-  if [ "${field_lineno:-}" ]; then
-    set -- "${BOLD}${RED}shellspec" \
-      "${field_specfile}:${field_lineno}${RESET}" \
-      "${CYAN}# $example_index)" "${field_description}${RESET}"
-  else
-    set -- "${BOLD}${RED}shellspec" \
-      "${field_specfile}:${field_range%-*}${RESET}" \
-      "${CYAN}# $example_index)" "${field_description}${RESET}"
-  fi
-
-  fatal_errors_set_if_empty "Fatal errors:${LF}"
-  fatal_errors_append "$@"
-  fatal_error_count=$((${fatal_error_count:-0} + 1))
 }

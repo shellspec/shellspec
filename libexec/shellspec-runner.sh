@@ -54,7 +54,11 @@ executor() {
 
   # shellcheck disable=SC2086
   command $SHELLSPEC_TIME $SHELLSPEC_SHELL "$executor" "$@" \
-    3>&2 2>"$SHELLSPEC_TIME_LOG"
+    3>&2 2>"${SHELLSPEC_TIME_LOG}#" && :
+  executor_status=$?
+  mv "${SHELLSPEC_TIME_LOG}#" "$SHELLSPEC_TIME_LOG"
+  [ "$executor_status" -eq 0 ] && shellspec_putsn "$SHELLSPEC_EOT"
+  return $executor_status
 }
 
 reporter() {

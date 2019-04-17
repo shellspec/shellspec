@@ -7,7 +7,7 @@ shellspec_output_METADATA() {
     "shell_version:$SHELLSPEC_SHELL_VERSION"
 }
 
-shellspec_output_END() {
+shellspec_output_FLUSH() {
   shellspec_putsn
 }
 

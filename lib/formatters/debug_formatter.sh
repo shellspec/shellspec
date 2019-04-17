@@ -28,5 +28,4 @@ debug_formatter() {
   formatter_references_end() { :; }
   formatter_finished() { :; }
   formatter_summary() { :; }
-  formatter_fatal_error() { :; }
 }

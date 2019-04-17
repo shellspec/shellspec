@@ -11,7 +11,7 @@ echo $$ > "$SHELLSPEC_TMPBASE/reporter_pid"
 . "${SHELLSPEC_LIB:-./lib}/libexec/reporter.sh"
 use import reset_params
 
-interrupt=''
+interrupt='' aborted=1
 if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
 if (trap - INT) 2>/dev/null; then trap '' TERM; fi
 
@@ -45,11 +45,7 @@ parse_lines() {
       $RS*)
         [ -z "$buf" ] || parse_fields "$1" "$buf"
         buf=${line#?} ;;
-      $CAN)
-        [ -z "$buf" ] || parse_fields canceled "$buf"
-        buf=''
-        exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
-        ;;
+      $EOT) aborted='' && break ;;
       *) buf="$buf${buf:+$LF}${line}"
     esac
 
@@ -78,10 +74,6 @@ parse_fields() {
     # eval "unset field_$field_name ||:"
     eval "field_$field_name="
   done
-}
-
-canceled() {
-  formatter_fatal_error "$@"
 }
 
 exit_status=0 fail_fast='' fail_fast_count="${SHELLSPEC_FAIL_FAST_COUNT:-}"
@@ -164,8 +156,15 @@ each_line() {
 }
 parse_lines each_line
 
+[ "$aborted" ] && exit_status=1
 [ "$interrupt" ] && exit_status=130
 
+i=0
+while [ $i -lt 10 ]; do
+  [ -e "$SHELLSPEC_TIME_LOG" ] && break
+  sleep 0
+  i=$(($i + 1))
+done
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 formatter_end

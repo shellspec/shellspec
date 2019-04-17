@@ -141,10 +141,12 @@ trans_with_function() {
 }
 
 syntax_error() {
-  putsn "shellspec_exit 2 \"Syntax error: $1 in $specfile line $lineno\" \"${2:-}\""
+  set -- "Syntax error: $1 in $specfile line $lineno" "${2:-}"
+  putsn "shellspec_abort 2 \"$1\" \"$2\""
 }
 
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
+
 if [ "${1:-}" = "--no-metadata" ]; then
   shift
 else
@@ -169,4 +171,4 @@ specfile() {
 }
 find_specfiles specfile "$@"
 
-putsn "shellspec_end"
+putsn "shellspec_flush"

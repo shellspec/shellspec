@@ -1,6 +1,6 @@
 #shellcheck shell=sh disable=SC2004
 
-: "${field_tag:-}" "${field_description:-}" "${field_message:-}"
+: "${field_tag:-}" "${field_description:-}" "${field_message:-}" "${aborted:-}"
 
 tap_formatter() {
   # shellcheck disable=SC2034
@@ -26,6 +26,11 @@ tap_formatter() {
       log      ) putsn "# $field_message" ;;
     esac
   }
+  formatter_results_end() {
+    if [ "$aborted" ]; then
+      putsn "not ok $(($_examples + 1)) - aborted by unexpected error"
+    fi
+  }
 
   formatter_methods() { :; }
   formatter_conclusion_format() { :; }
@@ -34,5 +39,4 @@ tap_formatter() {
   formatter_references_end() { :; }
   formatter_finished() { :; }
   formatter_summary() { :; }
-  formatter_fatal_error() { :; }
 }

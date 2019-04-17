@@ -9,7 +9,7 @@ SHELLSPEC_PATH_ALIAS=:
 : "${SHELLSPEC_LINENO:-}"
 
 shellspec_metadata() { shellspec_output METADATA; }
-shellspec_end() { shellspec_output END; }
+shellspec_flush() { shellspec_output FLUSH; }
 
 shellspec_yield() {
   "shellspec_yield$SHELLSPEC_BLOCK_NO"
@@ -201,9 +201,8 @@ shellspec_marker() {
   shellspec_putsn "${SHELLSPEC_SYN}shellspec_marker:${*:-}" >&2
 }
 
-shellspec_exit() {
-  echo "${SHELLSPEC_LF}${SHELLSPEC_CAN}"
-  echo "${2:-}" >&2
-  [ "${3:-}" ] && echo "${3:-}" >&2
+shellspec_abort() {
+  shellspec_putsn "${2:-}" >&2
+  [ "${3:-}" ] && shellspec_putsn "${3:-}" >&2
   exit "${1:-1}"
 }

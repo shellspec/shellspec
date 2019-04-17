@@ -23,7 +23,7 @@ shell() {
 }
 
 error_handler() {
-  specfile='' lineno='' errors=''
+  specfile='' lineno='' errors='' error_handler_status=0
 
   while IFS= read -r line; do
     case $line in
@@ -37,7 +37,10 @@ error_handler() {
         line=${line#${SHELLSPEC_SYN}shellspec_marker:}
         specfile=${line% *} lineno=${line##* }
         ;;
-      *) errors="$errors$line${SHELLSPEC_LF}" ;;
+      *)
+        errors="$errors$line${SHELLSPEC_LF}"
+        error_handler_status=1
+        ;;
     esac
   done
 
@@ -45,6 +48,7 @@ error_handler() {
     puts "$errors"
     display_unexpected_error "$specfile" "$lineno" "$errors"
   fi
+  return $error_handler_status
 }
 
 display_unexpected_error() {
@@ -80,6 +84,11 @@ detect_range() {
 }
 
 ( ( ( ( executor "$@" 2>&1 >&4; echo $? >&5 ) 2>&1 \
-  | error_handler >&3) 5>&1) \
-  | (read -r xs; exit "$xs") \
+  | error_handler >&3; echo $? >&5) 5>&1) \
+  | (
+      read -r xs1; read -r xs2
+      [ "$xs1" -ne 0 ] && exit "$xs1"
+      [ "$xs2" -ne 0 ] && exit "$xs2"
+      exit 0
+    )
 ) 4>&1
