@@ -6,14 +6,15 @@ use constants trim
 load parser
 
 initialize() {
-  lineno=0 block_no=0 block_no_stack='' example_no=0 skip_id=0 error=''
+  lineno=0 block_no=0 example_no=0 skip_id=0 error=''
+  _block_no=0 _block_no_stack=''
 }
 
 finalize() {
-  [ "$block_no_stack" ] || return 0
+  [ "$_block_no_stack" ] || return 0
   syntax_error "unexpected end of file (expecting 'End')"
   lineno=
-  while [ "$block_no_stack" ]; do block_end ""; done
+  while [ "$_block_no_stack" ]; do block_end ""; done
 }
 
 initialize_id() {
@@ -61,9 +62,13 @@ block_example_group() {
   fi
 
   increasese_id
-  block_no=$(($block_no + 1))
+  _block_no=$(($_block_no + 1))
+  block_no=$_block_no lineno_begin=$lineno
+  eval "block_lineno_begin${_block_no}=$lineno"
+
   eval trans block_example_group ${1+'"$@"'}
-  block_no_stack="$block_no_stack $block_no"
+
+  _block_no_stack="$_block_no_stack $_block_no"
 }
 
 block_example() {
@@ -78,21 +83,30 @@ block_example() {
   fi
 
   increasese_id
-  block_no=$(($block_no + 1)) example_no=$(($example_no + 1))
+  _block_no=$(($_block_no + 1)) example_no=$(($example_no + 1))
+  block_no=$_block_no lineno_begin=$lineno
+  eval "block_lineno_begin${block_no}=$lineno"
+
   eval trans block_example ${1+'"$@"'}
-  block_no_stack="$block_no_stack $block_no"
+
+  _block_no_stack="$_block_no_stack $block_no"
   inside_of_example="yes"
 }
 
 block_end() {
-  if [ -z "$block_no_stack" ]; then
+  if [ -z "$_block_no_stack" ]; then
     syntax_error "unexpected 'End'"
     return 0
   fi
 
   decrease_id
+  block_no=${_block_no_stack##* } lineno_end=$lineno
+  eval "block_lineno_end${block_no}=$lineno"
+  eval "lineno_begin=\$block_lineno_begin${block_no}"
+
   eval trans block_end ${1+'"$@"'}
-  block_no_stack="${block_no_stack% *}"
+
+  _block_no_stack="${_block_no_stack% *}"
   inside_of_example=""
 }
 
@@ -173,7 +187,7 @@ out() {
 }
 
 constant() {
-  if [ "$block_no_stack" ]; then
+  if [ "$_block_no_stack" ]; then
     syntax_error "Constant should be defined outside of Example Group/Example"
     return 0
   fi

@@ -17,7 +17,7 @@ trans_block_example_group() {
   putsn "(" \
     "SHELLSPEC_BLOCK_NO=$block_no" \
     "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
-    "SHELLSPEC_LINENO_BEGIN=$lineno"
+    "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { shellspec_example_group $1"
   putsn "}; shellspec_yield${block_no}() { :;"
@@ -25,9 +25,9 @@ trans_block_example_group() {
 
 trans_block_example() {
   putsn "(" \
-    "SHELLSPEC_BLOCK_NO=$block_no" \
+    "SHELLSPEC_BLOCK_NO=$_block_no" \
     "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
-    "SHELLSPEC_LINENO_BEGIN=$lineno" \
+    "SHELLSPEC_LINENO_BEGIN=$lineno_begin" \
     "SHELLSPEC_EXAMPLE_NO=$example_no"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { shellspec_example $1"
@@ -36,8 +36,8 @@ trans_block_example() {
 
 trans_block_end() {
   putsn "shellspec_marker \"$specfile\" $lineno"
-  putsn "}; SHELLSPEC_LINENO_END=$lineno"
-  putsn "shellspec_block${block_no_stack##* }) ${1# }"
+  putsn "}; SHELLSPEC_LINENO_END=$lineno_end"
+  putsn "shellspec_block${block_no}) ${1# }"
 }
 
 trans_statement() {
