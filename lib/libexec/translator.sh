@@ -104,6 +104,13 @@ block_end() {
   eval "block_lineno_end${block_no}=$lineno"
   eval "lineno_begin=\$block_lineno_begin${block_no}"
 
+  if is_focused_lineno; then
+    remove_focused_lineno
+    focused=1
+  else
+    focused=''
+  fi
+
   eval trans block_end ${1+'"$@"'}
 
   _block_no_stack="${_block_no_stack% *}"
@@ -228,28 +235,24 @@ with_function() {
 }
 
 is_focused_lineno() {
-  [ "$1" ] || return 1
-  eval "
-    set -- $1
-    while [ \$# -gt 0 ]; do
-      [ \"$2\" -le \"\$1\" ] && [ \"\$1\" -le \"$3\" ] && return 0
-      shift
-    done
-    return 1
-  "
+  [ "$focus_lineno" ] || return 1
+  eval "set -- $focus_lineno"
+  while [ $# -gt 0 ]; do
+    [ "$lineno_begin" -le "$1" ] && [ "$1" -le "$lineno_end" ] && return 0
+    shift
+  done
+  return 1
 }
 
 remove_focused_lineno() {
-  eval "
-    set -- $1
-    focus_lineno=''
-    while [ \$# -gt 0 ]; do
-      if ! [ \"$2\" -le \"\$1\" -a \"\$1\" -le \"$3\" ]; then
-        focus_lineno=\"\$focus_lineno \$1\"
-      fi
-      shift
-    done
-  "
+  eval "set -- $focus_lineno"
+  focus_lineno=''
+  while [ $# -gt 0 ]; do
+    if [ "$1" -lt "$lineno_begin" ] || [ "$lineno_end" -lt "$1" ]; then
+      focus_lineno="$focus_lineno $1"
+    fi
+    shift
+  done
 }
 
 translate() {

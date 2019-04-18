@@ -37,8 +37,7 @@ trans_block_example() {
 trans_block_end() {
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "}; SHELLSPEC_LINENO_END=$lineno_end"
-  if is_focused_lineno "$focus_lineno" "$lineno_begin" "$lineno_end"; then
-    remove_focused_lineno "$focus_lineno" "$lineno_begin" "$lineno_end"
+  if [ "$focused" ]; then
     putsn "SHELLSPEC_FOCUSED=1"
   fi
   putsn "shellspec_block${block_no}) ${1# }"
