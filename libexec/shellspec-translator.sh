@@ -157,14 +157,14 @@ specfile() {
   specfile=$1
   escape_quote specfile
 
-  putsn "shellspec_marker \"$specfile\" ---"
+  putsn "shellspec_marker '$specfile' ---"
   putsn '('
   putsn "SHELLSPEC_SPECFILE='$specfile'"
   putsn "shellspec_specfile begin"
   initialize
-  putsn "shellspec_marker \"$specfile\" BOF"
-  translate < "$specfile"
-  putsn "shellspec_marker \"$specfile\" EOF"
+  putsn "shellspec_marker '$specfile' BOF"
+  translate < "$1"
+  putsn "shellspec_marker '$specfile' EOF"
   finalize
   putsn "shellspec_specfile end"
   putsn ')'
