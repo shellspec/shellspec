@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004,SC2119,SC2120
+#shellcheck shell=sh disable=SC2004,SC2034,SC2119,SC2120
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
@@ -225,6 +225,31 @@ with_function() {
   trans with_function "$1"
   shift
   "$@"
+}
+
+is_focused_lineno() {
+  [ "$1" ] || return 1
+  eval "
+    set -- $1
+    while [ \$# -gt 0 ]; do
+      [ \"$2\" -le \"\$1\" ] && [ \"\$1\" -le \"$3\" ] && return 0
+      shift
+    done
+    return 1
+  "
+}
+
+remove_focused_lineno() {
+  eval "
+    set -- $1
+    focus_lineno=''
+    while [ \$# -gt 0 ]; do
+      if ! [ \"$2\" -le \"\$1\" -a \"\$1\" -le \"$3\" ]; then
+        focus_lineno=\"\$focus_lineno \$1\"
+      fi
+      shift
+    done
+  "
 }
 
 translate() {

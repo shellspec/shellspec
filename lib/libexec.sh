@@ -34,8 +34,23 @@ is_specfile() {
   return 1
 }
 
+find_specfiles_() {
+  is_specfile "${1%%:*}" || return 0
+  case $1 in
+    *:*)
+      set -- "${1%%:*}" "${1#*:}"
+      while :; do
+        case $2 in (*:*) set -- "$1" "${2%%:*} ${2#*:}" ;; (*) break ;; esac
+      done
+      found_specfile_ "$1" "$2"
+      ;;
+    *)   found_specfile_ "$1" ;;
+  esac
+}
+
 find_specfiles() {
-  eval "find_specfiles_() { if is_specfile \"\$1\"; then \"$1\" \"\$@\"; fi; }"
+  eval "found_specfile_() { \"$1\" \"\$@\"; }"
+  shift
   shellspec_find_files find_specfiles_ "$@"
 }
 

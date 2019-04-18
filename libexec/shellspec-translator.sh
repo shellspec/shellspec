@@ -37,6 +37,10 @@ trans_block_example() {
 trans_block_end() {
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "}; SHELLSPEC_LINENO_END=$lineno_end"
+  if is_focused_lineno "$focus_lineno" "$lineno_begin" "$lineno_end"; then
+    remove_focused_lineno "$focus_lineno" "$lineno_begin" "$lineno_end"
+    putsn "SHELLSPEC_FOCUSED=1"
+  fi
   putsn "shellspec_block${block_no}) ${1# }"
 }
 
@@ -154,16 +158,21 @@ else
 fi
 
 specfile() {
-  specfile=$1
+  specfile=$1 focus_lineno="${2:-}"
   escape_quote specfile
 
   putsn "shellspec_marker '$specfile' ---"
   putsn '('
+  if [ "$focus_lineno" ]; then
+    putsn "SHELLSPEC_FOCUSED="
+  else
+    putsn "SHELLSPEC_FOCUSED=1"
+  fi
   putsn "SHELLSPEC_SPECFILE='$specfile'"
   putsn "shellspec_specfile begin"
   initialize
   putsn "shellspec_marker '$specfile' BOF"
-  translate < "$1"
+  ( translate < "$1" )
   putsn "shellspec_marker '$specfile' EOF"
   finalize
   putsn "shellspec_specfile end"

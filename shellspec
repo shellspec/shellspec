@@ -246,17 +246,7 @@ exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
 case $mode in (runner|translator|syntax-check)
   [ $# -eq 0 ] && set -- 'spec'
   for specfile in "$@"; do
-    case $specfile in (*:*)
-      warn "Filtering feature is not currently supported. ($specfile)"
-      specfile=${specfile%:*}
-    esac
-    [ -e "$specfile" ] || abort "Not found path: $specfile"
-    shift
-    if [ $# -eq 0 ]; then
-      set -- "$specfile"
-    else
-      set -- "$@" "$specfile"
-    fi
+    [ -e "${specfile%%:*}" ] || abort "Not found path: ${specfile%%:*}"
   done
 esac
 

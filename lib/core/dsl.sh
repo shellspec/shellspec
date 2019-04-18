@@ -51,7 +51,7 @@ shellspec_example() {
 
   if [ "$SHELLSPEC_DRYRUN" ]; then
     shellspec_output SUCCEEDED
-  else
+  elif [ "$SHELLSPEC_FOCUSED" ]; then
     shellspec_invoke_example
   fi
 
