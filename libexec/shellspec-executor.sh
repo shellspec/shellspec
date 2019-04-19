@@ -71,13 +71,14 @@ detect_range() {
   while IFS= read -r line || [ "$line" ]; do
     trim line
     line=${line%% *}
-    line=${line#x}
     lineno=$(($lineno + 1))
     [ "$lineno" -lt "$1" ] && continue
-    if [ "$lineno" -eq "$1" ]; then
-      is_block_statement "$line" && lineno_begin=$(($lineno + 1))
-    else
-      is_block_statement "$line" && lineno_end=$(($lineno - 1)) && break
+    if is_begin_block "$line" || is_end_block "$line"; then
+      if [ "$lineno" -eq "$1" ]; then
+        lineno_begin=$lineno
+      else
+        lineno_end=$(($lineno - 1)) && break
+      fi
     fi
   done
   echo "${lineno_begin}-${lineno_end:-$lineno}"

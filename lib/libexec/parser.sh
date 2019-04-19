@@ -1,15 +1,23 @@
 #shellcheck shell=sh disable=SC2004
 
-is_block_statement() {
-  case $1 in (Describe | Context | Example | Specify | It | End)
-    return 0
+is_begin_block() {
+  case $1 in
+     Describe |  Context |  Example |  Specify |  It | Todo) return 0 ;;
+    xDescribe | xContext | xExample | xSpecify | xIt) return 0 ;;
+    fDescribe | fContext | fExample | fSpecify | fIt) return 0 ;;
   esac
   return 1
 }
 
+is_end_block() {
+  [ "$1" = "End" ]
+}
+
 is_example() {
-  case $1 in (Example | Specify | It)
-    return 0
+  case $1 in
+     Example |  Specify |  It | Todo) return 0 ;;
+    xExample | xSpecify | xIt) return 0 ;;
+    fExample | fSpecify | fIt) return 0 ;;
   esac
   return 1
 }
