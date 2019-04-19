@@ -10,7 +10,7 @@ Describe "general.sh"
       printf '%s\n' "$@"
     }
 
-    fIt "separates by \"'\""
+    It "separates by \"'\""
       When call reset_params '$3' "'" "a'b'c"
       The first  line of stdout should equal 'a'
       The second line of stdout should equal 'b'
