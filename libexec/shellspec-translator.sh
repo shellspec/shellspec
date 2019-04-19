@@ -19,7 +19,11 @@ trans_block_example_group() {
     "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
     "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
   putsn "shellspec_marker \"$specfile\" $lineno"
-  putsn "shellspec_block${block_no}() { shellspec_example_group $1"
+  putsn "shellspec_block${block_no}() { "
+  if [ "$focused" ]; then
+    putsn "SHELLSPEC_FOCUSED=$focused"
+  fi
+  putsn "shellspec_example_group $1"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
 
@@ -30,7 +34,11 @@ trans_block_example() {
     "SHELLSPEC_LINENO_BEGIN=$lineno_begin" \
     "SHELLSPEC_EXAMPLE_NO=$example_no"
   putsn "shellspec_marker \"$specfile\" $lineno"
-  putsn "shellspec_block${block_no}() { shellspec_example $1"
+  putsn "shellspec_block${block_no}() { "
+  if [ "$focused" ]; then
+    putsn "SHELLSPEC_FOCUSED=$focused"
+  fi
+  putsn "shellspec_example $1"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
 
@@ -38,7 +46,7 @@ trans_block_end() {
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "}; SHELLSPEC_LINENO_END=$lineno_end"
   if [ "$focused" ]; then
-    putsn "SHELLSPEC_FOCUSED=1"
+    putsn "SHELLSPEC_FOCUSED=$focused"
   fi
   putsn "shellspec_block${block_no}) ${1# }"
 }
@@ -158,14 +166,15 @@ fi
 
 specfile() {
   specfile=$1 focus_lineno="${2:-}"
+  [ "$focus_lineno" ] || unset focus_lineno
   escape_quote specfile
 
   putsn "shellspec_marker '$specfile' ---"
   putsn '('
-  if [ "$focus_lineno" ]; then
+  if [ "${focus_lineno:-}" ] || [ "$SHELLSPEC_FOCUS" ]; then
     putsn "SHELLSPEC_FOCUSED="
   else
-    putsn "SHELLSPEC_FOCUSED=1"
+    putsn "SHELLSPEC_FOCUSED=all"
   fi
   putsn "SHELLSPEC_SPECFILE='$specfile'"
   putsn "shellspec_specfile begin"

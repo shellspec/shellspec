@@ -24,6 +24,14 @@ import "formatter"
 import "${SHELLSPEC_FORMATTER}_formatter"
 "${SHELLSPEC_FORMATTER##*/}_formatter" "$@"
 
+warn() {
+  if [ "$SHELLSPEC_COLOR" ]; then
+    printf '\033[33m%s\033[0m\n' "$*"
+  else
+    printf '%s\n' "$*"
+  fi
+}
+
 syntax_error() {
   putsn "Syntax error: ${*:-} in ${field_specfile:-} line ${field_range:-}" >&2
 }
@@ -76,7 +84,8 @@ parse_fields() {
   done
 }
 
-exit_status=0 fail_fast='' fail_fast_count="${SHELLSPEC_FAIL_FAST_COUNT:-}"
+exit_status=0 fail_fast='' focus_mode=''
+fail_fast_count="${SHELLSPEC_FAIL_FAST_COUNT:-}"
 
 parse_metadata
 formatter_begin
@@ -146,6 +155,7 @@ each_line() {
   fi
 
   [ "${field_error:-}" ] && exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+  [ "${field_focused:-}" = "focus" ] && focus_mode=1
 
   if [ "$fail_fast_count" ]; then
     [ "${failed_count:-0}" -ge "$fail_fast_count" ] && fail_fast="yes"
@@ -168,5 +178,10 @@ done
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 formatter_end
+
+if [ "$focus_mode" ] && [ ! "${SHELLSPEC_FOCUS:-}" ]; then
+  warn "To run focused example group/example only," \
+    "you need to specify --focus option."
+fi
 
 exit "$exit_status"

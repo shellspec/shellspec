@@ -11,7 +11,7 @@ shellspec_output_raw() {
   case $1 in (begin | end | statement | result)
     # shellcheck disable=SC2145
     set -- "type:$@" "id:${SHELLSPEC_ID:-}" "block_no:${SHELLSPEC_BLOCK_NO:-}" \
-      "specfile:${SHELLSPEC_SPECFILE:-}" \
+      "specfile:${SHELLSPEC_SPECFILE:-}" "focused:${SHELLSPEC_FOCUSED:-}" \
       "range:${SHELLSPEC_LINENO_BEGIN:-}-${SHELLSPEC_LINENO_END:-}" \
       "desc:$SHELLSPEC_DESC" "description:$SHELLSPEC_DESCRIPTION"
   esac

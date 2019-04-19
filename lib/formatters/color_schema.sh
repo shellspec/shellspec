@@ -47,5 +47,9 @@ color_schema() {
     log) field_color=$BOLD${UNDERLINE}$WHITE ;;
     *        ) field_color=$WHITE ;;
   esac
+
+  if [ "${field_focused:-}" = "focus" ]; then
+    field_color="${UNDERLINE}$field_color"
+  fi
   COLOR_DEBUG=${WHITE}${BOLD}
 }

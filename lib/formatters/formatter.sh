@@ -7,7 +7,7 @@
 
 use proxy padding each
 
-buffer conclusion notable_examples failure_examples
+buffer conclusion notable_examples failure_examples focused_blocks
 
 proxy formatter_methods methods
 proxy formatter_conclusion_format conclusion_format
@@ -126,12 +126,19 @@ summary_end() {
 }
 
 references_format() {
+  if [ "$field_type" = "begin" ] && [ "${field_focused:-}" = "focus" ]; then
+    set -- "${field_color}shellspec" \
+      "${field_specfile}:${field_range%-*}${RESET}" \
+      "${CYAN}# ${field_description} ${field_note:-}${RESET}"
+    focused_blocks_set_if_empty "Focused example groups / examples:${LF}"
+    focused_blocks_append "$@"
+  fi
   [ "$field_type" = "result" ] || return 0
   [ "${example_index}" ] || return 0
 
   set -- "${field_color}shellspec" \
     "${field_specfile}:${field_range%-*}${RESET}" \
-    "${CYAN}# ${example_index})" "${field_description} ${field_note:-}${RESET}"
+    "${CYAN}# ${example_index}) ${field_description} ${field_note:-}${RESET}"
 
   if [ "${field_error:-}" ]; then
     failure_examples_set_if_empty "Failure examples:${LF}"
@@ -146,4 +153,5 @@ references_format() {
 references_end() {
   notable_examples_flush
   failure_examples_flush
+  focused_blocks_flush
 }

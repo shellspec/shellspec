@@ -18,14 +18,19 @@ dsl_mapping() {
   case $1 in
     Describe    )   block_example_group "$2" ;;
     xDescribe   ) x block_example_group "$2" ;;
+    fDescribe   ) f block_example_group "$2" ;;
     Context     )   block_example_group "$2" ;;
     xContext    ) x block_example_group "$2" ;;
+    fContext    ) f block_example_group "$2" ;;
     Example     )   block_example       "$2" ;;
     xExample    ) x block_example       "$2" ;;
+    fExample    ) f block_example       "$2" ;;
     Specify     )   block_example       "$2" ;;
     xSpecify    ) x block_example       "$2" ;;
+    fSpecify    ) f block_example       "$2" ;;
     It          )   block_example       "$2" ;;
     xIt         ) x block_example       "$2" ;;
+    fIt         ) f block_example       "$2" ;;
     End         )   block_end           "$2" ;;
     Todo        )   todo                "$2" ;;
     When        )   statement when      "$2" ;;

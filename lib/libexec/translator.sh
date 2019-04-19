@@ -6,7 +6,7 @@ use constants trim
 load parser
 
 initialize() {
-  lineno=0 block_no=0 example_no=0 skip_id=0 error=''
+  lineno=0 block_no=0 example_no=0 skip_id=0 error='' focused=''
   _block_no=0 _block_no_stack=''
 }
 
@@ -106,18 +106,25 @@ block_end() {
 
   if is_focused_lineno; then
     remove_focused_lineno
-    focused=1
+    focused="lineno"
   else
     focused=''
   fi
 
   eval trans block_end ${1+'"$@"'}
+  focused=''
 
   _block_no_stack="${_block_no_stack% *}"
   inside_of_example=""
 }
 
 x() { "$@"; skip; }
+
+f() {
+  [ "${focus_lineno+x}" ] || focused="focus"
+  "$@"
+  focused=''
+}
 
 todo() {
   block_example "$1"
@@ -235,7 +242,7 @@ with_function() {
 }
 
 is_focused_lineno() {
-  [ "$focus_lineno" ] || return 1
+  [ "${focus_lineno:-}" ] || return 1
   eval "set -- $focus_lineno"
   while [ $# -gt 0 ]; do
     [ "$lineno_begin" -le "$1" ] && [ "$1" -le "$lineno_end" ] && return 0
