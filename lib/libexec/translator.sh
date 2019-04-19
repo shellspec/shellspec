@@ -89,7 +89,7 @@ block_example() {
 
   eval trans block_example ${1+'"$@"'}
 
-  _block_no_stack="$_block_no_stack $block_no"
+  _block_no_stack="$_block_no_stack $_block_no"
   inside_of_example="yes"
 }
 
