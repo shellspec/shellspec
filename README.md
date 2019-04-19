@@ -478,6 +478,11 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
+0.11.0 (not yet released)
+
+* Run the example by line number. (`*_spec.sh:#*`)
+* Run focused example group / example. (`fDescribe`, `fContext`, `fExample`, `fSpecify`, `fIt`)
+
 0.10.0
 
 * Remove `Def` helper. (use `%putsn`, `%puts` directive instead)
