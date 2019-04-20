@@ -262,6 +262,11 @@ exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
 case $mode in (runner|translator|syntax-check)
   [ $# -eq 0 ] && set -- 'spec'
   for specfile in "$@"; do
+    case $specfile in (*:*)
+      case ${specfile#*:} in
+        *[!0-9:]*) abort "Specified line number is wrong: $specfile"
+      esac
+    esac
     [ -e "${specfile%%:*}" ] || abort "Not found path: ${specfile%%:*}"
   done
 esac
