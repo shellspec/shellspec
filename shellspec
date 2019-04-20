@@ -128,6 +128,16 @@ Usage: ${0##*/} [options] [files or directories]
                                         moderate (mute repeated messages)
                                         quiet (mute repeated messages and non-temporarily messages)
 
+  **** Filtering ****
+
+    You can select examples by appending the line numbers to the filename
+
+      e.g. shellspec path/to/a_spec.sh:10:20
+
+      --focus                         Run focused groups / examples only
+                                        To focus, prepend 'f' to groups / examples in specfiles
+                                        e.g. Describe -> fDescribe, It -> fIt
+
   **** Utility ****
 
       --init                          Initialize your project with shellspec

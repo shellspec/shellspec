@@ -130,7 +130,7 @@ references_format() {
     set -- "${field_color}shellspec" \
       "${field_specfile}:${field_range%-*}${RESET}" \
       "${CYAN}# ${field_description} ${field_note:-}${RESET}"
-    focused_blocks_set_if_empty "Focused example groups / examples:${LF}"
+    focused_blocks_set_if_empty "Focused groups / examples:${LF}"
     focused_blocks_append "$@"
   fi
   [ "$field_type" = "result" ] || return 0
