@@ -35,7 +35,7 @@ is_specfile() {
 }
 
 find_specfiles_() {
-  is_specfile "${1%%:*}" || return 0
+  if ! is_specfile "${1%%:*}"; then return 0; fi
   case $1 in
     *:*)
       set -- "${1%%:*}" "${1#*:}"
@@ -44,7 +44,7 @@ find_specfiles_() {
       done
       found_specfile_ "$1" "$2"
       ;;
-    *)   found_specfile_ "$1" ;;
+    *) found_specfile_ "$1" ;;
   esac
 }
 

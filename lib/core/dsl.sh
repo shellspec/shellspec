@@ -69,7 +69,7 @@ shellspec_invoke_example() {
       SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
       shellspec_output FAILED_BEFORE_HOOK
       shellspec_output FAILED
-      return
+      return 0
     fi
     shellspec_output_if PENDING ||:
     shellspec_yield
@@ -77,22 +77,23 @@ shellspec_invoke_example() {
       SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
       shellspec_output FAILED_AFTER_HOOK
       shellspec_output FAILED
-      return
+      return 0
     fi
   }
 
-  shellspec_if SKIP && shellspec_output SKIPPED && return
-  shellspec_output_if NOT_IMPLEMENTED && shellspec_output TODO && return
+  shellspec_if SKIP && shellspec_output SKIPPED && return 0
+  shellspec_output_if NOT_IMPLEMENTED && shellspec_output TODO && return 0
   shellspec_output_if UNHANDLED_STATUS && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STDOUT && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STDERR && shellspec_on WARNED
 
   shellspec_if PENDING && {
-    shellspec_if FAILED && shellspec_output TODO && return
-    shellspec_output FIXED && return
+    shellspec_if FAILED && shellspec_output TODO && return 0
+    shellspec_output FIXED && return 0
   }
-  shellspec_output_if FAILED && return
+  shellspec_output_if FAILED && return 0
   shellspec_output_if WARNED || shellspec_output SUCCEEDED
+  return 0
 }
 
 shellspec_statement() {
