@@ -4,16 +4,26 @@
 : "${field_desc:-}" "${field_color:-}" "${field_message:-}"
 
 documentation_formatter() {
-  formatter_results_format() {
-    : "${_indent:=}"
+  formatter_results_begin() {
+    _indent='' _nest=0 _pos=0 _flushed=''
+  }
 
+  formatter_results_format() {
     if [ "$field_tag" = "example_group" ]; then
       case $field_type in
         begin)
-          [ "$_indent" ] || putsn
-          putsn "${_indent}${field_color}${field_desc}${RESET}"
-          _indent="$_indent  " ;;
-        end) _indent="${_indent%  }" ;;
+          _flushed=
+          _desc="${_indent}${field_color}${field_desc}${RESET}"
+          eval "_descs_$_nest=\$_desc"
+          _indent="$_indent  "
+          _nest=$(($_nest + 1))
+          ;;
+        end)
+          _indent="${_indent%  }"
+          _nest=$(($_nest - 1))
+          [ "$_flushed" ] && _pos=$(($_pos - 1))
+          eval "unset _descs_$_nest" &&:
+          ;;
       esac
     fi
 
@@ -23,10 +33,22 @@ documentation_formatter() {
         putsn "${_indent}${field_color}${field_message}${RESET}"
         ;;
       result)
+        [ "$_pos" -eq 0 ] && putsn
+        while [ $_pos -lt $_nest ]; do
+          eval "_desc=\$_descs_$_pos"
+          putsn "$_desc"
+          _pos=$((_pos + 1))
+        done
+        _flushed=1
+
         set -- "${_indent}${field_color}${field_desc}"
         [ "$example_index" ] && set -- "$@" "(${field_note:-} - $example_index)"
         putsn "$*${RESET}"
         ;;
     esac
+  }
+
+  formatter_results_end() {
+    putsn
   }
 }

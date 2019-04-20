@@ -26,6 +26,7 @@ tap_formatter() {
       log      ) putsn "# $field_message" ;;
     esac
   }
+
   formatter_results_end() {
     if [ "$aborted" ]; then
       putsn "not ok $(($_count + 1)) - aborted by unexpected error"
