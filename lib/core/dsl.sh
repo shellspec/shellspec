@@ -49,10 +49,12 @@ shellspec_example() {
   shellspec_desc "example" "${1:-}"
   shellspec_output EXAMPLE_BEGIN
 
-  if [ "$SHELLSPEC_DRYRUN" ]; then
-    shellspec_output SUCCEEDED
-  elif [ "$SHELLSPEC_FOCUSED" ]; then
-    shellspec_invoke_example
+  if [ "$SHELLSPEC_FOCUSED" ]; then
+    if [ "$SHELLSPEC_DRYRUN" ]; then
+      shellspec_output SUCCEEDED
+    else
+      shellspec_invoke_example
+    fi
   fi
 
   shellspec_output EXAMPLE_END
