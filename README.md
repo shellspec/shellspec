@@ -17,6 +17,7 @@ BDD style unit testing framework for POSIX compatible shell script.
 - [Tutorial](#tutorial)
   - [Installation](#installation)
   - [Getting started](#getting-started)
+- [Usage](#usage)
 - [Specfile DSL](#specfile-dsl)
   - [Syntax example](#syntax-example)
   - [Samples](#samples)
@@ -53,6 +54,7 @@ BDD style unit testing framework for POSIX compatible shell script.
 * Pure shell script implementation
 * Minimum Dependencies (Use only a few POSIX compliant command)
 * Parallel execution
+* Filtering (Running by line number and focused groups /examples)
 * Nestable groups with scope like lexical scope
 * Before / After hooks
 * Skip / Pending
@@ -185,6 +187,60 @@ HERE
 # It goes success!
 $ shellspec
 ```
+
+## Usage
+
+```
+Usage: shellspec [options] [files or directories]
+
+  -s, --shell SHELL                   Specify a path of shell [default: current shell]
+      --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]
+  -e, --env NAME=VALUE                Set environment variable
+  -w, --warnings LEVEL                Set warnings level
+                                        none (do not show warnings)
+                                        notice (show warnings but not treats as error)
+                                        error (show warnings and treats as error) [default]
+                                        failure (treats warnings as failures)
+  -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
+      --count                         Count the number of examples without running any examples
+      --syntax-check                  Syntax check of the specfiles without running any examples
+      --dry-run                       Print the formatter output without running any examples
+
+  **** Output ****
+
+      --[no-]banner                   Show banner if exist 'spec/banner' [default: enabled]
+  -f, --format FORMATTER              Choose a formatter.
+                                        [p]rogress (dots) [default]
+                                        [d]ocumentation (group and example names)
+                                        [t]ap
+                                        debug (for developer)
+                                        custom formatter name
+      --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
+      --no-color, --no-colour         Force the output to not be in color, even if the output is a TTY
+      --skip-message VERBOSE          Mute skip message
+                                        none (do not mute any messages) [default]
+                                        moderate (mute repeated messages)
+                                        quiet (mute repeated messages and non-temporarily messages)
+
+  **** Filtering ****
+
+    You can select examples by appending the line numbers to the filename
+
+      e.g. shellspec path/to/a_spec.sh:10:20
+
+      --focus                         Run focused groups / examples only
+                                        To focus, prepend 'f' to groups / examples in specfiles
+                                        e.g. Describe -> fDescribe, It -> fIt
+
+  **** Utility ****
+
+      --init                          Initialize your project with shellspec
+      --task [TASK]                   Run task. If TASK is not specified, show the task list
+      --translate                     Output translated specfile
+  -v, --version                       Display the version
+  -h, --help                          You're looking at it
+  ```
+
 
 ## Specfile DSL
 
@@ -478,10 +534,11 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
-0.11.0 (not yet released)
+0.11.0
 
 * Run the example by line number. (`*_spec.sh:#*`)
 * Run focused example group / example. (`fDescribe`, `fContext`, `fExample`, `fSpecify`, `fIt`)
+* Add `--count` option for count the number of examples without running.
 
 0.10.0
 
