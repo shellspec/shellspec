@@ -536,8 +536,8 @@ To disable shows banner with `--no-banner` option.
 
 0.11.0
 
-* Run the example by line number. (`*_spec.sh:#*`)
-* Run focused example group / example. (`fDescribe`, `fContext`, `fExample`, `fSpecify`, `fIt`)
+* Run the example by line number. (`*_spec.sh:#`)
+* Run focused groups / examples. (`fDescribe`, `fContext`, `fExample`, `fSpecify`, `fIt`)
 * Add `--count` option for count the number of examples without running.
 
 0.10.0 (2019-04-17)
