@@ -534,7 +534,7 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
-0.11.0
+0.11.0 (2019-04-20)
 
 * Run the example by line number. (`*_spec.sh:#`)
 * Run focused groups / examples. (`fDescribe`, `fContext`, `fExample`, `fSpecify`, `fIt`)
