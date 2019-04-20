@@ -6,11 +6,11 @@ tap_formatter() {
   # shellcheck disable=SC2034
   SHELLSPEC_EXAMPLES_LOG=
   # shellcheck disable=SC2086
-  _examples=$($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-examples.sh" "$@")
+  _count=$($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-count.sh" "$@")
 
   formatter_results_begin() {
     _example_no=0
-    putsn "1..${_examples}"
+    putsn "1..${_count}"
   }
 
   formatter_results_format() {
@@ -28,7 +28,7 @@ tap_formatter() {
   }
   formatter_results_end() {
     if [ "$aborted" ]; then
-      putsn "not ok $(($_examples + 1)) - aborted by unexpected error"
+      putsn "not ok $(($_count + 1)) - aborted by unexpected error"
     fi
   }
 
