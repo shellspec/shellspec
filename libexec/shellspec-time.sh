@@ -1,6 +1,11 @@
 #!/bin/sh
 #shellcheck disable=SC2004
 
+if [ "$BASH_VERSION" ] || [ "$KSH_VERSION" ]; then
+  time -p "$@"
+  exit $?
+fi
+
 set -eu
 
 read -r sec_start millisec_start <<HERE
