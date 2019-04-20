@@ -540,7 +540,7 @@ To disable shows banner with `--no-banner` option.
 * Run focused example group / example. (`fDescribe`, `fContext`, `fExample`, `fSpecify`, `fIt`)
 * Add `--count` option for count the number of examples without running.
 
-0.10.0
+0.10.0 (2019-04-17)
 
 * Remove `Def` helper. (use `%putsn`, `%puts` directive instead)
 * Support parallel execution. (`--jobs` option)
@@ -549,14 +549,14 @@ To disable shows banner with `--no-banner` option.
 * Improve error handling.
 * Improve ctrl-c handling.
 
-0.9.0
+0.9.0 (2019-03-30)
 
 * Remove shorthand of the variable subject.
 * Change timing of loading external script by 'Include'. [breaking change]
 * Fix for translation speed slowdown.
 * Add `--syntax-check` option for syntax check of the specfile.
 
-0.8.0
+0.8.0 (2019-03-26)
 
 * Remove `It` statement and change `It` is alias of `Example` now.
 * Remove `Set` / `Unset` helper.
@@ -576,14 +576,14 @@ To disable shows banner with `--no-banner` option.
 * Add shorthand for `function` subject and `variable` subject.
 * Add failed message for `Before`/`After` each hook.
 
-0.7.0
+0.7.0 (2019-03-08)
 
 * Added `lines` modifier.
 
-0.6.0
+0.6.0 (2019-02-19)
 
 * Added `match` matcher.
 
-0.5.0
+0.5.0 (2019-02-06)
 
 * Initial public release.
