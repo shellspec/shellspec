@@ -109,8 +109,9 @@ Usage: ${0##*/} [options] [files or directories]
                                         error (show warnings and treats as error) [default]
                                         failure (treats warnings as failures)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
-      --dry-run                       Print the formatter output of your suite without
-                                        running any examples or hooks
+      --count                         Count the number of examples without running any examples
+      --syntax-check                  Syntax check of the specfiles without running any examples
+      --dry-run                       Print the formatter output without running any examples
 
   **** Output ****
 
@@ -141,7 +142,6 @@ Usage: ${0##*/} [options] [files or directories]
   **** Utility ****
 
       --init                          Initialize your project with shellspec
-      --syntax-check                  Syntax check of the specfiles
       --task [TASK]                   Run task. If TASK is not specified, show the task list
       --translate                     Output translated specfile
   -v, --version                       Display the version
@@ -211,10 +211,7 @@ parse_options() {
           SHELLSPEC_FAIL_FAST_COUNT=1
         esac ;;
       --no-fail-fast) SHELLSPEC_FAIL_FAST_COUNT='' ;;
-      --init) mode=init ;;
-      --task) mode=task ;;
-      --translate) mode=translator ;;
-      --syntax-check) mode=syntax-check ;;
+      --init | --task | --translate | --syntax-check | --count) mode=${1#--} ;;
       -h | --help) usage ;;
       -v | --version) echo "$SHELLSPEC_VERSION"; exit 0 ;;
       -*) abort "Unknown option '$1'" ;;
@@ -259,7 +256,7 @@ fi
 
 exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
 
-case $mode in (runner|translator|syntax-check)
+case $mode in (runner|translator|syntax-check|count)
   [ $# -eq 0 ] && set -- 'spec'
   for specfile in "$@"; do
     case $specfile in (*:*)

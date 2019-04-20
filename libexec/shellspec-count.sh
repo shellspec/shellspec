@@ -7,9 +7,10 @@ set -eu
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 load grammar
 
+focus=''
 for arg in "$@"; do
   case $arg in
-    --focus) SHELLSPEC_FOCUS=1 ;;
+    --focus) focus=1 ;;
     *) set -- "$@" "$arg" ;;
   esac
   shift
@@ -19,7 +20,7 @@ count=0
 specfile() {
   if [ "${2:-}" ]; then
     count_lineno "$2" < "$1"
-  elif [ "${SHELLSPEC_FOCUS:-}" ]; then
+  elif [ "$focus" ]; then
     count_focus < "$1"
   else
     count_all < "$1"
@@ -97,10 +98,5 @@ count_focus() {
 }
 
 find_specfiles specfile "$@"
-
-if [ "${SHELLSPEC_EXAMPLES_LOG:-}" ]; then
-  echo "$count" > "${SHELLSPEC_EXAMPLES_LOG}#"
-  mv "${SHELLSPEC_EXAMPLES_LOG}#" "$SHELLSPEC_EXAMPLES_LOG"
-fi
 
 echo "$count"

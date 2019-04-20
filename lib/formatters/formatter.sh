@@ -17,6 +17,10 @@ proxy formatter_summary summary_end
 proxy formatter_references_format references_format
 proxy formatter_references_end references_end
 
+count() {
+  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-count.sh" "$@"
+}
+
 formatter_results_begin() { :; }
 formatter_results_format() { :; }
 formatter_results_end() { :; }

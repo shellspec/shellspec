@@ -3,10 +3,8 @@
 : "${field_tag:-}" "${field_description:-}" "${field_message:-}" "${aborted:-}"
 
 tap_formatter() {
-  # shellcheck disable=SC2034
-  SHELLSPEC_EXAMPLES_LOG=
   # shellcheck disable=SC2086
-  _count=$($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-count.sh" "$@")
+  _count=$(count "$@")
 
   formatter_results_begin() {
     _example_no=0
