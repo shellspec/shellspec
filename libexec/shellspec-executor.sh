@@ -66,6 +66,10 @@ display_unexpected_error() {
   fi
 }
 
+is_separetor_statement() {
+  is_begin_block "$1" || is_end_block "$1" || is_oneline_example "$1"
+}
+
 detect_range() {
   lineno_begin=$1 lineno_end='' lineno=0
   while IFS= read -r line || [ "$line" ]; do
@@ -73,7 +77,7 @@ detect_range() {
     line=${line%% *}
     lineno=$(($lineno + 1))
     [ "$lineno" -lt "$1" ] && continue
-    if is_begin_block "$line" || is_end_block "$line"; then
+    if is_separetor_statement "$line" ; then
       if [ "$lineno" -eq "$1" ]; then
         lineno_begin=$lineno
       else
