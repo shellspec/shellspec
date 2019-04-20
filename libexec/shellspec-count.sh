@@ -5,7 +5,7 @@ set -eu
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-load parser
+load grammar
 
 for arg in "$@"; do
   case $arg in

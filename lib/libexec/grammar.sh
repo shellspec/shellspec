@@ -1,18 +1,18 @@
 #shellcheck shell=sh disable=SC2004
 
-define_dsl() {
+define() {
   eval "is_$1() { case \$1 in ($2) return 0; esac; return 1; }"
 }
 
-define_dsl normal_block  " Describe |  Context |  Example |  Specify |  It"
-define_dsl focused_block "fDescribe | fContext | fExample | fSpecify | fIt"
-define_dsl skipped_block "xDescribe | xContext | xExample | xSpecify | xIt"
-define_dsl end_block "End"
+define normal_block  " Describe |  Context |  Example |  Specify |  It"
+define focused_block "fDescribe | fContext | fExample | fSpecify | fIt"
+define skipped_block "xDescribe | xContext | xExample | xSpecify | xIt"
+define end_block "End"
 
-define_dsl normal_example  " Example |  Specify |  It"
-define_dsl focused_example "fExample | fSpecify | fIt"
-define_dsl skipped_example "xExample | xSpecify | xIt"
-define_dsl oneline_example "Todo"
+define normal_example  " Example |  Specify |  It"
+define focused_example "fExample | fSpecify | fIt"
+define skipped_example "xExample | xSpecify | xIt"
+define oneline_example "Todo"
 
 is_begin_block() {
   is_normal_block "$1" || is_focused_block "$1" || is_skipped_block "$1"
@@ -26,7 +26,7 @@ is_block_example() {
   is_normal_example "$1" || is_focused_example "$1" || is_skipped_example "$1"
 }
 
-dsl_mapping() {
+mapping() {
   case $1 in
     Describe    )   block_example_group "$2" ;;
     xDescribe   ) x block_example_group "$2" ;;

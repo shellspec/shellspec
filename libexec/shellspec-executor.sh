@@ -11,7 +11,7 @@ else
   . "${SHELLSPEC_LIB:-./lib}/libexec/serial-executor.sh"
 fi
 use trim
-load parser
+load grammar
 
 translator() {
   translator="$SHELLSPEC_LIBEXEC/shellspec-translator.sh"

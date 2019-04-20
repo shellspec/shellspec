@@ -3,7 +3,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use constants trim
-load parser
+load grammar
 
 initialize() {
   lineno=0 block_no=0 example_no=0 skip_id=0 error='' focused=''
@@ -273,7 +273,7 @@ translate() {
 
     dsl=${work%% *}
     # Do not one line. ksh 93r does not work properly.
-    if ! dsl_mapping "$dsl" "${work#"$dsl"}"; then
+    if ! mapping "$dsl" "${work#"$dsl"}"; then
       trans line "$line"
     fi
   done
