@@ -534,6 +534,11 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
+0.11.1 (2019-04-21)
+
+* Fixed ignored specified line number when parallel execution.
+* Fixed documentation formatter when supplied multiple specfiles.
+
 0.11.0 (2019-04-20)
 
 * Run the example by line number. (`*_spec.sh:#`)
