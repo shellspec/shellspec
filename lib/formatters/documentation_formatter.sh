@@ -9,23 +9,25 @@ documentation_formatter() {
   }
 
   formatter_results_format() {
-    if [ "$field_tag" = "example_group" ]; then
-      case $field_type in
-        begin)
-          _flushed=
-          _desc="${_indent}${field_color}${field_desc}${RESET}"
-          eval "_descs_$_nest=\$_desc"
-          _indent="$_indent  "
-          _nest=$(($_nest + 1))
-          ;;
-        end)
-          _indent="${_indent%  }"
-          _nest=$(($_nest - 1))
-          [ "$_flushed" ] && _pos=$(($_pos - 1))
-          eval "unset _descs_$_nest" &&:
-          ;;
-      esac
-    fi
+    case $field_tag in
+      specfile) _indent='' _nest=0 _pos=0 _flushed='';;
+      example_group)
+        case $field_type in
+          begin)
+            _flushed=
+            _desc="${_indent}${field_color}${field_desc}${RESET}"
+            eval "_descs_$_nest=\$_desc"
+            _indent="$_indent  "
+            _nest=$(($_nest + 1))
+            ;;
+          end)
+            _indent="${_indent%  }"
+            _nest=$(($_nest - 1))
+            [ "$_flushed" ] && _pos=$(($_pos - 1))
+            eval "unset _descs_$_nest" &&:
+            ;;
+        esac
+    esac
 
     case $field_type in
       statement)
@@ -37,7 +39,7 @@ documentation_formatter() {
         while [ $_pos -lt $_nest ]; do
           eval "_desc=\$_descs_$_pos"
           putsn "$_desc"
-          _pos=$((_pos + 1))
+          _pos=$(($_pos + 1))
         done
         _flushed=1
 
