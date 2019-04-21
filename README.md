@@ -534,6 +534,11 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
+0.12.0 (not yet released)
+
+* Add `--list-specfiles`, `--list-examples` option.
+* Change `--count` option output includes the number of specfiles.
+
 0.11.1 (2019-04-21)
 
 * Fixed ignored specified line number when parallel execution.

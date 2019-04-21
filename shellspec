@@ -109,8 +109,6 @@ Usage: ${0##*/} [options] [files or directories]
                                         error (show warnings and treats as error) [default]
                                         failure (treats warnings as failures)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
-      --count                         Count the number of examples without running any examples
-      --syntax-check                  Syntax check of the specfiles without running any examples
       --dry-run                       Print the formatter output without running any examples
 
   **** Output ****
@@ -142,8 +140,12 @@ Usage: ${0##*/} [options] [files or directories]
   **** Utility ****
 
       --init                          Initialize your project with shellspec
-      --task [TASK]                   Run task. If TASK is not specified, show the task list
+      --count                         Count the number of specfiles and examples without running any examples
+      --list-specfiles                List the specfiles
+      --list-examples                 List the examples
+      --syntax-check                  Syntax check of the specfiles without running any examples
       --translate                     Output translated specfile
+      --task [TASK]                   Run task. If TASK is not specified, show the task list
   -v, --version                       Display the version
   -h, --help                          You're looking at it
 USAGE
@@ -211,7 +213,8 @@ parse_options() {
           SHELLSPEC_FAIL_FAST_COUNT=1
         esac ;;
       --no-fail-fast) SHELLSPEC_FAIL_FAST_COUNT='' ;;
-      --init | --task | --translate | --syntax-check | --count) mode=${1#--} ;;
+      --init | --task | --translate | --syntax-check | \
+      --count | --list-specfiles | --list-examples) mode=${1#--} ;;
       -h | --help) usage ;;
       -v | --version) echo "$SHELLSPEC_VERSION"; exit 0 ;;
       -*) abort "Unknown option '$1'" ;;
@@ -256,7 +259,7 @@ fi
 
 exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
 
-case $mode in (runner|translator|syntax-check|count)
+case $mode in (runner|translator|syntax-check|count|list-specfiles|list-examples)
   [ $# -eq 0 ] && set -- 'spec'
   for specfile in "$@"; do
     case $specfile in (*:*)

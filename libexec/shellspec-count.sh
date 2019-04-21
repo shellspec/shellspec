@@ -7,29 +7,43 @@ set -eu
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 load grammar
 
-focus=''
+focus='' list=''
 for arg in "$@"; do
   case $arg in
     --focus) focus=1 ;;
+    --list-specfiles) list=specfiles ;;
+    --list-examples) list=examples ;;
     *) set -- "$@" "$arg" ;;
   esac
   shift
 done
 
-count=0
+specfiles=0 count=0
 specfile() {
-  if [ "${2:-}" ]; then
-    count_lineno "$2" < "$1"
-  elif [ "$focus" ]; then
-    count_focus < "$1"
+  specfile=$1
+  specfiles=$(($specfiles + 1))
+  if [ "$list" = "specfiles" ]; then
+    echo "$specfile"
   else
-    count_all < "$1"
+    if [ "${2:-}" ]; then
+      count_lineno "$2" < "$specfile"
+    elif [ "$focus" ]; then
+      count_focus < "$specfile"
+    else
+      count_all < "$specfile"
+    fi
   fi
 }
 
 count_all() {
+  lineno=0
   while read -r line || [ "$line" ]; do
-    is_example "${line%% *}" || continue
+    lineno=$(($lineno + 1))
+    if is_example "${line%% *}"; then
+      [ "$list" = "examples" ] && echo "$specfile:$lineno"
+    else
+      continue
+    fi
     count=$(($count + 1))
   done
 }
@@ -79,19 +93,26 @@ count_lineno() {
 
   i=1
   while [ $i -le $lineno ]; do
-    eval "if [ \"\${example_$i:-}\" ]; then count=\$((\$count + 1)); fi"
+    if eval "[ \"\${example_$i:-}\" ]"; then
+      [ "$list" = "examples" ] && echo "$specfile:$i"
+      count=$(($count + 1))
+    fi
     i=$(($i + 1))
   done
 }
 
 count_focus() {
-  focused='' nest=0
+  focused='' nest=0 lineno=0
   while read -r line || [ "$line" ]; do
+    lineno=$(($lineno + 1))
     line=${line%% *}
     is_focused_block "$line" && focused=1
     [ "$focused" ] || continue
     is_begin_block "$line" && nest=$(($nest + 1))
-    is_example "$line" && count=$(($count + 1))
+    if is_example "$line"; then
+      [ "$list" = "examples" ] && echo "$specfile:$lineno"
+      count=$(($count + 1))
+    fi
     is_end_block "$line" && nest=$(($nest - 1))
     [ "$nest" -ne 0 ] || focused=''
   done
@@ -99,4 +120,6 @@ count_focus() {
 
 find_specfiles specfile "$@"
 
-echo "$count"
+if [ "$list" = "" ]; then
+  echo "$specfiles $count"
+fi

@@ -5,6 +5,7 @@
 tap_formatter() {
   # shellcheck disable=SC2086
   _count=$(count "$@")
+  _count=${_count#* }
 
   formatter_results_begin() {
     _example_no=0
