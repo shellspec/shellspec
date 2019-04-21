@@ -107,7 +107,7 @@ the target shell and few POSIX compliant command.
 
 Currently used external command:
 
-`date`, `mkdir`, `rm`, `mv`, `cat` (recommends: `printf`, `ps`, `readlink`, `time`)
+`date`, `mkdir`, `rm`, `mv`, `cat`, `printf` (recommends: `ps`, `readlink`, `time`)
 
 ## Tutorial
 
