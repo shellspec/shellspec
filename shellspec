@@ -140,7 +140,7 @@ Usage: ${0##*/} [options] [files or directories]
   **** Utility ****
 
       --init                          Initialize your project with shellspec
-      --count                         Count the number of specfiles and examples without running any examples
+      --count                         Count the number of specfiles and examples
       --list-specfiles                List the specfiles
       --list-examples                 List the examples
       --syntax-check                  Syntax check of the specfiles without running any examples
