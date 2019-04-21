@@ -202,8 +202,6 @@ Usage: shellspec [options] [files or directories]
                                         error (show warnings and treats as error) [default]
                                         failure (treats warnings as failures)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
-      --count                         Count the number of examples without running any examples
-      --syntax-check                  Syntax check of the specfiles without running any examples
       --dry-run                       Print the formatter output without running any examples
 
   **** Output ****
@@ -235,12 +233,15 @@ Usage: shellspec [options] [files or directories]
   **** Utility ****
 
       --init                          Initialize your project with shellspec
-      --task [TASK]                   Run task. If TASK is not specified, show the task list
+      --count                         Count the number of specfiles and examples
+      --list-specfiles                List the specfiles
+      --list-examples                 List the examples
+      --syntax-check                  Syntax check of the specfiles without running any examples
       --translate                     Output translated specfile
+      --task [TASK]                   Run task. If TASK is not specified, show the task list
   -v, --version                       Display the version
   -h, --help                          You're looking at it
-  ```
-
+```
 
 ## Specfile DSL
 
