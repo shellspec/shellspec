@@ -53,7 +53,10 @@ shellspec_example() {
     if [ "$SHELLSPEC_DRYRUN" ]; then
       shellspec_output SUCCEEDED
     else
-      shellspec_invoke_example
+      # This {} is workaround for zsh 5.4.2
+      # I think this bug is related to #12 in contrib/bugs.sh
+      # But I do not know why this works well.
+      { shellspec_invoke_example; }
     fi
   fi
 

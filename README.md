@@ -80,7 +80,7 @@ Tested Platforms
 | Windows 10 1809 (Ubuntu 18.04 on WSL) | manual | bash, busybox, dash, ksh93, mksh, posh, yash, zsh |
 | Solaris 11                            | manual | ~~Bourne Shell~~, ksh88, ksh93                    |
 
-Confirmed version (tested with docker [contrib/dockerfiles](/contrib/dockerfiles))
+Confirmed version (tested with docker [dockerfiles](dockerfiles))
 
 | Platform      | ash   | bash  | busybox    | dash     | ksh | mksh | pdksh  | posh   | yash | zsh    |
 | ------------- | ----- | ----- | ---------- | -------- | --- | ---- | ------ | ------ | ---- | ------ |
@@ -97,6 +97,7 @@ Confirmed version (tested with docker [contrib/dockerfiles](/contrib/dockerfiles
 | debian 8      |       | 4.3   | 1.22.0     | 0.5.7    | 93u | 50d  |        | 0.12.3 | 2.36 | 5.0.7  |
 | debian 9      |       | 4.4   | 1.22.0     | 0.5.8    | 93u | 54   |        | 0.12.6 | 2.43 | 5.3.1  |
 | debian buster |       | 5.0.2 | 1.30.1     | 0.5.10.2 | 93u | 57   |        | 0.13.2 | 2.48 | 5.7.1  |
+| Ubuntu 18.04  |       |       |            |          |     |      |        |        |      | 5.4.2  |
 
 **The version of strikethrough is does NOT work**
 
@@ -539,6 +540,10 @@ To disable shows banner with `--no-banner` option.
 
 * Add `--list-specfiles`, `--list-examples` option.
 * Change `--count` option output includes the number of specfiles.
+
+0.11.2 (2019-04-23)
+
+* Fixed bug that does not work with zsh 5.4.2.
 
 0.11.1 (2019-04-21)
 
