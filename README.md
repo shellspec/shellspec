@@ -534,6 +534,10 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
+0.11.2 (2019-04-23)
+
+* Fixed bug that does not work with zsh 5.4.2.
+
 0.11.1 (2019-04-21)
 
 * Fixed ignored specified line number when parallel execution.
