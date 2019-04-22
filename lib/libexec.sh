@@ -30,8 +30,7 @@ load() {
 }
 
 is_specfile() {
-  case $1 in (*_spec.sh) return 0; esac
-  return 1
+  eval "case \$1 in ($SHELLSPEC_PATTERN) true;; (*) false; esac"
 }
 
 find_specfiles_() {

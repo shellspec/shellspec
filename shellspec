@@ -31,6 +31,7 @@ export SHELLSPEC_FOCUS=''
 export SHELLSPEC_BANNER=''
 export SHELLSPEC_MODE='runner'
 export SHELLSPEC_ENV_FROM=''
+export SHELLSPEC_PATTERN="*_spec.sh"
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
