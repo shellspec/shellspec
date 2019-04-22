@@ -106,6 +106,7 @@ Usage: ${0##*/} [options] [files or directories]
 
   -s, --shell SHELL                   Specify a path of shell [default: current shell]
       --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]
+  -r, --require MODULE                Require a file
   -e, --env NAME=VALUE                Set environment variable
       --env-from ENV-SCRIPT           Set environment variable from script file
   -w, --warnings LEVEL                Set warnings level
