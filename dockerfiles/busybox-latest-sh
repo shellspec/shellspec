@@ -1,7 +1,8 @@
 FROM busybox:latest
 
-RUN uname -a && busybox && /bin/sh --help
+ENV SH="busybox ash"
 
 WORKDIR /shellspec
 COPY ./ ./
-CMD [ "./shellspec", "--shell", "sh" ]
+ENTRYPOINT [ "./docker/entrypoint.sh" ]
+CMD [ "shellspec" ]

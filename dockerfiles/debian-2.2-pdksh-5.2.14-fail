@@ -1,10 +1,10 @@
-FROM debian:9
+FROM lpenz/debian-potato-i386
 
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN apt-get update && apt-get -y install procps
-RUN apt-get -y install mksh
+RUN apt-get update
+RUN apt-get -y --force-yes install pdksh
 
-ENV SH="mksh"
+ENV SH="ksh"
 
 WORKDIR /shellspec
 COPY ./ ./

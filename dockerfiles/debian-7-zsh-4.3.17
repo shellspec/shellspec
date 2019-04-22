@@ -1,11 +1,13 @@
 FROM debian:7
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_NOWARNINGS yes
-RUN apt-get update
 
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+RUN echo "deb http://archive.debian.org/debian wheezy main contrib" > /etc/apt/sources.list
+RUN apt-get update && apt-get -y install procps
 RUN apt-get -y install zsh
-RUN uname -a && cat /etc/debian_version && dpkg -l zsh
+
+ENV SH="zsh"
 
 WORKDIR /shellspec
 COPY ./ ./
-CMD [ "./shellspec", "--shell", "zsh" ]
+ENTRYPOINT [ "./docker/entrypoint.sh" ]
+CMD [ "shellspec" ]

@@ -1,11 +1,12 @@
 FROM lpenz/debian-squeeze-i386
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_NOWARNINGS yes
-RUN apt-get update
 
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+RUN apt-get update
 RUN apt-get -y --force-yes install ksh
-RUN uname -a && cat /etc/debian_version && dpkg -l ksh
+
+ENV SH="ksh"
 
 WORKDIR /shellspec
 COPY ./ ./
-CMD [ "./shellspec", "--shell", "ksh" ]
+ENTRYPOINT [ "./docker/entrypoint.sh" ]
+CMD [ "shellspec" ]

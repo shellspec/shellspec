@@ -7,8 +7,8 @@
 # It may change without notice.
 
 # Example of use
-#   contrib/test_in_docker.sh contrib/dockerfiles/debian-9-stretch/*
-#   contrib/test_in_docker.sh -q $(find ./contrib -name "*-bash*") -- bash contrib/bugs.sh
+#   contrib/test_in_docker.sh dockerfiles/debian-9-*
+#   contrib/test_in_docker.sh $(find ./dockerfiles -name "*-bash*") -- bash contrib/bugs.sh
 #
 # Delete all shellspec images
 #   docker rmi $(docker images shellspec -q)
@@ -25,19 +25,33 @@ USAGE
   exit 0
 fi
 
-LF=$(printf '\n_')
-LF=${LF%?}
-option=""
-dockerfiles=
-while [ $# -gt 0 ]; do
-  [ "$1" = "--" ] && shift && break
-  [ "$1" = "-q" ] && option="$option -q" && shift && continue
-  dockerfiles="${dockerfiles}$1${LF}"
-  shift
-done
+main() {
+  options=""
+  for arg in "$@"; do
+    case $arg in
+      --) break ;;
+      -*) options="${options}${arg} " ;;
+    esac
+  done
 
-while IFS= read -r dockerfile; do
-  [ "$dockerfile" ] || continue
+  while [ $# -gt 0 ]; do
+    case $1 in
+      --) break ;;
+      -*) ;;
+      *) run "$@" ;;
+    esac
+    shift
+  done
+}
+
+run() {
+  dockerfile=$1
+
+  while [ $# -gt 0 ]; do
+    [ "$1" = "--" ] && shift && break
+    shift
+  done
+
   echo "======================================================================"
   echo "$dockerfile: $@"
   echo "======================================================================"
@@ -46,12 +60,10 @@ while IFS= read -r dockerfile; do
   echo "======================================================================"
   echo
   case $# in
-    0) docker run -t --rm "shellspec:$tag" ;;
-    *) docker run -t --rm "shellspec:$tag" "$@" ;;
+    0) docker run -it --rm "shellspec:$tag" ;;
+    *) docker run -it --rm "shellspec:$tag" "$@" ;;
   esac
   echo
-  echo
-  echo
-done <<HERE
-$dockerfiles
-HERE
+}
+
+main "$@"

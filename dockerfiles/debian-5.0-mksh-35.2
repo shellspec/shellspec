@@ -1,11 +1,12 @@
 FROM lpenz/debian-lenny-i386
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_NOWARNINGS yes
-RUN apt-get update
 
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+RUN apt-get update
 RUN apt-get -y --force-yes install mksh
-RUN uname -a && cat /etc/debian_version && dpkg -l mksh
+
+ENV SH="mksh"
 
 WORKDIR /shellspec
 COPY ./ ./
-CMD [ "./shellspec", "--shell", "mksh" ]
+ENTRYPOINT [ "./docker/entrypoint.sh" ]
+CMD [ "shellspec" ]

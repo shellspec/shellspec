@@ -1,7 +1,8 @@
 FROM alpine:edge
 
-RUN uname -a && cat /etc/alpine-release && apk info -q busybox && ls -al /bin/sh
+ENV SH="busybox ash"
 
 WORKDIR /shellspec
 COPY ./ ./
-CMD [ "./shellspec", "--shell", "sh" ]
+ENTRYPOINT [ "./docker/entrypoint.sh" ]
+CMD [ "shellspec" ]

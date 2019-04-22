@@ -1,10 +1,12 @@
 FROM debian:buster
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_NOWARNINGS yes
-RUN apt-get update
 
-RUN uname -a && cat /etc/debian_version && dpkg -l bash
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+RUN apt-get update && apt-get -y install procps
+
+
+ENV SH="dash"
 
 WORKDIR /shellspec
 COPY ./ ./
-CMD [ "./shellspec", "--shell", "bash" ]
+ENTRYPOINT [ "./docker/entrypoint.sh" ]
+CMD [ "shellspec" ]
