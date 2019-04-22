@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2004
 
 : "${example_index:-}" "${field_tag:-}" "${field_type:-}" "${field_note:-}"
 : "${field_desc:-}" "${field_color:-}" "${field_message:-}"
