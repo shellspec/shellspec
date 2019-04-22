@@ -30,6 +30,7 @@ export SHELLSPEC_DRYRUN=''
 export SHELLSPEC_FOCUS=''
 export SHELLSPEC_BANNER=''
 export SHELLSPEC_MODE='runner'
+export SHELLSPEC_ENV_FROM=''
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
@@ -106,6 +107,7 @@ Usage: ${0##*/} [options] [files or directories]
   -s, --shell SHELL                   Specify a path of shell [default: current shell]
       --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]
   -e, --env NAME=VALUE                Set environment variable
+      --env-from ENV-SCRIPT           Set environment variable from script file
   -w, --warnings LEVEL                Set warnings level
                                         none (do not show warnings)
                                         notice (show warnings but not treats as error)
@@ -193,6 +195,14 @@ parse_options() {
         case $name in (*[!a-zA-Z0-9_]*) abort 'Invalid environment name.'; esac
         eval "export $name=\$value"
         shift ;;
+      --env-from)
+        [ $# -ge 2 ] || abort 'Require ENV-SCRIPT.'
+        [ -e "$2" ] || abort "Not found ENV-SCRIPT '$2'."
+        case $2 in
+          /* | ./* | ../*) SHELLSPEC_ENV_FROM=$2 ;;
+          *) SHELLSPEC_ENV_FROM="./$2" ;;
+        esac
+        shift ;;
       -r | --require)
         [ $# -ge 2 ] || abort 'Require PATH.'
         SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
@@ -267,5 +277,9 @@ case $SHELLSPEC_MODE in
     done
 esac
 
-exec="$SHELLSPEC_LIBEXEC/shellspec-${SHELLSPEC_MODE}.sh"
+if [ "$SHELLSPEC_ENV_FROM" ]; then
+  exec="$SHELLSPEC_LIBEXEC/shellspec-load-env.sh"
+else
+  exec="$SHELLSPEC_LIBEXEC/shellspec-${SHELLSPEC_MODE}.sh"
+fi
 eval exec "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'}
