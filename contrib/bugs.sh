@@ -154,4 +154,14 @@ HERE
   [ "$ret" = "ok" ] && no_problem || affect
 )
 
+(
+  title="17: can not return within eval (posh = around 2.36)"
+  foo() {
+    eval 'return 0'
+    return 1
+  }
+  foo &&:
+  [ $? -eq 0 ] && no_problem || affect
+)
+
 echo Done
