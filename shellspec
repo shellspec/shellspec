@@ -29,6 +29,7 @@ export SHELLSPEC_JOBS=0
 export SHELLSPEC_DRYRUN=''
 export SHELLSPEC_FOCUS=''
 export SHELLSPEC_BANNER=''
+export SHELLSPEC_MODE='runner'
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
@@ -216,7 +217,7 @@ parse_options() {
         esac ;;
       --no-fail-fast) SHELLSPEC_FAIL_FAST_COUNT='' ;;
       --init | --task | --translate | --syntax-check | \
-      --count | --list-specfiles | --list-examples) mode=${1#--} ;;
+      --count | --list-specfiles | --list-examples) SHELLSPEC_MODE=${1#--} ;;
       -h | --help) usage ;;
       -v | --version) echo "$SHELLSPEC_VERSION"; exit 0 ;;
       -*) abort "Unknown option '$1'" ;;
@@ -226,8 +227,6 @@ parse_options() {
     i=$(($i + $skip))
   done
 }
-
-mode='runner'
 
 read_dot_file "${XDG_CONFIG_HOME:-}" "shellspec/options" parse_options
 read_dot_file "${HOME:-}" ".shellspec" parse_options
@@ -255,17 +254,18 @@ if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
   abort "Unsupported shell (require arithmetic expansion): $SHELLSPEC_SHELL"
 fi
 
-case $mode in (runner|translator|syntax-check|count|list-specfiles|list-examples)
-  [ $# -eq 0 ] && set -- 'spec'
-  for specfile in "$@"; do
-    case $specfile in (*:*)
-      case ${specfile#*:} in
-        *[!0-9:]*) abort "Specified line number is wrong: $specfile"
+case $SHELLSPEC_MODE in
+  runner | translator | syntax-check | count | list-specfiles | list-examples)
+    [ $# -eq 0 ] && set -- 'spec'
+    for specfile in "$@"; do
+      [ -e "${specfile%%:*}" ] || abort "Not found path: ${specfile%%:*}"
+      case $specfile in (*:*)
+        case ${specfile#*:} in (*[!0-9:]*)
+          abort "Specified line number is wrong: $specfile"
+        esac
       esac
-    esac
-    [ -e "${specfile%%:*}" ] || abort "Not found path: ${specfile%%:*}"
-  done
+    done
 esac
 
-exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
+exec="$SHELLSPEC_LIBEXEC/shellspec-${SHELLSPEC_MODE}.sh"
 eval exec "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'}
