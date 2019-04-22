@@ -82,6 +82,10 @@ set_exit_status() {
   return "$1"
 }
 
+if [ "$SHELLSPEC_BANNER" ] && [ -e "$SHELLSPEC_BANNER" ]; then
+  cat "$SHELLSPEC_BANNER"
+fi
+
 # I want to process with non-blocking output
 # and the stdout of runner streams to the reporter
 # and capture stderr both of the runner and the reporter

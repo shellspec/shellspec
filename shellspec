@@ -28,6 +28,7 @@ export SHELLSPEC_FAIL_FAST_COUNT=''
 export SHELLSPEC_JOBS=0
 export SHELLSPEC_DRYRUN=''
 export SHELLSPEC_FOCUS=''
+export SHELLSPEC_BANNER=''
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
@@ -84,6 +85,7 @@ use unixtime
 SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$(unixtime).$$"
 SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/time.log"
 SHELLSPEC_EXAMPLES_LOG="$SHELLSPEC_TMPBASE/examples.log"
+SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner"
 
 if [ -z "$SHELLSPEC_TIME" ]; then
   SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
@@ -157,8 +159,8 @@ parse_options() {
   while [ $# -gt 0 ]; do
     skip=1
     case $1 in
-      --banner) banner="show" ;;
-      --no-banner) banner= ;;
+      --banner) SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner" ;;
+      --no-banner) SHELLSPEC_BANNER= ;;
       -f | --format)
         [ $# -ge 2 ] || abort 'Require FORMATTER.'
         case $2 in
@@ -225,7 +227,7 @@ parse_options() {
   done
 }
 
-banner="show" mode='runner'
+mode='runner'
 
 read_dot_file "${XDG_CONFIG_HOME:-}" "shellspec/options" parse_options
 read_dot_file "${HOME:-}" ".shellspec" parse_options
@@ -234,10 +236,6 @@ read_dot_file "." ".shellspec-local" parse_options
 if [ $# -gt 0 ]; then
   parse_options "$@"
   eval "set -- $PARAMS"
-fi
-
-if [ "$banner" ] && [ -e "$SHELLSPEC_SPECDIR/banner" ]; then
-  cat "$SHELLSPEC_SPECDIR/banner"
 fi
 
 [ "$SHELLSPEC_SHELL" ] || SHELLSPEC_SHELL=$(current_shell "$0")
@@ -257,8 +255,6 @@ if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
   abort "Unsupported shell (require arithmetic expansion): $SHELLSPEC_SHELL"
 fi
 
-exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
-
 case $mode in (runner|translator|syntax-check|count|list-specfiles|list-examples)
   [ $# -eq 0 ] && set -- 'spec'
   for specfile in "$@"; do
@@ -271,4 +267,5 @@ case $mode in (runner|translator|syntax-check|count|list-specfiles|list-examples
   done
 esac
 
+exec="$SHELLSPEC_LIBEXEC/shellspec-${mode}.sh"
 eval exec "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'}
