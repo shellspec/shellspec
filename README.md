@@ -1,4 +1,4 @@
-# shellspec
+q# shellspec
 
 BDD style unit testing framework for POSIX compatible shell script.
 
@@ -196,7 +196,9 @@ Usage: shellspec [options] [files or directories]
 
   -s, --shell SHELL                   Specify a path of shell [default: current shell]
       --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]
+  -r, --require MODULE                Require a file
   -e, --env NAME=VALUE                Set environment variable
+      --env-from ENV-SCRIPT           Set environment variable from script file
   -w, --warnings LEVEL                Set warnings level
                                         none (do not show warnings)
                                         notice (show warnings but not treats as error)
@@ -539,7 +541,10 @@ To disable shows banner with `--no-banner` option.
 0.12.0 (not yet released)
 
 * Add `--list-specfiles`, `--list-examples` option.
+* Add `--env-from` option.
+* Add tests that for array if supported shells.
 * Change `--count` option output includes the number of specfiles.
+* Change to the banner show only on shellspec-runner.
 
 0.11.2 (2019-04-23)
 
