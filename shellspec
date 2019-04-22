@@ -156,12 +156,11 @@ exit
 }
 
 parse_options() {
-  i=1 PARAMS=''
+  length=$# params=''
   while [ $# -gt 0 ]; do
-    skip=1
     case $1 in
       --banner) SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner" ;;
-      --no-banner) SHELLSPEC_BANNER= ;;
+      --no-banner) SHELLSPEC_BANNER='' ;;
       -f | --format)
         [ $# -ge 2 ] || abort 'Require FORMATTER.'
         case $2 in
@@ -170,15 +169,17 @@ parse_options() {
           t) SHELLSPEC_FORMATTER=tap ;;
           *) SHELLSPEC_FORMATTER=$2 ;;
         esac
-        skip=2 ;;
+        shift ;;
       --force-color | --force-colour) SHELLSPEC_COLOR=1 ;;
       --no-color | --no-colour) SHELLSPEC_COLOR='' ;;
       -s | --shell)
         [ $# -ge 2 ] || abort 'Require SHELL.'
-        SHELLSPEC_SHELL=$2 skip=2 ;;
+        SHELLSPEC_SHELL=$2
+        shift ;;
       -j | --jobs)
         [ $# -ge 2 ] || abort 'Require JOBS.'
-        SHELLSPEC_JOBS=$2 skip=2 ;;
+        SHELLSPEC_JOBS=$2
+        shift ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
       --focus) SHELLSPEC_FOCUS=1 ;;
       -e | --env)
@@ -186,30 +187,30 @@ parse_options() {
         #shellcheck disable=SC2034
         case $2 in
           *=*) name=${2%%=*} value=${2#*=} ;;
-          *) name=$2 value= ;;
+          *) name=$2 value='' ;;
         esac
         case $name in ([!a-zA-Z_]*) abort 'Invalid environment name.'; esac
         case $name in (*[!a-zA-Z0-9_]*) abort 'Invalid environment name.'; esac
-        eval "$name=\$value"
-        export "${name?}"; skip=2 ;;
+        eval "export $name=\$value"
+        shift ;;
       -r | --require)
         [ $# -ge 2 ] || abort 'Require PATH.'
-        [ "$SHELLSPEC_REQUIRES" ] && SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES:"
-        SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES$2" skip=2 ;;
+        SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
+        shift ;;
       -w | --warnings)
         [ $# -ge 2 ] || abort 'Require LEVEL.'
-        case $2 in
-          none|notice|error|failure) ;;
+        case $2 in (none|notice|error|failure) ;;
           *) abort 'Invalid LEVEL.'
         esac
-        SHELLSPEC_WARNINGS="$2" skip=2 ;;
+        SHELLSPEC_WARNINGS="$2"
+        shift ;;
       --skip-message)
         [ $# -ge 2 ] || abort 'Require VERBOSE.'
-        case $2 in
-          none|moderate|quiet) ;;
+        case $2 in (none|moderate|quiet) ;;
           *) abort 'Invalid VERBOSE.'
         esac
-        SHELLSPEC_SKIP_MESSAGE="$2" skip=2 ;;
+        SHELLSPEC_SKIP_MESSAGE="$2"
+        shift ;;
       --fail-fast | --fail-fast=*)
         SHELLSPEC_FAIL_FAST_COUNT=${1#*=}
         case $SHELLSPEC_FAIL_FAST_COUNT in (*[!0-9]*)
@@ -221,10 +222,9 @@ parse_options() {
       -h | --help) usage ;;
       -v | --version) echo "$SHELLSPEC_VERSION"; exit 0 ;;
       -*) abort "Unknown option '$1'" ;;
-      *) PARAMS="${PARAMS:-} \"\${$i}\""
+      *) params="$params \"\${$(($length - $# + 1))}\""
     esac
-    shift $skip
-    i=$(($i + $skip))
+    shift
   done
 }
 
@@ -234,7 +234,7 @@ read_dot_file "." ".shellspec" parse_options
 read_dot_file "." ".shellspec-local" parse_options
 if [ $# -gt 0 ]; then
   parse_options "$@"
-  eval "set -- $PARAMS"
+  eval "set -- $params"
 fi
 
 [ "$SHELLSPEC_SHELL" ] || SHELLSPEC_SHELL=$(current_shell "$0")
