@@ -97,6 +97,7 @@ Confirmed version (tested with docker [dockerfiles](dockerfiles))
 | debian 8      |       | 4.3   | 1.22.0     | 0.5.7    | 93u | 50d  |        | 0.12.3 | 2.36 | 5.0.7  |
 | debian 9      |       | 4.4   | 1.22.0     | 0.5.8    | 93u | 54   |        | 0.12.6 | 2.43 | 5.3.1  |
 | debian buster |       | 5.0.2 | 1.30.1     | 0.5.10.2 | 93u | 57   |        | 0.13.2 | 2.48 | 5.7.1  |
+| Ubuntu 18.04  |       |       |            |          |     |      |        |        |      | 5.4.2  |
 
 **The version of strikethrough is does NOT work**
 
