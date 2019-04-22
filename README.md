@@ -80,7 +80,7 @@ Tested Platforms
 | Windows 10 1809 (Ubuntu 18.04 on WSL) | manual | bash, busybox, dash, ksh93, mksh, posh, yash, zsh |
 | Solaris 11                            | manual | ~~Bourne Shell~~, ksh88, ksh93                    |
 
-Confirmed version (tested with docker [contrib/dockerfiles](/contrib/dockerfiles))
+Confirmed version (tested with docker [dockerfiles](dockerfiles))
 
 | Platform      | ash   | bash  | busybox    | dash     | ksh | mksh | pdksh  | posh   | yash | zsh    |
 | ------------- | ----- | ----- | ---------- | -------- | --- | ---- | ------ | ------ | ---- | ------ |
