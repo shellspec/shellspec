@@ -190,4 +190,18 @@ HERE
   [ $? -eq 0 ] && no_problem || affect
 )
 
+(
+  title='21: cat not ignore set -e with eval (pdksh = around 5.2.14 on debian 3.0)'
+  ret=$(
+    set -e
+    foo() {
+      eval "false"
+      echo ok
+    }
+    foo ||:
+  )
+  [ "$ret" = "ok" ] && no_problem || affect
+)
+
+
 echo Done

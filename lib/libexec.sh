@@ -30,7 +30,8 @@ load() {
 }
 
 is_specfile() {
-  eval "case \$1 in ($SHELLSPEC_PATTERN) true;; (*) false; esac"
+  # This &&: workaround for #21 in contrib/bugs.sh
+  eval "case \$1 in ($SHELLSPEC_PATTERN) true ;; (*) false ; esac &&:"
 }
 
 find_specfiles_() {
