@@ -104,6 +104,20 @@ shellspec_find_files__() {
     if [ \$# -gt 0 ]; then shellspec_find_files_ \"$1\" \"\$@\"; fi
   "
 }
+# Workaround for posh 0.10.2. do not glob with set -u.
+if [ "$(set -u; echo /*)" = '/*' ]; then
+  shellspec_find_files__() {
+    eval "
+      SHELLSPEC_IFSORIG=\$IFS
+      IFS=''
+      case \$- in (*u*) set +u ;; esac
+      set -- \$2/*
+      set -u
+      IFS=\$SHELLSPEC_IFSORIG
+      if [ \$# -gt 0 ]; then shellspec_find_files_ \"$1\" \"\$@\"; fi
+    "
+  }
+fi
 
 # `echo` not has portability, and external 'printf' command is slow.
 # Use shellspec_puts or shellspec_putsn replacement of 'echo'.

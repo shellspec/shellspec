@@ -13,7 +13,7 @@
 
 affect()      { echo "[affect] $title"; }
 no_problem()  { echo "[------] $title"; }
-skip()        { echo "[skip  ] $title [skip reason: $reason]"; }
+skip()        { echo "[skip  ] $title [skip reason: $1]"; }
 
 (
   title="01: set -e option is reset (posh)"
@@ -100,8 +100,7 @@ return_true() { false; }
       if [ "$line" ]; then no_problem; else affect; fi
     }
   else
-    reason='time command not found'
-    skip
+    skip 'time command not found'
   fi
 )
 
@@ -162,6 +161,23 @@ HERE
   }
   foo &&:
   [ $? -eq 0 ] && no_problem || affect
+)
+
+(
+  title="18: do not glob with set -u (posh = around 0.10.2)"
+  set -u
+  [ "$(echo /*)" != "/*" ]
+  [ $? -eq 0 ] && no_problem || affect
+)
+
+(
+  title='19: can not get $POSH_VERSION (posh = around 0.8.5)'
+  if [ "${POSH_VERSION:-}" ]; then
+    [ "$POSH_VERSION" != "POSH_VERSION" ]
+    [ $? -eq 0 ] && no_problem || affect
+  else
+    skip 'this shell is not posh'
+  fi
 )
 
 echo Done
