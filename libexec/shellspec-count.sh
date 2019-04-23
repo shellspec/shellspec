@@ -5,6 +5,7 @@ set -eu
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+use trim
 load grammar
 
 focus='' list=''
@@ -37,7 +38,8 @@ specfile() {
 
 count_all() {
   lineno=0
-  while read -r line || [ "$line" ]; do
+  while IFS= read -r line || [ "$line" ]; do
+    trim line
     lineno=$(($lineno + 1))
     if is_example "${line%% *}"; then
       [ "$list" = "examples" ] && echo "$specfile:$lineno"
@@ -50,7 +52,8 @@ count_all() {
 
 count_lineno() {
   lineno=0 block_no=0 block_no_stack='' block=''
-  while read -r line || [ "$line" ]; do
+  while IFS= read -r line || [ "$line" ]; do
+    trim line
     lineno=$(($lineno + 1)) line=${line%% *}
 
     if is_begin_block "$line"; then
@@ -103,7 +106,8 @@ count_lineno() {
 
 count_focus() {
   focused='' nest=0 lineno=0
-  while read -r line || [ "$line" ]; do
+  while IFS= read -r line || [ "$line" ]; do
+    trim line
     lineno=$(($lineno + 1))
     line=${line%% *}
     is_focused_block "$line" && focused=1

@@ -180,4 +180,14 @@ HERE
   fi
 )
 
+(
+  title='20: do not remove leading space when read with one arguments (yash = around 2.36)'
+  IFS=' '
+  read -r line<<HERE
+    line
+HERE
+  [ "$line" = "line" ]
+  [ $? -eq 0 ] && no_problem || affect
+)
+
 echo Done
