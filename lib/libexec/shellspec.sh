@@ -26,7 +26,7 @@ current_shell() {
     IFS= read -r line
     reset_params '$line'
     eval "$RESET_PARAMS"
-    for name in "$@"; do
+    for name in "${@:-}"; do
       case $name in (CMD | COMMAND) break; esac
       i=$(($i+1))
     done
