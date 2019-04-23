@@ -8,10 +8,12 @@
 
 # Example of use
 #   contrib/test_in_docker.sh dockerfiles/debian-9-*
-#   contrib/test_in_docker.sh $(find ./dockerfiles -name "*-bash*") -- bash contrib/bugs.sh
+#   contrib/test_in_docker.sh $(find ./dockerfiles -name "*-bash*") -- contrib/bugs.sh
 #
 # Delete all shellspec images
 #   docker rmi $(docker images shellspec -q)
+
+set -eu
 
 if [ $# -eq 0 ]; then
 cat <<USAGE
@@ -53,17 +55,18 @@ run() {
   done
 
   echo "======================================================================"
-  echo "$dockerfile: $@"
-  echo "======================================================================"
+  echo "[$dockerfile: $@]"
   tag="${dockerfile##*/}"
-  docker build $option -t "shellspec:$tag" ./ -f "$dockerfile"
-  echo "======================================================================"
+  docker build $options -t "shellspec:$tag" ./ -f "$dockerfile"
   echo
-  case $# in
-    0) docker run -it --rm "shellspec:$tag" ;;
-    *) docker run -it --rm "shellspec:$tag" "$@" ;;
+  docker run -it --rm "shellspec:$tag" "$@" &&:
+  xs=$?
+  case $tag in (*-fail) ;;
+    *) [ $xs -eq 0 ] || exit 1
   esac
   echo
 }
 
 main "$@"
+
+echo Done
