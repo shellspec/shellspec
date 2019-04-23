@@ -11,7 +11,7 @@ echo $$ > "$SHELLSPEC_TMPBASE/reporter_pid"
 . "${SHELLSPEC_LIB:-./lib}/libexec/reporter.sh"
 use import reset_params
 
-interrupt='' aborted=1
+interrupt='' aborted=1 no_examples=''
 if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
 if (trap - INT) 2>/dev/null; then trap '' TERM; fi
 
@@ -168,6 +168,9 @@ parse_lines each_line
 
 [ "$aborted" ] && exit_status=1
 [ "$interrupt" ] && exit_status=130
+if [ "$total_count" -eq 0 ] && [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ]; then
+  no_examples=1 exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+fi
 
 i=0
 while [ $i -lt 10 ]; do
@@ -183,5 +186,7 @@ if [ "$focus_mode" ] && [ ! "${SHELLSPEC_FOCUS:-}" ]; then
   warn "To run focused example group/example only," \
     "you need to specify --focus option."
 fi
+
+SHELLSPEC_FAIL_NO_EXAMPLES=1
 
 exit "$exit_status"

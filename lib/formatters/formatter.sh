@@ -123,9 +123,14 @@ summary_end() {
   elif [ "${aborted:-}" ]; then
     summary="${summary}, aborted by an unexpected error"
   fi
+  if [ "${no_examples:-}" ]; then
+    summary="${summary}, no examples found"
+  fi
 
   [ "${warned_count:-}" ] && color=$YELLOW || color=$GREEN
-  [ "${failed_count:-}${aborted}${interrupt}" ] && color=$RED
+  if [ "${failed_count:-}${aborted:-}${interrupt:-}${no_examples:-}" ]; then
+    color=$RED
+  fi
   putsn "${color}${summary}${RESET}${LF}"
 }
 
