@@ -13,7 +13,7 @@ use import reset_params
 
 interrupt='' aborted=1 no_examples=''
 if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
-if (trap - INT) 2>/dev/null; then trap '' TERM; fi
+if (trap - TERM) 2>/dev/null; then trap '' TERM; fi
 
 import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
