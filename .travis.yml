@@ -62,3 +62,4 @@ script:
   - $SH shellspec --syntax-check
   - $SH shellspec $($SH shellspec --list-specfiles | shuf | head -n 5)
   - $SH shellspec $($SH shellspec --list-examples | shuf | head -n 5) spec/general_spec.sh:40:60:80:100
+  - $SH shellspec --task hello:shellspec
