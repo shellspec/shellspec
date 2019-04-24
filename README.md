@@ -1,4 +1,4 @@
-q# shellspec
+# shellspec
 
 BDD style unit testing framework for POSIX compatible shell script.
 
