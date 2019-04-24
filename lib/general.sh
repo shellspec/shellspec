@@ -85,10 +85,9 @@ shellspec_find_files_() {
   eval "
     shift
     while [ \$# -gt 0 ]; do
-      case \$1 in (*/[*]) shift; continue; esac
       if [ -d \"\$1\" ]; then
         shellspec_find_files__ \"$1\" \"\${1%/}\"
-      else
+      elif [ -f \"\$1\" ]; then
         \"$1\" \"\$1\"
       fi
       shift
