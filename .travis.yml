@@ -56,4 +56,9 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install "$PKG"; fi
 before_script:
   - $SH shellspec --task fixture:stat:prepare
-script: $SH shellspec
+script:
+  - $SH shellspec
+  - $SH shellspec -j 3
+  - $SH shellspec --syntax-check
+  - $SH shellspec $($SH shellspec --list-specfiles | shuf | head -n 5)
+  - $SH shellspec $($SH shellspec --list-examples | shuf | head -n 5) spec/general_spec.sh:40:60:80:100
