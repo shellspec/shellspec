@@ -169,7 +169,9 @@ parse_lines each_line
 [ "$aborted" ] && exit_status=1
 [ "$interrupt" ] && exit_status=130
 if [ "$total_count" -eq 0 ] && [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ]; then
-  no_examples=1 exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+  #shellcheck disable=SC2034
+  no_examples=1
+  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 fi
 
 i=0
