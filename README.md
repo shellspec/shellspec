@@ -546,6 +546,10 @@ To disable shows banner with `--no-banner` option.
 * Change `--count` option output includes the number of specfiles.
 * Change to the banner show only on shellspec-runner.
 
+0.11.3 (2019-04-24)
+
+* Fixed broken parallel executor.
+
 0.11.2 (2019-04-23)
 
 * Fixed bug that does not work with zsh 5.4.2.
