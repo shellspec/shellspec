@@ -186,6 +186,6 @@ specfile() {
   putsn "shellspec_specfile end"
   putsn ')'
 }
-find_specfiles specfile "$@"
+eval find_specfiles specfile ${1+'"$@"'}
 
 putsn "shellspec_flush"

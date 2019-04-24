@@ -45,12 +45,14 @@ executor() {
     putsn "$1${2+:}${2:-}" > "$SHELLSPEC_JOBDIR/$jobs.job"
     jobs=$(($jobs + 1))
   }
-  find_specfiles specfile "$@"
+  eval find_specfiles specfile ${1+'"$@"'}
 
-  callback() { worker "$1" & }
-  sequence callback 0 $(($SHELLSPEC_JOBS-1))
-
-  reduce &
-
-  wait
+  if [ "$jobs" -eq 0 ]; then
+    translator | shell # Show only metadata
+  else
+    callback() { worker "$1" & }
+    sequence callback 0 $(($SHELLSPEC_JOBS-1))
+    reduce &
+    wait
+  fi
 }

@@ -48,7 +48,7 @@ find_specfiles_() {
 find_specfiles() {
   eval "found_specfile_() { \"$1\" \"\$@\"; }"
   shift
-  shellspec_find_files find_specfiles_ "$@"
+  eval shellspec_find_files find_specfiles_ ${1+'"$@"'}
 }
 
 use puts putsn
