@@ -167,8 +167,7 @@ parse_options() {
     case $1 in
       --banner) SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner" ;;
       --no-banner) SHELLSPEC_BANNER='' ;;
-      -f | --format)
-        [ $# -ge 2 ] || abort 'Require FORMATTER.'
+      -f | --format) [ $# -ge 2 ] || abort 'Require FORMATTER.'
         case $2 in
           p) SHELLSPEC_FORMATTER=progress ;;
           d) SHELLSPEC_FORMATTER=documentation ;;
@@ -178,18 +177,15 @@ parse_options() {
         shift ;;
       --force-color | --force-colour) SHELLSPEC_COLOR=1 ;;
       --no-color | --no-colour) SHELLSPEC_COLOR='' ;;
-      -s | --shell)
-        [ $# -ge 2 ] || abort 'Require SHELL.'
+      -s | --shell) [ $# -ge 2 ] || abort 'Require SHELL.'
         SHELLSPEC_SHELL=$2
         shift ;;
-      -j | --jobs)
-        [ $# -ge 2 ] || abort 'Require JOBS.'
+      -j | --jobs) [ $# -ge 2 ] || abort 'Require JOBS.'
         SHELLSPEC_JOBS=$2
         shift ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
       --focus) SHELLSPEC_FOCUS=1 ;;
-      -e | --env)
-        [ $# -ge 2 ] || abort 'Require NAME=VALUE.'
+      -e | --env) [ $# -ge 2 ] || abort 'Require NAME=VALUE.'
         #shellcheck disable=SC2034
         case $2 in
           *=*) name=${2%%=*} value=${2#*=} ;;
@@ -199,27 +195,23 @@ parse_options() {
         case $name in (*[!a-zA-Z0-9_]*) abort 'Invalid environment name.'; esac
         eval "export $name=\$value"
         shift ;;
-      --env-from)
-        [ $# -ge 2 ] || abort 'Require ENV-SCRIPT.'
+      --env-from) [ $# -ge 2 ] || abort 'Require ENV-SCRIPT.'
         [ -e "$2" ] || abort "Not found ENV-SCRIPT '$2'."
         case $2 in
           /* | ./* | ../*) SHELLSPEC_ENV_FROM=$2 ;;
           *) SHELLSPEC_ENV_FROM="./$2" ;;
         esac
         shift ;;
-      -r | --require)
-        [ $# -ge 2 ] || abort 'Require PATH.'
+      -r | --require) [ $# -ge 2 ] || abort 'Require PATH.'
         SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
         shift ;;
-      -w | --warnings)
-        [ $# -ge 2 ] || abort 'Require LEVEL.'
+      -w | --warnings) [ $# -ge 2 ] || abort 'Require LEVEL.'
         case $2 in (none|notice|error|failure) ;;
           *) abort 'Invalid LEVEL.'
         esac
         SHELLSPEC_WARNINGS="$2"
         shift ;;
-      --skip-message)
-        [ $# -ge 2 ] || abort 'Require VERBOSE.'
+      --skip-message) [ $# -ge 2 ] || abort 'Require VERBOSE.'
         case $2 in (none|moderate|quiet) ;;
           *) abort 'Invalid VERBOSE.'
         esac
