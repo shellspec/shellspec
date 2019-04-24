@@ -41,11 +41,8 @@ count_all() {
   while IFS= read -r line || [ "$line" ]; do
     trim line
     lineno=$(($lineno + 1))
-    if is_example "${line%% *}"; then
-      [ "$list" = "examples" ] && echo "$specfile:$lineno"
-    else
-      continue
-    fi
+    is_example "${line%% *}" || continue
+    [ "$list" = "examples" ] && echo "$specfile:$lineno"
     count=$(($count + 1))
   done
 }
