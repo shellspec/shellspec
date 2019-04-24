@@ -14,7 +14,7 @@ use trim
 load grammar
 
 translator() {
-  translator="$SHELLSPEC_LIBEXEC/shellspec-translator.sh"
+  translator="$SHELLSPEC_LIBEXEC/shellspec-translate.sh"
   eval shell "$translator" ${1+'"$@"'}
 }
 
