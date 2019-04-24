@@ -42,7 +42,7 @@ executor() {
 
   jobs=0
   specfile() {
-    putsn "$1${2+:}$2" > "$SHELLSPEC_JOBDIR/$jobs.job"
+    putsn "$1${2+:}${2:-}" > "$SHELLSPEC_JOBDIR/$jobs.job"
     jobs=$(($jobs + 1))
   }
   find_specfiles specfile "$@"
