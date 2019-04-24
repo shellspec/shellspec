@@ -33,6 +33,7 @@ export SHELLSPEC_BANNER=''
 export SHELLSPEC_MODE='runner'
 export SHELLSPEC_ENV_FROM=''
 export SHELLSPEC_PATTERN="*_spec.sh"
+export SHELLSPEC_UNIXTIME=''
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
@@ -84,9 +85,9 @@ SHELLSPEC_LOAD_PATH=$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_LIB/formatters
 
 # shellcheck source=lib/libexec/shellspec.sh
 . "$SHELLSPEC_LIB/libexec/shellspec.sh"
-use unixtime
 
-SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$(unixtime).$$"
+SHELLSPEC_UNIXTIME=$(date +%s)
+SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$SHELLSPEC_UNIXTIME.$$"
 SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/time.log"
 SHELLSPEC_EXAMPLES_LOG="$SHELLSPEC_TMPBASE/examples.log"
 SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner"

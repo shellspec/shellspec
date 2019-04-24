@@ -6,9 +6,6 @@
 use() {
   while [ $# -gt 0 ]; do
     case $1 in
-      unixtime) shellspec_import posix ;;
-    esac
-    case $1 in
       constants) shellspec_constants ;;
       reset_params)
         reset_params() {

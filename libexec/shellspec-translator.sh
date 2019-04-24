@@ -4,9 +4,9 @@ set -eu
 
 # shellcheck source=lib/libexec/translator.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
-use constants escape_quote unixtime
+use constants escape_quote
 
-delimiter="DATA-$(unixtime)-$$"
+delimiter="DATA-$SHELLSPEC_UNIXTIME-$$"
 
 trans() {
   # shellcheck disable=SC2145

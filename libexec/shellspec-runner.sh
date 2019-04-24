@@ -7,7 +7,6 @@ set -eu
 
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
-use unixtime
 
 error() {
   if [ "$SHELLSPEC_COLOR" ]; then
@@ -20,10 +19,7 @@ error() {
 wait_reporter_finished() {
   [ -e "$1" ] || return 0
   read -r reporter_pid < "$1"
-  start=$(unixtime)
   while kill -0 "$reporter_pid" 2>/dev/null; do
-    current=$(unixtime)
-    [ $(($current - $start)) -gt 5 ] && break # timeout
     sleep 0
   done
 }

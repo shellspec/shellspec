@@ -2,7 +2,6 @@
 
 set -eu
 
-shellspec_redefinable shellspec_unixtime
 shellspec_redefinable shellspec_output
 shellspec_redefinable shellspec_output_failure_message
 shellspec_redefinable shellspec_output_failure_message_when_negated

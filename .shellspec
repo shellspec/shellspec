@@ -1,5 +1,4 @@
 --require spec_helper
---require posix
 --skip-message moderate
 --fail-no-examples
 --env-from spec/env.sh
