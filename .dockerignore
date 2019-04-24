@@ -1,2 +1,4 @@
 /.git
 /spec/fixture/stat/*
+/demo.gif
+/dockerfiles
