@@ -38,6 +38,11 @@ error_handler() {
         specfile=${line% *} lineno=${line##* }
         ;;
       *)
+        # Workaround for posh 0.6.13
+        # Display 'internal error: j_async: bad nzombie' when run in background
+        case $line in (*internal\ error:\ j_async:\ bad\ nzombie*)
+          continue
+        esac
         errors="$errors$line${SHELLSPEC_LF}"
         error_handler_status=1
         ;;

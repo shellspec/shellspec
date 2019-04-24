@@ -203,5 +203,20 @@ HERE
   [ "$ret" = "ok" ] && no_problem || affect
 )
 
+(
+  title='22: internal error: j_async: bad nzombie (0) (posh = around 0.6.13)'
+  file=$(mktemp tmp.XXXXXXXXXX)
+  (
+    sleep 0 &
+    wait $!
+  ) 2>"$file"
+  ret=$(cat "$file")
+  rm "$file"
+
+  case $ret in
+    *bad\ nzombie*) affect ;;
+    *) no_problem ;;
+  esac
+)
 
 echo Done
