@@ -40,7 +40,5 @@ fi
 [ $millisec -lt 10 ] && millisec="0$millisec"
 
 echo "real $sec.$millisec" >&2
-echo "user 0.00" >&2
-echo "sys 0.00" >&2
 
 exit $status
