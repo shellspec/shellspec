@@ -3,6 +3,8 @@
 BDD style unit testing framework for POSIX compatible shell script.
 
 [![Build Status](https://travis-ci.org/ko1nksm/shellspec.svg?branch=master)](https://travis-ci.org/ko1nksm/shellspec)
+![GitHub release](https://img.shields.io/github/release/ko1nksm/shellspec.svg)
+![GitHub](https://img.shields.io/github/license/ko1nksm/shellspec.svg)
 
 **Let’s test the your shell script!**
 
