@@ -64,7 +64,7 @@ current_shell_fallback_on_linux() {
 
 command_path() {
   case $1 in
-    */*) [ -x "$1" ] && echo "$1" ;;
+    */*) [ -x "${1%% *}" ] && echo "$1" ;;
     *)
       command=$1
       reset_params '$PATH' ':'
