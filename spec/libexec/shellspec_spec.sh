@@ -46,6 +46,19 @@ Describe "libexec/shellspec.sh"
       End
     End
 
+    Context "when busybox 1.1.3 format"
+      fake_ps() {
+        echo "  PID  Uid     VmSize Stat Command"
+        echo "   $$ root       1520 S   /bin/sh /usr/local/bin/shellspec"
+        echo "   88 root       1808 R   ps w"
+      }
+
+      It "parses and detects shell"
+        When call current_shell "/usr/local/bin/shellspec" fake_ps
+        The stdout should equal "/bin/sh"
+      End
+    End
+
     Context "when busybox ps format 1"
       fake_ps() {
         echo "  PID USER       VSZ STAT COMMAND"

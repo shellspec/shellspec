@@ -27,7 +27,7 @@ current_shell() {
     reset_params '$line'
     eval "$RESET_PARAMS"
     for name in "${@:-}"; do
-      case $name in (CMD | COMMAND) break; esac
+      case $name in (CMD | COMMAND | Command) break; esac
       i=$(($i+1))
     done
     while IFS= read -r line; do
