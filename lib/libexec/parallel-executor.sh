@@ -6,19 +6,12 @@ use sequence
 
 worker() {
   job() {
-    mv "$SHELLSPEC_JOBDIR/$1.job" "$SHELLSPEC_JOBDIR/$1.job#" 2>/dev/null || return 0
-    IFS= read -r specfile < "$SHELLSPEC_JOBDIR/$1.job#"
-    {
-      if [ "$1" -eq 0 ]; then
-        translator "$specfile" | shell
-      else
-        translator --no-metadata "$specfile" | shell
-      fi
-    } > "$SHELLSPEC_JOBDIR/$1.stdout#" 2> "$SHELLSPEC_JOBDIR/$1.stderr#" &&:
-    echo "$?" > "$SHELLSPEC_JOBDIR/$1.status#"
-    for ext in stdout stderr status; do
-      mv "$SHELLSPEC_JOBDIR/$1.$ext#" "$SHELLSPEC_JOBDIR/$1.$ext"
-    done
+    (set -C; : > "$SHELLSPEC_JOBDIR/$1.lock") 2>/dev/null || return 0
+    IFS= read -r specfile < "$SHELLSPEC_JOBDIR/$1.job"
+    translator --no-metadata "$specfile" | shell \
+      > "$SHELLSPEC_JOBDIR/$1.stdout" 2> "$SHELLSPEC_JOBDIR/$1.stderr" &&:
+    echo "$?" > "$SHELLSPEC_JOBDIR/$1.status"
+    : > "$SHELLSPEC_JOBDIR/$1.done"
   }
   sequence job 0 $(($jobs - 1))
 }
@@ -26,7 +19,7 @@ worker() {
 reduce() {
   i=0
   while [ $i -lt "$jobs" ]; do
-    [ -e "$SHELLSPEC_JOBDIR/$i.status" ] || { sleep 0; continue; }
+    [ -e "$SHELLSPEC_JOBDIR/$i.done" ] || { sleep 0; continue; }
     cat "$SHELLSPEC_JOBDIR/$i.stdout"
     cat "$SHELLSPEC_JOBDIR/$i.stderr" >&2
     read -r exit_status < "$SHELLSPEC_JOBDIR/$i.status"
@@ -47,12 +40,10 @@ executor() {
   }
   eval find_specfiles specfile ${1+'"$@"'}
 
-  if [ "$jobs" -eq 0 ]; then
-    translator | shell # Show only metadata
-  else
-    callback() { worker "$1" & }
-    sequence callback 0 $(($SHELLSPEC_JOBS-1))
-    reduce &
-    wait
-  fi
+  translator | shell # Show only metadata
+
+  callback() { worker "$1" & }
+  sequence callback 0 $(($SHELLSPEC_JOBS-1))
+
+  reduce
 }
