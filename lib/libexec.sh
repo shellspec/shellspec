@@ -51,4 +51,12 @@ find_specfiles() {
   eval shellspec_find_files find_specfiles_ ${1+'"$@"'}
 }
 
+display() {
+  (
+    while IFS= read -r line || [ "$line" ]; do
+      putsn "$line"
+    done < "$1"
+  )
+}
+
 use puts putsn

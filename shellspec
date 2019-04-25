@@ -104,7 +104,7 @@ if [ -z "$SHELLSPEC_TIME" ]; then
 fi
 
 usage() {
-cat <<USAGE
+while IFS= read -r line; do echo "$line"; done <<USAGE
 Usage: ${0##*/} [options] [files or directories]
 
   -s, --shell SHELL                   Specify a path of shell [default: current shell]
@@ -159,7 +159,7 @@ Usage: ${0##*/} [options] [files or directories]
   -v, --version                       Display the version
   -h, --help                          You're looking at it
 USAGE
-exit
+exit 0
 }
 
 parse_options() {

@@ -78,7 +78,7 @@ set_exit_status() {
 }
 
 if [ "$SHELLSPEC_BANNER" ] && [ -e "$SHELLSPEC_BANNER" ]; then
-  cat "$SHELLSPEC_BANNER"
+  display "$SHELLSPEC_BANNER"
 fi
 
 # I want to process with non-blocking output

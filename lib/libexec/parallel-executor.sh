@@ -20,8 +20,8 @@ reduce() {
   i=0
   while [ $i -lt "$jobs" ]; do
     [ -e "$SHELLSPEC_JOBDIR/$i.done" ] || { sleep 0; continue; }
-    cat "$SHELLSPEC_JOBDIR/$i.stdout"
-    cat "$SHELLSPEC_JOBDIR/$i.stderr" >&2
+    display "$SHELLSPEC_JOBDIR/$i.stdout"
+    display "$SHELLSPEC_JOBDIR/$i.stderr" >&2
     read -r exit_status < "$SHELLSPEC_JOBDIR/$i.status"
     [ "$exit_status" -ne 0 ] && exit "$exit_status"
     i=$(($i + 1))

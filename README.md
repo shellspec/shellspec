@@ -110,7 +110,7 @@ the target shell and few POSIX compliant command.
 
 Currently used external command:
 
-`date`, `mkdir`, `rm`, `cat`, `printf`, `sleep` (recommends: `ps`, `readlink`, `time`)
+`date`, `mkdir`, `rm`, `printf`, `sleep` (recommends: `ps`, `readlink`, `time`)
 
 ## Tutorial
 
