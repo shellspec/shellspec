@@ -61,7 +61,8 @@ run() {
   echo
   docker run -it --rm "shellspec:$tag" "$@" &&:
   xs=$?
-  case $tag in (*-fail) ;;
+  case $tag in
+    *-fail)  [ $xs -eq 0 ] && exit 1 ;;
     *) [ $xs -eq 0 ] || exit 1
   esac
   echo
