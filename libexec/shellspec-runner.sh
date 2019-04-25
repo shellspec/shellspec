@@ -30,13 +30,13 @@ cleanup() {
   [ "$SHELLSPEC_TMPBASE" ] || return 0
   tmpbase="$SHELLSPEC_TMPBASE"
   SHELLSPEC_TMPBASE=''
-  wait_reporter_finished "$tmpbase/reporter_pid"
   rmtempdir "$tmpbase"
 }
 trap 'cleanup' EXIT
 
 interrupt() {
   trap '' TERM # posh: Prevent display 'Terminated'.
+  wait_reporter_finished "$SHELLSPEC_TMPBASE/reporter_pid"
   kill -TERM 0
   cleanup
   exit 130
