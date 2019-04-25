@@ -2,6 +2,8 @@
 
 BDD style unit testing framework for POSIX compatible shell script.
 
+**Project status: Implementation of practical features has been completed. I will add more tests and improve the documentation.**
+
 [![Build Status](https://travis-ci.org/ko1nksm/shellspec.svg?branch=master)](https://travis-ci.org/ko1nksm/shellspec)
 ![GitHub release](https://img.shields.io/github/release/ko1nksm/shellspec.svg)
 ![GitHub](https://img.shields.io/github/license/ko1nksm/shellspec.svg)
@@ -540,7 +542,7 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
-0.12.0 (not yet released)
+0.12.0 (2019-04-26)
 
 * Add `--list-specfiles`, `--list-examples` option.
 * Add `--env-from` option.
