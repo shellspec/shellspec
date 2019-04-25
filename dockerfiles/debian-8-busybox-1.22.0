@@ -1,7 +1,7 @@
 FROM debian:8
 
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN apt-get update && apt-get -y install procps
+RUN apt-get update
 RUN apt-get -y install busybox
 
 ENV SH="busybox ash"
@@ -9,4 +9,4 @@ ENV SH="busybox ash"
 WORKDIR /shellspec
 COPY ./ ./
 ENTRYPOINT [ "./docker/entrypoint.sh" ]
-CMD [ "shellspec", "-s", "busybox ash" ]
+CMD [ "shellspec" ]
