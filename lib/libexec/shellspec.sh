@@ -69,8 +69,10 @@ command_path() {
       command=$1
       reset_params '$PATH' ':'
       eval "$RESET_PARAMS"
-      for p in "$@"; do
-        [ -x "${p%/}/${command%% *}" ] && echo "${p%/}/$command" && break
+      while [ $# -gt 0 ]; do
+        [ -x "${1%/}/${command%% *}" ] && echo "${1%/}/$command" && return 0
+        shift
       done
   esac
+  return 1
 }
