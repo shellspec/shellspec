@@ -219,4 +219,16 @@ HERE
   esac
 )
 
+(
+  title='23: can not read after reading null character (yash = around 2.46)'
+  file=$(mktemp tmp.XXXXXXXXXX)
+  printf 'foo\0bar' > "$file"
+  IFS= read -r ret < "$file"
+  IFS= read -r ret <<HERE
+AAA
+HERE
+  rm "$file"
+  [ "$ret" ] && no_problem || affect
+)
+
 echo Done

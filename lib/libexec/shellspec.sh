@@ -34,9 +34,32 @@ current_shell() {
       eval "$RESET_PARAMS"
       [ "$1" = "$$" ] && shift $i && line="$*" && break
     done
-    line=${line#'{'"${self##*/}"'} '}
-    echo "${line%% $self*}"
+
+    if [ "$line" ]; then
+      line=${line#'{'"${self##*/}"'} '}
+      echo "${line%% $self*}"
+    else
+      current_shell_fallback_on_linux "$self" "/proc/$$/cmdline"
+    fi
   } ||:
+}
+
+current_shell_fallback_on_linux() {
+  [ -f "$2" ] || return 0
+
+  # "/proc/$$/cmdline" includes null character
+  #   zsh: ${line%[$IFS]} is removing null character
+  #   yash: () is workaround for #23 in contrib/bugs.sh
+  #   busybox ash: read reads 'busyboxash'
+  (
+    IFS= read -r line < "$2" ||:
+    line=${line%%$1*}
+    line=${line%[$IFS]}
+    case $line in (*/busybox* | busybox*)
+      line="${line%busybox*}busybox ${line##*busybox}"
+    esac
+    echo "$line"
+  )
 }
 
 command_path() {

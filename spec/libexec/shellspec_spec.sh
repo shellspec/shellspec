@@ -1,6 +1,7 @@
 #shellcheck shell=sh
 
 % DOT_SHELLSPEC: "fixture/dot-shellspec"
+% CMDLINE: "$SHELLSPEC_SPECDIR/fixture/cmdline"
 
 Describe "libexec/shellspec.sh"
   Include "$SHELLSPEC_LIB/libexec/shellspec.sh"
@@ -27,6 +28,8 @@ Describe "libexec/shellspec.sh"
   End
 
   Describe "current_shell()"
+    current_shell_fallback_on_linux() { echo 'fallback on linux'; }
+
     Context "when procps format"
       fake_ps() {
         echo "PID TTY      STAT   TIME COMMAND"
@@ -69,6 +72,31 @@ Describe "libexec/shellspec.sh"
         When call current_shell "/usr/local/bin/shellspec" fake_ps
         The stdout should equal "/bin/sh"
       End
+    End
+
+    Context "when unknown format"
+      fake_ps() { echo "dummy"; }
+
+      It "calls current_shell_fallback_on_linux"
+        When call current_shell "/usr/local/bin/shellspec" fake_ps
+        The stdout should equal "fallback on linux"
+      End
+    End
+
+    Context "when ps not found"
+      fake_ps() { echo "dummy"; }
+
+      It "calls current_shell_fallback_on_linux"
+        When call current_shell "/usr/local/bin/shellspec" fake_ps
+        The stdout should equal "fallback on linux"
+      End
+    End
+  End
+
+  Describe "current_shell_fallback_on_linux()"
+    It "parses /proc/<PID>/cmdline"
+      When call current_shell_fallback_on_linux "/usr/local/bin/shellspec" "$CMDLINE"
+      The stdout should equal "/bin/sh"
     End
   End
 End
