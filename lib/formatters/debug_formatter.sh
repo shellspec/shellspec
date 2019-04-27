@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-: "${field_type:-}" "${field_color:-}"
+: "${field_type:-} ${field_color:-}"
 
 debug_formatter() {
   formatter_format() {

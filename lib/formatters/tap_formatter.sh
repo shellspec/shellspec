@@ -1,19 +1,18 @@
 #shellcheck shell=sh disable=SC2004
 
-: "${field_tag:-}" "${field_description:-}" "${field_message:-}" "${aborted:-}"
+: "${example_count:-} ${aborted:-}"
+: "${field_type:-} ${field_tag:-} ${field_description:-} ${field_message:-}"
 
 tap_formatter() {
-  # shellcheck disable=SC2086
-  _count=$(count "$@")
-  _count=${_count#* }
+  count "$@"
 
   formatter_begin() {
     _example_no=0
-    putsn "1..${_count}"
+    putsn "1..$example_count"
   }
 
   formatter_format() {
-    [ "${field_type:-}" = "result" ] && _example_no=$(($_example_no + 1))
+    [ "$field_type" = "result" ] && _example_no=$(($_example_no + 1))
 
     case $field_tag in
       succeeded) putsn "ok $_example_no - $field_description" ;;
@@ -27,8 +26,7 @@ tap_formatter() {
   }
 
   formatter_end() {
-    if [ "$aborted" ]; then
-      putsn "not ok $(($_count + 1)) - aborted by unexpected error"
-    fi
+    [ "$aborted" ] || return 0
+    putsn "not ok $(($example_count + 1)) - aborted by unexpected error"
   }
 }

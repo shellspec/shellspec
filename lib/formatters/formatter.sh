@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004
+#shellcheck shell=sh disable=SC2004,SC2034
 
 : "${meta_shell:-}" "${meta_shell_type:-}" "${meta_shell_version:-}"
 : "${example_index:-}" "${detail_index:-}"
@@ -14,7 +14,10 @@ formatter_format() { :; }
 formatter_end() { :; }
 
 count() {
-  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-count.sh" "$@"
+  specfile_count=0 example_count=0
+  #shellcheck shell=sh disable=SC2046
+  set -- $($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-count.sh" "$@")
+  specfile_count=$1 example_count=$2
 }
 
 methods() {

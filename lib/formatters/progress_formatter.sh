@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-: "${field_tag:-}" "${field_color:-}" "${field_message:-}"
+: "${field_tag:-} ${field_color:-} ${field_message:-}"
 
 progress_formatter() {
   formatter_begin() {
@@ -12,6 +12,7 @@ progress_formatter() {
   formatter_format() {
     conclusion_format "$@"
     references_format "$@"
+
     case $field_tag in
       succeeded ) puts "${field_color}.${RESET}" ;;
       warned    ) puts "${field_color}W${RESET}" ;;
