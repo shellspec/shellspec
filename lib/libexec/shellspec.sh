@@ -39,20 +39,20 @@ current_shell() {
       line=${line#'{'"${self##*/}"'} '}
       echo "${line%% $self*}"
     else
-      current_shell_fallback_on_linux "$self" "/proc/$$/cmdline"
+      current_shell_fallback_with_proc "$self" "/proc/$$"
     fi
   } ||:
 }
 
-current_shell_fallback_on_linux() {
-  [ -f "$2" ] || return 0
+current_shell_fallback_with_proc() {
+  [ -e "$2" ] || return 0
 
   # "/proc/$$/cmdline" includes null character
   #   zsh: ${line%[$IFS]} is removing null character
   #   yash: () is workaround for #23 in contrib/bugs.sh
   #   busybox ash: read reads 'busyboxash'
   (
-    IFS= read -r line < "$2" ||:
+    IFS= read -r line < "$2/cmdline" ||:
     line=${line%%$1*}
     line=${line%[$IFS]}
     case $line in (*/busybox* | busybox*)
