@@ -231,4 +231,10 @@ HERE
   [ "$ret" ] && no_problem || affect
 )
 
+(
+  title='24: variable expansion not working with the positional parameter (posh, pdksh)'
+  set -- 'foobar' 'bar'
+  [ "${1%$2}" = "foo" ] && no_problem || affect
+)
+
 echo Done
