@@ -4,7 +4,8 @@ BDD style unit testing framework for POSIX compatible shell script.
 
 **Project status: Implementation of practical features has been completed. I will add more tests and improve the documentation.**
 
-[![Build Status](https://travis-ci.org/ko1nksm/shellspec.svg?branch=master)](https://travis-ci.org/ko1nksm/shellspec)
+[![TravisCI](https://img.shields.io/travis/ko1nksm/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/ko1nksm/shellspec)
+[![CirrusCI](https://api.cirrus-ci.com/github/ko1nksm/shellspec.svg?task=CirrusCI)](https://cirrus-ci.com/github/ko1nksm/shellspec)
 ![GitHub release](https://img.shields.io/github/release/ko1nksm/shellspec.svg)
 ![GitHub](https://img.shields.io/github/license/ko1nksm/shellspec.svg)
 
@@ -76,13 +77,14 @@ BDD style unit testing framework for POSIX compatible shell script.
 
 Tested Platforms
 
-| Platform                              | Test   | Shells                                            |
-| ------------------------------------- | ------ | ------------------------------------------------- |
-| Ubuntu 16.04 xenial                   | CI     | bash, busybox, dash, ksh93, mksh, posh, yash, zsh |
-| macOS 10.4 Mojave                     | CI     | bash, dash, ksh93, mksh, ~~posh~~, yash, zsh      |
-| macOS 10.4 Mojave                     | manual | bash, dash, ksh93, mksh, ~~posh~~, yash, zsh      |
-| Windows 10 1809 (Ubuntu 18.04 on WSL) | manual | bash, busybox, dash, ksh93, mksh, posh, yash, zsh |
-| Solaris 11                            | manual | ~~Bourne Shell~~, ksh88, ksh93                    |
+| Platform                              | Test      | Shells                                               |
+| ------------------------------------- | --------- | ---------------------------------------------------- |
+| Ubuntu 16.04 xenial                   | Travis CI | sh (dash), bash, busybox, ksh, mksh, posh, yash, zsh |
+| macOS 10.4 Mojave                     | Travis CI | sh (bash), dash, ksh, mksh, ~~posh~~, yash, zsh      |
+| FreeBSD 10.x, 11.x, 12.x              | Cirrus CI | sh (ash)                                             |
+| macOS 10.4 Mojave                     | manual    | sh (bash), dash, ksh, mksh, ~~posh~~, yash, zsh      |
+| Windows 10 1809 (Ubuntu 18.04 on WSL) | manual    | sh (dash), bash, busybox, ksh, mksh, posh, yash, zsh |
+| Solaris 11                            | manual    | sh (ksh), ksh88, ~~Bourne Shell~~                    |
 
 Confirmed version (tested with docker [dockerfiles](dockerfiles))
 
