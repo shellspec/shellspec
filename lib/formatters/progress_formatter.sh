@@ -3,7 +3,15 @@
 : "${field_tag:-}" "${field_color:-}" "${field_message:-}"
 
 progress_formatter() {
-  formatter_results_format() {
+  formatter_begin() {
+    methods
+    conclusion_begin
+    references_begin
+  }
+
+  formatter_format() {
+    conclusion_format "$@"
+    references_format "$@"
     case $field_tag in
       succeeded ) puts "${field_color}.${RESET}" ;;
       warned    ) puts "${field_color}W${RESET}" ;;
@@ -15,7 +23,11 @@ progress_formatter() {
     esac
   }
 
-  formatter_results_end() {
+  formatter_end() {
     putsn
+    conclusion_end
+    finished
+    summary
+    references_end
   }
 }

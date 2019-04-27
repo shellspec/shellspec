@@ -4,11 +4,17 @@
 : "${field_desc:-}" "${field_color:-}" "${field_message:-}"
 
 documentation_formatter() {
-  formatter_results_begin() {
+  formatter_begin() {
+    methods
+    conclusion_begin
+    references_begin
     _indent='' _nest=0 _pos=0 _flushed=''
   }
 
-  formatter_results_format() {
+  formatter_format() {
+    conclusion_format "$@"
+    references_format "$@"
+
     case $field_tag in
       specfile) _indent='' _nest=0 _pos=0 _flushed='';;
       example_group)
@@ -50,7 +56,11 @@ documentation_formatter() {
     esac
   }
 
-  formatter_results_end() {
+  formatter_end() {
     putsn
+    conclusion_end
+    finished
+    summary
+    references_end
   }
 }

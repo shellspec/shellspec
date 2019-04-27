@@ -9,45 +9,20 @@ use proxy padding each
 
 buffer conclusion notable_examples failure_examples focused_blocks
 
-proxy formatter_methods methods
-proxy formatter_conclusion_format conclusion_format
-proxy formatter_conclusion_end conclusion_end
-proxy formatter_finished finished_end
-proxy formatter_summary summary_end
-proxy formatter_references_format references_format
-proxy formatter_references_end references_end
+formatter_begin() { :; }
+formatter_format() { :; }
+formatter_end() { :; }
 
 count() {
   $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-count.sh" "$@"
-}
-
-formatter_results_begin() { :; }
-formatter_results_format() { :; }
-formatter_results_end() { :; }
-
-formatter_begin() {
-  formatter_methods
-  formatter_results_begin
-}
-
-formatter_format() {
-  formatter_conclusion_format "$@"
-  formatter_references_format "$@"
-  formatter_results_format "$@"
-}
-
-formatter_end() {
-  formatter_results_end
-  formatter_conclusion_end
-  formatter_finished
-  formatter_summary
-  formatter_references_end
 }
 
 methods() {
   putsn "Running: $meta_shell" \
     "[$meta_shell_type${meta_shell_version:+ }$meta_shell_version]"
 }
+
+conclusion_begin() { :; }
 
 conclusion_format() {
   [ "$field_type" = "statement" ] || return 0
@@ -95,12 +70,12 @@ conclusion_end() {
   conclusion_flush
 }
 
-finished_end() {
+finished() {
   putsn "Finished in ${time_real:-?} seconds" \
     "(user ${time_user:-?} seconds, sys ${time_sys:-?} seconds)"
 }
 
-summary_end() {
+summary() {
   summary=''
   callback() {
     [ "${1%% *}" ] || return 0
@@ -133,6 +108,8 @@ summary_end() {
   fi
   putsn "${color}${summary}${RESET}${LF}"
 }
+
+references_begin() { :; }
 
 references_format() {
   if [ "$field_type" = "begin" ] && [ "${field_focused:-}" = "focus" ]; then

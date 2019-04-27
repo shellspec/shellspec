@@ -7,12 +7,12 @@ tap_formatter() {
   _count=$(count "$@")
   _count=${_count#* }
 
-  formatter_results_begin() {
+  formatter_begin() {
     _example_no=0
     putsn "1..${_count}"
   }
 
-  formatter_results_format() {
+  formatter_format() {
     [ "${field_type:-}" = "result" ] && _example_no=$(($_example_no + 1))
 
     case $field_tag in
@@ -26,17 +26,9 @@ tap_formatter() {
     esac
   }
 
-  formatter_results_end() {
+  formatter_end() {
     if [ "$aborted" ]; then
       putsn "not ok $(($_count + 1)) - aborted by unexpected error"
     fi
   }
-
-  formatter_methods() { :; }
-  formatter_conclusion_format() { :; }
-  formatter_conclusion() { :; }
-  formatter_references_format() { :; }
-  formatter_references_end() { :; }
-  formatter_finished() { :; }
-  formatter_summary() { :; }
 }

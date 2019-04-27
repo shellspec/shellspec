@@ -3,7 +3,7 @@
 : "${field_type:-}" "${field_color:-}"
 
 debug_formatter() {
-  formatter_results_format() {
+  formatter_format() {
     case $field_type in
       begin    ) _mark="+" ;;
       end      ) _mark="-" ;;
@@ -21,11 +21,4 @@ debug_formatter() {
     done
     putsn "${RESET}"
   }
-
-  formatter_conclusion_format() { :; }
-  formatter_conclusion_end() { :; }
-  formatter_references_format() { :; }
-  formatter_references_end() { :; }
-  formatter_finished() { :; }
-  formatter_summary() { :; }
 }
