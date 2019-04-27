@@ -157,12 +157,12 @@ other
 
 ## Envronment Variables
 
-| Name                | Description                                   | Value                                                                            |
-| :------------------ | :-------------------------------------------- | -------------------------------------------------------------------------------- |
-| SHELLSPEC_ROOT      | shellspec root directory                      | If not specified, it detect automatically. (If missing `readlink`, it may fail.) |
-| SHELLSPEC_LIB       | shellspec lib directory                       | `$SHELLSPEC_ROOT/lib` if not specified.                                          |
-| SHELLSPEC_LIBEXEC   | shellspec libexec directory                   | `$SHELLSPEC_ROOT/libexec` if not specified.                                      |
-| SHELLSPEC_TMPDIR    | Temporary directory used by shellspec         | `$TMPDIR` or `/tmp` if not specified.                                            |
-| SHELLSPEC_TMPBASE   | Current temporary directory used by shellspec | Provided by shellspec.                                                           |
-| SHELLSPEC_SPECDIR   | Specfiles directory                           | `spec` directory under the current directory.                                    |
-| SHELLSPEC_LOAD_PATH | Load path of library                          | `$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_LIB/formatters`                    |
+| Name                | Description                                   | Value                                                         |
+| :------------------ | :-------------------------------------------- | ------------------------------------------------------------- |
+| SHELLSPEC_ROOT      | shellspec root directory                      | If not specified, it detect automatically.                    |
+| SHELLSPEC_LIB       | shellspec lib directory                       | `$SHELLSPEC_ROOT/lib` if not specified.                       |
+| SHELLSPEC_LIBEXEC   | shellspec libexec directory                   | `$SHELLSPEC_ROOT/libexec` if not specified.                   |
+| SHELLSPEC_TMPDIR    | Temporary directory used by shellspec         | `$TMPDIR` or `/tmp` if not specified.                         |
+| SHELLSPEC_TMPBASE   | Current temporary directory used by shellspec | Provided by shellspec.                                        |
+| SHELLSPEC_SPECDIR   | Specfiles directory                           | `spec` directory under the current directory.                 |
+| SHELLSPEC_LOAD_PATH | Load path of library                          | `$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_LIB/formatters` |

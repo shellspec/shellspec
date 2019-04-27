@@ -5,6 +5,7 @@ set -eu
 
 export SHELLSPEC_VERSION='0.12.0'
 
+export SHELLSPEC_PATH
 export SHELLSPEC_ROOT
 export SHELLSPEC_LIB
 export SHELLSPEC_LIBEXEC
@@ -54,26 +55,18 @@ warn() {
   fi
 }
 
-detect_shellspec_root() {
-  [ "${SHELLSPEC_ROOT:-}" ] && return 0
-  cwd=$PWD p=$1
+readlinkf() {
+  p=$1
   while [ -L "$p" ]; do
-    [ "$p" = "${p%/*}" ] || cd "${p%/*}"
-    p="$(readlink "$p")" || return 1
+    case $p in (*/*) cd "${p%/*}"; p=${p##*/}; esac
+    l=$(ls -dl "$p") && p=${l#*"$p -> "}
   done
-  [ "$p" = "${p%/*}" ] || cd "${p%/*}"
-  SHELLSPEC_ROOT=$PWD
-  cd "$cwd"
+  case $p in (*/*) cd "${p%/*}"; p=${p##*/}; esac
+  printf '%s\n' "$PWD/$p"
 }
 
-if ! detect_shellspec_root "$0"; then
-  abort "Detection of the shellspec root directory failed." \
-        "Specify SHELLSPEC_ROOT environment variable."
-fi
-
-if ! [ -x "$SHELLSPEC_ROOT/${0##*/}" ]; then
-  abort "'shellspec' not found in \$SHELLSPEC_ROOT ($SHELLSPEC_ROOT)"
-fi
+SHELLSPEC_PATH=$(readlinkf "$0")
+SHELLSPEC_ROOT="${SHELLSPEC_PATH%/*}"
 
 : "${SHELLSPEC_LIB:=$SHELLSPEC_ROOT/lib}"
 : "${SHELLSPEC_LIBEXEC:=$SHELLSPEC_ROOT/libexec}"

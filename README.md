@@ -112,7 +112,7 @@ the target shell and few POSIX compliant command.
 
 Currently used external command:
 
-`date`, `mkdir`, `rm`, `printf`, `sleep` (recommends: `ps`, `readlink`, `time`)
+`date`, `ls`, `mkdir`, `rm`, `printf`, `sleep` (recommends: `ps`, `time`)
 
 ## Tutorial
 
@@ -140,7 +140,7 @@ $ ln -s /SOME/WHERE/TO/INSTALL/shellspec-{VERSION}/shellspec /EXECUTABLE/PATH/
 # (e.g. /EXECUTABLE/PATH/ = /usr/local/bin/, $HOME/bin/)
 ```
 
-If does not installed `readlink`, create `shellspec` file.
+If you can't create symlink (like default of Git for Windows), create the `shellspec` file.
 
 ```sh
 $ cat<<'HERE'>/EXECUTABLE/PATH/shellspec
