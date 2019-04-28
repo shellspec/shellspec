@@ -31,7 +31,7 @@ each_shells() {
     shift
     for shell in $TARGET; do
       shell_path='' real_path=''
-      shell_path=$(which "${shell%% *}") > /dev/null &&:
+      shell_path=$(which "${shell%% *}") 2> /dev/null || shell_path=''
       [ -L "${shell_path%% *}" ] && real_path=$(readlinkf "${shell_path%% *}")
       $callback "$@"
     done
