@@ -52,7 +52,8 @@ Describe "core/evaluation.sh"
 
     It 'calls shellspec_evaluation_cleanup() after evaluation'
       When invoke shellspec_evaluation_run false
-      The stdout should equal 'cleanup: 1'
+      The first word of stdout should equal 'cleanup:'
+      The second word of stdout should be failure
     End
   End
 
