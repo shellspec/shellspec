@@ -3,9 +3,25 @@
 Describe "libexec/runner.sh"
   Include "$SHELLSPEC_LIB/libexec/runner.sh"
 
+  change_permission() {
+    chmod "$1" "$2"
+    perm=$(ls -dl "$2")
+    echo "${perm%"${perm#??????????}"}"
+  }
+
+  check_change_permission() {
+    file="$SHELLSPEC_TMPBASE/check_change_permission"
+    : > "$file"
+    perm1=$(change_permission 644 "$file")
+    perm2=$(change_permission 666 "$file")
+    [ "$perm1 : $perm2" != "-rw-r--r-- : -rw-rw-rw-" ]
+  }
+
   Describe "mktempdir()"
+    Skip if 'can not change permission' check_change_permission
+
     Before prepare
-    prepare() { dir="$SHELLSPEC_TMPBASE/$$.mktempdir_test"; }
+    prepare() { dir="$SHELLSPEC_TMPBASE/mktempdir_test"; }
     entry() { ls -dl "$dir"; }
 
     It "makes tempdir"
@@ -18,7 +34,7 @@ Describe "libexec/runner.sh"
   Describe "rmtempdir()"
     Before prepare
     prepare() {
-      dir="$SHELLSPEC_TMPBASE/$$.rmtempdir_test"
+      dir="$SHELLSPEC_TMPBASE/rmtempdir_test"
       mktempdir "$dir"
       [ -d "$dir" ] && [ -w "$dir" ]
     }
