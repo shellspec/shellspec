@@ -6,3 +6,33 @@ CirrusCI_task:
       - image: freebsd-12-0-release-amd64
   install_script: pkg install -y dash bash zsh ksh93 mksh oksh pdksh
   script: contrib/all.sh contrib/various_test.sh
+
+CirrusCI_task:
+  windows_container:
+    image: cirrusci/windowsservercore:2019
+    os_version: 2019
+  env:
+    PATH: $PATH;$ProgramFiles\Git\bin
+  script: bash -c 'contrib/all.sh contrib/various_test.sh'
+
+CirrusCI_task:
+  windows_container:
+    image: cirrusci/windowsservercore:2019
+    os_version: 2019
+  env:
+    PATH: $PATH;C:\tools\msys64\usr\bin
+  install_script:
+    - choco install -y msys2
+    - pacman.exe -Syu --noconfirm dash bash busybox mksh zsh
+  script: bash -c 'contrib/all.sh contrib/various_test.sh'
+
+CirrusCI_task:
+  windows_container:
+    image: cirrusci/windowsservercore:2019
+    os_version: 2019
+  env:
+    PATH: $PATH;C:\tools\cygwin\bin
+  install_script:
+    - choco install -y cygwin cyg-get
+    - cyg-get dash bash busybox mksh posh zsh
+  script: bash -c 'contrib/all.sh contrib/various_test.sh'
