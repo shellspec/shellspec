@@ -13,7 +13,7 @@
 
 set -eu
 
-: "${TARGET:=sh,ash,dash,bash,zsh,pdksh,ksh,ksh93,mksh,yash,posh,busybox ash}"
+: "${TARGET:=sh,ash,dash,bash,zsh,pdksh,ksh,ksh93,mksh,oksh,yash,posh,busybox ash}"
 
 readlinkf() {
   p=$1

@@ -4,9 +4,5 @@ CirrusCI_task:
       - image: freebsd-10-4-release-amd64
       - image: freebsd-11-2-release-amd64
       - image: freebsd-12-0-release-amd64
-  script:
-    - ./shellspec
-    - ./shellspec -j 3
-    - ./shellspec --syntax-check
-    - ./shellspec spec/general_spec.sh:40:60:80:100
-    - ./shellspec --task hello:shellspec
+  install_script: pkg -y install dash bash zsh ksh93 mksh oksh pdksh
+  script: contrib/all.sh contrib/various_test.sh
