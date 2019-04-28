@@ -23,7 +23,8 @@ CirrusCI_task:
     PATH: $PATH;C:\tools\msys64\usr\bin
   install_script:
     - choco install -y msys2
-    - pacman.exe -Syu --noconfirm dash bash busybox mksh zsh
+    - pacman.exe -Syu --noconfirm
+    - pacman.exe -S --noconfirm dash bash busybox mksh zsh
   script: bash -c 'contrib/all.sh contrib/various_test.sh'
 
 CirrusCI_task:
@@ -34,5 +35,5 @@ CirrusCI_task:
     PATH: $PATH;C:\tools\cygwin\bin
   install_script:
     - choco install -y cygwin cyg-get
-    - cyg-get dash bash busybox mksh posh zsh
+    - cyg-get dash bash busybox-standalone mksh posh zsh
   script: bash -c 'contrib/all.sh contrib/various_test.sh'
