@@ -11,55 +11,14 @@ matrix:
   include:
     - os: linux
       dist: xenial
-      env: PKG=dash SH=dash
-    - os: linux
-      dist: xenial
-      env: PKG=bash SH=bash
-    - os: linux
-      dist: xenial
-      env: PKG=zsh SH=zsh
-    - os: linux
-      dist: xenial
-      env: PKG=ksh SH=ksh
-    - os: linux
-      dist: xenial
-      env: PKG=mksh SH=mksh
-    - os: linux
-      dist: xenial
-      env: PKG=yash SH=yash
-    - os: linux
-      dist: xenial
-      env: PKG=posh SH=posh
-    - os: linux
-      dist: xenial
-      env: PKG=busybox SH="busybox ash"
+      env: PKG="dash bash zsh ksh mksh yash posh busybox"
     - os: osx
       osx_image: xcode10.2
-      env: PKG=dash SH=dash
-    - os: osx
-      osx_image: xcode10.2
-      env: PKG=bash SH=bash
-    - os: osx
-      osx_image: xcode10.2
-      env: PKG=zsh SH=zsh
-    - os: osx
-      osx_image: xcode10.2
-      env: PKG=ksh SH=ksh
-    - os: osx
-      osx_image: xcode10.2
-      env: PKG=mksh SH=mksh
-    - os: osx
-      osx_image: xcode10.2
-      env: PKG=yash SH=yash
+      env: PKG="dash bash zsh ksh mksh yash"
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install -y "$PKG"; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install "$PKG"; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install -y $PKG; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install $PKG; fi
 before_script:
-  - $SH shellspec --task fixture:stat:prepare
+  - shellspec --task fixture:stat:prepare
 script:
-  - $SH shellspec
-  - $SH shellspec -j 3
-  - $SH shellspec --syntax-check
-  - $SH shellspec $($SH shellspec --list-specfiles | shuf | head -n 5)
-  - $SH shellspec $($SH shellspec --list-examples | shuf | head -n 5) spec/general_spec.sh:40:60:80:100
-  - $SH shellspec --task hello:shellspec
+  - contrib/all.sh contrib/various_test.sh
