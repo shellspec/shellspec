@@ -19,6 +19,6 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install -y $PKG; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install $PKG; fi
 before_script:
-  - shellspec --task fixture:stat:prepare
+  - ./shellspec --task fixture:stat:prepare
 script:
   - contrib/all.sh contrib/various_test.sh
