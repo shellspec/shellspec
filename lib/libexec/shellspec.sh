@@ -26,8 +26,8 @@ process() {
 read_cmdline() {
   [ -e "$1" ] || return 0
 
-  prinft_octal_bug=''
-  [ "$(printf '\101' 2>/dev/null ||:)" = "A" ] || prinft_octal_bug=0
+  printf_octal_bug=''
+  [ "$(printf '\101' 2>/dev/null ||:)" = "A" ] || printf_octal_bug=0
 
   {
     # busybox 1.1.3: `-A n`, `-t o1` not supported
@@ -35,13 +35,12 @@ read_cmdline() {
     od -t o1 -v "$1" 2>/dev/null || od -b -v "$1"
   } | while IFS= read -r cmdline; do
     case $cmdline in (*\ *) ;; (*) continue; esac
-    #shellcheck disable=SC2086
-    set -- ${cmdline#* }
+    eval "set -- ${cmdline#* }"
     cmdline=''
     for i in "$@"; do
       case $i in
         000) i="040" ;;
-        1??) i="$prinft_octal_bug$i" ;;
+        1??) i="$printf_octal_bug$i" ;;
       esac
       cmdline="$cmdline\\$i"
       shift
