@@ -239,7 +239,7 @@ if [ $# -gt 0 ]; then
   eval "set -- $params"
 fi
 
-[ "$SHELLSPEC_SHELL" ] || SHELLSPEC_SHELL=$(current_shell "$0")
+[ "$SHELLSPEC_SHELL" ] || SHELLSPEC_SHELL=$(current_shell "$0" "$$")
 if [ -z "$SHELLSPEC_SHELL" ]; then
   warn "Failed to detect the current shell," \
        "because the ps command does not exist or not compatible."

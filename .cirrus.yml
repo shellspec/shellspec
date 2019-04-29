@@ -30,7 +30,7 @@ msys_task:
   install_script:
     - choco install -y msys2
     - pacman.exe -Syu --noconfirm
-    - pacman.exe -S --noconfirm dash bash mksh zsh
+    - pacman.exe -S --noconfirm procps dash bash busybox mksh zsh
   prepare_script:
     - bash -c './shellspec --task fixture:stat:prepare'
   script:
@@ -44,7 +44,7 @@ cygwin_task:
     PATH: $PATH;C:\tools\cygwin\bin
   install_script:
     - choco install -y cygwin cyg-get
-    - cyg-get nc dash bash mksh posh zsh
+    - cyg-get procps nc dash bash busybox mksh posh zsh
   prepare_script:
     - bash -c './shellspec --task fixture:stat:prepare'
     # I don't know why but tests using below files fail in cirrus ci environment.

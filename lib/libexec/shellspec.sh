@@ -19,10 +19,17 @@ read_dot_file() {
   [ $# -eq 0 ] || "$parser" "$@"
 }
 
-current_shell() {
-  self=$1 i=0
+process() {
+  # cygwin, msys2: Uses procps because ps command not compatible.
+  # This cause problems when run with 'busybox ash shellspec'
+  command procps -f 2>/dev/null && return 0
+  ps -f 2>/dev/null
+}
 
-  eval "${2:-ps w}" 2>/dev/null | {
+current_shell() {
+  self=$1 pid=$2 i=0
+
+  process | {
     IFS= read -r line
     reset_params '$line'
     eval "$RESET_PARAMS"
@@ -32,7 +39,7 @@ current_shell() {
     done
     while IFS= read -r line; do
       eval "$RESET_PARAMS"
-      [ "$1" = "$$" ] && shift $i && line="$*" && break
+      [ "$1" = "$pid" ] && shift $i && line="$*" && break
     done
 
     if [ "$line" ]; then

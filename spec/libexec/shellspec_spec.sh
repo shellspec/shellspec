@@ -31,76 +31,80 @@ Describe "libexec/shellspec.sh"
     current_shell_fallback_with_proc() { echo 'fallback'; }
 
     Context "when procps format"
-      fake_ps() {
-        echo "PID TTY      STAT   TIME COMMAND"
-        echo "  1 pts/0    Ss     0:00 -bash"
-        echo "001 pts/0    R+     0:00 ps w"
-        echo "002 ?        I<     0:00 [kworker/0:0H]"
-        echo "003 ?        S      0:00 (sd-pam)"
-        echo " $$ pts/0    S      0:00 /bin/sh /usr/local/bin/shellspec"
+      process() {
+        %text
+        #|PID TTY      STAT   TIME COMMAND
+        #|  1 pts/0    Ss     0:00 -bash
+        #|001 pts/0    R+     0:00 ps w
+        #|002 ?        I<     0:00 [kworker/0:0H]
+        #|003 ?        S      0:00 (sd-pam)
+        #|111 pts/0    S      0:00 /bin/sh /usr/local/bin/shellspec
       }
 
       It "parses and detects shell"
-        When call current_shell "/usr/local/bin/shellspec" fake_ps
+        When call current_shell "/usr/local/bin/shellspec" 111
         The stdout should equal "/bin/sh"
       End
     End
 
     Context "when busybox 1.1.3 format"
-      fake_ps() {
-        echo "  PID  Uid     VmSize Stat Command"
-        echo "   $$ root       1520 S   /bin/sh /usr/local/bin/shellspec"
-        echo "   88 root       1808 R   ps w"
+      process() {
+        %text
+        #|  PID  Uid     VmSize Stat Command
+        #|   88 root       1808 R   ps w
+        #|  111 root       1520 S   /bin/sh /usr/local/bin/shellspec
       }
 
       It "parses and detects shell"
-        When call current_shell "/usr/local/bin/shellspec" fake_ps
+        When call current_shell "/usr/local/bin/shellspec" 111
         The stdout should equal "/bin/sh"
       End
     End
 
     Context "when busybox ps format 1"
-      fake_ps() {
-        echo "  PID USER       VSZ STAT COMMAND"
-        echo "    1 root      1548 S    /sbin/init"
-        echo "  001 root      1200 R    ps w"
-        echo "   $$ root      1460 S    /bin/sh /usr/local/bin/shellspec"
+      process() {
+        %text
+        #|  PID USER       VSZ STAT COMMAND
+        #|    1 root      1548 S    /sbin/init
+        #|  001 root      1200 R    ps w
+        #|  111 root      1460 S    /bin/sh /usr/local/bin/shellspec
       }
 
       It "parses and detects shell"
-        When call current_shell "/usr/local/bin/shellspec" fake_ps
+        When call current_shell "/usr/local/bin/shellspec" 111
         The stdout should equal "/bin/sh"
       End
     End
 
     Context "when busybox ps format 2"
-      fake_ps() {
-        echo "  PID USER    TIME COMMAND"
-        echo "    1 root    0:00 /bin/sh"
-        echo "  001 root    0:00 ps w"
-        echo "   $$ root    0:00 {shellspec} /bin/sh /usr/local/bin/shellspec"
+      process() {
+        %text
+        #|  PID USER    TIME COMMAND
+        #|    1 root    0:00 /bin/sh
+        #|  001 root    0:00 ps w
+        #|  111 root    0:00 {shellspec} /bin/sh /usr/local/bin/shellspec
       }
 
       It "parses and detects shell"
-        When call current_shell "/usr/local/bin/shellspec" fake_ps
+        When call current_shell "/usr/local/bin/shellspec" 111
         The stdout should equal "/bin/sh"
       End
     End
 
     Context "when unknown format"
-      fake_ps() { echo "dummy"; }
+      process() { echo "dummy"; }
 
       It "calls current_shell_fallback_with_proc"
-        When call current_shell "/usr/local/bin/shellspec" fake_ps
+        When call current_shell "/usr/local/bin/shellspec" 111
         The stdout should equal "fallback"
       End
     End
 
     Context "when ps not found"
-      fake_ps() { echo "dummy"; }
+      process() { echo "dummy"; }
 
       It "calls current_shell_fallback_with_proc"
-        When call current_shell "/usr/local/bin/shellspec" fake_ps
+        When call current_shell "/usr/local/bin/shellspec" 111
         The stdout should equal "fallback"
       End
     End
