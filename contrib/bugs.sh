@@ -237,4 +237,12 @@ HERE
   [ "${1%$2}" = "foo" ] && no_problem || affect
 )
 
+(
+  title='25: printf can not handle octal numbers correctly (old pdksh, zsh <= around 4.0.4)'
+  # zsh 4.2.5: ch=\101
+  # pdksh on debian 3.0: \1: invalid escape
+  ch=$(printf "\101" 2>/dev/null) ||:
+  [ "$ch" = "A" ] && no_problem || affect
+)
+
 echo Done
