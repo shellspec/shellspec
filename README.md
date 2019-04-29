@@ -5,7 +5,7 @@ BDD style unit testing framework for POSIX compatible shell script.
 **Project status: Implementation of practical features has been completed. I will add more tests and improve the documentation.**
 
 [![TravisCI](https://img.shields.io/travis/ko1nksm/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/ko1nksm/shellspec)
-[![CirrusCI](https://api.cirrus-ci.com/github/ko1nksm/shellspec.svg?task=CirrusCI&script=done)](https://cirrus-ci.com/github/ko1nksm/shellspec)
+[![CirrusCI](https://api.cirrus-ci.com/github/ko1nksm/shellspec.svg?task=CirrusCI&script=CirrusCI)](https://cirrus-ci.com/github/ko1nksm/shellspec)
 ![GitHub release](https://img.shields.io/github/release/ko1nksm/shellspec.svg)
 ![GitHub](https://img.shields.io/github/license/ko1nksm/shellspec.svg)
 
@@ -73,18 +73,22 @@ BDD style unit testing framework for POSIX compatible shell script.
 
 ### Supported shells
 
-`dash`, `bash`, `ksh`, `mksh`, `pdksh`, `zsh`, `posh`, `yash`, `busybox (ash)`
+`dash`, `bash`, `ksh`, `mksh`, `oksh`, `pdksh`, `zsh`, `posh`, `yash`, `busybox (ash)`
 
 Tested Platforms
 
-| Platform                              | Test      | Shells                                               |
-| ------------------------------------- | --------- | ---------------------------------------------------- |
-| Ubuntu 16.04 xenial                   | Travis CI | sh (dash), bash, busybox, ksh, mksh, posh, yash, zsh |
-| macOS 10.4 Mojave                     | Travis CI | sh (bash), dash, ksh, mksh, ~~posh~~, yash, zsh      |
-| FreeBSD 10.x, 11.x, 12.x              | Cirrus CI | sh (ash)                                             |
-| macOS 10.4 Mojave                     | manual    | sh (bash), dash, ksh, mksh, ~~posh~~, yash, zsh      |
-| Windows 10 1809 (Ubuntu 18.04 on WSL) | manual    | sh (dash), bash, busybox, ksh, mksh, posh, yash, zsh |
-| Solaris 11                            | manual    | sh (ksh), ksh88, ~~Bourne Shell~~                    |
+| Platform                                | Test      | Shells                                                           |
+| --------------------------------------- | --------- | ---------------------------------------------------------------- |
+| Ubuntu 12.04, 14.04, 16.04              | Travis CI | sh (dash), dash, bash, busybox, ksh, mksh, posh, yash, zsh       |
+| macOS 10.10, 10.11, 10.12, 10.13, 10.14 | Travis CI | sh (bash), bash, ksh, zsh                                        |
+| macOS 10.14 (Homebrew)                  | Travis CI | sh (bash), dash, bash, ksh, mksh, ~~posh~~, yash, zsh            |
+| FreeBSD 10.x, 11.x, 12.x                | Cirrus CI | sh (ash), dash, bash, ~~busybox~~, ksh93, mksh, oksh, pdksh, zsh |
+| Windows Server 2019 (Git bash)          | Cirrus CI | sh (bash), bash                                                  |
+| Windows Server 2019 (msys2)             | Cirrus CI | sh (bash), dash, bash, busybox, mksh, zsh                        |
+| Windows Server 2019 (cygwin)            | Cirrus CI | sh (bash), dash, bash, busybox, mksh, posh, zsh                  |
+| macOS 10.4                              | manual    | sh (bash), dash, bash, ksh, mksh, ~~posh~~, yash, zsh            |
+| Windows 10 1809 (Ubuntu 18.04 on WSL)   | manual    | sh (dash), dash, bash, busybox, ksh, mksh, posh, yash, zsh       |
+| Solaris 11                              | manual    | sh (ksh93), bash, ksh88 (/usr/sunos/bin/ksh), ksh93, zsh         |
 
 Confirmed version (tested with docker [dockerfiles](dockerfiles))
 

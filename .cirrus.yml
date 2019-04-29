@@ -58,5 +58,5 @@ CirrusCI_task:
     - cygwin
   container:
     image: busybox
-  done_script:
+  CirrusCI_script:
     - echo all ok
