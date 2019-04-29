@@ -75,20 +75,17 @@ BDD style unit testing framework for POSIX compatible shell script.
 
 `dash`, `bash`, `ksh`, `mksh`, `oksh`, `pdksh`, `zsh`, `posh`, `yash`, `busybox (ash)`
 
-Tested Platforms
+Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.cirrus.yml))
 
-| Platform                                | Test      | Shells                                                           |
-| --------------------------------------- | --------- | ---------------------------------------------------------------- |
-| Ubuntu 12.04, 14.04, 16.04              | Travis CI | sh (dash), dash, bash, busybox, ksh, mksh, posh, yash, zsh       |
-| macOS 10.10, 10.11, 10.12, 10.13, 10.14 | Travis CI | sh (bash), bash, ksh, zsh                                        |
-| macOS 10.14 (Homebrew)                  | Travis CI | sh (bash), dash, bash, ksh, mksh, ~~posh~~, yash, zsh            |
-| FreeBSD 10.x, 11.x, 12.x                | Cirrus CI | sh (ash), dash, bash, ~~busybox~~, ksh93, mksh, oksh, pdksh, zsh |
-| Windows Server 2019 (Git bash)          | Cirrus CI | sh (bash), bash                                                  |
-| Windows Server 2019 (msys2)             | Cirrus CI | sh (bash), dash, bash, busybox, mksh, zsh                        |
-| Windows Server 2019 (cygwin)            | Cirrus CI | sh (bash), dash, bash, busybox, mksh, posh, zsh                  |
-| macOS 10.4                              | manual    | sh (bash), dash, bash, ksh, mksh, ~~posh~~, yash, zsh            |
-| Windows 10 1809 (Ubuntu 18.04 on WSL)   | manual    | sh (dash), dash, bash, busybox, ksh, mksh, posh, yash, zsh       |
-| Solaris 11                              | manual    | sh (ksh93), bash, ksh88 (/usr/sunos/bin/ksh), ksh93, zsh         |
+| Platform                                                  | Test      |
+| --------------------------------------------------------- | --------- |
+| Ubuntu 12.04, 14.04, 16.04                                | Travis CI |
+| macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 + Homebrew | Travis CI |
+| FreeBSD 10.x, 11.x, 12.x                                  | Cirrus CI |
+| Windows Server 2019 (Git bash, msys2, cygwin)             | Cirrus CI |
+| macOS 10.4                                                | manual    |
+| Windows 10 1809 (Ubuntu 18.04 on WSL)                     | manual    |
+| Solaris 11                                                | manual    |
 
 Confirmed version (tested with docker [dockerfiles](dockerfiles))
 
