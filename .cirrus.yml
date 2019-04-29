@@ -36,4 +36,7 @@ CirrusCI_task:
   install_script:
     - choco install -y cygwin cyg-get
     - cyg-get dash bash busybox-standalone mksh posh zsh
-  script: bash -c 'contrib/all.sh contrib/various_test.sh'
+  prepare_script:
+    - bash -c './shellspec --task fixture:stat:prepare'
+  script:
+    - bash -c 'contrib/all.sh contrib/various_test.sh'
