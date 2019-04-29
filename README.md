@@ -5,7 +5,7 @@ BDD style unit testing framework for POSIX compatible shell script.
 **Project status: Implementation of practical features has been completed. I will add more tests and improve the documentation.**
 
 [![TravisCI](https://img.shields.io/travis/ko1nksm/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/ko1nksm/shellspec)
-[![CirrusCI](https://api.cirrus-ci.com/github/ko1nksm/shellspec.svg?task=CirrusCI)](https://cirrus-ci.com/github/ko1nksm/shellspec)
+[![CirrusCI](https://api.cirrus-ci.com/github/ko1nksm/shellspec.svg?task=CirrusCI&script=done)](https://cirrus-ci.com/github/ko1nksm/shellspec)
 ![GitHub release](https://img.shields.io/github/release/ko1nksm/shellspec.svg)
 ![GitHub](https://img.shields.io/github/license/ko1nksm/shellspec.svg)
 
