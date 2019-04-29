@@ -38,10 +38,17 @@ pipe() {
   return 1
 }
 
-socket() {
-  if nc -lU "$1" 2>/dev/null & then
+create_socket_file() {
+  (
+    nc -lU "$1" &
     sleep 1
     kill $!
+  )
+}
+
+socket() {
+  which nc 2>/dev/null 1>&2 || return 1
+  if create_socket_file "$1" 2>/dev/null; then
     chown "$owner" "$1"
     return 0
   fi
