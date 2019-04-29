@@ -38,27 +38,14 @@ Describe "libexec/shellspec.sh"
     Context "when procps format"
       process() {
         %text
-        #|PID TTY      STAT   TIME COMMAND
-        #|  1 pts/0    Ss     0:00 -bash
-        #|001 pts/0    R+     0:00 ps w
-        #|002 ?        I<     0:00 [kworker/0:0H]
-        #|003 ?        S      0:00 (sd-pam)
-        #|111 pts/0    S      0:00 /bin/sh /usr/local/bin/shellspec
+        #|UID PID PPID C STIME TTY      STAT   TIME CMD
+        #|uid   1    2 C Apr30 pts/0    Ss     0:00 -bash
+        #|uid 001    1 C Apr30 pts/0    R+     0:00 ps -f
+        #|uid 002    2 C Apr30 ?        I<     0:00 [kworker/0:0H]
+        #|uid 003    3 C Apr30 ?        S      0:00 (sd-pam)
+        #|uid 111    4 C Apr30 pts/0    S      0:00 /bin/sh /usr/local/bin/shellspec
       }
 
-      It "parses and detects shell"
-        When call read_ps 111
-        The stdout should equal "/bin/sh /usr/local/bin/shellspec"
-      End
-    End
-
-    Context "when busybox 1.1.3 format"
-      process() {
-        %text
-        #|  PID  Uid     VmSize Stat Command
-        #|   88 root       1808 R   ps w
-        #|  111 root       1520 S   /bin/sh /usr/local/bin/shellspec
-      }
 
       It "parses and detects shell"
         When call read_ps 111
@@ -69,10 +56,9 @@ Describe "libexec/shellspec.sh"
     Context "when busybox ps format 1"
       process() {
         %text
-        #|  PID USER       VSZ STAT COMMAND
-        #|    1 root      1548 S    /sbin/init
-        #|  001 root      1200 R    ps w
-        #|  111 root      1460 S    /bin/sh /usr/local/bin/shellspec
+        #|  PID  Uid     VmSize Stat Command
+        #|   88 root       1808 R   ps -f
+        #|  111 root       1520 S   /bin/sh /usr/local/bin/shellspec
       }
 
       It "parses and detects shell"
@@ -84,10 +70,25 @@ Describe "libexec/shellspec.sh"
     Context "when busybox ps format 2"
       process() {
         %text
-        #|  PID USER    TIME COMMAND
-        #|    1 root    0:00 /bin/sh
-        #|  001 root    0:00 ps w
-        #|  111 root    0:00 {shellspec} /bin/sh /usr/local/bin/shellspec
+        #|  PID USER       VSZ STAT COMMAND
+        #|    1 root      1548 S    /sbin/init
+        #|  001 root      1200 R    ps -f
+        #|  111 root      1460 S    /bin/sh /usr/local/bin/shellspec
+      }
+
+      It "parses and detects shell"
+        When call read_ps 111
+        The stdout should equal "/bin/sh /usr/local/bin/shellspec"
+      End
+    End
+
+    Context "when busybox ps format 3"
+      process() {
+        %text
+        #|  PID USER    COMMAND
+        #|    1 root    /bin/sh
+        #|  001 root    ps -f
+        #|  111 root    {shellspec} /bin/sh /usr/local/bin/shellspec
       }
 
       It "parses and detects shell"

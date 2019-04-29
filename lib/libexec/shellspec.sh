@@ -20,7 +20,7 @@ read_dot_file() {
 }
 
 process() {
-  ps w 2>/dev/null
+  ps -f 2>/dev/null
 }
 
 read_cmdline() {
@@ -51,19 +51,25 @@ read_cmdline() {
 }
 
 read_ps() {
-  pid=$1 i=0
+  pid=$1 p=0 c=0 _pid=''
 
   process | {
     IFS= read -r line
     reset_params '$line'
     eval "$RESET_PARAMS"
     for name in "${@:-}"; do
-      case $name in (CMD | COMMAND | Command) break; esac
-      i=$(($i+1))
+      p=$(($p + 1))
+      case $name in ([pP][iI][dD]) break; esac
     done
+    for name in "${@:-}"; do
+      case $name in ([cC][mM][dD] | [cC][oO][mM][mM][aA][nN][dD]) break; esac
+      c=$(($c + 1))
+    done
+
     while IFS= read -r line; do
       eval "$RESET_PARAMS"
-      [ "$1" = "$pid" ] && shift $i && line="$*" && break
+      eval "_pid=\${$p}"
+      [ "$_pid" = "$pid" ] && shift $c && line="$*" && break
     done
     # workaround for old busybox ps format
     case $line in (\{*) line=${line#*\} }; esac
