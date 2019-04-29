@@ -20,14 +20,39 @@ read_dot_file() {
 }
 
 process() {
-  # cygwin, msys2: Uses procps because ps command not compatible.
-  # This cause problems when run with 'busybox ash shellspec'
-  command procps -f 2>/dev/null && return 0
-  ps -f 2>/dev/null
+  ps w 2>/dev/null
 }
 
-current_shell() {
-  self=$1 pid=$2 i=0
+read_cmdline() {
+  [ -e "$1" ] || return 0
+
+  prinft_octal_bug=''
+  [ "$(printf '\101' 2>/dev/null ||:)" = "A" ] || prinft_octal_bug=0
+
+  {
+    # busybox 1.1.3: `-A n`, `-t o1` not supported
+    # busybox 1.10.2: `od -b` not working properly
+    od -t o1 -v "$1" 2>/dev/null || od -b -v "$1"
+  } | while IFS= read -r cmdline; do
+    case $cmdline in (*\ *) ;; (*) continue; esac
+    #shellcheck disable=SC2086
+    set -- ${cmdline#* }
+    cmdline=''
+    for i in "$@"; do
+      case $i in
+        000) i="040" ;;
+        1??) i="$prinft_octal_bug$i" ;;
+      esac
+      cmdline="$cmdline\\$i"
+      shift
+    done
+    #shellcheck disable=SC2059
+    printf "$cmdline"
+  done
+}
+
+read_ps() {
+  pid=$1 i=0
 
   process | {
     IFS= read -r line
@@ -41,32 +66,21 @@ current_shell() {
       eval "$RESET_PARAMS"
       [ "$1" = "$pid" ] && shift $i && line="$*" && break
     done
-
-    if [ "$line" ]; then
-      line=${line#'{'"${self##*/}"'} '}
-      echo "${line%% $self*}"
-    else
-      current_shell_fallback_with_proc "$self" "/proc/$$"
-    fi
+    # workaround for old busybox ps format
+    case $line in (\{*) line=${line#*\} }; esac
+    echo "$line"
   } ||:
 }
 
-current_shell_fallback_with_proc() {
-  [ -e "$2" ] || return 0
+current_shell() {
+  self=$1 pid=$2
 
-  # "/proc/$$/cmdline" includes null character
-  #   zsh: ${line%[$IFS]} is removing null character
-  #   yash: () is workaround for #23 in contrib/bugs.sh
-  #   busybox ash: read reads 'busyboxash'
-  (
-    IFS= read -r line < "$2/cmdline" ||:
-    line=${line%%$1*}
-    line=${line%[$IFS]}
-    case $line in (*/busybox* | busybox*)
-      line="${line%busybox*}busybox ${line##*busybox}"
-    esac
-    echo "$line"
-  )
+  cmdline=$(read_cmdline "/proc/$2/cmdline")
+  if [ -z "$cmdline" ]; then
+    cmdline=$(read_ps "$2")
+  fi
+
+  echo "${cmdline%% $self*}"
 }
 
 command_path() {

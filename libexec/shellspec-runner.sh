@@ -3,8 +3,6 @@
 
 set -eu
 
-[ "${ZSH_VERSION:-}" ] && setopt shwordsplit
-
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
 

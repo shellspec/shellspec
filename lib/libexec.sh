@@ -1,5 +1,7 @@
 #shellcheck shell=sh
 
+[ "${ZSH_VERSION:-}" ] && setopt shwordsplit
+
 # shellcheck source=lib/general.sh
 . "${SHELLSPEC_LIB:-./lib}/general.sh"
 
@@ -21,6 +23,7 @@ use() {
 
 load() {
   while [ "$#" -gt 0 ]; do
+    # shellcheck disable=SC1090
     . "${SHELLSPEC_LIB:-./lib}/libexec/$1.sh"
     shift
   done

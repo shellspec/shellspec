@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 % DOT_SHELLSPEC: "fixture/dot-shellspec"
-% CMDLINE: "$SHELLSPEC_SPECDIR/fixture/proc"
+% CMDLINE: "$SHELLSPEC_SPECDIR/fixture/proc/cmdline"
 
 Describe "libexec/shellspec.sh"
   Include "$SHELLSPEC_LIB/libexec/shellspec.sh"
@@ -27,9 +27,14 @@ Describe "libexec/shellspec.sh"
     End
   End
 
-  Describe "current_shell()"
-    current_shell_fallback_with_proc() { echo 'fallback'; }
+  Describe "read_cmdline()"
+    It "parses /proc/<PID>/cmdline"
+      When call read_cmdline "$CMDLINE"
+      The stdout should equal "/bin/sh /usr/local/bin/shellspec "
+    End
+  End
 
+  Describe "read_ps()"
     Context "when procps format"
       process() {
         %text
@@ -42,8 +47,8 @@ Describe "libexec/shellspec.sh"
       }
 
       It "parses and detects shell"
-        When call current_shell "/usr/local/bin/shellspec" 111
-        The stdout should equal "/bin/sh"
+        When call read_ps 111
+        The stdout should equal "/bin/sh /usr/local/bin/shellspec"
       End
     End
 
@@ -56,8 +61,8 @@ Describe "libexec/shellspec.sh"
       }
 
       It "parses and detects shell"
-        When call current_shell "/usr/local/bin/shellspec" 111
-        The stdout should equal "/bin/sh"
+        When call read_ps 111
+        The stdout should equal "/bin/sh /usr/local/bin/shellspec"
       End
     End
 
@@ -71,8 +76,8 @@ Describe "libexec/shellspec.sh"
       }
 
       It "parses and detects shell"
-        When call current_shell "/usr/local/bin/shellspec" 111
-        The stdout should equal "/bin/sh"
+        When call read_ps 111
+        The stdout should equal "/bin/sh /usr/local/bin/shellspec"
       End
     End
 
@@ -86,34 +91,38 @@ Describe "libexec/shellspec.sh"
       }
 
       It "parses and detects shell"
-        When call current_shell "/usr/local/bin/shellspec" 111
-        The stdout should equal "/bin/sh"
-      End
-    End
-
-    Context "when unknown format"
-      process() { echo "dummy"; }
-
-      It "calls current_shell_fallback_with_proc"
-        When call current_shell "/usr/local/bin/shellspec" 111
-        The stdout should equal "fallback"
-      End
-    End
-
-    Context "when ps not found"
-      process() { echo "dummy"; }
-
-      It "calls current_shell_fallback_with_proc"
-        When call current_shell "/usr/local/bin/shellspec" 111
-        The stdout should equal "fallback"
+        When call read_ps 111
+        The stdout should equal "/bin/sh /usr/local/bin/shellspec"
       End
     End
   End
 
-  Describe "current_shell_fallback_with_proc()"
-    It "parses /proc/<PID>/cmdline"
-      When call current_shell_fallback_with_proc "/usr/local/bin/shellspec" "$CMDLINE"
+  Describe "current_shell()"
+    read_cmdline() { echo "/bin/sh /usr/local/bin/shellspec spec "; }
+
+    It "removes arguments"
+      When call current_shell "/usr/local/bin/shellspec" 111
       The stdout should equal "/bin/sh"
+    End
+
+    Context "when read_cmdline empty string"
+      read_cmdline() { :; }
+      read_ps() { echo ps; }
+
+      It "calls read_ps"
+        When call current_shell "/usr/local/bin/shellspec" 111
+        The stdout should equal "ps"
+      End
+    End
+
+    Context "when read_cmdline return string"
+      read_cmdline() { echo 'cmdline'; }
+      read_ps() { echo ok; }
+
+      It "does not call read_ps"
+        When call current_shell "/usr/local/bin/shellspec" 111
+        The stdout should equal "cmdline"
+      End
     End
   End
 End
