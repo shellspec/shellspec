@@ -57,12 +57,11 @@ warn() {
 
 readlinkf() {
   p=$1
-  while [ -L "$p" ]; do
+  while :; do
     case $p in (*/*) cd "${p%/*}"; p=${p##*/}; esac
-    l=$(ls -dl "$p") && p=${l#*"$p -> "}
+    [ ! -L "$p" ] && printf '%s\n' "$PWD/$p" && return
+    l=$(ls -dl "$p"); p=${l#*" $p -> "}
   done
-  case $p in (*/*) cd "${p%/*}"; p=${p##*/}; esac
-  printf '%s\n' "$PWD/$p"
 }
 
 SHELLSPEC_PATH=$(readlinkf "$0")
