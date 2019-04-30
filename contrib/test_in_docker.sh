@@ -6,24 +6,22 @@
 # It provide as is, do not any support.
 # It may change without notice.
 
-# Example of use
-#   contrib/test_in_docker.sh dockerfiles/debian-9-*
-#   contrib/test_in_docker.sh $(find ./dockerfiles -name "*-bash*") -- contrib/bugs.sh
-#
-# Delete all shellspec images
-#   docker rmi $(docker images shellspec -q)
-
 set -eu
 
 if [ $# -eq 0 ]; then
-cat <<USAGE
-Usage: test.sh [Dockerfile..] [-- COMMAND]
+cat <<'USAGE'
+Usage: test_in_docker.sh [Dockerfile..] [-- COMMAND]
 
 Run tests in docker
 
-Available Dockerfile:
+Example of use
+  contrib/test_in_docker.sh dockerfiles/*
+  contrib/test_in_docker.sh dockerfiles/debian-9-*
+  contrib/test_in_docker.sh dockerfiles/*bash* -- contrib/bugs.sh
+
+To delete all shellspec images
+  docker rmi $(docker images shellspec -q)
 USAGE
-  printf '  %s\n' $(find dockerfiles -type f)
   exit 0
 fi
 
