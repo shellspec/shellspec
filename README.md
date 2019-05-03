@@ -2,8 +2,6 @@
 
 BDD style unit testing framework for POSIX compatible shell script.
 
-**Project status: Implementation of practical features has been completed. I will add more tests and improve the documentation.**
-
 [![TravisCI](https://img.shields.io/travis/ko1nksm/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/ko1nksm/shellspec)
 [![CirrusCI](https://api.cirrus-ci.com/github/ko1nksm/shellspec.svg?task=CirrusCI&script=CirrusCI)](https://cirrus-ci.com/github/ko1nksm/shellspec)
 ![GitHub release](https://img.shields.io/github/release/ko1nksm/shellspec.svg)
@@ -12,6 +10,8 @@ BDD style unit testing framework for POSIX compatible shell script.
 **Let’s test the your shell script!**
 
 ![demo](demo.gif)
+
+**Project status: Implementation of practical features has been completed. I will add more tests and improve the documentation.**
 
 *Table of Contents*
 
@@ -77,15 +77,14 @@ BDD style unit testing framework for POSIX compatible shell script.
 
 Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.cirrus.yml))
 
-| Platform                                                  | Test      |
-| --------------------------------------------------------- | --------- |
-| Ubuntu 12.04, 14.04, 16.04                                | Travis CI |
-| macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 + Homebrew | Travis CI |
-| FreeBSD 10.x, 11.x, 12.x                                  | Cirrus CI |
-| Windows Server 2019 (Git bash, msys2, cygwin)             | Cirrus CI |
-| macOS 10.4                                                | manual    |
-| Windows 10 1809 (Ubuntu 18.04 on WSL)                     | manual    |
-| Solaris 11                                                | manual    |
+| Platform                                                  | Test                                                        |
+| --------------------------------------------------------- | ----------------------------------------------------------- |
+| Ubuntu 12.04, 14.04, 16.04                                | [Travis CI](https://travis-ci.org/ko1nksm/shellspec)        |
+| macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 (Homebrew) | [Travis CI](https://travis-ci.org/ko1nksm/shellspec)        |
+| FreeBSD 10.x, 11.x, 12.x                                  | [Cirrus CI](https://cirrus-ci.com/github/ko1nksm/shellspec) |
+| Windows Server 2019 (Git bash, msys2, cygwin)             | [Cirrus CI](https://cirrus-ci.com/github/ko1nksm/shellspec) |
+| Windows 10 1809 (Ubuntu 18.04 on WSL)                     | manual                                                      |
+| Solaris 11                                                | manual                                                      |
 
 Confirmed version (tested with docker [dockerfiles](dockerfiles))
 
