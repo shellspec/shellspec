@@ -15,12 +15,7 @@ load grammar
 
 translator() {
   translator="$SHELLSPEC_LIBEXEC/shellspec-translate.sh"
-  eval shell "\"$translator\"" ${1+'"$@"'}
-}
-
-#shellcheck disable=SC2120
-shell() {
-  eval "$SHELLSPEC_SHELL" ${1+'"$@"'}
+  eval "$SHELLSPEC_SHELL" "\"$translator\"" ${1+'"$@"'}
 }
 
 error_handler() {

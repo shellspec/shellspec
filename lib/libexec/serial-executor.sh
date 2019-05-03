@@ -4,5 +4,5 @@
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 
 executor() {
-  translator "$@" | shell
+  translator "$@" | $SHELLSPEC_SHELL
 }
