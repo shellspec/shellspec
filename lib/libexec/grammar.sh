@@ -65,7 +65,6 @@ mapping() {
     % | %const  )   constant            "$2" ;;
     %= | %putsn )   out putsn           "$2" ;;
     %- | %puts  )   out puts            "$2" ;;
-    Error       )   error               "$2" ;;
     *)
       case $1 in (*\(\))
         is_function_name "${1%??}" || return 1

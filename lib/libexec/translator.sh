@@ -231,10 +231,6 @@ include() {
   eval trans include ${1+'"$@"'}
 }
 
-error() {
-  syntax_error "${*:-}"
-}
-
 with_function() {
   trans with_function "$1"
   shift
