@@ -24,14 +24,6 @@ import "formatter"
 import "${SHELLSPEC_FORMATTER}_formatter"
 "${SHELLSPEC_FORMATTER##*/}_formatter" "$@"
 
-warn() {
-  if [ "$SHELLSPEC_COLOR" ]; then
-    printf '\033[33m%s\033[0m\n' "$*"
-  else
-    printf '%s\n' "$*"
-  fi
-}
-
 syntax_error() {
   putsn "Syntax error: ${*:-} in ${field_specfile:-} line ${field_range:-}" >&2
 }

@@ -4,15 +4,12 @@
 set -eu
 
 export SHELLSPEC_VERSION='0.12.0'
-
-export SHELLSPEC_PATH
-export SHELLSPEC_ROOT
-export SHELLSPEC_LIB
-export SHELLSPEC_LIBEXEC
-export SHELLSPEC_TMPDIR
-export SHELLSPEC_SPECDIR
-export SHELLSPEC_LOAD_PATH
-
+export SHELLSPEC_PATH=''
+export SHELLSPEC_ROOT=''
+export SHELLSPEC_LIB=''
+export SHELLSPEC_LIBEXEC=''
+export SHELLSPEC_SPECDIR=''
+export SHELLSPEC_LOAD_PATH=''
 export SHELLSPEC_SHELL=''
 export SHELLSPEC_TIME=''
 export SHELLSPEC_TMPBASE=''
@@ -35,25 +32,7 @@ export SHELLSPEC_MODE='runner'
 export SHELLSPEC_ENV_FROM=''
 export SHELLSPEC_PATTERN="*_spec.sh"
 export SHELLSPEC_UNIXTIME=''
-
-[ -t 1 ] && SHELLSPEC_COLOR=1
-
-abort() {
-  if [ "$SHELLSPEC_COLOR" ]; then
-    printf '\033[31m%s\033[0m\n' "$@" >&2
-  else
-    printf '%s\n' "$@" >&2
-  fi
-  exit 1
-}
-
-warn() {
-  if [ "$SHELLSPEC_COLOR" ]; then
-    printf '\033[33m%s\033[0m\n' "$*" >&2
-  else
-    printf '%s\n' "$*" >&2
-  fi
-}
+export SHELLSPEC_TMPDIR=${TMPDIR:-/tmp}
 
 readlinkf() {
   p=$1
@@ -66,17 +45,16 @@ readlinkf() {
 
 SHELLSPEC_PATH=$(readlinkf "$0")
 SHELLSPEC_ROOT="${SHELLSPEC_PATH%/*}"
+SHELLSPEC_LIB="$SHELLSPEC_ROOT/lib"
 
-: "${SHELLSPEC_LIB:=$SHELLSPEC_ROOT/lib}"
-: "${SHELLSPEC_LIBEXEC:=$SHELLSPEC_ROOT/libexec}"
-: "${SHELLSPEC_TMPDIR:=${TMPDIR:-}}"
-: "${SHELLSPEC_TMPDIR:=/tmp}"
-
-SHELLSPEC_SPECDIR=$PWD/spec
-SHELLSPEC_LOAD_PATH=$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_LIB/reporter
+[ -t 1 ] && SHELLSPEC_COLOR=1
 
 # shellcheck source=lib/libexec/shellspec.sh
 . "$SHELLSPEC_LIB/libexec/shellspec.sh"
+
+SHELLSPEC_LIBEXEC="$SHELLSPEC_ROOT/libexec"
+SHELLSPEC_SPECDIR=$PWD/spec
+SHELLSPEC_LOAD_PATH=$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_LIB/reporter
 
 SHELLSPEC_UNIXTIME=$(date +%s)
 SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$SHELLSPEC_UNIXTIME.$$"
@@ -84,15 +62,13 @@ SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/time.log"
 SHELLSPEC_EXAMPLES_LOG="$SHELLSPEC_TMPBASE/examples.log"
 SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner"
 
-if [ -z "$SHELLSPEC_TIME" ]; then
-  SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
-  if command_path time > /dev/null; then
-    SHELLSPEC_TIME="time -p"
-  elif command_path bash > /dev/null; then
-    SHELLSPEC_TIME="bash $SHELLSPEC_TIME"
-  elif command_path ksh > /dev/null; then
-    SHELLSPEC_TIME="ksh $SHELLSPEC_TIME"
-  fi
+SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
+if command_path time > /dev/null; then
+  SHELLSPEC_TIME="time -p"
+elif command_path bash > /dev/null; then
+  SHELLSPEC_TIME="bash $SHELLSPEC_TIME"
+elif command_path ksh > /dev/null; then
+  SHELLSPEC_TIME="ksh $SHELLSPEC_TIME"
 fi
 
 usage() {
@@ -151,7 +127,6 @@ Usage: ${0##*/} [options] [files or directories]
   -v, --version                       Display the version
   -h, --help                          You're looking at it
 USAGE
-exit 0
 }
 
 parse_options() {
@@ -220,8 +195,8 @@ parse_options() {
       --no-fail-no-examples) SHELLSPEC_FAIL_NO_EXAMPLES='' ;;
       --init | --task | --translate | --syntax-check | \
       --count | --list-specfiles | --list-examples) SHELLSPEC_MODE=${1#--} ;;
-      -h | --help) usage ;;
-      -v | --version) echo "$SHELLSPEC_VERSION"; exit 0 ;;
+      -h | --help) usage && exit 0;;
+      -v | --version) echo "$SHELLSPEC_VERSION" && exit 0 ;;
       -*) abort "Unknown option '$1'" ;;
       *) params="$params \"\${$(($length - $# + 1))}\""
     esac
@@ -233,10 +208,7 @@ read_dot_file "${XDG_CONFIG_HOME:-}" "shellspec/options" parse_options
 read_dot_file "${HOME:-}" ".shellspec" parse_options
 read_dot_file "." ".shellspec" parse_options
 read_dot_file "." ".shellspec-local" parse_options
-if [ $# -gt 0 ]; then
-  parse_options "$@"
-  eval "set -- $params"
-fi
+[ $# -gt 0 ] && parse_options "$@" && eval "set -- $params"
 
 [ "$SHELLSPEC_SHELL" ] || SHELLSPEC_SHELL=$(current_shell "$0" "$$")
 if [ -z "$SHELLSPEC_SHELL" ]; then
@@ -255,17 +227,14 @@ if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
   abort "Unsupported shell (require arithmetic expansion): $SHELLSPEC_SHELL"
 fi
 
-case $SHELLSPEC_MODE in
-  runner | translator | syntax-check | count | list-specfiles | list-examples)
-    [ $# -eq 0 ] && set -- 'spec'
-    for specfile in "$@"; do
-      [ -e "${specfile%%:*}" ] || abort "Not found path: ${specfile%%:*}"
-      case $specfile in (*:*)
-        case ${specfile#*:} in (*[!0-9:]*)
-          abort "Specified line number is wrong: $specfile"
-        esac
-      esac
-    done
+case $SHELLSPEC_MODE in (init | task) ;; (*)
+  [ $# -eq 0 ] && set -- 'spec'
+  for specfile in "$@"; do
+    [ -e "${specfile%%:*}" ] || abort "Not found path: ${specfile%%:*}"
+    case $specfile in (*:*) ;; (*) continue; esac
+    case ${specfile#*:} in (*[!0-9:]*) ;; (*) continue; esac
+    abort "Invalid line number: $specfile"
+  done
 esac
 
 if [ "$SHELLSPEC_ENV_FROM" ]; then

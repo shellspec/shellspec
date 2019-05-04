@@ -14,14 +14,6 @@ syntax_error() {
   syntax_error=1
 }
 
-error() {
-  if [ "$SHELLSPEC_COLOR" ]; then
-    printf '\33[2;31m%s\33[0m\n' "${*:-}" >&2
-  else
-    printf '%s\n' "${*:-}" >&2
-  fi
-}
-
 error_handler() {
   while IFS= read -r line; do
     error "$line"

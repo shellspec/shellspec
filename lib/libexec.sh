@@ -62,4 +62,25 @@ display() {
   )
 }
 
+warn() {
+  if [ "$SHELLSPEC_COLOR" ]; then
+    printf '\033[33m%s\033[0m\n' "${*:-}" >&2
+  else
+    printf '%s\n' "${*:-}" >&2
+  fi
+}
+
+error() {
+  if [ "$SHELLSPEC_COLOR" ]; then
+    printf '\33[2;31m%s\33[0m\n' "${*:-}" >&2
+  else
+    printf '%s\n' "${*:-}" >&2
+  fi
+}
+
+abort() {
+  error "$@"
+  exit 1
+}
+
 use puts putsn

@@ -6,14 +6,6 @@ set -eu
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
 
-error() {
-  if [ "$SHELLSPEC_COLOR" ]; then
-    printf '\33[2;31m%s\33[0m\n' "${*:-}" >&2
-  else
-    printf '%s\n' "${*:-}" >&2
-  fi
-}
-
 wait_reporter_finished() {
   [ -e "$1" ] || return 0
   read -r reporter_pid < "$1"
