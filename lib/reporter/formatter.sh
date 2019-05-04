@@ -3,7 +3,9 @@
 : "${meta_shell:-} ${meta_shell_type:-} ${meta_shell_version:-}"
 : "${example_index:-} ${detail_index:-}"
 : "${field_specfile:-} ${field_type:-} ${field_tag:-} ${field_range:-}"
-: "${field_lineno:-} ${field_color:-}"
+: "${field_lineno:-} ${field_color:-} ${field_focused:-}"
+: "${warned_count:-} ${skipped_count:-} ${suppressed_skipped_count:-}"
+: "${todo_count:-} ${fixed_count:-} ${suppressed_skipped_count:-}"
 : "${interrupt:-} ${aborted:-} ${no_examples:-}"
 
 use proxy padding each
@@ -23,7 +25,7 @@ count() {
 
 methods() {
   putsn "Running: $meta_shell" \
-    "[$meta_shell_type${meta_shell_version:+ }$meta_shell_version]"
+    "[${meta_shell_type}${meta_shell_version:+ }${meta_shell_version}]"
 }
 
 conclusion_begin() { :; }
@@ -92,24 +94,24 @@ summary() {
   }
 
   each callback "${total_count:-0} example" "${failed_count:-0} failure" \
-                "${warned_count:-} warning" "${skipped_count:-} skip"
-  if [ "${suppressed_skipped_count:-}" ]; then
-    summary="${summary} (muted $suppressed_skipped_count skip"
+                "$warned_count warning" "$skipped_count skip"
+  if [ "$suppressed_skipped_count" ]; then
+    summary="$summary (muted $suppressed_skipped_count skip"
     [ "$suppressed_skipped_count" -ne 1 ] && summary="${summary}s"
-    summary="${summary})"
+    summary="$summary)"
   fi
-  each callback "${todo_count:-} pending"   "${fixed_count:-} fix"
+  each callback "$todo_count pending"   "$fixed_count fix"
   if [ "$interrupt" ]; then
-    summary="${summary}, aborted by an interrupt"
+    summary="$summary, aborted by an interrupt"
   elif [ "$aborted" ]; then
-    summary="${summary}, aborted by an unexpected error"
+    summary="$summary, aborted by an unexpected error"
   fi
   if [ "$no_examples" ]; then
-    summary="${summary}, no examples found"
+    summary="$summary, no examples found"
   fi
 
-  [ "${warned_count:-}" ] && color=$YELLOW || color=$GREEN
-  [ "${failed_count:-}${aborted}${interrupt}${no_examples}" ] && color=$RED
+  [ "$warned_count" ] && color=$YELLOW || color=$GREEN
+  [ "${failed_count}${aborted}${interrupt}${no_examples}" ] && color=$RED
   putsn "${color}${summary}${RESET}${LF}"
 }
 
@@ -117,14 +119,14 @@ references_begin() { :; }
 
 references_format() {
   [ "$field_type" = "result" ] || return 0
-  [ -z "$example_index" ] && [ "${field_focused:-}" != "focus" ] && return 0
+  [ -z "$example_index" ] && [ "$field_focused" != "focus" ] && return 0
 
   set -- "${field_color}shellspec" \
-    "${field_specfile}:${field_range%-*}${RESET}" \
-    "${CYAN}# ${example_index:--}) ${field_description} ${field_note:-}${RESET}"
+    "$field_specfile:${field_range%-*}${RESET}" \
+    "${CYAN}# ${example_index:--}) $field_description ${field_note:-}${RESET}"
 
   # shellcheck disable=SC2145
-  [ "${field_focused:-}" = "focus" ] && set -- "${UNDERLINE}$@"
+  [ "$field_focused" = "focus" ] && set -- "${UNDERLINE}$@"
 
   if [ "${field_error:-}" ]; then
     failure_examples_set_if_empty "Failure examples:${LF}"

@@ -9,7 +9,7 @@ echo $$ > "$SHELLSPEC_TMPBASE/reporter_pid"
 
 # shellcheck source=lib/libexec/reporter.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/reporter.sh"
-use import reset_params
+use import reset_params each
 
 interrupt='' aborted=1 no_examples=''
 if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
@@ -41,9 +41,8 @@ parse_metadata() {
   set -- "${metadata#?}"
   reset_params '$1' "$US"
   eval "$RESET_PARAMS"
-  for meta_name in "$@"; do
-    eval "meta_${meta_name%%:*}=\${meta_name#*:}"
-  done
+  callback() { eval "meta_${1%%:*}=\${1#*:}"; }
+  each callback "$@"
 }
 
 parse_lines() {
@@ -56,36 +55,34 @@ parse_lines() {
       $EOT) aborted='' && break ;;
       *) buf="$buf${buf:+$LF}${line}"
     esac
-
-    if [ "$fail_fast" ]; then
-      break
-    fi
+    [ "$fail_fast" ] && aborted='' && break
   done
   [ -z "$buf" ] || parse_fields "$1" "$buf"
 }
 
 parse_fields() {
-  callback="$1" field_names=""
+  callback="$1"
 
   reset_params '$2' "$US"
   eval "$RESET_PARAMS"
-  for field_name in "$@"; do
-    field_names="$field_names ${field_name%%:*}"
-    eval "field_${field_name%%:*}=\${field_name#*:}"
+
+  for field in "$@"; do
+    eval "field_${field%%:*}=\${field#*:}"
+    set -- "$@" "${field%%:*}"
+    shift
   done
 
-  eval "set -- $field_names"
   "$callback" "$@"
 
   for field_name in "$@"; do
     # mksh @(#)MIRBSD KSH R39 2010/07/25: Many unset cause a Segmentation fault
     # eval "unset field_$field_name ||:"
-    eval "field_$field_name="
+    eval "field_$field_name=''"
   done
 }
 
-exit_status=0 fail_fast='' focus_mode=''
-fail_fast_count="${SHELLSPEC_FAIL_FAST_COUNT:-}"
+exit_status=0 fail_fast='' found_focus=''
+fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-}
 
 parse_metadata
 formatter_begin
@@ -127,9 +124,7 @@ each_line() {
     esac
     case ${SHELLSPEC_SKIP_MESSAGE:-} in (moderate|quiet)
       eval "
-        if [ \"\${field_skipid:-}\" = \"\$last_${field_tag}_id\" ]; then
-          example_index=''
-        fi
+        [ \"\$field_skipid\" = \"\$last_${field_tag}_id\" ] && example_index=''
         last_${field_tag}_id=\${field_skipid:-}
       "
     esac
@@ -155,11 +150,8 @@ each_line() {
   fi
 
   [ "${field_error:-}" ] && exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
-  [ "${field_focused:-}" = "focus" ] && focus_mode=1
-
-  if [ "$fail_fast_count" ]; then
-    [ "${failed_count:-0}" -ge "$fail_fast_count" ] && fail_fast="yes"
-  fi
+  [ "${field_focused:-}" = "focus" ] && found_focus=1
+  [ "${failed_count:-0}" -ge "${fail_fast_count:-99999999}" ] && fail_fast=1
 
   color_schema
   formatter_format "$@"
@@ -168,26 +160,19 @@ parse_lines each_line
 
 [ "$aborted" ] && exit_status=1
 [ "$interrupt" ] && exit_status=130
-if [ "$total_count" -eq 0 ] && [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ]; then
+if [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ] && [ "$total_count" -eq 0 ]; then
   #shellcheck disable=SC2034
-  no_examples=1
-  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+  no_examples=1 exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 fi
 
-i=0
-while [ $i -lt 10 ]; do
-  [ -e "$SHELLSPEC_TIME_LOG" ] && break
-  sleep 0
-  i=$(($i + 1))
-done
+callback() { [ -e "$SHELLSPEC_TIME_LOG" ] || sleep 0; }
+shellspec_sequence callback 1 10
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 formatter_end
 
-if [ "$focus_mode" ] && [ ! "${SHELLSPEC_FOCUS:-}" ]; then
+if [ "$found_focus" ] && [ ! "${SHELLSPEC_FOCUS:-}" ]; then
   warn "To run focused example only, you need to specify --focus option."
 fi
-
-SHELLSPEC_FAIL_NO_EXAMPLES=1
 
 exit "$exit_status"
