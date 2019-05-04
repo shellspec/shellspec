@@ -13,7 +13,7 @@ Describe "core/dsl.sh"
     End
   End
 
-  Describe "shellspec_example()"
+  Describe "shellspec_invoke_example()"
     prepare() { :; }
     shellspec_around_invoke() {
       prepare
@@ -21,7 +21,9 @@ Describe "core/dsl.sh"
       shellspec_yield() { echo yield; }
       if [ "${2:-}" ]; then
         eval "shellspec_yield() {
-          echo yield; shellspec_off NOT_IMPLEMENTED; $2;
+          echo yield
+          shellspec_off NOT_IMPLEMENTED
+          $2
         }"
       fi
       "$@"
@@ -30,98 +32,78 @@ Describe "core/dsl.sh"
     It 'skippes the all if skipped outside of example'
       prepare() { shellspec_on SKIP; }
       block() { :; }
-      When invoke shellspec_example block
+      When invoke shellspec_invoke_example block
       The stdout should not include 'yield'
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'SKIP'
-      The stdout line 3 should equal 'SKIPPED'
-      The stdout line 4 should equal 'EXAMPLE_END'
+      The stdout line 1 should equal 'SKIP'
+      The stdout line 2 should equal 'SKIPPED'
     End
 
     It 'skipps the rest if skipped inside of example'
       block() { shellspec_skip 1; }
-      When invoke shellspec_example block
+      When invoke shellspec_invoke_example block
       The stdout should include 'yield'
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'yield'
-      The stdout line 3 should equal 'SKIP'
-      The stdout line 4 should equal 'SKIPPED'
-      The stdout line 5 should equal 'EXAMPLE_END'
+      The stdout line 1 should equal 'yield'
+      The stdout line 2 should equal 'SKIP'
+      The stdout line 3 should equal 'SKIPPED'
     End
 
     It 'is unimplemented if there is nothing inside of example'
-      When invoke shellspec_example
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'yield'
-      The stdout line 3 should equal 'NOT_IMPLEMENTED'
-      The stdout line 4 should equal 'TODO'
-      The stdout line 5 should equal 'EXAMPLE_END'
+      When invoke shellspec_invoke_example
+      The stdout line 1 should equal 'yield'
+      The stdout line 2 should equal 'NOT_IMPLEMENTED'
+      The stdout line 3 should equal 'TODO'
     End
 
     It 'is failed if FAILED switch is on'
       block() { shellspec_on FAILED; }
-      When invoke shellspec_example block
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'yield'
-      The stdout line 3 should equal 'FAILED'
-      The stdout line 4 should equal 'EXAMPLE_END'
+      When invoke shellspec_invoke_example block
+      The stdout line 1 should equal 'yield'
+      The stdout line 2 should equal 'FAILED'
     End
 
     It 'is warned and be status unhandled if UNHANDLED_STATUS switch is on'
       block() { shellspec_on UNHANDLED_STATUS; }
-      When invoke shellspec_example block
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'yield'
-      The stdout line 3 should equal 'UNHANDLED_STATUS'
-      The stdout line 4 should equal 'WARNED'
-      The stdout line 5 should equal 'EXAMPLE_END'
+      When invoke shellspec_invoke_example block
+      The stdout line 1 should equal 'yield'
+      The stdout line 2 should equal 'UNHANDLED_STATUS'
+      The stdout line 3 should equal 'WARNED'
     End
 
     It 'is warned and be stdout unhandled if UNHANDLED_STDOUT switch is on'
       block() { shellspec_on UNHANDLED_STDOUT; }
-      When invoke shellspec_example block
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'yield'
-      The stdout line 3 should equal 'UNHANDLED_STDOUT'
-      The stdout line 4 should equal 'WARNED'
-      The stdout line 5 should equal 'EXAMPLE_END'
+      When invoke shellspec_invoke_example block
+      The stdout line 1 should equal 'yield'
+      The stdout line 2 should equal 'UNHANDLED_STDOUT'
+      The stdout line 3 should equal 'WARNED'
     End
 
     It 'is warned and be stderr unhandled if UNHANDLED_STDOUT switch is on'
       block() { shellspec_on UNHANDLED_STDERR; }
-      When invoke shellspec_example block
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'yield'
-      The stdout line 3 should equal 'UNHANDLED_STDERR'
-      The stdout line 4 should equal 'WARNED'
-      The stdout line 5 should equal 'EXAMPLE_END'
+      When invoke shellspec_invoke_example block
+      The stdout line 1 should equal 'yield'
+      The stdout line 2 should equal 'UNHANDLED_STDERR'
+      The stdout line 3 should equal 'WARNED'
     End
 
     It 'is success if example ends successfully'
       block() { :; }
-      When invoke shellspec_example block
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'yield'
-      The stdout line 3 should equal 'SUCCEEDED'
-      The stdout line 4 should equal 'EXAMPLE_END'
+      When invoke shellspec_invoke_example block
+      The stdout line 1 should equal 'yield'
+      The stdout line 2 should equal 'SUCCEEDED'
     End
 
     It 'is todo if FAILED and PENDING switch is on'
       block() { shellspec_on FAILED PENDING; }
-      When invoke shellspec_example block
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'yield'
-      The stdout line 3 should equal 'TODO'
-      The stdout line 4 should equal 'EXAMPLE_END'
+      When invoke shellspec_invoke_example block
+      The stdout line 1 should equal 'yield'
+      The stdout line 2 should equal 'TODO'
     End
 
     It 'is fixed if PENDING switch is on but not FAILED'
       block() { shellspec_on PENDING; }
-      When invoke shellspec_example block
-      The stdout line 1 should equal 'EXAMPLE_BEGIN'
-      The stdout line 2 should equal 'yield'
-      The stdout line 3 should equal 'FIXED'
-      The stdout line 4 should equal 'EXAMPLE_END'
+      When invoke shellspec_invoke_example block
+      The stdout line 1 should equal 'yield'
+      The stdout line 2 should equal 'FIXED'
     End
   End
 
