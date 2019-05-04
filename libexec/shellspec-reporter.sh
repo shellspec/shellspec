@@ -40,6 +40,7 @@ parse_metadata() {
 parse_lines() {
   buf=''
   while IFS= read -r line || [ "$line" ]; do
+    [ "$fail_fast" ] && aborted='' && break
     case $line in
       $RS*)
         [ -z "$buf" ] || parse_fields "$1" "$buf"
@@ -47,7 +48,6 @@ parse_lines() {
       $EOT) aborted='' && break ;;
       *) buf="$buf${buf:+$LF}${line}"
     esac
-    [ "$fail_fast" ] && aborted='' && break
   done
   [ -z "$buf" ] || parse_fields "$1" "$buf"
 }
