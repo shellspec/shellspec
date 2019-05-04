@@ -335,3 +335,14 @@ shellspec_trim() {
     done
   "
 }
+
+shellspec_replace() {
+  eval "
+    while :; do
+      case \$$1 in
+        *\$2*) $1=\${$1%%\$2*}\$3\${$1#*\$2} ;;
+        *) break ;;
+      esac
+    done
+  "
+}

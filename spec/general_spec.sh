@@ -311,4 +311,14 @@ Describe "general.sh"
       End
     End
   End
+
+  Describe "shellspec_replace()"
+    Before set_value
+
+    set_value() { value="a==b==c"; }
+    It 'replaces string'
+      When call shellspec_replace value "==" "--"
+      The value "$value" should eq "a--b--c"
+    End
+  End
 End
