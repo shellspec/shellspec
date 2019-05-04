@@ -1,14 +1,14 @@
 #shellcheck shell=sh disable=SC2004
 
 : "${example_index:-} ${field_tag:-} ${field_type:-} ${field_note:-}"
-: "${field_desc:-} ${field_color:-} ${field_message:-}"
+: "${field_description:-} ${field_color:-} ${field_message:-}"
 
 documentation_formatter() {
   formatter_begin() {
     methods
     conclusion_begin
     references_begin
-    _indent='' _nest=0 _pos=0 _flushed=''
+    _last_specfile='' _last_id=''
   }
 
   formatter_format() {
@@ -16,33 +16,26 @@ documentation_formatter() {
     references_format "$@"
 
     case $field_tag in
-      log) putsn "${_indent}${field_color}${field_message}${RESET}" ;;
-      specfile) _indent='' _nest=0 _pos=0 _flushed='';;
-      example_group)
-        case $field_type in
-          begin)
-            _desc="${_indent}${field_color}${field_desc}${RESET}"
-            eval "_descs_$_nest=\$_desc"
-            _indent="$_indent  " _nest=$(($_nest + 1)) _flushed=''
-            ;;
-          end)
-            _indent="${_indent%  }" _nest=$(($_nest - 1))
-            [ "$_flushed" ] && _pos=$(($_pos - 1))
-            eval "_descs_$_nest=''"
-            ;;
-        esac
-        ;;
+      log) putsn "${field_color}${field_message}${RESET}" ;;
       *)
         [ "$field_type" = "result" ] || return 0
-        [ "$_pos" -eq 0 ] && putsn
-        while [ $_pos -lt $_nest ]; do
-          eval "_desc=\$_descs_$_pos"
-          putsn "$_desc"
-          _pos=$(($_pos + 1))
+        if [ "$_last_specfile" != "$field_specfile" ]; then
+          _last_specfile=$field_specfile _last_id=''
+          putsn
+        fi
+        _id=$_last_id _current_id=$field_id
+        _description=$field_description _indent='' _last_id=$field_id
+        while [ "${_id%%:*}" = "${_current_id%%:*}" ]; do
+          _id=${_id#*:} _current_id=${_current_id#*:}
+          _description=${_description#*$VT} _indent="${_indent}  "
         done
-        _flushed=1
+        while :; do
+          case $_description in (*$VT*) ;; (*) break ;; esac
+          putsn "${_indent}${_description%%$VT*}"
+          _description=${_description#*$VT} _indent="${_indent}  "
+        done
 
-        set -- "${_indent}${field_color}${field_desc}"
+        set -- "${_indent}${field_color}${_description}"
         [ "$example_index" ] && set -- "$@" "(${field_note:-} - $example_index)"
         putsn "$*${RESET}"
     esac

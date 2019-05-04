@@ -24,29 +24,26 @@ shellspec_specfile() {
   esac
 }
 
-shellspec_desc() {
+shellspec_description() {
   if [ "$2" ]; then
     SHELLSPEC_DESC=$2
   else
     SHELLSPEC_DESC="<$1:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END>"
   fi
 
-  if [ "$SHELLSPEC_DESCRIPTION" ]; then
-    SHELLSPEC_DESCRIPTION="$SHELLSPEC_DESCRIPTION $SHELLSPEC_DESC"
-  else
-    SHELLSPEC_DESCRIPTION="$SHELLSPEC_DESC"
-  fi
+  set -- "${2:-<$1:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END>}"
+  SHELLSPEC_DESCRIPTION="${SHELLSPEC_DESCRIPTION}$1"
 }
 
 shellspec_example_group() {
-  shellspec_desc "example group" "${1:-}"
+  shellspec_description "example_group" "${1:-}${1:+$SHELLSPEC_VT}"
   shellspec_output EXAMPLE_GROUP_BEGIN
   shellspec_yield
   shellspec_output EXAMPLE_GROUP_END
 }
 
 shellspec_example() {
-  shellspec_desc "example" "${1:-}"
+  shellspec_description "example" "${1:-}"
   shellspec_output EXAMPLE_BEGIN
 
   if [ "$SHELLSPEC_FOCUSED" ]; then

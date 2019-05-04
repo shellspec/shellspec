@@ -14,13 +14,15 @@ tap_formatter() {
   formatter_format() {
     [ "$field_type" = "result" ] && _example_no=$(($_example_no + 1))
 
+    _description=${field_description:-}
+    replace _description "$VT" " "
     case $field_tag in
-      succeeded) putsn "ok $_example_no - $field_description" ;;
-      warned   ) putsn "ok $_example_no - $field_description" ;;
-      failed   ) putsn "not ok $_example_no - $field_description" ;;
-      skipped  ) putsn "ok $_example_no - $field_description # skip" ;;
-      todo     ) putsn "ok $_example_no - $field_description # pending" ;;
-      fixed    ) putsn "not ok $_example_no - $field_description # fixed" ;;
+      succeeded) putsn "ok $_example_no - $_description" ;;
+      warned   ) putsn "ok $_example_no - $_description" ;;
+      failed   ) putsn "not ok $_example_no - $_description" ;;
+      skipped  ) putsn "ok $_example_no - $_description # skip" ;;
+      todo     ) putsn "ok $_example_no - $_description # pending" ;;
+      fixed    ) putsn "not ok $_example_no - $_description # fixed" ;;
       log      ) putsn "# $field_message" ;;
     esac
   }

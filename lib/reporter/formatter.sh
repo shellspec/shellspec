@@ -35,11 +35,14 @@ conclusion_format() {
   case $field_tag in (evaluation|log) return 0; esac
   [ "$example_index" ] || return 0
 
+  description=${field_description:-}
+  replace description "$VT" " "
+
   conclusion_set_if_empty "${LF}Examples:${LF}"
   label="  $example_index) " indent=''
   padding indent ' ' ${#label}
   if [ "$detail_index" -eq 1 ]; then
-    conclusion_append "${WHITE}${label}${field_description:-}${RESET}"
+    conclusion_append "${WHITE}${label}${description}${RESET}"
     if [ "${field_evaluation:-}" ]; then
       conclusion_append "${BOLD}${CYAN}${indent}${field_evaluation:-}${RESET}"
       conclusion_append
@@ -121,9 +124,12 @@ references_format() {
   [ "$field_type" = "result" ] || return 0
   [ -z "$example_index" ] && [ "$field_focused" != "focus" ] && return 0
 
+  description=${field_description:-}
+  replace description "$VT" " "
+
   set -- "${field_color}shellspec" \
     "$field_specfile:${field_range%-*}${RESET}" \
-    "${CYAN}# ${example_index:--}) $field_description ${field_note:-}${RESET}"
+    "${CYAN}# ${example_index:--}) $description ${field_note:-}${RESET}"
 
   # shellcheck disable=SC2145
   [ "$field_focused" = "focus" ] && set -- "${UNDERLINE}$@"
