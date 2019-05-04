@@ -1,13 +1,14 @@
 #shellcheck shell=sh disable=SC2004,SC2034
 
-: "${meta_shell:-}" "${meta_shell_type:-}" "${meta_shell_version:-}"
-: "${example_index:-}" "${detail_index:-}"
-: "${field_specfile:-}" "${field_type:-}" "${field_tag:-}" "${field_range:-}"
-: "${field_lineno:-}" "${field_color:-}"
+: "${meta_shell:-} ${meta_shell_type:-} ${meta_shell_version:-}"
+: "${example_index:-} ${detail_index:-}"
+: "${field_specfile:-} ${field_type:-} ${field_tag:-} ${field_range:-}"
+: "${field_lineno:-} ${field_color:-}"
+: "${interrupt:-} ${aborted:-} ${no_examples:-}"
 
 use proxy padding each
 
-buffer conclusion notable_examples failure_examples focused_blocks
+buffer conclusion notable_examples failure_examples
 
 formatter_begin() { :; }
 formatter_format() { :; }
@@ -43,13 +44,14 @@ conclusion_format() {
     fi
   fi
 
-  label="${indent}${example_index}.${detail_index}) " indent=''
+  label="${indent}${example_index}.${detail_index}) "
+  indent=''
   padding indent ' ' ${#label}
 
   case $field_tag in
-    bad) tag='Failure' ;;
+    bad ) tag='Failure' ;;
     warn) tag='Warning' ;;
-    *) tag='' ;;
+    *   ) tag='' ;;
   esac
 
   message="${tag}${tag:+: }${field_message:-}" note=${field_note:-}
@@ -57,7 +59,8 @@ conclusion_format() {
 
   message=${LF}${field_failure_message:-} text=''
   while [ "$text" != "$message" ]; do
-    text=${message%%${LF}*} message=${message#*${LF}}
+    text=${message%%${LF}*}
+    message=${message#*${LF}}
     conclusion_append "  ${indent}${field_color}${text}${RESET}"
   done
 
@@ -96,38 +99,32 @@ summary() {
     summary="${summary})"
   fi
   each callback "${todo_count:-} pending"   "${fixed_count:-} fix"
-  if [ "${interrupt:-}" ]; then
+  if [ "$interrupt" ]; then
     summary="${summary}, aborted by an interrupt"
-  elif [ "${aborted:-}" ]; then
+  elif [ "$aborted" ]; then
     summary="${summary}, aborted by an unexpected error"
   fi
-  if [ "${no_examples:-}" ]; then
+  if [ "$no_examples" ]; then
     summary="${summary}, no examples found"
   fi
 
   [ "${warned_count:-}" ] && color=$YELLOW || color=$GREEN
-  if [ "${failed_count:-}${aborted:-}${interrupt:-}${no_examples:-}" ]; then
-    color=$RED
-  fi
+  [ "${failed_count:-}${aborted}${interrupt}${no_examples}" ] && color=$RED
   putsn "${color}${summary}${RESET}${LF}"
 }
 
 references_begin() { :; }
 
 references_format() {
-  if [ "$field_type" = "begin" ] && [ "${field_focused:-}" = "focus" ]; then
-    set -- "${field_color}shellspec" \
-      "${field_specfile}:${field_range%-*}${RESET}" \
-      "${CYAN}# ${field_description} ${field_note:-}${RESET}"
-    focused_blocks_set_if_empty "Focused groups / examples:${LF}"
-    focused_blocks_append "$@"
-  fi
   [ "$field_type" = "result" ] || return 0
-  [ "${example_index}" ] || return 0
+  [ -z "$example_index" ] && [ "${field_focused:-}" != "focus" ] && return 0
 
   set -- "${field_color}shellspec" \
     "${field_specfile}:${field_range%-*}${RESET}" \
-    "${CYAN}# ${example_index}) ${field_description} ${field_note:-}${RESET}"
+    "${CYAN}# ${example_index:--}) ${field_description} ${field_note:-}${RESET}"
+
+  # shellcheck disable=SC2145
+  [ "${field_focused:-}" = "focus" ] && set -- "${UNDERLINE}$@"
 
   if [ "${field_error:-}" ]; then
     failure_examples_set_if_empty "Failure examples:${LF}"
@@ -142,5 +139,4 @@ references_format() {
 references_end() {
   notable_examples_flush
   failure_examples_flush
-  focused_blocks_flush
 }

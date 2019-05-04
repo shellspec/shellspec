@@ -185,8 +185,7 @@ read_time_log "time" "$SHELLSPEC_TIME_LOG"
 formatter_end
 
 if [ "$focus_mode" ] && [ ! "${SHELLSPEC_FOCUS:-}" ]; then
-  warn "To run focused example group/example only," \
-    "you need to specify --focus option."
+  warn "To run focused example only, you need to specify --focus option."
 fi
 
 SHELLSPEC_FAIL_NO_EXAMPLES=1

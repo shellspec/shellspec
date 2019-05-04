@@ -48,8 +48,5 @@ color_schema() {
     *        ) field_color=$WHITE ;;
   esac
 
-  if [ "${field_focused:-}" = "focus" ]; then
-    field_color="${UNDERLINE}$field_color"
-  fi
   COLOR_DEBUG=${WHITE}${BOLD}
 }
