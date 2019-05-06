@@ -177,14 +177,13 @@ specfile() {
   else
     putsn "SHELLSPEC_FOCUSED=all"
   fi
-  putsn "SHELLSPEC_SPECFILE='$specfile'"
-  putsn "shellspec_specfile begin"
+  putsn "shellspec_begin '$specfile'"
   initialize
   putsn "shellspec_marker '$specfile' BOF"
   ( translate < "$1" )
   putsn "shellspec_marker '$specfile' EOF"
   finalize
-  putsn "shellspec_specfile end"
+  putsn "shellspec_end"
   putsn ')'
 }
 eval find_specfiles specfile ${1+'"$@"'}

@@ -92,45 +92,49 @@ each_line() {
   example_index=$current_example_index
 
   if [ "$field_type" = "begin" ]; then
-    if [ "$field_tag" = "specfile" ]; then
-      last_block_no='' last_example_no=''
-      eval last_skip_id='' last_skipped_id=''
-    else
-      if [ "${field_block_no:-0}" -le "${last_block_no:-0}" ]; then
-        syntax_error "Illegal executed the same block"
-        echo "(For example, do not include blocks in a loop)" >&2
-        exit 1
-      fi
-      last_block_no=$field_block_no
-    fi
+    last_block_no='' last_example_no=''
+    eval last_skip_id='' last_skipped_id=''
   fi
 
-  # Do not add references if example_index is blank
-  case $field_tag in (good|succeeded)
-    [ "${field_pending:-}" ] || example_index=''
-  esac
+  if [ "$field_type" = "result" ]; then
+    if [ "${field_block_no:-0}" -le "${last_block_no:-0}" ]; then
+      syntax_error "Illegal executed the same block"
+      echo "(For example, do not include blocks in a loop)" >&2
+      exit 1
+    fi
+    last_block_no=$field_block_no
+  fi
 
-  case $field_tag in (skip|skipped)
-    case ${SHELLSPEC_SKIP_MESSAGE:-} in (quiet)
-      [ "${field_conditional:-}" ] && example_index=''
+  if [ "$field_type" = "statement" ] || [ "$field_type" = "result" ]; then
+    # Do not add references if example_index is blank
+    case $field_tag in (good|succeeded)
+      [ "${field_pending:-}" ] || example_index=''
     esac
-    case ${SHELLSPEC_SKIP_MESSAGE:-} in (moderate|quiet)
-      eval "
-        [ \"\$field_skipid\" = \"\$last_${field_tag}_id\" ] && example_index=''
-        last_${field_tag}_id=\${field_skipid:-}
-      "
-    esac
-  esac
 
-  if [ "$example_index" ]; then
-    case $field_tag in (good|bad|warn|skip|pending)
-      # Increment example_index if change example_no
-      if [ "$field_example_no" != "$last_example_no" ];then
-        current_example_index=$(($current_example_index + 1)) detail_index=0
-        example_index=$current_example_index last_example_no=$field_example_no
-      fi
-      detail_index=$(($detail_index + 1))
+    case $field_tag in (skip|skipped)
+      case ${SHELLSPEC_SKIP_MESSAGE:-} in (quiet)
+        [ "${field_conditional:-}" ] && example_index=''
+      esac
+      case ${SHELLSPEC_SKIP_MESSAGE:-} in (moderate|quiet)
+        eval "
+          [ \"\$field_skipid\" = \"\$last_${field_tag}_id\" ] && example_index=''
+          last_${field_tag}_id=\${field_skipid:-}
+        "
+      esac
     esac
+  fi
+
+  if [ "$field_type" = "statement" ]; then
+    if [ "$example_index" ]; then
+      case $field_tag in (good|bad|warn|skip|pending)
+        # Increment example_index if change example_no
+        if [ "$field_example_no" != "$last_example_no" ];then
+          current_example_index=$(($current_example_index + 1)) detail_index=0
+          example_index=$current_example_index last_example_no=$field_example_no
+        fi
+        detail_index=$(($detail_index + 1))
+      esac
+    fi
   fi
 
   if [ "$field_type" = "result" ]; then

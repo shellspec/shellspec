@@ -17,11 +17,13 @@ shellspec_yield() {
   SHELLSPEC_LINENO=''
 }
 
-shellspec_specfile() {
-  case $1 in
-    begin) shellspec_output SPECFILE_BEGIN ;;
-    end)   shellspec_output SPECFILE_END ;;
-  esac
+shellspec_begin() {
+  SHELLSPEC_SPECFILE=$1
+  shellspec_output BEGIN
+}
+
+shellspec_end() {
+  shellspec_output END
 }
 
 shellspec_description() {
@@ -37,14 +39,11 @@ shellspec_description() {
 
 shellspec_example_group() {
   shellspec_description "example_group" "${1:-}${1:+$SHELLSPEC_VT}"
-  shellspec_output EXAMPLE_GROUP_BEGIN
   shellspec_yield
-  shellspec_output EXAMPLE_GROUP_END
 }
 
 shellspec_example() {
   shellspec_description "example" "${1:-}"
-  shellspec_output EXAMPLE_BEGIN
 
   if [ "$SHELLSPEC_FOCUSED" ]; then
     if [ "$SHELLSPEC_DRYRUN" ]; then
@@ -56,8 +55,6 @@ shellspec_example() {
       { shellspec_invoke_example; }
     fi
   fi
-
-  shellspec_output EXAMPLE_END
 }
 
 shellspec_invoke_example() {

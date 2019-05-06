@@ -11,30 +11,12 @@ shellspec_output_FLUSH() {
   shellspec_putsn
 }
 
-shellspec_output_SPECFILE_BEGIN() {
-  shellspec_output_raw "type:begin" "tag:specfile" \
-    "specfile:${SHELLSPEC_SPECFILE:-}"
+shellspec_output_BEGIN() {
+  shellspec_output_raw "type:begin" "specfile:$SHELLSPEC_SPECFILE"
 }
 
-shellspec_output_SPECFILE_END() {
-  shellspec_output_raw "type:end" "tag:specfile" \
-    "specfile:${SHELLSPEC_SPECFILE:-}"
-}
-
-shellspec_output_EXAMPLE_GROUP_BEGIN() {
-  shellspec_output_raw begin "tag:example_group"
-}
-
-shellspec_output_EXAMPLE_GROUP_END() {
-  shellspec_output_raw end "tag:example_group"
-}
-
-shellspec_output_EXAMPLE_BEGIN() {
-  shellspec_output_raw begin "tag:example"
-}
-
-shellspec_output_EXAMPLE_END() {
-  shellspec_output_raw end "tag:example"
+shellspec_output_END() {
+  shellspec_output_raw "type:end"
 }
 
 shellspec_output_SKIP() {
