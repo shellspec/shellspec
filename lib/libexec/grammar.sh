@@ -58,13 +58,13 @@ mapping() {
     Data:raw    )   data raw            "$2" ;;
     Data:expand )   data expand         "$2" ;;
     Include     )   include             "$2" ;;
-    Logger      )   control logger      "$2" ;;
     %text       )   text_begin raw      "$2" ;;
     %text:raw   )   text_begin raw      "$2" ;;
     %text:expand)   text_begin expand   "$2" ;;
     % | %const  )   constant            "$2" ;;
     %= | %putsn )   out putsn           "$2" ;;
     %- | %puts  )   out puts            "$2" ;;
+    %logger     )   out logger          "$2" ;;
     *)
       case $1 in (*\(\))
         is_function_name "${1%??}" || return 1

@@ -130,8 +130,9 @@ trans_text_end() {
 
 trans_out() {
   case $1 in
-    putsn) putsn "shellspec_putsn $2" ;;
-    puts)  putsn "shellspec_puts $2" ;;
+    putsn)  putsn "shellspec_putsn $2" ;;
+    puts)   putsn "shellspec_puts $2" ;;
+    logger) putsn "shellspec_logger $2" ;;
   esac
 }
 

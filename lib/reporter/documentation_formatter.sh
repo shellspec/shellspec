@@ -15,30 +15,26 @@ documentation_formatter() {
     conclusion_format "$@"
     references_format "$@"
 
-    case $field_tag in
-      log) putsn "${field_color}${field_message}${RESET}" ;;
-      *)
-        [ "$field_type" = "result" ] || return 0
-        if [ "$_last_specfile" != "$field_specfile" ]; then
-          _last_specfile=$field_specfile _last_id=''
-          putsn
-        fi
-        _id=$_last_id _current_id=$field_id
-        _description=$field_description _indent='' _last_id=$field_id
-        while [ "${_id%%:*}" = "${_current_id%%:*}" ]; do
-          _id=${_id#*:} _current_id=${_current_id#*:}
-          _description=${_description#*$VT} _indent="${_indent}  "
-        done
-        while :; do
-          case $_description in (*$VT*) ;; (*) break ;; esac
-          putsn "${_indent}${_description%%$VT*}"
-          _description=${_description#*$VT} _indent="${_indent}  "
-        done
+    [ "$field_type" = "result" ] || return 0
+    if [ "$_last_specfile" != "$field_specfile" ]; then
+      _last_specfile=$field_specfile _last_id=''
+      putsn
+    fi
+    _id=$_last_id _current_id=$field_id
+    _description=$field_description _indent='' _last_id=$field_id
+    while [ "${_id%%:*}" = "${_current_id%%:*}" ]; do
+      _id=${_id#*:} _current_id=${_current_id#*:}
+      _description=${_description#*$VT} _indent="${_indent}  "
+    done
+    while :; do
+      case $_description in (*$VT*) ;; (*) break ;; esac
+      putsn "${_indent}${_description%%$VT*}"
+      _description=${_description#*$VT} _indent="${_indent}  "
+    done
 
-        set -- "${_indent}${field_color}${_description}"
-        [ "$example_index" ] && set -- "$@" "(${field_note:-} - $example_index)"
-        putsn "$*${RESET}"
-    esac
+    set -- "${_indent}${field_color}${_description}"
+    [ "$example_index" ] && set -- "$@" "(${field_note:-} - $example_index)"
+    putsn "$*${RESET}"
   }
 
   formatter_end() {

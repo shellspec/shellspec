@@ -202,7 +202,9 @@ shellspec_include() {
 }
 
 shellspec_logger() {
-  shellspec_output LOG "${*:-}"
+  sleep 0; sleep 0; sleep 0; sleep 0; sleep 0;
+  shellspec_putsn "$@" >"$SHELLSPEC_LOGFILE"
+  sleep 0; sleep 0; sleep 0; sleep 0; sleep 0;
 }
 
 shellspec_marker() {

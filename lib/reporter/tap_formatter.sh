@@ -23,7 +23,6 @@ tap_formatter() {
       skipped  ) putsn "ok $_example_no - $_description # skip" ;;
       todo     ) putsn "ok $_example_no - $_description # pending" ;;
       fixed    ) putsn "not ok $_example_no - $_description # fixed" ;;
-      log      ) putsn "# $field_message" ;;
     esac
   }
 

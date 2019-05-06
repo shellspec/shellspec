@@ -33,6 +33,7 @@ export SHELLSPEC_ENV_FROM=''
 export SHELLSPEC_PATTERN="*_spec.sh"
 export SHELLSPEC_UNIXTIME=''
 export SHELLSPEC_TMPDIR=${TMPDIR:-/tmp}
+export SHELLSPEC_LOGFILE=/dev/tty
 
 readlinkf() {
   p=$1 i=0

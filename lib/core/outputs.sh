@@ -219,7 +219,3 @@ shellspec_output_SKIPPED() {
   shellspec_output_raw result "tag:skipped" "skipid:${SHELLSPEC_SKIP_ID:-}" \
     "conditional:${SHELLSPEC_CONDITIONAL_SKIP:+yes}" "note:SKIPPED"
 }
-
-shellspec_output_LOG() {
-  shellspec_output_raw statement "tag:log" "message:${*:-}"
-}

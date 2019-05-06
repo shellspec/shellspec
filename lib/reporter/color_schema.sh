@@ -42,7 +42,6 @@ color_schema() {
     pending      ) field_color=${MAGENTA} ;;
     bad          ) field_color=${RED}
       [ -z "$field_pending" ] || field_color=${YELLOW} ;;
-    log          ) field_color=${BOLD}${UNDERLINE}${WHITE} ;;
     *            ) field_color=${WHITE} ;;
   esac
 }

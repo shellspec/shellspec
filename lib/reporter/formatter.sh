@@ -32,7 +32,7 @@ conclusion_begin() { :; }
 
 conclusion_format() {
   [ "$field_type" = "statement" ] || return 0
-  case $field_tag in (evaluation|log) return 0; esac
+  case $field_tag in (evaluation) return 0; esac
   [ "$example_index" ] || return 0
 
   description=${field_description:-}
