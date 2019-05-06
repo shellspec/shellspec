@@ -35,14 +35,11 @@ conclusion_format() {
   case $field_tag in (evaluation) return 0; esac
   [ "$example_index" ] || return 0
 
-  description=${field_description:-}
-  replace description "$VT" " "
-
   conclusion_set_if_empty "${LF}Examples:${LF}"
   label="  $example_index) " indent=''
   padding indent ' ' ${#label}
   if [ "$detail_index" -eq 1 ]; then
-    conclusion_append "${WHITE}${label}${description}${RESET}"
+    conclusion_append "${WHITE}${label}$(field_description)${RESET}"
     if [ "${field_evaluation:-}" ]; then
       conclusion_append "${BOLD}${CYAN}${indent}${field_evaluation:-}${RESET}"
       conclusion_append
@@ -103,15 +100,13 @@ summary() {
     [ "$suppressed_skipped_count" -ne 1 ] && summary="${summary}s"
     summary="$summary)"
   fi
-  each callback "$todo_count pending"   "$fixed_count fix"
+  each callback "$todo_count pending" "$fixed_count fix"
   if [ "$interrupt" ]; then
     summary="$summary, aborted by an interrupt"
   elif [ "$aborted" ]; then
     summary="$summary, aborted by an unexpected error"
   fi
-  if [ "$no_examples" ]; then
-    summary="$summary, no examples found"
-  fi
+  [ "$no_examples" ] && summary="$summary, no examples found"
 
   [ "$warned_count" ] && color=$YELLOW || color=$GREEN
   [ "${failed_count}${aborted}${interrupt}${no_examples}" ] && color=$RED
@@ -124,12 +119,9 @@ references_format() {
   [ "$field_type" = "result" ] || return 0
   [ -z "$example_index" ] && [ "$field_focused" != "focus" ] && return 0
 
-  description=${field_description:-}
-  replace description "$VT" " "
-
   set -- "${field_color}shellspec" \
     "$field_specfile:${field_range%-*}${RESET}" \
-    "${CYAN}# ${example_index:--}) $description ${field_note:-}${RESET}"
+    "${CYAN}# ${example_index:--}) $(field_description) ${field_note:-}${RESET}"
 
   # shellcheck disable=SC2145
   [ "$field_focused" = "focus" ] && set -- "${UNDERLINE}$@"

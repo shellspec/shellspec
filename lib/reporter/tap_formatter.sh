@@ -7,22 +7,20 @@ tap_formatter() {
   count "$@"
 
   formatter_begin() {
-    _example_no=0
+    _no=0
     putsn "1..$example_count"
   }
 
   formatter_format() {
-    [ "$field_type" = "result" ] && _example_no=$(($_example_no + 1))
+    [ "$field_type" = "result" ] && _no=$(($_no + 1))
 
-    _description=${field_description:-}
-    replace _description "$VT" " "
     case $field_tag in
-      succeeded) putsn "ok $_example_no - $_description" ;;
-      warned   ) putsn "ok $_example_no - $_description" ;;
-      failed   ) putsn "not ok $_example_no - $_description" ;;
-      skipped  ) putsn "ok $_example_no - $_description # skip" ;;
-      todo     ) putsn "ok $_example_no - $_description # pending" ;;
-      fixed    ) putsn "not ok $_example_no - $_description # fixed" ;;
+      succeeded) putsn "ok"     "$_no - $(field_description)" ;;
+      warned   ) putsn "ok"     "$_no - $(field_description)" ;;
+      failed   ) putsn "not ok" "$_no - $(field_description)" ;;
+      skipped  ) putsn "ok"     "$_no - $(field_description) # skip" ;;
+      todo     ) putsn "ok"     "$_no - $(field_description) # pending" ;;
+      fixed    ) putsn "not ok" "$_no - $(field_description) # fixed" ;;
     esac
   }
 

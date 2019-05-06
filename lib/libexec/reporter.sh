@@ -29,3 +29,9 @@ buffer() {
     shift
   done
 }
+
+field_description() {
+  _description=${field_description:-}
+  replace _description "$VT" " "
+  putsn "$_description"
+}
