@@ -544,6 +544,11 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
+0.13.0 (not yet released)
+
+* Change `Logger` Helper to `%logger` directive.
+* Redesign reporter to improve performance, maintainability.
+
 0.12.0 (2019-04-26)
 
 * Add `--list-specfiles`, `--list-examples` option.
