@@ -59,7 +59,7 @@ run() {
   echo
   docker run -it --rm "shellspec:$tag" "$@" &&:
   xs=$?
-  echo "exit status: $?"
+  echo "exit status: $xs"
   case $tag in
     *-fail) ;;
     *) [ $xs -eq 0 ] || exit 1

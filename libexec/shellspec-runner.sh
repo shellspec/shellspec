@@ -37,13 +37,9 @@ if (trap - TERM) 2>/dev/null; then trap ':' TERM; fi
 
 executor() {
   executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
-
   # shellcheck disable=SC2086
   command $SHELLSPEC_TIME $SHELLSPEC_SHELL "$executor" "$@" \
-    3>&2 2>"$SHELLSPEC_TIME_LOG" && :
-  executor_status=$?
-  [ "$executor_status" -eq 0 ] && shellspec_putsn "$SHELLSPEC_EOT"
-  return $executor_status
+    3>&2 2>"$SHELLSPEC_TIME_LOG"
 }
 
 reporter() {

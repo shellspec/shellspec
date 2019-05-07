@@ -8,17 +8,14 @@ shellspec_output() {
 shellspec_output_raw() {
   [ $# -gt 0 ] || return 0
 
-  case $1 in (begin | end | statement | result)
-    # shellcheck disable=SC2145
-    set -- "type:$@" "id:${SHELLSPEC_ID:-}" "block_no:${SHELLSPEC_BLOCK_NO:-}" \
-      "specfile:${SHELLSPEC_SPECFILE:-}" "focused:${SHELLSPEC_FOCUSED:-}" \
-      "range:${SHELLSPEC_LINENO_BEGIN:-}-${SHELLSPEC_LINENO_END:-}" \
-      "desc:$SHELLSPEC_DESC" "description:$SHELLSPEC_DESCRIPTION"
-  esac
-  case ${1#type:} in (statement | result)
-    set -- "$@" "example_no:${SHELLSPEC_EXAMPLE_NO:-}" \
-      "lineno:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}" \
-      "evaluation:${SHELLSPEC_EVALUATION:-}" "pending:${SHELLSPEC_PENDING:-}"
+  # shellcheck disable=SC2145
+  case $1 in
+    example)
+      set -- "type:$@" "evaluation:" ;;
+    statement)
+      set -- "type:$@" "lineno:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}" ;;
+    *)
+      set -- "type:$@" ;;
   esac
 
   shellspec_output_buf="${shellspec_output_buf:-}$SHELLSPEC_RS"

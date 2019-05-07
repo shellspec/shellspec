@@ -8,7 +8,7 @@ worker() {
   job() {
     (set -C; : > "$SHELLSPEC_JOBDIR/$1.lock") 2>/dev/null || return 0
     IFS= read -r specfile < "$SHELLSPEC_JOBDIR/$1.job"
-    translator --no-metadata "$specfile" | $SHELLSPEC_SHELL \
+    translator --no-metadata --no-finished "$specfile" | $SHELLSPEC_SHELL \
       > "$SHELLSPEC_JOBDIR/$1.stdout" 2> "$SHELLSPEC_JOBDIR/$1.stderr" &&:
     echo "$?" > "$SHELLSPEC_JOBDIR/$1.status"
     : > "$SHELLSPEC_JOBDIR/$1.done"
@@ -40,10 +40,9 @@ executor() {
   }
   eval find_specfiles specfile ${1+'"$@"'}
 
-  translator | $SHELLSPEC_SHELL # Show only metadata
-
+  translator --no-finished | $SHELLSPEC_SHELL # output only metadata
   callback() { worker "$1" & }
   sequence callback 0 $(($SHELLSPEC_JOBS-1))
-
   reduce
+  translator --no-metadata | $SHELLSPEC_SHELL # output only finished
 }

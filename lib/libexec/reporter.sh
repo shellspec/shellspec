@@ -1,8 +1,33 @@
 #shellcheck shell=sh disable=SC2004
 
+: "${specfile_count:-} ${example_count:-}"
+
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use constants
+
+load_formatters() {
+  formatters=''
+  for f in "$@"; do
+    formatters="$formatters $f"
+    eval "${f}_begin() { :; }; ${f}_format() { :; }; ${f}_end() { :; };"
+    import "$f"
+  done
+}
+
+invoke_formatters() {
+  for f in $formatters; do
+    #shellcheck shell=sh disable=SC2145
+    "${f}_$@"
+  done
+}
+
+count() {
+  specfile_count=0 example_count=0
+  #shellcheck shell=sh disable=SC2046
+  set -- $($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-count.sh" "$@")
+  specfile_count=$1 example_count=$2
+}
 
 # $1: prefix, $2: filename
 read_time_log() {
@@ -23,7 +48,7 @@ buffer() {
       $1_set_if_empty() { if $1_is_empty; then $1_append \"\$@\"; fi; }
       $1_append() { $1_buffer=\$$1_buffer\${*:-}\${LF}; }
       $1_flush() {
-        if ! $1_is_empty; then putsn \"\$$1_buffer\"; $1_buffer=''; fi
+        if ! $1_is_empty; then puts \"\$$1_buffer\"; $1_buffer=''; fi
       }
     "
     shift
@@ -31,7 +56,7 @@ buffer() {
 }
 
 field_description() {
-  _description=${field_description:-}
-  replace _description "$VT" " "
-  putsn "$_description"
+  description=${field_description:-}
+  replace description "$VT" " "
+  putsn "$description"
 }

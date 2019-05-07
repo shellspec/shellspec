@@ -11,32 +11,32 @@ Describe '1'
     After "hook after 3"
 
     # The before hook is called by defined order
-    Logger "==== before example 1:1:1 ===="
+    %logger "==== before example 1:1:1 ===="
     Example '1:1:1'
-      Logger "example ${SHELLSPEC_ID}"
+      %logger "example ${SHELLSPEC_ID}"
       When call :
     End
-    Logger "==== after example 1:1:1 ===="
+    %logger "==== after example 1:1:1 ===="
     # The after hook is called by defined reverse order
 
     # The before hook is called for each example
-    Logger "==== before example 1:1:2 ===="
+    %logger "==== before example 1:1:2 ===="
     Example '1:1:2'
-      Logger "example ${SHELLSPEC_ID}"
+      %logger "example ${SHELLSPEC_ID}"
       When call :
     End
-    Logger "==== after example 1:1:2 ===="
+    %logger "==== after example 1:1:2 ===="
     # The after hook is called for each example
   End
 
   Describe '1:2'
     # The before 3 hook is not called
-    Logger "==== before example 1:2:1 ===="
+    %logger "==== before example 1:2:1 ===="
     Example '1:2:1'
-      Logger "example ${SHELLSPEC_ID}"
+      %logger "example ${SHELLSPEC_ID}"
       When call :
     End
-    Logger "==== after example 1:2:1 ===="
+    %logger "==== after example 1:2:1 ===="
     # The after 3 hook is not called
   End
 End

@@ -4,12 +4,13 @@ SHELLSPEC_DESCRIPTION=''
 SHELLSPEC_PATH_ALIAS=:
 
 # to suppress shellcheck SC2034
-: "${SHELLSPEC_EXPECTATION:-}" "${SHELLSPEC_EVALUATION:-}"
-: "${SHELLSPEC_SKIP_REASON:-}" "${SHELLSPEC_CONDITIONAL_SKIP:-}"
-: "${SHELLSPEC_LINENO:-}"
+: "${SHELLSPEC_EXPECTATION:-} ${SHELLSPEC_EVALUATION:-}"
+: "${SHELLSPEC_SKIP_REASON:-} ${SHELLSPEC_CONDITIONAL_SKIP:-}"
+: "${SHELLSPEC_SPECFILE:-} ${SHELLSPEC_LINENO:-}"
 
 shellspec_metadata() { shellspec_output METADATA; }
 shellspec_flush() { shellspec_output FLUSH; }
+shellspec_finished() { shellspec_output FINISHED; }
 
 shellspec_yield() {
   "shellspec_yield$SHELLSPEC_BLOCK_NO"
@@ -27,12 +28,6 @@ shellspec_end() {
 }
 
 shellspec_description() {
-  if [ "$2" ]; then
-    SHELLSPEC_DESC=$2
-  else
-    SHELLSPEC_DESC="<$1:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END>"
-  fi
-
   set -- "${2:-<$1:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END>}"
   SHELLSPEC_DESCRIPTION="${SHELLSPEC_DESCRIPTION}$1"
 }
@@ -58,6 +53,8 @@ shellspec_example() {
 }
 
 shellspec_invoke_example() {
+  shellspec_output EXAMPLE
+
   shellspec_on NOT_IMPLEMENTED
   shellspec_off FAILED WARNED
   shellspec_off UNHANDLED_STATUS UNHANDLED_STDOUT UNHANDLED_STDERR
@@ -199,9 +196,8 @@ shellspec_include() {
 }
 
 shellspec_logger() {
-  sleep 0; sleep 0; sleep 0; sleep 0; sleep 0;
+  sleep 0
   shellspec_putsn "$@" >"$SHELLSPEC_LOGFILE"
-  sleep 0; sleep 0; sleep 0; sleep 0; sleep 0;
 }
 
 shellspec_marker() {

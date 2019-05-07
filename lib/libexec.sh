@@ -70,6 +70,14 @@ warn() {
   fi
 }
 
+info() {
+  if [ "$SHELLSPEC_COLOR" ]; then
+    printf '\033[33m%s\033[0m\n' "$*"
+  else
+    printf '%s\n' "$*"
+  fi
+}
+
 error() {
   if [ "$SHELLSPEC_COLOR" ]; then
     printf '\33[2;31m%s\33[0m\n' "${*:-}" >&2

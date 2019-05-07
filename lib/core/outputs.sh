@@ -1,22 +1,36 @@
 #shellcheck shell=sh disable=SC2016
 
 shellspec_output_METADATA() {
-  shellspec_output_raw \
-    "shell:$SHELLSPEC_SHELL" \
-    "shell_type:$SHELLSPEC_SHELL_TYPE" \
-    "shell_version:$SHELLSPEC_SHELL_VERSION"
+  shellspec_output_raw meta "shell:$SHELLSPEC_SHELL" \
+    "shell_type:$SHELLSPEC_SHELL_TYPE" "shell_version:$SHELLSPEC_SHELL_VERSION"
 }
 
 shellspec_output_FLUSH() {
   shellspec_putsn
 }
 
+shellspec_output_FINISHED() {
+  shellspec_output_raw finished
+}
+
 shellspec_output_BEGIN() {
-  shellspec_output_raw "type:begin" "specfile:$SHELLSPEC_SPECFILE"
+  shellspec_output_raw begin "specfile:$SHELLSPEC_SPECFILE"
 }
 
 shellspec_output_END() {
-  shellspec_output_raw "type:end"
+  shellspec_output_raw end
+}
+
+shellspec_output_EXAMPLE() {
+  shellspec_output_raw example "id:${SHELLSPEC_ID:-}" \
+    "block_no:${SHELLSPEC_BLOCK_NO:-}" "focused:${SHELLSPEC_FOCUSED:-}" \
+    "range:${SHELLSPEC_LINENO_BEGIN:-}-${SHELLSPEC_LINENO_END:-}" \
+    "description:$SHELLSPEC_DESCRIPTION"
+}
+
+shellspec_output_EVALUATION() {
+  shellspec_output_raw statement "tag:evaluation" \
+    "evaluation:$SHELLSPEC_EVALUATION"
 }
 
 shellspec_output_SKIP() {
@@ -26,7 +40,7 @@ shellspec_output_SKIP() {
   else
     set -- "message:Temporarily skipped"
   fi
-  shellspec_output_raw statement "tag:skip" "skipid:${SHELLSPEC_SKIP_ID}" \
+  shellspec_output_raw statement "tag:skip" "skipid:$SHELLSPEC_SKIP_ID" \
     "conditional:${SHELLSPEC_CONDITIONAL_SKIP:+yes}" "$@"
 }
 
@@ -45,10 +59,9 @@ shellspec_output_UNHANDLED_STATUS() {
     notice | error) set -- "tag:warn" ;;
     failure) set -- "tag:bad" ;;
   esac
-  shellspec_output_raw statement "$@" \
+  shellspec_output_raw statement "$@" "note:" \
     "message:It was exits with status non-zero but not found expectation"
-  shellspec_output_raw_append "failure_message:status:" \
-    "$SHELLSPEC_STATUS"
+  shellspec_output_raw_append "failure_message:status:" "$SHELLSPEC_STATUS"
 }
 
 shellspec_output_UNHANDLED_STDOUT() {
@@ -57,10 +70,9 @@ shellspec_output_UNHANDLED_STDOUT() {
     notice | error) set -- "tag:warn" ;;
     failure) set -- "tag:bad" ;;
   esac
-  shellspec_output_raw statement "$@" \
+  shellspec_output_raw statement "$@" "note:" \
     "message:It was output to stdout but not found expectation"
-  shellspec_output_raw_append "failure_message:stdout:" \
-    "$SHELLSPEC_STDOUT"
+  shellspec_output_raw_append "failure_message:stdout:" "$SHELLSPEC_STDOUT"
 }
 
 shellspec_output_UNHANDLED_STDERR() {
@@ -69,41 +81,32 @@ shellspec_output_UNHANDLED_STDERR() {
     notice | error) set -- "tag:warn" ;;
     failure) set -- "tag:bad" ;;
   esac
-  shellspec_output_raw statement "$@" \
+  shellspec_output_raw statement "$@" "note:" \
     "message:It was output to stderr but not found expectation"
   shellspec_output_raw_append "failure_message:stderr:" \
     "$SHELLSPEC_STDERR"
 }
 
-shellspec_output_EVALUATION() {
-  set -- "tag:evaluation"
-  shellspec_output_raw statement "$@"
-}
-
 shellspec_output_FAILED_BEFORE_HOOK() {
-  set -- "tag:bad" "message:Before hook '$SHELLSPEC_HOOK' failed"
-  shellspec_output_raw statement "$@"
+  shellspec_output_raw statement "tag:bad" "note:" \
+    "message:Before hook '$SHELLSPEC_HOOK' failed"
   shellspec_output_raw_append "failure_message:The before hook registered" \
     "at line $SHELLSPEC_HOOK_LINENO returned $SHELLSPEC_HOOK_STATUS"
 }
 
 shellspec_output_FAILED_AFTER_HOOK() {
-  set -- "tag:bad" "message:After hook '$SHELLSPEC_HOOK' failed"
-  shellspec_output_raw statement "$@"
+  shellspec_output_raw statement "tag:bad" "note:" \
+    "message:After hook '$SHELLSPEC_HOOK' failed"
   shellspec_output_raw_append "failure_message:The after hook registered" \
     "at line $SHELLSPEC_HOOK_LINENO returned $SHELLSPEC_HOOK_STATUS"
 }
 
 shellspec_output_MATCHED() {
-  set -- "tag:good" "message:$SHELLSPEC_EXPECTATION"
-  shellspec_if FIXED && set -- "pending:yes" "note:FIXED" "$@"
-  shellspec_output_raw statement "$@"
+  shellspec_output_raw statement "tag:good" "message:$SHELLSPEC_EXPECTATION"
 }
 
 shellspec_output_UNMATCHED() {
-  set -- "tag:bad" "message:$SHELLSPEC_EXPECTATION"
-  shellspec_if TODO && set -- "pending:yes" "$@"
-  shellspec_output_raw statement "$@"
+  shellspec_output_raw statement "tag:bad" "message:$SHELLSPEC_EXPECTATION"
 }
 
 shellspec_output_SYNTAX_ERROR() {
@@ -125,8 +128,8 @@ shellspec_output_SYNTAX_ERROR_EXPECTATION() {
 }
 
 shellspec_output_SYNTAX_ERROR_MATCHER_REQUIRED() {
-  shellspec_output_raw statement "tag:bad" \
-    "message:${SHELLSPEC_EXPECTATION:-}"
+  set -- "tag:bad" "message:${SHELLSPEC_EXPECTATION:-}"
+  shellspec_output_raw statement "$@"
   shellspec_output_raw_append "failure_message:A word is required after" \
     "$(shellspec_output_syntax_name)." \
     "The correct word is one of the following."
@@ -172,7 +175,7 @@ shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
 }
 
 shellspec_output_SUCCEEDED() {
-  shellspec_output_raw result "tag:succeeded"
+  shellspec_output_raw result "tag:succeeded" "note:" "error:"
 }
 
 shellspec_output_FAILED() {
@@ -181,23 +184,22 @@ shellspec_output_FAILED() {
 
 shellspec_output_WARNED() {
   case $SHELLSPEC_WARNINGS in
-    none) set -- "tag:succeeded" ;;
-    notice) set -- "tag:warned" "note:WARNED" ;;
-    error) set -- "tag:warned" "note:WARNED"  "error:yes" ;;
-    failure) set -- "tag:failed" "note:FAILED"  "error:yes" ;;
+    none   ) set -- succeeded ;;
+    notice ) set -- warned    WARNED ;;
+    error  ) set -- warned    WARNED yes ;;
+    failure) set -- failed    FAILED yes ;;
   esac
-  shellspec_output_raw result "$@"
+  shellspec_output_raw result "tag:$1" "note:${2:-}" "error:${3:-}"
 }
 
 shellspec_output_TODO() {
-  shellspec_output_raw result "tag:todo" "note:PENDING"
+  shellspec_output_raw result "tag:todo" "note:PENDING" "error:"
 }
 
 shellspec_output_FIXED() {
-  shellspec_output_raw result "tag:fixed" "error:yes" "note:FIXED"
+  shellspec_output_raw result "tag:fixed" "note:FIXED" "error:yes"
 }
 
 shellspec_output_SKIPPED() {
-  shellspec_output_raw result "tag:skipped" "skipid:${SHELLSPEC_SKIP_ID:-}" \
-    "conditional:${SHELLSPEC_CONDITIONAL_SKIP:+yes}" "note:SKIPPED"
+  shellspec_output_raw result "tag:skipped" "note:SKIPPED" "error:"
 }

@@ -159,9 +159,18 @@ syntax_error() {
 
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 
-if [ "${1:-}" = "--no-metadata" ]; then
+metadata=1 finished=1
+
+for param in "$@"; do
+  case $param in
+    --no-metadata) metadata='' ;;
+    --no-finished) finished='' ;;
+    *) set -- "$@" "$param" ;;
+  esac
   shift
-else
+done
+
+if [ "$metadata" ]; then
   putsn "shellspec_metadata"
 fi
 
@@ -189,3 +198,7 @@ specfile() {
 eval find_specfiles specfile ${1+'"$@"'}
 
 putsn "shellspec_flush"
+
+if [ "$finished" ]; then
+  putsn "shellspec_finished"
+fi
