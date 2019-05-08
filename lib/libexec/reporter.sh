@@ -25,7 +25,7 @@ invoke_formatters() {
 count() {
   specfile_count=0 example_count=0
   #shellcheck shell=sh disable=SC2046
-  set -- $($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-count.sh" "$@")
+  set -- $($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-list.sh" "$@")
   specfile_count=$1 example_count=$2
 }
 

@@ -8,27 +8,15 @@ set -eu
 use trim
 load grammar
 
-focus='' list=''
-for arg in "$@"; do
-  case $arg in
-    --focus) focus=1 ;;
-    --list-specfiles) list=specfiles ;;
-    --list-examples) list=examples ;;
-    *) set -- "$@" "$arg" ;;
-  esac
-  shift
-done
-
 specfiles=0 count=0
 specfile() {
-  specfile=$1
-  specfiles=$(($specfiles + 1))
-  if [ "$list" = "specfiles" ]; then
+  specfile=$1 specfiles=$(($specfiles + 1))
+  if [ "${SHELLSPEC_LIST:-}" = "specfiles" ]; then
     echo "$specfile"
   else
     if [ "${2:-}" ]; then
       count_lineno "$2" < "$specfile"
-    elif [ "$focus" ]; then
+    elif [ "${SHELLSPEC_FOCUS:-}" ]; then
       count_focus < "$specfile"
     else
       count_all < "$specfile"
@@ -37,23 +25,29 @@ specfile() {
 }
 
 count_all() {
-  lineno=0
+  lineno=0 example_id=''
   while IFS= read -r line || [ "$line" ]; do
     trim line
-    lineno=$(($lineno + 1))
-    is_example "${line%% *}" || continue
-    [ "$list" = "examples" ] && echo "$specfile:$lineno"
+    line=${line%% *} lineno=$(($lineno + 1))
+    is_begin_block "$line" && increase_example_id
+    is_end_block "$line" && decrease_example_id
+    is_example "$line" || continue
+    case ${SHELLSPEC_LIST:-} in
+      examples:id) echo "$specfile@$example_id" ;;
+      examples:lineno) echo "$specfile:$lineno" ;;
+    esac
     count=$(($count + 1))
   done
 }
 
 count_lineno() {
-  lineno=0 block_no=0 block_no_stack='' block=''
+  lineno=0 block_no=0 block_no_stack='' block='' example_id=''
   while IFS= read -r line || [ "$line" ]; do
     trim line
     lineno=$(($lineno + 1)) line=${line%% *}
 
     if is_begin_block "$line"; then
+      increase_example_id
       block_no=$(($block_no + 1))
       block_no_stack="$block_no_stack $block_no"
       eval "block_${block_no}=$lineno"
@@ -64,6 +58,7 @@ count_lineno() {
     esac
 
     if is_end_block "$line"; then
+      decrease_example_id
       no=${block_no_stack##* }
       eval "block_${no}=\"\${block_${no}:-} $lineno\""
       block_no_stack="${block_no_stack% *}"
@@ -71,8 +66,9 @@ count_lineno() {
 
     if is_example "$line"; then
       eval "example_$lineno="
+      eval "example_id_$lineno=\$example_id"
     else
-      eval "if [ \"\${example_$lineno+x}\" ]; then unset example_$lineno; fi"
+      eval "unset example_$lineno example_id_$lineno ||:"
     fi
   done
 
@@ -94,7 +90,10 @@ count_lineno() {
   i=1
   while [ $i -le $lineno ]; do
     if eval "[ \"\${example_$i:-}\" ]"; then
-      [ "$list" = "examples" ] && echo "$specfile:$i"
+      case ${SHELLSPEC_LIST:-} in
+        examples:id) eval echo "\$specfile@\$example_id_$i" ;;
+        examples:lineno) echo "$specfile:$i" ;;
+      esac
       count=$(($count + 1))
     fi
     i=$(($i + 1))
@@ -102,16 +101,21 @@ count_lineno() {
 }
 
 count_focus() {
-  focused='' nest=0 lineno=0
+  focused='' nest=0 lineno=0 example_id=''
   while IFS= read -r line || [ "$line" ]; do
     trim line
     lineno=$(($lineno + 1))
     line=${line%% *}
+    is_begin_block "$line" && increase_example_id
+    is_end_block "$line" && decrease_example_id
     is_focused_block "$line" && focused=1
     [ "$focused" ] || continue
     is_begin_block "$line" && nest=$(($nest + 1))
     if is_example "$line"; then
-      [ "$list" = "examples" ] && echo "$specfile:$lineno"
+      case ${SHELLSPEC_LIST:-} in
+        examples:id) echo "$specfile@$example_id" ;;
+        examples:lineno) echo "$specfile:$lineno" ;;
+      esac
       count=$(($count + 1))
     fi
     is_end_block "$line" && nest=$(($nest - 1))
@@ -121,6 +125,4 @@ count_focus() {
 
 find_specfiles specfile "$@"
 
-if [ "$list" = "" ]; then
-  echo "$specfiles $count"
-fi
+[ "${SHELLSPEC_LIST:-}" ] || echo "$specfiles $count"

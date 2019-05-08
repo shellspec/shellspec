@@ -151,27 +151,24 @@ syntax_error() {
 
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 
-metadata=1 finished=1
+no_metadata='' no_finished=''
 
 for param in "$@"; do
   case $param in
-    --no-metadata) metadata='' ;;
-    --no-finished) finished='' ;;
+    --no-metadata) no_metadata=1 ;;
+    --no-finished) no_finished=1 ;;
     *) set -- "$@" "$param" ;;
   esac
   shift
 done
 
-if [ "$metadata" ]; then
-  putsn "shellspec_metadata"
-fi
+[ "$no_metadata" ] || putsn "shellspec_metadata"
 
 specfile() {
   specfile=$1 focus_lineno="${2:-}" focused='all'
   escape_quote specfile
-  [ "$focus_lineno" ] && focused=''
+  [ "${focus_lineno}${SHELLSPEC_FOCUS}" ] && focused=''
   [ "$focus_lineno" ] || unset focus_lineno
-  [ "$SHELLSPEC_FOCUS" ] && focused=''
 
   putsn "shellspec_marker '$specfile' ---"
   putsn "(shellspec_begin '$specfile' '$focused'"
@@ -185,6 +182,4 @@ specfile() {
 eval find_specfiles specfile ${1+'"$@"'}
 putsn "shellspec_flush"
 
-if [ "$finished" ]; then
-  putsn "shellspec_finished"
-fi
+[ "$no_finished" ] || putsn "shellspec_finished"

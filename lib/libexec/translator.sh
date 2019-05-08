@@ -240,8 +240,7 @@ remove_lineno_in_range() {
 }
 
 translate() {
-  initialize_example_id
-  inside_of_example='' inside_of_text=''
+  example_id='' inside_of_example='' inside_of_text=''
   while IFS= read -r line || [ "$line" ]; do
     lineno=$(($lineno + 1)) work=$line
     trim work

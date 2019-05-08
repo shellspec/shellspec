@@ -84,11 +84,8 @@ mapping() {
   esac
 }
 
-initialize_example_id() {
-  example_id='' example_id_increased=1
-}
-
 increase_example_id() {
+  [ "$example_id" ] || example_id_increased=1
   [ "$example_id_increased" ] && example_id=$example_id${example_id:+-}0
   case $example_id in
     *-*) example_id=${example_id%-*}-$((${example_id##*-} + 1)) ;;
