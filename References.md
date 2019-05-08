@@ -144,7 +144,6 @@ other
 | Skip `<REASON>`                                | Skip current block.                               |
 | Skip if `<REASON>` `<FUNCTION> [ARGUMENTS...]` | Skip current block with conditional.              |
 | Pending  `<REASON>`                            | Pending current block.                            |
-| Logger `<MESSAGE>`                             | Output log message.                               |
 
 ## Directive
 
@@ -154,6 +153,7 @@ other
 | %text      | Define a multiline texts to output to stdout. |
 | %putsn, %= | Output arguments with the newline.            |
 | %puts, %-  | Output arguments.                             |
+| %logger    | Output log message.                           |
 
 ## Envronment Variables
 
