@@ -83,3 +83,24 @@ mapping() {
       return 1
   esac
 }
+
+initialize_example_id() {
+  example_id='' example_id_increased=1
+}
+
+increase_example_id() {
+  [ "$example_id_increased" ] && example_id=$example_id${example_id:+-}0
+  case $example_id in
+    *-*) example_id=${example_id%-*}-$((${example_id##*-} + 1)) ;;
+    *  ) example_id=$(($example_id + 1)) ;;
+  esac
+  example_id_increased=1
+}
+
+decrease_example_id() {
+  if [ "$example_id_increased" ]; then
+    example_id_increased=''
+  else
+    example_id=${example_id%-*}
+  fi
+}

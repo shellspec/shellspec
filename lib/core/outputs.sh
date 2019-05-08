@@ -22,7 +22,7 @@ shellspec_output_END() {
 }
 
 shellspec_output_EXAMPLE() {
-  shellspec_output_raw example "id:${SHELLSPEC_ID:-}" \
+  shellspec_output_raw example "id:${SHELLSPEC_EXAMPLE_ID:-}" \
     "block_no:${SHELLSPEC_BLOCK_NO:-}" "focused:${SHELLSPEC_FOCUSED:-}" \
     "range:${SHELLSPEC_LINENO_BEGIN:-}-${SHELLSPEC_LINENO_END:-}" \
     "description:$SHELLSPEC_DESCRIPTION"

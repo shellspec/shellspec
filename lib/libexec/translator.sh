@@ -17,27 +17,6 @@ finalize() {
   while [ "$_block_no_stack" ]; do block_end ""; done
 }
 
-initialize_id() {
-  id='' id_state='begin'
-}
-
-increasese_id() {
-  if [ "$id_state" = "begin" ]; then
-    id=$id${id:+:}1
-  else
-    id_state="begin"
-    case $id in
-      *:*) id="${id%:*}:$((${id##*:} + 1))" ;;
-      *) id=$(($id + 1)) ;;
-    esac
-  fi
-}
-
-decrease_id() {
-  [ "$id_state" = "end" ] && id=${id%:*}
-  id_state="end"
-}
-
 one_line_syntax_check() { :; }
 
 is_constant_name() {
@@ -61,7 +40,7 @@ block_example_group() {
     return 0
   fi
 
-  increasese_id
+  increase_example_id
   _block_no=$(($_block_no + 1))
   block_no=$_block_no lineno_begin=$lineno
   eval "block_lineno_begin${_block_no}=$lineno"
@@ -82,7 +61,7 @@ block_example() {
     return 0
   fi
 
-  increasese_id
+  increase_example_id
   _block_no=$(($_block_no + 1)) example_no=$(($example_no + 1))
   block_no=$_block_no lineno_begin=$lineno
   eval "block_lineno_begin${block_no}=$lineno"
@@ -99,7 +78,7 @@ block_end() {
     return 0
   fi
 
-  decrease_id
+  decrease_example_id
   block_no=${_block_no_stack##* } lineno_end=$lineno
   eval "block_lineno_end${block_no}=$lineno"
   eval "lineno_begin=\$block_lineno_begin${block_no}"
@@ -261,7 +240,7 @@ remove_lineno_in_range() {
 }
 
 translate() {
-  initialize_id
+  initialize_example_id
   inside_of_example='' inside_of_text=''
   while IFS= read -r line || [ "$line" ]; do
     lineno=$(($lineno + 1)) work=$line
