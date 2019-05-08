@@ -16,13 +16,11 @@ trans() {
 trans_block_example_group() {
   putsn "(" \
     "SHELLSPEC_BLOCK_NO=$block_no" \
-    "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
+    "SHELLSPEC_ID=$id" \
     "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { "
-  if [ "$focused" ]; then
-    putsn "SHELLSPEC_FOCUSED=$focused"
-  fi
+  [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
   putsn "shellspec_example_group $1"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
@@ -30,14 +28,12 @@ trans_block_example_group() {
 trans_block_example() {
   putsn "(" \
     "SHELLSPEC_BLOCK_NO=$_block_no" \
-    "SHELLSPEC_SPECFILE=\"$specfile\"" "SHELLSPEC_ID=$id" \
+    "SHELLSPEC_ID=$id" \
     "SHELLSPEC_LINENO_BEGIN=$lineno_begin" \
     "SHELLSPEC_EXAMPLE_NO=$example_no"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { "
-  if [ "$focused" ]; then
-    putsn "SHELLSPEC_FOCUSED=$focused"
-  fi
+  [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
   putsn "shellspec_example $1"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
@@ -45,14 +41,12 @@ trans_block_example() {
 trans_block_end() {
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "}; SHELLSPEC_LINENO_END=$lineno_end"
-  if [ "$focused" ]; then
-    putsn "SHELLSPEC_FOCUSED=$focused"
-  fi
+  [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
   putsn "shellspec_block${block_no}) ${1# }"
 }
 
 trans_statement() {
-  putsn "SHELLSPEC_SPECFILE=\"$specfile\" SHELLSPEC_LINENO=$lineno"
+  putsn "SHELLSPEC_LINENO=$lineno"
   putsn "shellspec_statement $1$2"
 }
 
@@ -62,7 +56,7 @@ trans_control() {
 }
 
 trans_skip() {
-  putsn "SHELLSPEC_SPECFILE=\"$specfile\" SHELLSPEC_LINENO=$lineno"
+  putsn "SHELLSPEC_LINENO=$lineno"
   putsn "shellspec_skip ${skip_id}${1:-}"
 }
 
@@ -75,9 +69,7 @@ old_ash_bug_detection() {
   old_ash_bug_detection_() { read -r old_ash_bug_detection; }
   eval "old_ash_bug_detection_<<HERE${SHELLSPEC_LF}\$1${SHELLSPEC_LF}HERE"
   [ "$old_ash_bug_detection" ] && return 0
-  here() {
-    putsn "shellspec_passthrough \"\$@\"<<$1 $2"
-  }
+  here() { putsn "shellspec_passthrough \"\$@\"<<$1 $2"; }
 }
 old_ash_bug_detection 1
 
@@ -175,28 +167,22 @@ if [ "$metadata" ]; then
 fi
 
 specfile() {
-  specfile=$1 focus_lineno="${2:-}"
-  [ "$focus_lineno" ] || unset focus_lineno
+  specfile=$1 focus_lineno="${2:-}" focused='all'
   escape_quote specfile
+  [ "$focus_lineno" ] && focused=''
+  [ "$focus_lineno" ] || unset focus_lineno
+  [ "$SHELLSPEC_FOCUS" ] && focused=''
 
   putsn "shellspec_marker '$specfile' ---"
-  putsn '('
-  if [ "${focus_lineno:-}" ] || [ "$SHELLSPEC_FOCUS" ]; then
-    putsn "SHELLSPEC_FOCUSED="
-  else
-    putsn "SHELLSPEC_FOCUSED=all"
-  fi
-  putsn "shellspec_begin '$specfile'"
+  putsn "(shellspec_begin '$specfile' '$focused'"
   initialize
   putsn "shellspec_marker '$specfile' BOF"
   ( translate < "$1" )
   putsn "shellspec_marker '$specfile' EOF"
   finalize
-  putsn "shellspec_end"
-  putsn ')'
+  putsn "shellspec_end)"
 }
 eval find_specfiles specfile ${1+'"$@"'}
-
 putsn "shellspec_flush"
 
 if [ "$finished" ]; then

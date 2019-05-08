@@ -19,7 +19,7 @@ shellspec_yield() {
 }
 
 shellspec_begin() {
-  SHELLSPEC_SPECFILE=$1
+  SHELLSPEC_SPECFILE=$1 SHELLSPEC_FOCUSED=$2
   shellspec_output BEGIN
 }
 
