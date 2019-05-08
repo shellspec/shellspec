@@ -105,7 +105,7 @@ block_end() {
   eval "lineno_begin=\$block_lineno_begin${block_no}"
 
   if is_focused_lineno; then
-    remove_focused_lineno
+    remove_lineno_in_range
     focused="lineno"
   else
     focused=''
@@ -237,23 +237,25 @@ with_function() {
   "$@"
 }
 
+is_in_lineno_range() {
+  [ "$lineno_begin" -le "$1" ] && [ "$1" -le "$lineno_end" ]
+}
+
 is_focused_lineno() {
   [ "${focus_lineno:-}" ] || return 1
   eval "set -- $focus_lineno"
   while [ $# -gt 0 ]; do
-    [ "$lineno_begin" -le "$1" ] && [ "$1" -le "$lineno_end" ] && return 0
+    is_in_lineno_range "$1" && return 0
     shift
   done
   return 1
 }
 
-remove_focused_lineno() {
+remove_lineno_in_range() {
   eval "set -- $focus_lineno"
   focus_lineno=''
   while [ $# -gt 0 ]; do
-    if [ "$1" -lt "$lineno_begin" ] || [ "$lineno_end" -lt "$1" ]; then
-      focus_lineno="$focus_lineno $1"
-    fi
+    is_in_lineno_range "$1" || focus_lineno="$focus_lineno$1 "
     shift
   done
 }
