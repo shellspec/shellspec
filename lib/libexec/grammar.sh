@@ -72,8 +72,9 @@ mapping() {
           set -- "$1" "${2#"${2%%\%*}"}"
           set -- "$1" "${2%% *}" "${2#* }"
           case $2 in
-            %= | %putsn) with_function "$1" out putsn "$3" ;;
-            %- | %puts ) with_function "$1" out puts  "$3" ;;
+            %= | %putsn) with_function "$1" out putsn  "$3" ;;
+            %- | %puts ) with_function "$1" out puts   "$3" ;;
+            %logger    ) with_function "$1" out logger "$3" ;;
             *) return 1
           esac
           return 0

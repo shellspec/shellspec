@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-hook() { shellspec_logger "$1 $2 ${SHELLSPEC_ID}"; }
+hook() { %logger "$1 $2 ${SHELLSPEC_ID}"; }
 
 Describe '1'
   Before "hook before 1" "hook before 2"
