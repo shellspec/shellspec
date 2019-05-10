@@ -20,9 +20,9 @@ trans_block_example_group() {
     "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { "
-  putsn "SHELLSPEC_FOCUSED=\${SHELLSPEC_FOCUSED:-$focused}"
-  putsn "SHELLSPEC_FILTER=\${SHELLSPEC_FILTER:-$filter}"
-  putsn "SHELLSPEC_ENABLED=\${SHELLSPEC_ENABLED:-$enabled}"
+  [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
+  [ "$filter" ] && putsn "SHELLSPEC_FILTER=$filter"
+  [ "$enabled" ] && putsn "SHELLSPEC_ENABLED=$enabled"
   putsn "shellspec_example_group $1"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
@@ -35,9 +35,9 @@ trans_block_example() {
     "SHELLSPEC_EXAMPLE_NO=$example_no"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { "
-  putsn "SHELLSPEC_FOCUSED=\${SHELLSPEC_FOCUSED:-$focused}"
-  putsn "SHELLSPEC_FILTER=\${SHELLSPEC_FILTER:-$filter}"
-  putsn "SHELLSPEC_ENABLED=\${SHELLSPEC_ENABLED:-$enabled}"
+  [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
+  [ "$filter" ] && putsn "SHELLSPEC_FILTER=$filter"
+  [ "$enabled" ] && putsn "SHELLSPEC_ENABLED=$enabled"
   putsn "shellspec_example $1"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
@@ -45,7 +45,7 @@ trans_block_example() {
 trans_block_end() {
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "}; SHELLSPEC_LINENO_END=$lineno_end"
-  putsn "SHELLSPEC_ENABLED=\${SHELLSPEC_ENABLED:-$enabled}"
+  [ "$enabled" ] && putsn "SHELLSPEC_ENABLED=$enabled"
   putsn "shellspec_block${block_no}) ${1# }"
 }
 

@@ -3,125 +3,101 @@
 
 set -eu
 
-# shellcheck source=lib/libexec.sh
-. "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use trim
-load grammar
+# shellcheck source=lib/libexec/translator.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
 
-specfiles=0 count=0
+trans() {
+  # shellcheck disable=SC2145
+  case $1 in (block_example_group|block_example|block_end)
+    "trans_$@"
+  esac
+}
+
+trans_block_example_group() {
+  putsn "block${block_no}() { "
+  putsn "FILTER=\${FILTER}${filter:-0}" "ENABLED=\${ENABLED}${enabled:-0}"
+}
+
+trans_block_example() {
+  putsn "block${block_no}() { "
+  putsn "LINENO_BEGIN=$lineno_begin" "EXAMPLE_ID=$example_id"
+  putsn "FILTER=\${FILTER}${filter:-0}" "ENABLED=\${ENABLED}${enabled:-0}"
+  putsn "yield"
+}
+
+trans_block_end() {
+  putsn "FILTER=\${FILTER%?}" "ENABLED=\${ENABLED%?}"
+  putsn "}"
+  putsn "FILTER=\${FILTER}${filter:-0}" "ENABLED=\${ENABLED}${enabled:-0}"
+  putsn "block${block_no}"
+  putsn "FILTER=\${FILTER%?}" "ENABLED=\${ENABLED%?}"
+}
+
+yield() {
+  case $ENABLED in (*1*) case $FILTER in (*1*) proc; esac; esac
+}
+
+syntax_error() {
+  set -- "Syntax error: $1 in $specfile line $lineno" "${2:-}"
+  putsn "abort \"$1\" \"$2\""
+}
+
+prepare() {
+  specfile=$1 lineno_renges=${2:-} filter=1
+  [ "$SHELLSPEC_FOCUS_FILTER" ] && filter=''
+  [ "$SHELLSPEC_TAG_FILTER" ] && filter=''
+  [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
+  [ "$lineno_renges" ] && enabled='' || enabled=1
+  SPECFILE=$specfile
+  ENABLED=$enabled
+  FILTER=$filter
+}
+
+if [ "$SHELLSPEC_LIST" = "debug" ]; then
+  specfile() {
+    prepare "$@"
+    initialize; translate < "$1"; finalize
+  }
+  eval find_specfiles specfile ${1+'"$@"'}
+  exit
+fi
+
+if [ "$SHELLSPEC_LIST" = "specfiles" ]; then
+  specfile() { putsn "$1"; }
+  eval find_specfiles specfile ${1+'"$@"'}
+  exit
+fi
+
+if [ "$SHELLSPEC_LIST" ]; then
+  specfile() {
+    prepare "$@"
+    eval "$(initialize; translate < "$1"; finalize)"
+  }
+  # shellcheck disable=SC2153
+  case ${SHELLSPEC_LIST#examples:} in
+    lineno) proc() { echo "$SPECFILE:$LINENO_BEGIN"; }; ;;
+    id)     proc() { echo "$SPECFILE@$EXAMPLE_ID"; }; ;;
+  esac
+  eval find_specfiles specfile ${1+'"$@"'}
+  exit
+fi
+
 specfile() {
-  specfile=$1 specfiles=$(($specfiles + 1))
-  if [ "${SHELLSPEC_LIST:-}" = "specfiles" ]; then
-    echo "$specfile"
-  else
-    if [ "${2:-}" ]; then
-      count_lineno "$2" < "$specfile"
-    elif [ "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
-      count_focus < "$specfile"
-    else
-      count_all < "$specfile"
-    fi
-  fi
+  count=0
+  prepare "$@"
+  eval "$(initialize; translate < "$1"; finalize)"
+  echo "$count"
+}
+proc() {
+  count=$(($count + 1))
 }
 
-count_all() {
-  lineno=0 example_id=''
-  while IFS= read -r line || [ "$line" ]; do
-    trim line
-    line=${line%% *} lineno=$(($lineno + 1))
-    is_begin_block "$line" && increase_example_id
-    is_end_block "$line" && decrease_example_id
-    is_example "$line" || continue
-    case ${SHELLSPEC_LIST:-} in
-      examples:id) echo "$specfile@$example_id" ;;
-      examples:lineno) echo "$specfile:$lineno" ;;
-    esac
-    count=$(($count + 1))
-  done
-}
-
-count_lineno() {
-  lineno=0 block_no=0 block_no_stack='' block='' example_id=''
-  while IFS= read -r line || [ "$line" ]; do
-    trim line
-    line=${line%% *} lineno=$(($lineno + 1))
-
-    if is_begin_block "$line"; then
-      increase_example_id
-      block_no=$(($block_no + 1))
-      block_no_stack="$block_no_stack $block_no"
-      eval "block_${block_no}=$lineno"
-    fi
-
-    case " $1 " in (*\ $lineno\ *)
-      eval "block_${block_no}=\"@ \${block_${block_no}#@ }\""
-    esac
-
-    if is_end_block "$line"; then
-      decrease_example_id
-      no=${block_no_stack##* }
-      eval "block_${no}=\"\${block_${no}:-} $lineno\""
-      block_no_stack="${block_no_stack% *}"
-    fi
-
-    if is_example "$line"; then
-      eval "example_$lineno="
-      eval "example_id_$lineno=\$example_id"
-    else
-      eval "unset example_$lineno example_id_$lineno ||:"
-    fi
-  done
-
-  i=1
-  while [ $i -le $block_no ]; do
-    eval "block=\${block_$i:-}"
-    case $block in (@*)
-      range=${block#@ }
-      j=${range% *}
-      range=${range#* }
-      while [ "$j" -le "$range" ]; do
-        eval "if [ \"\${example_$j+x}\" ]; then example_$j=1; fi"
-        j=$(($j + 1))
-      done
-    esac
-    i=$(($i + 1))
-  done
-
-  i=1
-  while [ $i -le $lineno ]; do
-    if eval "[ \"\${example_$i:-}\" ]"; then
-      case ${SHELLSPEC_LIST:-} in
-        examples:id) eval echo "\$specfile@\$example_id_$i" ;;
-        examples:lineno) echo "$specfile:$i" ;;
-      esac
-      count=$(($count + 1))
-    fi
-    i=$(($i + 1))
-  done
-}
-
-count_focus() {
-  focused='' nest=0 lineno=0 example_id=''
-  while IFS= read -r line || [ "$line" ]; do
-    trim line
-    line=${line%% *} lineno=$(($lineno + 1))
-    is_begin_block "$line" && increase_example_id
-    is_end_block "$line" && decrease_example_id
-    is_focused_block "$line" && focused=1
-    [ "$focused" ] || continue
-    is_begin_block "$line" && nest=$(($nest + 1))
-    if is_example "$line"; then
-      case ${SHELLSPEC_LIST:-} in
-        examples:id) echo "$specfile@$example_id" ;;
-        examples:lineno) echo "$specfile:$lineno" ;;
-      esac
-      count=$(($count + 1))
-    fi
-    is_end_block "$line" && nest=$(($nest - 1))
-    [ "$nest" -ne 0 ] || focused=''
-  done
-}
-
-find_specfiles specfile "$@"
-
-[ "${SHELLSPEC_LIST:-}" ] || echo "$specfiles $count"
+total=0 specfiles=0
+while IFS= read -r count; do
+  [ "$count" ] || exit 1
+  specfiles=$(($specfiles + 1))
+  total=$(($total + $count))
+done <<HERE
+$(eval find_specfiles specfile ${1+'"$@"'})
+HERE
+echo "$specfiles $total"
