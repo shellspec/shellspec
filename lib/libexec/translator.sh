@@ -20,7 +20,7 @@ finalize() {
 one_line_syntax_check() { :; }
 
 check_filter() {
-  eval set -- $1
+  eval set -- "$1"
   if [ $# -gt 0 ]; then
     if [ "$SHELLSPEC_EXAMPLE_FILTER" ]; then
       case "${1:-}" in (*"$SHELLSPEC_EXAMPLE_FILTER"*) return 0; esac
