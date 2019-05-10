@@ -20,7 +20,9 @@ trans_block_example_group() {
     "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { "
-  [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
+  putsn "SHELLSPEC_FOCUSED=\${SHELLSPEC_FOCUSED:-$focused}"
+  putsn "SHELLSPEC_FILTER=\${SHELLSPEC_FILTER:-$filter}"
+  putsn "SHELLSPEC_ENABLED=\${SHELLSPEC_ENABLED:-$enabled}"
   putsn "shellspec_example_group $1"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
@@ -33,7 +35,9 @@ trans_block_example() {
     "SHELLSPEC_EXAMPLE_NO=$example_no"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { "
-  [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
+  putsn "SHELLSPEC_FOCUSED=\${SHELLSPEC_FOCUSED:-$focused}"
+  putsn "SHELLSPEC_FILTER=\${SHELLSPEC_FILTER:-$filter}"
+  putsn "SHELLSPEC_ENABLED=\${SHELLSPEC_ENABLED:-$enabled}"
   putsn "shellspec_example $1"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
@@ -41,7 +45,7 @@ trans_block_example() {
 trans_block_end() {
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "}; SHELLSPEC_LINENO_END=$lineno_end"
-  [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
+  putsn "SHELLSPEC_ENABLED=\${SHELLSPEC_ENABLED:-$enabled}"
   putsn "shellspec_block${block_no}) ${1# }"
 }
 
@@ -154,16 +158,20 @@ for param in "$@"; do
   shift
 done
 
+filter=1
+[ "$SHELLSPEC_FOCUS_FILTER" ] && filter=''
+[ "$SHELLSPEC_TAG_FILTER" ] && filter=''
+[ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
+
 [ "$no_metadata" ] || putsn "shellspec_metadata"
 
 specfile() {
-  specfile=$1 focus_lineno="${2:-}" focused='all'
+  specfile=$1 lineno_renges="${2:-}"
   escape_quote specfile
-  [ "${focus_lineno}${SHELLSPEC_FOCUS}" ] && focused=''
-  [ "$focus_lineno" ] || unset focus_lineno
+  [ "$lineno_renges" ] && enabled='' || enabled=1
 
   putsn "shellspec_marker '$specfile' ---"
-  putsn "(shellspec_begin '$specfile' '$focused'"
+  putsn "(shellspec_begin '$specfile' '$enabled' '$filter'"
   initialize
   putsn "shellspec_marker '$specfile' BOF"
   ( translate < "$1" )

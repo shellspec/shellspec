@@ -83,15 +83,13 @@ block_end() {
   eval "block_lineno_end${block_no}=$lineno"
   eval "lineno_begin=\$block_lineno_begin${block_no}"
 
-  if is_focused_lineno; then
-    remove_lineno_in_range
-    focused="lineno"
-  else
-    focused=''
+  if is_lineno_included_in_renges; then
+    enabled=1
+    remove_lineno_from_renges
   fi
 
   eval trans block_end ${1+'"$@"'}
-  focused=''
+  enabled=''
 
   _block_no_stack="${_block_no_stack% *}"
   inside_of_example=""
@@ -100,9 +98,9 @@ block_end() {
 x() { "$@"; skip; }
 
 f() {
-  [ "${focus_lineno+x}" ] || focused="focus"
+  focused="focus" filter=1
   "$@"
-  focused=''
+  focused='' filter=''
 }
 
 todo() {
@@ -220,9 +218,9 @@ is_in_lineno_range() {
   [ "$lineno_begin" -le "$1" ] && [ "$1" -le "$lineno_end" ]
 }
 
-is_focused_lineno() {
-  [ "${focus_lineno:-}" ] || return 1
-  eval "set -- $focus_lineno"
+is_lineno_included_in_renges() {
+  [ "${lineno_renges:-}" ] || return 1
+  eval "set -- $lineno_renges"
   while [ $# -gt 0 ]; do
     is_in_lineno_range "$1" && return 0
     shift
@@ -230,11 +228,11 @@ is_focused_lineno() {
   return 1
 }
 
-remove_lineno_in_range() {
-  eval "set -- $focus_lineno"
-  focus_lineno=''
+remove_lineno_from_renges() {
+  eval "set -- $lineno_renges"
+  lineno_renges=''
   while [ $# -gt 0 ]; do
-    is_in_lineno_range "$1" || focus_lineno="$focus_lineno$1 "
+    is_in_lineno_range "$1" || lineno_renges="$lineno_renges$1 "
     shift
   done
 }

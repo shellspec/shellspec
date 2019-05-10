@@ -133,7 +133,7 @@ read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 invoke_formatters end
 
-if [ "$found_focus" ] && [ ! "${SHELLSPEC_FOCUS:-}" ]; then
+if [ "$found_focus" ] && [ ! "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
   info "To run focused example only, you need to specify --focus option."
 fi
 

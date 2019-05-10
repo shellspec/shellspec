@@ -26,7 +26,9 @@ export SHELLSPEC_FAIL_FAST_COUNT=''
 export SHELLSPEC_FAIL_NO_EXAMPLES=''
 export SHELLSPEC_JOBS=0
 export SHELLSPEC_DRYRUN=''
-export SHELLSPEC_FOCUS=''
+export SHELLSPEC_FOCUS_FILTER=''
+export SHELLSPEC_TAG_FILTER=''
+export SHELLSPEC_EXAMPLE_FILTER=''
 export SHELLSPEC_BANNER=''
 export SHELLSPEC_MODE='runner'
 export SHELLSPEC_LIST=''
@@ -110,11 +112,13 @@ Usage: ${0##*/} [options] [files or directories]
                                         [moderate] (mute repeated messages)
                                         [quiet]    (mute repeated messages and non-temporarily messages)
 
-  **** Filtering ****
+  **** Renges / Filters ****
 
-    You can select examples by appending the line numbers to the filename
+    You can select examples range to run by appending the line numbers to the filename
 
-      e.g. shellspec path/to/a_spec.sh:10:20
+      shellspec path/to/a_spec.sh:10:20 # Run the groups or examples that includes lines 10 and 20
+
+    You can filter examples to run with the following options
 
       --focus                         Run focused groups / examples only
                                         To focus, prepend 'f' to groups / examples in specfiles
@@ -159,7 +163,7 @@ parse_options() {
         SHELLSPEC_JOBS=$2
         shift ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
-      --focus) SHELLSPEC_FOCUS=1 ;;
+      --focus) SHELLSPEC_FOCUS_FILTER=1 ;;
       -e | --env) [ $# -ge 2 ] || abort 'Require NAME=VALUE.'
         #shellcheck disable=SC2034
         case $2 in

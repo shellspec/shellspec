@@ -16,7 +16,7 @@ specfile() {
   else
     if [ "${2:-}" ]; then
       count_lineno "$2" < "$specfile"
-    elif [ "${SHELLSPEC_FOCUS:-}" ]; then
+    elif [ "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
       count_focus < "$specfile"
     else
       count_all < "$specfile"

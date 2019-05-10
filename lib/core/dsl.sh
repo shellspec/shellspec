@@ -19,7 +19,7 @@ shellspec_yield() {
 }
 
 shellspec_begin() {
-  SHELLSPEC_SPECFILE=$1 SHELLSPEC_FOCUSED=$2
+  SHELLSPEC_SPECFILE=$1 SHELLSPEC_ENABLED=$2 SHELLSPEC_FILTER=$3
   shellspec_output BEGIN
 }
 
@@ -40,7 +40,7 @@ shellspec_example_group() {
 shellspec_example() {
   shellspec_description "example" "${1:-}"
 
-  if [ "$SHELLSPEC_FOCUSED" ]; then
+  if [ "$SHELLSPEC_ENABLED" ] && [ "$SHELLSPEC_FILTER" ]; then
     if [ "$SHELLSPEC_DRYRUN" ]; then
       shellspec_output SUCCEEDED
     else
