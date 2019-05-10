@@ -61,7 +61,7 @@ trans_skip() {
 }
 
 here() {
-  # the parameters is ash 0.3.8 (with posh) workaround. #14 in contrib/bugs.sh
+  # the parameters is ash 0.3.8 (and posh) workaround. #14 in contrib/bugs.sh
   putsn "eval shellspec_passthrough \${1+'\"\$@\"'}<<$1 $2"
 }
 

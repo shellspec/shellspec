@@ -44,7 +44,7 @@ count_lineno() {
   lineno=0 block_no=0 block_no_stack='' block='' example_id=''
   while IFS= read -r line || [ "$line" ]; do
     trim line
-    lineno=$(($lineno + 1)) line=${line%% *}
+    line=${line%% *} lineno=$(($lineno + 1))
 
     if is_begin_block "$line"; then
       increase_example_id
@@ -104,8 +104,7 @@ count_focus() {
   focused='' nest=0 lineno=0 example_id=''
   while IFS= read -r line || [ "$line" ]; do
     trim line
-    lineno=$(($lineno + 1))
-    line=${line%% *}
+    line=${line%% *} lineno=$(($lineno + 1))
     is_begin_block "$line" && increase_example_id
     is_end_block "$line" && decrease_example_id
     is_focused_block "$line" && focused=1

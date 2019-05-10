@@ -1,30 +1,32 @@
 #shellcheck shell=sh disable=SC2004
 
+normal_block="  Describe |  Context |  Example |  Specify |  It"
+focused_block="fDescribe | fContext | fExample | fSpecify | fIt"
+skipped_block="xDescribe | xContext | xExample | xSpecify | xIt"
+end_block="End"
+normal_example="  Example |  Specify |  It"
+focused_example="fExample | fSpecify | fIt"
+skipped_example="xExample | xSpecify | xIt"
+oneline_example="Todo"
+begin_block="$normal_block | $focused_block | $skipped_block"
+block_example="$normal_example | $focused_example | $skipped_example"
+example="$block_example | $oneline_example"
+
 define() {
-  eval "is_$1() { case \$1 in ($2) return 0; esac; return 1; }"
+  eval "$1() { case \$1 in ($2) return 0; esac; return 1; }"
 }
 
-define normal_block  " Describe |  Context |  Example |  Specify |  It"
-define focused_block "fDescribe | fContext | fExample | fSpecify | fIt"
-define skipped_block "xDescribe | xContext | xExample | xSpecify | xIt"
-define end_block "End"
-
-define normal_example  " Example |  Specify |  It"
-define focused_example "fExample | fSpecify | fIt"
-define skipped_example "xExample | xSpecify | xIt"
-define oneline_example "Todo"
-
-is_begin_block() {
-  is_normal_block "$1" || is_focused_block "$1" || is_skipped_block "$1"
-}
-
-is_example() {
-  is_block_example "$1" || is_oneline_example "$1"
-}
-
-is_block_example() {
-  is_normal_example "$1" || is_focused_example "$1" || is_skipped_example "$1"
-}
+define is_normal_block "$normal_block"
+define is_focused_block "$focused_block"
+define is_skipped_block "$skipped_block"
+define is_end_block "$end_block"
+define is_begin_block "$begin_block"
+define is_normal_example "$normal_example"
+define is_focused_example "$focused_example"
+define is_skipped_example "$skipped_example"
+define is_oneline_example "$oneline_example"
+define is_block_example "$block_example"
+define is_example "$example"
 
 mapping() {
   case $1 in

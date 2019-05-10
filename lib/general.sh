@@ -44,6 +44,8 @@ shellspec_constants() {
   ")"
 }
 shellspec_constants SHELLSPEC_
+# shellcheck disable=SC2153
+SHELLSPEC_IFS=" ${SHELLSPEC_TAB}${SHELLSPEC_LF}"
 
 if (set -eu --; : "$@") 2>/dev/null; then
   shellspec_proxy() { eval "$1() { $2 \"\$@\"; }"; }
@@ -326,14 +328,7 @@ shellspec_readfile() {
 }
 
 shellspec_trim() {
-  eval "
-    while :; do
-      case \${$1} in
-        \\ * | \${SHELLSPEC_TAB}*) $1=\${$1#?} ;;
-        *) break ;;
-      esac
-    done
-  "
+  eval "if [ \"\$$1\" ]; then $1=\${$1#\"\${$1%%[!$SHELLSPEC_IFS]*}\"}; fi"
 }
 
 shellspec_replace() {
