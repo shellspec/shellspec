@@ -19,4 +19,4 @@ chmod +x /bin/sh
 mkdir -p /usr/local/bin
 ln -s $PWD/shellspec /usr/local/bin/shellspec
 
-exec "$@"
+"$@"

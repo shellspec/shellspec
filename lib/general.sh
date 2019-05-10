@@ -328,6 +328,7 @@ shellspec_readfile() {
 }
 
 shellspec_trim() {
+  # check $1 to avoid bug #26 in contrib/bugs.sh
   eval "if [ \"\$$1\" ]; then $1=\${$1#\"\${$1%%[!$SHELLSPEC_IFS]*}\"}; fi"
 }
 

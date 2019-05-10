@@ -245,4 +245,25 @@ HERE
   [ "$ch" = "A" ] && no_problem || affect
 )
 
+(
+  title='26: Segmentation fault in eval (ksh 93q, 93r)'
+  (
+    str="" i=0
+    step1() {
+      if (eval ':' 2>/dev/null); then :; fi
+      return 0
+    }
+    step2() { set --; eval "$(:)"; }
+    step3() { eval "str=\${str#}"; }
+    step1
+    step2
+    while [ $i -lt 100 ]; do
+      step3 # 10 Segmentation fault      "$@
+      i=$(($i+1))
+    done
+  ) &
+  wait $! 2>/dev/null # wait is not related this bug, it just prevent fail.
+  [ $? = 0 ] && no_problem || affect
+)
+
 echo Done
