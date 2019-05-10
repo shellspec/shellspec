@@ -21,7 +21,20 @@ one_line_syntax_check() { :; }
 
 check_filter() {
   eval set -- $1
-  case "${1:-}" in (*"$SHELLSPEC_EXAMPLE_FILTER"*) return 0; esac
+  if [ $# -gt 0 ]; then
+    if [ "$SHELLSPEC_EXAMPLE_FILTER" ]; then
+      case "${1:-}" in (*"$SHELLSPEC_EXAMPLE_FILTER"*) return 0; esac
+    fi
+    shift
+  fi
+  [ "$SHELLSPEC_TAG_FILTER" ] || return 1
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      *:*) [ "$1" = "$SHELLSPEC_TAG_FILTER" ] && return 0 ;;
+      *) [ "$1:true" = "$SHELLSPEC_TAG_FILTER" ] && return 0 ;;
+    esac
+    shift
+  done
   return 1
 }
 
