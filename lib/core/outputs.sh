@@ -5,10 +5,6 @@ shellspec_output_METADATA() {
     "shell_type:$SHELLSPEC_SHELL_TYPE" "shell_version:$SHELLSPEC_SHELL_VERSION"
 }
 
-shellspec_output_FLUSH() {
-  shellspec_putsn
-}
-
 shellspec_output_FINISHED() {
   shellspec_output_raw finished
 }

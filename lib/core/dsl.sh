@@ -9,7 +9,6 @@ SHELLSPEC_PATH_ALIAS=:
 : "${SHELLSPEC_SPECFILE:-} ${SHELLSPEC_LINENO:-}"
 
 shellspec_metadata() { shellspec_output METADATA; }
-shellspec_flush() { shellspec_output FLUSH; }
 shellspec_finished() { shellspec_output FINISHED; }
 
 shellspec_yield() {
