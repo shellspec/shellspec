@@ -124,6 +124,7 @@ Usage: ${0##*/} [options] [files or directories]
       --focus                         Run focused groups / examples only
                                         To focus, prepend 'f' to groups / examples in specfiles
                                         e.g. Describe -> fDescribe, It -> fIt
+      --example STRING                Run examples whose names include STRING
 
   **** Utility ****
 
@@ -166,6 +167,9 @@ parse_options() {
         shift ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
       --focus) SHELLSPEC_FOCUS_FILTER=1 ;;
+      --example) [ $# -ge 2 ] || abort 'Require STRING.'
+        SHELLSPEC_EXAMPLE_FILTER=$2
+        shift ;;
       -e | --env) [ $# -ge 2 ] || abort 'Require NAME=VALUE.'
         #shellcheck disable=SC2034
         case $2 in

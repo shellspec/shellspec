@@ -3,7 +3,7 @@
 % FILE: "$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
 
 Describe "general.sh"
-  Describe 'shellspec_reset_params()'
+  Describe 'shellspec_reset_params()' db:true
     reset_params() {
       shellspec_reset_params "$1" "$2"
       eval "$SHELLSPEC_RESET_PARAMS"

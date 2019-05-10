@@ -19,6 +19,12 @@ finalize() {
 
 one_line_syntax_check() { :; }
 
+check_filter() {
+  eval set -- $1
+  case "${1:-}" in (*"$SHELLSPEC_EXAMPLE_FILTER"*) return 0; esac
+  return 1
+}
+
 is_constant_name() {
   case $1 in ([!A-Z_]*) return 1; esac
   case $1 in (*[!A-Z0-9_]*) return 1; esac
@@ -40,6 +46,8 @@ block_example_group() {
     return 0
   fi
 
+  check_filter "$1" && filter=1
+
   increase_example_id
   _block_no=$(($_block_no + 1))
   block_no=$_block_no lineno_begin=$lineno
@@ -47,7 +55,7 @@ block_example_group() {
 
   eval trans block_example_group ${1+'"$@"'}
 
-  _block_no_stack="$_block_no_stack $_block_no"
+  _block_no_stack="$_block_no_stack $_block_no" filter=''
 }
 
 block_example() {
@@ -61,6 +69,8 @@ block_example() {
     return 0
   fi
 
+  check_filter "$1" && filter=1
+
   increase_example_id
   _block_no=$(($_block_no + 1)) example_no=$(($example_no + 1))
   block_no=$_block_no lineno_begin=$lineno
@@ -68,7 +78,7 @@ block_example() {
 
   eval trans block_example ${1+'"$@"'}
 
-  _block_no_stack="$_block_no_stack $_block_no"
+  _block_no_stack="$_block_no_stack $_block_no" filter=''
   inside_of_example="yes"
 }
 
