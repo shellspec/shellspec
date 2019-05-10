@@ -166,9 +166,9 @@ filter=1
 [ "$no_metadata" ] || putsn "shellspec_metadata"
 
 specfile() {
-  specfile=$1 lineno_renges="${2:-}"
+  specfile=$1 ranges="${2:-}"
   escape_quote specfile
-  [ "$lineno_renges" ] && enabled='' || enabled=1
+  [ "$ranges" ] && enabled='' || enabled=1
 
   putsn "shellspec_marker '$specfile' ---"
   putsn "(shellspec_begin '$specfile' '$enabled' '$filter'"

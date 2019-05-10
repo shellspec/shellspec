@@ -83,9 +83,9 @@ block_end() {
   eval "block_lineno_end${block_no}=$lineno"
   eval "lineno_begin=\$block_lineno_begin${block_no}"
 
-  if is_lineno_included_in_renges; then
+  if is_in_ranges; then
     enabled=1
-    remove_lineno_from_renges
+    remove_from_ranges
   fi
 
   eval trans block_end ${1+'"$@"'}
@@ -214,25 +214,28 @@ with_function() {
   "$@"
 }
 
-is_in_lineno_range() {
-  [ "$lineno_begin" -le "$1" ] && [ "$1" -le "$lineno_end" ]
+is_in_range() {
+  case $1 in
+    @*) [ "$example_id" = "${1#@}" ] ;;
+    *) [ "$lineno_begin" -le "$1" ] && [ "$1" -le "$lineno_end" ] ;;
+  esac
 }
 
-is_lineno_included_in_renges() {
-  [ "${lineno_renges:-}" ] || return 1
-  eval "set -- $lineno_renges"
+is_in_ranges() {
+  [ "${ranges:-}" ] || return 1
+  eval "set -- $ranges"
   while [ $# -gt 0 ]; do
-    is_in_lineno_range "$1" && return 0
+    is_in_range "$1" && return 0
     shift
   done
   return 1
 }
 
-remove_lineno_from_renges() {
-  eval "set -- $lineno_renges"
-  lineno_renges=''
+remove_from_ranges() {
+  eval "set -- $ranges"
+  ranges=''
   while [ $# -gt 0 ]; do
-    is_in_lineno_range "$1" || lineno_renges="$lineno_renges$1 "
+    is_in_range "$1" || ranges="$ranges$1 "
     shift
   done
 }

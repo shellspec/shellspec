@@ -112,11 +112,12 @@ Usage: ${0##*/} [options] [files or directories]
                                         [moderate] (mute repeated messages)
                                         [quiet]    (mute repeated messages and non-temporarily messages)
 
-  **** Renges / Filters ****
+  **** Ranges / Filters ****
 
-    You can select examples range to run by appending the line numbers to the filename
+    You can select examples range to run by appending the line numbers or id to the filename
 
-      shellspec path/to/a_spec.sh:10:20 # Run the groups or examples that includes lines 10 and 20
+      shellspec path/to/a_spec.sh:10:20     # Run the groups or examples that includes lines 10 and 20
+      shellspec path/to/a_spec.sh:@1-5:@1-6 # Run the 5th and 6th groups/examples defined in the 1st group
 
     You can filter examples to run with the following options
 
@@ -250,7 +251,7 @@ case $SHELLSPEC_MODE in (init | task) ;; (*)
   for specfile in "$@"; do
     [ -e "${specfile%%:*}" ] || abort "Not found path: ${specfile%%:*}"
     case $specfile in (*:*) ;; (*) continue; esac
-    case ${specfile#*:} in (*[!0-9:]*) ;; (*) continue; esac
+    case ${specfile#*:} in (*[!0-9:@-]*) ;; (*) continue; esac
     abort "Invalid line number: $specfile"
   done
 esac

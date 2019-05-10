@@ -43,11 +43,11 @@ syntax_error() {
 }
 
 prepare() {
-  specfile=$1 lineno_renges=${2:-} filter=1
+  specfile=$1 ranges=${2:-} filter=1
   [ "$SHELLSPEC_FOCUS_FILTER" ] && filter=''
   [ "$SHELLSPEC_TAG_FILTER" ] && filter=''
   [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
-  [ "$lineno_renges" ] && enabled='' || enabled=1
+  [ "$ranges" ] && enabled='' || enabled=1
   SPECFILE=$specfile
   ENABLED=$enabled
   FILTER=$filter
@@ -76,7 +76,7 @@ if [ "$SHELLSPEC_LIST" ]; then
   # shellcheck disable=SC2153
   case ${SHELLSPEC_LIST#examples:} in
     lineno) proc() { echo "$SPECFILE:$LINENO_BEGIN"; }; ;;
-    id)     proc() { echo "$SPECFILE@$EXAMPLE_ID"; }; ;;
+    id)     proc() { echo "$SPECFILE:@$EXAMPLE_ID"; }; ;;
   esac
   eval find_specfiles specfile ${1+'"$@"'}
   exit
