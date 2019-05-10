@@ -547,7 +547,11 @@ To disable shows banner with `--no-banner` option.
 0.13.0 (not yet released)
 
 * Change `Logger` Helper to `%logger` directive.
+* Merge `--list-specfiles`, `--list-examples` options to `--list` option.
 * Redesign reporter to improve performance, maintainability.
+* Add `--list examples:id` option.
+* Add `*_spec.sh:@ID` syntax the specify id with the filename.
+* Add `--example`, `--tag` filter option.
 
 0.12.0 (2019-04-26)
 
