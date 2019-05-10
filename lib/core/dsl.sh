@@ -8,8 +8,19 @@ SHELLSPEC_PATH_ALIAS=:
 : "${SHELLSPEC_SKIP_REASON:-} ${SHELLSPEC_CONDITIONAL_SKIP:-}"
 : "${SHELLSPEC_SPECFILE:-} ${SHELLSPEC_LINENO:-}"
 
-shellspec_metadata() { shellspec_output METADATA; }
-shellspec_finished() { shellspec_output FINISHED; }
+shellspec_metadata() {
+  if [ "${1:-}" ]; then
+    shellspec_output METADATA
+  fi
+}
+
+shellspec_finished() {
+  if [ "${1:-}" ]; then
+    shellspec_output FINISHED
+  else
+    shellspec_putsn
+  fi
+}
 
 shellspec_yield() {
   "shellspec_yield$SHELLSPEC_BLOCK_NO"

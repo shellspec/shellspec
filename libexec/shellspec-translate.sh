@@ -147,12 +147,12 @@ syntax_error() {
 
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 
-no_metadata='' no_finished=''
+metadata=1 finished=1
 
 for param in "$@"; do
   case $param in
-    --no-metadata) no_metadata=1 ;;
-    --no-finished) no_finished=1 ;;
+    --no-metadata) metadata='' ;;
+    --no-finished) finished='' ;;
     *) set -- "$@" "$param" ;;
   esac
   shift
@@ -163,7 +163,7 @@ filter=1
 [ "$SHELLSPEC_TAG_FILTER" ] && filter=''
 [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
 
-[ "$no_metadata" ] || putsn "shellspec_metadata"
+putsn "shellspec_metadata $metadata"
 
 specfile() {
   specfile=$1 ranges="${2:-}"
@@ -181,4 +181,4 @@ specfile() {
 }
 eval find_specfiles specfile ${1+'"$@"'}
 
-[ "$no_finished" ] || putsn "shellspec_finished"
+putsn "shellspec_finished $finished"
