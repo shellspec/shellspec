@@ -4,7 +4,7 @@ set -eu
 
 # shellcheck source=lib/libexec/translator.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
-use constants escape_quote
+use escape_quote
 
 delimiter="DATA-$SHELLSPEC_UNIXTIME-$$"
 
@@ -61,17 +61,9 @@ trans_skip() {
 }
 
 here() {
-  putsn "shellspec_passthrough<<$1 $2"
+  # the parameters is ash 0.3.8 (with posh) workaround. #14 in contrib/bugs.sh
+  putsn "eval shellspec_passthrough \${1+'\"\$@\"'}<<$1 $2"
 }
-
-# ash 0.3.8 (with posh) workaround
-old_ash_bug_detection() {
-  old_ash_bug_detection_() { read -r old_ash_bug_detection; }
-  eval "old_ash_bug_detection_<<HERE${SHELLSPEC_LF}\$1${SHELLSPEC_LF}HERE"
-  [ "$old_ash_bug_detection" ] && return 0
-  here() { putsn "shellspec_passthrough \"\$@\"<<$1 $2"; }
-}
-old_ash_bug_detection 1
 
 trans_data_begin() {
   putsn "shellspec_data() {"
