@@ -242,8 +242,10 @@ Usage: shellspec [options] [files or directories]
       --focus                         Run focused groups / examples only
                                         To focus, prepend 'f' to groups / examples in specfiles
                                         e.g. Describe -> fDescribe, It -> fIt
+      --pattern PATTERN               Load files matching pattern [default: "*_spec.sh"]
       --example STRING                Run examples whose names include STRING
       --tag TAG[:VALUE]               Run examples with the specified TAG
+      --default-path PATH             Set the default path where shellspec looks for examples [defualt: "spec"]
 
   **** Utility ****
 
@@ -553,14 +555,14 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
-0.13.0 (not yet released)
+0.13.0 (2019-05-12)
 
 * Change `Logger` Helper to `%logger` directive.
 * Merge `--list-specfiles`, `--list-examples` options to `--list` option.
 * Redesign reporter to improve performance, maintainability.
 * Add `--list examples:id` option.
 * Add `*_spec.sh:@ID` syntax the specify id with the filename.
-* Add `--example`, `--tag` filter option.
+* Add `--pattern`, `--example`, `--tag`, `--default-path` filter option.
 
 0.12.0 (2019-04-26)
 
