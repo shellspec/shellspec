@@ -266,4 +266,12 @@ HERE
   [ $? = 0 ] && no_problem || affect
 )
 
+(
+  title='27: set -C not working (posh = around 0.10.2)'
+  file=$(mktemp tmp.XXXXXXXXXX)
+  (set -C; : > "$file") 2>/dev/null &&:
+  ret=$?
+  rm "$file"
+  [ $ret -ne 0 ] && no_problem || affect
+)
 echo Done

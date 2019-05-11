@@ -6,7 +6,8 @@ use sequence
 
 worker() {
   job() {
-    (set -C; : > "$SHELLSPEC_JOBDIR/$1.lock") 2>/dev/null || return 0
+    # posh 0.10.2 workaround: uses mkdir instead of set -C
+    (mkdir "$SHELLSPEC_JOBDIR/$1.lock") 2>/dev/null || return 0
     IFS= read -r specfile < "$SHELLSPEC_JOBDIR/$1.job"
     translator --no-metadata --no-finished "$specfile" | $SHELLSPEC_SHELL \
       > "$SHELLSPEC_JOBDIR/$1.stdout" 2> "$SHELLSPEC_JOBDIR/$1.stderr" &&:
