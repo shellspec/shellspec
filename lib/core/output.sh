@@ -10,6 +10,8 @@ shellspec_output_raw() {
 
   # shellcheck disable=SC2145
   case $1 in
+    begin)
+      set -- "type:$@" "example_count:" ;;
     example)
       set -- "type:$@" "evaluation:" ;;
     statement)

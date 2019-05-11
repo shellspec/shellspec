@@ -56,16 +56,23 @@ invoke_formatters begin
 # shellcheck disable=SC2034
 {
   current_example_index=0 example_index='' detail_index=0
-  last_block_no='' last_skip_id=''
+  last_block_no='' last_skip_id='' not_enough_examples=''
   field_type='' field_tag='' field_block_no='' field_focused=''
   field_conditional='' field_skipid='' field_pending=''
-  total_count=0 succeeded_count='' failed_count='' warned_count=''
+  example_count=0 succeeded_count='' failed_count='' warned_count=''
   todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
 }
 
 each_line() {
   case $field_type in
-    begin) last_block_no=0 last_skip_id='' ;;
+    begin) last_block_no=0 last_skip_id=''
+      # shellcheck disable=SC2034
+      {
+        example_count_per_file=0 succeeded_count_per_file=0
+        failed_count_per_file=0 warned_count_per_file=0 todo_count_per_file=0
+        fixed_count_per_file=0 skipped_count_per_file=0
+      }
+      ;;
     example)
       if [ "$field_block_no" -le "$last_block_no" ]; then
         abort "Illegal executed the same block in ${field_specfile:-}" \
@@ -100,14 +107,23 @@ each_line() {
       done
       ;;
     result)
-      total_count=$(($total_count + 1))
+      example_count=$(($example_count + 1))
+      example_count_per_file=$(($example_count_per_file + 1))
       eval "${field_tag}_count=\$((\$${field_tag}_count + 1))"
+      eval "${field_tag}_count_per_file=\$((\$${field_tag}_count_per_file + 1))"
       [ "${field_error:-}" ] && exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
       if [ "${failed_count:-0}" -ge "${fail_fast_count:-999999}" ]; then
         aborted='' fail_fast=1
       fi
       if [ "$field_tag" = "skipped" ] && [ -z "$example_index" ]; then
         suppressed_skipped_count=$(($suppressed_skipped_count + 1))
+      fi
+      ;;
+    end)
+      # field_example_count not provided with range or filter
+      : "${field_example_count:=$example_count_per_file}"
+      if [ "$example_count_per_file" -ne "$field_example_count" ]; then
+        not_enough_examples=1
       fi
       ;;
     finished) aborted=''
@@ -122,9 +138,11 @@ if [ "$aborted" ]; then
   exit_status=1
 elif [ "$interrupt" ]; then
   exit_status=130
-elif [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ] && [ "$total_count" -eq 0 ]; then
+elif [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ] && [ "$example_count" -eq 0 ]; then
   #shellcheck disable=SC2034
   no_examples=1 exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+elif [ "$not_enough_examples" ]; then
+  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 fi
 
 callback() { [ -e "$SHELLSPEC_TIME_LOG" ] || sleep 0; }

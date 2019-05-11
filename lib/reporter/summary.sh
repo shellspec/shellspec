@@ -2,7 +2,7 @@
 
 : "${warned_count:-} ${skipped_count:-} ${suppressed_skipped_count:-}"
 : "${todo_count:-} ${fixed_count:-} ${suppressed_skipped_count:-}"
-: "${interrupt:-} ${aborted:-} ${no_examples:-}"
+: "${interrupt:-} ${aborted:-} ${no_examples:-} ${not_enough_examples:-}"
 
 summary_end() {
   summary=''
@@ -14,7 +14,7 @@ summary_end() {
     summary="${summary}s"
   }
 
-  each callback "${total_count:-0} example" "${failed_count:-0} failure" \
+  each callback "${example_count:-0} example" "${failed_count:-0} failure" \
                 "$warned_count warning" "$skipped_count skip"
   if [ "$suppressed_skipped_count" ]; then
     summary="$summary (muted $suppressed_skipped_count skip"
@@ -22,14 +22,21 @@ summary_end() {
     summary="$summary)"
   fi
   each callback "$todo_count pending" "$fixed_count fix"
+
+  summary_error=''
   if [ "$interrupt" ]; then
-    summary="$summary, aborted by an interrupt"
+    summary_error="$summary_error, aborted by an interrupt"
   elif [ "$aborted" ]; then
-    summary="$summary, aborted by an unexpected error"
+    summary_error="$summary_error, aborted by an unexpected error"
   fi
-  [ "$no_examples" ] && summary="$summary, no examples found"
+  if [ "$no_examples" ]; then
+    summary_error="$summary_error, no examples found"
+  fi
+  if [ "$not_enough_examples" ]; then
+    summary_error="$summary_error, some examples did not run"
+  fi
 
   [ "$warned_count" ] && color=$YELLOW || color=$GREEN
-  [ "$failed_count$fixed_count$aborted$interrupt$no_examples" ] && color=$RED
-  putsn "${color}${summary}${RESET}${LF}"
+  [ "$failed_count$fixed_count$summary_error" ] && color=$RED
+  putsn "${color}${summary}${summary_error}${RESET}${LF}"
 }
