@@ -14,7 +14,7 @@ shellspec_output_BEGIN() {
 }
 
 shellspec_output_END() {
-  shellspec_output_raw end
+  shellspec_output_raw end "example_count:$SHELLSPEC_EXAMPLE_COUNT"
 }
 
 shellspec_output_EXAMPLE() {

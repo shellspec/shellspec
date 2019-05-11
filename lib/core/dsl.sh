@@ -34,6 +34,8 @@ shellspec_begin() {
 }
 
 shellspec_end() {
+  # shellcheck disable=SC2034
+  SHELLSPEC_EXAMPLE_COUNT=$1
   shellspec_output END
 }
 

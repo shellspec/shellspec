@@ -166,18 +166,22 @@ filter=1
 putsn "shellspec_metadata $metadata"
 
 specfile() {
-  specfile=$1 ranges="${2:-}"
-  escape_quote specfile
-  [ "$ranges" ] && enabled='' || enabled=1
+  (
+    specfile=$1 ranges="${2:-}" example_count=''
+    escape_quote specfile
+    [ "$ranges" ] && enabled='' || enabled=1
+    [ "${enabled}" ] && [ "${filter}" ] && example_count=0
 
-  putsn "shellspec_marker '$specfile' ---"
-  putsn "(shellspec_begin '$specfile' '$enabled' '$filter'"
-  initialize
-  putsn "shellspec_marker '$specfile' BOF"
-  ( translate < "$1" )
-  putsn "shellspec_marker '$specfile' EOF"
-  finalize
-  putsn "shellspec_end)"
+    putsn "shellspec_marker '$specfile' ---"
+    putsn "(shellspec_begin '$specfile' '$enabled' '$filter'"
+    initialize
+    putsn "shellspec_marker '$specfile' BOF"
+    translate < "$1"
+    putsn "shellspec_marker '$specfile' EOF"
+    finalize
+    [ "$example_count" ] && example_count=$example_no
+    putsn "shellspec_end '$example_count')"
+  )
 }
 eval find_specfiles specfile ${1+'"$@"'}
 
