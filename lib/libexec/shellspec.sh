@@ -3,6 +3,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use reset_params
+load binary
 
 read_dot_file() {
   [ "$1" ] || return 0
@@ -26,22 +27,15 @@ process() {
 read_cmdline() {
   [ -e "$1" ] || return 0
 
-  # busybox 1.1.3: `-A n`, `-t o1` not supported
-  # busybox 1.10.2: `od -b` not working properly
-  { od -t o1 -v "$1" 2>/dev/null || od -b -v "$1"; } | {
+  octal_dump < "$1" | {
     cmdline='' printf_octal_bug=''
     [ "$(printf '\101' 2>/dev/null ||:)" = "A" ] || printf_octal_bug=0
     while IFS= read -r line; do
-      eval "set -- $line"
-      [ $# -gt 1 ] || continue
-      shift
-      for i in "$@"; do
-        case $i in
-          000) i="040" ;;
-          1??) i="$printf_octal_bug$i" ;;
-        esac
-        cmdline="$cmdline\\$i"
-      done
+      case $line in
+        000) line="040" ;;
+        1??) line="$printf_octal_bug$line" ;;
+      esac
+      cmdline="$cmdline\\$line"
     done
     #shellcheck disable=SC2059
     printf "$cmdline"

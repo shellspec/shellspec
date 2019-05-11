@@ -44,7 +44,7 @@ shellspec_constants() {
   ")"
 }
 shellspec_constants SHELLSPEC_
-# shellcheck disable=SC2153
+# shellcheck disable=SC2153,SC2034
 SHELLSPEC_IFS=" ${SHELLSPEC_TAB}${SHELLSPEC_LF}"
 
 if (set -eu --; : "$@") 2>/dev/null; then
