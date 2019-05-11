@@ -202,14 +202,15 @@ Usage: shellspec [options] [files or directories]
 
   -s, --shell SHELL                   Specify a path of shell [default: current shell]
       --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]
+      --[no-]fail-no-examples         Fail if no examples found [default: disabled]
   -r, --require MODULE                Require a file
   -e, --env NAME=VALUE                Set environment variable
       --env-from ENV-SCRIPT           Set environment variable from script file
   -w, --warnings LEVEL                Set warnings level
-                                        none (do not show warnings)
-                                        notice (show warnings but not treats as error)
-                                        error (show warnings and treats as error) [default]
-                                        failure (treats warnings as failures)
+                                        [none]    (do not show warnings)
+                                        [notice]  (show warnings but not treats as error)
+                                        [error]   (show warnings and treats as error) [default]
+                                        [failure] (treats warnings as failures)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
       --dry-run                       Print the formatter output without running any examples
 
@@ -217,34 +218,42 @@ Usage: shellspec [options] [files or directories]
 
       --[no-]banner                   Show banner if exist 'spec/banner' [default: enabled]
   -f, --format FORMATTER              Choose a formatter.
-                                        [p]rogress (dots) [default]
-                                        [d]ocumentation (group and example names)
-                                        [t]ap
-                                        debug (for developer)
+                                        [progress]      (dots) [default]
+                                        [documentation] (group and example names)
+                                        [tap]           (TAP format)
+                                        [debug]         (for developer)
                                         custom formatter name
       --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
       --no-color, --no-colour         Force the output to not be in color, even if the output is a TTY
       --skip-message VERBOSE          Mute skip message
-                                        none (do not mute any messages) [default]
-                                        moderate (mute repeated messages)
-                                        quiet (mute repeated messages and non-temporarily messages)
+                                        [none]     (do not mute any messages) [default]
+                                        [moderate] (mute repeated messages)
+                                        [quiet]    (mute repeated messages and non-temporarily messages)
 
-  **** Filtering ****
+  **** Ranges / Filters ****
 
-    You can select examples by appending the line numbers to the filename
+    You can select examples range to run by appending the line numbers or id to the filename
 
-      e.g. shellspec path/to/a_spec.sh:10:20
+      shellspec path/to/a_spec.sh:10:20     # Run the groups or examples that includes lines 10 and 20
+      shellspec path/to/a_spec.sh:@1-5:@1-6 # Run the 5th and 6th groups/examples defined in the 1st group
+
+    You can filter examples to run with the following options
 
       --focus                         Run focused groups / examples only
                                         To focus, prepend 'f' to groups / examples in specfiles
                                         e.g. Describe -> fDescribe, It -> fIt
+      --example STRING                Run examples whose names include STRING
+      --tag TAG[:VALUE]               Run examples with the specified TAG
 
   **** Utility ****
 
       --init                          Initialize your project with shellspec
       --count                         Count the number of specfiles and examples
-      --list-specfiles                List the specfiles
-      --list-examples                 List the examples
+      --list LIST                     List the specfiles / examples
+                                        [specfiles]       (List the specfiles)
+                                        [examples:id]     (List the examples with id)
+                                        [examples:lineno] (List the examples with lineno)
+                                        [debug]           (for developer)
       --syntax-check                  Syntax check of the specfiles without running any examples
       --translate                     Output translated specfile
       --task [TASK]                   Run task. If TASK is not specified, show the task list
