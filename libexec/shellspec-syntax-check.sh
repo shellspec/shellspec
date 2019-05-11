@@ -36,7 +36,7 @@ one_line_syntax_check() {
 }
 
 specfile() {
-  specfile=$1
+  specfile=$2
   putsn "$specfile"
   ( ( ( ( syntax_check "$specfile"; echo $? >&3 ) 2>&1 \
     | error_handler >&2) 3>&1) \

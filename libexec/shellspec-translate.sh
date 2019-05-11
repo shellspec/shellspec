@@ -167,7 +167,7 @@ putsn "shellspec_metadata $metadata"
 
 specfile() {
   (
-    specfile=$1 ranges="${2:-}" example_count=''
+    specfile=$2 ranges="${3:-}" example_count=''
     escape_quote specfile
     [ "$ranges" ] && enabled='' || enabled=1
     [ "${enabled}" ] && [ "${filter}" ] && example_count=0
@@ -176,7 +176,7 @@ specfile() {
     putsn "(shellspec_begin '$specfile' '$enabled' '$filter'"
     initialize
     putsn "shellspec_marker '$specfile' BOF"
-    translate < "$1"
+    translate < "$2"
     putsn "shellspec_marker '$specfile' EOF"
     finalize
     [ "$example_count" ] && example_count=$example_no

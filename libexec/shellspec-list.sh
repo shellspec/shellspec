@@ -43,7 +43,7 @@ syntax_error() {
 }
 
 prepare() {
-  specfile=$1 ranges=${2:-} filter=1
+  specfile=$2 ranges=${3:-} filter=1
   [ "$SHELLSPEC_FOCUS_FILTER" ] && filter=''
   [ "$SHELLSPEC_TAG_FILTER" ] && filter=''
   [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
@@ -56,14 +56,14 @@ prepare() {
 if [ "$SHELLSPEC_LIST" = "debug" ]; then
   specfile() {
     prepare "$@"
-    initialize; translate < "$1"; finalize
+    initialize; translate < "$2"; finalize
   }
   eval find_specfiles specfile ${1+'"$@"'}
   exit
 fi
 
 if [ "$SHELLSPEC_LIST" = "specfiles" ]; then
-  specfile() { putsn "$1"; }
+  specfile() { putsn "$2"; }
   eval find_specfiles specfile ${1+'"$@"'}
   exit
 fi
@@ -71,7 +71,7 @@ fi
 if [ "$SHELLSPEC_LIST" ]; then
   specfile() {
     prepare "$@"
-    eval "$(initialize; translate < "$1"; finalize)"
+    eval "$(initialize; translate < "$2"; finalize)"
   }
   # shellcheck disable=SC2153
   case ${SHELLSPEC_LIST#examples:} in
@@ -85,7 +85,7 @@ fi
 specfile() {
   count=0
   prepare "$@"
-  eval "$(initialize; translate < "$1"; finalize)"
+  eval "$(initialize; translate < "$2"; finalize)"
   echo "$count"
 }
 proc() {

@@ -38,13 +38,13 @@ find_specfiles_() {
   if ! is_specfile "${1%%:*}"; then return 0; fi
   case $1 in
     *:*)
-      set -- "${1%%:*}" "${1#*:}"
-      while :; do
-        case $2 in (*:*) set -- "$1" "${2%%:*} ${2#*:}" ;; (*) break ;; esac
+      set -- "$1" "${1%%:*}" "${1#*:}"
+      until case $3 in (*:*) false; esac; do
+        set -- "$1" "$2" "${3%%:*} ${3#*:}"
       done
-      found_specfile_ "$1" "$2"
+      found_specfile_ "$@"
       ;;
-    *) found_specfile_ "$1" ;;
+    *) found_specfile_ "$1" "$1" "" ;;
   esac
 }
 

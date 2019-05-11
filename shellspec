@@ -259,12 +259,17 @@ fi
 
 case $SHELLSPEC_MODE in (init | task) ;; (*)
   [ $# -eq 0 ] && set -- 'spec'
-  for specfile in "$@"; do
-    [ -e "${specfile%%:*}" ] || abort "Not found path: ${specfile%%:*}"
-    case $specfile in (*:*) ;; (*) continue; esac
-    case ${specfile#*:} in (*[!0-9:@-]*) ;; (*) continue; esac
-    abort "Invalid line number: $specfile"
-  done
+  specfile() {
+    [ -e "$2" ] || abort "Not found path: $2"
+    for range in $3; do
+      case $range in
+        @*) case ${range#@} in (*[!0-9-]*) ;; (*) continue; esac ;;
+        *) case $range in (*[!0-9]*) ;; (*) continue; esac ;;
+      esac
+      abort "Invalid range: $1"
+    done
+  }
+  eval find_specfiles specfile ${1+'"$@"'}
 esac
 
 if [ "$SHELLSPEC_ENV_FROM" ]; then
