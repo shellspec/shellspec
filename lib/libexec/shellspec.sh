@@ -94,3 +94,15 @@ command_path() {
   esac
   return 1
 }
+
+check_range() {
+  eval "set -- $1"
+  while [ $# -gt 0 ]; do
+    case $1 in
+      @*) case ${1#@} in (*[!0-9-]*) return 1; esac ;;
+      *) case $1 in (*[!0-9]*) return 1; esac ;;
+    esac
+    shift
+  done
+  return 0
+}

@@ -270,15 +270,9 @@ case $SHELLSPEC_MODE in (init | task) ;; (*)
   [ $# -eq 0 ] && set -- "$SHELLSPEC_DEFAULT_PATH"
   specfile() {
     [ -e "$2" ] || abort "Not found path: $2"
-    for range in $3; do
-      case $range in
-        @*) case ${range#@} in (*[!0-9-]*) ;; (*) continue; esac ;;
-        *) case $range in (*[!0-9]*) ;; (*) continue; esac ;;
-      esac
-      abort "Invalid range: $1"
-    done
+    check_range "$3" || abort "Invalid range: $1"
   }
-  eval find_specfiles specfile ${1+'"$@"'}
+  find_specfiles specfile "$@"
 esac
 
 if [ "$SHELLSPEC_ENV_FROM" ]; then
