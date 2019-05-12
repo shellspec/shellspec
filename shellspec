@@ -101,9 +101,9 @@ Usage: ${0##*/} [options] [files or directories]
 
       --[no-]banner                   Show banner if exist 'spec/banner' [default: enabled]
   -f, --format FORMATTER              Choose a formatter.
-                                        [progress]      (dots) [default]
-                                        [documentation] (group and example names)
-                                        [tap]           (TAP format)
+                                        [p]rogress      (dots) [default]
+                                        [d]ocumentation (group and example names)
+                                        [t]ap           (TAP format)
                                         [debug]         (for developer)
                                         custom formatter name
       --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
@@ -153,40 +153,38 @@ parse_options() {
     case $1 in
       --banner) SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner" ;;
       --no-banner) SHELLSPEC_BANNER='' ;;
-      -f | --format) [ $# -ge 2 ] || abort 'Require FORMATTER.'
-        case $2 in
-          p) SHELLSPEC_FORMATTER=progress ;;
-          d) SHELLSPEC_FORMATTER=documentation ;;
-          t) SHELLSPEC_FORMATTER=tap ;;
-          *) SHELLSPEC_FORMATTER=$2 ;;
-        esac
+      -f | --format) [ "${2:-}" ] || abort 'Require FORMATTER.'
+        SHELLSPEC_FORMATTER=$2
+        for format in progress documentation tap; do
+          case $format in ($2*) SHELLSPEC_FORMATTER=$format; esac
+        done
         shift ;;
       --force-color | --force-colour) SHELLSPEC_COLOR=1 ;;
       --no-color | --no-colour) SHELLSPEC_COLOR='' ;;
-      -s | --shell) [ $# -ge 2 ] || abort 'Require SHELL.'
+      -s | --shell) [ "${2:-}" ] || abort 'Require SHELL.'
         SHELLSPEC_SHELL=$2
         shift ;;
-      -j | --jobs) [ $# -ge 2 ] || abort 'Require JOBS.'
+      -j | --jobs) [ "${2:-}" ] || abort 'Require JOBS.'
         SHELLSPEC_JOBS=$2
         shift ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
       --focus) SHELLSPEC_FOCUS_FILTER=1 ;;
-      --pattern) [ $# -ge 2 ] || abort 'Require PATTERN.'
+      --pattern) [ "${2:-}" ] || abort 'Require PATTERN.'
         SHELLSPEC_PATTERN=$2
         shift ;;
-      --example) [ $# -ge 2 ] || abort 'Require STRING.'
+      --example) [ "${2:-}" ] || abort 'Require STRING.'
         SHELLSPEC_EXAMPLE_FILTER=$2
         shift ;;
-      --tag) [ $# -ge 2 ] || abort 'Require TAG.'
+      --tag) [ "${2:-}" ] || abort 'Require TAG.'
         case $2 in
           *:*) SHELLSPEC_TAG_FILTER=$2 ;;
           *) SHELLSPEC_TAG_FILTER="$2:true" ;;
         esac
         shift ;;
-      --default-path) [ $# -ge 2 ] || abort 'Require PATH.'
+      --default-path) [ "${2:-}" ] || abort 'Require PATH.'
         SHELLSPEC_DEFAULT_PATH=$2
         shift ;;
-      -e | --env) [ $# -ge 2 ] || abort 'Require NAME=VALUE.'
+      -e | --env) [ "${2:-}" ] || abort 'Require NAME=VALUE.'
         #shellcheck disable=SC2034
         case $2 in
           *=*) name=${2%%=*} value=${2#*=} ;;
@@ -196,23 +194,23 @@ parse_options() {
         case $name in (*[!a-zA-Z0-9_]*) abort 'Invalid environment name.'; esac
         eval "export $name=\$value"
         shift ;;
-      --env-from) [ $# -ge 2 ] || abort 'Require ENV-SCRIPT.'
+      --env-from) [ "${2:-}" ] || abort 'Require ENV-SCRIPT.'
         [ -e "$2" ] || abort "Not found ENV-SCRIPT '$2'."
         case $2 in
           /* | ./* | ../*) SHELLSPEC_ENV_FROM=$2 ;;
           *) SHELLSPEC_ENV_FROM="./$2" ;;
         esac
         shift ;;
-      -r | --require) [ $# -ge 2 ] || abort 'Require PATH.'
+      -r | --require) [ "${2:-}" ] || abort 'Require PATH.'
         SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
         shift ;;
-      -w | --warnings) [ $# -ge 2 ] || abort 'Require LEVEL.'
+      -w | --warnings) [ "${2:-}" ] || abort 'Require LEVEL.'
         case $2 in (none|notice|error|failure) ;;
           *) abort 'Invalid LEVEL.'
         esac
         SHELLSPEC_WARNINGS="$2"
         shift ;;
-      --skip-message) [ $# -ge 2 ] || abort 'Require VERBOSE.'
+      --skip-message) [ "${2:-}" ] || abort 'Require VERBOSE.'
         case $2 in (none|moderate|quiet) ;;
           *) abort 'Invalid VERBOSE.'
         esac
@@ -228,7 +226,7 @@ parse_options() {
       --no-fail-no-examples) SHELLSPEC_FAIL_NO_EXAMPLES='' ;;
       --init | --task | --translate | --syntax-check) SHELLSPEC_MODE=${1#--} ;;
       --count) SHELLSPEC_MODE=list SHELLSPEC_LIST='' ;;
-      --list) [ $# -ge 2 ] || abort 'Require LIST.'
+      --list) [ "${2:-}" ] || abort 'Require LIST.'
         case $2 in (specfiles|examples:id|examples:lineno|debug) ;;
           *) abort 'Invalid LIST.'
         esac
