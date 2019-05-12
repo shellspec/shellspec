@@ -54,6 +54,7 @@ shellspec_example() {
 
   if [ "$SHELLSPEC_ENABLED" ] && [ "$SHELLSPEC_FILTER" ]; then
     if [ "$SHELLSPEC_DRYRUN" ]; then
+      shellspec_output EXAMPLE
       shellspec_output SUCCEEDED
     else
       # This {} is workaround for zsh 5.4.2
