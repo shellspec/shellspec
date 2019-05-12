@@ -43,7 +43,7 @@ syntax_error() {
 }
 
 prepare() {
-  specfile=$2 ranges=${3:-} filter=1
+  specfile=$3 ranges=${4:-} filter=1
   [ "$SHELLSPEC_FOCUS_FILTER" ] && filter=''
   [ "$SHELLSPEC_TAG_FILTER" ] && filter=''
   [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
@@ -53,51 +53,33 @@ prepare() {
   FILTER=$filter
 }
 
-if [ "$SHELLSPEC_LIST" = "debug" ]; then
-  specfile() {
-    prepare "$@"
-    initialize; translate < "$2"; finalize
-  }
-  eval find_specfiles specfile ${1+'"$@"'}
-  exit
-fi
-
-if [ "$SHELLSPEC_LIST" = "specfiles" ]; then
-  specfile() { putsn "$2"; }
-  eval find_specfiles specfile ${1+'"$@"'}
-  exit
-fi
-
-if [ "$SHELLSPEC_LIST" ]; then
-  specfile() {
-    prepare "$@"
-    eval "$(initialize; translate < "$2"; finalize)"
-  }
-  # shellcheck disable=SC2153
-  case ${SHELLSPEC_LIST#examples:} in
-    lineno) proc() { echo "$SPECFILE:$LINENO_BEGIN"; }; ;;
-    id)     proc() { echo "$SPECFILE:@$EXAMPLE_ID"; }; ;;
-  esac
-  eval find_specfiles specfile ${1+'"$@"'}
-  exit
-fi
-
-specfile() {
-  count=0
-  prepare "$@"
-  eval "$(initialize; translate < "$2"; finalize)"
-  echo "$count"
-}
-proc() {
-  count=$(($count + 1))
-}
-
-total=0 specfiles=0
-while IFS= read -r count; do
-  [ "$count" ] || exit 1
+list_code() {
   specfiles=$(($specfiles + 1))
-  total=$(($total + $count))
-done <<HERE
-$(eval find_specfiles specfile ${1+'"$@"'})
-HERE
-echo "$specfiles $total"
+  prepare "$@"
+  "$1" "$(initialize; translate < "$3"; finalize)"
+}
+
+specfiles=0 examples='' SHELLSPEC_LIST=${SHELLSPEC_LIST:-}
+case ${SHELLSPEC_LIST%:*} in
+  debug)
+    specfile() { list_code putsn "$@"; }; ;;
+  specfiles)
+    specfile() { putsn "$2"; }; ;;
+  examples | '')
+    specfile() { list_code eval "$@"; }
+    example() { examples=$(($examples + 1)); }
+    # shellcheck disable=SC2153
+    case ${SHELLSPEC_LIST#examples:} in
+      lineno) proc() { example; putsn "$SPECFILE:$LINENO_BEGIN"; }; ;;
+      id)     proc() { example; putsn "$SPECFILE:@$EXAMPLE_ID"; }; ;;
+      '')     proc() { example; }; ;;
+    esac
+esac
+
+eval find_specfiles specfile ${1+'"$@"'}
+
+[ "$SHELLSPEC_LIST" ] || echo "$specfiles ${examples:-0}"
+
+if [ "${SHELLSPEC_COUNT_FILE:-}" ]; then
+  echo "$specfiles${examples:+ }$examples" > "$SHELLSPEC_COUNT_FILE"
+fi
