@@ -555,6 +555,11 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
+0.13.1 (2019-05-13)
+
+* Fixed bug when --dry-run mode.
+* Fixed documentation formatter.
+
 0.13.0 (2019-05-12)
 
 * Change `Logger` Helper to `%logger` directive.

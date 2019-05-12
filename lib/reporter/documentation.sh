@@ -9,8 +9,8 @@ documentation_format() {
     result)
       _id=$_last_id _current_id=$field_id
       _description=$field_description _indent='' _last_id=$field_id
-      while [ "${_id%%:*}" = "${_current_id%%:*}" ]; do
-        _id=${_id#*:} _current_id=${_current_id#*:}
+      while [ "${_id%%-*}" = "${_current_id%%-*}" ]; do
+        _id=${_id#*-} _current_id=${_current_id#*-}
         _description=${_description#*$VT} _indent="${_indent}  "
       done
       while :; do
