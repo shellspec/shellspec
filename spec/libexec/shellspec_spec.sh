@@ -7,16 +7,19 @@ Describe "libexec/shellspec.sh"
   Include "$SHELLSPEC_LIB/libexec/shellspec.sh"
 
   Describe "read_dot_file()"
-    parser() {
-      [ "$1" = "--require" ] && [ "$2" = "spec_helper" ] &&
-      [ "$3" = "--format" ] && [ "$4" = "progress" ] &&
-      [ $# -eq 4 ]
-      echo ok
-    }
+    parser() { printf '%s\n' "$@"; }
 
     It "reads dot file"
       When call read_dot_file "$SHELLSPEC_SPECDIR" "$DOT_SHELLSPEC" parser
-      The stdout should equal "ok"
+      The line 1 of stdout should equal "--require"
+      The line 2 of stdout should equal "spec_helper"
+      The line 3 of stdout should equal "--format"
+      The line 4 of stdout should equal "progress"
+      The line 5 of stdout should equal "--pattern"
+      The line 6 of stdout should equal "*_spec.sh"
+      The line 7 of stdout should equal "--env"
+      The line 8 of stdout should equal "TEST=a b c"
+      The lines of stdout should equal 8
       The status should be success
     End
 
