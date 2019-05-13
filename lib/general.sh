@@ -270,39 +270,19 @@ if [ "$SHELLSPEC_SHELL_TYPE" = "posh" ]; then
   # workaround for posh <= 0.12.6
   if ! shellspec_includes "abc[d]" "c[d]"; then
     shellspec_includes() {
-      shellspec_includes_escape "$2"
-      case $1 in (*$shellspec_v*) return 0 ;esac
+      shellspec_v="$2"
+      set -- "$1" ""
+      while [ "$shellspec_v" ]; do
+        case $shellspec_v in
+          [*]*) set -- "$1" "$2[*]" ;;
+          [?]*) set -- "$1" "$2[?]" ;;
+          [[]*) set -- "$1" "$2[[]" ;;
+          *)    set -- "$1" "$2${shellspec_v%"${shellspec_v#?}"}" ;;
+        esac
+        shellspec_v=${shellspec_v#?}
+      done
+      case $1 in (*$2*) return 0 ;esac
       return 1
-    }
-
-    shellspec_includes_escape() {
-      shellspec_v=${1:-}
-      SHELLSPEC_IFSORIG=$IFS
-      shellspec_includes_split '*'
-      shellspec_includes_split '?'
-      shellspec_includes_split '['
-      IFS=$SHELLSPEC_IFSORIG
-    }
-
-    shellspec_includes_split() {
-      IFS="$1"
-      #shellcheck disable=SC2086
-      set -- $shellspec_v'' # Trailing quote require for posh 0.10.2.
-      [ $# -eq 0 ] && return 0
-      case $shellspec_v in
-        *[$IFS]) shellspec_includes_join "[$IFS]" "$@" ;;
-        *)  shellspec_includes_join "[$IFS]" "$@"
-            shellspec_v=${shellspec_v%???}
-      esac
-    }
-
-    shellspec_includes_join() {
-      shellspec_v=''
-      eval "shift
-        while [ \$# -gt 0 ]; do
-          shellspec_v=\"\$shellspec_v\$1$1\"; shift
-        done
-      "
     }
   fi
 fi
