@@ -96,7 +96,8 @@ command_path() {
 }
 
 check_range() {
-  eval "set -- $1"
+  reset_params '$1' ':'
+  eval "$RESET_PARAMS"
   while [ $# -gt 0 ]; do
     case $1 in
       @*) case ${1#@} in (*[!0-9-]*) return 1; esac ;;
