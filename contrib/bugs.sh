@@ -248,21 +248,23 @@ HERE
 (
   title='26: Segmentation fault in eval (ksh 93q, 93r)'
   (
-    str="" i=0
-    step1() {
-      if (eval ':' 2>/dev/null); then :; fi
-      return 0
-    }
-    step2() { set --; eval "$(:)"; }
-    step3() { eval "str=\${str#}"; }
-    step1
-    step2
-    while [ $i -lt 100 ]; do
-      step3 # 10 Segmentation fault      "$@
-      i=$(($i+1))
-    done
-  ) &
-  wait $! 2>/dev/null # wait is not related this bug, it just prevent fail.
+    (
+      str="" i=0
+      step1() {
+        if (eval ':' 2>/dev/null); then :; fi
+        return 0
+      }
+      step2() { set --; eval "$(:)"; }
+      step3() { eval "str=\${str#}"; }
+      step1
+      step2
+      while [ $i -lt 100 ]; do
+        step3 # 10 Segmentation fault      "$@
+        i=$(($i+1))
+      done
+    ) &
+    wait $! # wait is not related this bug, it just prevent fail.
+  ) 2>/dev/null
   [ $? = 0 ] && no_problem || affect
 )
 
@@ -274,4 +276,11 @@ HERE
   rm "$file"
   [ $ret -ne 0 ] && no_problem || affect
 )
+
+(
+  title='28: variable expansion not working within the double qoute (posh >= 0.8.5)'
+  a='foobar' b='bar'
+  [ "${a%"$b"*}" = "foo" ] && no_problem || affect
+)
+
 echo Done
