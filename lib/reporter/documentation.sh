@@ -5,7 +5,9 @@
 
 documentation_format() {
   case $field_type in
-    begin) _last_id='' && putsn ;;
+    meta) putsn ;;
+    begin) _last_id='' ;;
+    end) [ ! "$_last_id" ] || putsn ;;
     result)
       _id=$_last_id _current_id=$field_id
       _description=$field_description _indent='' _last_id=$field_id
@@ -13,8 +15,7 @@ documentation_format() {
         _id=${_id#*-} _current_id=${_current_id#*-}
         _description=${_description#*$VT} _indent="${_indent}  "
       done
-      while :; do
-        case $_description in (*$VT*) ;; (*) break ;; esac
+      until case $_description in (*$VT*) false; esac; do
         putsn "${_indent}${_description%%$VT*}"
         _description=${_description#*$VT} _indent="${_indent}  "
       done
