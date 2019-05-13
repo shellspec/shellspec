@@ -178,10 +178,7 @@ parse_options() {
         SHELLSPEC_EXAMPLE_FILTER=$2
         shift ;;
       --tag) [ "${2:-}" ] || abort 'Require TAG.'
-        case $2 in
-          *:*) SHELLSPEC_TAG_FILTER=$2 ;;
-          *) SHELLSPEC_TAG_FILTER="$2:true" ;;
-        esac
+        SHELLSPEC_TAG_FILTER="${SHELLSPEC_TAG_FILTER%,},$2,"
         shift ;;
       --default-path) [ "${2:-}" ] || abort 'Require PATH.'
         SHELLSPEC_DEFAULT_PATH=$2
