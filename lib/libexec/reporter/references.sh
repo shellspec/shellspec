@@ -41,6 +41,8 @@ references_format() {
 }
 
 references_end() {
+  notable_examples_is_empty && failure_examples_is_empty && return 0
   notable_examples_flush
   failure_examples_flush
+  putsn
 }
