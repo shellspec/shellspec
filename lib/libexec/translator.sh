@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants trim
+use constants trim match
 load grammar
 
 initialize() {
@@ -22,9 +22,7 @@ one_line_syntax_check() { :; }
 check_filter() {
   eval set -- "$1"
   if [ $# -gt 0 ]; then
-    if [ "$SHELLSPEC_EXAMPLE_FILTER" ]; then
-      case "${1:-}" in (*"$SHELLSPEC_EXAMPLE_FILTER"*) return 0; esac
-    fi
+    match "$1" "$SHELLSPEC_EXAMPLE_FILTER" && return 0
     shift
   fi
   [ "$SHELLSPEC_TAG_FILTER" ] || return 1

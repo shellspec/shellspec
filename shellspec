@@ -128,7 +128,7 @@ Usage: ${0##*/} [options] [files or directories]
                                         To focus, prepend 'f' to groups / examples in specfiles
                                         e.g. Describe -> fDescribe, It -> fIt
       --pattern PATTERN               Load files matching pattern [default: "*_spec.sh"]
-      --example STRING                Run examples whose names include STRING
+      --example PATTERN               Run examples whose names include PATTERN
       --tag TAG[:VALUE]               Run examples with the specified TAG
       --default-path PATH             Set the default path where shellspec looks for examples [defualt: "spec"]
 
@@ -174,8 +174,12 @@ parse_options() {
       --pattern) [ "${2:-}" ] || abort 'Require PATTERN.'
         SHELLSPEC_PATTERN=$2
         shift ;;
-      --example) [ "${2:-}" ] || abort 'Require STRING.'
-        SHELLSPEC_EXAMPLE_FILTER=$2
+      --example) [ "${2:-}" ] || abort 'Require PATTERN.'
+        if [ "$SHELLSPEC_EXAMPLE_FILTER" ]; then
+          SHELLSPEC_EXAMPLE_FILTER="$SHELLSPEC_EXAMPLE_FILTER|$2"
+        else
+          SHELLSPEC_EXAMPLE_FILTER="$2"
+        fi
         shift ;;
       --tag) [ "${2:-}" ] || abort 'Require TAG.'
         SHELLSPEC_TAG_FILTER="${SHELLSPEC_TAG_FILTER%,},$2,"
