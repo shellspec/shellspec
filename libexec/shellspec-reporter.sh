@@ -89,7 +89,7 @@ each_line() {
           good) [ "$field_pending" ] || break ;;
           skip)
             case $SHELLSPEC_SKIP_MESSAGE in (quiet)
-              [ "$field_conditional" ] && break
+              [ ! "$field_conditional" ] || break
             esac
             case $SHELLSPEC_SKIP_MESSAGE in (moderate|quiet)
                 [ "$field_skipid" = "$last_skip_id" ] && break
