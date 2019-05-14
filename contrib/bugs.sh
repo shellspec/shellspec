@@ -283,4 +283,15 @@ HERE
   [ "${a%"$b"*}" = "foo" ] && no_problem || affect
 )
 
+(
+  title='29: case will be aborted when exit status is error (mksh <= 35.2, pdksh 5.2.14 on debian 2.2)'
+  ret=$(
+    set -e
+    case 1 in (*) false &&:; esac
+    echo ok
+  )
+  [ "$ret" = "ok" ] && no_problem || affect
+)
+
+
 echo Done
