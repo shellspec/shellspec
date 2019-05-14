@@ -34,24 +34,43 @@ is_specfile() {
   eval "case \$1 in ($SHELLSPEC_PATTERN) true ;; (*) false ; esac &&:"
 }
 
-find_specfiles_() {
-  if ! is_specfile "${1%%:*}"; then return 0; fi
-  case $1 in
-    *:*)
-      set -- "$1" "${1%%:*}" "${1#*:}"
-      until case $3 in (*:*) false; esac; do
-        set -- "$1" "$2" "${3%%:*} ${3#*:}"
-      done
-      found_specfile_ "$@"
-      ;;
-    *) found_specfile_ "$1" "$1" "" ;;
+merge_specfiles() {
+  case $1 in (*:*) set -- "${1%%:*}" ":${1#*:}"; esac
+  if ! is_specfile "$1"; then return 0; fi
+  found_specfiles="${SHELLSPEC_LF}${found_specfiles}"
+  found_specfiles_=${found_specfiles%%"${SHELLSPEC_LF}$1"[$SHELLSPEC_LF:]*}
+  if [ "$found_specfiles" = "$found_specfiles_" ]; then
+    found_specfiles=${found_specfiles}${1}${2:-}${SHELLSPEC_LF}
+  else
+    found_specfiles=${found_specfiles#"${found_specfiles_}${SHELLSPEC_LF}"}
+    found_specfiles_=${found_specfiles_}${SHELLSPEC_LF}
+    found_specfiles_=${found_specfiles_}${found_specfiles%%"$SHELLSPEC_LF"*}
+    found_specfiles_=${found_specfiles_}${2:-}${SHELLSPEC_LF}
+    found_specfiles=${found_specfiles_}${found_specfiles#*"$SHELLSPEC_LF"}
+  fi
+  found_specfiles=${found_specfiles#?}
+}
+
+invoke_specfile() {
+  set -- "$@" "${2%%:*}"
+  case $2 in (*:*)
+    set -- "$@" "${2#*:}"
+    until case $4 in (*:*) false; esac; do
+      set -- "$1" "$2" "$3" "${4%%:*} ${4#*:}"
+    done
   esac
+  "$@"
 }
 
 find_specfiles() {
-  eval "found_specfile_() { \"$1\" \"\$@\"; }"
+  callback=$1 found_specfiles=""
   shift
-  eval shellspec_find_files find_specfiles_ ${1+'"$@"'}
+  eval shellspec_find_files merge_specfiles ${1+'"$@"'}
+  while [ "$found_specfiles" ]; do
+    found_specfile=${found_specfiles%%"$SHELLSPEC_LF"*}
+    found_specfiles=${found_specfiles#*"$SHELLSPEC_LF"}
+    invoke_specfile "$callback" "$found_specfile"
+  done
 }
 
 display() {
