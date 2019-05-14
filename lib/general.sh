@@ -261,30 +261,37 @@ shellspec_padding_() {
   shellspec_padding_ "$1" "$2" $(($3 - 1))
 }
 
-shellspec_includes() {
-  case $1 in (*"$2"*) return 0 ;esac
-  return 1
+shellspec_escape_pattern() {
+  eval "shellspec_escape_pattern=\$$1"
+  set -- "$1" ""
+  while [ "$shellspec_escape_pattern" ]; do
+    case $shellspec_escape_pattern in
+      [*]*) set -- "$1" "$2[*]" ;;
+      [?]*) set -- "$1" "$2[?]" ;;
+      [[]*) set -- "$1" "$2[[]" ;;
+      *) set -- "$1" \
+          "$2${shellspec_escape_pattern%"${shellspec_escape_pattern#?}"}"
+    esac
+    shellspec_escape_pattern=${shellspec_escape_pattern#?}
+  done
+  eval "$1=\$2"
 }
 
-if [ "$SHELLSPEC_SHELL_TYPE" = "posh" ]; then
+# shellcheck disable=SC2194
+if case "a[d]" in (*"a[d]"*) false; esac; then
   # workaround for posh <= 0.12.6
-  if ! shellspec_includes "abc[d]" "c[d]"; then
-    shellspec_includes() {
-      shellspec_v="$2"
-      set -- "$1" ""
-      while [ "$shellspec_v" ]; do
-        case $shellspec_v in
-          [*]*) set -- "$1" "$2[*]" ;;
-          [?]*) set -- "$1" "$2[?]" ;;
-          [[]*) set -- "$1" "$2[[]" ;;
-          *)    set -- "$1" "$2${shellspec_v%"${shellspec_v#?}"}" ;;
-        esac
-        shellspec_v=${shellspec_v#?}
-      done
-      case $1 in (*$2*) return 0 ;esac
-      return 1
-    }
-  fi
+  shellspec_includes() {
+    shellspec_includes_pattern="$2"
+    shellspec_escape_pattern shellspec_includes_pattern
+    set -- "$1" "$shellspec_includes_pattern"
+    case $1 in (*$2*) return 0 ;esac
+    return 1
+  }
+else
+  shellspec_includes() {
+    case $1 in (*"$2"*) return 0; esac
+    return 1
+  }
 fi
 
 shellspec_passthrough() {
@@ -312,9 +319,24 @@ shellspec_trim() {
   eval "if [ \"\$$1\" ]; then $1=\${$1#\"\${$1%%[!\$SHELLSPEC_IFS]*}\"}; fi"
 }
 
-if (eval 'v=${0//}') 2>/dev/null; then
+# shellcheck disable=SC2194
+if (eval 'v="**/" p="*/"; [ "${v//"$p"/-}" = "*-" ]') 2>/dev/null; then
+  # not posix compliant, but fast
   shellspec_replace() {
     eval "$1=\${$1//\"\$2\"/\"\$3\"}"
+  }
+elif case "a[d]" in (*"a[d]"*) false; esac; then
+  # workaround for posh <= 0.12.6
+  shellspec_replace() {
+    eval "shellspec_replace_rest=\${$1} shellspec_replace=''"
+    shellspec_replace_pattern=$2
+    shellspec_escape_pattern shellspec_replace_pattern
+    set -- "$1" "$shellspec_replace_pattern" "$3"
+    until case $shellspec_replace_rest in (*$2*) false; esac; do
+      shellspec_replace=${shellspec_replace}${shellspec_replace_rest%%$2*}$3
+      shellspec_replace_rest=${shellspec_replace_rest#*$2}
+    done
+    eval "$1=\$shellspec_replace\$shellspec_replace_rest"
   }
 else
   shellspec_replace() {

@@ -313,12 +313,44 @@ Describe "general.sh"
   End
 
   Describe "shellspec_replace()"
-    Before set_value
+    Context 'when value is "a==b==c"'
+      Before 'value="a==b==c"'
+      It 'replaces string'
+        When call shellspec_replace value "==" "--"
+        The variable value should eq "a--b--c"
+      End
+    End
 
-    set_value() { value="a==b==c"; }
-    It 'replaces string'
-      When call shellspec_replace value "==" "--"
-      The value "$value" should eq "a--b--c"
+    Context 'when value is "a*b*c"'
+      Before 'value="a*b*c"'
+      It 'replaces string'
+        When call shellspec_replace value "*" "-"
+        The variable value should eq "a-b-c"
+      End
+    End
+
+    Context 'when value is "a b c"'
+      Before 'value="a b c"'
+      It 'replaces string'
+        When call shellspec_replace value " " "-"
+        The variable value should eq "a-b-c"
+      End
+    End
+
+    Context 'when value is "a/b/c"'
+      Before 'value="a/b/c"'
+      It 'replaces string'
+        When call shellspec_replace value "/" "-"
+        The variable value should eq "a-b-c"
+      End
+    End
+
+    Context 'when value is "a-b-c"'
+      Before 'value="a-b-c"'
+      It 'replaces string'
+        When call shellspec_replace value "-" "--"
+        The variable value should eq "a--b--c"
+      End
     End
   End
 End
