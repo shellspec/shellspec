@@ -1,6 +1,6 @@
 # shellspec
 
-BDD style unit testing framework for POSIX compatible shell script.
+BDD style unit testing framework for POSIX compliant shell script.
 
 [![TravisCI](https://img.shields.io/travis/ko1nksm/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/ko1nksm/shellspec)
 [![CirrusCI](https://api.cirrus-ci.com/github/ko1nksm/shellspec.svg?task=CirrusCI&script=CirrusCI)](https://cirrus-ci.com/github/ko1nksm/shellspec)
@@ -53,7 +53,7 @@ BDD style unit testing framework for POSIX compatible shell script.
 
 ### Features
 
-* Support POSIX compatible shell (dash, bash, ksh, busybox, etc...)
+* Support POSIX compliant shell (dash, bash, ksh, busybox, etc...)
 * BDD style specfile syntax
 * The specfile is compatible with shell script syntax
 * Implemented by shell script
