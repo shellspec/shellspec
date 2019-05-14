@@ -31,27 +31,32 @@ load() {
 
 is_specfile() {
   # This &&: workaround for #21 in contrib/bugs.sh
-  eval "case \$1 in ($SHELLSPEC_PATTERN) true ;; (*) false ; esac &&:"
+  eval "case \${1%%:*} in ($SHELLSPEC_PATTERN) true ;; (*) false ; esac &&:"
 }
 
-find_specfiles_() {
-  if ! is_specfile "${1%%:*}"; then return 0; fi
-  case $1 in
-    *:*)
-      set -- "$1" "${1%%:*}" "${1#*:}"
-      until case $3 in (*:*) false; esac; do
-        set -- "$1" "$2" "${3%%:*} ${3#*:}"
-      done
-      found_specfile_ "$@"
-      ;;
-    *) found_specfile_ "$1" "$1" "" ;;
+found_specfile() {
+  set -- "$@" "${2%%:*}"
+  case $2 in (*:*)
+    set -- "$@" "${2#*:}"
+    until case $4 in (*:*) false; esac; do
+      set -- "$1" "$2" "$3" "${4%%:*} ${4#*:}"
+    done
   esac
+  "$@"
 }
 
 find_specfiles() {
-  eval "found_specfile_() { \"$1\" \"\$@\"; }"
+  eval "found_() { ! is_specfile \"\$1\" || found_specfile \"$1\" \"\$1\"; }"
   shift
-  eval shellspec_find_files find_specfiles_ ${1+'"$@"'}
+  if [ "${1:-}" = "-" ]; then
+    [ -e "$SHELLSPEC_INFILE" ] || return 0
+    while IFS= read -r line || [ "$line" ]; do
+      [ "$line" ] || continue
+      eval shellspec_find_files found_ "$line"
+    done < "$SHELLSPEC_INFILE"
+  else
+    eval shellspec_find_files found_ ${1+'"$@"'}
+  fi
 }
 
 display() {

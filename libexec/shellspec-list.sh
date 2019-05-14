@@ -70,13 +70,17 @@ case ${SHELLSPEC_LIST%:*} in
     example() { examples=$(($examples + 1)); }
     # shellcheck disable=SC2153
     case ${SHELLSPEC_LIST#examples:} in
-      lineno) proc() { example; putsn "$SPECFILE:$LINENO_BEGIN"; }; ;;
-      id)     proc() { example; putsn "$SPECFILE:@$EXAMPLE_ID"; }; ;;
-      '')     proc() { example; }; ;;
+      id | examples) proc() { example; putsn "$SPECFILE:@$EXAMPLE_ID"; }; ;;
+      lineno)        proc() { example; putsn "$SPECFILE:$LINENO_BEGIN"; }; ;;
+      '')            proc() { example; }; ;;
     esac
 esac
 
-eval find_specfiles specfile ${1+'"$@"'}
+if [ "${SHELLSPEC_RANDOM:-}" ]; then
+  eval find_specfiles specfile ${1+'"$@"'} | shuf
+else
+  eval find_specfiles specfile ${1+'"$@"'}
+fi
 
 [ "$SHELLSPEC_LIST" ] || echo "$specfiles ${examples:-0}"
 

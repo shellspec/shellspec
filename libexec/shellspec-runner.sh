@@ -67,6 +67,13 @@ if [ "$SHELLSPEC_BANNER" ] && [ -e "$SHELLSPEC_BANNER" ]; then
   display "$SHELLSPEC_BANNER"
 fi
 
+if [ "${SHELLSPEC_RANDOM:-}" ]; then
+  SHELLSPEC_LIST=$SHELLSPEC_RANDOM
+  exec="$SHELLSPEC_LIBEXEC/shellspec-list.sh"
+  eval "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'} >"$SHELLSPEC_INFILE"
+  set -- -
+fi
+
 # I want to process with non-blocking output
 # and the stdout of runner streams to the reporter
 # and capture stderr both of the runner and the reporter
