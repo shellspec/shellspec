@@ -312,16 +312,20 @@ shellspec_trim() {
   eval "if [ \"\$$1\" ]; then $1=\${$1#\"\${$1%%[!\$SHELLSPEC_IFS]*}\"}; fi"
 }
 
-shellspec_replace() {
-  eval "
-    while :; do
-      case \$$1 in
-        *\$2*) $1=\${$1%%\$2*}\$3\${$1#*\$2} ;;
-        *) break ;;
-      esac
+if (eval 'v=${0//}') 2>/dev/null; then
+  shellspec_replace() {
+    eval "$1=\${$1//\"\$2\"/\"\$3\"}"
+  }
+else
+  shellspec_replace() {
+    eval "shellspec_replace_rest=\${$1} shellspec_replace=''"
+    until case $shellspec_replace_rest in (*"$2"*) false; esac; do
+      shellspec_replace=${shellspec_replace}${shellspec_replace_rest%%"$2"*}$3
+      shellspec_replace_rest=${shellspec_replace_rest#*"$2"}
     done
-  "
-}
+    eval "$1=\$shellspec_replace\$shellspec_replace_rest"
+  }
+fi
 
 shellspec_match() {
   [ "${2:-}" ] && eval "case \${1:-} in ($2) true ;; (*) false ;; esac &&:"
