@@ -95,7 +95,7 @@ Usage: shellspec [options] [files or directories]
   -e, --env NAME=VALUE                Set environment variable
       --env-from ENV-SCRIPT           Set environment variable from script file
       --random TYPE[:SEED]            Run examples by the specified random type
-                                        [none]      examples and groups are run in the order they are defined [default]
+                                        [none]      run in the defined order [default]
                                         [specfiles] randomize the order of specfiles
                                         [examples]  randomize the order of examples (slow)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
