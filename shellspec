@@ -149,6 +149,7 @@ Usage: shellspec [options] [files or directories]
                                         [examples:id]     alias for examples
                                         [examples:lineno] list the examples with lineno
                                         [debug]           for developer
+                                        affected by --random but TYPE is ignored
       --syntax-check                  Syntax check of the specfiles without running any examples
       --translate                     Output translated specfile
       --task [TASK]                   Run task. If TASK is not specified, show the task list
@@ -292,6 +293,13 @@ case $SHELLSPEC_MODE in (init | task) ;; (*)
       check_range "${p#*:}" || abort "Invalid range: $p"
     esac
   done
+esac
+
+case $SHELLSPEC_MODE in (runner | list)
+  if [ "$SHELLSPEC_RANDOM" ] && [ ! "$SHELLSPEC_SEED" ]; then
+    SHELLSPEC_SEED=$(( ($SHELLSPEC_UNIXTIME * $$ / 7 + $$) % 100000))
+    info "Randomized with seed $SHELLSPEC_SEED" >&2
+  fi
 esac
 
 if [ "$SHELLSPEC_ENV_FROM" ]; then
