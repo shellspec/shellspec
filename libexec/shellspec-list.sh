@@ -3,6 +3,8 @@
 
 set -eu
 
+# shellcheck source=lib/libexec/list.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec/list.sh"
 # shellcheck source=lib/libexec/translator.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
 
@@ -77,7 +79,7 @@ case ${SHELLSPEC_LIST%:*} in
 esac
 
 if [ "${SHELLSPEC_RANDOM:-}" ]; then
-  eval find_specfiles specfile ${1+'"$@"'} | shuf
+  eval find_specfiles specfile ${1+'"$@"'} | shuffle "${SHELLSPEC_SEED:-}"
 else
   eval find_specfiles specfile ${1+'"$@"'}
 fi

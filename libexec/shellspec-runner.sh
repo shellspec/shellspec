@@ -68,6 +68,7 @@ if [ "$SHELLSPEC_BANNER" ] && [ -e "$SHELLSPEC_BANNER" ]; then
 fi
 
 if [ "${SHELLSPEC_RANDOM:-}" ]; then
+  export SHELLSPEC_LIST
   SHELLSPEC_LIST=$SHELLSPEC_RANDOM
   exec="$SHELLSPEC_LIBEXEC/shellspec-list.sh"
   eval "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'} >"$SHELLSPEC_INFILE"

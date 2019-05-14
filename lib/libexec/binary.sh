@@ -18,30 +18,3 @@ octal_dump() {
     done
   }
 }
-
-FNV_OFFSET_BASIS_32=2166136261
-FNV_PRIME_32=16777619
-
-fnv1() {
-  hash=$FNV_OFFSET_BASIS_32
-  while IFS= read -r oct; do
-    hash=$(( (($hash * $FNV_PRIME_32) & 0xFFFFFFFF) ^ 0$oct ));
-  done
-  echo "$hash"
-}
-
-fnv1a() {
-  hash=$FNV_OFFSET_BASIS_32
-  while IFS= read -r oct; do
-    hash=$(( ( ($hash ^ 0$oct) * $FNV_PRIME_32) & 0xFFFFFFFF ));
-  done
-  echo "$hash"
-}
-
-xorshift32() {
-  y=$1
-  y=$(( y ^ ((y << 13) & 0xFFFFFFFF) ))
-  y=$(( y ^ (y >> 17) ))
-  y=$(( y ^ ((y << 5) & 0xFFFFFFFF) ))
-  echo "$y"
-}
