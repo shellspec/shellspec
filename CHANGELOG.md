@@ -158,3 +158,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Initial public release.
+
+[Unreleased]: https://github.com/ko1nksm/shellspec/compare/0.14.0...HEAD
+[0.14.0]: https://github.com/ko1nksm/shellspec/compare/0.13.1...0.14.0
+[0.13.1]: https://github.com/ko1nksm/shellspec/compare/0.13.0...0.13.1
+[0.13.0]: https://github.com/ko1nksm/shellspec/compare/0.12.0...0.13.0
+[0.12.0]: https://github.com/ko1nksm/shellspec/compare/0.11.3...0.12.0
+[0.11.3]: https://github.com/ko1nksm/shellspec/compare/0.11.2...0.11.3
+[0.11.2]: https://github.com/ko1nksm/shellspec/compare/0.11.1...0.11.2
+[0.11.1]: https://github.com/ko1nksm/shellspec/compare/0.11.0...0.11.1
+[0.11.0]: https://github.com/ko1nksm/shellspec/compare/0.10.0...0.11.0
+[0.10.0]: https://github.com/ko1nksm/shellspec/compare/0.9.0...0.10.0
+[0.9.0]: https://github.com/ko1nksm/shellspec/compare/0.8.0...0.9.0
+[0.8.0]: https://github.com/ko1nksm/shellspec/compare/0.7.0...0.8.0
+[0.7.0]: https://github.com/ko1nksm/shellspec/compare/0.6.0...0.7.0
+[0.6.0]: https://github.com/ko1nksm/shellspec/compare/0.5.0...0.6.0
+[0.5.0]: https://github.com/ko1nksm/shellspec/commits/0.5.0
