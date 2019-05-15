@@ -559,4 +559,4 @@ To disable shows banner with `--no-banner` option.
 
 ## Version history
 
-See [ChangeLog](CHANGELOG.md)
+See [Changelog](CHANGELOG.md)
