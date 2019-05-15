@@ -3,12 +3,15 @@
 : "${example_count:-} ${aborted:-}"
 : "${field_type:-} ${field_tag:-} ${field_description:-} ${field_message:-}"
 
+tap_no=0
+
 tap_begin() {
-  _no=0
   putsn "1..$example_count"
 }
 
 tap_format() {
+  _no=$tap_no
+
   case $field_type in (result)
     _no=$(($_no + 1))
     case $field_tag in
@@ -20,6 +23,8 @@ tap_format() {
       fixed    ) putsn "not ok" "$_no - $(field_description) # fixed" ;;
     esac
   esac
+
+  tap_no=$_no
 }
 
 tap_end() {

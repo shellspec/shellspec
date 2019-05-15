@@ -3,7 +3,12 @@
 : "${example_index:-} ${field_type:-} ${field_note:-}"
 : "${field_description:-} ${field_color:-} ${field_id:-}"
 
+documentation_last_id=''
+
 documentation_format() {
+  _id='' _current_id='' _description='' _indent=''
+  _last_id=$documentation_last_id
+
   case $field_type in
     meta) putsn ;;
     begin) _last_id='' ;;
@@ -21,7 +26,9 @@ documentation_format() {
       done
 
       set -- "${_indent}${field_color}${_description}"
-      [ "$example_index" ] && set -- "$@" "(${field_note:-} - $example_index)"
+      [ "$example_index" ] && set -- "$@" "($field_note - $example_index)"
       putsn "$*${RESET}"
   esac
+
+  documentation_last_id=$_last_id
 }

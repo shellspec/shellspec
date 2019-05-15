@@ -3,6 +3,8 @@
 : "${field_type:-} ${field_color:-}"
 
 debug_format() {
+  _mark='' _value=''
+
   case $field_type in
     meta     ) _mark='!' ;;
     begin    ) _mark='#' ;;
@@ -18,7 +20,7 @@ debug_format() {
   while [ $# -gt 0 ]; do
     eval "_value=\$field_$1"
     replace _value "$VT" "${BOLD}${BLACK}<VT>${field_color}"
-    puts "${field_color}$1:${_value:-}"
+    puts "${field_color}$1:${_value}"
     shift
     [ $# -eq 0 ] || puts "${BOLD}${BLACK}<US>${field_color}"
   done
