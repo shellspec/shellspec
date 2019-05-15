@@ -313,44 +313,19 @@ Describe "general.sh"
   End
 
   Describe "shellspec_replace()"
-    Context 'when value is "a==b==c"'
-      Before 'value="a==b==c"'
-      It 'replaces string'
-        When call shellspec_replace value "==" "--"
-        The variable value should eq "a--b--c"
-      End
-    End
+    replace() {
+      chars="$1"
+      while [ "$chars" ]; do
+        ch=${chars%"${chars#?}"} && chars=${chars#?}
+        value="a${ch}${ch}${ch}b${ch}${ch}${ch}c"
+        shellspec_replace value "$ch" "x"
+        [ "$value" = "axxxbxxxc" ] || echo "$ch"
+      done
+    }
 
-    Context 'when value is "a*b*c"'
-      Before 'value="a*b*c"'
-      It 'replaces string'
-        When call shellspec_replace value "*" "-"
-        The variable value should eq "a-b-c"
-      End
-    End
-
-    Context 'when value is "a b c"'
-      Before 'value="a b c"'
-      It 'replaces string'
-        When call shellspec_replace value " " "-"
-        The variable value should eq "a-b-c"
-      End
-    End
-
-    Context 'when value is "a/b/c"'
-      Before 'value="a/b/c"'
-      It 'replaces string'
-        When call shellspec_replace value "/" "-"
-        The variable value should eq "a-b-c"
-      End
-    End
-
-    Context 'when value is "a-b-c"'
-      Before 'value="a-b-c"'
-      It 'replaces string'
-        When call shellspec_replace value "-" "--"
-        The variable value should eq "a--b--c"
-      End
+    It 'replaces various characters'
+      When call replace '!"#$%&()-=^~\|@`[{;+:*]}.>/?_ '"'"
+      The output should eq ''
     End
   End
 End

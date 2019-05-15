@@ -265,10 +265,12 @@ shellspec_escape_pattern() {
   eval "shellspec_escape_pattern=\$$1"
   set -- "$1" ""
   while [ "$shellspec_escape_pattern" ]; do
+    # shellcheck disable=SC1003
     case $shellspec_escape_pattern in
       [*]*) set -- "$1" "$2[*]" ;;
       [?]*) set -- "$1" "$2[?]" ;;
       [[]*) set -- "$1" "$2[[]" ;;
+      '\\'*) set -- "$1" "$2"'\\' ;;
       *) set -- "$1" \
           "$2${shellspec_escape_pattern%"${shellspec_escape_pattern#?}"}"
     esac
@@ -320,8 +322,15 @@ shellspec_trim() {
 }
 
 # shellcheck disable=SC2194
-if (eval 'v="**/" p="*/"; [ "${v//"$p"/-}" = "*-" ]') 2>/dev/null; then
+if (eval 'v="*#*/" p="#*/"; [ "${v//"$p"/-}" = "*-" ]') 2>/dev/null; then
   # not posix compliant, but fast
+  #
+  # supported: bash, busybox ash, ksh93, mksh, yash, zsh
+  #   but not work properly because of bug:
+  #     bash: 2.03, 2.05a, 2.05b
+  #     busybox ash: < 1.30.1(?)
+  #     mksh: < R54(?)
+  # not supported: ash, dash, ksh88, pdksh, posh
   shellspec_replace() {
     eval "$1=\${$1//\"\$2\"/\"\$3\"}"
   }
