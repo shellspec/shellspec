@@ -6,8 +6,12 @@
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use constants
 
+formatter() {
+  formatters=$1
+  eval "${1}_begin() { :; }; ${1}_format() { :; }; ${1}_end() { :; }; ${1}_output() { :; };"
+}
+
 load_formatters() {
-  formatters=''
   for f in "$@"; do
     formatters="$formatters $f"
     eval "${f}_begin() { :; }; ${f}_format() { :; }; ${f}_end() { :; }; ${f}_output() { :; };"
