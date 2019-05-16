@@ -35,7 +35,8 @@ color_schema() {
         good         ) field_color=${GREEN} ;;
         warn         ) field_color=${YELLOW} ;;
         pending      ) field_color=${MAGENTA} ;;
-        bad          ) field_color=${RED} ;;
+        bad          ) [ "$field_pending" ] && field_color=${YELLOW} || \
+                       field_color=${RED};;
         *            ) field_color=${WHITE} ;;
       esac
       ;;

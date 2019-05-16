@@ -41,7 +41,7 @@ shellspec_output_SKIP() {
 }
 
 shellspec_output_PENDING() {
-  shellspec_output_raw statement "tag:pending" \
+  shellspec_output_raw statement "tag:pending" "pending:yes" \
     "message:PENDING: ${SHELLSPEC_PENDING_REASON:-No reason given}"
 }
 
