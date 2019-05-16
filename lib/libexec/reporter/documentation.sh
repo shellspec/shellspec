@@ -37,15 +37,7 @@ documentation_format() {
 
 documentation_output() {
   case $1 in
-    format)
-      methods_output format
-      documentation output ;;
-    end)
-      documentation output
-      conclusion_output end
-      finished_output end
-      summary_output end
-      references_output end
-      ;;
+    format | end) documentation output ;;
   esac
+  output "$1" methods conclusion finished summary references
 }

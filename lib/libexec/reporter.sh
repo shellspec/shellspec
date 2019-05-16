@@ -22,6 +22,10 @@ invoke_formatters() {
   done
 }
 
+output() {
+  eval "shift; while [ \$# -gt 0 ]; do \"\$1_output\" \"$1\"; shift; done"
+}
+
 count() {
   specfile_count=0 example_count=0
   #shellcheck shell=sh disable=SC2046

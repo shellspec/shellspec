@@ -24,16 +24,7 @@ progress_end() {
 
 progress_output() {
   case $1 in
-    format)
-      methods_output format
-      progress output
-      ;;
-    end)
-      progress output
-      conclusion_output end
-      finished_output end
-      summary_output end
-      references_output end
-      ;;
+    format | end) progress output ;;
   esac
+  output "$1" methods conclusion finished summary references
 }
