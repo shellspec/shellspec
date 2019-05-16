@@ -15,7 +15,8 @@ load_formatters() {
   for f in "$@"; do
     formatters="$formatters $f"
     eval "${f}_begin() { :; }; ${f}_format() { :; }; ${f}_end() { :; }; ${f}_output() { :; };"
-    import "$f"
+    import "${f}_formatter"
+    "${f}_formatter"
   done
 }
 
