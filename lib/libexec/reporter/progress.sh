@@ -5,31 +5,31 @@
 buffer progress
 
 progress_format() {
-  progress_clear
+  progress clear
   case $field_type in (result)
     case $field_tag in
-      succeeded ) progress_add "${field_color}.${RESET}" ;;
-      warned    ) progress_add "${field_color}W${RESET}" ;;
-      skipped   ) progress_add "${field_color}s${RESET}" ;;
-      failed    ) progress_add "${field_color}F${RESET}" ;;
-      todo      ) progress_add "${field_color}P${RESET}" ;;
-      fixed     ) progress_add "${field_color}p${RESET}" ;;
+      succeeded ) progress add "${field_color}.${RESET}" ;;
+      warned    ) progress add "${field_color}W${RESET}" ;;
+      skipped   ) progress add "${field_color}s${RESET}" ;;
+      failed    ) progress add "${field_color}F${RESET}" ;;
+      todo      ) progress add "${field_color}P${RESET}" ;;
+      fixed     ) progress add "${field_color}p${RESET}" ;;
     esac
   esac
 }
 
 progress_end() {
-  progress_append
+  progress append
 }
 
 progress_output() {
   case $1 in
     format)
       methods_output format
-      progress_puts
+      progress output
       ;;
     end)
-      progress_puts
+      progress output
       conclusion_output end
       finished_output end
       summary_output end

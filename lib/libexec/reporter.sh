@@ -41,21 +41,19 @@ read_time_log() {
 }
 
 buffer() {
-  while [ $# -gt 0 ]; do
-    eval "
-      $1_buffer=''
-      $1_clear() { $1_buffer=''; }
-      $1_is_empty() { [ -z \"\$$1_buffer\" ]; }
-      $1_set_if_empty() { if $1_is_empty; then $1_append \"\$@\"; fi; }
-      $1_add() { $1_buffer=\$$1_buffer\${*:-}; }
-      $1_append() { $1_buffer=\$$1_buffer\${*:-}\${LF}; }
-      $1_puts() { puts \"\$$1_buffer\"; }
-      $1_flush() {
-        if ! $1_is_empty; then puts \"\$$1_buffer\"; $1_buffer=''; fi
-      }
-    "
-    shift
-  done
+  eval "
+    $1_buffer=''
+    $1() {
+      case \$1 in
+        clear       ) shift; $1_buffer='' ;;
+        is_empty    ) shift; [ ! \"\$$1_buffer\" ] ;;
+        set_if_empty) shift; if $1 is_empty; then $1 append \"\$@\"; fi ;;
+        add         ) shift; $1_buffer=\$$1_buffer\${*:-} ;;
+        append      ) shift; $1_buffer=\$$1_buffer\${*:-}\${LF} ;;
+        output      ) shift; puts \"\$$1_buffer\" ;;
+      esac
+    }
+  "
 }
 
 field_description() {

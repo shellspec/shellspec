@@ -3,12 +3,12 @@
 buffer finished
 
 finished_end() {
-  finished_append "Finished in ${time_real:-?} seconds" \
+  finished append "Finished in ${time_real:-?} seconds" \
     "(user ${time_user:-?} seconds, sys ${time_sys:-?} seconds)"
 }
 
 finished_output() {
   case $1 in
-    end) finished_puts
+    end) finished output
   esac
 }

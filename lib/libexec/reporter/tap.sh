@@ -7,22 +7,22 @@ tap_no=0
 buffer tap
 
 tap_begin() {
-  tap_append "1..$example_count"
+  tap append "1..$example_count"
 }
 
 tap_format() {
   _no=$tap_no
-  tap_clear
+  tap clear
 
   case $field_type in (result)
     _no=$(($_no + 1))
     case $field_tag in
-      succeeded) tap_append "ok"     "$_no - $(field_description)" ;;
-      warned   ) tap_append "ok"     "$_no - $(field_description)" ;;
-      failed   ) tap_append "not ok" "$_no - $(field_description)" ;;
-      skipped  ) tap_append "ok"     "$_no - $(field_description) # skip" ;;
-      todo     ) tap_append "ok"     "$_no - $(field_description) # pending" ;;
-      fixed    ) tap_append "not ok" "$_no - $(field_description) # fixed" ;;
+      succeeded) tap append "ok"     "$_no - $(field_description)" ;;
+      warned   ) tap append "ok"     "$_no - $(field_description)" ;;
+      failed   ) tap append "not ok" "$_no - $(field_description)" ;;
+      skipped  ) tap append "ok"     "$_no - $(field_description) # skip" ;;
+      todo     ) tap append "ok"     "$_no - $(field_description) # pending" ;;
+      fixed    ) tap append "not ok" "$_no - $(field_description) # fixed" ;;
     esac
   esac
 
@@ -31,12 +31,12 @@ tap_format() {
 
 tap_end() {
   [ "$aborted" ] || return 0
-  tap_clear
-  tap_append "not ok $(($example_count + 1)) - aborted by unexpected error"
+  tap clear
+  tap append "not ok $(($example_count + 1)) - aborted by unexpected error"
 }
 
 tap_output() {
   case $1 in
-    format | end ) tap_puts ;;
+    begin | format | end ) tap output ;;
   esac
 }

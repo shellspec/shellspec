@@ -39,11 +39,11 @@ summary_end() {
 
   [ "$warned_count" ] && _color=$YELLOW || _color=$GREEN
   [ "${failed_count}${fixed_count}${_summary_error}" ] && _color=$RED
-  summary_append "${_color}${_summary}${_summary_error}${RESET}${LF}"
+  summary append "${_color}${_summary}${_summary_error}${RESET}${LF}"
 }
 
 summary_output() {
   case $1 in
-    end) summary_puts ;;
+    end) summary output ;;
   esac
 }
