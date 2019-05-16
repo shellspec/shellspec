@@ -4,13 +4,13 @@ buffer finished
 
 finished_formatter() {
   finished_end() {
-    finished append "Finished in ${time_real:-?} seconds" \
-      "(user ${time_user:-?} seconds, sys ${time_sys:-?} seconds)"
+    finished '=' "Finished in ${time_real:-?} seconds" \
+      "(user ${time_user:-?} seconds, sys ${time_sys:-?} seconds)${LF}"
   }
 
   finished_output() {
     case $1 in
-      end) finished output
+      end) finished '>>'
     esac
   }
 }

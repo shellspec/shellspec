@@ -13,12 +13,12 @@ documentation_formatter() {
   documentation_format() {
     _id='' _current_id='' _description='' _indent=''
     _last_id=$documentation_last_id
-    documentation clear
+    documentation '='
 
     case $field_type in
-      meta) documentation append ;;
+      meta) documentation '+=' "${LF}" ;;
       begin) _last_id='' ;;
-      end) [ ! "$_last_id" ] || documentation append ;;
+      end) [ ! "$_last_id" ] || documentation '+=' "${LF}" ;;
       result)
         _id=$_last_id _current_id=$field_id
         _description=$field_description _indent='' _last_id=$field_id
@@ -27,13 +27,13 @@ documentation_formatter() {
           _description=${_description#*$VT} _indent="${_indent}  "
         done
         until case $_description in (*$VT*) false; esac; do
-          documentation append "${_indent}${_description%%$VT*}"
+          documentation '+=' "${_indent}${_description%%$VT*}${LF}"
           _description=${_description#*$VT} _indent="${_indent}  "
         done
 
         set -- "${_indent}${field_color}${_description}"
         [ "$example_index" ] && set -- "$@" "($field_note - $example_index)"
-        documentation append "$*${RESET}"
+        documentation '+=' "${*:-}${RESET}${LF}"
     esac
 
     documentation_last_id=$_last_id
@@ -41,7 +41,7 @@ documentation_formatter() {
 
   documentation_output() {
     case $1 in
-      format | end) documentation output ;;
+      format | end) documentation '>>' ;;
     esac
     output "$1" methods conclusion finished summary references
   }

@@ -7,16 +7,20 @@ buffer methods
 
 methods_formatter() {
   methods_format() {
-    methods clear
+    methods '='
     case $field_type in (meta)
-      methods append "Running: $field_shell" \
-        "[${field_shell_type}${field_shell_version:+ }${field_shell_version}]"
+      methods '=' "Running: $field_shell "
+      if [ "$field_shell_version" ]; then
+        methods '+=' "[${field_shell_type} ${field_shell_version}]${LF}"
+      else
+        methods '+=' "[${field_shell_type}]${LF}"
+      fi
     esac
   }
 
   methods_output() {
     case $1 in
-      format) methods output ;;
+      format) methods '>>' ;;
     esac
   }
 }

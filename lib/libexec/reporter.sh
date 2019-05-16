@@ -53,13 +53,12 @@ buffer() {
   eval "
     $1_buffer=''
     $1() {
-      case \$1 in
-        clear       ) shift; $1_buffer='' ;;
-        is_empty    ) shift; [ ! \"\$$1_buffer\" ] ;;
-        set_if_empty) shift; if $1 is_empty; then $1 append \"\$@\"; fi ;;
-        add         ) shift; $1_buffer=\$$1_buffer\${*:-} ;;
-        append      ) shift; $1_buffer=\$$1_buffer\${*:-}\${LF} ;;
-        output      ) shift; puts \"\$$1_buffer\" ;;
+      case \${1:-} in
+        ''   ) [ \"\$$1_buffer\" ] ;;
+        '='  ) shift; $1_buffer=\${*:-} ;;
+        '||=') shift; $1 || $1 += \"\$@\" ;;
+        '+=' ) shift; $1_buffer=\$$1_buffer\${*:-} ;;
+        '>>' ) shift; puts \"\$$1_buffer\" ;;
       esac
     }
   "

@@ -15,18 +15,20 @@ references_formatter() {
 
         set -- "${field_color}shellspec" \
           "$field_specfile:${field_range%-*}${RESET}" \
-          "$CYAN# ${example_index:--}) $(field_description) ${field_note}${RESET}"
+          "$CYAN# ${example_index:--})" \
+          "$(field_description) ${field_note}${RESET}"
 
         # shellcheck disable=SC2145
         [ "$field_focused" = "focus" ] && set -- "${UNDERLINE}$@"
 
         if [ "$field_error" ]; then
-          references_failure set_if_empty "Failure examples:${LF}"
-          references_failure append "$@"
+          references_failure '||=' "${BOLD}Failure examples:" \
+            "(Listed here affect your suite's status)${RESET}${LF}${LF}"
+          references_failure '+=' "${*:-}${LF}"
         else
-          references_notable set_if_empty "Notable examples:" \
-            "(listed here are expected and do not affect your suite's status)$LF"
-          references_notable append "$@"
+          references_notable '||=' "${BOLD}Notable examples:" \
+            "(Listed here do not affect your suite's status)${RESET}${LF}${LF}"
+          references_notable '+=' "${*:-}${LF}"
         fi
         ;;
       end)
@@ -36,8 +38,8 @@ references_formatter() {
           "$CYAN# expected $field_example_count examples," \
           "but only ran $example_count_per_file examples${RESET}"
 
-        references_failure set_if_empty "Failure examples:${LF}"
-        references_failure append "$@"
+        references_failure '||=' "Failure examples:${LF}"
+        references_failure '+=' "${*:-}${LF}"
         ;;
     esac
   }
@@ -45,14 +47,10 @@ references_formatter() {
   references_output() {
     case $1 in
       end)
-        if ! references_notable is_empty; then
-          references_notable output
-          putsn
-        fi
-        if ! references_failure is_empty; then
-          references_failure output
-          putsn
-        fi
+        references_notable && references_notable '+=' "$LF"
+        references_notable '>>'
+        references_failure && references_failure '+=' "$LF"
+        references_failure '>>'
     esac
   }
 }

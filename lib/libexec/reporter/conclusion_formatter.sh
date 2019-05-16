@@ -15,14 +15,14 @@ conclusion_formatter() {
     case $field_tag in (evaluation|good) return 0; esac
     [ "$example_index" ] || return 0
 
-    conclusion set_if_empty "${LF}Examples:${LF}"
+    conclusion '||=' "Examples:${LF}"
     _label="  $example_index) "
     padding _indent ' ' ${#_label}
     if [ "$detail_index" -eq 1 ]; then
-      conclusion append "${WHITE}${_label}$(field_description)${RESET}"
+      conclusion '+=' "${WHITE}${_label}$(field_description)${RESET}${LF}"
       if [ "$field_evaluation" ]; then
-        conclusion append "${BOLD}${CYAN}${_indent}${field_evaluation}${RESET}"
-        conclusion append
+        conclusion '+=' "${BOLD}${CYAN}${_indent}${field_evaluation}${RESET}"
+        conclusion '+=' "${LF}${LF}"
       fi
     fi
 
@@ -34,24 +34,24 @@ conclusion_formatter() {
       warn) _message="Warning $field_message" ;;
       *   ) _message=$field_message ;;
     esac
-    conclusion append "${_label}${field_color}${_message}${RESET}${LF}"
+    conclusion '+=' "${_label}${field_color}${_message}${RESET}${LF}${LF}"
 
     case $field_tag in (warn|bad)
       _message=$field_failure_message _text=''
       while [ "$_text" != "$_message" ]; do
         _text=${_message%%${LF}*}
         _message=${_message#*${LF}}
-        conclusion append "  ${_indent}${field_color}${_text}${RESET}"
+        conclusion '+=' "  ${_indent}${field_color}${_text}${RESET}${LF}"
       done
     esac
 
-    conclusion append "${_indent}${CYAN}#" \
-      "${field_specfile}:${field_lineno}${RESET}${LF}"
+    conclusion '+=' "${_indent}${CYAN}#" \
+      "${field_specfile}:${field_lineno}${RESET}${LF}${LF}"
   }
 
   conclusion_output() {
     case $1 in
-      end) conclusion output ;;
+      end) conclusion '>>' ;;
     esac
   }
 }
