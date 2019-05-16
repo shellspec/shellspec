@@ -3,9 +3,18 @@
 : "${field_type:-}"
 : "${field_shell:-} ${field_shell_type:-} ${field_shell_version:-}"
 
+buffer methods
+
 methods_format() {
+  methods_clear
   case $field_type in (meta)
-    putsn "Running: $field_shell" \
+    methods_append "Running: $field_shell" \
       "[${field_shell_type}${field_shell_version:+ }${field_shell_version}]"
+  esac
+}
+
+methods_output() {
+  case $1 in
+    format) methods_puts ;;
   esac
 }

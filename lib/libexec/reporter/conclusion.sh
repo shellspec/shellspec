@@ -48,6 +48,8 @@ conclusion_format() {
     "${field_specfile}:${field_lineno}${RESET}${LF}"
 }
 
-conclusion_end() {
-  conclusion_flush
+conclusion_output() {
+  case $1 in
+    end) conclusion_puts ;;
+  esac
 }

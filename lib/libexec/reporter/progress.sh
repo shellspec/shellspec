@@ -2,19 +2,38 @@
 
 : "${field_type:-} ${field_tag:-} ${field_color:-}"
 
+buffer progress
+
 progress_format() {
+  progress_clear
   case $field_type in (result)
     case $field_tag in
-      succeeded ) puts "${field_color}.${RESET}" ;;
-      warned    ) puts "${field_color}W${RESET}" ;;
-      skipped   ) puts "${field_color}s${RESET}" ;;
-      failed    ) puts "${field_color}F${RESET}" ;;
-      todo      ) puts "${field_color}P${RESET}" ;;
-      fixed     ) puts "${field_color}p${RESET}" ;;
+      succeeded ) progress_add "${field_color}.${RESET}" ;;
+      warned    ) progress_add "${field_color}W${RESET}" ;;
+      skipped   ) progress_add "${field_color}s${RESET}" ;;
+      failed    ) progress_add "${field_color}F${RESET}" ;;
+      todo      ) progress_add "${field_color}P${RESET}" ;;
+      fixed     ) progress_add "${field_color}p${RESET}" ;;
     esac
   esac
 }
 
 progress_end() {
-  putsn
+  progress_append
+}
+
+progress_output() {
+  case $1 in
+    format)
+      methods_output format
+      progress_puts
+      ;;
+    end)
+      progress_puts
+      conclusion_output end
+      finished_output end
+      summary_output end
+      references_output end
+      ;;
+  esac
 }

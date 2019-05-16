@@ -40,13 +40,13 @@ references_format() {
   esac
 }
 
-references_end() {
+references_output() {
   if ! references_notable_is_empty; then
-    references_notable_flush
+    references_notable_puts
     putsn
   fi
   if ! references_failure_is_empty; then
-    references_failure_flush
+    references_failure_puts
     putsn
   fi
 }

@@ -10,7 +10,7 @@ load_formatters() {
   formatters=''
   for f in "$@"; do
     formatters="$formatters $f"
-    eval "${f}_begin() { :; }; ${f}_format() { :; }; ${f}_end() { :; };"
+    eval "${f}_begin() { :; }; ${f}_format() { :; }; ${f}_end() { :; }; ${f}_output() { :; };"
     import "$f"
   done
 }
@@ -44,9 +44,12 @@ buffer() {
   while [ $# -gt 0 ]; do
     eval "
       $1_buffer=''
+      $1_clear() { $1_buffer=''; }
       $1_is_empty() { [ -z \"\$$1_buffer\" ]; }
       $1_set_if_empty() { if $1_is_empty; then $1_append \"\$@\"; fi; }
+      $1_add() { $1_buffer=\$$1_buffer\${*:-}; }
       $1_append() { $1_buffer=\$$1_buffer\${*:-}\${LF}; }
+      $1_puts() { puts \"\$$1_buffer\"; }
       $1_flush() {
         if ! $1_is_empty; then puts \"\$$1_buffer\"; $1_buffer=''; fi
       }

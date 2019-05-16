@@ -4,6 +4,8 @@
 : "${todo_count:-} ${fixed_count:-} ${suppressed_skipped_count:-}"
 : "${interrupt:-} ${aborted:-} ${no_examples:-} ${not_enough_examples:-}"
 
+buffer summary
+
 summary_end() {
   _summary='' _summary_error='' _color=''
 
@@ -37,5 +39,11 @@ summary_end() {
 
   [ "$warned_count" ] && _color=$YELLOW || _color=$GREEN
   [ "${failed_count}${fixed_count}${_summary_error}" ] && _color=$RED
-  putsn "${_color}${_summary}${_summary_error}${RESET}${LF}"
+  summary_append "${_color}${_summary}${_summary_error}${RESET}${LF}"
+}
+
+summary_output() {
+  case $1 in
+    end) summary_puts ;;
+  esac
 }

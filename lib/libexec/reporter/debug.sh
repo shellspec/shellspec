@@ -2,8 +2,11 @@
 
 : "${field_type:-} ${field_color:-}"
 
+buffer debug
+
 debug_format() {
   _mark='' _value=''
+  debug_clear
 
   case $field_type in
     meta     ) _mark='!' ;;
@@ -16,13 +19,19 @@ debug_format() {
     *        ) _mark='?' ;;
   esac
 
-  puts "${BOLD}${WHITE}${_mark} ${field_color}${BOLD}${BLACK}<RS>${field_color}"
+  debug_add "${BOLD}${WHITE}${_mark} ${field_color}${BOLD}${BLACK}<RS>${field_color}"
   while [ $# -gt 0 ]; do
     eval "_value=\$field_$1"
     replace _value "$VT" "${BOLD}${BLACK}<VT>${field_color}"
-    puts "${field_color}$1:${_value}"
+    debug_add "${field_color}$1:${_value}"
     shift
-    [ $# -eq 0 ] || puts "${BOLD}${BLACK}<US>${field_color}"
+    [ $# -eq 0 ] || debug_add "${BOLD}${BLACK}<US>${field_color}"
   done
-  putsn "${RESET}"
+  debug_append "${RESET}"
+}
+
+debug_output() {
+  case $1 in
+    format) debug_puts ;;
+  esac
 }
