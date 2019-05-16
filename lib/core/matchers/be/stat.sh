@@ -21,10 +21,15 @@ shellspec_syntax 'shellspec_matcher_be_charactor_device'
 shellspec_make_file_matcher() {
   eval "
     shellspec_matcher_be_$1() {
-      shellspec_matcher__match() {
-        [ $2 \"\${SHELLSPEC_SUBJECT:-}\" ]
-      }
-
+      if [ 'empty' = \"$1\" ] && [ -d \"\${SHELLSPEC_SUBJECT:-}\" ]; then
+          shellspec_matcher__match() {
+            ! \\ls -A -1 \"\${SHELLSPEC_SUBJECT:-}\" | \\grep -q .
+          }
+      else
+          shellspec_matcher__match() {
+            [ $2 \"\${SHELLSPEC_SUBJECT:-}\" ]
+          }
+      fi
       shellspec_matcher__failure_message() {
         shellspec_putsn \"The specified path ${4:-${3%% *} not ${3#* }}\"
         shellspec_putsn \"path: \$SHELLSPEC_SUBJECT\"
@@ -44,7 +49,7 @@ shellspec_make_file_matcher() {
 shellspec_make_file_matcher exist            "-e" "exists" "does not exist"
 shellspec_make_file_matcher file             "-f" "is a regular file"
 shellspec_make_file_matcher directory        "-d" "is a directory"
-shellspec_make_file_matcher empty          "! -s" "is empty file"
+shellspec_make_file_matcher empty          "! -s" "is empty file or directory"
 
 shellspec_make_file_matcher symlink          "-L" "is a symbolic link"
 shellspec_make_file_matcher pipe             "-p" "is a pipe"
