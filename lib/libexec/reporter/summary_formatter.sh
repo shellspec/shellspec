@@ -44,8 +44,8 @@ summary_formatter() {
   }
 
   summary_output() {
-    case $1 in
-      end) summary '>>' ;;
+    case $1 in (end)
+      summary '>>'
     esac
   }
 }

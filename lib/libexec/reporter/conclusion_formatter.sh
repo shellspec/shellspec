@@ -50,8 +50,8 @@ conclusion_formatter() {
   }
 
   conclusion_output() {
-    case $1 in
-      end) conclusion '>>' ;;
+    case $1 in (end)
+      conclusion '>>'
     esac
   }
 }

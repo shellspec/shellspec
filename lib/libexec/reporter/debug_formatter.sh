@@ -5,8 +5,6 @@
 buffer debug
 
 debug_formatter() {
-  formatter debug
-
   debug_format() {
     _mark='' _value=''
 
@@ -34,8 +32,8 @@ debug_formatter() {
   }
 
   debug_output() {
-    case $1 in
-      format) debug '>>' ;;
+    case $1 in (format)
+      debug '>>'
     esac
   }
 }

@@ -19,8 +19,8 @@ methods_formatter() {
   }
 
   methods_output() {
-    case $1 in
-      format) methods '>>' ;;
+    case $1 in (format)
+      methods '>>'
     esac
   }
 }

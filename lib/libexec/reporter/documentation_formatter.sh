@@ -6,10 +6,9 @@
 documentation_last_id=''
 buffer documentation
 
-documentation_formatter() {
-  formatter documentation
-  load_formatters methods conclusion finished summary references
+load_formatters methods conclusion finished summary references
 
+documentation_formatter() {
   documentation_format() {
     _id='' _current_id='' _description='' _indent=''
     _last_id=$documentation_last_id
@@ -40,9 +39,9 @@ documentation_formatter() {
   }
 
   documentation_output() {
-    case $1 in
-      format | end) documentation '>>' ;;
-    esac
     output "$1" methods conclusion finished summary references
+    case $1 in (format)
+      documentation '>>'
+    esac
   }
 }

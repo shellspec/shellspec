@@ -8,7 +8,6 @@ buffer tap
 
 tap_formatter() {
   count "$@"
-  formatter tap
 
   tap_begin() {
     tap '=' "1..${example_count}${LF}"
@@ -39,8 +38,8 @@ tap_formatter() {
   }
 
   tap_output() {
-    case $1 in
-      begin | format | end ) tap '>>' ;;
+    case $1 in (begin | format | end )
+      tap '>>'
     esac
   }
 }

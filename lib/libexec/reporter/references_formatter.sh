@@ -45,12 +45,11 @@ references_formatter() {
   }
 
   references_output() {
-    case $1 in
-      end)
-        references_notable && references_notable '+=' "$LF"
-        references_notable '>>'
-        references_failure && references_failure '+=' "$LF"
-        references_failure '>>'
+    case $1 in (end)
+      references_notable && references_notable '+=' "$LF"
+      references_notable '>>'
+      references_failure && references_failure '+=' "$LF"
+      references_failure '>>'
     esac
   }
 }

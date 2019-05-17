@@ -4,10 +4,9 @@
 
 buffer progress
 
-progress_formatter() {
-  formatter progress
-  load_formatters methods conclusion finished summary references
+load_formatters methods conclusion finished summary references
 
+progress_formatter() {
   progress_format() {
     progress '='
     case $field_type in (result)
@@ -27,8 +26,8 @@ progress_formatter() {
   }
 
   progress_output() {
-    case $1 in
-      format | end) progress '>>' ;;
+    case $1 in (format | end)
+      progress '>>'
     esac
     output "$1" methods conclusion finished summary references
   }

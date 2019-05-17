@@ -9,8 +9,8 @@ finished_formatter() {
   }
 
   finished_output() {
-    case $1 in
-      end) finished '>>'
+    case $1 in (end)
+      finished '>>'
     esac
   }
 }

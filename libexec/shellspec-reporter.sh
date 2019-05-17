@@ -20,8 +20,8 @@ color_constants "${SHELLSPEC_COLOR:-}"
 
 : "${SHELLSPEC_FORMATTER:=debug}"
 
-import "${SHELLSPEC_FORMATTER}_formatter"
-"${SHELLSPEC_FORMATTER##*/}_formatter" "$@"
+load_formatters "$SHELLSPEC_FORMATTER"
+invoke_formatters formatter "$@"
 
 parse_lines() {
   buf=''
@@ -52,7 +52,7 @@ exit_status=0 found_focus=''
 fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-}
 
 invoke_formatters begin
-"${SHELLSPEC_FORMATTER}_output" begin
+output begin "${SHELLSPEC_FORMATTER}"
 
 # shellcheck disable=SC2034
 {
@@ -132,7 +132,7 @@ each_line() {
 
   color_schema
   invoke_formatters format "$@"
-  "${SHELLSPEC_FORMATTER}_output" format
+  output format "${SHELLSPEC_FORMATTER}"
 }
 parse_lines
 
@@ -152,7 +152,7 @@ shellspec_sequence callback 1 10
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 invoke_formatters end
-"${SHELLSPEC_FORMATTER}_output" end
+output end "${SHELLSPEC_FORMATTER}"
 
 if [ "$found_focus" ] && [ ! "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
   info "You need to specify --focus option to run focused (underlined) example(s) only.$LF"
