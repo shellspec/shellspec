@@ -117,15 +117,13 @@ each_line() {
   esac
 
   color_schema
-  invoke_formatters format "$@"
-  output format "${SHELLSPEC_FORMATTER}"
+  invoke_formatters each "$@"
 }
 
-load_formatters "$SHELLSPEC_FORMATTER"
-invoke_formatters formatter "$@"
+load_formatter "$SHELLSPEC_FORMATTER"
+initialize_formatter "$@"
 
 invoke_formatters begin
-output begin "${SHELLSPEC_FORMATTER}"
 
 parse_lines
 
@@ -134,6 +132,7 @@ if [ "$aborted" ]; then
 elif [ "$interrupt" ]; then
   exit_status=130
 elif [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ] && [ "$example_count" -eq 0 ]; then
+  #shellcheck disable=SC2034
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE no_examples=1
 elif [ "$not_enough_examples" ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
@@ -144,7 +143,6 @@ sequence callback 1 10
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 invoke_formatters end
-output end "${SHELLSPEC_FORMATTER}"
 
 if [ "$found_focus" ] && [ ! "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
   info "You need to specify --focus option" \

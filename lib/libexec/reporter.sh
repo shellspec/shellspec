@@ -6,30 +6,37 @@
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use each replace padding
 
-formatters=''
 
-load_formatters() {
+load_formatter() {
+  formatters=''
+  require_formatters "$1"
+}
+
+initialize_formatter() {
+  for f in $formatters; do "${f}_initialize" "$@"; done
+}
+
+require_formatters() {
   for f in "$@"; do
-    formatters="$formatters $f"
+    formatters="$formatters$f "
     eval "
+      ${f}_initialize() { :; }
       ${f}_begin() { :; }
-      ${f}_format() { :; }
+      ${f}_each() { :; }
       ${f}_end() { :; }
       ${f}_output() { :; }
     "
     import "${f}_formatter"
-    "${f}_formatter"
   done
 }
 
 invoke_formatters() {
-  for f in $formatters; do
-    #shellcheck shell=sh disable=SC2145
-    "${f}_$@"
-  done
+  #shellcheck shell=sh disable=SC2145
+  for f in $formatters; do "${f}_$@"; done
+  output_formatter "$1" "${formatters%% *}"
 }
 
-output() {
+output_formatter() {
   eval "shift; while [ \$# -gt 0 ]; do \"\$1_output\" \"$1\"; shift; done"
 }
 
