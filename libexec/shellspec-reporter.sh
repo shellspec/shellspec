@@ -3,32 +3,37 @@
 
 set -eu
 
-echo $$ > "$SHELLSPEC_TMPBASE/reporter_pid"
+: "${SHELLSPEC_SPEC_FAILURE_CODE:=101}" "${SHELLSPEC_FORMATTER:=debug}"
 
-: "${SHELLSPEC_SPEC_FAILURE_CODE:=101}"
+interrupt=''
+if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
+if (trap - TERM) 2>/dev/null; then trap '' TERM; fi
+
+[ "${SHELLSPEC_TMPBASE:-}" ] && echo $$ > "$SHELLSPEC_TMPBASE/reporter_pid"
 
 # shellcheck source=lib/libexec/reporter.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/reporter.sh"
-use import reset_params each replace
-
-interrupt='' aborted=1 no_examples=''
-if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
-if (trap - TERM) 2>/dev/null; then trap '' TERM; fi
+use import reset_params constants sequence
 
 import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
 
-: "${SHELLSPEC_FORMATTER:=debug}"
+exit_status=0 found_focus='' no_examples='' aborted=1
+fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-}
+current_example_index=0 example_index='' detail_index=0
+last_block_no='' last_skip_id='' not_enough_examples=''
+field_type='' field_tag='' field_block_no='' field_focused=''
+field_conditional='' field_skipid='' field_pending=''
 
-load_formatters "$SHELLSPEC_FORMATTER"
-invoke_formatters formatter "$@"
+# shellcheck disable=SC2034
+example_count=0 succeeded_count='' failed_count='' warned_count='' \
+todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
 
 parse_lines() {
   buf=''
-  while IFS= read -r line || [ "$line" ]; do
-    [ "$fail_fast" ] && break
+  while { IFS= read -r line || [ "$line" ]; } && [ ! "$fail_fast" ]; do
     case $line in
-      $RS*) [ -z "$buf" ] || parse_fields "$buf"; buf=${line#?} ;;
+      $RS*) [ "$buf" ] && parse_fields "$buf"; buf=${line#?} ;;
       *) buf="$buf${buf:+$LF}${line}" ;;
     esac
   done
@@ -48,31 +53,13 @@ parse_fields() {
   each_line "$@"
 }
 
-exit_status=0 found_focus=''
-fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-}
-
-invoke_formatters begin
-output begin "${SHELLSPEC_FORMATTER}"
-
-# shellcheck disable=SC2034
-{
-  current_example_index=0 example_index='' detail_index=0
-  last_block_no='' last_skip_id='' not_enough_examples=''
-  field_type='' field_tag='' field_block_no='' field_focused=''
-  field_conditional='' field_skipid='' field_pending=''
-  example_count=0 succeeded_count='' failed_count='' warned_count=''
-  todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
-}
-
 each_line() {
   case $field_type in
     begin) last_block_no=0 last_skip_id=''
       # shellcheck disable=SC2034
-      {
-        example_count_per_file=0 succeeded_count_per_file=0
-        failed_count_per_file=0 warned_count_per_file=0 todo_count_per_file=0
-        fixed_count_per_file=0 skipped_count_per_file=0
-      }
+      example_count_per_file=0 succeeded_count_per_file=0 \
+      failed_count_per_file=0 warned_count_per_file=0 todo_count_per_file=0 \
+      fixed_count_per_file=0 skipped_count_per_file=0
       ;;
     example)
       if [ "$field_block_no" -le "$last_block_no" ]; then
@@ -98,12 +85,11 @@ each_line() {
             esac
         esac
 
-        if [ "$example_index" ]; then
-          detail_index=$(($detail_index + 1))
-        else
-          current_example_index=$(($current_example_index + 1)) detail_index=1
-          example_index=$current_example_index
+        if [ ! "$example_index" ]; then
+          current_example_index=$(($current_example_index + 1))
+          example_index=$current_example_index detail_index=0
         fi
+        detail_index=$(($detail_index + 1))
         break
       done
       ;;
@@ -134,6 +120,13 @@ each_line() {
   invoke_formatters format "$@"
   output format "${SHELLSPEC_FORMATTER}"
 }
+
+load_formatters "$SHELLSPEC_FORMATTER"
+invoke_formatters formatter "$@"
+
+invoke_formatters begin
+output begin "${SHELLSPEC_FORMATTER}"
+
 parse_lines
 
 if [ "$aborted" ]; then
@@ -141,21 +134,21 @@ if [ "$aborted" ]; then
 elif [ "$interrupt" ]; then
   exit_status=130
 elif [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ] && [ "$example_count" -eq 0 ]; then
-  #shellcheck disable=SC2034
-  no_examples=1 exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE no_examples=1
 elif [ "$not_enough_examples" ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 fi
 
 callback() { [ -e "$SHELLSPEC_TIME_LOG" ] || sleep 0; }
-shellspec_sequence callback 1 10
+sequence callback 1 10
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 invoke_formatters end
 output end "${SHELLSPEC_FORMATTER}"
 
 if [ "$found_focus" ] && [ ! "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
-  info "You need to specify --focus option to run focused (underlined) example(s) only.$LF"
+  info "You need to specify --focus option" \
+        "to run focused (underlined) example(s) only.$LF"
 fi
 
 exit "$exit_status"

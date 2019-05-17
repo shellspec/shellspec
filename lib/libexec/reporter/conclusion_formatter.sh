@@ -4,7 +4,6 @@
 : "${field_type:-} ${field_specfile:-} ${field_tag:-} ${field_lineno:-}"
 : "${field_evaluation:-} ${field_message:-} ${field_failure_message:-}"
 
-use padding
 buffer conclusion
 
 conclusion_formatter() {

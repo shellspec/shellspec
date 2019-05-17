@@ -4,14 +4,19 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants
+use each replace padding
 
 formatters=''
 
 load_formatters() {
   for f in "$@"; do
     formatters="$formatters $f"
-    eval "${f}_begin() { :; }; ${f}_format() { :; }; ${f}_end() { :; }; ${f}_output() { :; };"
+    eval "
+      ${f}_begin() { :; }
+      ${f}_format() { :; }
+      ${f}_end() { :; }
+      ${f}_output() { :; }
+    "
     import "${f}_formatter"
     "${f}_formatter"
   done
