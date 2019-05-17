@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Redesign the reporter to support the generator.
+
 ## [0.14.0] - 2019-05-15
 
 ### Added
