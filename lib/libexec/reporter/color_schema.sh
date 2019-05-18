@@ -26,28 +26,27 @@ color_schema() {
   field_color=''
   case $field_type in
     meta | finished) field_color=${BOLD}${WHITE} ;;
-    begin | end) field_color=${REVERSE}${WHITE} ;;
-    example) field_color=${UNDERLINE}${WHITE} ;;
+    begin | end    ) field_color=${REVERSE}${WHITE} ;;
+    example        ) field_color=${UNDERLINE}${WHITE} ;;
     statement)
       case $field_tag in
-        skip         ) field_color=${MAGENTA} ;;
-        evaluation   ) field_color=${BOLD}${CYAN} ;;
-        good         ) field_color=${GREEN} ;;
-        warn         ) field_color=${YELLOW} ;;
-        pending      ) field_color=${MAGENTA} ;;
-        bad          ) [ "$field_pending" ] && field_color=${YELLOW} || \
+        skip      ) field_color=${MAGENTA} ;;
+        evaluation) field_color=${BOLD}${CYAN} ;;
+        good      ) field_color=${GREEN} ;;
+        warn      ) field_color=${YELLOW} ;;
+        pending   ) field_color=${MAGENTA} ;;
+        bad       ) [ "$field_pending" ] && field_color=${YELLOW} || \
                        field_color=${RED};;
-        *            ) field_color=${WHITE} ;;
-      esac
-      ;;
+        *         ) field_color=${WHITE} ;;
+      esac ;;
     result)
       case $field_tag in
-        succeeded    ) field_color=${BOLD}${GREEN} ;;
-        failed       ) field_color=${BOLD}${RED} ;;
-        warned       ) field_color=${BOLD}${YELLOW} ;;
-        todo         ) field_color=${BOLD}${YELLOW} ;;
-        fixed        ) field_color=${BOLD}${YELLOW} ;;
-        skipped      ) field_color=${BOLD}${MAGENTA} ;;
+        succeeded) field_color=${BOLD}${GREEN} ;;
+        failed   ) field_color=${BOLD}${RED} ;;
+        warned   ) field_color=${BOLD}${YELLOW} ;;
+        todo     ) field_color=${BOLD}${YELLOW} ;;
+        fixed    ) field_color=${BOLD}${YELLOW} ;;
+        skipped  ) field_color=${BOLD}${MAGENTA} ;;
       esac
   esac
 }
