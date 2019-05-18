@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004,SC2034
+#shellcheck shell=sh
 
 : "${warned_count:-} ${skipped_count:-} ${suppressed_skipped_count:-}"
 : "${todo_count:-} ${fixed_count:-} ${suppressed_skipped_count:-}"

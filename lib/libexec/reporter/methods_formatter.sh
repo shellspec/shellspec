@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004,SC2034
+#shellcheck shell=sh
 
 : "${field_type:-}"
 : "${field_shell:-} ${field_shell_type:-} ${field_shell_version:-}"

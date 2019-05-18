@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004,SC2034
+#shellcheck shell=sh
 
 : "${example_index:-} ${example_count_per_file:-}"
 : "${field_type:-} ${field_specfile:-} ${field_range:-} ${field_focused:-}"

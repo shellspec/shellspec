@@ -64,7 +64,8 @@ parse_fields() {
 
 each_line() {
   case $field_type in
-    begin) last_block_no=0 last_skip_id=''
+    begin)
+      last_block_no=0 last_skip_id=''
       # shellcheck disable=SC2034
       example_count_per_file=0 succeeded_count_per_file=0 \
       failed_count_per_file=0 warned_count_per_file=0 todo_count_per_file=0 \

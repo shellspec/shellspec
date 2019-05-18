@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004
+#shellcheck shell=sh
 
 : "${count_specfiles:-} ${count_examples:-}"
 
