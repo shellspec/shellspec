@@ -2,10 +2,10 @@
 
 BDD style unit testing framework for POSIX compliant shell script.
 
-[![TravisCI](https://img.shields.io/travis/ko1nksm/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/ko1nksm/shellspec)
-[![CirrusCI](https://api.cirrus-ci.com/github/ko1nksm/shellspec.svg?task=CirrusCI&script=CirrusCI)](https://cirrus-ci.com/github/ko1nksm/shellspec)
-![GitHub release](https://img.shields.io/github/release/ko1nksm/shellspec.svg)
-![GitHub](https://img.shields.io/github/license/ko1nksm/shellspec.svg)
+[![TravisCI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/shellspec/shellspec)
+[![CirrusCI](https://api.cirrus-ci.com/github/shellspec/shellspec.svg?task=CirrusCI&script=CirrusCI)](https://cirrus-ci.com/github/shellspec/shellspec)
+![GitHub release](https://img.shields.io/github/release/shellspec/shellspec.svg)
+![GitHub](https://img.shields.io/github/license/shellspec/shellspec.svg)
 
 **Let’s test the your shell script!**
 
@@ -76,14 +76,14 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.cirrus.yml))
 
-| Platform                                                  | Test                                                        |
-| --------------------------------------------------------- | ----------------------------------------------------------- |
-| Ubuntu 12.04, 14.04, 16.04                                | [Travis CI](https://travis-ci.org/ko1nksm/shellspec)        |
-| macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 (Homebrew) | [Travis CI](https://travis-ci.org/ko1nksm/shellspec)        |
-| FreeBSD 10.x, 11.x, 12.x                                  | [Cirrus CI](https://cirrus-ci.com/github/ko1nksm/shellspec) |
-| Windows Server 2019 (Git bash, msys2, cygwin)             | [Cirrus CI](https://cirrus-ci.com/github/ko1nksm/shellspec) |
-| Windows 10 1809 (Ubuntu 18.04 on WSL)                     | manual                                                      |
-| Solaris 11                                                | manual                                                      |
+| Platform                                                  | Test                                                          |
+| --------------------------------------------------------- | ------------------------------------------------------------- |
+| Ubuntu 12.04, 14.04, 16.04                                | [Travis CI](https://travis-ci.org/shellspec/shellspec)        |
+| macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 (Homebrew) | [Travis CI](https://travis-ci.org/shellspec/shellspec)        |
+| FreeBSD 10.x, 11.x, 12.x                                  | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
+| Windows Server 2019 (Git bash, msys2, cygwin)             | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
+| Windows 10 1809 (Ubuntu 18.04 on WSL)                     | manual                                                        |
+| Solaris 11                                                | manual                                                        |
 
 Confirmed version (tested with docker [dockerfiles](dockerfiles))
 
@@ -125,7 +125,7 @@ From git
 
 ```sh
 $ cd /SOME/WHERE/TO/INSTALL
-$ git clone https://github.com/ko1nksm/shellspec.git
+$ git clone https://github.com/shellspec/shellspec.git
 $ ln -s /SOME/WHERE/TO/INSTALL/shellspec/shellspec /EXECUTABLE/PATH/
 # (e.g. /EXECUTABLE/PATH/ = /usr/local/bin/, $HOME/bin/)
 ```
@@ -134,7 +134,7 @@ From tar.gz
 
 ```sh
 $ cd /SOME/WHERE/TO/INSTALL
-$ wget https://github.com/ko1nksm/shellspec/archive/{VERSION}.tar.gz
+$ wget https://github.com/shellspec/shellspec/archive/{VERSION}.tar.gz
 $ tar xzvf shellspec-{VERSION}.tar.gz
 
 $ ln -s /SOME/WHERE/TO/INSTALL/shellspec-{VERSION}/shellspec /EXECUTABLE/PATH/
