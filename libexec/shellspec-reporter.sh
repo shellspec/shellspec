@@ -3,7 +3,8 @@
 
 set -eu
 
-: "${SHELLSPEC_SPEC_FAILURE_CODE:=101}" "${SHELLSPEC_FORMATTER:=debug}"
+: "${SHELLSPEC_SPEC_FAILURE_CODE:=101}"
+: "${SHELLSPEC_FORMATTER:=debug}" "${SHELLSPEC_GENERATORS:=}"
 
 interrupt=''
 if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
@@ -28,6 +29,14 @@ field_conditional='' field_skipid='' field_pending=''
 # shellcheck disable=SC2034
 example_count=0 succeeded_count='' failed_count='' warned_count='' \
 todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
+
+load_formatter "$SHELLSPEC_FORMATTER"
+load_generators $SHELLSPEC_GENERATORS
+
+formatters initialize "$@"
+generators prepare "$@"
+
+output_formatters begin
 
 parse_lines() {
   buf=''
@@ -117,14 +126,8 @@ each_line() {
   esac
 
   color_schema
-  invoke_formatters each "$@"
+  output_formatters each "$@"
 }
-
-load_formatter "$SHELLSPEC_FORMATTER"
-initialize_formatter "$@"
-
-invoke_formatters begin
-
 parse_lines
 
 if [ "$aborted" ]; then
@@ -142,7 +145,10 @@ callback() { [ -e "$SHELLSPEC_TIME_LOG" ] || sleep 0; }
 sequence callback 1 10
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
-invoke_formatters end
+output_formatters end
+
+generators cleanup "$@"
+formatters finalize "$@"
 
 if [ "$found_focus" ] && [ ! "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
   info "You need to specify --focus option" \

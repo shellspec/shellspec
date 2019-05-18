@@ -1,39 +1,79 @@
 #shellcheck shell=sh disable=SC2004
 
-: "${specfile_count:-} ${example_count:-}"
+: "${count_specfiles:-} ${count_examples:-}"
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use each replace padding
 
+formatters='' generators=''
 
 load_formatter() {
-  formatters=''
-  require_formatters "$1"
-}
-
-initialize_formatter() {
-  for f in $formatters; do "${f}_initialize" "$@"; done
+  formatters=$1
+  import_formatter "$1"
 }
 
 require_formatters() {
-  for f in "$@"; do
-    formatters="$formatters$f "
-    eval "
-      ${f}_initialize() { :; }
-      ${f}_begin() { :; }
-      ${f}_each() { :; }
-      ${f}_end() { :; }
-      ${f}_output() { :; }
-    "
-    import "${f}_formatter"
+  while [ $# -gt 0 ]; do
+    case " $formatters " in (*\ $1\ *) ;; (*)
+      formatters="${formatters}${formatters:+ }$1"
+      import_formatter "$1"
+    esac
+    shift
   done
 }
 
-invoke_formatters() {
+import_formatter() {
+  eval "
+    ${1}_initialize() { :; }; ${1}_finalize() { :; }
+    ${1}_begin() { :; }; ${1}_each() { :; }; ${1}_end() { :; }
+    ${1}_output() { :; }
+  "
+  import "${1}_formatter"
+}
+
+load_generators() {
+  while [ $# -gt 0 ]; do
+    case " $formatters $generators " in (*\ $1\ *) ;; (*)
+      generators="${generators}${generators:+ }$1"
+      eval "
+        ${1}_output='report.${1}'
+        ${1}_prepare() {
+          case \$${1}_output in (*[a-z]* | *[A-Z]* | *[0-9]*)
+            : > \"\$${1}_output\"
+          esac
+        }
+        ${1}_generate() {
+          case \$${1}_output in (*[a-z]* | *[A-Z]* | *[0-9]*)
+            \"${1}_output\" \"\$@\" | generate_file \"\$${1}_output\"
+          esac
+        }
+        ${1}_cleanup() { :; }
+      "
+      import_formatter "$1"
+    esac
+    shift
+  done
+}
+
+generate_file() {
+  remove_escape_sequence >> "$1"
+}
+
+formatters() {
   #shellcheck shell=sh disable=SC2145
-  for f in $formatters; do "${f}_$@"; done
-  output_formatter "$1" "${formatters%% *}"
+  for f in $formatters $generators; do "${f}_$@"; done
+}
+
+generators() {
+  #shellcheck shell=sh disable=SC2145
+  for g in $generators; do "${g}_$@"; done
+}
+
+output_formatters() {
+  formatters "$@"
+  "${formatters%% *}_output" "$1"
+  generators generate "$1"
 }
 
 output_formatter() {
@@ -41,10 +81,10 @@ output_formatter() {
 }
 
 count() {
-  specfile_count=0 example_count=0
+  count_specfiles=0 count_examples=0
   #shellcheck shell=sh disable=SC2046
   set -- $($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-list.sh" "$@")
-  specfile_count=$1 example_count=$2
+  count_specfiles=$1 count_examples=$2
 }
 
 # $1: prefix, $2: filename
@@ -77,4 +117,17 @@ field_description() {
   description=${field_description:-}
   replace description "$VT" " "
   putsn "$description"
+}
+
+remove_escape_sequence() {
+  text=''
+  while IFS= read -r line; do
+    until case $line in (*$ESC*) false; esac; do
+      text="${text}${line%%$ESC*}"
+      line=${line#*$ESC}
+      line=${line#*m} # only supported SGR
+    done
+    text="${text}${line}${LF}"
+  done
+  puts "$text"
 }
