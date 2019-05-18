@@ -45,7 +45,7 @@ load_generators() {
         }
         ${1}_generate() {
           case \$${1}_output in (*[a-z]* | *[A-Z]* | *[0-9]*)
-            \"${1}_output\" \"\$@\" | generate_file \"\$${1}_output\"
+            (\"${1}_output\" \"\$@\" | generate_file \"\$${1}_output\")
           esac
         }
         ${1}_cleanup() { :; }
