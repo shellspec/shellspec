@@ -28,5 +28,5 @@ progress_output() {
   case $1 in (each | end)
     progress '>>'
   esac
-  output_formatter "$1" methods conclusion finished summary references
+  output "$1" methods conclusion finished summary references
 }

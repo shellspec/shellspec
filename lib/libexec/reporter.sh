@@ -76,7 +76,7 @@ output_formatters() {
   generators generate "$1"
 }
 
-output_formatter() {
+output() {
   eval "shift; while [ \$# -gt 0 ]; do \"\$1_output\" \"$1\"; shift; done"
 }
 
