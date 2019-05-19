@@ -293,5 +293,10 @@ HERE
   [ "$ret" = "ok" ] && no_problem || affect
 )
 
+(
+  title='30: eval interpret invalid -- option (posh = around 0.3.14)'
+  ret=$(eval echo -- foo)
+  [ "$ret" = "-- foo" ] && no_problem || affect
+)
 
 echo Done
