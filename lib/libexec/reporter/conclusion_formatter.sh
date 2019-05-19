@@ -4,7 +4,7 @@
 : "${field_type:-} ${field_specfile:-} ${field_tag:-} ${field_lineno:-}"
 : "${field_evaluation:-} ${field_message:-} ${field_failure_message:-}"
 
-buffer conclusion
+create_buffers conclusion
 
 conclusion_each() {
   _label='' _indent='' _message='' _text=''
@@ -13,7 +13,7 @@ conclusion_each() {
   case $field_tag in (evaluation|good) return 0; esac
   [ "$example_index" ] || return 0
 
-  conclusion '||=' "Examples:${LF}"
+  conclusion '|=' "Examples:${LF}"
   _label="  $example_index) "
   padding _indent ' ' ${#_label}
   if [ "$detail_index" -eq 1 ]; then
@@ -47,8 +47,12 @@ conclusion_each() {
     "${field_specfile}:${field_lineno}${RESET}${LF}${LF}"
 }
 
+conclusion_end() {
+  conclusion '<|>'
+}
+
 conclusion_output() {
   case $1 in (end)
-    conclusion '>>'
+    conclusion '>>>'
   esac
 }

@@ -4,7 +4,7 @@
 : "${todo_count:-} ${fixed_count:-} ${suppressed_skipped_count:-}"
 : "${interrupt:-} ${aborted:-} ${no_examples:-} ${not_enough_examples:-}"
 
-buffer summary
+create_buffers summary
 
 summary_end() {
   _summary='' _summary_error='' _color=''
@@ -45,7 +45,5 @@ summary_end() {
 }
 
 summary_output() {
-  case $1 in (end)
-    summary '>>'
-  esac
+  summary '>>>'
 }

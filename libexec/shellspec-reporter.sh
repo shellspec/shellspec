@@ -14,8 +14,8 @@ if (trap - TERM) 2>/dev/null; then trap '' TERM; fi
 
 # shellcheck source=lib/libexec/reporter.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/reporter.sh"
-use import reset_params constants sequence
 
+import "formatter"
 import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
 
@@ -31,8 +31,9 @@ expected_example_count=0 example_count=0 \
 succeeded_count='' failed_count='' warned_count='' \
 todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
 
-load_formatter "$SHELLSPEC_FORMATTER"
-load_generators $SHELLSPEC_GENERATORS
+[ "$SHELLSPEC_GENERATORS" ] && mkdir -p "$SHELLSPEC_REPORTDIR"
+
+load_formatter "$SHELLSPEC_FORMATTER" $SHELLSPEC_GENERATORS
 
 formatters initialize "$@"
 generators prepare "$@"

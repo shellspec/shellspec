@@ -4,7 +4,7 @@
 : "${field_description:-} ${field_color:-} ${field_id:-}"
 
 documentation_last_id=''
-buffer documentation
+create_buffers documentation
 
 require_formatters methods conclusion finished summary references
 
@@ -39,7 +39,5 @@ documentation_each() {
 
 documentation_output() {
   output "$1" methods conclusion finished summary references
-  case $1 in (each)
-    documentation '>>'
-  esac
+  documentation '>>>'
 }

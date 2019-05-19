@@ -3,8 +3,7 @@
 : "${count_examples:-} ${aborted:-}"
 : "${field_type:-} ${field_tag:-} ${field_description:-} ${field_message:-}"
 
-tap_no=0
-buffer tap
+create_buffers tap
 
 tap_initialize() {
   count "$@"
@@ -15,11 +14,12 @@ tap_begin() {
 }
 
 tap_each() {
-  _no=$tap_no _description=''
+  _no='' _description=''
   tap '='
 
   case $field_type in (result)
-    _no=$(($_no + 1)) _description=$(field_description)
+    _no=$example_count
+    _description=$(field_description)
     case $field_tag in
       succeeded) tap '=' "ok"     "$_no - ${_description}${LF}" ;;
       warned   ) tap '=' "ok"     "$_no - ${_description}${LF}" ;;
@@ -29,8 +29,6 @@ tap_each() {
       fixed    ) tap '=' "not ok" "$_no - ${_description} # fixed${LF}" ;;
     esac
   esac
-
-  tap_no=$_no
 }
 
 tap_end() {
@@ -39,7 +37,5 @@ tap_end() {
 }
 
 tap_output() {
-  case $1 in (begin | each | end )
-    tap '>>'
-  esac
+  tap '>>>'
 }

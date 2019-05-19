@@ -2,7 +2,7 @@
 
 : "${field_type:-} ${field_color:-}"
 
-buffer debug
+create_buffers debug
 
 debug_each() {
   _mark='' _value=''
@@ -31,7 +31,5 @@ debug_each() {
 }
 
 debug_output() {
-  case $1 in (each)
-    debug '>>'
-  esac
+  debug '>>>'
 }

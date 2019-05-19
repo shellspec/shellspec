@@ -4,8 +4,7 @@
 : "${field_type:-} ${field_specfile:-} ${field_range:-} ${field_focused:-}"
 : "${field_color:-} ${field_error:-} ${field_note:-} ${field_example_count:-}"
 
-buffer references_notable
-buffer references_failure
+create_buffers references_notable references_failure
 
 references_each() {
   case $field_type in
@@ -21,11 +20,11 @@ references_each() {
       [ "$field_focused" = "focus" ] && set -- "${UNDERLINE}$@"
 
       if [ "$field_error" ]; then
-        references_failure '||=' "${BOLD}Failure examples:" \
+        references_failure '|=' "${BOLD}Failure examples:" \
           "(Listed here affect your suite's status)${RESET}${LF}${LF}"
         references_failure '+=' "${*:-}${LF}"
       else
-        references_notable '||=' "${BOLD}Notable examples:" \
+        references_notable '|=' "${BOLD}Notable examples:" \
           "(Listed here do not affect your suite's status)${RESET}${LF}${LF}"
         references_notable '+=' "${*:-}${LF}"
       fi
@@ -37,18 +36,21 @@ references_each() {
         "$CYAN# expected $field_example_count examples," \
         "but only ran $example_count_per_file examples${RESET}"
 
-      references_failure '||=' "${BOLD}Failure examples:" \
+      references_failure '|=' "${BOLD}Failure examples:" \
         "(Listed here affect your suite's status)${RESET}${LF}${LF}"
       references_failure '+=' "${*:-}${LF}"
       ;;
   esac
 }
 
+references_end() {
+  references_notable '!?' || references_notable '+=' "$LF"
+  references_failure '!?' || references_failure '+=' "$LF"
+ }
+
 references_output() {
   case $1 in (end)
-    references_notable && references_notable '+=' "$LF"
-    references_notable '>>'
-    references_failure && references_failure '+=' "$LF"
-    references_failure '>>'
+    references_notable '>>>'
+    references_failure '>>>'
   esac
 }

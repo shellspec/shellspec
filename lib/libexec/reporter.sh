@@ -4,81 +4,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use each replace padding
-
-formatters='' generators=''
-
-load_formatter() {
-  formatters=$1
-  import_formatter "$1"
-}
-
-require_formatters() {
-  while [ $# -gt 0 ]; do
-    case " $formatters " in (*\ $1\ *) ;; (*)
-      formatters="${formatters}${formatters:+ }$1"
-      import_formatter "$1"
-    esac
-    shift
-  done
-}
-
-import_formatter() {
-  eval "
-    ${1}_initialize() { :; }; ${1}_finalize() { :; }
-    ${1}_begin() { :; }; ${1}_each() { :; }; ${1}_end() { :; }
-    ${1}_output() { :; }
-  "
-  import "${1}_formatter"
-}
-
-load_generators() {
-  while [ $# -gt 0 ]; do
-    case " $formatters $generators " in (*\ $1\ *) ;; (*)
-      generators="${generators}${generators:+ }$1"
-      eval "
-        ${1}_output='report.${1}'
-        ${1}_prepare() {
-          case \$${1}_output in (*[a-z]* | *[A-Z]* | *[0-9]*)
-            : > \"\$${1}_output\"
-          esac
-        }
-        ${1}_generate() {
-          case \$${1}_output in (*[a-z]* | *[A-Z]* | *[0-9]*)
-            (\"${1}_output\" \"\$@\" | generate_file \"\$${1}_output\")
-          esac
-        }
-        ${1}_cleanup() { :; }
-      "
-      import_formatter "$1"
-    esac
-    shift
-  done
-}
-
-generate_file() {
-  remove_escape_sequence >> "$1"
-}
-
-formatters() {
-  #shellcheck shell=sh disable=SC2145
-  for f in $formatters $generators; do "${f}_$@"; done
-}
-
-generators() {
-  #shellcheck shell=sh disable=SC2145
-  for g in $generators; do "${g}_$@"; done
-}
-
-output_formatters() {
-  formatters "$@"
-  "${formatters%% *}_output" "$1"
-  generators generate "$1"
-}
-
-output() {
-  eval "shift; while [ \$# -gt 0 ]; do \"\$1_output\" \"$1\"; shift; done"
-}
+use import reset_params constants sequence replace each padding
 
 count() {
   count_specfiles=0 count_examples=0
@@ -98,36 +24,30 @@ read_time_log() {
   done < "$2"
 }
 
-buffer() {
-  eval "
-    $1_buffer=''
-    $1() {
-      case \${1:-} in
-        ''   ) [ \"\$$1_buffer\" ] ;;
-        '='  ) shift; $1_buffer=\${*:-} ;;
-        '||=') shift; $1 || $1 += \"\$@\" ;;
-        '+=' ) shift; $1_buffer=\$$1_buffer\${*:-} ;;
-        '>>' ) shift; puts \"\$$1_buffer\" ;;
-      esac
-    }
-  "
-}
-
 field_description() {
   description=${field_description:-}
   replace description "$VT" " "
   putsn "$description"
 }
 
-remove_escape_sequence() {
-  text=''
-  while IFS= read -r line; do
-    until case $line in (*$ESC*) false; esac; do
-      text="${text}${line%%$ESC*}"
-      line=${line#*$ESC}
-      line=${line#*m} # only supported SGR
-    done
-    text="${text}${line}${LF}"
-  done
-  puts "$text"
+# This is magical buffer. You can output same thing again and again until close.
+#   [?] is present?   [!?] is empty?
+#   [=] open and set  [|=] open and set if empty  [+=] open and append
+#   [>>>] output      [<|>] open                  [>|<] close
+buffer() {
+  eval "
+    $1_buffer='' $1_opened='' $1_flowed=''
+    $1() {
+      case \${1:-} in
+        '?'  ) [ \"\$$1_buffer\" ] ;;
+        '!?' ) [ ! \"\$$1_buffer\" ] ;;
+        '='  ) $1_opened=1; shift; $1_buffer=\${*:-} ;;
+        '|=' ) $1_opened=1; shift; [ \"\$$1_buffer\" ] || $1_buffer=\${*:-} ;;
+        '+=' ) $1_opened=1; shift; $1_buffer=\$$1_buffer\${*:-} ;;
+        '<|>') $1_opened=1 ;;
+        '>|<') [ \"\$$1_flowed\" ] && $1_buffer='' $1_flowed=''; $1_opened='' ;;
+        '>>>') [ ! \"\$$1_opened\" ] || { $1_flowed=1; puts \"\$$1_buffer\"; } ;;
+      esac
+    }
+  "
 }

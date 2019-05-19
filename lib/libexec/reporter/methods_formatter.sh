@@ -3,10 +3,9 @@
 : "${field_type:-}"
 : "${field_shell:-} ${field_shell_type:-} ${field_shell_version:-}"
 
-buffer methods
+create_buffers methods
 
 methods_each() {
-  methods '='
   case $field_type in (meta)
     methods '=' "Running: $field_shell "
     if [ "$field_shell_version" ]; then
@@ -18,7 +17,5 @@ methods_each() {
 }
 
 methods_output() {
-  case $1 in (each)
-    methods '>>'
-  esac
+  methods '>>>'
 }

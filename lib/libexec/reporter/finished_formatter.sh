@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-buffer finished
+create_buffers finished
 
 finished_end() {
   finished '=' "Finished in ${time_real:-?} seconds" \
@@ -8,7 +8,5 @@ finished_end() {
 }
 
 finished_output() {
-  case $1 in (end)
-    finished '>>'
-  esac
+  finished '>>>'
 }
