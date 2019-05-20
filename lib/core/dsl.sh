@@ -90,7 +90,10 @@ shellspec_invoke_example() {
     fi
   }
 
-  shellspec_if SKIP && shellspec_output SKIPPED && return 0
+  shellspec_if SKIP && shellspec_unless FAILED && {
+    shellspec_output SKIPPED && return 0
+  }
+
   shellspec_output_if NOT_IMPLEMENTED && shellspec_output TODO && return 0
   shellspec_output_if UNHANDLED_STATUS && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STDOUT && shellspec_on WARNED
@@ -100,6 +103,7 @@ shellspec_invoke_example() {
     shellspec_if FAILED && shellspec_output TODO && return 0
     shellspec_output FIXED && return 0
   }
+
   shellspec_output_if FAILED && return 0
   shellspec_output_if WARNED || shellspec_output SUCCEEDED
   return 0

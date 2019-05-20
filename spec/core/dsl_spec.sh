@@ -49,6 +49,16 @@ Describe "core/dsl.sh"
       The stdout line 4 should equal 'SKIPPED'
     End
 
+    It 'is fail if failed before skipping'
+      block() { shellspec_on FAILED; shellspec_skip 1; }
+      When invoke shellspec_invoke_example block
+      The stdout should include 'yield'
+      The stdout line 1 should equal 'EXAMPLE'
+      The stdout line 2 should equal 'yield'
+      The stdout line 3 should equal 'SKIP'
+      The stdout line 4 should equal 'FAILED'
+    End
+
     It 'is unimplemented if there is nothing inside of example'
       When invoke shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
