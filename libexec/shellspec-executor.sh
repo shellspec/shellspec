@@ -25,11 +25,9 @@ error_handler() {
     case $line in
       ${SHELLSPEC_SYN}shellspec_marker:*)
         if [ "$errors" ]; then
-          puts "$errors"
+          detect_unexpected_error "$specfile" "$lineno" "$errors"
           errors=''
-          display_unexpected_error "$specfile" "$lineno"
         fi
-
         line=${line#${SHELLSPEC_SYN}shellspec_marker:}
         specfile=${line% *} lineno=${line##* }
         ;;
@@ -45,23 +43,25 @@ error_handler() {
     esac
   done
 
-  if [ "$errors" ]; then
-    puts "$errors"
-    display_unexpected_error "$specfile" "$lineno" "$errors"
-  fi
+  detect_unexpected_error "$specfile" "$lineno" "$errors"
   return $error_handler_status
 }
 
-display_unexpected_error() {
+detect_unexpected_error() {
   case $2 in
     ---) set -- "$1" '' ;;
     BOF) set -- "$1" 1  ;;
     EOF) return 0 ;; # no error
   esac
 
+  puts "$3"
   if [ "$2" ]; then
     range=$(detect_range "$2" < "$1")
-    putsn "Unexpected output to the stderr at line $range in '$1'"
+    if [ "$3" ]; then
+      putsn "Unexpected output to the stderr at line $range in '$1'"
+    else
+      putsn "Unexpected exit at line $range in '$1'"
+    fi
   else
     putsn "Unexpected error (syntax error?) occurred in '$1'"
   fi
