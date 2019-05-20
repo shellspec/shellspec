@@ -34,7 +34,9 @@ summary_end() {
     _summary_error="$_summary_error, no examples found"
   fi
   if [ "$not_enough_examples" ]; then
-    _summary_error="$_summary_error, some examples did not run"
+    _summary_error="$_summary_error, $not_enough_examples example"
+    [ "$not_enough_examples" -ne 1 ] && _summary_error="${_summary_error}s"
+    _summary_error="$_summary_error did not run (unexpected exit?)"
   fi
 
   [ "$warned_count" ] && _color=$YELLOW || _color=$GREEN

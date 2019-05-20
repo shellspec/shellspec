@@ -27,7 +27,8 @@ field_type='' field_tag='' field_block_no='' field_focused=''
 field_conditional='' field_skipid='' field_pending=''
 
 # shellcheck disable=SC2034
-example_count=0 succeeded_count='' failed_count='' warned_count='' \
+expected_example_count=0 example_count=0 \
+succeeded_count='' failed_count='' warned_count='' \
 todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
 
 load_formatter "$SHELLSPEC_FORMATTER"
@@ -119,8 +120,11 @@ each_line() {
     end)
       # field_example_count not provided with range or filter
       : "${field_example_count:=$example_count_per_file}"
+      expected_example_count=$(($expected_example_count + $field_example_count))
       if [ "$example_count_per_file" -ne "$field_example_count" ]; then
-        not_enough_examples=1
+        not_enough_examples=${not_enough_examples:-0}
+        not_enough_examples=$(($not_enough_examples + $field_example_count))
+        not_enough_examples=$(($not_enough_examples - $example_count_per_file))
       fi
       ;;
     finished) aborted=''

@@ -37,7 +37,8 @@ references_each() {
         "$CYAN# expected $field_example_count examples," \
         "but only ran $example_count_per_file examples${RESET}"
 
-      references_failure '||=' "Failure examples:${LF}"
+      references_failure '||=' "${BOLD}Failure examples:" \
+        "(Listed here affect your suite's status)${RESET}${LF}${LF}"
       references_failure '+=' "${*:-}${LF}"
       ;;
   esac
