@@ -29,7 +29,7 @@ count() {
   shift
   cat $@ | wc -lc | {
     read -r lines bytes
-    printf '%3s files, %4s lines, %3s KiB\n' $# $lines $((bytes / 1024))
+    printf '%3s files, %5s lines, %3s KiB\n' $# $lines $((bytes / 1024))
   }
 }
 
@@ -43,13 +43,21 @@ count sample $(samples)
 count total $(sources; specs; samples)
 echo
 
-echo "Checking scripts..."
-
-if ! which shellcheck > /dev/null; then
-  echo 'ERROR: shellcheck not found' >&2
+if ! docker --version >/dev/null 2>&1; then
+  echo "You need docker to run shellcheck" >&2
   exit 1
 fi
 
-shellcheck $(sources; specs; samples) || exit 1
+echo "Checking scripts by shellcheck..."
 
-echo "Done"
+tag="shellspec:shellcheck"
+
+trap 'exit 1' INT
+trap 'docker rmi "$tag" >/dev/null 2>&1' EXIT
+
+# Does not use volume because can not use VolFs of WSL.
+docker build -t "$tag" . -f dockerfiles/.shellcheck > /dev/null
+docker run -it --rm "$tag" --version
+docker run -it --rm "$tag" $(sources; specs; samples)
+
+echo "ok"
