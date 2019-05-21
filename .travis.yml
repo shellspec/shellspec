@@ -9,37 +9,43 @@ addons:
     update: true
 matrix:
   include:
-    - os: linux
-      dist: precise # Ubuntu 12.04
-      env: PKG="dash bash zsh ksh mksh yash posh busybox"
-    - os: linux
-      dist: trusty # Ubuntu 14.04
-      env: PKG="dash bash zsh ksh mksh yash posh busybox"
-    - os: linux
-      dist: xenial # Ubuntu 16.04
-      env: PKG="dash bash zsh ksh mksh yash posh busybox"
-    - os: osx
-      osx_image: xcode6.4 # macOS 10.10 Yosemite 2014-06
-      env: PKG=""
-    - os: osx
-      osx_image: xcode8 # macOS 10.11 El Capitan 2015-06
-      env: PKG=""
-    - os: osx
-      osx_image: xcode9.2 # macOS 10.12 Sierra 2016-06
-      env: PKG=""
-    - os: osx
-      osx_image: xcode10.1 # macOS 10.13 High Sierra 2017-06
-      env: PKG=""
-    - os: osx
-      osx_image: xcode10.2 # macOS 10.14 Mojave 2018-06
-      env: PKG=""
-    - os: osx
-      osx_image: xcode10.2 # macOS 10.14 Mojave 2018-06
-      env: PKG="dash bash zsh ksh mksh yash"
+    - os: linux # Ubuntu 12.04
+      dist: precise
+      env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+    - os: linux # Ubuntu 14.04
+      dist: trusty
+      env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+    - os: linux # Ubuntu 16.04
+      dist: xenial
+      env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+    - os: linux # Ubuntu 16.04
+      dist: xenial
+      env: USE_DOCKER=1 SHELLCHECK=1
+    - os: osx # macOS 10.10 Yosemite 2014-06
+      osx_image: xcode6.4
+    - os: osx # macOS 10.11 El Capitan 2015-06
+      osx_image: xcode8
+    - os: osx # macOS 10.12 Sierra 2016-06
+      osx_image: xcode9.2
+    - os: osx # macOS 10.13 High Sierra 2017-06
+      osx_image: xcode10.1
+    - os: osx # macOS 10.14 Mojave 2018-06
+      osx_image: xcode10.2
+    - os: osx  # macOS 10.14 Mojave 2018-06
+      osx_image: xcode10.2
+      env: FORMULAS="dash bash zsh ksh mksh yash"
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$PKG" ]; then sudo apt-get install -y $PKG; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$PKG" ]; then brew install $PKG; fi
+  - if [ "$PACKAGES" ]; then sudo apt-get install -y $PACKAGES; fi
+  - if [ "$FORMULAS" ]; then brew install $FORMULAS; fi
+  - |-
+    if [ "$USE_DOCKER" ]; then
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+      sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+      sudo apt-get update
+      sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+    fi
 before_script:
-  - ./shellspec --task fixture:stat:prepare
+  - if [ ! "$SHELLCHECK" ]; then ./shellspec --task fixture:stat:prepare; fi
 script:
-  - contrib/all.sh contrib/various_test.sh
+  - if [   "$SHELLCHECK" ]; then contrib/check.sh; fi
+  - if [ ! "$SHELLCHECK" ]; then contrib/all.sh contrib/various_test.sh; fi
