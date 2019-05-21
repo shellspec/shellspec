@@ -11,29 +11,34 @@ matrix:
   include:
     - os: linux # Ubuntu 12.04
       dist: precise
-      env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+      env: OS="Ubuntu 12.04" PACKAGES="dash bash zsh ksh mksh yash posh busybox"
     - os: linux # Ubuntu 14.04
       dist: trusty
-      env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+      env: OS="Ubuntu 14.04" PACKAGES="dash bash zsh ksh mksh yash posh busybox"
     - os: linux # Ubuntu 16.04
       dist: xenial
-      env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+      env: OS="Ubuntu 16.04" PACKAGES="dash bash zsh ksh mksh yash posh busybox"
     - os: linux # Ubuntu 16.04
       dist: xenial
-      env: USE_DOCKER=1 SHELLCHECK=1
+      env: OS="Ubuntu 16.04" USE_DOCKER=1 SHELLCHECK=1
     - os: osx # macOS 10.10 Yosemite 2014-06
       osx_image: xcode6.4
+      env: OS="macOS 10.10" SHELLS="bash zsh ksh"
     - os: osx # macOS 10.11 El Capitan 2015-06
       osx_image: xcode8
+      env: OS="macOS 10.11" SHELLS="bash zsh ksh"
     - os: osx # macOS 10.12 Sierra 2016-06
       osx_image: xcode9.2
+      env: OS="macOS 10.12" SHELLS="bash zsh ksh"
     - os: osx # macOS 10.13 High Sierra 2017-06
       osx_image: xcode10.1
+      env: OS="macOS 10.13" SHELLS="bash zsh ksh"
     - os: osx # macOS 10.14 Mojave 2018-06
       osx_image: xcode10.2
+      env: OS="macOS 10.14" SHELLS="bash zsh ksh"
     - os: osx  # macOS 10.14 Mojave 2018-06
       osx_image: xcode10.2
-      env: FORMULAS="dash bash zsh ksh mksh yash"
+      env: OS="macOS 10.14" FORMULAS="dash bash zsh ksh mksh yash"
 before_install:
   - if [ "$PACKAGES" ]; then sudo apt-get install -y $PACKAGES; fi
   - if [ "$FORMULAS" ]; then brew install $FORMULAS; fi
