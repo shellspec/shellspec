@@ -1,6 +1,6 @@
 #shellcheck shell=sh disable=SC2004
 
-: "${count_examples:-} ${aborted:-}"
+: "${count_examples:-} ${aborted:-} ${example_count:-}"
 : "${field_type:-} ${field_tag:-} ${field_description:-} ${field_message:-}"
 
 create_buffers tap
