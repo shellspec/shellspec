@@ -171,13 +171,14 @@ parse_options() {
       --banner) SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner" ;;
       --no-banner) SHELLSPEC_BANNER='' ;;
       -f | --format) [ "${2:-}" ] || abort 'Require FORMATTER.'
+        case $2 in (*[!a-z0-9_]*) abort 'Invalid FORMATTER name.'; esac
         SHELLSPEC_FORMATTER=$2
         for format in progress documentation tap; do
           case $format in ($2*) SHELLSPEC_FORMATTER=$format; esac
         done
         shift ;;
       -o | --output) [ "${2:-}" ] || abort 'Require GENERATOR.'
-        case $2 in (*[!a-z0-9_-]*) abort 'Invalid generator name.'; esac
+        case $2 in (*[!a-z0-9_]*) abort 'Invalid GENERATOR name.'; esac
         SHELLSPEC_GENERATORS="$SHELLSPEC_GENERATORS $2"
         shift ;;
       --force-color | --force-colour) SHELLSPEC_COLOR=1 ;;
