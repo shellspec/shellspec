@@ -14,7 +14,7 @@ Usage: test_in_docker.sh [Dockerfile..] [-- COMMAND]
 
 Run tests in docker
 
-Example of use
+Examples
   contrib/test_in_docker.sh dockerfiles/*
   contrib/test_in_docker.sh dockerfiles/debian-9-*
   contrib/test_in_docker.sh dockerfiles/*bash* -- contrib/bugs.sh
@@ -55,6 +55,7 @@ run() {
   echo "======================================================================"
   echo "[$dockerfile: $@]"
   tag="${dockerfile##*/}"
+  tag="${tag#.}"
   docker build $options -t "shellspec:$tag" ./ -f "$dockerfile"
   echo
   docker run -it --rm "shellspec:$tag" "$@" &&:
