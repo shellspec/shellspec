@@ -57,7 +57,7 @@ trap 'docker rmi "$tag" >/dev/null 2>&1' EXIT
 
 # Does not use volume because can not use VolFs of WSL.
 docker build -t "$tag" . -f dockerfiles/.shellcheck > /dev/null
-docker run -it --rm "$tag" --version
-docker run -it --rm "$tag" $(sources; specs; samples)
+docker run -i --rm "$tag" --version
+docker run -i --rm "$tag" -C $(sources; specs; samples)
 
 echo "ok"
