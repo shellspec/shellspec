@@ -9,7 +9,11 @@ Describe "core/matchers/be/empty.sh"
    Describe 'be empty matcher'
     Example 'example'
       Path empty-file="$FIXTURE/empty"
+      Path not-empty-file="$FIXTURE/file"
+      Path not-exists-file="$FIXTURE/not-exists"
       The path empty-file should be empty
+      The path not-empty-file should not be empty
+      The path not-exists-file should not be empty
     End
 
     Context 'when path is empty'
@@ -22,6 +26,14 @@ Describe "core/matchers/be/empty.sh"
 
     Context 'when path is not empty'
       subject() { %- "$FIXTURE/file"; }
+      It 'does not match'
+        When invoke shellspec_matcher be empty
+        The status should be failure
+      End
+    End
+
+    Context 'when path does not exist'
+      subject() { %- "$FIXTURE/not-exists"; }
       It 'does not match'
         When invoke shellspec_matcher be empty
         The status should be failure

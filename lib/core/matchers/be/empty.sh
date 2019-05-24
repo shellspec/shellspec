@@ -4,7 +4,7 @@ shellspec_syntax 'shellspec_matcher_be_empty'
 
 shellspec_matcher_be_empty() {
   shellspec_matcher__match() {
-    [ ! -s "${SHELLSPEC_SUBJECT:-}" ]
+    [ -f "${SHELLSPEC_SUBJECT:-}" ] && [ ! -s "${SHELLSPEC_SUBJECT:-}" ]
   }
 
   shellspec_matcher__failure_message() {
