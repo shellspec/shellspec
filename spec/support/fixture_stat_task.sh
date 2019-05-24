@@ -43,7 +43,11 @@ create_socket_file() {
     command nc -lU "$1" &
     sleep 1
     kill $!
+    wait $!
   )
+  [ -S "$1" ] && return 0
+  rm "$1"
+  return 1
 }
 
 socket() {
