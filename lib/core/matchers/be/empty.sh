@@ -1,8 +1,9 @@
 #shellcheck shell=sh
 
-shellspec_syntax 'shellspec_matcher_be_empty'
+shellspec_syntax 'shellspec_matcher_be_empty_file'
+shellspec_syntax_compound 'shellspec_matcher_be_empty'
 
-shellspec_matcher_be_empty() {
+shellspec_matcher_be_empty_file() {
   shellspec_matcher__match() {
     [ -f "${SHELLSPEC_SUBJECT:-}" ] && [ ! -s "${SHELLSPEC_SUBJECT:-}" ]
   }
