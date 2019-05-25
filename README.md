@@ -82,7 +82,7 @@ Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.c
 | macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 (Homebrew) | [Travis CI](https://travis-ci.org/shellspec/shellspec)        |
 | FreeBSD 10.x, 11.x, 12.x                                  | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
 | Windows Server 2019 (Git bash, msys2, cygwin)             | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
-| Windows 10 1809 (Ubuntu 18.04 on WSL)                     | manual                                                        |
+| Windows 10 1903 (Ubuntu 18.04 on WSL)                     | manual                                                        |
 | Solaris 11                                                | manual                                                        |
 
 Confirmed version (tested with docker [dockerfiles](dockerfiles))
@@ -101,7 +101,7 @@ Confirmed version (tested with docker [dockerfiles](dockerfiles))
 | debian 7      |       | 4.2   | 1.20.0     | 0.5.7    | 93u | 40.9 |        | 0.10.2 | 2.30 | 4.3.17 |
 | debian 8      |       | 4.3   | 1.22.0     | 0.5.7    | 93u | 50d  |        | 0.12.3 | 2.36 | 5.0.7  |
 | debian 9      |       | 4.4   | 1.22.0     | 0.5.8    | 93u | 54   |        | 0.12.6 | 2.43 | 5.3.1  |
-| debian buster |       | 5.0.2 | 1.30.1     | 0.5.10.2 | 93u | 57   |        | 0.13.2 | 2.48 | 5.7.1  |
+| debian buster |       | 5.0.4 | 1.30.1     | 0.5.10.2 | 93u | 57   |        | 0.13.2 | 2.48 | 5.7.1  |
 | Ubuntu 18.04  |       |       |            |          |     |      |        |        |      | 5.4.2  |
 
 **The version of strikethrough is does NOT work**

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `be empty directory` (alias: `be empty dir`) matcher.
+
+### Changed
+
+- Rename `be empty` matcher to `be empty file` matcher. [breaking change]
+
+### Fixed
+
+- Fixed bug that `be empty` (renamed to `be empty file`) matcher matches not exists file, etc.
+
 ## [0.14.0] - 2019-05-15
 
 ### Added
