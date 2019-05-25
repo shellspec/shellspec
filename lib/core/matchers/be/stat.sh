@@ -3,7 +3,6 @@
 shellspec_syntax 'shellspec_matcher_be_exist'
 shellspec_syntax 'shellspec_matcher_be_file'
 shellspec_syntax 'shellspec_matcher_be_directory'
-shellspec_syntax 'shellspec_matcher_be_empty'
 
 shellspec_syntax 'shellspec_matcher_be_symlink'
 shellspec_syntax 'shellspec_matcher_be_pipe'
@@ -44,7 +43,6 @@ shellspec_make_file_matcher() {
 shellspec_make_file_matcher exist            "-e" "exists" "does not exist"
 shellspec_make_file_matcher file             "-f" "is a regular file"
 shellspec_make_file_matcher directory        "-d" "is a directory"
-shellspec_make_file_matcher empty          "! -s" "is empty file"
 
 shellspec_make_file_matcher symlink          "-L" "is a symbolic link"
 shellspec_make_file_matcher pipe             "-p" "is a pipe"
