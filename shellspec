@@ -44,6 +44,7 @@ export SHELLSPEC_DEFAULT_PATH=spec
 export SHELLSPEC_INFILE=file
 export SHELLSPEC_RANDOM=''
 export SHELLSPEC_SEED=''
+export SHELLSPEC_ARITHMETIC_CHECK=1
 
 readlinkf() {
   p=$1 i=0
@@ -102,6 +103,7 @@ Usage: shellspec [options] [files or directories]
                                         [specfiles] randomize the order of specfiles
                                         [examples]  randomize the order of examples (slow)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
+      --[no-]arithmetic-check         Ensure the shell has arithmetic expansion [default: enabled]
   -w, --warnings LEVEL                Set warnings level
                                         [none]    do not show warnings
                                         [notice]  show warnings but not treats as error
@@ -197,6 +199,8 @@ parse_options() {
       -j | --jobs) [ "${2:-}" ] || abort 'Require JOBS.'
         SHELLSPEC_JOBS=$2
         shift ;;
+      --arithmetic-check) SHELLSPEC_ARITHMETIC_CHECK=1 ;;
+      --no-arithmetic-check) SHELLSPEC_ARITHMETIC_CHECK=0 ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
       --focus) SHELLSPEC_FOCUS_FILTER=1 ;;
       --pattern) [ "${2:-}" ] || abort 'Require PATTERN.'
@@ -291,7 +295,7 @@ if ! [ -x "${shell%% *}" ]; then
 fi
 SHELLSPEC_SHELL=$shell
 
-if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
+if [ $SHELLSPEC_ARITHMETIC_CHECK -eq 1 ] && ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
   abort "Unsupported shell (require arithmetic expansion): $SHELLSPEC_SHELL"
 fi
 
