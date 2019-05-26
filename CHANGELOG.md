@@ -173,7 +173,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.14.0...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.15.0...HEAD
+[0.15.0]: https://github.com/shellspec/shellspec/compare/0.14.0...0.15.0
 [0.14.0]: https://github.com/shellspec/shellspec/compare/0.13.1...0.14.0
 [0.13.1]: https://github.com/shellspec/shellspec/compare/0.13.0...0.13.1
 [0.13.0]: https://github.com/shellspec/shellspec/compare/0.12.0...0.13.0
