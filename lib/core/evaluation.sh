@@ -16,7 +16,7 @@ shellspec_evaluation_call() {
     shift
     eval set -- shellspec_evaluation_eval ${1+'"$@"'}
   fi
-  [ "${SHELLSPEC_DATA:-}" ] && set -- shellspec_evaluation_with_data "$@"
+  [ ! "${SHELLSPEC_DATA:-}" ] || set -- shellspec_evaluation_with_data "$@"
   "$@" >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
 }
@@ -41,7 +41,7 @@ shellspec_evaluation_invoke() {
     shift
     eval set -- shellspec_evaluation_eval ${1+'"$@"'}
   fi
-  [ "${SHELLSPEC_DATA:-}" ] && set -- shellspec_evaluation_with_data "$@"
+  [ ! "${SHELLSPEC_DATA:-}" ] || set -- shellspec_evaluation_with_data "$@"
   ( shellspec_around_invoke "$@" ) >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
 }
