@@ -81,22 +81,23 @@ status (the subject expect status)
 
 stat (the subject expect file path)
 
-| Matcher             | Description                            |
-| :------------------ | :------------------------------------- |
-| be exist            | The file should be exist.              |
-| be file             | The file should be a file.             |
-| be directory        | The file should be a directory.        |
-| be empty            | The file should be an empty.           |
-| be symlink          | The file should be a symlink.          |
-| be pipe             | The file should be a pipe.             |
-| be socket           | The file should be a socket.           |
-| be readable         | The file should be a readable.         |
-| be writable         | The file should be a writable.         |
-| be executable       | The file should be an executable.      |
-| be block_device     | The file should be a block device.     |
-| be charactor_device | The file should be a charactor device. |
-| has setgid          | The file should has setgid.            |
-| has setuid          | The file should has setuid.            |
+| Matcher                            | Description                                 |
+| :--------------------------------- | :------------------------------------------ |
+| be exist                           | The file should be exist.                   |
+| be file                            | The file should be a file.                  |
+| be directory                       | The file should be a directory.             |
+| be empty file                      | The file should be an empty file.           |
+| be empty directory<br>be empty dir | The directory should be an empty directory. |
+| be symlink                         | The file should be a symlink.               |
+| be pipe                            | The file should be a pipe.                  |
+| be socket                          | The file should be a socket.                |
+| be readable                        | The file should be a readable.              |
+| be writable                        | The file should be a writable.              |
+| be executable                      | The file should be an executable.           |
+| be block_device                    | The file should be a block device.          |
+| be charactor_device                | The file should be a charactor device.      |
+| has setgid                         | The file should has setgid.                 |
+| has setuid                         | The file should has setuid.                 |
 
 valid
 
