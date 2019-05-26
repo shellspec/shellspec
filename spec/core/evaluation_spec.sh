@@ -40,6 +40,12 @@ Describe "core/evaluation.sh"
       When call 'echo "${*:-}"' 1 2 3
       The stdout should equal '1 2 3'
     End
+
+    It 'ensures errno 0 before evaluating function'
+      relay_errno() { return ${?}; }
+      When call relay_errno
+      The status should equal 0
+    End
   End
 
   Describe 'run evaluation'
@@ -100,6 +106,13 @@ Describe "core/evaluation.sh"
     It 'accepts evaluatable string'
       When invoke 'echo "${*:-}"' 1 2 3
       The stdout should equal '1 2 3'
+    End
+
+    It 'ensures errno 0 before calling external command'
+      shellspec_around_invoke() { "$@"; }
+      relay_errno() { return ${?}; }
+      When invoke relay_errno
+      The status should equal 0
     End
   End
 
