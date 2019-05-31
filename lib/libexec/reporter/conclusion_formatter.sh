@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
-: "${example_index:-} ${detail_index:-} ${field_color:-}"
-: "${field_type:-} ${field_specfile:-} ${field_tag:-} ${field_lineno:-}"
+: "${example_index:-} ${detail_index:-} ${field_color:-} ${field_type:-}"
+: "${field_specfile:-} ${field_lineno:-} ${field_tag:-} ${field_note:-}"
 : "${field_evaluation:-} ${field_message:-} ${field_failure_message:-}"
 
 create_buffers conclusion
@@ -27,7 +27,7 @@ conclusion_each() {
   _label="${_indent}${example_index}.${detail_index}) "
   padding _indent ' ' ${#_label}
 
-  _message=$field_message
+  _message="${field_note:+[}$field_note${field_note:+] }$field_message"
   conclusion '+=' "${_label}${field_color}${_message}${RESET}${LF}${LF}"
 
   case $field_tag in (warn|bad)

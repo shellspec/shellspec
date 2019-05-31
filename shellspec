@@ -23,6 +23,7 @@ export SHELLSPEC_REQUIRES=''
 export SHELLSPEC_SPEC_FAILURE_CODE=101
 export SHELLSPEC_UNEXPECTED_STDERR=102
 export SHELLSPEC_SKIP_MESSAGE=verbose
+export SHELLSPEC_WARNING_AS_FAILURE=1
 export SHELLSPEC_FAIL_FAST_COUNT=''
 export SHELLSPEC_FAIL_NO_EXAMPLES=''
 export SHELLSPEC_JOBS=0
@@ -101,6 +102,7 @@ Usage: shellspec [options] [files or directories]
                                         [specfiles] randomize the order of specfiles
                                         [examples]  randomize the order of examples (slow)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
+      --[no-]warning-as-failure       Treat warning as failure [default: enabled]
       --dry-run                       Print the formatter output without running any examples
 
   **** Output ****
@@ -229,6 +231,8 @@ parse_options() {
       -r | --require) [ "${2:-}" ] || abort 'Require PATH.'
         SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
         shift ;;
+      --warning-as-failure) SHELLSPEC_WARNING_AS_FAILURE=1 ;;
+      --no-warning-as-failure) SHELLSPEC_WARNING_AS_FAILURE='' ;;
       --skip-message) [ "${2:-}" ] || abort 'Require VERBOSE.'
         case $2 in (verbose|moderate|quiet) ;;
           *) abort 'Invalid VERBOSE.'

@@ -75,31 +75,31 @@ Describe "core/dsl.sh"
       The stdout line 3 should equal 'FAILED'
     End
 
-    It 'is failed and be status unhandled if UNHANDLED_STATUS switch is on'
+    It 'is warned and be status unhandled if UNHANDLED_STATUS switch is on'
       block() { shellspec_on UNHANDLED_STATUS; }
       When invoke shellspec_invoke_example block
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STATUS'
-      The stdout line 4 should equal 'FAILED'
+      The stdout line 4 should equal 'WARNED'
     End
 
-    It 'is failed and be stdout unhandled if UNHANDLED_STDOUT switch is on'
+    It 'is warned and be stdout unhandled if UNHANDLED_STDOUT switch is on'
       block() { shellspec_on UNHANDLED_STDOUT; }
       When invoke shellspec_invoke_example block
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STDOUT'
-      The stdout line 4 should equal 'FAILED'
+      The stdout line 4 should equal 'WARNED'
     End
 
-    It 'is failed and be stderr unhandled if UNHANDLED_STDOUT switch is on'
+    It 'is warned and be stderr unhandled if UNHANDLED_STDOUT switch is on'
       block() { shellspec_on UNHANDLED_STDERR; }
       When invoke shellspec_invoke_example block
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STDERR'
-      The stdout line 4 should equal 'FAILED'
+      The stdout line 4 should equal 'WARNED'
     End
 
     It 'is success if example ends successfully'
@@ -303,7 +303,6 @@ Describe "core/dsl.sh"
       shellspec_if SKIP && echo 'SKIP:on' || echo 'SKIP:off'
       echo "skip_id:${SHELLSPEC_SKIP_ID-<unset>}"
       echo "skip_reason:${SHELLSPEC_SKIP_REASON-<unset>}"
-      echo "conditional_skip:${SHELLSPEC_CONDITIONAL_SKIP-<unset>}"
       echo "example_no:${SHELLSPEC_EXAMPLE_NO-<unset>}"
     }
 
@@ -322,7 +321,6 @@ Describe "core/dsl.sh"
         When invoke shellspec_skip 123 "reason"
         The stdout should include 'skip_id:123'
         The stdout should include 'skip_reason:reason'
-        The stdout should include 'conditional_skip:'
         The stdout should include 'example_no:1'
       End
     End
@@ -353,7 +351,6 @@ Describe "core/dsl.sh"
         When invoke shellspec_skip 123 "skip reason"
         The stdout should include 'skip_id:<unset>'
         The stdout should include 'skip_reason:<unset>'
-        The stdout should include 'conditional_skip:<unset>'
         The stdout should include 'example_no:1'
       End
     End

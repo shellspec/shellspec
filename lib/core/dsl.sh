@@ -69,7 +69,7 @@ shellspec_invoke_example() {
   shellspec_output EXAMPLE
 
   shellspec_on NOT_IMPLEMENTED
-  shellspec_off FAILED UNHANDLED_STATUS UNHANDLED_STDOUT UNHANDLED_STDERR
+  shellspec_off FAILED WARNED UNHANDLED_STATUS UNHANDLED_STDOUT UNHANDLED_STDERR
 
   # Output SKIP message if skipped in outer group.
   shellspec_output_if SKIP || {
@@ -94,16 +94,17 @@ shellspec_invoke_example() {
   }
 
   shellspec_output_if NOT_IMPLEMENTED && shellspec_output TODO && return 0
-  shellspec_output_if UNHANDLED_STATUS && shellspec_on FAILED
-  shellspec_output_if UNHANDLED_STDOUT && shellspec_on FAILED
-  shellspec_output_if UNHANDLED_STDERR && shellspec_on FAILED
+  shellspec_output_if UNHANDLED_STATUS && shellspec_on WARNED
+  shellspec_output_if UNHANDLED_STDOUT && shellspec_on WARNED
+  shellspec_output_if UNHANDLED_STDERR && shellspec_on WARNED
 
   shellspec_if PENDING && {
     shellspec_if FAILED && shellspec_output TODO && return 0
     shellspec_output FIXED && return 0
   }
 
-  shellspec_output_if FAILED || shellspec_output SUCCEEDED
+  shellspec_output_if FAILED && return 0
+  shellspec_output_if WARNED || shellspec_output SUCCEEDED
 }
 
 shellspec_statement() {
@@ -181,13 +182,11 @@ shellspec_skip() {
 
   if [ "${1:-}" = if ]; then
     [ $# -ge 3 ] || return 0
-    SHELLSPEC_SKIP_REASON="$2"
-    SHELLSPEC_CONDITIONAL_SKIP=1
+    SHELLSPEC_SKIP_REASON=$2
     shift 2
     ( "$@" ) || return 0
   else
-    SHELLSPEC_SKIP_REASON="${1:-}"
-    SHELLSPEC_CONDITIONAL_SKIP=
+    SHELLSPEC_SKIP_REASON=${1:-}
   fi
 
   # Output SKIP message if within the example group

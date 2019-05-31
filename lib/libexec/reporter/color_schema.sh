@@ -33,6 +33,7 @@ color_schema() {
         skip      ) field_color=${MAGENTA} ;;
         evaluation) field_color=${BOLD}${CYAN} ;;
         good      ) field_color=${GREEN} ;;
+        warn      ) field_color=${YELLOW} ;;
         pending   ) field_color=${MAGENTA} ;;
         bad       ) [ "$field_pending" ] && field_color=${YELLOW} || \
                        field_color=${RED};;
@@ -42,6 +43,7 @@ color_schema() {
       case $field_tag in
         succeeded) field_color=${BOLD}${GREEN} ;;
         failed   ) field_color=${BOLD}${RED} ;;
+        warned   ) field_color=${BOLD}${YELLOW} ;;
         todo     ) field_color=${BOLD}${YELLOW} ;;
         fixed    ) field_color=${BOLD}${YELLOW} ;;
         skipped  ) field_color=${BOLD}${MAGENTA} ;;
