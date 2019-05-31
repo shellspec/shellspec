@@ -109,7 +109,7 @@ each_line() {
       example_count_per_file=$(($example_count_per_file + 1))
       eval "${field_tag}_count=\$((\$${field_tag}_count + 1))"
       eval "${field_tag}_count_per_file=\$((\$${field_tag}_count_per_file + 1))"
-      [ "${field_error:-}" ] && exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+      [ "${field_fail:-}" ] && exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
       if [ "${failed_count:-0}" -ge "${fail_fast_count:-999999}" ]; then
         aborted='' fail_fast=1
       fi

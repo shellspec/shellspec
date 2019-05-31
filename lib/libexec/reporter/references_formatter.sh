@@ -2,7 +2,7 @@
 
 : "${example_index:-} ${example_count_per_file:-}"
 : "${field_type:-} ${field_specfile:-} ${field_range:-} ${field_focused:-}"
-: "${field_color:-} ${field_error:-} ${field_note:-} ${field_example_count:-}"
+: "${field_color:-} ${field_fail:-} ${field_note:-} ${field_example_count:-}"
 
 create_buffers references_notable references_failure
 
@@ -19,7 +19,7 @@ references_each() {
       # shellcheck disable=SC2145
       [ "$field_focused" = "focus" ] && set -- "${UNDERLINE}$@"
 
-      if [ "$field_error" ]; then
+      if [ "$field_fail" ]; then
         references_failure '|=' "${BOLD}Failure examples:" \
           "(Listed here affect your suite's status)${RESET}${LF}${LF}"
         references_failure '+=' "${*:-}${LF}"

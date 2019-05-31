@@ -155,21 +155,21 @@ shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
 }
 
 shellspec_output_SUCCEEDED() {
-  shellspec_output_raw result "tag:succeeded" "note:" "error:"
+  shellspec_output_raw result "tag:succeeded" "note:" "fail:"
 }
 
 shellspec_output_FAILED() {
-  shellspec_output_raw result "tag:failed" "note:FAILED" "error:yes"
+  shellspec_output_raw result "tag:failed" "note:FAILED" "fail:y"
 }
 
 shellspec_output_TODO() {
-  shellspec_output_raw result "tag:todo" "note:PENDING" "error:"
+  shellspec_output_raw result "tag:todo" "note:PENDING" "fail:"
 }
 
 shellspec_output_FIXED() {
-  shellspec_output_raw result "tag:fixed" "note:FIXED" "error:yes"
+  shellspec_output_raw result "tag:fixed" "note:FIXED" "fail:y"
 }
 
 shellspec_output_SKIPPED() {
-  shellspec_output_raw result "tag:skipped" "note:SKIPPED" "error:"
+  shellspec_output_raw result "tag:skipped" "note:SKIPPED" "fail:"
 }
