@@ -210,15 +210,17 @@ Usage: shellspec [options] [files or directories]
                                         [specfiles] randomize the order of specfiles
                                         [examples]  randomize the order of examples (slow)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
+      --[no-]warning-as-failure       Treat warning as failure [default: enabled]
       --dry-run                       Print the formatter output without running any examples
 
   **** Output ****
 
       --[no-]banner                   Show banner if exist 'spec/banner' [default: enabled]
-  -f, --format FORMATTER              Choose a formatter.
+  -f, --format FORMATTER              Choose a formatter to use for display
                                         [p]rogress      dots [default]
                                         [d]ocumentation group and example names
                                         [t]ap           TAP format
+                                        [null]          do not display anything
                                         [debug]         for developer
                                         custom formatter name
       --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
@@ -227,6 +229,8 @@ Usage: shellspec [options] [files or directories]
                                         [verbose]  do not mute any messages [default]
                                         [moderate] mute repeated messages
                                         [quiet]    mute repeated messages and non-temporarily messages
+  -o, --output GENERATOR              Choose a generator(s) to generate a report
+                                        [tap]           TAP format
 
   **** Ranges / Filters ****
 
