@@ -172,4 +172,11 @@ Describe "libexec/reporter.sh"
       End
     End
   End
+
+  Describe "htmlescape()"
+    It 'escapes special characters'
+      When call htmlescape value '<"test&">'
+      The variable value should eq '&lt;&quot;test&amp;&quot;&gt;'
+    End
+  End
 End
