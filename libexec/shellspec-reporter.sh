@@ -19,7 +19,7 @@ import "formatter"
 import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
 
-exit_status=0 found_focus='' no_examples='' aborted=1
+specfile_count=0 exit_status=0 found_focus='' no_examples='' aborted=1
 fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-}
 current_example_index=0 example_index='' detail_index=0
 last_block_no='' last_skip_id='' not_enough_examples=''
@@ -68,6 +68,7 @@ each_line() {
   case $field_type in
     begin)
       last_block_no=0 last_skip_id=''
+      specfile_count=$(($specfile_count + 1))
       # shellcheck disable=SC2034
       example_count_per_file=0 succeeded_count_per_file=0 \
       failed_count_per_file=0 warned_count_per_file=0 todo_count_per_file=0 \

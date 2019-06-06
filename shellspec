@@ -44,6 +44,8 @@ export SHELLSPEC_DEFAULT_PATH=spec
 export SHELLSPEC_INFILE=file
 export SHELLSPEC_RANDOM=''
 export SHELLSPEC_SEED=''
+#shellcheck disable=SC2039
+export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
 
 readlinkf() {
   p=$1 i=0
@@ -108,21 +110,23 @@ Usage: shellspec [options] [files or directories]
   **** Output ****
 
       --[no-]banner                   Show banner if exist 'spec/banner' [default: enabled]
-  -f, --format FORMATTER              Choose a formatter to use for display.
+  -f, --format FORMATTER              Choose a formatter to use for display
                                         [p]rogress      dots [default]
                                         [d]ocumentation group and example names
                                         [t]ap           TAP format
+                                        [j]unit         JUnit XML
                                         [null]          do not display anything
                                         [debug]         for developer
                                         custom formatter name
+  -o, --output GENERATOR              Choose a generator(s) to generate a report file(s)
+                                        You can use the same name as FORMATTER
+                                        Multiple options can be specified [default: not specified]
       --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
       --no-color, --no-colour         Force the output to not be in color, even if the output is a TTY
       --skip-message VERBOSITY        Mute skip message
                                         [verbose]  do not mute any messages [default]
                                         [moderate] mute repeated messages
                                         [quiet]    mute repeated messages and non-temporarily messages
-  -o, --output GENERATOR              Choose a generator(s) to generate a report.
-                                        [tap]           TAP format
 
   **** Ranges / Filters ****
 
@@ -161,7 +165,7 @@ USAGE
 }
 
 parse_options() {
-  length=$# params=''
+  length=$# params='' formatters="progress documentation tap junit"
   while [ $# -gt 0 ]; do
     case $1 in
       --banner) SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner" ;;
@@ -169,13 +173,18 @@ parse_options() {
       -f | --format) [ "${2:-}" ] || abort 'Require FORMATTER.'
         case $2 in (*[!a-z0-9_]*) abort 'Invalid FORMATTER name.'; esac
         SHELLSPEC_FORMATTER=$2
-        for format in progress documentation tap; do
-          case $format in ($2*) SHELLSPEC_FORMATTER=$format; esac
+        for formatter in $formatters; do
+          case $formatter in ($2*) SHELLSPEC_FORMATTER=$formatter; esac
         done
         shift ;;
       -o | --output) [ "${2:-}" ] || abort 'Require GENERATOR.'
         case $2 in (*[!a-z0-9_]*) abort 'Invalid GENERATOR name.'; esac
         SHELLSPEC_GENERATORS="$SHELLSPEC_GENERATORS $2"
+        for formatter in $formatters; do
+          case $formatter in ($2*)
+            SHELLSPEC_GENERATORS="${SHELLSPEC_GENERATORS% *} $formatter"
+          esac
+        done
         shift ;;
       --force-color | --force-colour) SHELLSPEC_COLOR=1 ;;
       --no-color | --no-colour) SHELLSPEC_COLOR='' ;;

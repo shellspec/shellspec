@@ -110,3 +110,11 @@ remove_escape_sequence() {
     putsn "${text}${line}"
   done
 }
+
+htmlescape() {
+  [ $# -gt 1 ] && eval "$1=\$2"
+  replace "$1" '&' '&amp;'
+  replace "$1" '<' '&lt;'
+  replace "$1" '>' '&gt;'
+  replace "$1" '"' '&quot;'
+}
