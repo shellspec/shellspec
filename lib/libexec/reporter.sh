@@ -63,3 +63,15 @@ htmlescape() {
   replace "$1" '>' '&gt;'
   replace "$1" '"' '&quot;'
 }
+
+htmlattrs() {
+  eval "
+    $1=''
+    shift
+    while [ \$# -gt 0 ]; do
+      htmlescape htmlattrs \"\${1#*=}\"
+      $1=\"\${$1}\${$1:+ }\${1%%=*}=\\\"\$htmlattrs\\\"\"
+      shift
+    done
+  "
+}

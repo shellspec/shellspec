@@ -179,4 +179,11 @@ Describe "libexec/reporter.sh"
       The variable value should eq '&lt;&quot;test&amp;&quot;&gt;'
     End
   End
+
+  Describe "htmlattrs()"
+    It 'creates html attributes'
+      When call htmlattrs attrs 'v1=a' 'v2=<"test&">'
+      The variable attrs should eq 'v1="a" v2="&lt;&quot;test&amp;&quot;&gt;"'
+    End
+  End
 End
