@@ -1,9 +1,8 @@
 #shellcheck shell=sh disable=SC2004
 
-: "${count_examples:-} ${aborted:-} ${time_real:-} ${specfile_count:-}"
 : "${field_type:-} ${field_fail:-} ${field_tag:-} ${field_description:-}"
 : "${field_lineno:-} ${field_specfile:-} ${field_message:-}"
-: "${field_failure_message:-}"
+: "${field_failure_message:-} ${time_real:-}"
 
 junit_testsuite=0 junit_tests=0 junit_failures=0 junit_skipped=0
 junit_tests_total=0 junit_failures_total=0
@@ -12,47 +11,38 @@ create_buffers junit
 junit_output="results_junit.xml"
 
 junit_begin() {
-  junit '=' "<?xml version=\"1.0\" encoding=\"UTF-8\"?>${LF}"
-  junit '+=' "<testsuites name=\"\">${LF}"
+  junit '=' '<?xml version="1.0" encoding="UTF-8"?>'
+  junit '+=' "${LF}<testsuites name=\"\">${LF}"
   junit '>>>' >> "$SHELLSPEC_TMPBASE/${junit_output}.work"
 }
 
 junit_each() {
-  _testsuite=$junit_testsuite
+  _text='' _attrs='' _testsuite=$junit_testsuite
   _tests=$junit_tests _failures=$junit_failures _skipped=$junit_skipped
   _tests_total=$junit_tests_total _failures_total=$junit_failures_total
-
-  _description='' _specfile='' _message='' _failure_message='' _timestamp=''
 
   case $field_type in
     meta) junit '=' ;;
     begin)
-      _timestamp=$(date -u '+%Y-%m-%dT%H:%M:%S')
-      htmlescape _specfile "$field_specfile"
-      junit '=' "  <testsuite name=\"$_specfile\"" \
-        "hostname=\"$SHELLSPEC_HOSTNAME\"" \
-        "id=\"$(($specfile_count - 1))\"" \
-        "timestamp=\"$_timestamp\">${LF}"
+      htmlattrs _attrs "name=$field_specfile" "hostname=$SHELLSPEC_HOSTNAME" \
+        "timestamp=$(date -u '+%Y-%m-%dT%H:%M:%S')"
+      junit '=' "  <testsuite $_attrs>${LF}"
       _tests=0 _failures=0 _skipped=0
       ;;
     example)
-      htmlescape _description "$(field_description)"
-      htmlescape _specfile "$field_specfile"
-      junit '=' "    <testcase classname=\"$_specfile\" name=\"$_description\">"
+      htmlattrs _attrs "classname=$field_specfile" "name=$(field_description)"
+      junit '=' "    <testcase $_attrs>"
       ;;
     statement)
       if [ "$field_fail" ]; then
-        htmlescape _message "$field_message"
-        htmlescape _failure_message "$field_failure_message"
-        junit '+=' "${LF}      "
-        junit '+=' "<failure message=\"$_message\">"
-        junit '+=' "$_failure_message${LF}"
-        junit '+=' "# ${field_specfile}:${field_lineno}"
-        junit '+=' "</failure>${LF}    "
+        htmlattrs _attrs "message=$field_message"
+        _text="$field_failure_message${LF}# $field_specfile:$field_lineno"
+        htmlescape _text "$_text"
+        junit '=' "${LF}      <failure $_attrs>$_text</failure>${LF}    "
       else
         case $field_tag in (skip | pending)
-          htmlescape _message "$field_message"
-          junit '+='  "${LF}      <skip message=\"$_message\" />${LF}    "
+          htmlattrs _attrs "message=$field_message"
+          junit '='  "${LF}      <skip $_attrs />${LF}    "
         esac
       fi
       ;;
@@ -67,7 +57,7 @@ junit_each() {
           _skipped=$(($_skipped + 1))
         esac
       fi
-      junit '+=' "</testcase>${LF}"
+      junit '=' "</testcase>${LF}"
       ;;
     end)
       junit '=' "  </testsuite>${LF}"
@@ -76,9 +66,7 @@ junit_each() {
       eval "junit_skipped_${_testsuite}=\$_skipped"
       _testsuite=$(($_testsuite + 1))
       ;;
-    finished)
-      junit '='
-      ;;
+    finished) junit '=' ;;
   esac
   junit '>>>' >> "$SHELLSPEC_TMPBASE/${junit_output}.work"
 
@@ -93,27 +81,22 @@ junit_end() {
 }
 
 junit_output() {
-  _testsuite=0 _tests='' _failures='' _skipped=''
+  _id=0 _before='' _after='' _attrs=''
   case $1 in (end)
     while IFS= read -r _line; do
       case $_line in
         *\<testsuites\ *)
-          putsn "${_line%%<testsuites\ *}<testsuites" \
-            "tests=\"$junit_tests_total\"" \
-            "failures=\"$junit_failures_total\"" \
-            "time=\"$time_real\"" \
-            "${_line#*<testsuites\ }"
+          _before=${_line%%<testsuites\ *} _after=${_line#*<testsuites\ }
+          htmlattrs _attrs "tests=$junit_tests_total" \
+            "failures=$junit_failures_total" "time=$time_real"
+          putsn "$_before<testsuites $_attrs $_after"
           ;;
         *\<testsuite\ *)
-          eval "_tests=\$junit_tests_${_testsuite}"
-          eval "_failures=\$junit_failures_${_testsuite}"
-          eval "_skipped=\$junit_skipped_${_testsuite}"
-          putsn "${_line%%<testsuite\ *}<testsuite" \
-            "tests=\"$_tests\"" \
-            "failures=\"$_failures\"" \
-            "skipped=\"$_skipped\"" \
-            "${_line#*<testsuite\ }"
-          _testsuite=$(($_testsuite + 1))
+          _before=${_line%%<testsuite\ *} _after=${_line#*<testsuite\ }
+          eval "htmlattrs _attrs id=$_id tests=\$junit_tests_${_id} \
+            failures=\$junit_failures_${_id} skipped=\$junit_skipped_${_id}"
+          putsn "$_before<testsuite $_attrs $_after"
+          _id=$(($_id + 1))
           ;;
         *) putsn "$_line"
       esac
