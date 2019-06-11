@@ -105,7 +105,7 @@ Describe 'subject sample'
       The file hosts should eq '/etc/hosts'
     End
 
-    It 'has an alias "file"'
+    It 'has an alias "dir"'
       Path target='/foo/bar/baz/target'
       The dir target should eq '/foo/bar/baz/target'
     End
