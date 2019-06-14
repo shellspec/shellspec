@@ -75,3 +75,15 @@ htmlattrs() {
     done
   "
 }
+
+remove_escape_sequence() {
+  while IFS= read -r line || [ "$line" ]; do
+    text=''
+    until case $line in (*$ESC*) false; esac; do
+      text="${text}${line%%$ESC*}"
+      line=${line#*$ESC}
+      line=${line#*m} # only support SGR
+    done
+    putsn "${text}${line}"
+  done
+}

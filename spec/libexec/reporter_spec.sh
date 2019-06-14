@@ -186,4 +186,12 @@ Describe "libexec/reporter.sh"
       The variable attrs should eq 'v1="a" v2="&lt;&quot;test&amp;&quot;&gt;"'
     End
   End
+
+  Describe "remove_escape_sequence()"
+    It 'removes escape sequence'
+      Data printf '\033[2;31m%s\033[0m \033[2;31m%s\033[0m\n' "foo" "bar"
+      When call remove_escape_sequence
+      The stdout should eq "foo bar"
+    End
+  End
 End

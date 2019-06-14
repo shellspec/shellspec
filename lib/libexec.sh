@@ -85,7 +85,7 @@ info() {
 
 error() {
   if [ "$SHELLSPEC_COLOR" ]; then
-    printf '\33[2;31m%s\33[0m\n' "${*:-}" >&2
+    printf '\033[2;31m%s\033[0m\n' "${*:-}" >&2
   else
     printf '%s\n' "${*:-}" >&2
   fi
