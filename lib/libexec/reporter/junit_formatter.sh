@@ -24,24 +24,24 @@ junit_each() {
   case $field_type in
     meta) junit '=' ;;
     begin)
-      htmlattrs _attrs "name=$field_specfile" "hostname=$SHELLSPEC_HOSTNAME" \
+      xmlattrs _attrs "name=$field_specfile" "hostname=$SHELLSPEC_HOSTNAME" \
         "timestamp=$(date -u '+%Y-%m-%dT%H:%M:%S')"
       junit '=' "  <testsuite $_attrs>${LF}"
       _tests=0 _failures=0 _skipped=0
       ;;
     example)
-      htmlattrs _attrs "classname=$field_specfile" "name=$(field_description)"
+      xmlattrs _attrs "classname=$field_specfile" "name=$(field_description)"
       junit '=' "    <testcase $_attrs>"
       ;;
     statement)
       if [ "$field_fail" ]; then
-        htmlattrs _attrs "message=$field_message"
+        xmlattrs _attrs "message=$field_message"
         _text="$field_failure_message${LF}# $field_specfile:$field_lineno"
-        htmlescape _text "$_text"
+        xmlescape _text "$_text"
         junit '=' "${LF}      <failure $_attrs>$_text</failure>${LF}    "
       else
         case $field_tag in (skip | pending)
-          htmlattrs _attrs "message=$field_message"
+          xmlattrs _attrs "message=$field_message"
           junit '='  "${LF}      <skip $_attrs />${LF}    "
         esac
       fi
@@ -87,13 +87,13 @@ junit_output() {
       case $_line in
         *\<testsuites\ *)
           _before=${_line%%<testsuites\ *} _after=${_line#*<testsuites\ }
-          htmlattrs _attrs "tests=$junit_tests_total" \
+          xmlattrs _attrs "tests=$junit_tests_total" \
             "failures=$junit_failures_total" "time=$time_real"
           putsn "$_before<testsuites $_attrs $_after"
           ;;
         *\<testsuite\ *)
           _before=${_line%%<testsuite\ *} _after=${_line#*<testsuite\ }
-          eval "htmlattrs _attrs id=$_id tests=\$junit_tests_${_id} \
+          eval "xmlattrs _attrs id=$_id tests=\$junit_tests_${_id} \
             failures=\$junit_failures_${_id} skipped=\$junit_skipped_${_id}"
           putsn "$_before<testsuite $_attrs $_after"
           _id=$(($_id + 1))

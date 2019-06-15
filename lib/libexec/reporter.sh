@@ -56,7 +56,7 @@ buffer() {
   "
 }
 
-htmlescape() {
+xmlescape() {
   [ $# -gt 1 ] && eval "$1=\$2"
   replace "$1" '&' '&amp;'
   replace "$1" '<' '&lt;'
@@ -64,13 +64,13 @@ htmlescape() {
   replace "$1" '"' '&quot;'
 }
 
-htmlattrs() {
+xmlattrs() {
   eval "
     $1=''
     shift
     while [ \$# -gt 0 ]; do
-      htmlescape htmlattrs \"\${1#*\=}\"
-      $1=\"\${$1}\${$1:+ }\${1%%\=*}=\\\"\$htmlattrs\\\"\"
+      xmlescape xmlattrs \"\${1#*\=}\"
+      $1=\"\${$1}\${$1:+ }\${1%%\=*}=\\\"\$xmlattrs\\\"\"
       shift
     done
   "

@@ -173,16 +173,16 @@ Describe "libexec/reporter.sh"
     End
   End
 
-  Describe "htmlescape()"
+  Describe "xmlescape()"
     It 'escapes special characters'
-      When call htmlescape value '<"test&">'
+      When call xmlescape value '<"test&">'
       The variable value should eq '&lt;&quot;test&amp;&quot;&gt;'
     End
   End
 
-  Describe "htmlattrs()"
-    It 'creates html attributes'
-      When call htmlattrs attrs 'v1=a' 'v2=<"test&">'
+  Describe "xmlattrs()"
+    It 'creates xml attributes'
+      When call xmlattrs attrs 'v1=a' 'v2=<"test&">'
       The variable attrs should eq 'v1="a" v2="&lt;&quot;test&amp;&quot;&gt;"'
     End
   End
