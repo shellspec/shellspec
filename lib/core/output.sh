@@ -30,7 +30,8 @@ shellspec_output_raw() {
 }
 
 shellspec_output_raw_append() {
-  shellspec_putsn "${SHELLSPEC_US}$*"
+  shellspec_puts "$SHELLSPEC_US"
+  shellspec_putsn "$@"
 }
 
 shellspec_output_if() {
@@ -78,7 +79,7 @@ shellspec_output_syntax_name() {
   [ "${SHELLSPEC_SYNTAX_NAME:-}" ] || return 0
   shellspec_reset_params '${SHELLSPEC_SYNTAX_NAME#shellspec_}' '_'
   eval "$SHELLSPEC_RESET_PARAMS"
-  eval "shift; shellspec_putsn \"\$*\" \"$1\""
+  eval "shift; shellspec_putsn \"\$@\" \"$1\""
 }
 
 shellspec_output_subject() {

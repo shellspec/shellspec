@@ -115,7 +115,7 @@ shellspec_statement() {
 }
 
 shellspec_when() {
-  SHELLSPEC_EVALUATION="When ${*:-}"
+  eval shellspec_join SHELLSPEC_EVALUATION ${1+'"$@"'}
   shellspec_off NOT_IMPLEMENTED
 
   shellspec_if EVALUATION && {
@@ -149,7 +149,7 @@ shellspec_when() {
 }
 
 shellspec_the() {
-  SHELLSPEC_EXPECTATION="The ${*:-}"
+  eval shellspec_join SHELLSPEC_EXPECTATION The ${1+'"$@"'}
   shellspec_off NOT_IMPLEMENTED
   shellspec_on EXPECTATION
 
@@ -215,7 +215,7 @@ shellspec_logger() {
 }
 
 shellspec_marker() {
-  shellspec_putsn "${SHELLSPEC_SYN}shellspec_marker:${*:-}" >&2
+  shellspec_putsn "${SHELLSPEC_SYN}shellspec_marker:$1 $2" >&2
 }
 
 shellspec_abort() {

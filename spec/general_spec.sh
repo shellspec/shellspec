@@ -28,13 +28,9 @@ Describe "general.sh"
 
   Describe 'shellspec_splice_params()'
     splice() {
-      params=$1
-      shift
-      args=$*
-      eval "set -- $params"
-      eval "shellspec_splice_params $# $args"
+      eval "set -- $1; shellspec_splice_params \$# $2"
       eval "$SHELLSPEC_RESET_PARAMS"
-      echo "${*:-}"
+      eval echo ${1+'"$@"'}
     }
 
     Context 'when offset is 0'
@@ -46,14 +42,14 @@ Describe "general.sh"
 
     Context 'when offset is 2'
       It 'removes all parameters after offset 2'
-        When call splice "a b c d e f g" 2
+        When call splice "a b c d e f g" "2"
         The stdout should equal 'a b'
       End
     End
 
     Context 'when offset is 3 and length is 2'
       It 'removes 2 parameters after offset 3'
-        When call splice "a b c d e f g" 3 2
+        When call splice "a b c d e f g" "3 2"
         The stdout should equal 'a b c f g'
       End
     End
@@ -61,7 +57,7 @@ Describe "general.sh"
     Context 'when offset is 3 and length is 2 and list specified'
       Before 'a=A b=B c=C'
       It 'removes 2 parameters after offset 3 and inserts list'
-        When call splice "a b c d e f g" 3 2 a b c
+        When call splice "a b c d e f g" "3 2 a b c"
         The stdout should equal 'a b c A B C f g'
       End
     End
@@ -326,6 +322,22 @@ Describe "general.sh"
     It 'replaces various characters'
       When call replace '!"#$%&()-=^~\|@`[{;+:*]}.>/?_ '"'"
       The output should eq ''
+    End
+  End
+
+  Describe "shellspec_join()"
+    Before value=''
+    It 'joins arguments by space'
+      When call shellspec_join value foo bar baz
+      The variable value should eq 'foo bar baz'
+    End
+
+    Context 'when IFS is @'
+      Before IFS='@'
+      It 'joins arguments by space'
+        When call shellspec_join value foo bar baz
+        The variable value should eq 'foo bar baz'
+      End
     End
   End
 End

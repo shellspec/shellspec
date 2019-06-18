@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support [Unofficial Bash Strict Mode](http://redsymbol.net/articles/unofficial-bash-strict-mode/).
+
 ### Changed
 
 - Redesign the reporter to support the generator.

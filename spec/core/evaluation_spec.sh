@@ -37,7 +37,7 @@ Describe "core/evaluation.sh"
     End
 
     It 'accepts evaluatable string'
-      When call 'echo "${*:-}"' 1 2 3
+      When call 'echo "$@"' 1 2 3
       The stdout should equal '1 2 3'
     End
 
@@ -104,7 +104,7 @@ Describe "core/evaluation.sh"
     End
 
     It 'accepts evaluatable string'
-      When invoke 'echo "${*:-}"' 1 2 3
+      When invoke 'echo "$@"' 1 2 3
       The stdout should equal '1 2 3'
     End
 

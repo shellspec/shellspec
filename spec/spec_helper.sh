@@ -2,6 +2,9 @@
 
 set -eu
 
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+IFS="$SHELLSPEC_LF$SHELLSPEC_TAB"
+
 shellspec_redefinable shellspec_output
 shellspec_redefinable shellspec_output_failure_message
 shellspec_redefinable shellspec_output_failure_message_when_negated
@@ -54,7 +57,7 @@ shellspec_spec_helper_configure() {
   intercept_shellspec_matcher() {
     shellspec_around_invoke() {
       shellspec_output() { shellspec_puts "$1" >&2; }
-      shellspec_is() { shellspec_puts "is:$*"; }
+      shellspec_is() { shellspec_puts "is:" "$@"; }
       shellspec_proxy "shellspec_matcher_do_match" \
                       "shellspec_matcher_do_match_positive"
       "$@"

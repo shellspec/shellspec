@@ -20,14 +20,14 @@ Describe "core/matchers/be/valid.sh"
       subject() { %= 123; }
       It 'matches'
         When invoke shellspec_matcher be valid as a number
-        The stdout should equal "is:number 123"
+        The stdout should equal "is: number 123"
       End
     End
 
     Context 'when subject is undefined'
       It 'does not match'
         When invoke shellspec_matcher be valid as number
-        The stdout should equal "is:number "
+        The stdout should equal "is: number "
       End
     End
 
@@ -54,14 +54,14 @@ Describe "core/matchers/be/valid.sh"
       subject() { %= "foo_bar"; }
       It 'matches'
         When invoke shellspec_matcher be valid as a funcname
-        The stdout should equal "is:funcname foo_bar"
+        The stdout should equal "is: funcname foo_bar"
       End
     End
 
     Context 'when subject is undefined'
       It 'does not match'
         When invoke shellspec_matcher be valid as funcname
-        The stdout should equal "is:funcname "
+        The stdout should equal "is: funcname "
       End
     End
 

@@ -46,6 +46,7 @@ read_ps() {
   pid=$1 p=0 c=0 _pid=''
 
   process | {
+    IFS=" "
     IFS= read -r line
     reset_params '$line'
     eval "$RESET_PARAMS"

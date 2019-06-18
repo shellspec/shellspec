@@ -3,7 +3,7 @@
 Describe "core/statement.sh"
   Describe "shellspec_statement_preposition()"
     the() {
-      shellspec_statement_ordinal() { echo "the $*"; }
+      shellspec_statement_ordinal() { echo "the" "$@"; }
       shellspec_statement_preposition "$@"
     }
 
@@ -20,7 +20,7 @@ Describe "core/statement.sh"
 
   Describe "shellspec_statement_ordinal()"
     the() {
-      shellspec_statement_subject() { echo "the $*"; }
+      shellspec_statement_subject() { echo "the" "$@"; }
       shellspec_statement_ordinal "$@"
     }
 

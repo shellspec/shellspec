@@ -23,7 +23,7 @@ Describe "core/syntax.sh"
 
   Describe "shellspec_syntax_param()"
     shellspec_around_invoke() {
-      shellspec_output() { echo "$*"; }
+      shellspec_output() { echo "$@"; }
       shellspec_on() { echo "[$1]"; }
       "$@"
     }

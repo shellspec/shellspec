@@ -17,7 +17,7 @@ count() {
 read_time_log() {
   [ -r "$2" ] || return 0
   # shellcheck disable=SC2034
-  while read -r time_log_name time_log_value; do
+  while IFS=" " read -r time_log_name time_log_value; do
     case $time_log_name in (real|user|sys) ;; (*) continue; esac
     case $time_log_value in (*[!0-9.]*) continue; esac
     eval "$1_${time_log_name}=\"\$time_log_value\""
@@ -38,6 +38,7 @@ buffer() {
   eval "
     $1_buffer='' $1_opened='' $1_flowed=''
     $1() {
+      IFS=\" \$IFS\"
       case \${1:-} in
         '?'  ) [ \"\$$1_buffer\" ] ;;
         '!?' ) [ ! \"\$$1_buffer\" ] ;;
@@ -48,6 +49,9 @@ buffer() {
         '>|<') [ \"\$$1_flowed\" ] && $1_buffer='' $1_flowed=''; $1_opened='' ;;
         '>>>') [ ! \"\$$1_opened\" ] || { $1_flowed=1; puts \"\$$1_buffer\"; } ;;
       esac
+      set -- \$?
+      IFS=\${IFS#?}
+      return \$1
     }
   "
 }
