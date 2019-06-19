@@ -47,15 +47,11 @@ junit_each() {
       fi
       ;;
     result)
-      _tests=$(($_tests + 1))
-      _tests_total=$(($_tests_total + 1))
+      inc _tests _tests_total
       if [ "$field_fail" ]; then
-        _failures=$(($_failures + 1))
-        _failures_total=$(($_failures_total + 1))
-      else
-        case $field_tag in (todo | skipped)
-          _skipped=$(($_skipped + 1))
-        esac
+        inc _failures _failures_total
+      elif [ "$field_tag" = "todo" ] || [ "$field_tag" = "skipped" ]; then
+        inc _skipped
       fi
       junit '=' "</testcase>${LF}"
       ;;
@@ -64,7 +60,7 @@ junit_each() {
       eval "junit_tests_${_testsuite}=\$_tests"
       eval "junit_failures_${_testsuite}=\$_failures"
       eval "junit_skipped_${_testsuite}=\$_skipped"
-      _testsuite=$(($_testsuite + 1))
+      inc _testsuite
       ;;
     finished) junit '=' ;;
   esac
@@ -96,7 +92,7 @@ junit_output() {
           eval "xmlattrs _attrs id=$_id tests=\$junit_tests_${_id} \
             failures=\$junit_failures_${_id} skipped=\$junit_skipped_${_id}"
           putsn "$_before<testsuite $_attrs $_after"
-          _id=$(($_id + 1))
+          inc _id
           ;;
         *) putsn "$_line"
       esac

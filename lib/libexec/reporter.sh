@@ -87,3 +87,10 @@ remove_escape_sequence() {
     putsn "${text}${line}"
   done
 }
+
+inc() {
+  while [ $# -gt 0 ]; do
+    eval "$1=\$((\${$1} + 1))"
+    shift
+  done
+}

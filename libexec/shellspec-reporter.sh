@@ -19,15 +19,15 @@ import "formatter"
 import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
 
-specfile_count=0 exit_status=0 found_focus='' no_examples='' aborted=1
+exit_status=0 found_focus='' no_examples='' aborted=1
 fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-}
-current_example_index=0 example_index='' detail_index=0
+current_example_index=0 example_index=''
 last_block_no='' last_skip_id='' not_enough_examples=''
 field_type='' field_tag='' field_block_no='' field_focused=''
 field_conditional='' field_skipid='' field_pending=''
 
 # shellcheck disable=SC2034
-expected_example_count=0 example_count=0 \
+specfile_count=0 detail_index=0 expected_example_count=0 example_count=0 \
 succeeded_count='' failed_count='' warned_count='' \
 todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
 
@@ -68,7 +68,7 @@ each_line() {
   case $field_type in
     begin)
       last_block_no=0 last_skip_id=''
-      specfile_count=$(($specfile_count + 1))
+      inc specfile_count
       # shellcheck disable=SC2034
       example_count_per_file=0 succeeded_count_per_file=0 \
       failed_count_per_file=0 warned_count_per_file=0 todo_count_per_file=0 \
@@ -99,24 +99,24 @@ each_line() {
         esac
 
         if [ ! "$example_index" ]; then
-          current_example_index=$(($current_example_index + 1))
-          example_index=$current_example_index detail_index=0
+          inc current_example_index
+          example_index=$current_example_index
+          # shellcheck disable=SC2034
+          detail_index=0
         fi
-        detail_index=$(($detail_index + 1))
+        inc detail_index
         break
       done
       ;;
     result)
-      example_count=$(($example_count + 1))
-      example_count_per_file=$(($example_count_per_file + 1))
-      eval "${field_tag}_count=\$((\$${field_tag}_count + 1))"
-      eval "${field_tag}_count_per_file=\$((\$${field_tag}_count_per_file + 1))"
+      inc example_count example_count_per_file
+      inc "${field_tag}_count" "${field_tag}_count_per_file"
       [ "${field_fail:-}" ] && exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
       if [ "${failed_count:-0}" -ge "${fail_fast_count:-999999}" ]; then
         aborted='' fail_fast=1
       fi
       if [ "$field_tag" = "skipped" ] && [ -z "$example_index" ]; then
-        suppressed_skipped_count=$(($suppressed_skipped_count + 1))
+        inc suppressed_skipped_count
       fi
       ;;
     end)

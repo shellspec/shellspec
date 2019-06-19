@@ -194,4 +194,13 @@ Describe "libexec/reporter.sh"
       The stdout should eq "foo bar"
     End
   End
+
+  Describe "inc()"
+    Before value1=0 value2=1
+    It 'increments variables'
+      When call inc value1 value2
+      The variable value1 should eq 1
+      The variable value2 should eq 2
+    End
+  End
 End
