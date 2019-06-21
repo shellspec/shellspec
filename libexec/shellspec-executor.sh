@@ -3,7 +3,10 @@
 
 set -eu
 
-if [ "$SHELLSPEC_JOBS" -gt 0 ]; then
+if [ "$SHELLSPEC_KCOV" -gt 0 ]; then
+  # shellcheck source=lib/libexec/kcov-executor.sh
+  . "${SHELLSPEC_LIB:-./lib}/libexec/kcov-executor.sh"
+elif [ "$SHELLSPEC_JOBS" -gt 0 ]; then
   # shellcheck source=lib/libexec/parallel-executor.sh
   . "${SHELLSPEC_LIB:-./lib}/libexec/parallel-executor.sh"
 else
@@ -48,13 +51,14 @@ error_handler() {
 }
 
 detect_unexpected_error() {
+  puts "$3"
+
   case $2 in
     ---) set -- "$1" '' ;;
     BOF) set -- "$1" 1  ;;
     EOF) return 0 ;; # no error
   esac
 
-  puts "$3"
   if [ "$2" ]; then
     range=$(detect_range "$2" < "$1")
     if [ "$3" ]; then

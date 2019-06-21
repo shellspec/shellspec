@@ -2,3 +2,4 @@
 --skip-message moderate
 --fail-no-examples
 --env-from spec/env.sh
+--kcov-common-options "--include-path=./lib,./libexec,./shellspec"

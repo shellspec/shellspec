@@ -21,6 +21,7 @@ cleanup() {
   tmpbase="$SHELLSPEC_TMPBASE"
   SHELLSPEC_TMPBASE=''
   rmtempdir "$tmpbase"
+  rm -f "$SHELLSPEC_KCOV_IN_FILE"
 }
 trap 'cleanup' EXIT
 

@@ -145,14 +145,14 @@ syntax_error() {
   putsn "shellspec_abort 2 \"$1\" \"$2\""
 }
 
-putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
-
-metadata=1 finished=1
+metadata=1 finished=1 functrace='' fd=''
 
 for param in "$@"; do
   case $param in
     --no-metadata) metadata='' ;;
     --no-finished) finished='' ;;
+    --functrace  ) functrace=1 ;;
+    --fd=*       ) fd=${param#*=} ;;
     *) set -- "$@" "$param" ;;
   esac
   shift
@@ -163,6 +163,9 @@ filter=1
 [ "$SHELLSPEC_TAG_FILTER" ] && filter=''
 [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
 
+[ "$functrace" ] && putsn "set -o functrace"
+[ "$fd" ] && putsn "exec 1>&$fd"
+putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_metadata $metadata"
 
 specfile() {

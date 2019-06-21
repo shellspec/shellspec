@@ -44,6 +44,13 @@ export SHELLSPEC_DEFAULT_PATH=spec
 export SHELLSPEC_INFILE=file
 export SHELLSPEC_RANDOM=''
 export SHELLSPEC_SEED=''
+export SHELLSPEC_COVERAGEDIR=''
+export SHELLSPEC_KCOV=''
+export SHELLSPEC_KCOV_PATH='kcov'
+export SHELLSPEC_KCOV_IN_FILE='_shellspec.kcov.in-file'
+export SHELLSPEC_KCOV_COMMON_OPTS=''
+export SHELLSPEC_KCOV_OPTS=''
+
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
 
@@ -72,7 +79,16 @@ SHELLSPEC_REPORTERLIB="$SHELLSPEC_LIB/libexec/reporter"
 SHELLSPEC_LIBEXEC="$SHELLSPEC_ROOT/libexec"
 SHELLSPEC_SPECDIR=$PWD/spec
 SHELLSPEC_REPORTDIR=$PWD/report
+SHELLSPEC_COVERAGEDIR=$PWD/coverage
 SHELLSPEC_LOAD_PATH=$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_REPORTERLIB
+
+while IFS= read -r option; do
+  SHELLSPEC_KCOV_COMMON_OPTS="$SHELLSPEC_KCOV_COMMON_OPTS$option "
+done <<HERE
+--include-path=.
+--include-pattern=.sh
+--exclude-pattern=/coverage/,/spec/,/report/
+HERE
 
 SHELLSPEC_UNIXTIME=$(date +%s)
 SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$SHELLSPEC_UNIXTIME.$$"
@@ -144,6 +160,17 @@ Usage: shellspec [options] [files or directories]
       --example PATTERN               Run examples whose names include PATTERN
       --tag TAG[:VALUE]               Run examples with the specified TAG
       --default-path PATH             Set the default path where shellspec looks for examples [defualt: "spec"]
+
+  **** Coverage ****
+
+      --[no-]kcov                     Enable coverage using kcov [default: disabled]
+                                        Note: shell should be bash and ignore parallel jobs
+      --kcov-path PATH                Specify kcov path [default: kcov]
+      --kcov-common-options OPTIONS   Specify kcov common options [default: see below]
+                                        --include-path=.
+                                        --include-pattern=.sh
+                                        --exclude-pattern=/coverage/,/spec/,/report/
+      --kcov-options KOPTIONS         Specify additional kcov options
 
   **** Utility ****
 
@@ -256,6 +283,17 @@ parse_options() {
       --no-fail-fast) SHELLSPEC_FAIL_FAST_COUNT='' ;;
       --fail-no-examples) SHELLSPEC_FAIL_NO_EXAMPLES=1 ;;
       --no-fail-no-examples) SHELLSPEC_FAIL_NO_EXAMPLES='' ;;
+      --kcov) SHELLSPEC_KCOV=1 ;;
+      --kcov-path) [ "${2:-}" ] || abort 'Require PATH.'
+        SHELLSPEC_KCOV_PATH="$2"
+        shift ;;
+      --kcov-common-options) [ "${2:-}" ] || abort 'Require OPTIONS.'
+        SHELLSPEC_KCOV_COMMON_OPTS="$2"
+        shift ;;
+      --kcov-options) [ "${2:-}" ] || abort 'Require OPTIONS.'
+        SHELLSPEC_KCOV_OPTS="${SHELLSPEC_KCOV_OPTS}${SHELLSPEC_KCOV_OPTS:+ }$2"
+        shift ;;
+      --no-kcov) SHELLSPEC_KCOV='' ;;
       --init | --task | --translate | --syntax-check) SHELLSPEC_MODE=${1#--} ;;
       --count) SHELLSPEC_MODE=list SHELLSPEC_LIST='' ;;
       --list) [ "${2:-}" ] || abort 'Require LIST.'
@@ -294,6 +332,15 @@ SHELLSPEC_SHELL=$shell
 
 if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
   abort "Unsupported shell (require arithmetic expansion): $SHELLSPEC_SHELL"
+fi
+
+if [ "$SHELLSPEC_KCOV" ]; then
+  if ! kcov --version 2>/dev/null 1>&2; then
+    abort "Not found kcov for to running coverage."
+  fi
+  if [ ! "$($SHELLSPEC_SHELL -c 'echo "${BASH_VERSION:-}"')" ]; then
+    abort "Specify bash as a shell to run coverage. (e.g: --shell bash)"
+  fi
 fi
 
 case $SHELLSPEC_MODE in (init | task) ;; (*)
