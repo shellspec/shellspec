@@ -50,37 +50,21 @@ shellspec_output_NOT_IMPLEMENTED() {
 }
 
 shellspec_output_UNHANDLED_STATUS() {
-  case $SHELLSPEC_WARNINGS in
-    none) return 0;;
-    notice | error) set -- "tag:warn" ;;
-    failure) set -- "tag:bad" ;;
-  esac
-  shellspec_output_raw statement "$@" "note:" \
+  shellspec_output_raw statement "$@" "tag:bad" "note:" \
     "message:It was exits with status non-zero but not found expectation"
   shellspec_output_raw_append "failure_message:status:" "$SHELLSPEC_STATUS"
 }
 
 shellspec_output_UNHANDLED_STDOUT() {
-  case $SHELLSPEC_WARNINGS in
-    none) return 0;;
-    notice | error) set -- "tag:warn" ;;
-    failure) set -- "tag:bad" ;;
-  esac
-  shellspec_output_raw statement "$@" "note:" \
+  shellspec_output_raw statement "$@" "tag:bad" "note:" \
     "message:It was output to stdout but not found expectation"
   shellspec_output_raw_append "failure_message:stdout:" "$SHELLSPEC_STDOUT"
 }
 
 shellspec_output_UNHANDLED_STDERR() {
-  case $SHELLSPEC_WARNINGS in
-    none) return 0;;
-    notice | error) set -- "tag:warn" ;;
-    failure) set -- "tag:bad" ;;
-  esac
-  shellspec_output_raw statement "$@" "note:" \
+  shellspec_output_raw statement "$@" "tag:bad" "note:" \
     "message:It was output to stderr but not found expectation"
-  shellspec_output_raw_append "failure_message:stderr:" \
-    "$SHELLSPEC_STDERR"
+  shellspec_output_raw_append "failure_message:stderr:" "$SHELLSPEC_STDERR"
 }
 
 shellspec_output_FAILED_BEFORE_HOOK() {
@@ -176,16 +160,6 @@ shellspec_output_SUCCEEDED() {
 
 shellspec_output_FAILED() {
   shellspec_output_raw result "tag:failed" "note:FAILED" "error:yes"
-}
-
-shellspec_output_WARNED() {
-  case $SHELLSPEC_WARNINGS in
-    none   ) set -- succeeded ;;
-    notice ) set -- warned    WARNED ;;
-    error  ) set -- warned    WARNED yes ;;
-    failure) set -- failed    FAILED yes ;;
-  esac
-  shellspec_output_raw result "tag:$1" "note:${2:-}" "error:${3:-}"
 }
 
 shellspec_output_TODO() {

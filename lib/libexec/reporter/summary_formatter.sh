@@ -1,13 +1,13 @@
 #shellcheck shell=sh
 
-: "${warned_count:-} ${skipped_count:-} ${suppressed_skipped_count:-}"
+: "${skipped_count:-} ${suppressed_skipped_count:-}"
 : "${todo_count:-} ${fixed_count:-} ${suppressed_skipped_count:-}"
 : "${interrupt:-} ${aborted:-} ${no_examples:-} ${not_enough_examples:-}"
 
 create_buffers summary
 
 summary_end() {
-  _summary='' _summary_error='' _color=''
+  _summary='' _summary_error='' _color=$GREEN
 
   callback() {
     [ "${1%% *}" ] || return 0
@@ -17,7 +17,7 @@ summary_end() {
     _summary="${_summary}s"
   }
   each callback "${example_count:-0} example" "${failed_count:-0} failure" \
-                "$warned_count warning" "$skipped_count skip"
+                "$skipped_count skip"
   if [ "$suppressed_skipped_count" ]; then
     _summary="$_summary (muted $suppressed_skipped_count skip"
     [ "$suppressed_skipped_count" -ne 1 ] && _summary="${_summary}s"
@@ -39,7 +39,6 @@ summary_end() {
     _summary_error="$_summary_error did not run (unexpected exit?)"
   fi
 
-  [ "$warned_count" ] && _color=$YELLOW || _color=$GREEN
   [ "${failed_count}${fixed_count}${_summary_error}" ] && _color=$RED
   summary '+=' "${_color}${_summary}${_summary_error}${RESET}${LF}${LF}"
 }

@@ -75,31 +75,31 @@ Describe "core/dsl.sh"
       The stdout line 3 should equal 'FAILED'
     End
 
-    It 'is warned and be status unhandled if UNHANDLED_STATUS switch is on'
+    It 'is failed and be status unhandled if UNHANDLED_STATUS switch is on'
       block() { shellspec_on UNHANDLED_STATUS; }
       When invoke shellspec_invoke_example block
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STATUS'
-      The stdout line 4 should equal 'WARNED'
+      The stdout line 4 should equal 'FAILED'
     End
 
-    It 'is warned and be stdout unhandled if UNHANDLED_STDOUT switch is on'
+    It 'is failed and be stdout unhandled if UNHANDLED_STDOUT switch is on'
       block() { shellspec_on UNHANDLED_STDOUT; }
       When invoke shellspec_invoke_example block
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STDOUT'
-      The stdout line 4 should equal 'WARNED'
+      The stdout line 4 should equal 'FAILED'
     End
 
-    It 'is warned and be stderr unhandled if UNHANDLED_STDOUT switch is on'
+    It 'is failed and be stderr unhandled if UNHANDLED_STDOUT switch is on'
       block() { shellspec_on UNHANDLED_STDERR; }
       When invoke shellspec_invoke_example block
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STDERR'
-      The stdout line 4 should equal 'WARNED'
+      The stdout line 4 should equal 'FAILED'
     End
 
     It 'is success if example ends successfully'

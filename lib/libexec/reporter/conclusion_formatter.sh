@@ -27,11 +27,7 @@ conclusion_each() {
   _label="${_indent}${example_index}.${detail_index}) "
   padding _indent ' ' ${#_label}
 
-  case $field_tag in
-    bad ) _message="Failure $field_message" ;;
-    warn) _message="Warning $field_message" ;;
-    *   ) _message=$field_message ;;
-  esac
+  _message=$field_message
   conclusion '+=' "${_label}${field_color}${_message}${RESET}${LF}${LF}"
 
   case $field_tag in (warn|bad)

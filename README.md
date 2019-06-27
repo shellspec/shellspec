@@ -15,39 +15,39 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 *Table of Contents*
 
-- [Introduction](#introduction)
-  - [Features](#features)
-  - [Supported shells](#supported-shells)
-  - [Requires](#requires)
-- [Tutorial](#tutorial)
-  - [Installation](#installation)
-  - [Getting started](#getting-started)
-- [Usage](#usage)
-- [Specfile DSL](#specfile-dsl)
-  - [Syntax example](#syntax-example)
-  - [Samples](#samples)
-  - [Example group (Describe/Context)](#example-group-describecontext)
-  - [Example (Example/Specify/It)](#example-examplespecifyit)
-    - [Evaluation (When)](#evaluation-when)
-    - [Expectation (The)](#expectation-the)
-  - [Helper](#helper)
-    - [Skip and pending (Skip/Pending)](#skip-and-pending-skippending)
-    - [Before and after hook (Before/After)](#before-and-after-hook-beforeafter)
-    - [Input from stdin (Data)](#input-from-stdin-data)
-  - [Mock and Stub](#mock-and-stub)
-  - [Directive](#directive)
-    - [Constant definition (%const)](#constant-definition-const)
-    - [Embedded text (%text)](#embedded-text-text)
-  - [More syntax (subject/modifier/matcher/etc.)](#more-syntax-subjectmodifiermatcheretc)
-  - [Custom matcher](#custom-matcher)
+- [Introduction](#Introduction)
+  - [Features](#Features)
+  - [Supported shells](#Supported-shells)
+  - [Requires](#Requires)
+- [Tutorial](#Tutorial)
+  - [Installation](#Installation)
+  - [Getting started](#Getting-started)
+- [Usage](#Usage)
+- [Specfile DSL](#Specfile-DSL)
+  - [Syntax example](#Syntax-example)
+  - [Samples](#Samples)
+  - [Example group (Describe/Context)](#Example-group-DescribeContext)
+  - [Example (Example/Specify/It)](#Example-ExampleSpecifyIt)
+    - [Evaluation (When)](#Evaluation-When)
+    - [Expectation (The)](#Expectation-The)
+  - [Helper](#Helper)
+    - [Skip and pending (Skip/Pending)](#Skip-and-pending-SkipPending)
+    - [Before and after hook (Before/After)](#Before-and-after-hook-BeforeAfter)
+    - [Input from stdin (Data)](#Input-from-stdin-Data)
+  - [Mock and Stub](#Mock-and-Stub)
+  - [Directive](#Directive)
+    - [Constant definition (%const)](#Constant-definition-const)
+    - [Embedded text (%text)](#Embedded-text-text)
+  - [More syntax (subject/modifier/matcher/etc.)](#More-syntax-subjectmodifiermatcheretc)
+  - [Custom matcher](#Custom-matcher)
 - [shellspec command](#shellspec-command)
-  - [Configure default options](#configure-default-options)
-  - [Task runner](#task-runner)
+  - [Configure default options](#Configure-default-options)
+  - [Task runner](#Task-runner)
 - [spec directory](#spec-directory)
   - [spec_helper.sh](#spechelpersh)
   - [support](#support)
   - [banner](#banner)
-- [Version history](#version-history)
+- [Version history](#Version-history)
 
 ## Introduction
 
@@ -210,11 +210,6 @@ Usage: shellspec [options] [files or directories]
                                         [specfiles] randomize the order of specfiles
                                         [examples]  randomize the order of examples (slow)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
-  -w, --warnings LEVEL                Set warnings level
-                                        [none]    do not show warnings
-                                        [notice]  show warnings but not treats as error
-                                        [error]   show warnings and treats as error [default]
-                                        [failure] treats warnings as failures
       --dry-run                       Print the formatter output without running any examples
 
   **** Output ****

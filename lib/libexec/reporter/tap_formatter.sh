@@ -22,7 +22,6 @@ tap_each() {
     _description=$(field_description)
     case $field_tag in
       succeeded) tap '=' "ok"     "$_no - ${_description}${LF}" ;;
-      warned   ) tap '=' "ok"     "$_no - ${_description}${LF}" ;;
       failed   ) tap '=' "not ok" "$_no - ${_description}${LF}" ;;
       skipped  ) tap '=' "ok"     "$_no - ${_description} # skip${LF}" ;;
       todo     ) tap '=' "ok"     "$_no - ${_description} # pending${LF}" ;;

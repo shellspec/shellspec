@@ -23,7 +23,6 @@ export SHELLSPEC_REQUIRES=''
 export SHELLSPEC_SPEC_FAILURE_CODE=101
 export SHELLSPEC_UNEXPECTED_STDERR=102
 export SHELLSPEC_SKIP_MESSAGE=none
-export SHELLSPEC_WARNINGS=error
 export SHELLSPEC_FAIL_FAST_COUNT=''
 export SHELLSPEC_FAIL_NO_EXAMPLES=''
 export SHELLSPEC_JOBS=0
@@ -102,11 +101,6 @@ Usage: shellspec [options] [files or directories]
                                         [specfiles] randomize the order of specfiles
                                         [examples]  randomize the order of examples (slow)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
-  -w, --warnings LEVEL                Set warnings level
-                                        [none]    do not show warnings
-                                        [notice]  show warnings but not treats as error
-                                        [error]   show warnings and treats as error [default]
-                                        [failure] treats warnings as failures
       --dry-run                       Print the formatter output without running any examples
 
   **** Output ****
@@ -234,12 +228,6 @@ parse_options() {
         shift ;;
       -r | --require) [ "${2:-}" ] || abort 'Require PATH.'
         SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
-        shift ;;
-      -w | --warnings) [ "${2:-}" ] || abort 'Require LEVEL.'
-        case $2 in (none|notice|error|failure) ;;
-          *) abort 'Invalid LEVEL.'
-        esac
-        SHELLSPEC_WARNINGS="$2"
         shift ;;
       --skip-message) [ "${2:-}" ] || abort 'Require VERBOSE.'
         case $2 in (none|moderate|quiet) ;;

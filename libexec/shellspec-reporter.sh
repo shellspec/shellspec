@@ -27,8 +27,7 @@ field_type='' field_tag='' field_block_no='' field_focused=''
 field_conditional='' field_skipid='' field_pending=''
 
 # shellcheck disable=SC2034
-expected_example_count=0 example_count=0 \
-succeeded_count='' failed_count='' warned_count='' \
+expected_example_count=0 example_count=0 succeeded_count='' failed_count='' \
 todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
 
 [ "$SHELLSPEC_GENERATORS" ] && mkdir -p "$SHELLSPEC_REPORTDIR"
@@ -70,7 +69,7 @@ each_line() {
       last_block_no=0 last_skip_id=''
       # shellcheck disable=SC2034
       example_count_per_file=0 succeeded_count_per_file=0 \
-      failed_count_per_file=0 warned_count_per_file=0 todo_count_per_file=0 \
+      failed_count_per_file=0 todo_count_per_file=0 \
       fixed_count_per_file=0 skipped_count_per_file=0
       ;;
     example)
