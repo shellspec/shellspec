@@ -223,8 +223,8 @@ Usage: shellspec [options] [files or directories]
                                         custom formatter name
       --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
       --no-color, --no-colour         Force the output to not be in color, even if the output is a TTY
-      --skip-message VERBOSE          Mute skip message
-                                        [none]     do not mute any messages [default]
+      --skip-message [VERBOSITY]      Mute skip message
+                                        [verbose]  do not mute any messages [default]
                                         [moderate] mute repeated messages
                                         [quiet]    mute repeated messages and non-temporarily messages
 

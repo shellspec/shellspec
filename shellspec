@@ -22,7 +22,7 @@ export SHELLSPEC_COLOR=''
 export SHELLSPEC_REQUIRES=''
 export SHELLSPEC_SPEC_FAILURE_CODE=101
 export SHELLSPEC_UNEXPECTED_STDERR=102
-export SHELLSPEC_SKIP_MESSAGE=none
+export SHELLSPEC_SKIP_MESSAGE=verbose
 export SHELLSPEC_FAIL_FAST_COUNT=''
 export SHELLSPEC_FAIL_NO_EXAMPLES=''
 export SHELLSPEC_JOBS=0
@@ -115,8 +115,8 @@ Usage: shellspec [options] [files or directories]
                                         custom formatter name
       --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
       --no-color, --no-colour         Force the output to not be in color, even if the output is a TTY
-      --skip-message VERBOSE          Mute skip message
-                                        [none]     do not mute any messages [default]
+      --skip-message [VERBOSITY]      Mute skip message
+                                        [verbose]  do not mute any messages [default]
                                         [moderate] mute repeated messages
                                         [quiet]    mute repeated messages and non-temporarily messages
   -o, --output GENERATOR              Choose a generator(s) to generate a report.
@@ -230,7 +230,7 @@ parse_options() {
         SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
         shift ;;
       --skip-message) [ "${2:-}" ] || abort 'Require VERBOSE.'
-        case $2 in (none|moderate|quiet) ;;
+        case $2 in (verbose|moderate|quiet) ;;
           *) abort 'Invalid VERBOSE.'
         esac
         SHELLSPEC_SKIP_MESSAGE="$2"
