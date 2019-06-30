@@ -10,7 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Redesign the reporter to support the generator.
--
+- Change `--skip-message none` to `--skip-message verbose`.
+
+### Removed
+
+- Remove `--warnings` option.
+
 ## [0.15.0] - 2019-05-26
 
 ### Added
