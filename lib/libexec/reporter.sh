@@ -69,8 +69,8 @@ htmlattrs() {
     $1=''
     shift
     while [ \$# -gt 0 ]; do
-      htmlescape htmlattrs \"\${1#*=}\"
-      $1=\"\${$1}\${$1:+ }\${1%%=*}=\\\"\$htmlattrs\\\"\"
+      htmlescape htmlattrs \"\${1#*\=}\"
+      $1=\"\${$1}\${$1:+ }\${1%%\=*}=\\\"\$htmlattrs\\\"\"
       shift
     done
   "

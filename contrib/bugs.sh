@@ -299,4 +299,11 @@ HERE
   [ "$ret" = "-- foo" ] && no_problem || affect
 )
 
+(
+  title='31: ${v%%=*} not working (zsh <= around 4.3.17)'
+  kv="key=value"
+  (ret="${kv%%=*}"; [ "$ret" = "key" ]) 2>/dev/null &&:
+  [ $? = 0 ] && no_problem || affect
+)
+
 echo Done
