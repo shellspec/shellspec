@@ -11,10 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support [Unofficial Bash Strict Mode](http://redsymbol.net/articles/unofficial-bash-strict-mode/).
 - Add `--warning-as-failure` option.
+- Add generators.
 
 ### Changed
 
-- Redesign the reporter to support the generator.
 - Change `--skip-message none` to `--skip-message verbose`.
 
 ### Removed

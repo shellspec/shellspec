@@ -220,17 +220,19 @@ Usage: shellspec [options] [files or directories]
                                         [p]rogress      dots [default]
                                         [d]ocumentation group and example names
                                         [t]ap           TAP format
+                                        [j]unit         JUnit XML
                                         [null]          do not display anything
                                         [debug]         for developer
                                         custom formatter name
+  -o, --output GENERATOR              Choose a generator(s) to generate a report file(s)
+                                        You can use the same name as FORMATTER
+                                        Multiple options can be specified [default: not specified]
       --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
       --no-color, --no-colour         Force the output to not be in color, even if the output is a TTY
       --skip-message VERBOSITY        Mute skip message
                                         [verbose]  do not mute any messages [default]
                                         [moderate] mute repeated messages
                                         [quiet]    mute repeated messages and non-temporarily messages
-  -o, --output GENERATOR              Choose a generator(s) to generate a report
-                                        [tap]           TAP format
 
   **** Ranges / Filters ****
 
