@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support [Unofficial Bash Strict Mode](http://redsymbol.net/articles/unofficial-bash-strict-mode/).
 - Add `--warning-as-failure` option.
 - Add JUnit formatter.
-- Add generator feature.
+- Report generator.
+- Support for [Schily Bourne Shell](http://schilytools.sourceforge.net/bosh.html) (`bosh`, `pbosh`).
 
 ### Changed
 

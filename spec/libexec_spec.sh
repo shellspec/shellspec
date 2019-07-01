@@ -28,7 +28,7 @@ Describe 'libexec.sh'
     callback() {
       echo "path:$1"
       echo "file:$2"
-      echo "range:${3-"<unset>"}"
+      echo "range:${3-<unset>}"
     }
 
     It 'calls callback with no range'

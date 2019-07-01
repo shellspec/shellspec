@@ -16,7 +16,10 @@ shellspec_shell_info() {
   fi
   if (eval ': "${.sh.version}"' 2>/dev/null); then
     eval 'SHELLSPEC_SHELL_VERSION=${.sh.version}'
-    SHELLSPEC_SHELL_TYPE=ksh
+    case $SHELLSPEC_SHELL_VERSION in
+      *bosh*) SHELLSPEC_SHELL_TYPE=bosh ;;
+      *) SHELLSPEC_SHELL_TYPE=ksh ;;
+    esac
     return 0
   fi
 }
@@ -107,19 +110,21 @@ shellspec_find_files__() {
   "
 }
 # Workaround for posh 0.10.2. do not glob with set -u.
-if [ "$(set -u; echo /*)" = '/*' ]; then
-  shellspec_find_files__() {
-    eval "
-      SHELLSPEC_IFSORIG=\$IFS
-      IFS=''
-      case \$- in (*u*) set +u ;; esac
-      set -- \$2/*
-      set -u
-      IFS=\$SHELLSPEC_IFSORIG
-      if [ \$# -gt 0 ]; then shellspec_find_files_ \"$1\" \"\$@\"; fi
-    "
-  }
-fi
+case $SHELLSPEC_SHELL_TYPE in (posh)
+  if [ "$(set -u; echo /*)" = '/*' ]; then
+    shellspec_find_files__() {
+      eval "
+        SHELLSPEC_IFSORIG=\$IFS
+        IFS=''
+        case \$- in (*u*) set +u ;; esac
+        set -- \$2/*
+        set -u
+        IFS=\$SHELLSPEC_IFSORIG
+        if [ \$# -gt 0 ]; then shellspec_find_files_ \"$1\" \"\$@\"; fi
+      "
+    }
+  fi
+esac
 
 # `echo` not has portability, and external 'printf' command is slow.
 # Use shellspec_puts or shellspec_putsn replacement of 'echo'.

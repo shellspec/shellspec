@@ -72,7 +72,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 ### Supported shells
 
-`dash`, `bash`, `ksh`, `mksh`, `oksh`, `pdksh`, `zsh`, `posh`, `yash`, `busybox (ash)`
+`dash`, `bash`, `ksh`, `mksh`, `oksh`, `pdksh`, `zsh`, `posh`, `yash`, `busybox (ash)`, `bosh`, `pbosh`
 
 Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.cirrus.yml))
 
@@ -104,7 +104,8 @@ Confirmed version (tested with docker [dockerfiles](dockerfiles))
 | debian buster |       | 5.0.4 | 1.30.1     | 0.5.10.2 | 93u | 57   |        | 0.13.2 | 2.48 | 5.7.1  |
 | Ubuntu 18.04  |       |       |            |          |     |      |        |        |      | 5.4.2  |
 
-**The version of strikethrough is does NOT work**
+* **The version of strikethrough is does NOT work**
+* I confirmed that works with [Schily Bourne Shell](http://schilytools.sourceforge.net/bosh.html) (`bosh`, `pbosh`), but not well tested.
 
 ### Requires
 
