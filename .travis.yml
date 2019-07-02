@@ -68,3 +68,5 @@ before_script:
 script:
   - if [   "$COVERAGE" ]; then contrib/check.sh && ./shellspec -s bash --kcov --kcov-options "--coveralls-id=${TRAVIS_JOB_ID}"; fi
   - if [ ! "$COVERAGE" ]; then contrib/all.sh contrib/various_test.sh; fi
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -s coverage
