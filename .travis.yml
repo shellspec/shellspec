@@ -60,8 +60,8 @@ before_script:
         tar zxvf v36.tar.gz
         cd kcov-36
         cmake -DCMAKE_INSTALL_PREFIX=${HOME}/kcov .
-        make
-        make install
+        make -j4
+        make -j4 install
         cd ..
       fi
   - if [ ! "$COVERAGE" ]; then ./shellspec --task fixture:stat:prepare; fi
