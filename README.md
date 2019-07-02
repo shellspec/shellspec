@@ -66,8 +66,9 @@ BDD style unit testing framework for POSIX compliant shell script.
 * The hook before and after of the examples
 * Skip and pending of the examples
 * Useful and portability standard input / output directive for testing
-* Built-in simple task runner
 * Modern reporting (colorize, failure line number)
+* Coverage (kcov integration, requires kcov and bash)
+* Built-in simple task runner
 * Extensible architecture (custom matcher, custom formatter, etc...)
 * shellspec is tested by shellspec
 
@@ -116,6 +117,8 @@ the target shell and few basic POSIX compliant command.
 Currently used external command:
 
 `date`, `ls`, `mkdir`, `rm`, `printf`, `sleep`, `sort`, `od` (recommends: `ps`, `time`)
+
+And `kcov` (and `bash`) for coverage [optional].
 
 ## Tutorial
 
@@ -252,6 +255,17 @@ Usage: shellspec [options] [files or directories]
       --example PATTERN               Run examples whose names include PATTERN
       --tag TAG[:VALUE]               Run examples with the specified TAG
       --default-path PATH             Set the default path where shellspec looks for examples [defualt: "spec"]
+
+  **** Coverage ****
+
+      --[no-]kcov                     Enable coverage using kcov [default: disabled]
+                                        Note: requires kcov, shell should be bash and ignore parallel jobs
+      --kcov-path PATH                Specify kcov path [default: kcov]
+      --kcov-common-options OPTIONS   Specify kcov common options [default: see below]
+                                        --include-path=.
+                                        --include-pattern=.sh
+                                        --exclude-pattern=/coverage/,/spec/,/report/
+      --kcov-options KOPTIONS         Specify additional kcov options
 
   **** Utility ****
 
