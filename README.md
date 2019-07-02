@@ -79,7 +79,7 @@ Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.c
 
 | Platform                                                  | Test                                                          |
 | --------------------------------------------------------- | ------------------------------------------------------------- |
-| Ubuntu 12.04, 14.04, 16.04                                | [Travis CI](https://travis-ci.org/shellspec/shellspec)        |
+| Ubuntu 12.04, 14.04, 16.04, 18.04                         | [Travis CI](https://travis-ci.org/shellspec/shellspec)        |
 | macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 (Homebrew) | [Travis CI](https://travis-ci.org/shellspec/shellspec)        |
 | FreeBSD 10.x, 11.x, 12.x                                  | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
 | Windows Server 2019 (Git bash, msys2, cygwin)             | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
