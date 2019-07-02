@@ -4,6 +4,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 [![TravisCI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/shellspec/shellspec)
 [![CirrusCI](https://api.cirrus-ci.com/github/shellspec/shellspec.svg?task=CirrusCI&script=CirrusCI)](https://cirrus-ci.com/github/shellspec/shellspec)
+[![Coverage Status](https://coveralls.io/repos/github/shellspec/shellspec/badge.svg?branch=master)](https://coveralls.io/github/shellspec/shellspec?branch=master)
 ![GitHub release](https://img.shields.io/github/release/shellspec/shellspec.svg)
 ![GitHub](https://img.shields.io/github/license/shellspec/shellspec.svg)
 
