@@ -1,3 +1,4 @@
 .shellspec-local
 report
 coverage
+ttyrecord
