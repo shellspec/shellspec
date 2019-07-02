@@ -4,6 +4,9 @@
 # ttyrec -e "ghostplay contrib/demo.sh"
 # seq2gif -l 3000 -h 32 -w 139 -p win -i ttyrecord -o demo.gif
 GP_HOSTNAME=ubuntu
+highlight() {
+  command highlight -l -O xterm256 --syntax sh
+}
 #ghostplay end
 
 shellspec
@@ -11,10 +14,14 @@ shellspec
 #ghostplay sleep 3
 
 cd contrib/demo
+
 #ghostplay sleep 1
-highlight -l -O xterm256 mylib.sh
+
+cat mylib.sh | highlight
+
 #ghostplay sleep 1
-highlight -l -O xterm256 spec/demo_spec.sh
+
+cat spec/demo_spec.sh | highlight
 
 #ghostplay sleep 3
 
