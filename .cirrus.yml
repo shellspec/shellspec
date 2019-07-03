@@ -51,14 +51,3 @@ cygwin_task:
     - bash -c "rm -f ./spec/fixture/stat/{readable,writable}"
   script:
     - bash -c 'contrib/all.sh shellspec'
-
-CirrusCI_task:
-  depends_on:
-    - freebsd
-    - gitbash
-    - msys
-    - cygwin
-  container:
-    image: busybox
-  CirrusCI_script:
-    - echo all ok
