@@ -164,7 +164,7 @@ Usage: shellspec [options] [files or directories]
   **** Coverage ****
 
       --[no-]kcov                     Enable coverage using kcov [default: disabled]
-                                        Note: requires kcov, shell should be bash and ignore parallel jobs
+                                        Note: Requires kcov and bash, parallel execution is ignored.
       --kcov-path PATH                Specify kcov path [default: kcov]
       --kcov-common-options OPTIONS   Specify kcov common options [default: see below]
                                         --include-path=.
@@ -317,7 +317,13 @@ read_dot_file "." ".shellspec" parse_options
 read_dot_file "." ".shellspec-local" parse_options
 [ $# -gt 0 ] && parse_options "$@" && eval "set -- $params"
 
-[ "$SHELLSPEC_SHELL" ] || SHELLSPEC_SHELL=$(current_shell "$0" "$$")
+if [ ! "$SHELLSPEC_SHELL" ]; then
+  if [ "$SHELLSPEC_KCOV" ]; then
+    SHELLSPEC_SHELL=bash
+  else
+    SHELLSPEC_SHELL=$(current_shell "$0" "$$")
+  fi
+fi
 if [ -z "$SHELLSPEC_SHELL" ]; then
   warn "Failed to detect the current shell," \
        "because the ps command does not exist or not compatible."
@@ -339,7 +345,7 @@ if [ "$SHELLSPEC_KCOV" ]; then
     abort "Not found kcov for to running coverage."
   fi
   if [ ! "$($SHELLSPEC_SHELL -c 'echo "${BASH_VERSION:-}"')" ]; then
-    abort "Specify bash as a shell to run coverage. (e.g: --shell bash)"
+    abort "Require to use bash to run kcov. (e.g: --shell bash)"
   fi
 fi
 

@@ -261,7 +261,7 @@ Usage: shellspec [options] [files or directories]
   **** Coverage ****
 
       --[no-]kcov                     Enable coverage using kcov [default: disabled]
-                                        Note: requires kcov, shell should be bash and ignore parallel jobs
+                                        Note: Requires kcov and bash, parallel execution is ignored.
       --kcov-path PATH                Specify kcov path [default: kcov]
       --kcov-common-options OPTIONS   Specify kcov common options [default: see below]
                                         --include-path=.
