@@ -29,6 +29,8 @@ jobs:
     docker:
       - image: kcov/kcov
     steps:
+      - run: apt-get update
+      - run: apt-get install -y ca-certificates
       - checkout
       - run: ./shellspec --task fixture:stat:prepare
       - run: ./shellspec --kcov
