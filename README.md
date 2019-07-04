@@ -112,6 +112,7 @@ Confirmed version (tested with docker [dockerfiles](dockerfiles))
 
 * **The version of strikethrough is does NOT work**
 * I confirmed that works with [Schily Bourne Shell](http://schilytools.sourceforge.net/bosh.html) (`bosh`, `pbosh`), but not well tested.
+* If you want to do all the tests, run `./contrib/test_in_docker.sh dockerfiles/*`.
 
 ### Requires
 
