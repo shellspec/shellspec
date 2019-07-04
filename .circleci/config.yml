@@ -13,6 +13,7 @@ jobs:
     steps:
       - run: apk add --no-progress --no-cache ca-certificates
       - checkout
+      - run: ./shellspec --task fixture:stat:prepare
       - run: ./shellspec -o tap -o junit
       - run:
           command: |
@@ -23,9 +24,20 @@ jobs:
           path: ~/report
       - store_artifacts:
           path: report
+  coverage:
+    working_directory: ~/shellspec
+    docker:
+      - image: kcov/kcov
+    steps:
+      - checkout
+      - run: ./shellspec --task fixture:stat:prepare
+      - run: ./shellspec --kcov
+      - store_artifacts:
+          path: coverage
 workflows:
   version: 2
   lint_and_test:
     jobs:
       - lint
       - test
+      - coverage
