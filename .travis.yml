@@ -21,10 +21,7 @@ matrix:
       env: OS="Ubuntu 16.04" PACKAGES="dash bash zsh ksh mksh yash posh busybox"
     - os: linux # Ubuntu 18.04
       dist: bionic
-      env: OS="Ubuntu 18.04" PACKAGES="dash bash zsh ksh mksh yash posh busybox"
-    - os: linux # Ubuntu 18.04
-      dist: bionic
-      env: OS="Ubuntu 18.04" USE_DOCKER=1 COVERAGE=1 PACKAGES="libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev"
+      env: OS="Ubuntu 18.04" PACKAGES="dash bash zsh ksh mksh yash posh busybox" COVERAGE=1
     - os: osx # macOS 10.10 Yosemite 2014-06
       osx_image: xcode6.4
       env: OS="macOS 10.10" SHELLS="bash zsh ksh"
@@ -46,16 +43,10 @@ matrix:
 before_install:
   - if [ "$PACKAGES" ]; then sudo apt-get install -y $PACKAGES; fi
   - if [ "$FORMULAS" ]; then brew install $FORMULAS; fi
-  - |-
-    if [ "$USE_DOCKER" ]; then
-      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-      sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-      sudo apt-get update
-      sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-    fi
 before_script:
   - |
       if [ "$COVERAGE" ]; then
+        apt-get install -y libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev
         wget https://github.com/SimonKagstrom/kcov/archive/v36.tar.gz
         tar zxvf v36.tar.gz
         cd kcov-36
@@ -64,9 +55,9 @@ before_script:
         make -j4 install
         cd ..
       fi
-  - if [ ! "$COVERAGE" ]; then ./shellspec --task fixture:stat:prepare; fi
+  - ./shellspec --task fixture:stat:prepare
 script:
-  - if [   "$COVERAGE" ]; then contrib/check.sh && ./shellspec -s bash --kcov --kcov-options "--coveralls-id=${TRAVIS_JOB_ID}"; fi
-  - if [ ! "$COVERAGE" ]; then contrib/all.sh contrib/various_test.sh; fi
+  - contrib/all.sh contrib/various_test.sh
+  - if [ "$COVERAGE" ]; then ./shellspec --kcov --kcov-options "--coveralls-id=${TRAVIS_JOB_ID}"; fi
 after_success:
-  - if [   "$COVERAGE" ]; then bash <(curl -s https://codecov.io/bash) -s coverage; fi
+  - if [ "$COVERAGE" ]; then bash <(curl -s https://codecov.io/bash) -s coverage; fi
