@@ -1,5 +1,4 @@
 #!/bin/sh
-# shellcheck disable=SC2046
 
 # Check shell script files
 
@@ -11,21 +10,6 @@
 #   contrib/check.sh
 
 set -eu
-
-image="koalaman/shellcheck"
-
-shellcheck() {
-  if ! docker --version >/dev/null 2>&1; then
-    echo "You need docker to run shellcheck" >&2
-    exit 1
-  fi
-
-  if [ -f /proc/sys/fs/binfmt_misc/WSLInterop ]; then
-    pwd() { wslpath -w -a .; }
-  fi
-
-  docker run -i -v "$(pwd):/src" -w /src "$image" "$@"
-}
 
 sources() {
   echo shellspec
@@ -43,9 +27,9 @@ samples() {
 count() {
   printf '%6s: ' "$1"
   shift
-  cat "$@" | wc -lc | {
+  cat $@ | wc -lc | {
     read -r lines bytes
-    printf '%3s files, %5s lines, %3s KiB\n' $# "$lines" $((bytes / 1024))
+    printf '%3s files, %5s lines, %3s KiB\n' $# $lines $((bytes / 1024))
   }
 }
 
@@ -59,7 +43,21 @@ count sample $(samples)
 count total $(sources; specs; samples)
 echo
 
+if ! docker --version >/dev/null 2>&1; then
+  echo "You need docker to run shellcheck" >&2
+  exit 1
+fi
+
 echo "Checking scripts by shellcheck..."
-shellcheck -C $(sources; specs; samples)
+
+tag="shellspec:shellcheck"
+
+trap 'exit 1' INT
+trap 'docker rmi "$tag" >/dev/null 2>&1' EXIT
+
+# Volume can not be used on VolFs of WSL.
+docker build -t "$tag" . -f dockerfiles/.shellcheck > /dev/null
+docker run -i --rm "$tag" --version
+docker run -i --rm "$tag" -C $(sources; specs; samples)
 
 echo "ok"
