@@ -2,12 +2,12 @@
 
 BDD style unit testing framework for POSIX compliant shell script.
 
-[![TravisCI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/shellspec/shellspec)
+[![Travis CI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/shellspec/shellspec)
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI)](https://cirrus-ci.com/github/shellspec/shellspec)
-[![CircleCI](https://img.shields.io/circleci/build/github/shellspec/shellspec.svg?label=CircleCI)](https://circleci.com/gh/shellspec/shellspec)
-[![kcov](https://img.shields.io/badge/kcov-Coverage%20Report-blueviolet.svg)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html)
-[![coveralls](https://coveralls.io/repos/github/shellspec/shellspec/badge.svg?branch=master)](https://coveralls.io/github/shellspec/shellspec?branch=master)
-[![codecov](https://codecov.io/gh/shellspec/shellspec/branch/master/graph/badge.svg)](https://codecov.io/gh/shellspec/shellspec)
+[![Circle CI](https://img.shields.io/circleci/build/github/shellspec/shellspec.svg?label=CircleCI)](https://circleci.com/gh/shellspec/shellspec)
+[![Kcov](https://img.shields.io/badge/kcov-coverage-blue.svg)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html)
+[![Coveralls](https://img.shields.io/coveralls/github/shellspec/shellspec.svg?label=coveralls)](https://coveralls.io/github/shellspec/shellspec?branch=master)
+[![Codecov](https://img.shields.io/codecov/c/github/shellspec/shellspec.svg?label=codecov)](https://codecov.io/gh/shellspec/shellspec)
 [![CodeFactor](https://www.codefactor.io/repository/github/shellspec/shellspec/badge)](https://www.codefactor.io/repository/github/shellspec/shellspec)
 ![GitHub release](https://img.shields.io/github/release/shellspec/shellspec.svg)
 ![GitHub](https://img.shields.io/github/license/shellspec/shellspec.svg)
