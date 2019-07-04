@@ -39,8 +39,11 @@ jobs:
           path: coverage
 workflows:
   version: 2
-  lint_and_test:
+  lint_test_and_coverage:
     jobs:
       - lint
       - test
-      - coverage
+      - coverage:
+          requires:
+            - lint
+            - test
