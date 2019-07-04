@@ -46,7 +46,7 @@ before_install:
 before_script:
   - |
       if [ "$COVERAGE" ]; then
-        apt-get install -y libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev
+        sudo apt-get install -y libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev
         wget https://github.com/SimonKagstrom/kcov/archive/v36.tar.gz
         tar zxvf v36.tar.gz
         cd kcov-36
