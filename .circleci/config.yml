@@ -35,6 +35,7 @@ jobs:
       - run: ./shellspec --task fixture:stat:prepare
       - run: ./shellspec --kcov
       - run: "echo \".versionInfo:after { content: ' ($(kcov --version))'; }\" >> coverage/data/bcov.css"
+      - run: find coverage -name coverage.json -exec cp {} coverage/ \;
       - store_artifacts:
           path: coverage
 workflows:
