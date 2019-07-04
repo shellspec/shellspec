@@ -1,0 +1,30 @@
+version: 2
+jobs:
+  lint:
+    docker:
+      - image: koalaman/shellcheck-alpine
+    steps:
+      - checkout
+      - run: shellcheck shellspec $(find lib libexec spec sample -name '*.sh')
+  test:
+    working_directory: ~/shellspec
+    docker:
+      - image: alpine
+    steps:
+      - run: apk add --no-progress --no-cache ca-certificates
+      - checkout
+      - run:
+          command: |
+            mkdir -p ~/report/shellspec
+            ./shellspec -o tap -o junit
+          when: always
+      - store_test_results:
+          path: ~/report
+      - store_artifacts:
+          path: report
+workflows:
+  version: 2
+  lint_and_test:
+    jobs:
+      - lint
+      - test
