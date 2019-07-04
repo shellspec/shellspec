@@ -15,9 +15,12 @@ syntax_error() {
 }
 
 error_handler() {
+  error=0
   while IFS= read -r line; do
     error "$line"
+    error=1
   done
+  return "$error"
 }
 
 syntax_check() {
@@ -39,8 +42,13 @@ specfile() {
   specfile=$2
   putsn "$specfile"
   ( ( ( ( syntax_check "$specfile"; echo $? >&3 ) 2>&1 \
-    | error_handler >&2) 3>&1) \
-    | (read -r xs; exit "$xs") \
+    | error_handler >&2; echo $? >&3) 3>&1) \
+    | (
+        read -r xs
+        [ "$xs" = 0 ] || exit "$xs"
+        read -r xs
+        exit "$xs"
+      ) \
   ) 4>&1 || exit_status=1
 }
 find_specfiles specfile "$@"
