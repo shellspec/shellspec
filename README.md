@@ -2,7 +2,7 @@
 
 BDD style unit testing framework for POSIX compliant shell script.
 
-[![Travis CI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/shellspec/shellspec)
+[![Travis CI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI&logo=appveyor)](https://travis-ci.org/shellspec/shellspec)
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI)](https://cirrus-ci.com/github/shellspec/shellspec)
 [![Circle CI](https://img.shields.io/circleci/build/github/shellspec/shellspec.svg?label=CircleCI)](https://circleci.com/gh/shellspec/shellspec)
 [![Kcov](https://img.shields.io/badge/dynamic/json.svg?label=kcov&query=percent_covered&suffix=%25&url=https%3A%2F%2Fcircleci.com%2Fapi%2Fv1.1%2Fproject%2Fgithub%2Fshellspec%2Fshellspec%2Flatest%2Fartifacts%2F0%2Froot%2Fshellspec%2Fcoverage%2Fcoverage.json)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html)
@@ -12,6 +12,15 @@ BDD style unit testing framework for POSIX compliant shell script.
 [![GitHub top language](https://img.shields.io/github/languages/top/shellspec/shellspec.svg)](https://github.com/shellspec/shellspec/search?l=Shell)
 [![GitHub release](https://img.shields.io/github/release/shellspec/shellspec.svg)](https://github.com/shellspec/shellspec/releases/latest)
 [![License](https://img.shields.io/github/license/shellspec/shellspec.svg)](https://github.com/shellspec/shellspec/blob/master/LICENSE)
+
+![bash](https://img.shields.io/badge/bash-%3E%3D2.03-lightgrey.svg?style=plastic)
+![busybox](https://img.shields.io/badge/busybox-%3E%3D1.1.3-lightgrey.svg?style=plastic)
+![dash](https://img.shields.io/badge/dash-%3E%3D0.5.2-lightgrey.svg?style=plastic)
+![ksh](https://img.shields.io/badge/ksh-%3E%3D93q-lightgrey.svg?style=plastic)
+![mksh](https://img.shields.io/badge/mksh-%3E%3D28-lightgrey.svg?style=plastic)
+![posh](https://img.shields.io/badge/posh-%3E%3D0.3.14-lightgrey.svg?style=plastic)
+![yash](https://img.shields.io/badge/yash-%3E%3D2.30-lightgrey.svg?style=plastic)
+![zsh](https://img.shields.io/badge/yash-%3E%3D3.1.9-lightgrey.svg?style=plastic)
 
 **Let’s test the your shell script!**
 
