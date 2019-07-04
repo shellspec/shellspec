@@ -126,7 +126,7 @@ Describe "core/matchers/be/empty.sh"
     End
 
     Context 'when enabled failglob in bash'
-      Skip if 'is not bash' [ "$SHELLSPEC_SHELL_TYPE" != "bash" ]
+      Skip if 'shell is not bash' [ "$SHELLSPEC_SHELL_TYPE" != "bash" ]
       Before '{ shopt -s failglob ||:; } 2>/dev/null'
 
       subject() { %- "$EMPTYDIR"; }
