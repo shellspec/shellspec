@@ -13,10 +13,11 @@ jobs:
     steps:
       - run: apk add --no-progress --no-cache ca-certificates
       - checkout
+      - run: ./shellspec -o tap -o junit
       - run:
           command: |
             mkdir -p ~/report/shellspec
-            ./shellspec -o tap -o junit
+            cp report/results_junit.xml ~/report/shellspec/
           when: always
       - store_test_results:
           path: ~/report
