@@ -37,7 +37,7 @@ specs() {
 }
 
 samples() {
-  find sample/spec -name '*.sh'
+  find sample -name '*.sh'
 }
 
 count() {
