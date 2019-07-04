@@ -28,14 +28,14 @@ Describe 'libexec.sh'
     callback() {
       echo "path:$1"
       echo "file:$2"
-      echo "range:${3-<unset>}"
+      echo "range:${3-[unset]}"
     }
 
     It 'calls callback with no range'
       When call found_specfile callback "a_spec.sh"
       The line 1 of output should eq "path:a_spec.sh"
       The line 2 of output should eq "file:a_spec.sh"
-      The line 3 of output should eq "range:<unset>"
+      The line 3 of output should eq "range:[unset]"
     End
 
     It 'calls callback with range'

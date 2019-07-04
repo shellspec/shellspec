@@ -301,9 +301,9 @@ Describe "core/dsl.sh"
       shellspec_output() { echo "output:$1"; }
       "$@"
       shellspec_if SKIP && echo 'SKIP:on' || echo 'SKIP:off'
-      echo "skip_id:${SHELLSPEC_SKIP_ID-<unset>}"
-      echo "skip_reason:${SHELLSPEC_SKIP_REASON-<unset>}"
-      echo "example_no:${SHELLSPEC_EXAMPLE_NO-<unset>}"
+      echo "skip_id:${SHELLSPEC_SKIP_ID-[unset]}"
+      echo "skip_reason:${SHELLSPEC_SKIP_REASON-[unset]}"
+      echo "example_no:${SHELLSPEC_EXAMPLE_NO-[unset]}"
     }
 
     Context 'when inside of example'
@@ -349,8 +349,8 @@ Describe "core/dsl.sh"
 
       It 'sets skip related variables'
         When invoke shellspec_skip 123 "skip reason"
-        The stdout should include 'skip_id:<unset>'
-        The stdout should include 'skip_reason:<unset>'
+        The stdout should include 'skip_id:[unset]'
+        The stdout should include 'skip_reason:[unset]'
         The stdout should include 'example_no:1'
       End
     End
