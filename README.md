@@ -26,7 +26,8 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 ![demo](demo.gif)
 
-**Project status: Implementation of practical features has been completed. I will add more tests and improve the documentation.**
+**Project status: Implementation of practical features has been completed.**
+**I will add more tests and improve the documentation.**
 
 *Table of Contents*
 
@@ -358,10 +359,11 @@ groups / examples in specfiles. (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`)
 ### Coverage
 
 shellspec is integrated with coverage for ease of use
-(Requires to [install kcov](https://github.com/SimonKagstrom/kcov)).
+(Requires to [install kcov](https://github.com/SimonKagstrom/kcov).
+Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html)).
 It works with the default settings, but you may need to adjust kcov's options
-to make it more accurate. Be aware of the shell can be used for coverage
-is `bash` only.
+to make it more accurate.
+*Be aware of the shell can be used for coverage is `bash` only.*
 
 ### Task runner
 
@@ -433,7 +435,8 @@ This directory use to create file for custom matchers, tasks and etc.
 
 ### Example
 
-**The best place to learn how to write specfile is [sample/spec](/sample/spec) directory. You must see it!** *(Those samples includes failure examples on purpose.)*
+**The best place to learn how to write specfile is [sample/spec](/sample/spec) directory. You must see it!**
+*(Those samples includes failure examples on purpose.)*
 
 ```sh
 Describe 'sample' # example group
