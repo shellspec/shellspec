@@ -1,8 +1,2 @@
 FROM busybox:latest
-
 ENV SH="busybox ash"
-
-WORKDIR /shellspec
-COPY ./ ./
-ENTRYPOINT [ "./docker/entrypoint.sh" ]
-CMD [ "shellspec" ]

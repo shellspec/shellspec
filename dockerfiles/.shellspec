@@ -1,0 +1,6 @@
+ARG IMAGE
+FROM $IMAGE
+WORKDIR /shellspec
+COPY ./ ./
+ENTRYPOINT [ "./docker/entrypoint.sh" ]
+CMD [ "shellspec" ]

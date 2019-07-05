@@ -1,12 +1,3 @@
 FROM lpenz/debian-squeeze-i386
-
-ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN apt-get update
-RUN apt-get -y --force-yes install mksh
-
-ENV SH="mksh"
-
-WORKDIR /shellspec
-COPY ./ ./
-ENTRYPOINT [ "./docker/entrypoint.sh" ]
-CMD [ "shellspec" ]
+ENV SH="mksh" DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+RUN apt-get update && apt-get -y --force-yes install mksh

@@ -1,13 +1,3 @@
-FROM debian:7
-
-ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN echo "deb http://archive.debian.org/debian wheezy main contrib" > /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get -y install ksh
-
-ENV SH="ksh"
-
-WORKDIR /shellspec
-COPY ./ ./
-ENTRYPOINT [ "./docker/entrypoint.sh" ]
-CMD [ "shellspec" ]
+FROM lpenz/debian-wheezy-i386
+ENV SH="ksh" DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+RUN apt-get update && apt-get -y install ksh

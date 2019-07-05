@@ -44,6 +44,10 @@ main() {
   done
 }
 
+iidfile=$(mktemp)
+trap 'exit 1' INT
+trap '[ -f "$iidfile" ] && rm "$iidfile"' EXIT
+
 run() {
   dockerfile=$1
 
@@ -56,10 +60,13 @@ run() {
   echo "[$dockerfile: $@]"
   tag="${dockerfile##*/}"
   tag="${tag#.}"
-  docker build $options -t "shellspec:$tag" ./ -f "$dockerfile"
-  echo
-  docker run -it --rm "shellspec:$tag" "$@" &&:
+  image="shellspec:$tag"
+  docker build $options -t "$image" - < "$dockerfile"
+  docker build --iidfile "$iidfile" --build-arg "IMAGE=$image" . -f "dockerfiles/.shellspec"
+  id=$(cat "$iidfile")
+  docker run -it --rm "$id" "$@" &&:
   xs=$?
+  docker rmi "$id" > /dev/null
   echo "exit status: $xs"
   case $tag in
     *-fail) ;;

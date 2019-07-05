@@ -1,0 +1,8 @@
+FROM buildpack-deps
+ARG schily=schily-2018-10-30
+RUN wget -nv --trust-server-names https://sourceforge.net/projects/schilytools/files/${schily}.tar.bz2/download
+RUN tar xf ${schily}.tar.bz2
+WORKDIR ${schily}
+RUN make install
+ENV PATH="/opt/schily/bin:$PATH"
+ENV SH="pbosh"
