@@ -37,31 +37,43 @@ BDD style unit testing framework for POSIX compliant shell script.
 - [Tutorial](#Tutorial)
   - [Installation](#Installation)
   - [Getting started](#Getting-started)
-- [Usage](#Usage)
-- [Specfile DSL](#Specfile-DSL)
-  - [Syntax example](#Syntax-example)
-  - [Samples](#Samples)
-  - [Example group (Describe/Context)](#Example-group-DescribeContext)
-  - [Example (Example/Specify/It)](#Example-ExampleSpecifyIt)
-    - [Evaluation (When)](#Evaluation-When)
-    - [Expectation (The)](#Expectation-The)
-  - [Helper](#Helper)
-    - [Skip and pending (Skip/Pending)](#Skip-and-pending-SkipPending)
-    - [Before and after hook (Before/After)](#Before-and-after-hook-BeforeAfter)
-    - [Input from stdin (Data)](#Input-from-stdin-Data)
-  - [Mock and Stub](#Mock-and-Stub)
-  - [Directive](#Directive)
-    - [Constant definition (%const)](#Constant-definition-const)
-    - [Embedded text (%text)](#Embedded-text-text)
-  - [More syntax (subject/modifier/matcher/etc.)](#More-syntax-subjectmodifiermatcheretc)
-  - [Custom matcher](#Custom-matcher)
 - [shellspec command](#shellspec-command)
+  - [Usage](#Usage)
   - [Configure default options](#Configure-default-options)
+  - [Special environment variable](#Special-environment-variable)
+  - [Parallel execution](#Parallel-execution)
+  - [Random execution](#Random-execution)
+  - [Reporter / Generator](#Reporter--Generator)
+  - [Ranges / Filters](#Ranges--Filters)
+  - [Coverage](#Coverage)
   - [Task runner](#Task-runner)
-- [spec directory](#spec-directory)
-  - [spec_helper.sh](#spechelpersh)
-  - [support](#support)
+- [Project directory](#Project-directory)
+  - [.shellspec](#shellspec)
+  - [.shellspec-local](#shellspec-local)
+  - [report/](#report)
+  - [coverage/](#coverage)
+  - [spec/](#spec)
   - [banner](#banner)
+  - [spec_helper.sh](#spechelpersh)
+  - [support/](#support)
+- [Specfile](#Specfile)
+  - [Example](#Example)
+  - [Translation process](#Translation-process)
+  - [DSL](#DSL)
+    - [Describe / Context (example group)](#Describe--Context-example-group)
+    - [It / Example / Specify (example)](#It--Example--Specify-example)
+    - [When (evaluation)](#When-evaluation)
+    - [The (expectation)](#The-expectation)
+    - [Skip / Pending](#Skip--Pending)
+    - [Before / After (hook)](#Before--After-hook)
+    - [Data (input for evaluation)](#Data-input-for-evaluation)
+    - [subject / modifier / matcher](#subject--modifier--matcher)
+  - [Directive](#Directive)
+    - [%const (constant definition)](#const-constant-definition)
+    - [%text (embedded text)](#text-embedded-text)
+    - [%puts / %putsn (output)](#puts--putsn-output)
+    - [%logger](#logger)
+  - [Mock and Stub](#Mock-and-Stub)
 - [Version history](#Version-history)
 
 ## Introduction
@@ -81,7 +93,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 * Skip and pending of the examples
 * Useful and portability standard input / output directive for testing
 * Modern reporting (colorize, failure line number)
-* Coverage (kcov integration, requires kcov and bash)
+* Coverage ([kcov](http://simonkagstrom.github.io/kcov/index.html) integration, requires kcov and bash)
 * Built-in simple task runner
 * Extensible architecture (custom matcher, custom formatter, etc...)
 * shellspec is tested by shellspec
@@ -101,7 +113,8 @@ Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.c
 | Windows 10 1903 (Ubuntu 18.04 on WSL)                     | manual                                                        |
 | Solaris 11                                                | manual                                                        |
 
-Confirmed version (tested with docker [dockerfiles](dockerfiles))
+<details>
+<summary>Tested shell and version (tested with docker)</summary>
 
 | Platform       | ash   | bash  | busybox    | dash     | ksh | mksh | pdksh  | posh   | yash | zsh    |
 | -------------- | ----- | ----- | ---------- | -------- | --- | ---- | ------ | ------ | ---- | ------ |
@@ -124,18 +137,18 @@ Confirmed version (tested with docker [dockerfiles](dockerfiles))
 
 * **The version of strikethrough is does NOT work**
 * I confirmed that works with [Schily Bourne Shell](http://schilytools.sourceforge.net/bosh.html) (`bosh`, `pbosh`) linux build, but not well tested.
-* If you want to do the tests above, run `./contrib/test_in_docker.sh <DOCKERFILES...> [-- COMMAND]`.
+* If you want to do the tests above, run `./contrib/test_in_docker.sh <DOCKERFILES...> [-- COMMAND]`. ([Dockerfiles](dockerfiles))
+
+</details>
 
 ### Requires
 
-shellspec is implemented in a pure shell script, so what you need is
-the target shell and few basic POSIX compliant command.
+shellspec is implemented in a pure shell script, so what you need is the target shell
+and few basic POSIX compliant command (except `kcov` for optionally coverage).
 
 Currently used external command:
 
 `date`, `ls`, `mkdir`, `rm`, `printf`, `sleep`, `sort`, `od` (recommends: `ps`, `time`)
-
-And `kcov` (and `bash`) for coverage [optional].
 
 ## Tutorial
 
@@ -216,7 +229,9 @@ HERE
 $ shellspec
 ```
 
-## Usage
+## shellspec command
+
+### Usage
 
 ```
 Usage: shellspec [options] [files or directories]
@@ -302,18 +317,132 @@ Usage: shellspec [options] [files or directories]
   -h, --help                          You're looking at it
 ```
 
-## Specfile DSL
+### Configure default options
 
-### Syntax example
+To change default options for `shellspec` command, create options file.
+Read files in the order the bellows and overrides options.
+
+1. `$XDG_CONFIG_HOME/shellspec/options`
+2. `$HOME/.shellspec`
+3. `./.shellspec`
+4. `./.shellspec-local` (Do not store in VCS such as git)
+
+### Special environment variable
+
+Special environment variable of shellspec is starts with `SHELLSPEC_`.
+It can be overridden with custom script of `--env-from` option.
+
+*Todo: descriptions of many special environment variables.*
+
+### Parallel execution
+
+You can use parallel execution for fast test with `--jobs` option.
+
+### Random execution
+
+You can randomize the execution order to detect troubles due to
+the test execution order. If `SEED` specified, you can execute same order.
+
+### Reporter / Generator
+
+You can specify one reporter (output to stdout) and multiple generators
+(output to file). Currently builtin formatters are `progress`, `documentation`,
+`tap`, `junit`, `null`, `debug`.
+
+### Ranges / Filters
+
+You can execute specified spec only. It can be specified by line number,
+example id, example name, tag and focues. To focus, prepend `f` to
+groups / examples in specfiles. (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`)
+
+### Coverage
+
+shellspec is integrated with coverage for ease of use
+(Requires to [install kcov](https://github.com/SimonKagstrom/kcov)).
+It works with the default settings, but you may need to adjust kcov's options
+to make it more accurate. Be aware of the shell can be used for coverage
+is `bash` only.
+
+### Task runner
+
+You can run the task with `--task` option.
+
+## Project directory
+
+Typical directory structure.
+
+```
+Project directory
+├─ .shellspec
+├─ .shellspec-local
+├─ report/
+├─ coverage/
+│
+├─ bin/
+│   ├─ executable_shell_script
+│              :
+├─ lib/
+│   ├─ your_shell_script_library.sh
+│              :
+├─ libexec/
+│   ├─ executable_utilities
+│              :
+├─ spec/
+│   ├─ banner
+│   ├─ spec_helper.sh
+│   ├─ support/
+│   ├─ your_shell_script_library_spec.sh
+│              :
+```
+
+### .shellspec
+
+Project default options for `shellspec` command.
+
+### .shellspec-local
+
+Override project default options (Do not store in VCS such as git).
+
+### report/
+
+Directory where the generator outputs reports.
+
+### coverage/
+
+Directory where the kcov outputs coverge.
+
+### spec/
+
+Directory where you create specfiles.
+
+### banner
+
+If exists `spec/banner` file, shows banner when `shellspec` command executed.
+To disable shows banner with `--no-banner` option.
+
+### spec_helper.sh
+
+The *spec_helper.sh* loaded by `--require spec_helper` option.
+This file use to preparation for running examples, define custom matchers, and etc.
+
+### support/
+
+This directory use to create file for custom matchers, tasks and etc.
+
+## Specfile
+
+### Example
+
+**The best place to learn how to write specfile is [sample/spec](/sample/spec) directory. You must see it!** *(Those samples includes failure examples on purpose.)*
 
 ```sh
-Describe 'sample' # Example group
+Describe 'sample' # example group
   Describe 'bc command'
     add() { echo "$1 + $2" | bc; }
 
-    It 'performs addition' # Example
-      When call add 2 3 # Evaluation
-      The output should eq 5  # Expectation
+    It 'performs addition' # example
+      When call add 2 3 # evaluation
+      The output should eq 5  # expectation
     End
   End
 
@@ -328,38 +457,33 @@ Describe 'sample' # Example group
 End
 ```
 
+### Translation process
+
 The specfile is a valid shell script syntax, but performs translation process
-to implements the scope and line number etc.
+to implements the scope and line number etc. Each example group block and
+example block are translate to subsshell. Therefore changes inside the block
+do not affect the outside of the block. In other words it realize local
+variables and local functions in the specfile. This is very useful for
+describing a structured spec. If you are interested in how to translate,
+use the `--translate` option.
 
-The each example group block and the example block are translate to subsshell.
-Therefore changes inside the block do not affect the outside of the block.
+### DSL
 
-In other words it realize local variables and local functions in the specfile.
-This is very useful for describing a structured spec.
-
-If you are interested in how to translate, use the `--translate` option.
-
-### Samples
-
-**The best place to learn DSL is [sample/spec](/sample/spec) directory. You must see it!**
-
-*Be ware that those specfiles includes failure examples.*
-
-### Example group (Describe/Context)
+#### Describe / Context (example group)
 
 You can write structured *example* using by `Describe`, `Context`. Example
 groups can be nested. Example groups can contain example groups or examples.
 Each example groups run in subshell.
 
-### Example (Example/Specify/It)
+#### It / Example / Specify (example)
 
-You can write describe how code behaves using by `Example`, `Specify`, `It`.
-It constitute by maximum of one *Evaluation* and multiple *Expectations*.
+You can write describe how code behaves using by `It`, `Example`, `Specify`.
+It constitute by maximum of one evaluation and multiple expectations.
 
-#### Evaluation (When)
+#### When (evaluation)
 
 Defines the action for verification. The evaluation is start with `When`
-It can be defined `Evaluation` up to one for each `Example`.
+It can be defined evaluation up to one for each example.
 
 ```
 When call echo hello world
@@ -369,7 +493,7 @@ When call echo hello world
  +-- The evaluation is start with `When`
 ```
 
-#### Expectation (The)
+#### The (expectation)
 
 Defines the verification. The expectation is start with `The`
 
@@ -428,25 +552,20 @@ The first word of second line of output should valid number
 The first word of the second line of output should valid as a number
 ```
 
-### Helper
-
-#### Skip and pending (Skip/Pending)
+#### Skip / Pending
 
 You can skip example by `Skip`. If you want to skip only in some cases,
-use conditional skip `Skip if`.
+use conditional skip `Skip if`. You can also use `Pending` to indicate the
+to be implementation. You can temporary skip `Describe`, `Context`, `Example`,
+`Specify`, `It` block. To skip, add prefixing `x` and modify to `xDescribe`,
+`xContext`, `xExample`, `xSpecify`, `xIt`.
 
-You can also use `Pending` to indicate the to be implementation.
-
-You can temporary skip `Describe`, `Context`, `Example`, `Specify`, `It` block.
-To skip, add prefixing `x` and modify to `xDescribe`, `xContext`, `xExample`,
-`xSpecify`, `xIt`.
-
-#### Before and after hook (Before/After)
+#### Before / After (hook)
 
 You can define hooks called before/after running example by `Before`, `After`.
 The hook is called for each example.
 
-#### Input from stdin (Data)
+#### Data (input for evaluation)
 
 You can use Data Helper that input data from stdin for evaluation.
 After `#|` in the `Data` block is the input data.
@@ -465,13 +584,78 @@ Describe 'Data helper'
 End
 ```
 
+#### subject / modifier / matcher
+
+There is more *subject*, *modifier*, *matcher*. please refer to the
+[References](/References.md)
+
+*Custom matcher*
+
+shellspec has extensible architecture. So you can create custom matcher,
+custom modifier, custom formatter, etc...
+
+see [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
+
+### Directive
+
+#### %const (constant definition)
+
+`%const` (`%` is short hand) directive is define constant value. The characters
+that can be used for variable name is upper capital, number and underscore only.
+It can not be define inside of the example group or the example.
+
+The timing of evaluation of the value is the specfile translation process.
+So you can access shellspec variables, but you can not access variable or
+function in the specfile.
+
+This feature assumed use with conditional skip. The conditional skip may runs
+outside of the examples. As a result, sometime you may need variables defined
+outside of the examples.
+
+#### %text (embedded text)
+
+You can use `%text` directive instead of hard-to-use heredoc with indented code.
+After `#|` is the input data.
+
+```sh
+Describe '%text directive'
+  It 'outputs texts'
+    output() {
+      echo "start" # you can write code here
+      %text
+      #|aaa
+      #|bbb
+      #|ccc
+      echo "end" # you can write code here
+    }
+
+    When call output
+    The line 1 of output should eq 'start'
+    The line 2 of output should eq 'aaa'
+    The line 3 of output should eq 'bbb'
+    The line 4 of output should eq "ccc"
+    The line 5 of output should eq 'end'
+  End
+End
+```
+
+#### %puts / %putsn (output)
+
+`%puts` (put string) and `%putsn` (put string with newline) can be used instead of
+(not portable) echo. Unlike echo, not interpret escape sequences all shells.
+`%-` is an alias of `%puts`, `%=` is an alias of `%putsn`.
+
+#### %logger
+
+Output log to `$SHELLSPEC_LOGFILE` (default: `/dev/tty`) for debugging.
+
 ### Mock and Stub
 
-Currentry, shellspec is not provide any special function for mocking/stubbing.
+Currentry, shellspec is not provide any special function for mocking / stubbing.
 But redefine shell function can override existing shell function or external
-command. It can use as mocking/stubbing.
+command. It can use as mocking / stubbing.
 
-Remember to `Describe`, `Context`, `Example`, `Specify`, `It` block running in
+Remember to `Describe`, `Context`, `It`, `Example`, `Specify` block running in
 subshell. When going out of the block restore redefined function.
 
 ```sh
@@ -492,104 +676,6 @@ Describe 'mock stub sample'
   End
 End
 ```
-
-### Directive
-
-#### Constant definition (%const)
-
-`%const` (`%` is short hand) directive is define constant value. The characters
-that can be used for variable name is upper capital, number and underscore only.
-It can not be define inside of the example group or the example.
-
-The timing of evaluation of the value is the specfile translation process.
-So you can access shellspec variables, but you can not access variable or
-function in the specfile.
-
-This feature assumed use with conditional skip. The conditional skip may runs
-outside of the examples. As a result, sometime you may need variables defined
-outside of the examples.
-
-#### Embedded text (%text)
-
-You can use `%text` directive instead of hard-to-use heredoc with indented code.
-After `#|` is the input data.
-
-```sh
-Describe '%text directive'
-  It 'outputs texts'
-    output() {
-      echo "start" # you can write code here
-      %text
-      #|aaa
-      #|bbb
-      #|ccc
-      echo "end" # you can write code here
-    }
-
-    heredoc_breaks_indent() {
-      echo "start"
-      cat<<'HERE'
-aaa
-bbb
-ccc
-HERE
-      echo "end"
-    }
-
-    When call output
-    The line 1 of output should eq 'start'
-    The line 2 of output should eq 'aaa'
-    The line 3 of output should eq 'bbb'
-    The line 4 of output should eq "ccc"
-    The line 5 of output should eq 'end'
-  End
-End
-```
-
-### More syntax (subject/modifier/matcher/etc.)
-
-There is more *subject*, *modifier*, *matcher*. please refer to the
-[References](/References.md)
-
-### Custom matcher
-
-shellspec has extensible architecture. So you can create custom matcher,
-custom modifier, custom formatter, etc...
-
-see [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
-
-## shellspec command
-
-### Configure default options
-
-To change default options for `shellspec` command, create options file.
-Read files in the order the bellows and overrides options.
-
-1. `$XDG_CONFIG_HOME/shellspec/options`
-2. `$HOME/.shellspec`
-3. `./.shellspec`
-4. `./.shellspec-local` (Do not manage by VCS)
-
-### Task runner
-
-You can run the task with `--task` option.
-
-## spec directory
-
-### spec_helper.sh
-
-The *spec_helper.sh* loaded by `--require spec_helper` option.
-
-This file use to preparation for running examples, define custom matchers, and etc.
-
-### support
-
-This directory use to create file for custom matchers, tasks and etc.
-
-### banner
-
-If exists `spec/banner` file, shows banner when `shellspec` command executed.
-To disable shows banner with `--no-banner` option.
 
 ## Version history
 
