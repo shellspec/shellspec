@@ -17,6 +17,7 @@ shellspec_shell_info() {
   if (eval ': "${.sh.version}"' 2>/dev/null); then
     eval 'SHELLSPEC_SHELL_VERSION=${.sh.version}'
     case $SHELLSPEC_SHELL_VERSION in
+      *pbosh*) SHELLSPEC_SHELL_TYPE=pbosh ;;
       *bosh*) SHELLSPEC_SHELL_TYPE=bosh ;;
       *) SHELLSPEC_SHELL_TYPE=ksh ;;
     esac
