@@ -75,6 +75,7 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [%puts / %putsn (output)](#puts--putsn-output)
     - [%logger](#logger)
   - [Mock and Stub](#Mock-and-Stub)
+- [For developer](#For-developer)
 - [Version history](#Version-history)
 
 ## Introduction
@@ -679,6 +680,10 @@ Describe 'mock stub sample'
   End
 End
 ```
+
+## For developer
+
+If you want to know shellspec architecture and self test, see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Version history
 
