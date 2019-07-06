@@ -14,7 +14,7 @@ shellspec
 
 #ghostplay sleep 3
 
-# parallel execution
+# Parallel execution
 shellspec --jobs 4
 
 #ghostplay sleep 3
@@ -27,15 +27,19 @@ cat spec/demo_spec.sh | highlight sh
 
 #ghostplay sleep 3
 
+# It has one failure
+shellspec
+
+#ghostplay sleep 5
+
+# Dry run with documentation formatter
 shellspec --dry-run --format documentation
 
 #ghostplay sleep 5
 
-# coverage and generate junit xml
+# Coverage and generate junit xml
 shellspec --kcov --output junit
 
 #ghostplay sleep 5
 
 cat report/results_junit.xml | highlight xml
-
-
