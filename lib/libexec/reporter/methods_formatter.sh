@@ -17,7 +17,5 @@ methods_each() {
 }
 
 methods_output() {
-  case $1 in (meta)
-    methods '>>>'
-  esac
+  methods '>>>'
 }
