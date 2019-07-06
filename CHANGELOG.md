@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Coverage reporting.
+- Add `--fail-low-coverage` option.
+
 ## [0.16.0] - 2019-07-03
 
 ### Added

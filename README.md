@@ -241,6 +241,8 @@ Usage: shellspec [options] [files or directories]
   -s, --shell SHELL                   Specify a path of shell [default: current shell]
       --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]
       --[no-]fail-no-examples         Fail if no examples found [default: disabled]
+      --[no-]fail-low-coverage        Fail on low coverage [default: disabled]
+                                        The coverage threshold is specified by the coverage option
   -r, --require MODULE                Require a file
   -e, --env NAME=VALUE                Set environment variable
       --env-from ENV-SCRIPT           Set environment variable from script file
@@ -296,10 +298,12 @@ Usage: shellspec [options] [files or directories]
                                         Note: Requires kcov and bash, parallel execution is ignored.
       --kcov-path PATH                Specify kcov path [default: kcov]
       --kcov-common-options OPTIONS   Specify kcov common options [default: see below]
+                                        --path-strip-level=1
                                         --include-path=.
                                         --include-pattern=.sh
                                         --exclude-pattern=/coverage/,/spec/,/report/
       --kcov-options KOPTIONS         Specify additional kcov options
+                                        coverage limits, coveralls id, etc...
 
   **** Utility ****
 
