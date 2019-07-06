@@ -2,11 +2,11 @@
 
 #ghostplay silent
 # ttyrec -e "ghostplay contrib/demo.sh"
-# seq2gif -l 3000 -h 32 -w 139 -p win -i ttyrecord -o demo.gif
-# seq2gif -l 3000 -h 19 -w 83 -p win -i ttyrecord -o sns.gif
+# seq2gif -l 5000 -h 32 -w 139 -p win -i ttyrecord -o demo.gif
+# seq2gif -l 5000 -h 19 -w 83 -p win -i ttyrecord -o sns.gif
 GP_HOSTNAME=ubuntu
 highlight() {
-  command highlight -l -O xterm256 --syntax sh
+  command highlight -l -O xterm256 --syntax "$1"
 }
 #ghostplay end
 
@@ -18,12 +18,18 @@ cd contrib/demo
 
 #ghostplay sleep 1
 
-cat mylib.sh | highlight
-
-#ghostplay sleep 1
-
-cat spec/demo_spec.sh | highlight
+cat spec/demo_spec.sh | highlight sh
 
 #ghostplay sleep 3
 
-shellspec -f d
+shellspec --dry-run --format documentation
+
+#ghostplay sleep 5
+
+shellspec --kcov --output junit
+
+#ghostplay sleep 5
+
+cat report/results_junit.xml | highlight xml
+
+
