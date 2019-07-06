@@ -8,5 +8,7 @@ finished_end() {
 }
 
 finished_output() {
-  finished '>>>'
+  case $1 in (end)
+    finished '>>>'
+  esac
 }

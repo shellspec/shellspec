@@ -45,5 +45,7 @@ summary_end() {
 }
 
 summary_output() {
-  summary '>>>'
+  case $1 in (end)
+    summary '>>>'
+  esac
 }

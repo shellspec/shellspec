@@ -3,6 +3,7 @@
 : "${field_type:-} ${field_tag:-} ${field_color:-}"
 
 require_formatters methods conclusion finished summary references
+[ "$SHELLSPEC_KCOV" ] && require_formatters kcov
 
 create_buffers progress
 
@@ -26,4 +27,5 @@ progress_end() {
 progress_output() {
   progress '>>>'
   output "$1" methods conclusion finished summary references
+  if [ "$SHELLSPEC_KCOV" ]; then output "$1" kcov; fi
 }

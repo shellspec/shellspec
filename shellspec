@@ -28,6 +28,7 @@ export SHELLSPEC_SKIP_MESSAGE=verbose
 export SHELLSPEC_WARNING_AS_FAILURE=1
 export SHELLSPEC_FAIL_FAST_COUNT=''
 export SHELLSPEC_FAIL_NO_EXAMPLES=''
+export SHELLSPEC_FAIL_LOW_COVERAGE=''
 export SHELLSPEC_JOBS=0
 export SHELLSPEC_DRYRUN=''
 export SHELLSPEC_FOCUS_FILTER=''
@@ -120,6 +121,8 @@ Usage: shellspec [options] [files or directories]
   -s, --shell SHELL                   Specify a path of shell [default: current shell]
       --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]
       --[no-]fail-no-examples         Fail if no examples found [default: disabled]
+      --[no-]fail-low-coverage        Fail on low coverage [default: disabled]
+                                        The coverage threshold is specified by the coverage option
   -r, --require MODULE                Require a file
   -e, --env NAME=VALUE                Set environment variable
       --env-from ENV-SCRIPT           Set environment variable from script file
@@ -180,6 +183,7 @@ Usage: shellspec [options] [files or directories]
                                         --include-pattern=.sh
                                         --exclude-pattern=/coverage/,/spec/,/report/
       --kcov-options KOPTIONS         Specify additional kcov options
+                                        coverage limits, coveralls id, etc...
 
   **** Utility ****
 
@@ -292,6 +296,8 @@ parse_options() {
       --no-fail-fast) SHELLSPEC_FAIL_FAST_COUNT='' ;;
       --fail-no-examples) SHELLSPEC_FAIL_NO_EXAMPLES=1 ;;
       --no-fail-no-examples) SHELLSPEC_FAIL_NO_EXAMPLES='' ;;
+      --fail-low-coverage) SHELLSPEC_FAIL_LOW_COVERAGE=1 ;;
+      --no-fail-low-coverage) SHELLSPEC_FAIL_LOW_COVERAGE='' ;;
       --kcov) SHELLSPEC_KCOV=1 ;;
       --kcov-path) [ "${2:-}" ] || abort 'Require PATH.'
         SHELLSPEC_KCOV_PATH="$2"

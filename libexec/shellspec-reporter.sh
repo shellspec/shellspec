@@ -19,7 +19,7 @@ import "formatter"
 import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
 
-exit_status=0 found_focus='' no_examples='' aborted=1
+exit_status=0 found_focus='' no_examples='' aborted=1 coverage_failed=''
 fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-}
 current_example_index=0 example_index=''
 last_block_no='' last_skip_id='' not_enough_examples=''
@@ -137,6 +137,15 @@ each_line() {
 }
 parse_lines
 
+callback() { [ -e "$SHELLSPEC_TIME_LOG" ] || sleep 0; }
+sequence callback 1 10
+read_time_log "time" "$SHELLSPEC_TIME_LOG"
+
+output_formatters end
+
+generators cleanup "$@"
+formatters finalize "$@"
+
 if [ "$aborted" ]; then
   exit_status=1
 elif [ "$interrupt" ]; then
@@ -146,16 +155,9 @@ elif [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ] && [ "$example_count" -eq 0 ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE no_examples=1
 elif [ "$not_enough_examples" ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+elif [ "$SHELLSPEC_FAIL_LOW_COVERAGE" ] && [ "$coverage_failed" ]; then
+  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 fi
-
-callback() { [ -e "$SHELLSPEC_TIME_LOG" ] || sleep 0; }
-sequence callback 1 10
-read_time_log "time" "$SHELLSPEC_TIME_LOG"
-
-output_formatters end
-
-generators cleanup "$@"
-formatters finalize "$@"
 
 if [ "$found_focus" ] && [ ! "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
   info "You need to specify --focus option" \
