@@ -14,6 +14,11 @@ shellspec
 
 #ghostplay sleep 3
 
+# parallel execution
+shellspec --jobs 4
+
+#ghostplay sleep 3
+
 cd contrib/demo
 
 #ghostplay sleep 1
@@ -26,6 +31,7 @@ shellspec --dry-run --format documentation
 
 #ghostplay sleep 5
 
+# coverage and generate junit xml
 shellspec --kcov --output junit
 
 #ghostplay sleep 5
