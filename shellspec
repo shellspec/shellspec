@@ -6,6 +6,8 @@ set -eu
 export SHELLSPEC_VERSION='0.16.0'
 export SHELLSPEC_PATH=''
 export SHELLSPEC_ROOT=''
+export SHELLSPEC_PROJECT_ROOT=''
+export SHELLSPEC_PROJECT_NAME=''
 export SHELLSPEC_LIB=''
 export SHELLSPEC_LIBEXEC=''
 export SHELLSPEC_SPECDIR=''
@@ -47,9 +49,10 @@ export SHELLSPEC_SEED=''
 export SHELLSPEC_COVERAGEDIR=''
 export SHELLSPEC_KCOV=''
 export SHELLSPEC_KCOV_PATH='kcov'
-export SHELLSPEC_KCOV_IN_FILE=''
 export SHELLSPEC_KCOV_COMMON_OPTS=''
 export SHELLSPEC_KCOV_OPTS=''
+export SHELLSPEC_KCOV_FILENAME=''
+export SHELLSPEC_KCOV_IN_FILE=''
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -77,19 +80,12 @@ SHELLSPEC_REPORTERLIB="$SHELLSPEC_LIB/libexec/reporter"
 . "$SHELLSPEC_LIB/libexec/shellspec.sh"
 
 SHELLSPEC_LIBEXEC="$SHELLSPEC_ROOT/libexec"
-SHELLSPEC_SPECDIR=$PWD/spec
-SHELLSPEC_REPORTDIR=$PWD/report
-SHELLSPEC_COVERAGEDIR=$PWD/coverage
-SHELLSPEC_LOAD_PATH=$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_REPORTERLIB
-
-SHELLSPEC_KCOV_IN_FILE=${PWD##*/}_specs.kcov-in-file
-while IFS= read -r option; do
-  SHELLSPEC_KCOV_COMMON_OPTS="$SHELLSPEC_KCOV_COMMON_OPTS$option "
-done <<HERE
---include-path=.
---include-pattern=.sh
---exclude-pattern=/coverage/,/spec/,/report/
-HERE
+SHELLSPEC_PROJECT_ROOT="$PWD"
+SHELLSPEC_PROJECT_NAME="${SHELLSPEC_PROJECT_ROOT##*/}"
+SHELLSPEC_SPECDIR="$SHELLSPEC_PROJECT_ROOT/spec"
+SHELLSPEC_REPORTDIR="$SHELLSPEC_PROJECT_ROOT/report"
+SHELLSPEC_COVERAGEDIR="$SHELLSPEC_PROJECT_ROOT/coverage"
+SHELLSPEC_LOAD_PATH="$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_REPORTERLIB"
 
 SHELLSPEC_UNIXTIME=$(date +%s)
 SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$SHELLSPEC_UNIXTIME.$$"
@@ -105,6 +101,17 @@ elif command_path bash > /dev/null; then
 elif command_path ksh > /dev/null; then
   SHELLSPEC_TIME="ksh $SHELLSPEC_TIME"
 fi
+
+while IFS= read -r option; do
+  SHELLSPEC_KCOV_COMMON_OPTS="$SHELLSPEC_KCOV_COMMON_OPTS$option "
+done <<HERE
+--path-strip-level=1
+--include-path=.
+--include-pattern=.sh
+--exclude-pattern=/coverage/,/spec/,/report/
+HERE
+SHELLSPEC_KCOV_FILENAME="$SHELLSPEC_PROJECT_NAME [specfiles]"
+SHELLSPEC_KCOV_IN_FILE="$SHELLSPEC_PROJECT_ROOT/$SHELLSPEC_KCOV_FILENAME"
 
 usage() {
 while IFS= read -r line; do echo "$line"; done <<USAGE
@@ -168,6 +175,7 @@ Usage: shellspec [options] [files or directories]
                                         Note: Requires kcov and bash, parallel execution is ignored.
       --kcov-path PATH                Specify kcov path [default: kcov]
       --kcov-common-options OPTIONS   Specify kcov common options [default: see below]
+                                        --path-strip-level=1
                                         --include-path=.
                                         --include-pattern=.sh
                                         --exclude-pattern=/coverage/,/spec/,/report/
