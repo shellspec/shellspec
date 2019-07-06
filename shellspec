@@ -181,8 +181,8 @@ Usage: shellspec [options] [files or directories]
                                         --path-strip-level=1
                                         --include-path=.
                                         --include-pattern=.sh
-                                        --exclude-pattern=/coverage/,/spec/,/report/
-      --kcov-options KOPTIONS         Specify additional kcov options
+                                        --exclude-pattern=/spec/,/coverage/,/report/
+      --kcov-options OPTIONS          Specify additional kcov options
                                         coverage limits, coveralls id, etc...
 
   **** Utility ****
