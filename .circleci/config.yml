@@ -48,22 +48,15 @@ workflows:
           requires:
             - lint
             - test
-  lint-schedule:
+  daily_update_schedule:
     jobs:
       - lint
+      - coverage:
+          requires:
+            - lint
     triggers:
       - schedule:
           cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - master
-  coverage-schedule:
-    jobs:
-      - coverage
-    triggers:
-      - schedule:
-          cron: "1,5,10 0 * * *"
           filters:
             branches:
               only:
