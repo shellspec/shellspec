@@ -48,7 +48,9 @@ workflows:
           requires:
             - lint
             - test
-  schedule:
+  lint-schedule:
+    jobs:
+      - lint
     triggers:
       - schedule:
           cron: "0 0 * * *"
@@ -56,6 +58,13 @@ workflows:
             branches:
               only:
                 - master
+  coverage-schedule:
     jobs:
-      - lint
       - coverage
+    triggers:
+      - schedule:
+          cron: "1,5,10 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
