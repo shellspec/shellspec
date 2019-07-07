@@ -2,6 +2,10 @@
 
 BDD style unit testing framework for POSIX compliant shell script.
 
+**Let’s test the your shell script!**
+
+![demo](demo.gif)
+
 [![Travis CI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/shellspec/shellspec)
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI)](https://cirrus-ci.com/github/shellspec/shellspec)
 [![Circle CI](https://img.shields.io/circleci/build/github/shellspec/shellspec.svg?label=CircleCI)](https://circleci.com/gh/shellspec/shellspec)
@@ -21,10 +25,6 @@ BDD style unit testing framework for POSIX compliant shell script.
 ![posh](https://img.shields.io/badge/posh-%3E%3D0.3.14-lightgrey.svg?style=plastic)
 ![yash](https://img.shields.io/badge/yash-%3E%3D2.30-lightgrey.svg?style=plastic)
 ![zsh](https://img.shields.io/badge/zsh-%3E%3D3.1.9-lightgrey.svg?style=plastic)
-
-**Let’s test the your shell script!**
-
-![demo](demo.gif)
 
 **Project status: Implementation of practical features has been completed.**
 **I will add more tests and improve the documentation.**
