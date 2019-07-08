@@ -262,6 +262,7 @@ Usage: shellspec [options] [files or directories]
                                         [d]ocumentation group and example names
                                         [t]ap           TAP format
                                         [j]unit         JUnit XML
+                                                        (Require --profile for time attributre)
                                         [null]          do not display anything
                                         [debug]         for developer
                                         custom formatter name
@@ -274,6 +275,8 @@ Usage: shellspec [options] [files or directories]
                                         [verbose]  do not mute any messages [default]
                                         [moderate] mute repeated messages
                                         [quiet]    mute repeated messages and non-temporarily messages
+  -p  --[no-]profile                  Enable profiling of examples and list the slowest examples
+      --profile-limit N               List the top N slowest examples (default: 10)
 
   **** Ranges / Filters ****
 
