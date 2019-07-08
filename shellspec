@@ -377,6 +377,10 @@ if [ "$SHELLSPEC_KCOV" ]; then
   fi
 fi
 
+if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_JOBS" -gt 0 ]; then
+  abort "Can not be specified profiler and paralell execution at the same time"
+fi
+
 case $SHELLSPEC_MODE in (init | task) ;; (*)
   [ $# -eq 0 ] && set -- "$SHELLSPEC_DEFAULT_PATH"
   for p in "$@"; do
