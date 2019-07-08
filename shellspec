@@ -147,6 +147,7 @@ Usage: shellspec [options] [files or directories]
                                         [d]ocumentation group and example names
                                         [t]ap           TAP format
                                         [j]unit         JUnit XML
+                                                        (Require --profile for time attributre)
                                         [null]          do not display anything
                                         [debug]         for developer
                                         custom formatter name

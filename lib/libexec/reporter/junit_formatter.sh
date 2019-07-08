@@ -11,8 +11,10 @@ create_buffers junit
 junit_output="results_junit.xml"
 
 junit_begin() {
+  _attrs=''
+  xmlattrs _attrs "name=$SHELLSPEC_PROJECT_NAME"
   junit '=' '<?xml version="1.0" encoding="UTF-8"?>'
-  junit '+=' "${LF}<testsuites name=\"\">${LF}"
+  junit '+=' "${LF}<testsuites $_attrs>${LF}"
   junit '>>>' >> "$SHELLSPEC_TMPBASE/${junit_output}.work"
 }
 
@@ -77,7 +79,7 @@ junit_end() {
 }
 
 junit_output() {
-  _id=0 _before='' _after='' _attrs=''
+  _id=0 _cid=0 _before='' _after='' _attrs='' _time=''
   case $1 in (end)
     while IFS= read -r _line; do
       case $_line in
@@ -93,6 +95,17 @@ junit_output() {
             failures=\$junit_failures_${_id} skipped=\$junit_skipped_${_id}"
           putsn "$_before<testsuite $_attrs $_after"
           inc _id
+          ;;
+        *\<testcase\ *)
+          _before=${_line%%<testcase\ *} _after=${_line#*<testcase\ }
+          if [ "$SHELLSPEC_PROFILER" ]; then
+            eval "_time=\${profiler_time$_cid#* }"
+          else
+            _time=0
+          fi
+          xmlattrs _attrs "time=$_time"
+          putsn "$_before<testcase $_attrs $_after"
+          inc _cid
           ;;
         *) putsn "$_line"
       esac
