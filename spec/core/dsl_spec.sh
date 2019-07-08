@@ -22,6 +22,7 @@ Describe "core/dsl.sh"
       if [ "${2:-}" ]; then
         eval "shellspec_yield() {
           echo yield
+          shellspec_on EXPECTATION
           shellspec_off NOT_IMPLEMENTED
           $2
         }"

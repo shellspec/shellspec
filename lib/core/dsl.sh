@@ -69,7 +69,8 @@ shellspec_invoke_example() {
   shellspec_output EXAMPLE
 
   shellspec_on NOT_IMPLEMENTED
-  shellspec_off FAILED WARNED UNHANDLED_STATUS UNHANDLED_STDOUT UNHANDLED_STDERR
+  shellspec_off FAILED WARNED EXPECTATION
+  shellspec_off UNHANDLED_STATUS UNHANDLED_STDOUT UNHANDLED_STDERR
 
   # Output SKIP message if skipped in outer group.
   shellspec_output_if SKIP || {
@@ -94,6 +95,7 @@ shellspec_invoke_example() {
   }
 
   shellspec_output_if NOT_IMPLEMENTED && shellspec_output TODO && return 0
+  shellspec_output_unless EXPECTATION && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STATUS && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STDOUT && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STDERR && shellspec_on WARNED
