@@ -340,4 +340,45 @@ Describe "general.sh"
       End
     End
   End
+
+  Describe "shellspec_shift10()"
+    Context 'integer number'
+      It "shifts to left"
+        When call shellspec_shift10 ret 123 2
+        The variable ret should eq 12300
+      End
+
+      It "shifts to right less then length"
+        When call shellspec_shift10 ret 123 -2
+        The variable ret should eq 1.23
+      End
+
+      It "shifts to right more than length"
+        When call shellspec_shift10 ret 123 -4
+        The variable ret should eq 0.0123
+      End
+    End
+
+    Context 'number with decimal part'
+      It "shifts to left less than the fraction length"
+        When call shellspec_shift10 ret 123.456 2
+        The variable ret should eq 12345.6
+      End
+
+      It "shifts to left the fraction length"
+        When call shellspec_shift10 ret 123.4 1
+        The variable ret should eq 1234
+      End
+
+      It "shifts to left more than the fraction length"
+        When call shellspec_shift10 ret 123.4 2
+        The variable ret should eq 12340
+      End
+
+      It "shifts to right turn"
+        When call shellspec_shift10 ret 123.456 -2
+        The variable ret should eq 1.23456
+      End
+    End
+  End
 End

@@ -373,3 +373,25 @@ shellspec_join() {
   eval "shift; $1=\${*:-}"
   IFS=${IFS#?}
 }
+
+shellspec_shift10() {
+  if [ "$3" -gt 0 ]; then
+    case $2 in
+      *.*)
+        set -- "$1" "${2%.*}" "${2#*.}" "$3"
+        set -- "$1" $(($2 * 10)) "${3%"${3#?}"}" "${3#?}" "$4"
+        set -- "$1" $(($2 + $3)) "$4" "$5"
+        eval "shellspec_shift10 $1 $2${3:+.}$3 $(($4 - 1))"
+        ;;
+      *) eval "shellspec_shift10 $1 \$(($2 * 10)) $(($3 - 1))" ;;
+    esac
+  elif [ "$3" -lt 0 ]; then
+    case $2 in
+      *.*) set -- "$1" "${2%.*}" "${2#*.}" "$3" ;;
+      *  ) set -- "$1" "$2" "" "$3" ;;
+    esac
+    eval "shellspec_shift10 $1 $(($2 / 10)).${2#"${2%?}"}$3 $(($4 + 1))"
+  else
+    eval "$1=$2"
+  fi
+}
