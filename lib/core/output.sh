@@ -13,7 +13,9 @@ shellspec_output_raw() {
     begin)
       set -- "type:$@" "example_count:" ;;
     example)
-      set -- "type:$@" "evaluation:" "pending:" ;;
+      set -- "type:$@" "evaluation:" "pending:" \
+        "lineno_begin:$SHELLSPEC_LINENO_BEGIN" \
+        "lineno_end:$SHELLSPEC_LINENO_END";;
     statement)
       set -- "type:$@" "lineno:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}" ;;
     *)

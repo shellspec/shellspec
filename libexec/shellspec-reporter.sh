@@ -139,7 +139,24 @@ parse_lines
 
 callback() { [ -e "$SHELLSPEC_TIME_LOG" ] || sleep 0; }
 sequence callback 1 10
+time_real='' time_real_nano=''
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
+
+if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_PROFILER_LOG" ]; then
+  profiler_tick_total=0
+  while IFS=" " read -r profiler_tick; do
+    profiler_tick_total=$(($profiler_tick_total + $profiler_tick))
+  done < "$SHELLSPEC_PROFILER_LOG"
+
+  shellspec_shift10 time_real_nano "$time_real" 6
+  profiler_count=0
+  while IFS=" " read -r profiler_tick; do
+    profiler_duration=$(($time_real_nano * $profiler_tick / $profiler_tick_total))
+    shellspec_shift10 profiler_duration "$profiler_duration" -6
+    eval "profiler_time$profiler_count=\"$profiler_tick $profiler_duration\""
+    profiler_count=$(($profiler_count + 1))
+  done < "$SHELLSPEC_PROFILER_LOG"
+fi
 
 output_formatters end
 

@@ -14,10 +14,30 @@ wait_reporter_finished() {
   done
 }
 
+start_profiler() {
+  [ "$SHELLSPEC_PROFILER" ] || return 0
+  profiler="$SHELLSPEC_LIBEXEC/shellspec-profiler.sh"
+  $SHELLSPEC_SHELL "$profiler" &
+  SHELLSPEC_PROFILER_PID=$!
+}
+
+stop_profiler() {
+  [ "$SHELLSPEC_PROFILER_PID" ] || return 0
+  kill -TERM "$SHELLSPEC_PROFILER_PID"
+  while kill -0 "$SHELLSPEC_PROFILER_PID" 2>/dev/null; do
+    sleep 0
+  done
+  SHELLSPEC_PROFILER_PID=''
+}
+
 mktempdir "$SHELLSPEC_TMPBASE"
 cleanup() {
   if (trap - INT) 2>/dev/null; then trap '' INT; fi
   [ "$SHELLSPEC_TMPBASE" ] || return 0
+  if [ "$SHELLSPEC_PROFILER_PID" ]; then
+    kill -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
+    SHELLSPEC_PROFILER_PID=''
+  fi
   tmpbase="$SHELLSPEC_TMPBASE"
   SHELLSPEC_TMPBASE=''
   rmtempdir "$tmpbase"
@@ -29,6 +49,7 @@ trap 'cleanup' EXIT
 
 interrupt() {
   trap '' TERM # posh: Prevent display 'Terminated'.
+  stop_profiler
   wait_reporter_finished "$SHELLSPEC_TMPBASE/reporter_pid"
   kill -TERM 0
   cleanup
@@ -43,6 +64,7 @@ executor() {
   # shellcheck disable=SC2086
   command $SHELLSPEC_TIME $SHELLSPEC_SHELL "$executor" "$@" \
     3>&2 2>"$SHELLSPEC_TIME_LOG"
+  stop_profiler
 }
 
 reporter() {
@@ -77,6 +99,8 @@ if [ "${SHELLSPEC_RANDOM:-}" ]; then
   eval "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'} >"$SHELLSPEC_INFILE"
   set -- -
 fi
+
+start_profiler
 
 # I want to process with non-blocking output
 # and the stdout of runner streams to the reporter

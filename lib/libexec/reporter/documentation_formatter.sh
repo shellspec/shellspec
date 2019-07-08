@@ -6,7 +6,7 @@
 documentation_last_id=''
 create_buffers documentation
 
-require_formatters methods conclusion finished summary references
+require_formatters methods conclusion finished summary references profiler
 [ "$SHELLSPEC_KCOV" ] && require_formatters kcov
 
 documentation_each() {
@@ -39,7 +39,7 @@ documentation_each() {
 }
 
 documentation_output() {
-  output "$1" methods conclusion finished summary references
+  output "$1" methods conclusion finished summary references profiler
   if [ "$SHELLSPEC_KCOV" ]; then output "$1" kcov; fi
   documentation '>>>'
 }

@@ -57,10 +57,12 @@ shellspec_example() {
       shellspec_output EXAMPLE
       shellspec_output SUCCEEDED
     else
+      shellspec_profile_start
       # This {} is workaround for zsh 5.4.2
       # I think this bug is related to #12 in contrib/bugs.sh
       # But I do not know why this works well.
       { shellspec_invoke_example; }
+      shellspec_profile_end
     fi
   fi
 }
@@ -224,3 +226,15 @@ shellspec_abort() {
   [ "${3:-}" ] && shellspec_putsn "${3:-}" >&2
   exit "${1:-1}"
 }
+
+if [ "$SHELLSPEC_PROFILER" ]; then
+  shellspec_profile_start() {
+    kill -USR1 "$SHELLSPEC_PROFILER_PID"
+  }
+  shellspec_profile_end() {
+    kill -USR1 "$SHELLSPEC_PROFILER_PID"
+  }
+else
+  shellspec_profile_start() { :; }
+  shellspec_profile_end() { :; }
+fi
