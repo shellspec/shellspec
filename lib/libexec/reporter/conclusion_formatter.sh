@@ -4,12 +4,15 @@
 : "${field_specfile:-} ${field_lineno:-} ${field_tag:-} ${field_note:-}"
 : "${field_evaluation:-} ${field_message:-} ${field_failure_message:-}"
 
+conclusion_evaluation=''
 create_buffers conclusion
 
 conclusion_each() {
   _label='' _indent='' _message='' _text=''
 
-  [ "$field_type" = "statement" ] || return 0
+  [ "$field_type" = example ] && conclusion_evaluation=''
+  [ "$field_type" = statement ] || return 0
+  [ "$field_tag" = evaluation ] && conclusion_evaluation=$field_evaluation
   case $field_tag in (evaluation|good) return 0; esac
   [ "$example_index" ] || return 0
 
@@ -18,10 +21,12 @@ conclusion_each() {
   padding _indent ' ' ${#_label}
   if [ "$detail_index" -eq 1 ]; then
     conclusion '+=' "${WHITE}${_label}$(field_description)${RESET}${LF}"
-    if [ "$field_evaluation" ]; then
-      conclusion '+=' "${BOLD}${CYAN}${_indent}${field_evaluation}${RESET}"
-      conclusion '+=' "${LF}${LF}"
-    fi
+  fi
+
+  if [ "$conclusion_evaluation" ]; then
+    conclusion '+=' "${BOLD}${CYAN}${_indent}${conclusion_evaluation}${RESET}"
+    conclusion '+=' "${LF}${LF}"
+    conclusion_evaluation=''
   fi
 
   _label="${_indent}${example_index}.${detail_index}) "
