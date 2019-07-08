@@ -98,11 +98,8 @@ junit_output() {
           ;;
         *\<testcase\ *)
           _before=${_line%%<testcase\ *} _after=${_line#*<testcase\ }
-          if [ "$SHELLSPEC_PROFILER" ]; then
-            eval "_time=\${profiler_time$_cid#* }"
-          else
-            _time=0
-          fi
+          _time=0
+          [ "$SHELLSPEC_PROFILER" ] && eval "_time=\$profiler_time$_cid"
           xmlattrs _attrs "time=$_time"
           putsn "$_before<testcase $_attrs $_after"
           inc _cid

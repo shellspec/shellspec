@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2004
 
 : "${count_specfiles:-} ${count_examples:-}"
 
@@ -93,4 +93,21 @@ inc() {
     eval "$1=\$((\${$1} + 1))"
     shift
   done
+}
+
+read_profiler() {
+  tick_total=0 time_real_nano=0
+  while IFS=" " read -r tick; do
+    tick_total=$(($tick_total + $tick))
+  done < "$2"
+
+  shellspec_shift10 time_real_nano "$3" 6
+
+  i=0
+  while IFS=" " read -r tick; do
+    duration=$(($time_real_nano * $tick / $tick_total))
+    shellspec_shift10 duration "$duration" -6
+    $1 "$i" "$tick" "$duration"
+    i=$(($i + 1))
+  done < "$2"
 }

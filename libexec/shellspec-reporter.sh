@@ -29,7 +29,8 @@ field_conditional='' field_skipid='' field_pending=''
 # shellcheck disable=SC2034
 specfile_count=0 detail_index=0 expected_example_count=0 example_count=0 \
 succeeded_count='' failed_count='' warned_count='' \
-todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
+todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count='' \
+profiler_count=0 profiler_line=''
 
 [ "$SHELLSPEC_GENERATORS" ] && mkdir -p "$SHELLSPEC_REPORTDIR"
 
@@ -81,6 +82,7 @@ each_line() {
       fi
       [ "$field_focused" = "focus" ] && found_focus=1
       example_index='' last_block_no=$field_block_no
+      eval "profiler_line$example_count=\$field_specfile:\$field_lineno_begin"
       ;;
     statement)
       while :; do
@@ -139,23 +141,18 @@ parse_lines
 
 callback() { [ -e "$SHELLSPEC_TIME_LOG" ] || sleep 0; }
 sequence callback 1 10
-time_real='' time_real_nano=''
+time_real=''
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_PROFILER_LOG" ]; then
-  profiler_tick_total=0
-  while IFS=" " read -r profiler_tick; do
-    profiler_tick_total=$(($profiler_tick_total + $profiler_tick))
-  done < "$SHELLSPEC_PROFILER_LOG"
-
-  shellspec_shift10 time_real_nano "$time_real" 6
-  profiler_count=0
-  while IFS=" " read -r profiler_tick; do
-    profiler_duration=$(($time_real_nano * $profiler_tick / $profiler_tick_total))
-    shellspec_shift10 profiler_duration "$profiler_duration" -6
-    eval "profiler_time$profiler_count=\"$profiler_tick $profiler_duration\""
-    profiler_count=$(($profiler_count + 1))
-  done < "$SHELLSPEC_PROFILER_LOG"
+  mkdir -p "$SHELLSPEC_REPORTDIR"
+  callback() {
+    eval "profiler_tick$1=\$2 profiler_time$1=\$3" \
+      "profiler_line=\$profiler_line$1 profiler_count=$(($1 + 1))"
+    putsn "$3 $profiler_line"
+  }
+  read_profiler callback "$SHELLSPEC_PROFILER_LOG" "$time_real" \
+    > "$SHELLSPEC_REPORTDIR/$SHELLSPEC_PROFILER_REPORT"
 fi
 
 output_formatters end
