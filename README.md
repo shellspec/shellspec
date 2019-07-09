@@ -157,7 +157,7 @@ Currently used external command:
 
 From git
 
-```sh
+```console
 $ cd /SOME/WHERE/TO/INSTALL
 $ git clone https://github.com/shellspec/shellspec.git
 $ ln -s /SOME/WHERE/TO/INSTALL/shellspec/shellspec /EXECUTABLE/PATH/
@@ -166,7 +166,7 @@ $ ln -s /SOME/WHERE/TO/INSTALL/shellspec/shellspec /EXECUTABLE/PATH/
 
 From tar.gz
 
-```sh
+```console
 $ cd /SOME/WHERE/TO/INSTALL
 $ wget https://github.com/shellspec/shellspec/archive/{VERSION}.tar.gz
 $ tar xzvf shellspec-{VERSION}.tar.gz
@@ -177,7 +177,7 @@ $ ln -s /SOME/WHERE/TO/INSTALL/shellspec-{VERSION}/shellspec /EXECUTABLE/PATH/
 
 If you can't create symlink (like default of Git for Windows), create the `shellspec` file.
 
-```sh
+```console
 $ cat<<'HERE'>/EXECUTABLE/PATH/shellspec
 #!/bin/sh
 exec /SOME/WHERE/TO/INSTALL/shellspec/shellspec "$@"
@@ -189,15 +189,16 @@ $ chmod +x /EXECUTABLE/PATH/shellspec
 
 **Just create your project directory and run `shellspec --init` to setup to your project**
 
-```sh
-# Create your project directory
-$ mkdir <your-project-directory>
-$ cd <your-project-directory>
+```console
+# Create your project directory. for example "hello".
+$ mkdir hello
+$ cd hello
 
 # Initialize
 $ shellspec --init
-  create .shellspec
-  create spec/spec_helper.sh
+  create   .shellspec
+  create   spec/spec_helper.sh
+  create   spec/hello_spec.sh # sample
 
 # Write your first specfile (of course you can use your favorite editor)
 $ cat<<'HERE'>spec/hello_spec.sh
