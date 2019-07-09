@@ -47,6 +47,7 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Reporter / Generator](#Reporter--Generator)
   - [Ranges / Filters](#Ranges--Filters)
   - [Coverage](#Coverage)
+  - [Profiler](#Profiler)
   - [Task runner](#Task-runner)
 - [Project directory](#Project-directory)
   - [.shellspec](#shellspec)
@@ -371,7 +372,12 @@ shellspec is integrated with coverage for ease of use
 Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html)).
 It works with the default settings, but you may need to adjust kcov's options
 to make it more accurate.
-*Be aware of the shell can be used for coverage is `bash` only.*
+
+**Be aware of the shell can be used for coverage is `bash` only.**
+
+### Profiler
+
+When specified `--profile` option, profiler is enabled and list the slow examples.
 
 ### Task runner
 
