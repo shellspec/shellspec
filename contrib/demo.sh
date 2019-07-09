@@ -43,3 +43,10 @@ shellspec --kcov --output junit
 #ghostplay sleep 5
 
 cat report/results_junit.xml | highlight xml
+
+#ghostplay sleep 3
+
+cd profile
+
+# Profiler
+shellspec --profile --format documentation
