@@ -84,19 +84,15 @@ BDD style unit testing framework for POSIX compliant shell script.
 ### Features
 
 * Support POSIX compliant shell (dash, bash, ksh, busybox, etc...)
-* BDD style specfile syntax
-* The specfile is compatible with shell script syntax
-* Implemented by shell script
-* Minimal dependencies (use only a few basic POSIX compliant command)
+* Specfile is BDD style syntax with shell scripts compatible
+* Implemented by shell script with Minimal dependencies (use only a few basic POSIX compliant command)
 * Nestable block with scope like lexical scope
-* Mocking and stubbing (temporary function override)
-* Parallel execution, random ordering execution
-* Filtering (line number, id, focus, tag and example name)
-* The hook before and after of the examples
-* Skip and pending of the examples
-* Useful and portability standard input / output directive for testing
-* Modern reporting (colorize, failure line number)
-* Coverage ([kcov](http://simonkagstrom.github.io/kcov/index.html) integration, requires kcov and bash)
+* Mocking and stubbing in the scope (temporary function override)
+* The before/after hook and the skip/pending of the examples
+* Execution filtering (line number, id, focus, tag and example name)
+* Parallel execution, random ordering execution, dry-run executions
+* Modern reporting (colorize, line number, progress/documentation/TAP/JUnit formatter)
+* Coverage ([kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
 * Built-in simple task runner
 * Extensible architecture (custom matcher, custom formatter, etc...)
 * shellspec is tested by shellspec
