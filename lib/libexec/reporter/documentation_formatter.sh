@@ -39,7 +39,8 @@ documentation_each() {
 }
 
 documentation_output() {
-  output "$1" methods conclusion finished summary references profiler
+  output "$1" methods conclusion finished summary references
   if [ "$SHELLSPEC_KCOV" ]; then output "$1" kcov; fi
+  output "$1" profiler
   documentation '>>>'
 }
