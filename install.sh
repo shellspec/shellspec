@@ -7,9 +7,13 @@ readonly project="shellspec"
 readonly exec="shellspec"
 
 { set -eu; eval "usage() { done=1; echo \"$(cat)\"; }"; } << USAGE
-Usage: curl -sL $installer | [sudo] sh -s [VERSION] [OPTIONS...]
-  or : wget -O- $installer | [sudo] sh -s [VERSION] [OPTIONS...]
-  or : [sudo] ./${0##*/} [VERSION] [OPTIONS...]
+Usage: [sudo] ./${0##*/} [VERSION] [OPTIONS...]
+  or : wget -O- $installer | [sudo] sh
+  or : wget -O- $installer | [sudo] sh -s -- [OPTIONS...]
+  or : wget -O- $installer | [sudo] sh -s VERSION [OPTIONS...]
+  or : curl -fsSL $installer | [sudo] sh
+  or : curl -fsSL $installer | [sudo] sh -s -- [OPTIONS...]
+  or : curl -fsSL $installer | [sudo] sh -s VERSION [OPTIONS...]
 
 VERSION:
   Specify install version and method
@@ -150,7 +154,7 @@ esac
 printf '\n%s' "Do you want to continue? [y/N] "
 ans=''
 [ "$YES" ] && ans=y && echo "$ans"
-[ "$ans" ] || read -r ans
+[ "$ans" ] || read -r ans < /dev/tty
 case $ans in [Yy]|[Yy][Ee][Ss]) ;; *) done=1; exit 1; esac
 
 case $method in
