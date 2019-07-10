@@ -116,13 +116,13 @@ BIN=${BIN:-${PREFIX%/}/bin} DIR=${PREFIX%/}/$DIR
 case $VERSION in
   .)
     method=local DIR=$PWD
-    [ -d "$DIR" ] || abort "Not found projct directory: '$DIR'"
-    [ -x "$DIR/$exec" ] || abort "Not found '$exec' in project directory: '$DIR'"
+    [ -d "$DIR" ] || abort "Not found installation directory: '$DIR'"
+    [ -x "$DIR/$exec" ] || abort "Not found '$exec' in installation directory: '$DIR'"
     VERSION=$("$DIR/$exec" --version)
     ;;
   *.tar.gz)
     [ "$SWITCH" ] && abort "Can not switch version when install from archive"
-    [ -e "$DIR" ] && abort "Already exists projct directory: '$DIR'"
+    [ -e "$DIR" ] && abort "Already exists installation directory: '$DIR'"
     method=archive
     [ ! "$FETCH" ] && exists curl && FETCH=curl
     [ ! "$FETCH" ] && exists wget && FETCH=wget
@@ -132,20 +132,20 @@ case $VERSION in
   *)
     if [ "$SWITCH" ]; then
       method=switch
-      [ -d "$DIR" ] || abort "Not found projct directory: '$DIR'"
+      [ -d "$DIR" ] || abort "Not found installation directory: '$DIR'"
       [ -d "$DIR/.git" ] || abort "Can't switch it's not a git repository: '$DIR'"
     else
       method=git
-      [ -e "$DIR" ] && abort "Already exists projct directory: '$DIR'"
+      [ -e "$DIR" ] && abort "Already exists installation directory: '$DIR'"
     fi
     # requires git >= 1.7.10.4
     exists git || abort "Requires 'git' when install from git repository"
     [ "$VERSION" ] || VERSION=$(latest_version)
 esac
 
-echo "Executable file  : $BIN/$exec"
-echo "Project directory: $DIR"
-echo "Version          : $VERSION"
+echo "Executable file: $BIN/$exec"
+echo "Installation   : $DIR"
+echo "Version        : $VERSION"
 case $method in
   git) echo "[git] $repo" ;;
   archive) echo "[$FETCH] $archive/$VERSION" ;;
