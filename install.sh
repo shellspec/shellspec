@@ -6,7 +6,7 @@ readonly archive="https://github.com/shellspec/shellspec/archive"
 readonly project="shellspec"
 readonly exec="shellspec"
 
-{ set -eu; eval "usage() { done=1; echo \"$(cat)\"; }"; } << USAGE
+{ set -eu; eval "usage() { echo \"$(cat)\"; }"; } << USAGE
 Usage: [sudo] ./${0##*/} [VERSION] [OPTIONS...]
   or : wget -O- $installer | [sudo] sh
   or : wget -O- $installer | [sudo] sh -s -- [OPTIONS...]
@@ -97,14 +97,14 @@ while [ $# -gt 0 ]; do
                     DIR=$2 && shift ;;
     -s | --switch ) SWITCH=1 ;;
     -y | --yes    ) YES=1 ;;
-    -l | --list   ) list_versions && exit ;;
+    -l | --list   ) list_versions && done=1 && exit ;;
          --fetch  ) [ "${2:-}" ] || abort "FETCH not specified"
                     case $2 in
                       curl | wget) FETCH=$2 && shift ;;
                       *) abort "FETCH must be 'curl' or 'wget'."
                     esac
                     ;;
-    -h | --help   ) usage && exit ;;
+    -h | --help   ) usage && done=1 && exit ;;
     -*            ) abort "Unknown option $1" ;;
     *             ) VERSION=$1 ;;
   esac
@@ -155,7 +155,7 @@ printf '\n%s' "Do you want to continue? [y/N] "
 ans=''
 [ "$YES" ] && ans=y && echo "$ans"
 [ "$ans" ] || read -r ans < /dev/tty
-case $ans in [Yy]|[Yy][Ee][Ss]) ;; *) done=1; exit 1; esac
+case $ans in [Yy]|[Yy][Ee][Ss]) ;; *) done=1 && exit 1; esac
 
 case $method in
   git)
