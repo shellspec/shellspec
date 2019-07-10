@@ -1,0 +1,17 @@
+FROM alpine as installer
+RUN apk add git curl
+RUN echo 'cd $(dirname $(which _$1)); mv _$1 $1' > /usr/local/bin/enable \
+ && echo 'cd $(dirname $(which  $1)); mv $1 _$1' > /usr/local/bin/disable \
+ && chmod +x /usr/local/bin/*
+RUN echo '#!/bin/sh' > /entrypoint.sh \
+ && echo 'echo You can use enable/disable [COMMAND]' >> /entrypoint.sh \
+ && echo 'exec "$@"' >> /entrypoint.sh \
+ && chmod +x /entrypoint.sh
+ENV PATH $PATH:/root/bin
+WORKDIR /root
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "/bin/sh" ]
+
+FROM shellspec:installer as test
+COPY ./install.sh ./
+COPY ./ ./shellspec-local

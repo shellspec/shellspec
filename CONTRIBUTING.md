@@ -10,6 +10,7 @@
   - [contrib/test_in_docker.sh](#contribtestindockersh)
   - [contrib/check.sh](#contribchecksh)
   - [contrib/bugs.sh](#contribbugssh)
+  - [contrib/installr_test.sh](#contribinstallrtestsh)
 - [Shell builtin commands](#Shell-builtin-commands)
 
 ## Architecture
@@ -71,6 +72,12 @@ This script detects shell bugs and problems.
 
 Usage: `contrib/bugs.sh`
 
+### contrib/installr_test.sh
+
+`contrib/installr_test.sh` is useful for creating a test environmen for the
+installer. (Requires docker).
+
+Usage: `contrib/installr_test.sh`
 
 ## Shell builtin commands
 
