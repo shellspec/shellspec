@@ -153,6 +153,72 @@ Currently used external command:
 
 ### Installation
 
+```console
+$ curl -fsSL https://git.io/shellspec | sh
+```
+
+or
+
+```console
+$ wget -O- https://git.io/shellspec | sh
+```
+
+<details>
+<summary>Upgrade / Switch version</summary>
+
+Upgrade the latest release version.
+
+```console
+$ curl -fsSL https://git.io/shellspec | sh -s -- --switch
+```
+
+Switch to the specified version.
+
+```console
+$ curl -fsSL https://git.io/shellspec | sh -s 0.18.0 --switch
+```
+
+</details>
+
+<details>
+<summary>Advanced installation</summary>
+
+```console
+$ curl -fsSL https://git.io/shellspec | sh -s -- --help
+Usage: [sudo] ./install.sh [VERSION] [OPTIONS...]
+  or : wget -O- https://git.io/shellspec | [sudo] sh
+  or : wget -O- https://git.io/shellspec | [sudo] sh -s -- [OPTIONS...]
+  or : wget -O- https://git.io/shellspec | [sudo] sh -s VERSION [OPTIONS...]
+  or : curl -fsSL https://git.io/shellspec | [sudo] sh
+  or : curl -fsSL https://git.io/shellspec | [sudo] sh -s -- [OPTIONS...]
+  or : curl -fsSL https://git.io/shellspec | [sudo] sh -s VERSION [OPTIONS...]
+
+VERSION:
+  Specify install version and method
+
+  e.g
+    1.0.0           Install 1.0.0 from git
+    master          Install master from git
+    1.0.0.tar.gz    Install 1.0.0 from tar.gz archive
+    .               Install from local directory
+
+OPTIONS:
+  -p, --prefix PREFIX   Specify prefix          [default: $HOME]
+  -b, --bin BIN         Specify bin directory   [default: <PREFIX>/bin]
+  -d, --dir DIR         Specify directory name  [default: .shellspec]
+  -s, --switch          Switch version (requires installed via git)
+  -l, --list            List available versions (tags)
+      --pre             Include pre-release
+      --fetch FETCH     Force command to use when install from archive (curl or wget)
+  -y, --yes             Automatic yes to prompts
+  -h, --help            You're looking at it
+```
+
+</details>
+
+<details>
+<summary>Manual installation</summary>
+
 **Just get the shellspec and create a symlink in your executable PATH!**
 
 From git
@@ -184,6 +250,16 @@ exec /SOME/WHERE/TO/INSTALL/shellspec/shellspec "$@"
 HERE
 $ chmod +x /EXECUTABLE/PATH/shellspec
 ```
+
+</details>
+
+<details>
+<summary>Uninstall</summary>
+
+1. Delete the shellspec installation directpry [default: $HOME/.shellspec].
+2. Delete the shellspec executable file [default: $HOME/bin/shellspec].
+
+</details>
 
 ### Getting started
 
