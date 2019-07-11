@@ -25,9 +25,9 @@ VERSION:
     .               Install from local directory
 
 OPTIONS:
-  -p, --prefix PREFIX   Specify prefix          [default: \\\$HOME]
-  -b, --bin BIN         Specify bin directory   [default: <PREFIX>/bin]
-  -d, --dir DIR         Specify directory name  [default: .$project]
+  -p, --prefix PREFIX   Specify prefix                 [default: \\\$HOME]
+  -b, --bin BIN         Specify bin directory          [default: <PREFIX>/bin]
+  -d, --dir DIR         Specify installation directory [default: <PREFIX>/opt/$project]
   -s, --switch          Switch version (requires installed via git)
   -l, --list            List available versions (tags)
       --pre             Include pre-release
@@ -36,7 +36,7 @@ OPTIONS:
   -h, --help            You're looking at it
 USAGE
 
-VERSION='' PREFIX=$HOME BIN='' DIR=.$project  SWITCH=''  PRE='' YES='' FETCH=''
+VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH=''
 done=''
 
 finished() {
@@ -63,7 +63,7 @@ fetch() {
 }
 
 unarchive() {
-  mkdir "$1"
+  mkdir -p "$1"
   tar xzf - -C "$1" --strip-components 1
 }
 
@@ -111,7 +111,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-BIN=${BIN:-${PREFIX%/}/bin} DIR=${PREFIX%/}/$DIR
+BIN=${BIN:-${PREFIX%/}/bin} DIR=${DIR:-${PREFIX%/}/opt/$project}
 
 case $VERSION in
   .)
@@ -143,9 +143,9 @@ case $VERSION in
     [ "$VERSION" ] || VERSION=$(latest_version)
 esac
 
-echo "Executable file: $BIN/$exec"
-echo "Installation   : $DIR"
-echo "Version        : $VERSION"
+echo "Executable file        : $BIN/$exec"
+echo "Installation directory : $DIR"
+echo "Version (tag or commit): $VERSION"
 case $method in
   git) echo "[git] $repo" ;;
   archive) echo "[$FETCH] $archive/$VERSION" ;;
