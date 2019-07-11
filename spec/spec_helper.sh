@@ -81,4 +81,19 @@ shellspec_spec_helper_configure() {
     # shellcheck disable=SC2194
     case "a[d]" in (*"a[d]"*) false; esac # posh <= 0.12.6
   }
+
+  accuracy_error_bug() { # ksh on Ubuntu 18.04 on WSL
+    [ "$((99999999 * 999999999))" = "99999998900000000" ]
+  }
+
+  xor_not_support_bug() { # ash 0.3.8
+    ! (eval ': $((0^0))') 2>/dev/null
+  }
+
+  miscalculate_signed_32bit_int_bug() { # yash 2.30 ans = -2147483648
+    ans=$((21474836478 ^ 0))
+    [ "$ans" = 21474836478 ] && return 1
+    [ "$ans" = -2 ] && return 1
+    return 0
+  }
 }
