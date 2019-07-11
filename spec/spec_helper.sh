@@ -71,4 +71,14 @@ shellspec_spec_helper_configure() {
 
   # shellcheck disable=SC2034
   LF="$SHELLSPEC_LF" TAB="$SHELLSPEC_TAB"
+
+  zsh_exit_status_bug() {
+    # I confirmed zsh 4.2.0. (there may be other things)
+    (exit 123) &&:; [ $? -ne 123 ]
+  }
+
+  posh_pattern_matching_bug() {
+    # shellcheck disable=SC2194
+    case "a[d]" in (*"a[d]"*) false; esac # posh <= 0.12.6
+  }
 }

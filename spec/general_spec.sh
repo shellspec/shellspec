@@ -1,8 +1,164 @@
 #shellcheck shell=sh disable=SC2016
 
-% FILE: "$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
+% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 
 Describe "general.sh"
+  Describe 'shellspec_shell_info()'
+    Before SHELLSPEC_SHELL_TYPE="" SHELLSPEC_SHELL_VERSION=""
+    pretend() {
+      eval "
+        shellspec_shell_version() {
+          [ \"\$1\" = \"$1\" ] || return 1
+          SHELLSPEC_SHELL_TYPE=\"$1\" SHELLSPEC_SHELL_VERSION=\"$2\"
+        }
+      "
+    }
+
+    Context '${.sh.version} not available'
+      Before SHELLSPEC_SH_VERSION=''
+
+      Context 'pretend to be bash'
+        pretend bash "4.4.19(1)-release"
+        It 'detects as bash'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'bash'
+        End
+      End
+
+      Context 'pretend to be zsh'
+        pretend zsh "5.4.2"
+        It 'detects as zsh'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'zsh'
+        End
+      End
+
+      Context 'pretend to be yash'
+        pretend yash "2.46"
+        It 'detects as yash'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'yash'
+        End
+      End
+
+      Context 'pretend to be posh'
+        pretend posh "0.13.1"
+        It 'detects as yash'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'posh'
+        End
+      End
+
+      Context 'pretend to be mksh'
+        pretend ksh "@(#)MIRBSD KSH R56 2018/01/14"
+        It 'detects as mksh'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'mksh'
+        End
+      End
+
+      Context 'pretend to be pdksh'
+        pretend ksh "@(#)PD KSH v5.2.14 99/07/13.2"
+        It 'detects as pdksh'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'pdksh'
+        End
+      End
+
+      Context 'pretend to be sh'
+        pretend "" ""
+        It 'detects as sh'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'sh'
+        End
+      End
+
+      Context 'pretend to be ksh'
+        pretend ksh "ksh Version AJM 93u+ 2012-08-01"
+        It 'detects as ksh'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'ksh'
+        End
+      End
+    End
+
+    Context '${.sh.version} not available'
+      Context 'pretend to be old ksh'
+        Before 'SHELLSPEC_SH_VERSION="Version M 1993-12-28 q"'
+        pretend sh ""
+        It 'detects as ksh'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'ksh'
+        End
+      End
+
+      Context 'pretend to be bosh'
+        Before 'SHELLSPEC_SH_VERSION="bosh version bosh 2019/02/05 a+"'
+        pretend sh ""
+        It 'detects as bosh'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'bosh'
+        End
+      End
+
+      Context 'pretend to be posh'
+        Before 'SHELLSPEC_SH_VERSION="pbosh version pbosh 2019/02/05 a+"'
+        pretend sh ""
+        It 'detects as pbosh'
+          When call shellspec_shell_info
+          The variable SHELLSPEC_SHELL_TYPE should eq 'pbosh'
+        End
+      End
+    End
+  End
+
+  Describe 'shellspec_shell_version()'
+    Before 'MYSH_VERSION="1.0" SHELLSPEC_SH_VERSION=""'
+
+    It 'returns success when shell detection is successful.'
+      When call shellspec_shell_version mysh MYSH_VERSION
+      The status should be success
+      The variable SHELLSPEC_SHELL_TYPE should eq mysh
+      The variable SHELLSPEC_SHELL_VERSION should eq '1.0'
+    End
+
+    It 'returns failure when shell detection is not successful.'
+      When call shellspec_shell_version nosh NOSH_VERSION
+      The status should be failure
+      The variable SHELLSPEC_SHELL_TYPE should eq 'sh'
+      The variable SHELLSPEC_SHELL_VERSION should eq ''
+    End
+  End
+
+  Describe 'shellspec_import()'
+    It 'exits when module not found'
+      Skip if "can not get the exit status" zsh_exit_status_bug
+      When invoke shellspec_import not-found-module
+      The status should be failure
+      The stderr should be defined
+    End
+
+    It 'outputs error message to stderr'
+      When invoke shellspec_import not-found-module
+      The status should be defined
+      The stderr should be present
+    End
+  End
+
+  Describe 'shellspec_find_files()'
+    found() {
+      echo "${1#"$FIXTURE/files/"}"
+    }
+    It "finds files"
+      When call shellspec_find_files found "$FIXTURE/files"
+      The output should include "file1"
+      The output should include "file2"
+      The output should include "dir1-file"
+      The output should include "dir1-dir2-file"
+      The lines of output should eq 4
+    End
+  End
+
   Describe 'shellspec_reset_params()'
     reset_params() {
       shellspec_reset_params "$1" "$2"
@@ -27,39 +183,37 @@ Describe "general.sh"
   End
 
   Describe 'shellspec_splice_params()'
+    Before 'a=A b=B c=C'
+
     splice() {
       eval "set -- $1; shellspec_splice_params \$# $2"
       eval "$SHELLSPEC_RESET_PARAMS"
       eval echo ${1+'"$@"'}
     }
 
-    Context 'when offset is 0'
-      It 'removes all parameters'
-        When call splice "a b c d e f g" 0
-        The stdout should equal ""
-      End
+    It 'removes all parameters when specified offset 0'
+      When call splice "a b c d e f g" 0
+      The stdout should equal ""
     End
 
-    Context 'when offset is 2'
-      It 'removes all parameters after offset 2'
-        When call splice "a b c d e f g" "2"
-        The stdout should equal 'a b'
-      End
+    It 'Leave all parameters when offset is more than the count of parametes'
+      When call splice "a b c d e f g" "7"
+      The stdout should equal 'a b c d e f g'
     End
 
-    Context 'when offset is 3 and length is 2'
-      It 'removes 2 parameters after offset 3'
-        When call splice "a b c d e f g" "3 2"
-        The stdout should equal 'a b c f g'
-      End
+    It 'removes all parameters after specified offset'
+      When call splice "a b c d e f g" "2"
+      The stdout should equal 'a b'
     End
 
-    Context 'when offset is 3 and length is 2 and list specified'
-      Before 'a=A b=B c=C'
-      It 'removes 2 parameters after offset 3 and inserts list'
-        When call splice "a b c d e f g" "3 2 a b c"
-        The stdout should equal 'a b c A B C f g'
-      End
+    It 'removes the specified number of parameters from the offset'
+      When call splice "a b c d e f g" "3 2"
+      The stdout should equal 'a b c f g'
+    End
+
+    It 'inserts list where removed position'
+      When call splice "a b c d e f g" "3 2 a b c"
+      The stdout should equal 'a b c A B C f g'
     End
   End
 
@@ -283,7 +437,7 @@ Describe "general.sh"
 
   Describe 'shellspec_readfile()'
     It 'reads the file as is'
-      When call shellspec_readfile var "$FILE"
+      When call shellspec_readfile var "$FIXTURE/end-with-multiple-lf.txt"
       The variable var should equal "a${LF}${LF}"
     End
   End
@@ -314,14 +468,38 @@ Describe "general.sh"
       while [ "$chars" ]; do
         ch=${chars%"${chars#?}"} && chars=${chars#?}
         value="a${ch}${ch}${ch}b${ch}${ch}${ch}c"
-        shellspec_replace value "$ch" "x"
+        real_replace value "$ch" "x"
         [ "$value" = "axxxbxxxc" ] || echo "$ch"
       done
     }
 
-    It 'replaces various characters'
-      When call replace '!"#$%&()-=^~\|@`[{;+:*]}.>/?_ '"'"
-      The output should eq ''
+    Describe "fast version"
+      real_replace() { shellspec_replace "$@"; }
+      It 'replaces various characters'
+        When call replace '!"#$%&()-=^~\|@`[{;+:*]}.>/?_ '"'"
+        The output should eq ''
+      End
+    End
+
+    Describe "posix version"
+      Skip if 'it is old posh with bugs' posh_pattern_matching_bug
+      real_replace() { shellspec_replace_posix "$@"; }
+      It 'replaces various characters'
+        When call replace '!"#$%&()-=^~\|@`[{;+:*]}.>/?_ '"'"
+        The output should eq ''
+      End
+    End
+  End
+
+  Describe "shellspec_match()"
+    It 'returns success if value mactches with pattern'
+      When call shellspec_match foo "[fF]?*"
+      The status should be success
+    End
+
+    It 'returns failure if value mactches with pattern'
+      When call shellspec_match bar "[fF]?*"
+      The status should be failure
     End
   End
 

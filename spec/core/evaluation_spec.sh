@@ -86,11 +86,7 @@ Describe "core/evaluation.sh"
     End
 
     It 'prevents exit'
-      shell_has_bug() {
-        # I confirmed zsh 4.2.0. (there may be other things)
-        (exit 123) &&:; [ $? -ne 123 ]
-      }
-      Skip if "can not get the exit status" shell_has_bug
+      Skip if "can not get the exit status" zsh_exit_status_bug
 
       do_exit() { exit "$1"; }
       When invoke do_exit 12

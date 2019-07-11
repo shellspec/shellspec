@@ -1,58 +1,62 @@
 #shellcheck shell=sh disable=SC2016
 
-: "${SHELLSPEC_SHELL_TYPE:=sh}" "${SHELLSPEC_SHELL_VERSION:=}"
+: "${SHELLSPEC_SHELL_TYPE:=}" "${SHELLSPEC_SHELL_VERSION:=}"
+SHELLSPEC_SH_VERSION=$(eval 'echo "${.sh.version}"' 2>/dev/null) ||:
 
 shellspec_shell_info() {
+  SHELLSPEC_SHELL_TYPE='sh'
   shellspec_shell_version bash BASH_VERSION && return 0
   shellspec_shell_version zsh  ZSH_VERSION  && return 0
   shellspec_shell_version yash YASH_VERSION && return 0
   shellspec_shell_version posh POSH_VERSION && return 0
   if shellspec_shell_version ksh KSH_VERSION; then
     case $SHELLSPEC_SHELL_VERSION in
-      *MIRBSD*) SHELLSPEC_SHELL_TYPE=mksh ;;
+      *MIRBSD* ) SHELLSPEC_SHELL_TYPE=mksh ;;
       *PD\ KSH*) SHELLSPEC_SHELL_TYPE=pdksh ;;
     esac
-    return 0
-  fi
-  if (eval ': "${.sh.version}"' 2>/dev/null); then
-    eval 'SHELLSPEC_SHELL_VERSION=${.sh.version}'
+  else
+    SHELLSPEC_SHELL_VERSION=$SHELLSPEC_SH_VERSION
     case $SHELLSPEC_SHELL_VERSION in
       *pbosh*) SHELLSPEC_SHELL_TYPE=pbosh ;;
-      *bosh*) SHELLSPEC_SHELL_TYPE=bosh ;;
-      *) SHELLSPEC_SHELL_TYPE=ksh ;;
+      *bosh* ) SHELLSPEC_SHELL_TYPE=bosh ;;
+      ?*     ) SHELLSPEC_SHELL_TYPE=ksh ;;
     esac
-    return 0
   fi
 }
 
 shellspec_shell_version() {
+  SHELLSPEC_SHELL_TYPE='sh' SHELLSPEC_SHELL_VERSION=''
   eval "[ \${$2+x} ] &&:" || return 1
-  SHELLSPEC_SHELL_TYPE=$1
-  eval "SHELLSPEC_SHELL_VERSION=\${$2}"
+  eval "SHELLSPEC_SHELL_TYPE=\$1 SHELLSPEC_SHELL_VERSION=\${$2}"
 }
+
 shellspec_shell_info
 
 shellspec_constants() {
   set -- "${1:-}"
 
+  SHELLSPEC_EVAL="
+    ${1}SOH='\\001' ${1}STX='\\002' ${1}ETX='\\003' ${1}EOT='\\004' \
+    ${1}ENQ='\\005' ${1}ACK='\\006' ${1}BEL='\\007' ${1}BS='\\010' \
+    ${1}HT='\\011'  ${1}TAB='\\011' ${1}LF='\\012'  ${1}VT='\\013' \
+    ${1}FF='\\014'  ${1}CR='\\015'  ${1}SO='\\016'  ${1}SI='\\017' \
+    ${1}DLE='\\020' ${1}DC1='\\021' ${1}DC2='\\022' ${1}DC3='\\023' \
+    ${1}DC4='\\024' ${1}NAK='\\025' ${1}SYN='\\026' ${1}ETB='\\027' \
+    ${1}CAN='\\030' ${1}EM='\\031'  ${1}SUB='\\032' ${1}ESC='\\033' \
+    ${1}FS='\\034'  ${1}GS='\\035'  ${1}RS='\\036'  ${1}US='\\037' \
+    "
   # shellcheck disable=SC2059
-  eval "$(printf "
-    ${1}SOH='\\001' ${1}STX='\\002' ${1}ETX='\\003' ${1}EOT='\\004'
-    ${1}ENQ='\\005' ${1}ACK='\\006' ${1}BEL='\\007' ${1}BS='\\010'
-    ${1}HT='\\011'  ${1}TAB='\\011' ${1}LF='\\012'  ${1}VT='\\013'
-    ${1}FF='\\014'  ${1}CR='\\015'  ${1}SO='\\016'  ${1}SI='\\017'
-    ${1}DLE='\\020' ${1}DC1='\\021' ${1}DC2='\\022' ${1}DC3='\\023'
-    ${1}DC4='\\024' ${1}NAK='\\025' ${1}SYN='\\026' ${1}ETB='\\027'
-    ${1}CAN='\\030' ${1}EM='\\031'  ${1}SUB='\\032' ${1}ESC='\\033'
-    ${1}FS='\\034'  ${1}GS='\\035'  ${1}RS='\\036'  ${1}US='\\037'
-  ")"
+  eval "$(printf "$SHELLSPEC_EVAL")"
 }
+
 shellspec_constants SHELLSPEC_
 # shellcheck disable=SC2153,SC2034
 SHELLSPEC_IFS=" ${SHELLSPEC_TAB}${SHELLSPEC_LF}"
 
 if (set -eu --; : "$@") 2>/dev/null; then
-  shellspec_proxy() { eval "$1() { $2 \"\$@\"; }"; }
+  shellspec_proxy() {
+    eval "$1() { $2 \"\$@\"; }"
+  }
 else
   shellspec_proxy() {
     eval "$1() { case \$# in (0) $2 ;; (*) $2 \"\$@\" ;; esac; }"
@@ -88,41 +92,38 @@ else
   shellspec_proxy shellspec_find_files shellspec_find_files_
 fi
 shellspec_find_files_() {
-  eval "
-    shift
-    while [ \$# -gt 0 ]; do
-      case \$1 in (*/[*]) shift; continue; esac
-      if [ -d \"\$1\" ]; then
-        shellspec_find_files__ \"$1\" \"\${1%/}\"
-      else
-        \"$1\" \"\$1\"
-      fi
-      shift
-    done
+  SHELLSPEC_EVAL="
+    shift; \
+    while [ \$# -gt 0 ]; do \
+      case \$1 in (*/[*]) shift; continue; esac; \
+      if [ -d \"\$1\" ]; then \
+        shellspec_find_files__ \"$1\" \"\${1%/}\"; \
+      else \
+        \"$1\" \"\$1\"; \
+      fi; \
+      shift; \
+    done \
   "
+  eval "$SHELLSPEC_EVAL"
 }
 shellspec_find_files__() {
-  eval "
-    SHELLSPEC_IFSORIG=\$IFS
-    IFS=''
-    set -- \$2/*
-    IFS=\$SHELLSPEC_IFSORIG
+  SHELLSPEC_EVAL="
+    SHELLSPEC_IFSORIG=\$IFS; IFS=''; set -- \$2/*; IFS=\$SHELLSPEC_IFSORIG; \
     if [ \$# -gt 0 ]; then shellspec_find_files_ \"$1\" \"\$@\"; fi
   "
+  eval "$SHELLSPEC_EVAL"
 }
 # Workaround for posh 0.10.2. do not glob with set -u.
 case $SHELLSPEC_SHELL_TYPE in (posh)
   if [ "$(set -u; echo /*)" = '/*' ]; then
     shellspec_find_files__() {
-      eval "
-        SHELLSPEC_IFSORIG=\$IFS
-        IFS=''
-        case \$- in (*u*) set +u ;; esac
-        set -- \$2/*
-        set -u
-        IFS=\$SHELLSPEC_IFSORIG
-        if [ \$# -gt 0 ]; then shellspec_find_files_ \"$1\" \"\$@\"; fi
+      SHELLSPEC_EVAL="
+        SHELLSPEC_IFSORIG=\$IFS; IFS=''; \
+        case \$- in (*u*) set +u ;; esac; \
+        set -- \$2/*; set -u; IFS=\$SHELLSPEC_IFSORIG; \
+        if [ \$# -gt 0 ]; then shellspec_find_files_ \"$1\" \"\$@\"; fi \
       "
+      eval "$SHELLSPEC_EVAL"
     }
   fi
 esac
@@ -162,7 +163,7 @@ shellspec_reset_params() {
     set -- $1
     IFS=\$SHELLSPEC_IFSORIG
   "
-  [ "$SHELLSPEC_SHELL_TYPE" = zsh ] || return 0
+  [ "${ZSH_VERSION:-}" ] || return 0
   eval '[[ -o shwordsplit ]]' && return 0
   SHELLSPEC_RESET_PARAMS="
     setopt shwordsplit
@@ -174,11 +175,7 @@ shellspec_reset_params() {
 # $1: number of params, $2: offset, $3: length, $4-: list
 shellspec_splice_params() {
   SHELLSPEC_RESET_PARAMS='set --'
-  if [ "$1" -lt "${2:-0}" ]; then
-    shellspec_splice_params_step 1 "$1"
-  else
-    shellspec_splice_params_step 1 "${2:-0}"
-  fi
+  shellspec_splice_params_step 1 "${2:-0}"
   shellspec_splice_params_list "$@"
   shellspec_splice_params_step $((${2:-0} + ${3:-$1} + 1)) "$1"
 }
@@ -232,16 +229,15 @@ shellspec_sequence_() {
 }
 
 shellspec_escape_quote() {
-  eval "
-    shellspec_reset_params '\$$1' \"'\"
-    eval \"\$SHELLSPEC_RESET_PARAMS\"
-    $1=''
-    while [ \$# -gt 0 ]; do
-      $1=\"\${$1}\${1}\"
-      shift
-      [ \$# -eq 0 ] || $1=\"\${$1}'\\''\"
-    done
+  SHELLSPEC_EVAL="
+    shellspec_reset_params '\$$1' \"'\"; \
+    eval \"\$SHELLSPEC_RESET_PARAMS\"; $1=''; \
+    while [ \$# -gt 0 ]; do \
+      $1=\"\${$1}\${1}\"; shift; \
+      [ \$# -eq 0 ] || $1=\"\${$1}'\\''\"; \
+    done \
   "
+  eval "$SHELLSPEC_EVAL"
 }
 
 shellspec_lines() {
@@ -267,6 +263,7 @@ shellspec_padding_() {
   shellspec_padding_ "$1" "$2" $(($3 - 1))
 }
 
+# workaround for posh <= 0.12.6
 shellspec_escape_pattern() {
   eval "shellspec_escape_pattern=\$$1"
   set -- "$1" ""
@@ -327,6 +324,16 @@ shellspec_trim() {
   eval "if [ \"\$$1\" ]; then $1=\${$1#\"\${$1%%[!\$SHELLSPEC_IFS]*}\"}; fi"
 }
 
+shellspec_replace_posix() {
+  eval "shellspec_replace_rest=\${$1} shellspec_replace=''"
+  until case $shellspec_replace_rest in (*"$2"*) false; esac; do
+    shellspec_replace=${shellspec_replace}${shellspec_replace_rest%%"$2"*}$3
+    shellspec_replace_rest=${shellspec_replace_rest#*"$2"}
+  done
+  eval "$1=\$shellspec_replace\$shellspec_replace_rest"
+}
+shellspec_proxy shellspec_replace shellspec_replace_posix
+
 # shellcheck disable=SC2194
 if (eval 'v="*#*/" p="#*/"; [ "${v//"$p"/-}" = "*-" ]') 2>/dev/null; then
   # not posix compliant, but fast
@@ -350,15 +357,6 @@ elif case "a[d]" in (*"a[d]"*) false; esac; then
     until case $shellspec_replace_rest in (*$2*) false; esac; do
       shellspec_replace=${shellspec_replace}${shellspec_replace_rest%%$2*}$3
       shellspec_replace_rest=${shellspec_replace_rest#*$2}
-    done
-    eval "$1=\$shellspec_replace\$shellspec_replace_rest"
-  }
-else
-  shellspec_replace() {
-    eval "shellspec_replace_rest=\${$1} shellspec_replace=''"
-    until case $shellspec_replace_rest in (*"$2"*) false; esac; do
-      shellspec_replace=${shellspec_replace}${shellspec_replace_rest%%"$2"*}$3
-      shellspec_replace_rest=${shellspec_replace_rest#*"$2"}
     done
     eval "$1=\$shellspec_replace\$shellspec_replace_rest"
   }
