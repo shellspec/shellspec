@@ -54,8 +54,7 @@ shellspec_output_NOT_IMPLEMENTED() {
 shellspec_output_EXPECTATION() {
   shellspec_output_raw statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
-    "message:Not found any expectation"
-  shellspec_output_raw_append "failure_message:status:" "$SHELLSPEC_STATUS"
+    "message:Not found any expectation" "failure_message:"
 }
 
 shellspec_output_UNHANDLED_STATUS() {
