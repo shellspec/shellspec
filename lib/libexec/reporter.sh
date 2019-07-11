@@ -35,25 +35,26 @@ field_description() {
 #   [=] open and set  [|=] open and set if empty  [+=] open and append
 #   [>>>] output      [<|>] open                  [>|<] close
 buffer() {
-  eval "
-    $1_buffer='' $1_opened='' $1_flowed=''
-    $1() {
-      IFS=\" \$IFS\"
-      case \${1:-} in
-        '?'  ) [ \"\$$1_buffer\" ] ;;
-        '!?' ) [ ! \"\$$1_buffer\" ] ;;
-        '='  ) $1_opened=1; shift; $1_buffer=\${*:-} ;;
-        '|=' ) $1_opened=1; shift; [ \"\$$1_buffer\" ] || $1_buffer=\${*:-} ;;
-        '+=' ) $1_opened=1; shift; $1_buffer=\$$1_buffer\${*:-} ;;
-        '<|>') $1_opened=1 ;;
-        '>|<') [ \"\$$1_flowed\" ] && $1_buffer='' $1_flowed=''; $1_opened='' ;;
-        '>>>') [ ! \"\$$1_opened\" ] || { $1_flowed=1; puts \"\$$1_buffer\"; } ;;
-      esac
-      set -- \$?
-      IFS=\${IFS#?}
-      return \$1
-    }
+  EVAL="
+    $1_buffer='' $1_opened='' $1_flowed=''; \
+    $1() { \
+      IFS=\" \$IFS\"; \
+      case \${1:-} in \
+        '?'  ) [ \"\$$1_buffer\" ] ;; \
+        '!?' ) [ ! \"\$$1_buffer\" ] ;; \
+        '='  ) $1_opened=1; shift; $1_buffer=\${*:-} ;; \
+        '|=' ) $1_opened=1; shift; [ \"\$$1_buffer\" ] || $1_buffer=\${*:-} ;; \
+        '+=' ) $1_opened=1; shift; $1_buffer=\$$1_buffer\${*:-} ;; \
+        '<|>') $1_opened=1 ;; \
+        '>|<') [ \"\$$1_flowed\" ] && $1_buffer='' $1_flowed=''; $1_opened='' ;; \
+        '>>>') [ ! \"\$$1_opened\" ] || { $1_flowed=1; puts \"\$$1_buffer\"; } ;; \
+      esac; \
+      set -- \$?; \
+      IFS=\${IFS#?}; \
+      return \$1; \
+    } \
   "
+  eval "$EVAL"
 }
 
 xmlescape() {
@@ -65,15 +66,15 @@ xmlescape() {
 }
 
 xmlattrs() {
-  eval "
-    $1=''
-    shift
-    while [ \$# -gt 0 ]; do
-      xmlescape xmlattrs \"\${1#*\=}\"
-      $1=\"\${$1}\${$1:+ }\${1%%\=*}=\\\"\$xmlattrs\\\"\"
-      shift
-    done
+  EVAL="
+    $1=''; shift; \
+    while [ \$# -gt 0 ]; do \
+      xmlescape xmlattrs \"\${1#*\=}\"; \
+      $1=\"\${$1}\${$1:+ }\${1%%\=*}=\\\"\$xmlattrs\\\"\"; \
+      shift; \
+    done \
   "
+  eval "$EVAL"
 }
 
 remove_escape_sequence() {

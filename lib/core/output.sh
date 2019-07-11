@@ -59,22 +59,23 @@ shellspec_output_failure_message_when_negated() {
 }
 
 shellspec_output_following_words() {
-  eval "
-    shellspec_reset_params '\${SHELLSPEC_SYNTAXES#|}' '|'
-    eval \"\$SHELLSPEC_RESET_PARAMS\"
-    callback() { case \${1#$1_} in (*_*) return 1; esac; }
-    shellspec_find callback \"\$@\"
-    eval \"\$SHELLSPEC_RESET_PARAMS\"
-    callback() {
-      [ \$(( (\$2 - 1) % 8)) -eq 0 ] && shellspec_puts '  '
-      shellspec_puts \"\${1#$1_}\"
-      [ \$2 -eq \$3 ] || shellspec_puts ', '
-      [ \$(( \$2 % 8)) -ne 0 ] || shellspec_puts \"\$SHELLSPEC_LF\"
-    }
-    shellspec_putsn
-    shellspec_each callback \"\$@\"
-    shellspec_putsn
+  SHELLSPEC_EVAL="
+    shellspec_reset_params '\${SHELLSPEC_SYNTAXES#|}' '|'; \
+    eval \"\$SHELLSPEC_RESET_PARAMS\"; \
+    callback() { case \${1#$1_} in (*_*) return 1; esac; }; \
+    shellspec_find callback \"\$@\"; \
+    eval \"\$SHELLSPEC_RESET_PARAMS\"; \
+    callback() { \
+      [ \$(( (\$2 - 1) % 8)) -eq 0 ] && shellspec_puts '  '; \
+      shellspec_puts \"\${1#$1_}\"; \
+      [ \$2 -eq \$3 ] || shellspec_puts ', '; \
+      [ \$(( \$2 % 8)) -ne 0 ] || shellspec_puts \"\$SHELLSPEC_LF\"; \
+    }; \
+    shellspec_putsn; \
+    shellspec_each callback \"\$@\"; \
+    shellspec_putsn; \
   "
+  eval "$SHELLSPEC_EVAL"
 }
 
 shellspec_output_syntax_name() {
