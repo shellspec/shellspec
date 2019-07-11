@@ -73,7 +73,10 @@ git_remote_tags() {
     [ "$PRE" ] || case $rel in -*) continue; esac
     IFS=. && eval 'set -- $num'
     printf '%08d%08d%08d%s %s\n' "$1" "$2" "$3" "${rel:-=}" "$tag"
-  done | sort -k 1 "$@" | while read -r line; do echo "${line#* }"; done
+  done | sort -k 1 "$@" | while read -r line; do
+    # Throw away stderr. Unknown 'sh: echo: I/O error' displayed with asciinema
+    echo "${line#* }" 2>/dev/null
+  done
 }
 
 latest_version() {
