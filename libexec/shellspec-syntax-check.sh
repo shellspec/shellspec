@@ -15,12 +15,12 @@ syntax_error() {
 }
 
 error_handler() {
-  error=0
+  warning=0
   while IFS= read -r line; do
     error "$line"
-    error=1
+    warning=1
   done
-  return "$error"
+  return "$warning"
 }
 
 syntax_check() {
@@ -45,9 +45,10 @@ specfile() {
     | error_handler >&2; echo $? >&3) 3>&1) \
     | (
         read -r xs
-        [ "$xs" = 0 ] || exit "$xs"
+        [ "$xs" -ne 0 ] && exit "$xs"
         read -r xs
-        exit "$xs"
+        [ "$SHELLSPEC_WARNING_AS_FAILURE" ] && [ "$xs" -ne 0 ] && exit "$xs"
+        exit 0
       ) \
   ) 4>&1 || exit_status=1
 }
