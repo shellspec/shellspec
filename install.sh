@@ -36,29 +36,33 @@ OPTIONS:
   -h, --help            You're looking at it
 USAGE
 
-VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH=''
-done=''
+VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH='' done=''
 
-finished() {
-  [ "$done" ] || error "Failed to install"
-}
-trap finished EXIT
+[ "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
+finish() { done=1; exit "${1:-0}"; }
 error() { printf '\033[31m%s\033[0m\n' "$1"; }
-
-abort() { done=1; error "$1" >&2; exit 1; }
+abort() { [ "${1:-}" ] && error "$1" >&2; finish 1; }
+finished() { [ "$done" ] || error "Failed to install"; }
+trap finished EXIT
 
 exists() {
   ( IFS=:; for p in $PATH; do [ -x "${p%/}/$1" ] && exit 0; done; exit 1 )
 }
 
+prompt() {
+  ans=${2:-} && printf '%s' "$1"
+  [ "$ans" ] && echo "$2"
+  [ "$ans" ] || read -r ans
+  ! case $ans in ( [Yy] | [Yy][Ee][Ss] ) false; esac
+}
+
 fetch() {
   case $FETCH in
-    curl) curl -sSfLI -o /dev/null "$1" && curl -SfL "$1" | unarchive "$2" ;;
-    wget) wget -q --spider "$1" && wget -O- "$1" | unarchive "$2" ;;
-  esac &&:
-  error=$?
-  [ "$error" -gt 0 ] && [ -d "$DIR" ] && rmdir "$DIR"
+    curl) curl -sSfLI -o /dev/null "$1" && curl -SfL "$1" ;;
+    wget) wget -q --spider "$1" && wget -O- "$1" ;;
+  esac | unarchive "$2" &&:
+  error=$? && [ "$error" -ne 0 ] && [ -d "$DIR" ] && rmdir "$DIR"
   return "$error"
 }
 
@@ -69,26 +73,27 @@ unarchive() {
 
 git_remote_tags() {
   git ls-remote --tags "$repo" | while read -r line; do
-    tag=${line##*/} && ver=${tag%%+*} && num=${ver%%-*} && rel=${ver#"$num"}
-    [ "$PRE" ] || case $rel in -*) continue; esac
-    IFS=. && eval 'set -- $num'
-    printf '%08d%08d%08d%s %s\n' "$1" "$2" "$3" "${rel:-=}" "$tag"
-  done | sort -k 1 "$@" | while read -r line; do
-    # Throw away stderr. Unknown 'sh: echo: I/O error' displayed with asciinema
-    echo "${line#* }" 2>/dev/null
+    tag=${line##*/} && pre=${tag#${tag%%[-+]*}}
+    [ "${1:-}" = "--pre" ] || case $pre in (-*) continue; esac
+    echo "$tag"
   done
 }
 
-latest_version() {
-  git_remote_tags -r | { read -r line; echo "$line"; }
+get_versions() { git_remote_tags "${PRE:+--pre}"; }
+
+version_sort() {
+  while read -r version; do
+    ver=${version%%+*} && num=${ver%%-*} && pre=${ver#$num}
+    IFS=. && eval 'set -- $num'
+    printf '%08d%08d%08d%s %s\n' "$1" "$2" "$3" "${pre:-=}" "$version"
+  done | sort -k 1 "$@" | while read -r keyver; do echo "${keyver#* }"; done
 }
 
-list_versions() {
-  git_remote_tags | {
-    versions=$(while read -r ver; do printf '%s, ' "$ver"; done)
-    echo "${versions%, }"
-  }
-}
+join() { s='' && while read -r v; do s="$s$v$1"; done && echo "${s%"$1"}"; }
+list_versions() { get_versions | version_sort | join ", "; }
+
+first() { read -r line && echo "$line" && while read -r _; do :; done; }
+latest_version() { get_versions | version_sort -r | first; }
 
 while [ $# -gt 0 ]; do
   case $1 in
@@ -99,15 +104,14 @@ while [ $# -gt 0 ]; do
     -d | --dir    ) [ "${2:-}" ] || abort "DIR not specified"
                     DIR=$2 && shift ;;
     -s | --switch ) SWITCH=1 ;;
-    -y | --yes    ) YES=1 ;;
-    -l | --list   ) list_versions && done=1 && exit ;;
+    -y | --yes    ) YES=y ;;
+    -l | --list   ) list_versions && finish ;;
+         --pre    ) PRE=1 ;;
          --fetch  ) [ "${2:-}" ] || abort "FETCH not specified"
-                    case $2 in
-                      curl | wget) FETCH=$2 && shift ;;
+                    case $2 in ( curl | wget ) FETCH=$2 && shift ;;
                       *) abort "FETCH must be 'curl' or 'wget'."
-                    esac
-                    ;;
-    -h | --help   ) usage && done=1 && exit ;;
+                    esac ;;
+    -h | --help   ) usage && finish ;;
     -*            ) abort "Unknown option $1" ;;
     *             ) VERSION=$1 ;;
   esac
@@ -153,12 +157,9 @@ case $method in
   git) echo "[git] $repo" ;;
   archive) echo "[$FETCH] $archive/$VERSION" ;;
 esac
+echo
 
-printf '\n%s' "Do you want to continue? [y/N] "
-ans=''
-[ "$YES" ] && ans=y && echo "$ans"
-[ "$ans" ] || read -r ans < /dev/tty
-case $ans in [Yy]|[Yy][Ee][Ss]) ;; *) done=1 && exit 1; esac
+prompt "Do you want to continue? [y/N] " "$YES" < /dev/tty || abort "Canceled"
 
 case $method in
   git)
@@ -179,19 +180,17 @@ case $method in
       git checkout -b "$VERSION" FETCH_HEAD
     fi
     ;;
-  local) ;; # Do nothing
+  local) # Do nothing
 esac
 
 mkdir -p "$BIN"
 ln -sf "$DIR/$exec" "$BIN/$exec"
 
-[ -L "$BIN/$exec" ] && done=1 && exit
+if [ ! -L "$BIN/$exec" ]; then
+  rm "$BIN/$exec"
+  printf '#!/bin/sh\nexec "%s" "$@"\n' "$DIR/$exec" > "$BIN/$exec"
+  chmod +x "$BIN/$exec"
+fi
 
-rm "$BIN/$exec"
-cat << HERE > "$BIN/$exec"
-#!/bin/sh
-exec "$DIR/$exec" "\$@"
-HERE
-chmod +x "$BIN/$exec"
-
-done=1
+echo "Done"
+finish
