@@ -1,9 +1,8 @@
 /.git
 /spec/fixture/stat/*
 /dockerfiles
-/coverage
-/report
-*.gif
-*.png
-*.md
-ttyrecord
+/misc
+/ttyrecord
+**/coverage
+**/report
+**/*.md
