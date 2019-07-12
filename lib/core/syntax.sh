@@ -34,17 +34,21 @@ shellspec_syntax_dispatch() {
   fi
 
   if ! shellspec_includes "$SHELLSPEC_COMPOUNDS" "|shellspec_$1|"; then
-    eval "
-      shift
-      while [ \$# -gt 0 ]; do
-        case \$1 in (the|a|an|as) shift;; (*) break; esac
-      done
-      case \$# in
-        0) set -- \"$1\" ;;
-        *) set -- \"$1\" \"\$@\" ;;
+    SHELLSPEC_EVAL="
+      shift; \
+      while [ \$# -gt 0 ]; do \
+        case \$1 in (the|a|an|as) shift;; (*) break; esac; \
+      done; \
+      case \$# in \
+        0) set -- \"$1\" ;; \
+        *) set -- \"$1\" \"\$@\" ;; \
       esac
     "
+    eval "$SHELLSPEC_EVAL"
   fi
+
+  shellspec_why_posh_0_12_3_falls_without_this() { :; return 0 ||:; }
+  shellspec_why_posh_0_12_3_falls_without_this # workaround for posh 0.12.3
 
   if shellspec_includes "$SHELLSPEC_SYNTAXES" "|shellspec_$1_${2:-}|"; then
     SHELLSPEC_SYNTAX_NAME="shellspec_$1_$2" && shift 2

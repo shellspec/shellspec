@@ -16,7 +16,7 @@ read_dot_file() {
     else
       eval "set -- \"\$@\" $line"
     fi
-  done < "$file"
+  done < "$file" &&:
   [ $# -eq 0 ] || "$parser" "$@"
 }
 

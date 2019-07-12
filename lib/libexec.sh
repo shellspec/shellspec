@@ -53,7 +53,7 @@ find_specfiles() {
     while IFS= read -r line || [ "$line" ]; do
       [ "$line" ] || continue
       eval shellspec_find_files found_ "$line"
-    done < "$SHELLSPEC_INFILE"
+    done < "$SHELLSPEC_INFILE" &&:
   else
     eval shellspec_find_files found_ ${1+'"$@"'}
   fi

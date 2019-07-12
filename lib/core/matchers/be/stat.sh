@@ -18,26 +18,24 @@ shellspec_syntax_compound 'shellspec_matcher_be_charactor'
 shellspec_syntax 'shellspec_matcher_be_charactor_device'
 
 shellspec_make_file_matcher() {
-  eval "
-    shellspec_matcher_be_$1() {
-      shellspec_matcher__match() {
-        [ $2 \"\${SHELLSPEC_SUBJECT:-}\" ]
-      }
-
-      shellspec_matcher__failure_message() {
-        shellspec_putsn \"The specified path ${4:-${3%% *} not ${3#* }}\"
-        shellspec_putsn \"path: \$SHELLSPEC_SUBJECT\"
-      }
-
-      shellspec_matcher__failure_message_when_negated() {
-        shellspec_putsn \"The specified path $3\"
-        shellspec_putsn \"path: \$SHELLSPEC_SUBJECT\"
-      }
-
-      shellspec_syntax_param count [ \$# -eq 0 ] || return 0
-      shellspec_matcher_do_match
+  SHELLSPEC_EVAL="
+    shellspec_matcher_be_$1() { \
+      shellspec_matcher__match() { \
+        [ $2 \"\${SHELLSPEC_SUBJECT:-}\" ]; \
+      }; \
+      shellspec_matcher__failure_message() { \
+        shellspec_putsn \"The specified path ${4:-${3%% *} not ${3#* }}\"; \
+        shellspec_putsn \"path: \$SHELLSPEC_SUBJECT\"; \
+      }; \
+      shellspec_matcher__failure_message_when_negated() { \
+        shellspec_putsn \"The specified path $3\"; \
+        shellspec_putsn \"path: \$SHELLSPEC_SUBJECT\"; \
+      }; \
+      shellspec_syntax_param count [ \$# -eq 0 ] || return 0; \
+      shellspec_matcher_do_match; \
     }
   "
+  eval "$SHELLSPEC_EVAL"
 }
 
 shellspec_make_file_matcher exist            "-e" "exists" "does not exist"

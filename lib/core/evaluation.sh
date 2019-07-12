@@ -22,8 +22,7 @@ shellspec_evaluation_call() {
 }
 
 shellspec_evaluation_run() {
-  (
-    if [ "${SHELLSPEC_DATA:-}" ]; then
+  ( if [ "${SHELLSPEC_DATA:-}" ]; then
       shellspec_data > "$SHELLSPEC_STDIN_FILE"
       command "$@" < "$SHELLSPEC_STDIN_FILE"
     else

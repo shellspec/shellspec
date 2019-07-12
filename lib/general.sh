@@ -263,7 +263,7 @@ shellspec_padding_() {
   shellspec_padding_ "$1" "$2" $(($3 - 1))
 }
 
-# workaround for posh <= 0.12.6
+# workaround for posh
 shellspec_escape_pattern() {
   eval "shellspec_escape_pattern=\$$1"
   set -- "$1" ""
@@ -284,7 +284,7 @@ shellspec_escape_pattern() {
 
 # shellcheck disable=SC2194
 if case "a[d]" in (*"a[d]"*) false; esac; then
-  # workaround for posh <= 0.12.6
+  # workaround for posh. ok: 0.13.0, 0.12.3, 0.6.12 bad:0.12.6, 0.10.2, 0.8.5
   shellspec_includes() {
     shellspec_includes_pattern="$2"
     shellspec_escape_pattern shellspec_includes_pattern
