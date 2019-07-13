@@ -6,3 +6,4 @@
 **/coverage
 **/report
 **/*.md
+.shellspec-local

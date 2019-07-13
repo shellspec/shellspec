@@ -57,13 +57,15 @@ run() {
   done
 
   echo "======================================================================"
-  echo "[$dockerfile: $@]"
+  echo "# $dockerfile: $@"
   tag="${dockerfile##*/}"
   tag="${tag#.}"
   image="shellspec:$tag"
   docker build $options -t "$image" - < "$dockerfile"
   docker build --iidfile "$iidfile" --build-arg "IMAGE=$image" . -f "dockerfiles/.shellspec"
   id=$(cat "$iidfile")
+  echo
+  echo "# $dockerfile: $@"
   docker run -it --rm "$id" "$@" &&:
   xs=$?
   docker rmi "$id" > /dev/null

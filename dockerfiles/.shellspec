@@ -2,6 +2,6 @@ ARG IMAGE
 FROM $IMAGE
 WORKDIR /shellspec
 COPY ./ ./
-RUN ./docker/overwrite_shell.sh
-RUN ./shellspec --task fixture:stat:prepare
+RUN echo "--no-banner" > .shellspec-local
+ENTRYPOINT [ "./docker/entrypoint.sh" ]
 CMD [ "shellspec" ]

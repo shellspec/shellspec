@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2004
 
 # without root privileges
 # $ shellspec --task fixture:stat:prepare
@@ -39,11 +39,16 @@ pipe() {
 }
 
 create_socket_file() {
+  #shellcheck disable=SC2230
   (
-    command nc -lU "$1" &
-    sleep 1
+    which nc >/dev/null || return 1
+    $(which nc) -lU "$1" &
+    i=0
+    while [ $i -lt 10000 ] && [ ! -e "$1" ] && kill -0 $!; do
+      sleep 0
+      i=$(($i+1))
+    done
     kill $!
-    wait $!
   )
   [ -S "$1" ] && return 0
   rm "$1"
@@ -62,9 +67,9 @@ file() {
   echo "${4:-}" > "$1"
   chown "$owner" "$1"
   chmod "$2" "$1"
-  case $(ls -dl "$1") in
-    $3*) return 0
-  esac
+  #shellcheck disable=SC2034
+  perm=$(ls -dl "$1")
+  eval "case \$perm in $3*) return 0; esac"
   rm "$1"
   return 1
 }

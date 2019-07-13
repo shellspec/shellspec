@@ -1,3 +1,3 @@
 FROM lpenz/debian-lenny-i386
 ENV SH="pdksh" DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN apt-get update && apt-get -y --force-yes install pdksh
+RUN apt-get update && apt-get -y --force-yes install pdksh netcat-openbsd
