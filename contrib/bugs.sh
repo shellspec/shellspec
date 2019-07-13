@@ -318,4 +318,10 @@ HERE
   [ "$message" ] && affect || no_problem
 )
 
+(
+  title='34: built-in commands can not redefine (busybox = around 1.1.3)'
+  whoami() { echo nobody; }
+  [ "$(whoami)" = nobody ] && no_problem || affect
+)
+
 echo Done
