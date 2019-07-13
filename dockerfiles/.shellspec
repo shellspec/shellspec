@@ -2,5 +2,6 @@ ARG IMAGE
 FROM $IMAGE
 WORKDIR /shellspec
 COPY ./ ./
-ENTRYPOINT [ "./docker/entrypoint.sh" ]
+RUN ./docker/overwrite_shell.sh
+RUN ./shellspec --task fixture:stat:prepare
 CMD [ "shellspec" ]
