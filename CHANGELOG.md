@@ -9,15 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add installer (It has not been officially released, but you can used it already).
 - Testing for single script file (Add `execute` evaluation).
 
 ### Removed
 
 - Drop support for busybox 1.1.3 and similar versions as it can not redefine builtin commands.
-
-### Added
-
-- Add installer
 
 ## [0.18.0] - 2019-07-09
 
