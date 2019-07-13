@@ -59,7 +59,6 @@ Describe "core/syntax.sh"
     It "raise errors with wrong parameter"
       When invoke shellspec_syntax_param wrong-parameter
       The error should be present
-      Skip if "can not get the exit status" zsh_exit_status_bug
       The status should be failure
     End
   End

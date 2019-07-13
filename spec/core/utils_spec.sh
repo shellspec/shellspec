@@ -71,7 +71,6 @@ Describe "core/utils.sh"
     It 'raise error with invalid type'
       When invoke shellspec_is invalid-type
       The error should be present
-      Skip if "can not get the exit status" zsh_exit_status_bug
       The status should be failure
     End
   End

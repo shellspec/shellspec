@@ -132,7 +132,6 @@ Describe "general.sh"
 
   Describe 'shellspec_import()'
     It 'exits when module not found'
-      Skip if "can not get the exit status" zsh_exit_status_bug
       When invoke shellspec_import not-found-module
       The status should be failure
       The stderr should be defined

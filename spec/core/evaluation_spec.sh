@@ -101,8 +101,6 @@ Describe "core/evaluation.sh"
     End
 
     It 'prevents exit'
-      Skip if "can not get the exit status" zsh_exit_status_bug
-
       do_exit() { exit "$1"; }
       When invoke do_exit 12
       The status should equal 12
