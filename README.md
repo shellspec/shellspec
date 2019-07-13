@@ -256,7 +256,7 @@ $ chmod +x /EXECUTABLE/PATH/shellspec
 <details>
 <summary>Uninstall</summary>
 
-1. Delete the shellspec installation directpry [default: $HOME/.shellspec].
+1. Delete the shellspec installation directpry [default: $HOME/opt/shellspec].
 2. Delete the shellspec executable file [default: $HOME/bin/shellspec].
 
 </details>
