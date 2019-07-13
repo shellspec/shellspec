@@ -7,6 +7,7 @@ SHELLSPEC_STDERR_FILE="$SHELLSPEC_TMPBASE/$$.stderr"
 shellspec_syntax 'shellspec_evaluation_call'
 shellspec_syntax 'shellspec_evaluation_run'
 shellspec_syntax 'shellspec_evaluation_invoke'
+shellspec_syntax 'shellspec_evaluation_execute'
 
 shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
@@ -87,6 +88,37 @@ fi
 shellspec_evaluation_with_data() {
   shellspec_data > "$SHELLSPEC_STDIN_FILE"
   "$@" < "$SHELLSPEC_STDIN_FILE"
+}
+
+shellspec_omit_readonly_error() {
+  while read -r line; do
+    case $line in (*__SOURCED__*) false; esac && shellspec_putsn "$line"
+  done
+  if [ "$line" ]; then
+    case $line in (*__SOURCED__*) false; esac && shellspec_puts "$line"
+  fi
+}
+
+shellspec_execute() {
+  ( ( ( (set -e
+    #shellcheck disable=SC2034
+    {
+      __SOURCED__=1; readonly __SOURCED__
+      __() { shellspec_intercept "$@"; }
+      if [ "$SHELLSPEC_SHELL_TYPE" = "ksh" ]; then
+        # ksh is too fast? use 'wait' to wait for write buffer flushed.
+        ( eval "shift; . $1" ) &
+        wait $!
+      else
+        ( eval "shift; . $1" )
+      fi
+    } >&3); echo $? >&4) 2>&1 \
+  | shellspec_omit_readonly_error >&2) 4>&1 \
+  | (read -r xs; exit "$xs") ) 3>&1
+}
+
+shellspec_evaluation_execute() {
+  shellspec_evaluation_invoke shellspec_execute "$@"
 }
 
 shellspec_evaluation_cleanup() {

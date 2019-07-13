@@ -91,4 +91,16 @@ shellspec_spec_helper_configure() {
     [ "$ans" = -2 ] && return 1
     return 0
   }
+
+  #shellcheck disable=SC2034
+  if ( ( readonly A ) 2>/dev/null ); then
+    old_ksh_readonly_bug() { false; }
+  else
+    old_ksh_readonly_bug() { true; }
+  fi
+
+  old_pdksh_readonly_bug() {
+    # shellcheck disable=SC2034
+    [ "$( ( readonly old_pdksh_readonly_bug=123 ) 2>&1 )" ]
+  }
 }

@@ -1,5 +1,7 @@
 #shellcheck shell=sh disable=SC2016
 
+% BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
+
 Describe "core/evaluation.sh"
   Before 'VAR=123'
 
@@ -132,6 +134,52 @@ Describe "core/evaluation.sh"
       Data "data"
       When invoke cat
       The stdout should equal 'data'
+    End
+  End
+
+  Describe 'execute evaluation'
+    Skip if 'it has readonly bug (ksh)' old_ksh_readonly_bug
+
+    Example 'The script runs without any problems'
+      When run "$BIN/script.sh"
+      The status should be success
+    End
+
+    shellspec_intercept() { :; }
+
+    It 'executes script'
+      When execute "$BIN/script.sh"
+      The status should be success
+    End
+
+    It 'calls shellspec_intercept'
+      shellspec_intercept() {
+        # You can overrite here
+        printenv() { echo "foobarbaz"; }
+      }
+      When execute "$BIN/script.sh" --command printenv
+      The status should be success
+      The stdout should equal "foobarbaz"
+    End
+
+    It 'provides readonly __SOURCED__ variable'
+      shellspec_intercept() {
+        ( (unset __SOURCED__ &&:) 2>/dev/null) || echo ok
+      }
+      When execute "$BIN/script.sh"
+      The status should be success
+      The stdout should equal "ok"
+    End
+
+    It 'can pass arguments'
+      When execute "$BIN/script.sh" --dump-params a b c
+      The status should be success
+      The stdout should equal "--dump-params a b c"
+    End
+
+    It 'catches exit code'
+      When execute "$BIN/script.sh" --exit-with 123
+      The status should eq 123
     End
   End
 
