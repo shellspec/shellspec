@@ -2,8 +2,7 @@
 
 set -eu
 
-#shellcheck disable=SC2034
-(__SOURCED__=) && __() { :; }
+test || __() { :; }
 
 __ intercept __
 

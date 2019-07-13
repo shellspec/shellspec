@@ -138,9 +138,7 @@ Describe "core/evaluation.sh"
   End
 
   Describe 'execute evaluation'
-    Skip if 'it has readonly bug (ksh)' old_ksh_readonly_bug
-
-    Example 'The script runs without any problems'
+    Specify 'The script runs without any problems'
       When run "$BIN/script.sh"
       The status should be success
     End
@@ -162,15 +160,6 @@ Describe "core/evaluation.sh"
       The stdout should equal "foobarbaz"
     End
 
-    It 'provides readonly __SOURCED__ variable'
-      shellspec_intercept() {
-        ( (unset __SOURCED__ &&:) 2>/dev/null) || echo ok
-      }
-      When execute "$BIN/script.sh"
-      The status should be success
-      The stdout should equal "ok"
-    End
-
     It 'can pass arguments'
       When execute "$BIN/script.sh" --dump-params a b c
       The status should be success
@@ -180,6 +169,11 @@ Describe "core/evaluation.sh"
     It 'catches exit code'
       When execute "$BIN/script.sh" --exit-with 123
       The status should eq 123
+    End
+
+    Specify '"test" return to the original behavior'
+      When execute "$BIN/script.sh" --command test
+      The status should be failure
     End
   End
 
