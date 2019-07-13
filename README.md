@@ -18,7 +18,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 [![License](https://img.shields.io/github/license/shellspec/shellspec.svg)](https://github.com/shellspec/shellspec/blob/master/LICENSE)
 
 ![bash](https://img.shields.io/badge/bash-%3E%3D2.03-lightgrey.svg?style=plastic)
-![busybox](https://img.shields.io/badge/busybox-%3E%3D1.1.3-lightgrey.svg?style=plastic)
+![busybox](https://img.shields.io/badge/busybox-%3E%3D1.10.2-lightgrey.svg?style=plastic)
 ![dash](https://img.shields.io/badge/dash-%3E%3D0.5.2-lightgrey.svg?style=plastic)
 ![ksh](https://img.shields.io/badge/ksh-%3E%3D93q-lightgrey.svg?style=plastic)
 ![mksh](https://img.shields.io/badge/mksh-%3E%3D28-lightgrey.svg?style=plastic)
@@ -76,6 +76,7 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [%puts / %putsn (output)](#puts--putsn-output)
     - [%logger](#logger)
   - [Mock and Stub](#Mock-and-Stub)
+  - [Testing for a single script file](#Testing-for-a-single-script-file)
 - [For developer](#For-developer)
 - [Version history](#Version-history)
 
@@ -123,7 +124,7 @@ Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.c
 | debian 2.2     |       | 2.03  |            |          |     |      | 5.2.14 |        |      | 3.1.9  |
 | debian 3.0     | 0.3.8 | 2.05a | ~~0.60.2~~ |          |     |      | 5.2.14 |        |      | 4.0.4  |
 | debian 3.1     |       | 2.05b | ~~0.60.5~~ | 0.5.2    | 93q |      | 5.2.14 | 0.3.14 |      | 4.2.5  |
-| debian 4.0     |       | 3.1   | 1.1.3      | 0.5.3    | 93r | 28   | 5.2.14 | 0.5.4  |      | 4.3.2  |
+| debian 4.0     |       | 3.1   | ~~1.1.3~~  | 0.5.3    | 93r | 28   | 5.2.14 | 0.5.4  |      | 4.3.2  |
 | debian 5.0     |       | 3.2   | 1.10.2     | 0.5.4    | 93s | 35.2 | 5.2.14 | 0.6.13 |      | 4.3.6  |
 | debian 6       |       | 4.1.5 | 1.17.1     | 0.5.5.1  | 93s | 39   | 5.2.14 | 0.8.5  |      | 4.3.10 |
 | debian 7       |       | 4.2   | 1.20.0     | 0.5.7    | 93u | 40.9 |        | 0.10.2 | 2.30 | 4.3.17 |
@@ -135,8 +136,9 @@ Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.c
 | Ubuntu 19.04   |       |       |            |          |     |      |        |        |      | 5.5.1  |
 
 * **The version of strikethrough is does NOT work**
+* The shell that includes with the supported os is the main support. The old shell has been tested, but support may be discontinued.
 * I confirmed that works with [Schily Bourne Shell](http://schilytools.sourceforge.net/bosh.html) (`bosh`, `pbosh`) linux build, but not well tested.
-* If you want to do the tests above, run `./contrib/test_in_docker.sh <DOCKERFILES...> [-- COMMAND]`. ([Dockerfiles](dockerfiles))
+* If you want to do the tests above within docker, run `./contrib/test_in_docker.sh <DOCKERFILES...> [-- COMMAND]`. ([Dockerfiles](dockerfiles))
 
 </details>
 
@@ -766,6 +768,10 @@ Describe 'mock stub sample'
   End
 End
 ```
+
+### Testing for a single script file
+
+**TODO** (Currently developed)
 
 ## For developer
 
