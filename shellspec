@@ -369,6 +369,10 @@ if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
   abort "Unsupported shell (require arithmetic expansion): $SHELLSPEC_SHELL"
 fi
 
+if ! (false() { :; }; false); then
+  abort "Unsupported shell (builtin commands can not redefine): $SHELLSPEC_SHELL"
+fi
+
 if [ "$SHELLSPEC_KCOV" ]; then
   if ! kcov --version 2>/dev/null 1>&2; then
     abort "Not found kcov for to running coverage."
