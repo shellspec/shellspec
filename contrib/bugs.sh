@@ -285,11 +285,7 @@ HERE
 
 (
   title='29: case will be aborted when exit status is error (mksh <= 35.2, pdksh 5.2.14 on debian 2.2)'
-  ret=$(
-    set -e
-    case 1 in (*) false &&:; esac
-    echo ok
-  )
+  ret=$( set -e; case 1 in (*) false &&: ;; esac; echo ok )
   [ "$ret" = "ok" ] && no_problem || affect
 )
 
@@ -304,6 +300,22 @@ HERE
   kv="key=value"
   (ret="${kv%%=*}"; [ "$ret" = "key" ]) 2>/dev/null &&:
   [ $? = 0 ] && no_problem || affect
+)
+
+(
+  title='32: last readonly always display "is read only" in subshell (ksh 93q, 93r)'
+  (
+    # readonly A     # => not display
+    # readonly B     # => display "B is read only"
+    readonly A; (readonly B) 2>/dev/null
+    [ $? = 0 ] && no_problem || affect
+  ) &&:
+) 2>/dev/null
+
+(
+  title='33: fails when use readonly with value (pdksh 5.2.14 on debian 2.2)'
+  message=$( ( readonly value=123 ) 2>&1 )
+  [ "$message" ] && affect || no_problem
 )
 
 echo Done
