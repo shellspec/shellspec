@@ -29,7 +29,7 @@ shellspec_matcher_be_empty_directory() {
     [ -d "${SHELLSPEC_SUBJECT:-}" ] || return 1
 
     # This subshell is used to revert changes directory, $OLDPWD, set, shopt
-    (
+    ( :
       # set -- "$DIR"/* not working properly in posh 0.10.2
       cd "$SHELLSPEC_SUBJECT" || return 1
 

@@ -3,11 +3,6 @@
 Describe "core/evaluation.sh"
   Before 'VAR=123'
 
-  shellspec_around_invoke() {
-    shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
-    "$@"
-  }
-
   Describe 'call evaluation'
     It 'outputs to stdout and stderr'
       evaluation() { echo ok; echo err >&2; return 0; }
@@ -31,6 +26,10 @@ Describe "core/evaluation.sh"
     End
 
     It 'calls shellspec_evaluation_cleanup() after evaluation'
+      shellspec_around_invoke() {
+        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
+        "$@"
+      }
       evaluation() { return 123; }
       When invoke shellspec_evaluation_call evaluation
       The stdout should equal 'cleanup: 123'
@@ -46,6 +45,12 @@ Describe "core/evaluation.sh"
       When call relay_errno
       The status should equal 0
     End
+
+    It 'reads data from stdin'
+      Data "data"
+      When call cat
+      The stdout should equal 'data'
+    End
   End
 
   Describe 'run evaluation'
@@ -57,9 +62,19 @@ Describe "core/evaluation.sh"
     End
 
     It 'calls shellspec_evaluation_cleanup() after evaluation'
+      shellspec_around_invoke() {
+        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
+        "$@"
+      }
       When invoke shellspec_evaluation_run false
       The first word of stdout should equal 'cleanup:'
       The second word of stdout should be failure
+    End
+
+    It 'reads data from stdin'
+      Data "data"
+      When run cat
+      The stdout should equal 'data'
     End
   End
 
@@ -94,6 +109,10 @@ Describe "core/evaluation.sh"
     End
 
     It 'calls shellspec_evaluation_cleanup() after evaluation'
+      shellspec_around_invoke() {
+        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
+        "$@"
+      }
       evaluation() { return 123; }
       When invoke shellspec_evaluation_invoke evaluation
       The stdout should equal 'cleanup: 123'
@@ -109,6 +128,12 @@ Describe "core/evaluation.sh"
       relay_errno() { return ${?}; }
       When invoke relay_errno
       The status should equal 0
+    End
+
+    It 'reads data from stdin'
+      Data "data"
+      When invoke cat
+      The stdout should equal 'data'
     End
   End
 
