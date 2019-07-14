@@ -1,3 +1,3 @@
 FROM lpenz/debian-wheezy-i386
 ENV SH="yash" DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN apt-get update && apt-get -y install yash netcat-openbsd
+RUN apt-get update && apt-get -y install yash

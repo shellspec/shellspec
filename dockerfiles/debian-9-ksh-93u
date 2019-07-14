@@ -1,3 +1,3 @@
 FROM debian:9
 ENV SH="ksh" DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN apt-get update && apt-get -y install ksh netcat-openbsd
+RUN apt-get update && apt-get -y install ksh

@@ -61,6 +61,7 @@ run() {
   tag="${dockerfile##*/}"
   tag="${tag#.}"
   image="shellspec:$tag"
+  docker build -t shellspec:mksock . -f dockerfiles/.mksock
   docker build $options -t "$image" - < "$dockerfile"
   docker build --iidfile "$iidfile" --build-arg "IMAGE=$image" . -f "dockerfiles/.shellspec"
   id=$(cat "$iidfile")

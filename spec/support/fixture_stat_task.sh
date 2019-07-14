@@ -43,12 +43,13 @@ create_socket_file() {
   (
     which nc >/dev/null || return 1
     $(which nc) -lU "$1" &
-    i=0
-    while [ $i -lt 10000 ] && [ ! -e "$1" ] && kill -0 $!; do
+    s=$(date +%s)
+    while [ ! -e "$1" ]; do
+      e=$(date +%s)
+      [ "$(($e - $s))" -gt 1 ] && break
       sleep 0
-      i=$(($i+1))
     done
-    kill $!
+    kill $! ||:
   )
   [ -S "$1" ] && return 0
   rm "$1"
@@ -69,9 +70,7 @@ file() {
   chmod "$2" "$1"
   #shellcheck disable=SC2034
   perm=$(ls -dl "$1")
-  eval "case \$perm in $3*) return 0; esac"
-  rm "$1"
-  return 1
+  eval "case \$perm in ($3*) true ;; (*) rm \"\$1\"; false; esac"
 }
 
 device() {
@@ -87,19 +86,19 @@ create() {
   [ -e "$2" ] && rm -f "$2"
 
   if "$@"; then
-    echo "[created] '$2'"
+    printf '\033[32m[created]\033[0m %s\n' "$2"
   else
-    echo "[failure] '$2'"
+    printf '\033[31m[failure]\033[0m %s\n' "$2"
   fi
 }
 
 delete() {
-  if [ -e "$2" ]; then
-    if rm -f "$2"; then
-      echo "[deleted] '$2'"
-    else
-    echo "[failure] '$2'"
-    fi
+  [ -e "$2" ] || return 0
+
+  if rm -f "$2"; then
+    printf '\033[32m[deleted]\033[0m %s\n' "$2"
+  else
+    printf '\033[31m[failure]\033[0m %s\n' "$2"
   fi
 }
 

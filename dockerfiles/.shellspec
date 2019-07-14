@@ -1,7 +1,11 @@
 ARG IMAGE
+
+FROM shellspec:mksock as mksock
 FROM $IMAGE
+COPY --from=mksock mksock /usr/local/bin/mksock
 WORKDIR /shellspec
 COPY ./ ./
+COPY ./docker/fake-nc.sh /usr/local/bin/nc
 RUN echo "--no-banner" > .shellspec-local
 ENTRYPOINT [ "./docker/entrypoint.sh" ]
 CMD [ "shellspec" ]

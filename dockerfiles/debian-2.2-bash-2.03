@@ -1,2 +1,2 @@
 FROM lpenz/debian-potato-i386
-ENV SH="bash" DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+ENV SH="bash"

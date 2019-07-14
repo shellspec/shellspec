@@ -1,3 +1,2 @@
 FROM alpine:edge
 ENV SH="busybox ash"
-RUN apk add netcat-openbsd
