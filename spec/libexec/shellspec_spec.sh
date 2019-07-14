@@ -39,7 +39,7 @@ Describe "libexec/shellspec.sh"
 
   Describe "read_ps()"
     Context "when procps format"
-      process() {
+      ps() {
         %text
         #|UID PID PPID C STIME TTY      STAT   TIME CMD
         #|uid   1    2 C Apr30 pts/0    Ss     0:00 -bash
@@ -57,7 +57,7 @@ Describe "libexec/shellspec.sh"
     End
 
     Context "when busybox ps format 1"
-      process() {
+      ps() {
         %text
         #|  PID  Uid     VmSize Stat Command
         #|   88 root       1808 R   ps -f
@@ -71,7 +71,7 @@ Describe "libexec/shellspec.sh"
     End
 
     Context "when busybox ps format 2"
-      process() {
+      ps() {
         %text
         #|  PID USER       VSZ STAT COMMAND
         #|    1 root      1548 S    /sbin/init
@@ -86,7 +86,7 @@ Describe "libexec/shellspec.sh"
     End
 
     Context "when busybox ps format 3"
-      process() {
+      ps() {
         %text
         #|  PID USER    COMMAND
         #|    1 root    /bin/sh
@@ -97,6 +97,40 @@ Describe "libexec/shellspec.sh"
       It "parses and detects shell"
         When call read_ps 111
         The stdout should equal "/bin/sh /usr/local/bin/shellspec"
+      End
+    End
+
+    Context "when unknown format"
+      ps() {
+        %text
+        #|  P1D U5ER    COMMAND
+        #|    1 root
+        #|  001 root
+        #|  111 root
+      }
+
+      It "returns nothing"
+        When call read_ps 111
+        The status should be success
+        The stdout should equal ""
+      End
+    End
+
+    Context "when ps command fails"
+      ps() { echo "unknown option" >&2; exit 1; }
+      It "returns nothing"
+        When call read_ps 111
+        The status should be success
+        The stdout should equal ""
+      End
+    End
+
+    Context "when ps command not found"
+      Before PATH=''
+      It "returns nothing"
+        When call read_ps 111
+        The status should be success
+        The stdout should equal ""
       End
     End
   End
@@ -127,6 +161,66 @@ Describe "libexec/shellspec.sh"
         When call current_shell "/usr/local/bin/shellspec" 111
         The stdout should equal "cmdline"
       End
+    End
+  End
+
+  Describe "command_path()"
+    Before PATH="/foo:/bar:/bin"
+
+    Context 'when absolute path'
+      It "outputs found path"
+        When call command_path "/bin/sh"
+        The stdout should equal "/bin/sh"
+      End
+
+      It "return failure when not found command"
+        When call command_path "/bin/-there-is-not-such-a-command-"
+        The status should be failure
+      End
+    End
+
+    Context 'when command only'
+      It "outputs absolute path"
+        When call command_path "sh"
+        The stdout should equal "/bin/sh"
+      End
+
+      It "return failure when not found command"
+        When call command_path "-there-is-not-such-a-command-"
+        The status should be failure
+      End
+    End
+  End
+
+  Describe "check_range()"
+    It "returns success when passed line number"
+      When call check_range "1"
+      The status should be success
+    End
+
+    It "returns success when passed multiple line number"
+      When call check_range "1:2:3"
+      The status should be success
+    End
+
+    It "returns success when passed id"
+      When call check_range "@1"
+      The status should be success
+    End
+
+    It "returns success when passed multiple id"
+      When call check_range "@1:@2:@3"
+      The status should be success
+    End
+
+    It "returns success when passed mixed line number and id"
+      When call check_range "@1:2:@3:4"
+      The status should be success
+    End
+
+    It "returns fails when passed invalid string"
+      When call check_range "foo"
+      The status should be failure
     End
   End
 End

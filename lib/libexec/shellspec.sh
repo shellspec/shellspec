@@ -20,10 +20,6 @@ read_dot_file() {
   [ $# -eq 0 ] || "$parser" "$@"
 }
 
-process() {
-  ps -f 2>/dev/null
-}
-
 read_cmdline() {
   [ -e "$1" ] || return 0
 
@@ -43,17 +39,17 @@ read_cmdline() {
 }
 
 read_ps() {
-  pid=$1 p=0 c=0 _pid=''
-
-  process | {
-    IFS=" "
+  ps -f 2>/dev/null | {
+    IFS=" " pid=$1 p=0 c=0 _pid=''
     IFS= read -r line
     reset_params '$line'
     eval "$RESET_PARAMS"
+
     for name in "${@:-}"; do
       p=$(($p + 1))
       case $name in ([pP][iI][dD]) break; esac
     done
+
     for name in "${@:-}"; do
       case $name in ([cC][mM][dD] | [cC][oO][mM][mM][aA][nN][dD]) break; esac
       c=$(($c + 1))
@@ -61,11 +57,13 @@ read_ps() {
 
     while IFS= read -r line; do
       eval "$RESET_PARAMS"
-      eval "_pid=\${$p}"
+      eval "_pid=\${$p:-}"
       [ "$_pid" = "$pid" ] && shift $c && line="$*" && break
     done
+
     # workaround for old busybox ps format
     case $line in (\{*) line=${line#*\} }; esac
+
     echo "$line"
   } ||:
 }
@@ -83,7 +81,7 @@ current_shell() {
 
 command_path() {
   case $1 in
-    */*) [ -x "${1%% *}" ] && echo "$1" ;;
+    */*) [ -x "${1%% *}" ] && echo "$1" && return 0 ;;
     *)
       command=$1
       reset_params '$PATH' ':'
