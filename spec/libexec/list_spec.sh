@@ -33,4 +33,16 @@ Describe "libexec/list.sh"
       The line 9 of output should eq "list4"
     End
   End
+
+  Describe "decord_hash_and_filename()"
+    It 'decords hash (unsigned 32bit integer) and filename'
+      When call decord_hash_and_filename 3633671424 "\061\062\063\064"
+      The output should eq "3633671424 1234"
+    End
+
+    It 'decords hash (signed 32bit integer) and filename'
+      When call decord_hash_and_filename -661295872 "\061\062\063\064"
+      The output should eq "3633671424 1234"
+    End
+  End
 End

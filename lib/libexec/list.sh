@@ -23,15 +23,8 @@ shuffle() {
           hash=$(( $hash ^ ((($hash & ${HEX}7FFFF) << 13) & ${HEX}FFFFFFFF) ))
           hash=$(( $hash ^ (($hash >> 17) & ${HEX}7FFF)))
           hash=$(( $hash ^ ((($hash & ${HEX}7FFFFFF) << 5) & ${HEX}FFFFFFFF) ))
-          if [ "$hash" -lt 0 ]; then
-            left=$((42949 + $hash / 100000)) right=$((67296 + $hash % 100000))
-            [ "$right" -lt 0 ] && left=$(($left - 1)) right=$(($right + 100000))
-            printf "%05u%05u $filename\n" "$left" "$right"
-          else
-            printf "%010u $filename\n" "$hash"
-          fi
-          hash=$seed filename=''
-          continue ;;
+          decord_hash_and_filename "$hash" "$filename"
+          hash=$seed && filename='' && continue ;;
         1??) filename="$filename\\$printf_octal_bug$oct" ;;
         *  ) filename="$filename\\$oct" ;;
       esac
@@ -47,4 +40,17 @@ gen_seed() {
     hash=$(( ( ($hash ^ ${OCT}${oct}) * $FNV_PRIME_32) & ${HEX}FFFFFFFF ))
   done
   echo "$hash"
+}
+
+decord_hash_and_filename() {
+  case $1 in
+    -*)
+      set -- "$1" "$2" $((42949 - ${1#-}/100000)) $((67296 - ${1#-}%100000))
+      if [ "$4" -lt 0 ]; then
+        set -- "$1" "$2" $(($3 - 1)) $(($4 + 100000))
+      fi
+      printf "%05u%05u $2\n" "$3" "$4"
+      ;;
+    *) printf "%010u $2\n" "$1"
+  esac
 }
