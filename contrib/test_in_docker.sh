@@ -49,7 +49,7 @@ trap 'exit 1' INT
 trap '[ -f "$iidfile" ] && rm "$iidfile"' EXIT
 
 run() {
-  dockerfile=$1
+  dockerfile=$1 count=0
 
   while [ $# -gt 0 ]; do
     [ "$1" = "--" ] && shift && break
@@ -58,6 +58,7 @@ run() {
 
   echo "======================================================================"
   echo "# $dockerfile: $@"
+  count=$(($count + 1))
   tag="${dockerfile##*/}"
   tag="${tag#.}"
   image="shellspec:$tag"
@@ -78,6 +79,10 @@ run() {
   echo
 }
 
+start=$(date) start_sec=$(date +%s)
 main "$@"
+end=$(date) end_sec=$(date +%s)
 
-echo Done
+echo "$start"
+echo "$end"
+echo "Done [$count tests, $(( ($end_sec - $start_sec) / 60)) min]"

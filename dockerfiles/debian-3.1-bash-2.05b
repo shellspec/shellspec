@@ -1,2 +1,7 @@
 FROM lpenz/debian-sarge-i386
 ENV SH="bash"
+
+RUN apt-get update && apt-get install -y sudo \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && adduser --disabled-password --gecos "" user
+USER user

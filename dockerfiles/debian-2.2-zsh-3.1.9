@@ -1,3 +1,9 @@
 FROM lpenz/debian-potato-i386
 ENV SH="zsh" DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN apt-get update && apt-get -y --force-yes install zsh
+
+RUN apt-get update && apt-get install -y sudo \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && addgroup user \
+ && useradd user -g user
+USER user

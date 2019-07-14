@@ -2,5 +2,11 @@ FROM buildpack-deps
 ARG schily=schily-2019-03-11
 RUN wget -nv -O- --trust-server-names https://sourceforge.net/projects/schilytools/files/${schily}.tar.bz2/download | tar xfj - \
  && cd ${schily} && make install
+
+RUN apt-get update && apt-get install -y sudo
+RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers
+RUN adduser --disabled-password user
+USER user
+
 ENV PATH="/opt/schily/bin:$PATH"
 ENV SH="bosh"
