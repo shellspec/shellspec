@@ -474,4 +474,23 @@ Describe "core/dsl.sh"
       End
     End
   End
+
+  Describe "shellspec_logger()"
+    Context "when SHELLSPEC_LOGFILE=/dev/stdout"
+      Before SHELLSPEC_LOGFILE=/dev/stdout
+      It 'outputs to logfile'
+        When call shellspec_logger "logger test"
+        The stdout should eq "logger test"
+      End
+    End
+
+    Context "when SHELLSPEC_LOGFILE=/dev/null"
+      Before SHELLSPEC_LOGFILE=/dev/null
+      sleep() { echo sleep; }
+      It 'sleeps to make the log easy to read'
+        When call shellspec_logger "logger test"
+        The stdout should eq "sleep"
+      End
+    End
+  End
 End
