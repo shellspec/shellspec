@@ -81,10 +81,6 @@ shellspec_spec_helper_configure() {
     [ "$((99999999 * 999999999))" = "99999998900000000" ]
   }
 
-  xor_not_support_bug() { # ash 0.3.8
-    if (eval ': $((0^0))') 2>/dev/null; then false; else true; fi
-  }
-
   miscalculate_signed_32bit_int_bug() { # yash 2.30 ans = -2147483648
     ans=$((21474836478 ^ 0))
     [ "$ans" = 21474836478 ] && return 1

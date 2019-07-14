@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Drop support for busybox 1.1.3 and similar versions as it can not redefine builtin commands.
+- Drop support for ash 0.3.8 and similar versions as it can not use retrun in sourced script.
 
 ## [0.18.0] - 2019-07-09
 

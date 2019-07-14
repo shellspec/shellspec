@@ -5,7 +5,6 @@ Describe "libexec/list.sh"
 
   Describe "shuffle()"
     Skip if "it has calculation accuracy problem" accuracy_error_bug
-    Skip if "it not support xor" xor_not_support_bug
     Skip if "it can not calculate correctly" miscalculate_signed_32bit_int_bug
 
     Data
