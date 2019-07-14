@@ -1,5 +1,8 @@
 #shellcheck shell=sh
 
+% LIB: "$SHELLSPEC_SPECDIR/fixture/lib"
+% BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
+
 Describe "core/dsl.sh"
   Describe "shellspec_example_group()"
     shellspec_around_invoke() {
@@ -445,6 +448,29 @@ Describe "core/dsl.sh"
       It 'turns on the PENDING switch'
         When invoke shellspec_pending
         The stdout should include 'pending:on'
+      End
+    End
+  End
+
+  Describe "shellspec_include()"
+    Before 'unset SOURCED ||:'
+
+    It 'includes library script'
+      When call shellspec_include "$LIB/lib.sh"
+      The result of "foo()" should eq "foo"
+    End
+
+    Context 'when script is not executable file'
+      It 'not supplies SOURCED variable'
+        When call shellspec_include "$LIB/lib.sh"
+        The variable SOURCED should be undefined
+      End
+    End
+
+    Context 'when script is executable file'
+      It 'supplies SOURCED variable'
+        When call shellspec_include "$BIN/sourced.sh"
+        The variable SOURCED should be defined
       End
     End
   End
