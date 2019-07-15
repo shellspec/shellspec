@@ -1,4 +1,5 @@
 # Built-in commands can not redefine.
 FROM lpenz/debian-etch-i386
-ENV SH="busybox ash" DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN apt-get update && apt-get -y --force-yes install busybox
+RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
+ && apt-get update && apt-get -y install busybox
+ENV SH="busybox ash"

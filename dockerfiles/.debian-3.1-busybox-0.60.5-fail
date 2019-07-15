@@ -1,3 +1,3 @@
 FROM lpenz/debian-sarge-i386
-ENV SH="busybox ash" DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN apt-get update && apt-get -y --force-yes install busybox-static
+RUN apt-get update && apt-get -y install busybox-static
+ENV SH="busybox ash"

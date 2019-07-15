@@ -1,7 +1,6 @@
 FROM alpine:edge
-ENV SH="busybox ash"
-
-RUN apk add --no-cache sudo
-RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers
-RUN adduser user -D
+RUN apk add --no-cache sudo \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && adduser user -D
 USER user
+ENV SH="busybox ash"

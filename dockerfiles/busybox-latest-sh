@@ -1,4 +1,3 @@
 FROM busybox:latest
-ENV SH="busybox ash"
-
 RUN adduser -D user
+ENV SH="busybox ash"

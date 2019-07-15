@@ -1,8 +1,6 @@
 FROM lpenz/debian-sarge-i386
-ENV SH="pdksh" DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN apt-get update && apt-get -y --force-yes install pdksh
-
-RUN apt-get update && apt-get install -y sudo \
+RUN apt-get update && apt-get -y install pdksh sudo \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
  && adduser --disabled-password --gecos "" user
 USER user
+ENV SH="pdksh"

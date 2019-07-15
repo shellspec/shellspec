@@ -25,6 +25,11 @@ USAGE
   exit 0
 fi
 
+LF="
+"
+
+failures='' count=0 failures_count=0 total_count=0
+
 main() {
   options=""
   for arg in "$@"; do
@@ -44,52 +49,105 @@ main() {
   done
 }
 
+finished() {
+  if [ -f "$iidfile" ]; then
+    rm "$iidfile" ||:
+  fi
+
+  if [ "$failures" ]; then
+    echo >&2
+    echo "Failures:" >&2
+    echo "$failures" >&2
+  fi
+}
+
+info() {
+  printf '\033[1;35m%s\033[0m\n' "$*" >&2
+}
+
+grayout() {
+  while IFS= read -r line; do
+    printf '\033[1;30m%s\033[0m\n' "$line" >&2
+  done
+}
+
 iidfile=$(mktemp)
-trap 'exit 1' INT
-trap '[ -f "$iidfile" ] && rm "$iidfile"' EXIT
+trap 'finished; exit 1' INT
+trap 'finished' EXIT
 
 run() {
-  dockerfile=$1 count=0
+  dockerfile=$1
 
   while [ $# -gt 0 ]; do
     [ "$1" = "--" ] && shift && break
     shift
   done
 
-  echo "======================================================================"
-  echo "# $dockerfile: $@"
+  info "======================================================================"
+  info "$dockerfile: $@"
   count=$(($count + 1))
-  tag="${dockerfile##*/}"
-  tag="${tag#.}"
-  image="shellspec:$tag"
+  os="${dockerfile##*/}"
+  os="${os#.}"
+  image="shellspec:$os"
   (
     cd contrib/mksock
-    docker build -t shellspec:mksock .
+    docker build -t shellspec:mksock . | grayout
   )
-  docker build $options -t "$image" - < "$dockerfile"
-  old_iid=$(docker images -q --no-trunc --filter "label=tag1=$image")
-  docker build --iidfile "$iidfile" --label "tag1=$image" --build-arg "IMAGE=$image" . -f "dockerfiles/.shellspec"
-  iid=$(cat "$iidfile")
-  if [ "$old_iid" ] && [ "$iid" != "$old_iid" ]; then
-    docker rmi "$old_iid" > /dev/null
+
+  old_image=$(docker images -q --no-trunc "$image")
+
+  docker build --iidfile "$iidfile" $options - < "$dockerfile" | grayout
+  base_image=$(cat "$iidfile")
+
+  info "Create image from base image: $base_image"
+  docker build --iidfile "$iidfile" -t "$image" --build-arg "IMAGE=$base_image" . -f "dockerfiles/.shellspec" | grayout
+  new_image=$(cat "$iidfile")
+
+  if [ "$old_image" ] && [ "$old_image" != "$new_image" ]; then
+    info "Delete old image $old_image"
+    docker rmi "$old_image" >/dev/null ||:
   fi
-  echo
-  echo "# $dockerfile: $@"
-  docker run -it --rm "$iid" "$@" &&:
+  info
+  info "Starting $dockerfile: $@"
+  info
+  docker run -it --rm "$image" "$@" &&:
   xs=$?
-  echo "exit status: $xs"
-  case $tag in
-    *-fail) ;;
-    *) [ $xs -eq 0 ] || exit 1
-  esac
-  echo
+  info
+  if [ "$xs" -eq 0 ]; then
+    printf '\033[32mexit status: %s\033[0m\n' "$xs" >&2
+  else
+    printf '\033[31mexit status: %s\033[0m %s\n' "$xs" >&2
+    failures="${failures}- ${os} [$xs]${LF}"
+    failures_count=$(($failures_count + 1))
+  fi
+  if [ "$failures_count" -eq 0 ]; then
+    printf '\033[32m%d / %d (failures: %d)\033[0m\n' "$count" "$total_count" "$failures_count" >&2
+  else
+    printf '\033[31m%d / %d (failures: %d)\033[0m\n' "$count" "$total_count" "$failures_count" >&2
+  fi
+  info
 }
+
+count_total() {
+  total_count=0
+  while [ $# -gt 0 ]; do
+    [ "$1" = "--" ] && break
+    total_count=$(($total_count + 1))
+    shift
+  done
+  echo $total_count
+}
+total_count=$(count_total "$@")
 
 start=$(date) start_sec=$(date +%s)
 main "$@"
 end=$(date) end_sec=$(date +%s)
 sec=$(($end_sec - $start_sec))
 
-echo "$start"
-echo "$end"
-echo "Done. $count tests, $sec sec ($(( $sec / 60)) min)"
+echo "$start" >&2
+echo "$end" >&2
+echo "Done. $count tests, $sec sec ($(( $sec / 60)) min)" >&2
+
+if [ "$failures" ]; then
+  exit 1
+fi
