@@ -50,7 +50,7 @@ create_socket_file() {
       sleep 0
     done
     kill $! ||:
-  )
+  ) ||:
   [ -S "$1" ] && return 0
   rm "$1"
   return 1

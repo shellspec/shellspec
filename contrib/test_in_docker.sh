@@ -62,15 +62,21 @@ run() {
   tag="${dockerfile##*/}"
   tag="${tag#.}"
   image="shellspec:$tag"
-  docker build -t shellspec:mksock . -f dockerfiles/.mksock
+  (
+    cd contrib/mksock
+    docker build -t shellspec:mksock .
+  )
   docker build $options -t "$image" - < "$dockerfile"
-  docker build --iidfile "$iidfile" --build-arg "IMAGE=$image" . -f "dockerfiles/.shellspec"
-  id=$(cat "$iidfile")
+  old_iid=$(docker images -q --no-trunc --filter "label=tag1=$image")
+  docker build --iidfile "$iidfile" --label "tag1=$image" --build-arg "IMAGE=$image" . -f "dockerfiles/.shellspec"
+  iid=$(cat "$iidfile")
+  if [ "$old_iid" ] && [ "$iid" != "$old_iid" ]; then
+    docker rmi "$old_iid" > /dev/null
+  fi
   echo
   echo "# $dockerfile: $@"
-  docker run -it --rm "$id" "$@" &&:
+  docker run -it --rm "$iid" "$@" &&:
   xs=$?
-  docker rmi "$id" > /dev/null
   echo "exit status: $xs"
   case $tag in
     *-fail) ;;
@@ -82,7 +88,8 @@ run() {
 start=$(date) start_sec=$(date +%s)
 main "$@"
 end=$(date) end_sec=$(date +%s)
+sec=$(($end_sec - $start_sec))
 
 echo "$start"
 echo "$end"
-echo "Done [$count tests, $(( ($end_sec - $start_sec) / 60)) min]"
+echo "Done. $count tests, $sec sec ($(( $sec / 60)) min)"
