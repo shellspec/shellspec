@@ -24,5 +24,8 @@ int main(int argc, char *argv[])
     if (bind(sock, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
         return 1;
     }
+
+    close(sock);
+
     return 0;
 }

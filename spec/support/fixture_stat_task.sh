@@ -42,14 +42,18 @@ create_socket_file() {
   #shellcheck disable=SC2230
   (
     which nc >/dev/null || return 1
-    $(which nc) -lU "$1" &
+    (
+      $(which nc) -lU "$1"
+      # ksh(?) occasionally fail when nc exits before kill.
+      sleep 3
+    ) &
     s=$(date +%s)
     while [ ! -e "$1" ]; do
       e=$(date +%s)
       [ "$(($e - $s))" -gt 1 ] && break
       sleep 0
     done
-    kill $! ||:
+    kill $!
   ) ||:
   [ -S "$1" ] && return 0
   rm "$1"
@@ -108,7 +112,7 @@ fixture_stat_files() {
   "$1" socket  "$fixture/stat/socket"
   "$1" file    "$fixture/stat/readable"         a=,u+r "-r??"
   "$1" file    "$fixture/stat/writable"         a=,u+w "-?w?"
-  "$1" file    "$fixture/stat/executable"       a=,u+x "-??x"     "#!/bin/sh"
+  "$1" file    "$fixture/stat/executable"       a=,u+x "-??x" "#!/bin/sh"
   "$1" file    "$fixture/stat/no-permission"    a=     "----"
   "$1" file    "$fixture/stat/setuid"           a=,u+s "---S"
   "$1" file    "$fixture/stat/setgid"           a=,g+s "------S"
