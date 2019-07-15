@@ -144,12 +144,13 @@ Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.c
 
 ### Requires
 
-shellspec is implemented in a pure shell script, so what you need is the target shell
-and few basic POSIX compliant command (except `kcov` for optionally coverage).
+shellspec is implemented in a pure shell script with a shell built-in commands and few basic POSIX compliant commands. (except `kcov` for optionally coverage).
 
-Currently used external command:
+Currently used external (not shell built-in) commands.
 
-`date`, `ls`, `mkdir`, `rm`, `printf`, `sleep`, `sort`, `od` (recommends: `ps`, `time`)
+- `date`, `ls`, `mkdir`, `od`, `rm`, `sleep`, `sort`, `time`
+- `ps` (used on systems without procfs, but not required.)
+- `kill`, `printf` (used but almost shell built-in.)
 
 ## Tutorial
 
