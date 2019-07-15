@@ -142,14 +142,14 @@ HERE
   files=$(echo "/"*)
   [ "$files" != "/*" ] && no_problem || affect
 )
-
 (
   title="16: 'command' can not prevent error (bash = 2.03)"
-  ret=$(
+  func() {
     set -e
     command false &&:
     echo ok
-  )
+  }
+  ret=$(func)
   [ "$ret" = "ok" ] && no_problem || affect
 )
 
@@ -192,14 +192,15 @@ HERE
 
 (
   title='21: cat not ignore set -e with eval (pdksh = around 5.2.14 on debian 3.0)'
-  ret=$(
+  func() {
     set -e
     foo() {
       eval "false"
       echo ok
     }
     foo ||:
-  )
+  }
+  ret=$(func)
   [ "$ret" = "ok" ] && no_problem || affect
 )
 
@@ -285,7 +286,8 @@ HERE
 
 (
   title='29: case will be aborted when exit status is error (mksh <= 35.2, pdksh 5.2.14 on debian 2.2)'
-  ret=$( set -e; case 1 in (*) false &&: ;; esac; echo ok )
+  func() { set -e; case 1 in (*) false &&: ;; esac; echo ok; }
+  ret=$(func)
   [ "$ret" = "ok" ] && no_problem || affect
 )
 
@@ -322,6 +324,35 @@ HERE
   title='34: built-in commands can not redefine (busybox = around 1.1.3)'
   whoami() { echo nobody; }
   [ "$(whoami)" = nobody ] && no_problem || affect
+)
+
+(
+  title='35: exit status is not 127 when command not found (zsh <= around 4.0.4)'
+  no-such-command 2>/dev/null &&:
+  [ $? = 127 ] && no_problem || affect
+)
+
+(
+  title='36: exit status is not 127 when command not found and PATH='' (bash <= 4.3)'
+  no-such-command 2>/dev/null &&:
+  if [ $? = 1 ]; then
+    skip 'affected #35'
+  else
+    set -e
+    PATH=''
+    no-such-command 2>/dev/null &&:
+    [ $? = 127 ] && no_problem || affect
+  fi
+)
+
+(
+  title='37: wrong parse command substitution (bosh/posh = 20181030,20190311)'
+$(
+cat << HERE
+HERE
+)
+  ret=$( printf a; printf b )
+  [ "$ret" = "ab" ] && no_problem || affect
 )
 
 echo Done
