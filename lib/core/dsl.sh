@@ -211,7 +211,7 @@ shellspec_pending() {
 shellspec_include() {
   shellspec_if SKIP && return 0
   # shellcheck disable=SC2034
-  [ -x "$1" ] && SOURCED=1
+  SOURCED=1
   eval . ${1+'"$@"'};
 }
 

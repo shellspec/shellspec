@@ -460,18 +460,9 @@ Describe "core/dsl.sh"
       The result of "foo()" should eq "foo"
     End
 
-    Context 'when script is not executable file'
-      It 'not supplies SOURCED variable'
-        When call shellspec_include "$LIB/lib.sh"
-        The variable SOURCED should be undefined
-      End
-    End
-
-    Context 'when script is executable file'
-      It 'supplies SOURCED variable'
-        When call shellspec_include "$BIN/sourced.sh"
-        The variable SOURCED should be defined
-      End
+    It 'supplies SOURCED variable'
+      When call shellspec_include "$BIN/sourced.sh"
+      The variable SOURCED should be defined
     End
   End
 
