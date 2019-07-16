@@ -452,17 +452,21 @@ Describe "core/dsl.sh"
     End
   End
 
-  Describe "shellspec_include()"
+  Describe "Include"
+    Include "$LIB/include.sh" # comment
     Before 'unset SOURCED ||:'
 
-    It 'includes library script'
-      When call shellspec_include "$LIB/lib.sh"
+    It 'includes script'
       The result of "foo()" should eq "foo"
     End
 
     It 'supplies SOURCED variable'
-      When call shellspec_include "$BIN/sourced.sh"
-      The variable SOURCED should be defined
+      The output should be blank
+      The result of "get_sourced()" should eq "$LIB/include.sh"
+    End
+
+    It 'handles readonly correctly'
+      The variable value should eq 123
     End
   End
 

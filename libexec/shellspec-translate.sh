@@ -129,7 +129,11 @@ trans_constant() {
 }
 
 trans_include() {
-  putsn "shellspec_include $1"
+  putsn "if shellspec_unless SKIP; then"
+  putsn "  SOURCED=${1# }"
+  putsn "  . $1"
+  putsn "  unset SOURCED"
+  putsn "fi"
 }
 
 trans_line() {

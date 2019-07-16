@@ -208,13 +208,6 @@ shellspec_pending() {
   shellspec_if FAILED || shellspec_on PENDING
 }
 
-shellspec_include() {
-  shellspec_if SKIP && return 0
-  # shellcheck disable=SC2034
-  SOURCED=1
-  eval . ${1+'"$@"'};
-}
-
 shellspec_logger() {
   sleep 0
   shellspec_putsn "$@" >"$SHELLSPEC_LOGFILE"

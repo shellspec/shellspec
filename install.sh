@@ -1,5 +1,7 @@
 #!/bin/sh
 
+test || __() { :; }
+
 readonly installer="https://git.io/shellspec"
 readonly repo="https://github.com/shellspec/shellspec.git"
 readonly archive="https://github.com/shellspec/shellspec/archive"
@@ -36,15 +38,12 @@ OPTIONS:
   -h, --help            You're looking at it
 USAGE
 
-VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH='' done=''
-
 [ "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
 finish() { done=1; exit "${1:-0}"; }
 error() { printf '\033[31m%s\033[0m\n' "$1"; }
 abort() { [ "${1:-}" ] && error "$1" >&2; finish 1; }
 finished() { [ "$done" ] || error "Failed to install"; }
-trap finished EXIT
 
 exists() {
   ( IFS=:; for p in $PATH; do [ -x "${p%/}/$1" ] && exit 0; done; exit 1 )
@@ -86,14 +85,31 @@ version_sort() {
     ver=${version%%+*} && num=${ver%%-*} && pre=${ver#$num}
     IFS=. && eval 'set -- $num'
     printf '%08d%08d%08d%s %s\n' "$1" "$2" "$3" "${pre:-=}" "$version"
-  done | sort -k 1 "$@" | while read -r keyver; do echo "${keyver#* }"; done
+  done | eval "sort -k 1 ${1:+"$@"}" | while read -r keyvalue; do
+    echo "${keyvalue#* }"
+  done
 }
 
-join() { s='' && while read -r v; do s="$s$v$1"; done && echo "${s%"$1"}"; }
+join() {
+  s=''
+  while read -r v; do
+    s="$s$v$1"
+  done
+  echo "${s%"$1"}"
+}
+
 list_versions() { get_versions | version_sort | join ", "; }
 
 first() { read -r line && echo "$line" && while read -r _; do :; done; }
 latest_version() { get_versions | version_sort -r | first; }
+
+${SOURCED:+return}
+
+trap finished EXIT
+VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH='' done=''
+[ "${ZSH_VERSION:-}" ] && setopt shwordsplit
+
+__ parse-option __
 
 while [ $# -gt 0 ]; do
   case $1 in
@@ -119,6 +135,8 @@ while [ $# -gt 0 ]; do
 done
 
 BIN=${BIN:-${PREFIX%/}/bin} DIR=${DIR:-${PREFIX%/}/opt/$project}
+
+__ main __
 
 case $VERSION in
   .)
