@@ -56,6 +56,7 @@ mapping() {
     After       )   control after       "$2" ;;
     Pending     )   control pending     "$2" ;;
     Skip        )   skip                "$2" ;;
+    Intercept   )   control intercept   "$2" ;;
     Data        )   data raw            "$2" ;;
     Data:raw    )   data raw            "$2" ;;
     Data:expand )   data expand         "$2" ;;

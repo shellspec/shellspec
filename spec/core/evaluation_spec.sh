@@ -143,21 +143,22 @@ Describe "core/evaluation.sh"
       The status should be success
     End
 
-    shellspec_intercept() { :; }
-
     It 'executes script'
       When execute "$BIN/script.sh"
       The status should be success
     End
 
     It 'calls shellspec_intercept'
-      shellspec_intercept() {
-        # You can overrite here
-        printenv() { echo "foobarbaz"; }
+      Intercept intercept
+
+      # You can overrite here
+      __intercept__() {
+        date() { echo "now"; }
       }
-      When execute "$BIN/script.sh" --command printenv
+
+      When execute "$BIN/script.sh" --command date
       The status should be success
-      The stdout should equal "foobarbaz"
+      The stdout should equal "now"
     End
 
     It 'can pass arguments'
@@ -174,6 +175,49 @@ Describe "core/evaluation.sh"
     Specify '"test" return to the original behavior'
       When execute "$BIN/script.sh" --command test
       The status should be failure
+    End
+  End
+
+  Describe 'shellspec_interceptor()'
+    foo() { echo foo; }
+    foo2() { echo foo2; }
+    bar() { printf '%s ' bar "$@"; }
+
+    Context 'when interceptor exists'
+      Before 'SHELLSPEC_INTERCEPTOR="|foo:foo|bar:bar|"'
+
+      It 'calls interceptor'
+        When call shellspec_interceptor foo __
+        The output should eq "foo"
+      End
+
+      It 'calls interceptor with arguments'
+        When call shellspec_interceptor bar 1 2 __
+        The output should eq "bar 1 2 "
+      End
+
+      It 'does not call interceptor without last __'
+        When call shellspec_interceptor foo
+        The output should be blank
+      End
+    End
+
+    Context 'when interceptor overrided'
+      Before 'SHELLSPEC_INTERCEPTOR="|foo:foo|foo:foo2|"'
+
+      It 'calls interceptor'
+        When call shellspec_interceptor foo __
+        The output should eq "foo2"
+      End
+    End
+
+    Context 'when interceptor not exists'
+      Before 'SHELLSPEC_INTERCEPTOR="|foo:foo|bar:bar|"'
+
+      It 'does not call interceptor'
+        When call shellspec_interceptor baz __
+        The output should be blank
+      End
     End
   End
 

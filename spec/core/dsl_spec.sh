@@ -488,4 +488,26 @@ Describe "core/dsl.sh"
       End
     End
   End
+
+  Describe "shellspec_intercept()"
+    It 'registor interceptor with default name'
+      When call shellspec_intercept foo
+      The variable SHELLSPEC_INTERCEPTOR should eq "|foo:__foo__|"
+    End
+
+    It 'registor interceptor with specified name'
+      When call shellspec_intercept foo:bar
+      The variable SHELLSPEC_INTERCEPTOR should eq "|foo:bar|"
+    End
+
+    It 'registor interceptor with same name'
+      When call shellspec_intercept foo:
+      The variable SHELLSPEC_INTERCEPTOR should eq "|foo:foo|"
+    End
+
+    It 'registor multiple interceptors at once'
+      When call shellspec_intercept foo bar
+      The variable SHELLSPEC_INTERCEPTOR should eq "|foo:__foo__|bar:__bar__|"
+    End
+  End
 End

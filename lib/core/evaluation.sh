@@ -98,8 +98,23 @@ shellspec_execute() {
       eval [ ${1+'"$@"'} ]
     fi
   }
-  __() { shellspec_intercept "$@"; }
+  __() { shellspec_interceptor "$@"; }
   eval "shift; . $1"
+}
+
+shellspec_interceptor() {
+  eval "[ \"\${$#}\" = __ ] &&:" || return 0
+  set -- "$@" "$SHELLSPEC_EM"
+  until [ "$2" = "$SHELLSPEC_EM" ]; do
+    set -- "$@" "$1"
+    shift
+  done
+  shift 2
+  case $SHELLSPEC_INTERCEPTOR in (*\|$1:*)
+    eval "shift; set -- \"${SHELLSPEC_INTERCEPTOR##*\|$1:}\" ${2:+\"\$@\"}"
+    eval "shift; set -- \"${1%%\|*}\" ${2:+\"\$@\"}"
+    "$@"
+  esac
 }
 
 shellspec_evaluation_execute() {

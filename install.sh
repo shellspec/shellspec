@@ -109,7 +109,7 @@ trap finished EXIT
 VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH='' done=''
 [ "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
-__ parse-option __
+__ parse_option __
 
 while [ $# -gt 0 ]; do
   case $1 in

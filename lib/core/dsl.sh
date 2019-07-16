@@ -2,6 +2,7 @@
 
 SHELLSPEC_DESCRIPTION=''
 SHELLSPEC_PATH_ALIAS=:
+SHELLSPEC_INTERCEPTOR='|'
 
 # to suppress shellcheck SC2034
 : "${SHELLSPEC_EXPECTATION:-} ${SHELLSPEC_EVALUATION:-}"
@@ -211,6 +212,17 @@ shellspec_pending() {
 shellspec_logger() {
   sleep 0
   shellspec_putsn "$@" >"$SHELLSPEC_LOGFILE"
+}
+
+shellspec_intercept() {
+  while [ $# -gt 0 ]; do
+    case $1 in
+    *: ) SHELLSPEC_INTERCEPTOR="${SHELLSPEC_INTERCEPTOR}$1${1%:}|" ;;
+    *:*) SHELLSPEC_INTERCEPTOR="${SHELLSPEC_INTERCEPTOR}$1|" ;;
+    *  ) SHELLSPEC_INTERCEPTOR="${SHELLSPEC_INTERCEPTOR}$1:__$1__|" ;;
+    esac
+    shift
+  done
 }
 
 shellspec_marker() {
