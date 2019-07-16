@@ -149,7 +149,7 @@ syntax_error() {
   putsn "shellspec_abort 2 \"$1\" \"$2\""
 }
 
-metadata=1 finished=1 ft='' fd=''
+metadata=1 finished=1 ft='' fd='' spec_no=1
 
 for param in "$@"; do
   case $param in
@@ -157,6 +157,7 @@ for param in "$@"; do
     --no-finished) finished='' ;;
     --functrace  ) ft=1 ;;
     --fd=*       ) fd=${param#*=} ;;
+    --spec-no=*  ) spec_no=${param#*=} ;;
     *) set -- "$@" "$param" ;;
   esac
   shift
@@ -180,7 +181,8 @@ specfile() {
     [ "${enabled}" ] && [ "${filter}" ] && example_count=0
 
     putsn "shellspec_marker '$specfile' ---"
-    putsn "(shellspec_begin '$specfile' '$enabled' '$filter'"
+    putsn "(shellspec_begin '$specfile' '$spec_no'"
+    putsn "shellspec_perform '$enabled' '$filter'"
     initialize
     putsn "shellspec_marker '$specfile' BOF"
     translate < "$2"
@@ -189,6 +191,7 @@ specfile() {
     [ "$example_count" ] && example_count=$example_no
     putsn "shellspec_end '$example_count')"
   )
+  spec_no=$(($spec_no + 1))
 }
 eval find_specfiles specfile ${1+'"$@"'}
 

@@ -30,8 +30,12 @@ shellspec_yield() {
 }
 
 shellspec_begin() {
-  SHELLSPEC_SPECFILE=$1 SHELLSPEC_ENABLED=$2 SHELLSPEC_FILTER=$3
+  SHELLSPEC_SPECFILE=$1 SHELLSPEC_SPEC_NO=$2
   shellspec_output BEGIN
+}
+
+shellspec_perform() {
+  SHELLSPEC_ENABLED=$1 SHELLSPEC_FILTER=$2
 }
 
 shellspec_end() {
