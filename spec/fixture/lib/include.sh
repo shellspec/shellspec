@@ -7,8 +7,8 @@ foo() {
   echo foo
 }
 
-eval "get_sourced() { echo '$SOURCED'; }"
+eval "get_sourced() { echo '$__SOURCED__'; }"
 
-${SOURCED:+return}
+${__SOURCED__:+return}
 
 echo "this will not be executed"

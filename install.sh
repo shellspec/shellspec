@@ -103,7 +103,7 @@ list_versions() { get_versions | version_sort | join ", "; }
 first() { read -r line && echo "$line" && while read -r _; do :; done; }
 latest_version() { get_versions | version_sort -r | first; }
 
-${SOURCED:+return}
+${__SOURCED__:+return}
 
 trap finished EXIT
 VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH='' done=''

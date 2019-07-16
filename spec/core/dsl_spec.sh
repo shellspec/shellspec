@@ -454,13 +454,13 @@ Describe "core/dsl.sh"
 
   Describe "Include"
     Include "$LIB/include.sh" # comment
-    Before 'unset SOURCED ||:'
+    Before 'unset __SOURCED__ ||:'
 
     It 'includes script'
       The result of "foo()" should eq "foo"
     End
 
-    It 'supplies SOURCED variable'
+    It 'supplies __SOURCED__ variable'
       The output should be blank
       The result of "get_sourced()" should eq "$LIB/include.sh"
     End
