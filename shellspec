@@ -59,6 +59,7 @@ export SHELLSPEC_PROFILER_PID=''
 export SHELLSPEC_PROFILER_LOG=''
 export SHELLSPEC_PROFILER_LIMIT=10
 export SHELLSPEC_PROFILER_REPORT="profiler.log"
+export SHELLSPEC_DEFECT_READONLY=''
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -371,6 +372,14 @@ fi
 
 if ! (false() { :; }; false); then
   abort "Unsupported shell (builtin commands can not redefine): $SHELLSPEC_SHELL"
+fi
+
+#shellcheck disable=SC2034,SC2234
+if ( [ "$( ( readonly value=123 ) 2>&1 )" ] ) 2>/dev/null; then
+  # Workaround for pdksh 5.2.14 (debian-2.2), ksh 93q, ksh 93r.
+  # Still working but not officially supported.
+  warn "Unsupported shell (defect of readonly): $SHELLSPEC_SHELL"
+  SHELLSPEC_DEFECT_READONLY=1
 fi
 
 if [ "$SHELLSPEC_KCOV" ]; then

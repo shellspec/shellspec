@@ -21,6 +21,10 @@ else
   shellspec_redefinable() { :; }
 fi
 
+if [ "${SHELLSPEC_DEFECT_READONLY:-}" ]; then
+  alias readonly=''
+fi
+
 shellspec_load_requires() {
   shellspec_reset_params '$1' ':'
   eval "$SHELLSPEC_RESET_PARAMS"

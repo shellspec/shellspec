@@ -20,7 +20,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 ![bash](https://img.shields.io/badge/bash-%3E%3D2.03-lightgrey.svg?style=plastic)
 ![busybox](https://img.shields.io/badge/busybox-%3E%3D1.10.2-lightgrey.svg?style=plastic)
 ![dash](https://img.shields.io/badge/dash-%3E%3D0.5.2-lightgrey.svg?style=plastic)
-![ksh](https://img.shields.io/badge/ksh-%3E%3D93q-lightgrey.svg?style=plastic)
+![ksh](https://img.shields.io/badge/ksh-%3E%3D93s-lightgrey.svg?style=plastic)
 ![mksh](https://img.shields.io/badge/mksh-%3E%3D28-lightgrey.svg?style=plastic)
 ![posh](https://img.shields.io/badge/posh-%3E%3D0.3.14-lightgrey.svg?style=plastic)
 ![yash](https://img.shields.io/badge/yash-%3E%3D2.30-lightgrey.svg?style=plastic)
@@ -116,24 +116,24 @@ Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.c
 <details>
 <summary>Tested shell and version (tested with docker)</summary>
 
-| Platform      | bash  | busybox ash | dash     | ksh | mksh | pdksh  | posh   | yash | zsh    |
-| ------------- | ----- | ----------- | -------- | --- | ---- | ------ | ------ | ---- | ------ |
-| alpine latest |       | 1.29.3      |          |     |      |        |        |      |        |
-| alpine edge   |       | 1.30.1      |          |     |      |        |        |      |        |
-| busybox       |       | 1.30.1      |          |     |      |        |        |      |        |
-| debian 2.2    | 2.03  |             |          |     |      | 5.2.14 |        |      | 3.1.9  |
-| debian 3.0    | 2.05a | ~~0.60.2~~  |          |     |      | 5.2.14 |        |      | 4.0.4  |
-| debian 3.1    | 2.05b | ~~0.60.5~~  | 0.5.2    | 93q |      | 5.2.14 | 0.3.14 |      | 4.2.5  |
-| debian 4.0    | 3.1   | ~~1.1.3~~   | 0.5.3    | 93r | 28   | 5.2.14 | 0.5.4  |      | 4.3.2  |
-| debian 5.0    | 3.2   | 1.10.2      | 0.5.4    | 93s | 35.2 | 5.2.14 | 0.6.13 |      | 4.3.6  |
-| debian 6      | 4.1.5 | 1.17.1      | 0.5.5.1  | 93s | 39   | 5.2.14 | 0.8.5  |      | 4.3.10 |
-| debian 7      | 4.2   | 1.20.0      | 0.5.7    | 93u | 40.9 |        | 0.10.2 | 2.30 | 4.3.17 |
-| debian 8      | 4.3   | 1.22.0      | 0.5.7    | 93u | 50d  |        | 0.12.3 | 2.36 | 5.0.7  |
-| debian 9      | 4.4   | 1.22.0      | 0.5.8    | 93u | 54   |        | 0.12.6 | 2.43 | 5.3.1  |
-| debian 10     | 5.0.3 | 1.30.1      | 0.5.10.2 | 93u | 57   |        | 0.13.2 | 2.48 | 5.7.1  |
-| Ubuntu 16.04  |       |             |          |     | 52c  |        |        |      | 5.1.1  |
-| Ubuntu 18.04  |       | 1.27.2      |          |     | 56c  |        | 0.13.1 |      | 5.4.2  |
-| Ubuntu 19.04  |       |             |          |     |      |        |        |      | 5.5.1  |
+| Platform      | bash  | busybox ash | dash     | ksh     | mksh | pdksh      | posh   | yash | zsh    |
+| ------------- | ----- | ----------- | -------- | ------- | ---- | ---------- | ------ | ---- | ------ |
+| alpine latest |       | 1.29.3      |          |         |      |            |        |      |        |
+| alpine edge   |       | 1.30.1      |          |         |      |            |        |      |        |
+| busybox       |       | 1.30.1      |          |         |      |            |        |      |        |
+| debian 2.2    | 2.03  |             |          |         |      | ~~5.2.14~~ |        |      | 3.1.9  |
+| debian 3.0    | 2.05a | ~~0.60.2~~  |          |         |      | 5.2.14     |        |      | 4.0.4  |
+| debian 3.1    | 2.05b | ~~0.60.5~~  | 0.5.2    | ~~93q~~ |      | 5.2.14     | 0.3.14 |      | 4.2.5  |
+| debian 4.0    | 3.1   | ~~1.1.3~~   | 0.5.3    | ~~93r~~ | 28   | 5.2.14     | 0.5.4  |      | 4.3.2  |
+| debian 5.0    | 3.2   | 1.10.2      | 0.5.4    | 93s     | 35.2 | 5.2.14     | 0.6.13 |      | 4.3.6  |
+| debian 6      | 4.1.5 | 1.17.1      | 0.5.5.1  | 93s     | 39   | 5.2.14     | 0.8.5  |      | 4.3.10 |
+| debian 7      | 4.2   | 1.20.0      | 0.5.7    | 93u     | 40.9 |            | 0.10.2 | 2.30 | 4.3.17 |
+| debian 8      | 4.3   | 1.22.0      | 0.5.7    | 93u     | 50d  |            | 0.12.3 | 2.36 | 5.0.7  |
+| debian 9      | 4.4   | 1.22.0      | 0.5.8    | 93u     | 54   |            | 0.12.6 | 2.43 | 5.3.1  |
+| debian 10     | 5.0.3 | 1.30.1      | 0.5.10.2 | 93u     | 57   |            | 0.13.2 | 2.48 | 5.7.1  |
+| Ubuntu 16.04  |       |             |          |         | 52c  |            |        |      | 5.1.1  |
+| Ubuntu 18.04  |       | 1.27.2      |          |         | 56c  |            | 0.13.1 |      | 5.4.2  |
+| Ubuntu 19.04  |       |             |          |         |      |            |        |      | 5.5.1  |
 
 * **The version of strikethrough is does NOT work**
 * The shell that includes with the supported os is the main support. The old shell has been tested, but support may be discontinued.
