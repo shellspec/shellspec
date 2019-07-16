@@ -1,15 +1,15 @@
 # References
 
-- [Example Group](#example-group)
-- [Example](#example)
-  - [Evaluation](#evaluation)
-  - [Expectation](#expectation)
-    - [Subject](#subject)
-    - [Modifier](#modifier)
-    - [Matcher](#matcher)
-- [Helper](#helper)
-- [Directive](#directive)
-- [Envronment Variables](#envronment-variables)
+- [Example Group](#Example-Group)
+- [Example](#Example)
+  - [Evaluation](#Evaluation)
+  - [Expectation](#Expectation)
+    - [Subject](#Subject)
+    - [Modifier](#Modifier)
+    - [Matcher](#Matcher)
+- [Helper](#Helper)
+- [Directive](#Directive)
+- [Envronment Variables](#Envronment-Variables)
 
 ## Example Group
 
@@ -33,13 +33,14 @@ You can write structured *Example* by below DSL.
 
 The line start with `When` is the evaluation. The evaluation type follows after `When`.
 
-| evaluation type                    | Description                                             |
-| :--------------------------------- | :------------------------------------------------------ |
-| call `<FUNCTION> [ARGUMENTS...]`   | Execute shell function or external command.             |
-| call `<STRING> [ARGUMENTS...]`     | Eval string and execute.                                |
-| invoke `<FUNCTION> [ARGUMENTS...]` | Execute shell function or external command in subshell. |
-| invoke `<STRING> [ARGUMENTS...]`   | Eval string and execute in subshell.                    |
-| run `<FUNCTION> [ARGUMENTS...]`    | Execute external command.                               |
+| evaluation type                    | Description                                          |
+| :--------------------------------- | :--------------------------------------------------- |
+| call `<FUNCTION> [ARGUMENTS...]`   | Call shell function or external command.             |
+| call `<STRING> [ARGUMENTS...]`     | Eval string and execute.                             |
+| invoke `<FUNCTION> [ARGUMENTS...]` | Call shell function or external command in subshell. |
+| invoke `<STRING> [ARGUMENTS...]`   | Eval string and execute in subshell.                 |
+| run `<FUNCTION> [ARGUMENTS...]`    | Run external command.                                |
+| execute `<SCRIPT> [ARGUMENTS...]`  | Execute shell script file.                           |
 
 Normally you will use `call`. `invoke` is similar to `call` but execute in subshell.
 `invoke` usefull for *override function in evaluation only* and trap `exit`.
@@ -144,7 +145,8 @@ other
 | Data `"<STRING>"`<br>Data `'<STRING>'`         | Use string for stdin data for evaluation.         |
 | Skip `<REASON>`                                | Skip current block.                               |
 | Skip if `<REASON>` `<FUNCTION> [ARGUMENTS...]` | Skip current block with conditional.              |
-| Pending  `<REASON>`                            | Pending current block.                            |
+| Pending `<REASON>`                             | Pending current block.                            |
+| Intercept `[NAMES...]`                         | Define an interceptor.                            |
 
 ## Directive
 

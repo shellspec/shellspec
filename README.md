@@ -76,7 +76,7 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [%puts / %putsn (output)](#puts--putsn-output)
     - [%logger](#logger)
   - [Mock and Stub](#Mock-and-Stub)
-  - [Testing for a single script file](#Testing-for-a-single-script-file)
+  - [Testing a single file script.](#Testing-a-single-file-script)
 - [For developer](#For-developer)
 - [Version history](#Version-history)
 
@@ -770,7 +770,7 @@ Describe 'mock stub sample'
 End
 ```
 
-### Testing for a single script file
+### Testing a single file script.
 
 **TODO** (Currently developed)
 
