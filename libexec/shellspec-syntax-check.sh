@@ -7,7 +7,16 @@ set -eu
 
 exit_status='' syntax_error=''
 
-trans() { :; }
+trans() {
+  case $1 in (constant)
+    # shellcheck disable=SC2145
+    "trans_$@"
+  esac
+}
+
+trans_constant() {
+  eval "$1=\\'$2\\'"
+}
 
 syntax_error() {
   putsn "Syntax error: $1 in $specfile line $lineno${2+:}${2:-}" >&2
