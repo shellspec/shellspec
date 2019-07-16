@@ -1,4 +1,5 @@
 #!/bin/sh
+#shellcheck disable=SC2004
 
 set -eu
 

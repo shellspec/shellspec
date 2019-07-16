@@ -59,8 +59,9 @@ if [ "${ZSH_VERSION:-}" ] && (exit 1); then
   # Implemented for "execute evaluation", but discontinue support
   # if any more problems are found.
   shellspec_evaluation_invoke_wrapper() {
-    ( : ) & # Use $! as a unique ID
-    SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_TMPBASE/$$.exit_codes.$!"
+    SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_TMPBASE/$$.exit_codes"
+    SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_ZSH_EXIT_CODES.$SHELLSPEC_SPEC_NO"
+    SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_ZSH_EXIT_CODES.$SHELLSPEC_EXAMPLE_NO"
     : > "$SHELLSPEC_ZSH_EXIT_CODES"
     (
       # "unset status" causes an error and forces exit instead of "exit"
