@@ -43,6 +43,7 @@ export SHELLSPEC_PATTERN="*_spec.sh"
 export SHELLSPEC_UNIXTIME=''
 export SHELLSPEC_TMPDIR=${TMPDIR:-/tmp}
 export SHELLSPEC_LOGFILE=/dev/tty
+export SHELLSPEC_KEEP_TEMPDIR=''
 export SHELLSPEC_DEFAULT_PATH=spec
 export SHELLSPEC_INFILE=file
 export SHELLSPEC_RANDOM=''
@@ -140,6 +141,7 @@ Usage: shellspec [options] [files or directories]
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
       --[no-]warning-as-failure       Treat warning as failure [default: enabled]
       --dry-run                       Print the formatter output without running any examples
+      --keep-tempdir                  Do not cleanup temporary directory [default: disabled]
 
   **** Output ****
 
@@ -253,6 +255,7 @@ parse_options() {
         SHELLSPEC_JOBS=$2
         shift ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
+      --keep-tempdir) SHELLSPEC_KEEP_TEMPDIR=1 ;;
       --focus) SHELLSPEC_FOCUS_FILTER=1 ;;
       --pattern) [ "${2:-}" ] || abort 'Require PATTERN.'
         SHELLSPEC_PATTERN=$2

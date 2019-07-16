@@ -30,6 +30,11 @@ stop_profiler() {
   SHELLSPEC_PROFILER_PID=''
 }
 
+if [ "$SHELLSPEC_KEEP_TEMPDIR" ]; then
+  warn "Keeping temporary directory. "
+  warn "Manually delete: rm -rf \"$SHELLSPEC_TMPBASE\""
+fi
+
 mktempdir "$SHELLSPEC_TMPBASE"
 cleanup() {
   if (trap - INT) 2>/dev/null; then trap '' INT; fi
@@ -40,7 +45,9 @@ cleanup() {
   fi
   tmpbase="$SHELLSPEC_TMPBASE"
   SHELLSPEC_TMPBASE=''
-  rmtempdir "$tmpbase"
+  if [ ! "$SHELLSPEC_KEEP_TEMPDIR" ]; then
+    rmtempdir "$tmpbase"
+  fi
   if [ -f "$SHELLSPEC_KCOV_IN_FILE" ]; then
     rm "$SHELLSPEC_KCOV_IN_FILE"
   fi
