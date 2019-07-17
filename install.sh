@@ -46,7 +46,7 @@ abort() { [ "${1:-}" ] && error "$1" >&2; finish 1; }
 finished() { [ "$done" ] || error "Failed to install"; }
 
 exists() {
-  ( IFS=:; for p in $PATH; do [ -x "${p%/}/$1" ] && exit 0; done; exit 1 )
+  ( IFS=:; for p in $PATH; do [ -x "${p%/}/$1" ] && return 0; done; return 1 )
 }
 
 prompt() {
@@ -58,16 +58,16 @@ prompt() {
 
 fetch() {
   case $FETCH in
-    curl) curl -sSfLI -o /dev/null "$1" && curl -SfL "$1" ;;
-    wget) wget -q --spider "$1" && wget -O- "$1" ;;
+    curl) curl --head -sSfL -o /dev/null "$1" && curl -SfL "$1" ;;
+    wget) wget --spider -q "$1" && wget -O- "$1" ;;
   esac | unarchive "$2" &&:
-  error=$? && [ "$error" -ne 0 ] && [ -d "$DIR" ] && rmdir "$DIR"
+  error=$? && [ "$error" -ne 0 ] && [ -d "$2" ] && rmdir "$2"
   return "$error"
 }
 
 unarchive() {
   mkdir -p "$1"
-  tar xzf - -C "$1" --strip-components 1
+  tar x -z --strip-components 1 -f - -C "$1"
 }
 
 git_remote_tags() {
@@ -78,16 +78,16 @@ git_remote_tags() {
   done
 }
 
-get_versions() { git_remote_tags "${PRE:+--pre}"; }
+get_versions() {
+  git_remote_tags "${PRE:+--pre}"
+}
 
 version_sort() {
   while read -r version; do
     ver=${version%%+*} && num=${ver%%-*} && pre=${ver#$num}
     IFS=. && eval 'set -- $num'
     printf '%08d%08d%08d%s %s\n' "$1" "$2" "$3" "${pre:-=}" "$version"
-  done | eval "sort -k 1 ${1:+"$@"}" | while read -r keyvalue; do
-    echo "${keyvalue#* }"
-  done
+  done | sort -k 1 | while read -r kv; do echo "${kv#* }"; done
 }
 
 join() {
@@ -98,16 +98,26 @@ join() {
   echo "${s%"$1"}"
 }
 
-list_versions() { get_versions | version_sort | join ", "; }
+last() {
+  version=''
+  while read -r v; do
+    version=$v
+  done
+  echo "$version"
+}
 
-first() { read -r line && echo "$line" && while read -r _; do :; done; }
-latest_version() { get_versions | version_sort -r | first; }
+list_versions() {
+  get_versions | version_sort | join ", "
+}
+
+latest_version() {
+  get_versions | version_sort | last
+}
 
 ${__SOURCED__:+return}
 
 trap finished EXIT
 VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH='' done=''
-[ "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
 __ parse_option __
 
@@ -141,7 +151,6 @@ __ main __
 case $VERSION in
   .)
     method=local DIR=$PWD
-    [ -d "$DIR" ] || abort "Not found installation directory: '$DIR'"
     [ -x "$DIR/$exec" ] || abort "Not found '$exec' in installation directory: '$DIR'"
     VERSION=$("$DIR/$exec" --version)
     ;;
