@@ -87,7 +87,9 @@ device() {
 }
 
 create() {
-  [ -e "$2" ] && rm -f "$2"
+  if [ -e "$2" ] || [ -L "$2" ]; then
+    rm -f "$2"
+  fi
 
   if "$@"; then
     printf '\033[32m[created]\033[0m %s\n' "$2"
@@ -97,7 +99,9 @@ create() {
 }
 
 delete() {
-  [ -e "$2" ] || return 0
+  if [ ! -e "$2" ] && [ ! -L "$2" ]; then
+    return 0
+  fi
 
   if rm -f "$2"; then
     printf '\033[32m[deleted]\033[0m %s\n' "$2"
