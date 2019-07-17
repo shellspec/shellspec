@@ -558,4 +558,15 @@ Describe "general.sh"
       End
     End
   End
+
+  Describe "shellspec_chomp()"
+    set_var() {
+      var="string${SHELLSPEC_LF}${SHELLSPEC_LF}${SHELLSPEC_LF}"
+    }
+    Before set_var
+    It "removes trailing LF"
+      When call shellspec_chomp var
+      The value "$var" should eq "string"
+    End
+  End
 End

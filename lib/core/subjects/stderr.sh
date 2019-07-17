@@ -10,7 +10,8 @@ shellspec_syntax_alias 'shellspec_subject_entire_error' 'shellspec_subject_entir
 
 shellspec_subject_stderr() {
   if [ ${SHELLSPEC_STDERR+x} ]; then
-    SHELLSPEC_SUBJECT=$(shellspec_putsn "${SHELLSPEC_STDERR:-}")
+    SHELLSPEC_SUBJECT=${SHELLSPEC_STDERR:-}
+    shellspec_chomp SHELLSPEC_SUBJECT
   else
     unset SHELLSPEC_SUBJECT ||:
   fi

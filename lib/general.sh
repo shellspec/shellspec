@@ -396,3 +396,12 @@ shellspec_shift10() {
 
   eval "$1=$2"
 }
+
+shellspec_chomp() {
+  SHELLSPEC_EVAL="
+    until case \$$1 in (*\$SHELLSPEC_LF) false; esac; do \
+      $1=\${$1%\$SHELLSPEC_LF}; \
+    done
+  "
+  eval "$SHELLSPEC_EVAL"
+}

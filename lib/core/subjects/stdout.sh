@@ -10,7 +10,8 @@ shellspec_syntax_alias 'shellspec_subject_entire_output' 'shellspec_subject_enti
 
 shellspec_subject_stdout() {
   if [ ${SHELLSPEC_STDOUT+x} ]; then
-    SHELLSPEC_SUBJECT=$(shellspec_putsn "${SHELLSPEC_STDOUT:-}")
+    SHELLSPEC_SUBJECT=${SHELLSPEC_STDOUT:-}
+    shellspec_chomp SHELLSPEC_SUBJECT
   else
     unset SHELLSPEC_SUBJECT ||:
   fi
