@@ -236,7 +236,7 @@ Describe "general.sh"
     _find() {
       shellspec_find callback "$@"
       eval "$SHELLSPEC_RESET_PARAMS"
-      shellspec_puts "$@"
+      echo "$@"
     }
 
     It 'calls callback with index and value'
@@ -246,7 +246,7 @@ Describe "general.sh"
   End
 
   Describe 'shellspec_sequence()'
-    callback() { shellspec_puts "$1,"; }
+    callback() { %- "$1,"; }
 
     It 'calls callback with sequence of numbers'
       When call shellspec_sequence callback 1 5
@@ -420,7 +420,7 @@ Describe "general.sh"
 
   Describe 'shellspec_passthrough()'
     passthrough() {
-      shellspec_puts "$1" | shellspec_passthrough
+      %- "$1" | shellspec_passthrough
     }
 
     It "passes through to stdout from stdin"

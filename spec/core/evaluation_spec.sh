@@ -21,8 +21,10 @@ Describe "core/evaluation.sh"
     End
 
     It 'not restore mocked function after evaluation'
-      echo_foo() { shellspec_puts 'foo'; }
-      mock_foo() { echo_foo() { shellspec_puts 'FOO'; }; }
+      echo_foo() { echo 'foo'; }
+      mock_foo() {
+        echo_foo() { echo 'FOO'; }
+      }
       When call mock_foo
       The result of 'echo_foo()' should equal 'FOO'
     End
@@ -91,8 +93,10 @@ Describe "core/evaluation.sh"
     End
 
     It 'restore mocked function after evaluation'
-      echo_foo() { shellspec_puts 'foo'; }
-      mock_foo() { echo_foo() { shellspec_puts 'FOO'; }; }
+      echo_foo() { echo 'foo'; }
+      mock_foo() {
+        echo_foo() { echo 'FOO'; }
+      }
       When invoke mock_foo
       The result of 'echo_foo()' should equal 'foo'
     End
