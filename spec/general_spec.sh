@@ -424,13 +424,13 @@ Describe "general.sh"
     }
 
     It "passes through to stdout from stdin"
-      When call passthrough "a${SHELLSPEC_LF}b${SHELLSPEC_LF}"
-      The entire output should equal "a${SHELLSPEC_LF}b${SHELLSPEC_LF}"
+      When call passthrough "a${LF}b${LF}"
+      The entire output should equal "a${LF}b${LF}"
     End
 
     It "passes through data that not end with LF"
-      When call passthrough "a${SHELLSPEC_LF}b"
-      The entire output should equal "a${SHELLSPEC_LF}b"
+      When call passthrough "a${LF}b"
+      The entire output should equal "a${LF}b"
     End
   End
 
@@ -561,7 +561,7 @@ Describe "general.sh"
 
   Describe "shellspec_chomp()"
     set_var() {
-      var="string${SHELLSPEC_LF}${SHELLSPEC_LF}${SHELLSPEC_LF}"
+      var="string${LF}${LF}${LF}"
     }
     Before set_var
     It "removes trailing LF"
