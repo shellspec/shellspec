@@ -37,11 +37,6 @@ Describe "core/evaluation.sh"
       The stdout should equal 'cleanup: 123'
     End
 
-    It 'accepts evaluatable string'
-      When call 'echo "$@"' 1 2 3
-      The stdout should equal '1 2 3'
-    End
-
     It 'ensures errno 0 before evaluating function'
       relay_errno() { return ${?}; }
       When call relay_errno
@@ -116,11 +111,6 @@ Describe "core/evaluation.sh"
       evaluation() { return 123; }
       When invoke shellspec_evaluation_invoke evaluation
       The stdout should equal 'cleanup: 123'
-    End
-
-    It 'accepts evaluatable string'
-      When invoke 'echo "$@"' 1 2 3
-      The stdout should equal '1 2 3'
     End
 
     It 'ensures errno 0 before calling external command'

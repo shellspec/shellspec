@@ -12,11 +12,6 @@ shellspec_syntax 'shellspec_evaluation_execute'
 shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
 shellspec_evaluation_call() {
-  if ! shellspec_is funcname "$1"; then
-    eval "shellspec_evaluation_eval() { $1; }"
-    shift
-    eval set -- shellspec_evaluation_eval ${1+'"$@"'}
-  fi
   if [ "${SHELLSPEC_DATA:-}" ]; then
     set -- shellspec_evaluation_with_data "$@"
   fi
@@ -38,11 +33,6 @@ shellspec_evaluation_run() {
 shellspec_around_invoke() { "$@"; }
 
 shellspec_evaluation_invoke() {
-  if ! shellspec_is funcname "$1"; then
-    eval "shellspec_evaluation_eval() { $1; }"
-    shift
-    eval set -- shellspec_evaluation_eval ${1+'"$@"'}
-  fi
   if [ "${SHELLSPEC_DATA:-}" ]; then
     set -- shellspec_evaluation_with_data "$@"
   fi

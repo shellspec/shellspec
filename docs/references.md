@@ -33,14 +33,12 @@ You can write structured *Example* by below DSL.
 
 The line start with `When` is the evaluation. The evaluation type follows after `When`.
 
-| evaluation type                    | Description                                          |
-| :--------------------------------- | :--------------------------------------------------- |
-| call `<FUNCTION> [ARGUMENTS...]`   | Call shell function or external command.             |
-| call `<STRING> [ARGUMENTS...]`     | Eval string and execute.                             |
-| invoke `<FUNCTION> [ARGUMENTS...]` | Call shell function or external command in subshell. |
-| invoke `<STRING> [ARGUMENTS...]`   | Eval string and execute in subshell.                 |
-| run `<FUNCTION> [ARGUMENTS...]`    | Run external command.                                |
-| execute `<SCRIPT> [ARGUMENTS...]`  | Execute shell script file.                           |
+| evaluation type                             | Description                                          |
+| :------------------------------------------ | :--------------------------------------------------- |
+| call `<FUNCTION | COMMAND> [ARGUMENTS...]`  | Call shell function or external command.             |
+| invoke `<FUNCTION| COMMAND> [ARGUMENTS...]` | Call shell function or external command in subshell. |
+| run `<COMMAND> [ARGUMENTS...]`              | Run external command.                                |
+| execute `<SCRIPT> [ARGUMENTS...]`           | Execute shell script file.                           |
 
 Normally you will use `call`. `invoke` is similar to `call` but execute in subshell.
 `invoke` usefull for *override function in evaluation only* and trap `exit`.
