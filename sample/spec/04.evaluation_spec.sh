@@ -19,11 +19,6 @@ Describe 'evaluation sample'
       The output should eq "be called"
     End
 
-    It 'calls evaluable string'
-      When call 'echo "$1" | bc' '2+2'
-      The output should eq 4
-    End
-
     It 'must be one call each example'
       When call echo 1
       When call echo 2 # can not be called more than once.
