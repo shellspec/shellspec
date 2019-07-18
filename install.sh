@@ -57,7 +57,7 @@ prompt() {
 }
 
 fetch() {
-  tmpfile=$(mktemp)
+  tmpfile=$(mktemp -t shellspec.XXXXXXXX)
   case $FETCH in
     curl) curl --head -sSfL -o /dev/null "$1" && curl -SfL "$1" ;;
     wget) wget --spider -q "$1" && wget -O- "$1" ;;

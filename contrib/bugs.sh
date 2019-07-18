@@ -206,7 +206,7 @@ HERE
 
 (
   title='22: internal error: j_async: bad nzombie (0) (posh = around 0.6.13)'
-  file=$(mktemp tmp.XXXXXXXXXX)
+  file=$(mktemp -t shellspec.XXXXXXXX)
   (
     sleep 0 &
     wait $!
@@ -222,7 +222,7 @@ HERE
 
 (
   title='23: can not read after reading null character (yash = around 2.46)'
-  file=$(mktemp tmp.XXXXXXXXXX)
+  file=$(mktemp -t shellspec.XXXXXXXX)
   printf 'foo\0bar' > "$file"
   IFS= read -r ret < "$file"
   IFS= read -r ret <<HERE

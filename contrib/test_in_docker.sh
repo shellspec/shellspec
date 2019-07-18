@@ -71,7 +71,7 @@ grayout() {
   done
 }
 
-iidfile=$(mktemp)
+iidfile=$(mktemp -t shellspec.XXXXXXXX)
 trap 'finished; exit 1' INT
 trap 'finished' EXIT
 

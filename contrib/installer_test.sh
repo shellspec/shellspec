@@ -8,7 +8,8 @@
 
 set -eu
 
-iid='' iidfile=$(mktemp) dockerfile="dockerfiles/.installer-test"
+iid='' iidfile=$(mktemp -t shellspec.XXXXXXXX)
+dockerfile="dockerfiles/.installer-test"
 
 cleanup() {
   [ -f "$iidfile" ] && rm "$iidfile"
