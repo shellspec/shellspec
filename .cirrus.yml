@@ -17,6 +17,8 @@ gitbash_task:
   env:
     PATH: $ProgramFiles\Git\bin;$PATH
   prepare_script:
+    - bash -c "LANG=C env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
+    - bash -c "mount"
     - bash -c "./shellspec --task fixture:stat:prepare"
   script:
     - bash -c "contrib/all.sh contrib/various_test.sh"
@@ -32,6 +34,8 @@ msys_task:
     - pacman.exe -Syu --noconfirm
     - pacman.exe -S --noconfirm dash bash busybox mksh zsh
   prepare_script:
+    - bash -c "LANG=C env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
+    - bash -c "mount"
     - bash -c "./shellspec --task fixture:stat:prepare"
   script:
     - bash -c "contrib/all.sh shellspec"
@@ -46,6 +50,8 @@ cygwin_task:
     - choco install -y cygwin cyg-get
     - cyg-get nc dash bash busybox mksh posh zsh
   prepare_script:
+    - bash -c "LANG=C env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
+    - bash -c "mount"
     - bash -c "./shellspec --task fixture:stat:prepare"
     # I don't know why but tests using below files fail in cirrus ci environment.
     - bash -c "rm -f ./spec/fixture/stat/{readable,writable}"
