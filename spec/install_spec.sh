@@ -44,14 +44,13 @@ Describe "./install.sh"
   }
 
   Describe "exists()"
-    Before "PATH=/usr/local/bin:/usr/bin:/bin:/foo:$FIXTURE"
     It 'returns success when found executable file'
-      When call exists executable.sh
+      When call exists sh
       The status should be success
     End
 
     It 'returns success when not found executable file'
-      When call exists not-executable.sh
+      When call exists no-such-command
       The status should be failure
     End
   End
