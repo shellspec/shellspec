@@ -4,7 +4,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 **Let’s test the your shell script!**
 
-![demo](misc/demo.gif)
+![demo](docs/demo.gif)
 
 [![Travis CI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/shellspec/shellspec)
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI)](https://cirrus-ci.com/github/shellspec/shellspec)
