@@ -120,5 +120,13 @@ Describe 'Data helper'
       When call output
       The output should eq 'ABC'
     End
+
+    Describe 'file style'
+      It 'reads data from file'
+        Data < "$FIXTURE/file"
+        When call output
+        The output should eq 'this is not empty'
+      End
+    End
   End
 End

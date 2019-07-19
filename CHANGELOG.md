@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add installer (It has not been officially released, but you can used it already).
 - Testing for single script file (Add `execute` evaluation, `Intercept` and `__SOURCED__` variable).
 - Add `--keep-tempdir` option.
+- Add `Data < <FILE>` syntax.
 
 ### Removed
 

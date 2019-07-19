@@ -154,13 +154,10 @@ skip() {
 }
 
 data() {
-  data_line=''
-  trim data_line "${2:-}"
-
   eval trans data_begin ${1+'"$@"'}
-  case $data_line in
+  case ${2:-} in
     '' | \#* | \|*)
-      trans data_here_begin "$1" "$data_line"
+      trans data_here_begin "$1" "${2:-}"
       while IFS= read -r line || [ "$line" ]; do
         lineno=$(($lineno + 1))
         trim line "$line"
@@ -172,8 +169,9 @@ data() {
         esac
       done
       trans data_here_end ;;
-    \'* | \"*) trans data_text "$data_line" ;;
-    *) trans data_func "$data_line" ;;
+    \'* | \"*) trans data_text "$2" ;;
+    \<*) trans data_file "$2" ;;
+    *) trans data_func "$2" ;;
   esac
   eval trans data_end ${1+'"$@"'}
 }

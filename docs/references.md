@@ -141,6 +141,7 @@ other
 | Data `[ | FILTER ]`... End                     | Define stdin data for evaluation.                 |
 | Data `<FUNCTION> [ARGUMENTS...] [ | FILTER ]`  | Use function for stdin data for evaluation.       |
 | Data `"<STRING>"`<br>Data `'<STRING>'`         | Use string for stdin data for evaluation.         |
+| Data `< <FILE> [ | FILTER ]`                   | Use file for stdin data for evaluation.           |
 | Skip `<REASON>`                                | Skip current block.                               |
 | Skip if `<REASON>` `<FUNCTION> [ARGUMENTS...]` | Skip current block with conditional.              |
 | Pending `<REASON>`                             | Pending current block.                            |

@@ -97,6 +97,10 @@ trans_data_func() {
   putsn "  $1"
 }
 
+trans_data_file() {
+  putsn "cat ${1#<}"
+}
+
 trans_data_end() {
   putsn "}"
   putsn "SHELLSPEC_DATA=1"

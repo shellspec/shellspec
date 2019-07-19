@@ -148,7 +148,7 @@ shellspec is implemented in a pure shell script with a shell built-in commands a
 
 Currently used external (not shell built-in) commands.
 
-- `date`, `ls`, `mkdir`, `od`, `rm`, `sleep`, `sort`, `time`
+- `cat`, `date`, `ls`, `mkdir`, `od`, `rm`, `sleep`, `sort`, `time`
 - `ps` (used on systems without procfs, but not required.)
 - `kill`, `printf` (used but almost shell built-in.)
 
