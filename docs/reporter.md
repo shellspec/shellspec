@@ -1,4 +1,6 @@
-# shellspec reporting protocol
+# Reporter
+
+## Reporting protocol
 
 ```
 | pair   | type      | number of times                 |
@@ -12,7 +14,7 @@
 |        | finished  | 1                               |
 ```
 
-## types
+### types
 
 | type      | fields                                                       |
 | --------- | ------------------------------------------------------------ |
@@ -24,7 +26,7 @@
 | end       |                                                              |
 | finished  |                                                              |
 
-## statement type
+### statement type
 
 | tag        | fields                                     |
 | ---------- | ------------------------------------------ |
@@ -35,7 +37,7 @@
 | skip       | note, fail:,  message, skipid, conditional |
 | pending    | note, fail:,  message, pending             |
 
-## result type
+### result type
 
 | tag       | fields       |
 | --------- | ------------ |

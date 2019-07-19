@@ -77,6 +77,8 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [%logger](#logger)
   - [Mock and Stub](#Mock-and-Stub)
   - [Testing a single file script.](#Testing-a-single-file-script)
+    - [Sourced Return](#Sourced-Return)
+    - [Intercept](#Intercept)
 - [For developer](#For-developer)
 - [Version history](#Version-history)
 
@@ -330,6 +332,7 @@ Usage: shellspec [options] [files or directories]
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
       --[no-]warning-as-failure       Treat warning as failure [default: enabled]
       --dry-run                       Print the formatter output without running any examples
+      --keep-tempdir                  Do not cleanup temporary directory [default: disabled]
 
   **** Output ****
 
@@ -772,7 +775,67 @@ End
 
 ### Testing a single file script.
 
-**TODO** (Currently developed)
+Shell scripts are often made up of a single file. shellspec provides two ways
+to test a single shell script.
+
+#### Sourced Return
+
+This is a method for testing functions defined in shell scripts. Loading a
+script with `Include` defines a `__SOURCED__` variable. If the `__SOURCE__`
+variable is defined, return in your shell script process.
+
+```sh
+#!/bin/sh
+# hello.sh
+
+hello() { echo "Hello $1"; }
+
+${__SOURCED__:+return}
+
+hello "$1"
+```
+
+```sh
+Describe "sample"
+  Include "./hello.sh"
+  Example "hello test"
+    When call hello world
+    The output should eq "Hello world"
+  End
+End
+```
+
+#### Intercept
+
+This is a method to mock/stub functions and commands when executing shell scripts.
+By placing intercept points in your script, you can call the hooks defined in specfile.
+
+```sh
+#!/bin/sh
+# today.sh
+
+test || __() { :; }
+
+__ begin __
+
+date +"%A, %B %d, %Y"
+```
+
+```sh
+Describe "sample"
+  Intercept begin
+  __begin__() {
+    date() {
+      export LANG=C
+      command date "$@" --date="2019-07-19"
+    }
+  }
+  Example "today test"
+    When execute ./today.sh
+    The output should eq "Friday, July 19, 2019"
+  End
+End
+```
 
 ## For developer
 
