@@ -418,22 +418,6 @@ Describe "general.sh"
     End
   End
 
-  Describe 'shellspec_passthrough()'
-    passthrough() {
-      %- "$1" | shellspec_passthrough
-    }
-
-    It "passes through to stdout from stdin"
-      When call passthrough "a${LF}b${LF}"
-      The entire output should equal "a${LF}b${LF}"
-    End
-
-    It "passes through data that not end with LF"
-      When call passthrough "a${LF}b"
-      The entire output should equal "a${LF}b"
-    End
-  End
-
   Describe 'shellspec_readfile()'
     It 'reads the file as is'
       When call shellspec_readfile var "$FIXTURE/end-with-multiple-lf.txt"
