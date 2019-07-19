@@ -52,17 +52,17 @@ trans_block_end() {
 
 trans_statement() {
   putsn "SHELLSPEC_LINENO=$lineno"
-  putsn "shellspec_statement $1$2"
+  putsn "shellspec_statement $1 $2"
 }
 
 trans_control() {
   putsn "SHELLSPEC_AUX_LINENO=$lineno"
-  putsn "shellspec_$1$2"
+  putsn "shellspec_$1 $2"
 }
 
 trans_skip() {
   putsn "SHELLSPEC_LINENO=$lineno"
-  putsn "shellspec_skip ${skip_id}${1:-}"
+  putsn "shellspec_skip ${skip_id} ${1:-}"
 }
 
 here() {

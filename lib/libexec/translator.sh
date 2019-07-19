@@ -269,7 +269,8 @@ translate() {
 
     [ "$inside_of_text" ] && text "$work" && continue
 
-    dsl=${work%% *}
-    mapping "$dsl" "${work#"$dsl"}" || trans line "$line"
+    dsl=${work%% *} rest=''
+    trim rest "${work#"$dsl"}"
+    mapping "$dsl" "$rest" || trans line "$line"
   done
 }
