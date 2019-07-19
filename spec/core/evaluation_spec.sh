@@ -147,12 +147,12 @@ Describe "core/evaluation.sh"
 
       # You can overrite here
       __intercept__() {
-        date() { echo "now"; }
+        iconv() { echo "overrided"; }
       }
 
-      When execute "$BIN/script.sh" --command date
+      When execute "$BIN/script.sh" --command iconv -l
       The status should be success
-      The stdout should equal "now"
+      The stdout should equal "overrided"
     End
 
     It 'can pass arguments'

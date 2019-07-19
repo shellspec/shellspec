@@ -21,6 +21,17 @@ else
   shellspec_redefinable() { :; }
 fi
 
+# Workaround for busybox-1.1.3, ksh 93q, ksh 93r
+if [ "$SHELLSPEC_DEFECT_REDEFINE" ]; then
+  shellspec_unbuiltin() {
+    eval "alias $1='shellspec_unbuiltin_$1'"
+    eval "shellspec_unbuiltin_$1() { \\$1 \"\$@\"; }"
+  }
+  shellspec_unbuiltin "test"
+else
+  shellspec_unbuiltin() { :; }
+fi
+
 if [ "${SHELLSPEC_DEFECT_READONLY:-}" ]; then
   alias readonly=''
 fi

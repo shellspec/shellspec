@@ -61,6 +61,7 @@ export SHELLSPEC_PROFILER_LOG=''
 export SHELLSPEC_PROFILER_LIMIT=10
 export SHELLSPEC_PROFILER_REPORT="profiler.log"
 export SHELLSPEC_DEFECT_READONLY=''
+export SHELLSPEC_DEFECT_REDEFINE=''
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -373,8 +374,9 @@ if ! $SHELLSPEC_SHELL -c 'exit $((0))' 2>/dev/null; then
   abort "Unsupported shell (require arithmetic expansion): $SHELLSPEC_SHELL"
 fi
 
-if ! (false() { :; }; false); then
-  abort "Unsupported shell (builtin commands can not redefine): $SHELLSPEC_SHELL"
+if ! (false() { :; }; false) 2>/dev/null; then
+  warn "Unsupported shell (builtin commands can not redefine): $SHELLSPEC_SHELL"
+  SHELLSPEC_DEFECT_REDEFINE=1
 fi
 
 #shellcheck disable=SC2034,SC2234

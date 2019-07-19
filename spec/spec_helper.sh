@@ -5,6 +5,7 @@ set -eu
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
 IFS="$SHELLSPEC_LF$SHELLSPEC_TAB"
 
+# Workaround for ksh
 shellspec_redefinable shellspec_output
 shellspec_redefinable shellspec_output_failure_message
 shellspec_redefinable shellspec_output_failure_message_when_negated
@@ -13,6 +14,11 @@ shellspec_redefinable shellspec_off
 shellspec_redefinable shellspec_is
 shellspec_redefinable shellspec_syntax_dispatch
 shellspec_redefinable shellspec_callback
+
+# Workaround for busybox-1.1.3
+shellspec_unbuiltin "ps"
+shellspec_unbuiltin "last"
+shellspec_unbuiltin "sleep"
 
 shellspec_spec_helper_configure() {
   shellspec_import 'support/custom_matcher'
