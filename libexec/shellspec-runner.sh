@@ -3,6 +3,9 @@
 
 set -eu
 
+# Workaround for bosh/pbosh
+export SHELLSPEC_PROFILER_PID
+
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
 
@@ -23,9 +26,12 @@ start_profiler() {
 
 stop_profiler() {
   [ "$SHELLSPEC_PROFILER_PID" ] || return 0
-  kill -TERM "$SHELLSPEC_PROFILER_PID"
+  kill -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null
+  i=0
   while kill -0 "$SHELLSPEC_PROFILER_PID" 2>/dev/null; do
+    [ "$i" -gt 1000 ] && break
     sleep 0
+    i=$(($i + 1))
   done
   SHELLSPEC_PROFILER_PID=''
 }
