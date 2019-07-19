@@ -1,3 +1,8 @@
+# Unsupported: built-in commands can not redefine.
 FROM lpenz/debian-sarge-i386
-RUN apt-get update && apt-get -y install busybox-static
+RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
+ && apt-get update && apt-get -y install sudo busybox-static \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && adduser --disabled-password --gecos "" user
+USER user
 ENV SH="busybox ash"

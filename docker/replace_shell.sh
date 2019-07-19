@@ -3,7 +3,7 @@
 # Replace /bin/sh to target shell to easy test.
 if [ "${1% *}" = "busybox" ]; then
   # Avoid unsupported busybox 0.60.5 freeze
-  busybox ash -c 'busybox ash -c false' && exit 1
+  busybox ash -c 'busybox ash -c false' && exit 0
 
   ln -snf /bin/busybox /bin/ash
   rm /bin/sh
