@@ -1,8 +1,8 @@
 #shellcheck shell=sh
 
 : "${example_index:-} ${example_count_per_file:-}"
-: "${field_type:-} ${field_specfile:-} ${field_range:-} ${field_focused:-}"
-: "${field_color:-} ${field_fail:-} ${field_note:-} ${field_example_count:-}"
+: "${field_type:-} ${field_specfile:-} ${field_color:-} ${field_lineno_range:-}"
+: "${field_focused:-} ${field_fail:-} ${field_note:-} ${field_example_count:-}"
 
 create_buffers references_notable references_failure
 
@@ -12,7 +12,7 @@ references_each() {
       [ -z "$example_index" ] && [ "$field_focused" != "focus" ] && return 0
 
       set -- "${field_color}shellspec" \
-        "$field_specfile:${field_range%-*}${RESET}" \
+        "$field_specfile:${field_lineno_range%-*}${RESET}" \
         "$CYAN# ${example_index:--})" \
         "$(field_description) ${field_note}${RESET}"
 

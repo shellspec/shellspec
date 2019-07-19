@@ -68,7 +68,7 @@ parse_fields() {
 each_line() {
   case $field_type in
     begin)
-      last_block_no=0 last_skip_id=''
+      field_example_count='' last_block_no=0 last_skip_id=''
       inc specfile_count
       # shellcheck disable=SC2034
       example_count_per_file=0 succeeded_count_per_file=0 \
@@ -76,13 +76,15 @@ each_line() {
       fixed_count_per_file=0 skipped_count_per_file=0
       ;;
     example)
+      # shellcheck disable=SC2034
+      field_evaluation='' field_pending=''
       if [ "$field_block_no" -le "$last_block_no" ]; then
-        abort "Illegal executed the same block in ${field_specfile:-}" \
-          "line ${field_range:-}${LF}(e.g. do not include blocks in a loop)"
+        abort "Illegal executed the same block (that in a loop?)" \
+          "in ${field_specfile:-}" "line ${field_lineno_range:-}"
       fi
       [ "$field_focused" = "focus" ] && found_focus=1
       example_index='' last_block_no=$field_block_no
-      eval "profiler_line$example_count=\$field_specfile:\$field_lineno_begin"
+      eval "profiler_line$example_count=\$field_specfile:\$field_lineno_range"
       ;;
     statement)
       while :; do

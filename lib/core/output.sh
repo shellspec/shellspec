@@ -10,16 +10,11 @@ shellspec_output_raw() {
 
   # shellcheck disable=SC2145
   case $1 in
-    begin)
-      set -- "type:$@" "example_count:" ;;
-    example)
-      set -- "type:$@" "evaluation:" "pending:" \
-        "lineno_begin:$SHELLSPEC_LINENO_BEGIN" \
-        "lineno_end:$SHELLSPEC_LINENO_END";;
-    statement)
-      set -- "type:$@" "lineno:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}" ;;
-    *)
-      set -- "type:$@" ;;
+    example) set -- "type:$@" \
+      "lineno_range:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END" ;;
+    statement) set -- "type:$@" \
+      "lineno:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}" ;;
+    *) set -- "type:$@" ;;
   esac
 
   shellspec_output_buf="${shellspec_output_buf:-}$SHELLSPEC_RS"
