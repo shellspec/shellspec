@@ -442,22 +442,14 @@ Describe "general.sh"
   End
 
   Describe "shellspec_trim()"
-    Before set_value
-
-    Context 'when value is abc'
-      set_value() { value="  abc"; }
-      It 'trims left space'
-        When call shellspec_trim value
-        The value "$value" should eq 'abc'
-      End
+    It 'trims space'
+      When call shellspec_trim value "  abc  "
+      The value "$value" should eq 'abc'
     End
 
-    Context 'when value is <TAB><TAB>abc'
-      set_value() { value="${TAB}${TAB}abc"; }
-      It 'trims left tab'
-        When call shellspec_trim value
-        The value "$value" should eq 'abc'
-      End
+    It 'trims tab'
+      When call shellspec_trim value "${TAB}${TAB}abc${TAB}${TAB}"
+      The value "$value" should eq 'abc'
     End
   End
 

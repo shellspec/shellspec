@@ -81,9 +81,8 @@ is_separetor_statement() {
 detect_range() {
   lineno_begin=$1 lineno_end='' lineno=0
   while IFS= read -r line || [ "$line" ]; do
-    trim line
-    line=${line%% *}
-    lineno=$(($lineno + 1))
+    trim line "$line"
+    line=${line%% *} lineno=$(($lineno + 1))
     [ "$lineno" -lt "$1" ] && continue
     if is_separetor_statement "$line" ; then
       if [ "$lineno" -eq "$1" ]; then

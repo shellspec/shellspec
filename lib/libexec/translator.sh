@@ -154,8 +154,8 @@ skip() {
 }
 
 data() {
-  data_line=${2:-}
-  trim data_line
+  data_line=''
+  trim data_line "${2:-}"
 
   eval trans data_begin ${1+'"$@"'}
   case $data_line in
@@ -163,7 +163,7 @@ data() {
       trans data_here_begin "$1" "$data_line"
       while IFS= read -r line || [ "$line" ]; do
         lineno=$(($lineno + 1))
-        trim line
+        trim line "$line"
         case $line in
           \#\|*) trans data_here_line "$line" ;;
           \#*) ;;
@@ -205,10 +205,9 @@ constant() {
     return 0
   fi
 
-  line=$1
-  trim line
-  name=${line%%:*} value=${line#*:}
-  trim value
+  trim line "$1"
+  name=${line%%:*} value=''
+  trim value "${line#*:}"
   if is_constant_name "$name"; then
     trans constant "$name" "$value"
   else
@@ -265,15 +264,12 @@ remove_from_ranges() {
 translate() {
   example_id='' inside_of_example='' inside_of_text=''
   while IFS= read -r line || [ "$line" ]; do
-    lineno=$(($lineno + 1)) work=$line
-    trim work
+    lineno=$(($lineno + 1)) work=''
+    trim work "$line"
 
     [ "$inside_of_text" ] && text "$work" && continue
 
     dsl=${work%% *}
-    # Do not one line. ksh 93r does not work properly.
-    if ! mapping "$dsl" "${work#"$dsl"}"; then
-      trans line "$line"
-    fi
+    mapping "$dsl" "${work#"$dsl"}" || trans line "$line"
   done
 }

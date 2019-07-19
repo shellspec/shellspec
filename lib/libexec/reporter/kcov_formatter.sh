@@ -15,9 +15,8 @@ kcov_end() {
   [ -f "$_coverage" ] || return 0
 
   while IFS= read -r _line; do
-    _key=${_line%%:*} _value=${_line#*:}
-    trim _key
-    trim _value
+    trim _key "${_line%%:*}"
+    trim _value "${_line#*:}"
     _key=${_key#\"} _key=${_key%\"} _value=${_value%,}
     _value=${_value#\"} _value=${_value%\"}
     case $_key in

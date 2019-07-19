@@ -320,8 +320,12 @@ shellspec_readfile() {
 }
 
 shellspec_trim() {
-  # check $1 to avoid bug #26 in contrib/bugs.sh
-  eval "if [ \"\$$1\" ]; then $1=\${$1#\"\${$1%%[!\$SHELLSPEC_IFS]*}\"}; fi"
+  SHELLSPEC_EVAL="
+    $1=\${2:-}; [ \"\$$1\" ] || return 0; \
+    $1=\${$1#\"\${$1%%[!\$SHELLSPEC_IFS]*}\"}; \
+    $1=\${$1%\"\${$1##*[!\$SHELLSPEC_IFS]}\"}
+  "
+  eval "$SHELLSPEC_EVAL"
 }
 
 shellspec_replace_posix() {
