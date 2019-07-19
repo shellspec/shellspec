@@ -103,13 +103,16 @@ SHELLSPEC_EXAMPLES_LOG="$SHELLSPEC_TMPBASE/examples.log"
 SHELLSPEC_PROFILER_LOG="$SHELLSPEC_TMPBASE/profiler.log"
 SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner"
 
-SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
-if command_path time > /dev/null; then
-  SHELLSPEC_TIME="time -p"
-elif command_path bash > /dev/null; then
-  SHELLSPEC_TIME="bash $SHELLSPEC_TIME"
-elif command_path ksh > /dev/null; then
-  SHELLSPEC_TIME="ksh $SHELLSPEC_TIME"
+SHELLSPEC_TIME=$(command_path time) &&:
+if [ "$SHELLSPEC_TIME" ]; then
+  SHELLSPEC_TIME="$SHELLSPEC_TIME -p"
+else
+  SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
+  if command_path bash > /dev/null; then
+    SHELLSPEC_TIME="bash $SHELLSPEC_TIME"
+  elif command_path ksh > /dev/null; then
+    SHELLSPEC_TIME="ksh $SHELLSPEC_TIME"
+  fi
 fi
 
 while IFS= read -r option; do
