@@ -16,11 +16,20 @@ terminate() {
     echo "$(($end - $start))" >> "$SHELLSPEC_PROFILER_LOG"
     i=$(($i + 2))
   done
+  rm "$SHELLSPEC_TMPBASE/profiler.pid"
   exit
 }
 
-trap handler USR1
-trap terminate TERM
+: > "$SHELLSPEC_PROFILER_LOG"
+
+pid=''
+if ( trap - USR1 && trap - TERM ) 2>/dev/null; then
+  trap handler USR1
+  trap terminate TERM
+  pid=$$
+fi
+echo "$pid" > "$SHELLSPEC_TMPBASE/profiler.pid"
+[ "$pid" ] || exit 1
 
 index=0 counter=0
 while :; do

@@ -56,12 +56,12 @@ export SHELLSPEC_KCOV_OPTS=''
 export SHELLSPEC_KCOV_FILENAME=''
 export SHELLSPEC_KCOV_IN_FILE=''
 export SHELLSPEC_PROFILER=''
-export SHELLSPEC_PROFILER_PID=''
 export SHELLSPEC_PROFILER_LOG=''
 export SHELLSPEC_PROFILER_LIMIT=10
 export SHELLSPEC_PROFILER_REPORT="profiler.log"
 export SHELLSPEC_DEFECT_READONLY=''
 export SHELLSPEC_DEFECT_REDEFINE=''
+export SHELLSPEC_KILL='kill'
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -365,6 +365,18 @@ if [ -z "$SHELLSPEC_SHELL" ]; then
   warn "Failed to detect the current shell," \
        "because the ps command does not exist or not compatible."
   warn "Use 'sh' instead. You can specify the shell with --shell option."
+fi
+
+#shellcheck disable=SC2123
+
+# posh 0.8.5 implements kill but not support any signals. meaningless.
+if [ ! "$(PATH=; kill -l 2>/dev/null)"  ]; then
+  SHELLSPEC_KILL=$(command_path kill) ||:
+fi
+if [ ! "$SHELLSPEC_KILL" ]; then
+  # e.g. posh 0.13.2 not implement kill, and debian 10 not install kill.
+  warn "kill not found. You may encounter errors with some features."
+  SHELLSPEC_KILL="kill"
 fi
 
 shell=$(command_path "${SHELLSPEC_SHELL:-sh}") ||:

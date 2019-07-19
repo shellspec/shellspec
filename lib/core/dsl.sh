@@ -241,10 +241,10 @@ shellspec_abort() {
 
 if [ "$SHELLSPEC_PROFILER" ]; then
   shellspec_profile_start() {
-    kill -USR1 "$SHELLSPEC_PROFILER_PID"
+    shellspec_signal -USR1 "$SHELLSPEC_PROFILER_PID"
   }
   shellspec_profile_end() {
-    kill -USR1 "$SHELLSPEC_PROFILER_PID"
+    shellspec_signal -USR1 "$SHELLSPEC_PROFILER_PID"
   }
 else
   shellspec_profile_start() { :; }

@@ -3,74 +3,56 @@
 
 set -eu
 
-# Workaround for bosh/pbosh
-export SHELLSPEC_PROFILER_PID
+export SHELLSPEC_PROFILER_PID=''
 
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
 
-wait_reporter_finished() {
-  [ -e "$1" ] || return 0
-  read -r reporter_pid < "$1"
-  while kill -0 "$reporter_pid" 2>/dev/null; do
-    sleep 0
-  done
-}
-
 start_profiler() {
   [ "$SHELLSPEC_PROFILER" ] || return 0
-  profiler="$SHELLSPEC_LIBEXEC/shellspec-profiler.sh"
-  $SHELLSPEC_SHELL "$profiler" &
-  SHELLSPEC_PROFILER_PID=$!
+  $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-profiler.sh" &
+  read_pid_file SHELLSPEC_PROFILER_PID "$SHELLSPEC_TMPBASE/profiler.pid" 1000
+  [ "$SHELLSPEC_PROFILER_PID" ] && return 0
+  warn "Failed to activate profiler (trap not supported?)"
+  SHELLSPEC_PROFILER=''
 }
 
 stop_profiler() {
   [ "$SHELLSPEC_PROFILER_PID" ] || return 0
-  kill -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null
+  signal -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null
   i=0
-  while kill -0 "$SHELLSPEC_PROFILER_PID" 2>/dev/null; do
-    [ "$i" -gt 1000 ] && break
+  while [ -e "$SHELLSPEC_TMPBASE/profiler.pid" ] && [ "$i" -lt 1000 ]; do
     sleep 0
     i=$(($i + 1))
   done
   SHELLSPEC_PROFILER_PID=''
 }
 
-if [ "$SHELLSPEC_KEEP_TEMPDIR" ]; then
-  warn "Keeping temporary directory. "
-  warn "Manually delete: rm -rf \"$SHELLSPEC_TMPBASE\""
-fi
-
-mktempdir "$SHELLSPEC_TMPBASE"
 cleanup() {
   if (trap - INT) 2>/dev/null; then trap '' INT; fi
   [ "$SHELLSPEC_TMPBASE" ] || return 0
   if [ "$SHELLSPEC_PROFILER_PID" ]; then
-    kill -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
+    signal -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
     SHELLSPEC_PROFILER_PID=''
   fi
-  tmpbase="$SHELLSPEC_TMPBASE"
-  SHELLSPEC_TMPBASE=''
-  if [ ! "$SHELLSPEC_KEEP_TEMPDIR" ]; then
-    rmtempdir "$tmpbase"
-  fi
-  if [ -f "$SHELLSPEC_KCOV_IN_FILE" ]; then
-    rm "$SHELLSPEC_KCOV_IN_FILE"
-  fi
+  tmpbase="$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
+  [ -f "$SHELLSPEC_KCOV_IN_FILE" ] && rm "$SHELLSPEC_KCOV_IN_FILE"
+  [ "$SHELLSPEC_KEEP_TEMPDIR" ] || rmtempdir "$tmpbase"
 }
-trap 'cleanup' EXIT
 
 interrupt() {
   trap '' TERM # posh: Prevent display 'Terminated'.
   stop_profiler
-  wait_reporter_finished "$SHELLSPEC_TMPBASE/reporter_pid"
-  kill -TERM 0
+  read_pid_file reporter_pid "$SHELLSPEC_TMPBASE/reporter.pid" 0
+  if [ "$reporter_pid" ]; then
+    while signal -0 "$reporter_pid" 2>/dev/null; do
+      sleep 0
+    done
+  fi
+  signal -TERM 0
   cleanup
   exit 130
 }
-
-if (trap - INT) 2>/dev/null; then trap 'interrupt' INT; fi
-if (trap - TERM) 2>/dev/null; then trap ':' TERM; fi
 
 executor() {
   executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
@@ -99,6 +81,17 @@ error_handler() {
 set_exit_status() {
   return "$1"
 }
+
+if (trap - INT) 2>/dev/null; then trap 'interrupt' INT; fi
+if (trap - TERM) 2>/dev/null; then trap ':' TERM; fi
+trap 'cleanup' EXIT
+
+mktempdir "$SHELLSPEC_TMPBASE"
+
+if [ "$SHELLSPEC_KEEP_TEMPDIR" ]; then
+  warn "Keeping temporary directory. "
+  warn "Manually delete: rm -rf \"$SHELLSPEC_TMPBASE\""
+fi
 
 if [ "$SHELLSPEC_BANNER" ] && [ -e "$SHELLSPEC_BANNER" ]; then
   display "$SHELLSPEC_BANNER"
