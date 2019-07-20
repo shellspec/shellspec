@@ -23,15 +23,3 @@ read_pid_file() {
     eval "read -r $1 < \"$2\""
   fi
 }
-
-sleep_wait() {
-  case $1 in
-    *[!0-9]*) timeout=999999999 ;;
-    *) timeout=$1; shift
-  esac
-  while "$@"; do
-    [ "$timeout" -gt 0 ] || return 1
-    sleep 0
-    timeout=$(($timeout - 1))
-  done
-}

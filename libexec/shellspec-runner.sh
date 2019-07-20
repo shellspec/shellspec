@@ -20,7 +20,7 @@ start_profiler() {
 stop_profiler() {
   [ "$SHELLSPEC_PROFILER_PID" ] || return 0
   signal -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
-  sleep_wait 1000 [ -e "$SHELLSPEC_TMPBASE/profiler.pid" ] ||:
+  sleep_wait 1000 [ ! -e "$SHELLSPEC_TMPBASE/profiler.done" ] ||:
   SHELLSPEC_PROFILER_PID=''
 }
 
