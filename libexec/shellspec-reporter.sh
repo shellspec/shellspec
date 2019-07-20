@@ -148,9 +148,7 @@ read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_PROFILER_LOG" ]; then
   mkdir -p "$SHELLSPEC_REPORTDIR"
-  while shellspec_signal -0 "$SHELLSPEC_PROFILER_PID" 2>/dev/null; do
-    sleep 0
-  done
+  sleep_wait [ ! -e "$SHELLSPEC_TMPBASE/profiler.done" ] ||:
   callback() {
     eval "profiler_tick$1=\$2 profiler_time$1=\$3" \
       "profiler_line=\$profiler_line$1 profiler_count=$(($1 + 1))"

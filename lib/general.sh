@@ -240,6 +240,13 @@ shellspec_sequence_() {
   shellspec_sequence_ "$1" $(($2 + $4)) "$3" "$4" "$5"
 }
 
+shellspec_loop() {
+  if [ "$2" -gt 0 ]; then
+    "$1"
+    shellspec_loop "$1" $(($2 - 1))
+  fi
+}
+
 shellspec_escape_quote() {
   SHELLSPEC_EVAL="
     shellspec_reset_params '\$$1' \"'\"; \
@@ -411,13 +418,3 @@ shellspec_chomp() {
   "
   eval "$SHELLSPEC_EVAL"
 }
-
-if $SHELLSPEC_KILL -0 $$ 2>/dev/null; then
-  shellspec_signal() {
-    "$SHELLSPEC_KILL" "$1" "$2"
-  }
-else
-  shellspec_signal() {
-    "$SHELLSPEC_KILL" -s "${1#-}" "$2"
-  }
-fi

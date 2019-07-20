@@ -238,15 +238,3 @@ shellspec_abort() {
   [ "${3:-}" ] && shellspec_putsn "${3:-}" >&2
   exit "${1:-1}"
 }
-
-if [ "$SHELLSPEC_PROFILER" ]; then
-  shellspec_profile_start() {
-    shellspec_signal -USR1 "$SHELLSPEC_PROFILER_PID"
-  }
-  shellspec_profile_end() {
-    shellspec_signal -USR1 "$SHELLSPEC_PROFILER_PID"
-  }
-else
-  shellspec_profile_start() { :; }
-  shellspec_profile_end() { :; }
-fi

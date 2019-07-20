@@ -3,7 +3,7 @@
 
 set -eu
 
-export SHELLSPEC_PROFILER_PID=''
+export SHELLSPEC_PROFILER_SIGNAL="$SHELLSPEC_TMPBASE/profiler.signal"
 
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
@@ -11,23 +11,18 @@ export SHELLSPEC_PROFILER_PID=''
 start_profiler() {
   [ "$SHELLSPEC_PROFILER" ] || return 0
   $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-profiler.sh" &
-  read_pid_file SHELLSPEC_PROFILER_PID "$SHELLSPEC_TMPBASE/profiler.pid" 1000
-  [ "$SHELLSPEC_PROFILER_PID" ] && return 0
-  warn "Failed to activate profiler (trap not supported?)"
-  SHELLSPEC_PROFILER=''
-}
+} 2>/dev/null
 
 stop_profiler() {
-  [ "$SHELLSPEC_PROFILER_PID" ] || return 0
-  signal -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
-  sleep_wait 1000 [ -e "$SHELLSPEC_TMPBASE/profiler.pid" ] ||:
-  SHELLSPEC_PROFILER_PID=''
+  [ "$SHELLSPEC_PROFILER" ] || return 0
+  if [ -e "$SHELLSPEC_PROFILER_SIGNAL" ]; then
+    rm "$SHELLSPEC_PROFILER_SIGNAL"
+  fi
 }
 
 cleanup() {
   if (trap - INT) 2>/dev/null; then trap '' INT; fi
   [ "$SHELLSPEC_TMPBASE" ] || return 0
-  stop_profiler
   tmpbase="$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
   [ -f "$SHELLSPEC_KCOV_IN_FILE" ] && rm "$SHELLSPEC_KCOV_IN_FILE"
   [ "$SHELLSPEC_KEEP_TEMPDIR" ] || rmtempdir "$tmpbase"
@@ -45,6 +40,7 @@ interrupt() {
 }
 
 executor() {
+  start_profiler
   executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
   # shellcheck disable=SC2086
   $SHELLSPEC_TIME $SHELLSPEC_SHELL "$executor" "$@" 3>&2 2>"$SHELLSPEC_TIME_LOG"
@@ -95,8 +91,6 @@ if [ "${SHELLSPEC_RANDOM:-}" ]; then
   set -- -
 fi
 
-start_profiler
-
 # I want to process with non-blocking output
 # and the stdout of runner streams to the reporter
 # and capture stderr both of the runner and the reporter
@@ -121,6 +115,11 @@ start_profiler
     )
 ) 3>&1 4>&2 &&:
 exit_status=$?
+
+if [ -e "$SHELLSPEC_TMPBASE/profiler.timeout" ]; then
+  warn "Forced terminate the profiler due to a timed out" \
+    "(Occasionally occurs with zsh)."
+fi
 
 case $exit_status in
   0) ;; # Running specs exit with successfully.

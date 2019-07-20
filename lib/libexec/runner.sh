@@ -2,7 +2,6 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use signal
 
 mktempdir() {
   (umask 0077; mkdir "$1"; chmod 0700 "$1")
@@ -22,16 +21,4 @@ read_pid_file() {
   if [ -e "$2" ]; then
     eval "read -r $1 < \"$2\""
   fi
-}
-
-sleep_wait() {
-  case $1 in
-    *[!0-9]*) timeout=999999999 ;;
-    *) timeout=$1; shift
-  esac
-  while "$@"; do
-    [ "$timeout" -gt 0 ] || return 1
-    sleep 0
-    timeout=$(($timeout - 1))
-  done
 }

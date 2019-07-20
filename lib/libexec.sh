@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2004
 
 [ "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
@@ -95,5 +95,31 @@ abort() {
   error "$@"
   exit 1
 }
+
+sleep_wait() {
+  case $1 in
+    *[!0-9]*) while "$@"; do sleep 0; done; return 0 ;;
+  esac
+
+  sleep_wait_eval="
+    shift; \
+    while \"\$@\"; do \
+      [ \"\$(( \$(date +%s) - $(date +%s) ))\" -ge $1 ] && return 1; \
+      sleep 0; \
+    done
+  "
+  eval "$sleep_wait_eval"
+}
+
+
+if $SHELLSPEC_KILL -0 $$ 2>/dev/null; then
+  signal() {
+    "$SHELLSPEC_KILL" "$1" "$2"
+  }
+else
+  signal() {
+    "$SHELLSPEC_KILL" -s "${1#-}" "$2"
+  }
+fi
 
 use puts putsn

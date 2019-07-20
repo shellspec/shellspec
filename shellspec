@@ -62,6 +62,7 @@ export SHELLSPEC_PROFILER_REPORT="profiler.log"
 export SHELLSPEC_DEFECT_READONLY=''
 export SHELLSPEC_DEFECT_REDEFINE=''
 export SHELLSPEC_KILL='kill'
+export SHELLSPEC_SLEEP='sleep'
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -328,7 +329,7 @@ parse_options() {
         shift ;;
       -p | --profile) SHELLSPEC_PROFILER=1 ;;
       --no-profile) SHELLSPEC_PROFILER='' ;;
-      --profiler-limit) [ "${2:-}" ] || abort 'Require N.'
+      --profile-limit) [ "${2:-}" ] || abort 'Require N.'
         SHELLSPEC_PROFILER_LIMIT="$2"
         shift ;;
       --init | --task | --translate | --syntax-check) SHELLSPEC_MODE=${1#--} ;;
@@ -368,7 +369,6 @@ if [ -z "$SHELLSPEC_SHELL" ]; then
 fi
 
 #shellcheck disable=SC2123
-
 # posh 0.8.5 implements kill but not support any signals. meaningless.
 if [ ! "$(PATH=; kill -l 2>/dev/null)"  ]; then
   SHELLSPEC_KILL=$(command_path kill) ||:
@@ -411,8 +411,12 @@ if [ "$SHELLSPEC_KCOV" ]; then
   fi
 fi
 
-if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_JOBS" -gt 0 ]; then
-  abort "Can not be specified profiler and paralell execution at the same time"
+if [ "$SHELLSPEC_PROFILER" ]; then
+  if [ "$SHELLSPEC_JOBS" -gt 0 ]; then
+    abort "Can not be specified profiler" \
+      "and paralell execution at the same time"
+  fi
+  SHELLSPEC_SLEEP=$(command_path sleep)
 fi
 
 case $SHELLSPEC_MODE in (init | task) ;; (*)
