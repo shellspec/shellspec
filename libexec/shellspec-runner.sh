@@ -19,36 +19,26 @@ start_profiler() {
 
 stop_profiler() {
   [ "$SHELLSPEC_PROFILER_PID" ] || return 0
-  signal -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null
-  i=0
-  while [ -e "$SHELLSPEC_TMPBASE/profiler.pid" ] && [ "$i" -lt 1000 ]; do
-    sleep 0
-    i=$(($i + 1))
-  done
+  signal -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
+  sleep_wait 1000 [ -e "$SHELLSPEC_TMPBASE/profiler.pid" ] ||:
   SHELLSPEC_PROFILER_PID=''
 }
 
 cleanup() {
   if (trap - INT) 2>/dev/null; then trap '' INT; fi
   [ "$SHELLSPEC_TMPBASE" ] || return 0
-  if [ "$SHELLSPEC_PROFILER_PID" ]; then
-    signal -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
-    SHELLSPEC_PROFILER_PID=''
-  fi
+  stop_profiler
   tmpbase="$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
   [ -f "$SHELLSPEC_KCOV_IN_FILE" ] && rm "$SHELLSPEC_KCOV_IN_FILE"
   [ "$SHELLSPEC_KEEP_TEMPDIR" ] || rmtempdir "$tmpbase"
 }
 
 interrupt() {
-  trap '' TERM # posh: Prevent display 'Terminated'.
+  trap '' TERM # Workaround for posh: Prevent display 'Terminated'.
   stop_profiler
+  reporter_pid=''
   read_pid_file reporter_pid "$SHELLSPEC_TMPBASE/reporter.pid" 0
-  if [ "$reporter_pid" ]; then
-    while signal -0 "$reporter_pid" 2>/dev/null; do
-      sleep 0
-    done
-  fi
+  [ "$reporter_pid" ] && sleep_wait signal -0 "$reporter_pid" 2>/dev/null
   signal -TERM 0
   cleanup
   exit 130
