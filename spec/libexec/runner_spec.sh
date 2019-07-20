@@ -64,22 +64,22 @@ Describe "libexec/runner.sh"
   End
 
   Describe "sleep_wait()"
-    Before 'called_count=0'
+    Before 'called=""'
 
     It "waits with sleep"
       sleep() { echo sleep; }
-      callback() {
-        called_count=$(($called_count + 1))
-        [ "$called_count" -le 2 ]
+      condition() {
+        called="$called."
+        [ "${#called}" -le 2 ]
       }
-      When call sleep_wait callback
+      When call sleep_wait condition
       The lines of stdout should eq 2
     End
 
     It "can specify a timeout"
       sleep() { echo sleep; }
-      callback() { true; }
-      When call sleep_wait 3 callback
+      condition() { true; }
+      When call sleep_wait 3 condition
       The lines of stdout should eq 3
       The status should be failure
     End
