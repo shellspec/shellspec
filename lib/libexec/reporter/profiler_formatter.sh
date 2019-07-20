@@ -1,11 +1,19 @@
 #shellcheck shell=sh disable=SC2004
 
-: "${profiler_count:-}"
+: "${profiler_count:-} ${example_count:-}"
 
 profiler_output() {
-  [ "$profiler_count" -eq 0 ] && return 0
+  [ "$SHELLSPEC_PROFILER" ] || return 0
   case $1 in (end)
     _i=0
+    puts "${BOLD}${BLACK}Profile $profiler_count examples"
+    if [ "$example_count" -gt 0 ] && [ "$profiler_count" -eq 0 ]; then
+      puts " (Profiler failed. An error has occurred)"
+    elif [ "$example_count" -ne "$profiler_count" ]; then
+      puts " (Does not match example count, A drop or an error has occurred)"
+    fi
+    putsn "${RESET}"
+
     while [ $_i -lt "$profiler_count" ]; do
       eval "putsn \$profiler_tick$_i \$profiler_time$_i \"\$profiler_line$_i\""
       _i=$(($_i + 1))
@@ -15,7 +23,10 @@ profiler_output() {
       while IFS=" " read -r _tick _duration _line; do
         [ "$_i" -ge "$SHELLSPEC_PROFILER_LIMIT" ] && break
         _i=$(($_i + 1))
-        putsn "${BOLD}${BLACK}$_i $_duration $_line${RESET}"
+        while [ "${#_i}" -lt "${#SHELLSPEC_PROFILER_LIMIT}" ]; do
+          _i=" $_i"
+        done
+        putsn "${BOLD}${BLACK} $_i $_duration $_line${RESET}"
       done
     }
     putsn

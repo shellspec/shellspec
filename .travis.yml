@@ -55,7 +55,7 @@ before_script:
         make -j4 install
         cd ..
       fi
-  - ./shellspec --task fixture:stat:prepare
+  - ./shellspec --shell sh --task fixture:stat:prepare
 script:
   - contrib/all.sh contrib/various_test.sh
   - if [ "$COVERAGE" ]; then ./shellspec --kcov --kcov-options "--coveralls-id=${TRAVIS_JOB_ID}"; fi

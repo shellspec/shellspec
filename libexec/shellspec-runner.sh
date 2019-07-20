@@ -11,6 +11,7 @@ export SHELLSPEC_PROFILER_PID=''
 start_profiler() {
   [ "$SHELLSPEC_PROFILER" ] || return 0
   $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-profiler.sh" &
+  sleep 1
   read_pid_file SHELLSPEC_PROFILER_PID "$SHELLSPEC_TMPBASE/profiler.pid" 1000
   [ "$SHELLSPEC_PROFILER_PID" ] && return 0
   warn "Failed to activate profiler (trap not supported?)"
@@ -18,16 +19,18 @@ start_profiler() {
 }
 
 stop_profiler() {
-  [ "$SHELLSPEC_PROFILER_PID" ] || return 0
-  signal -TERM "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
-  sleep_wait 1000 [ ! -e "$SHELLSPEC_TMPBASE/profiler.done" ] ||:
-  SHELLSPEC_PROFILER_PID=''
+  [ "$SHELLSPEC_PROFILER" ] || return 0
+  signal -TERM "$SHELLSPEC_PROFILER_PID" ||:
+  if ! sleep_wait 3 [ ! -e "$SHELLSPEC_TMPBASE/profiler.done" ]; then
+    : > "$SHELLSPEC_TMPBASE/profiler.done"
+    : > "$SHELLSPEC_TMPBASE/profiler.timeout"
+  fi
+  signal -KILL "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
 }
 
 cleanup() {
   if (trap - INT) 2>/dev/null; then trap '' INT; fi
   [ "$SHELLSPEC_TMPBASE" ] || return 0
-  stop_profiler
   tmpbase="$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
   [ -f "$SHELLSPEC_KCOV_IN_FILE" ] && rm "$SHELLSPEC_KCOV_IN_FILE"
   [ "$SHELLSPEC_KEEP_TEMPDIR" ] || rmtempdir "$tmpbase"
@@ -38,7 +41,7 @@ interrupt() {
   stop_profiler
   reporter_pid=''
   read_pid_file reporter_pid "$SHELLSPEC_TMPBASE/reporter.pid" 0
-  [ "$reporter_pid" ] && sleep_wait signal -0 "$reporter_pid" 2>/dev/null
+  [ "$reporter_pid" ] && sleep_wait signal -0 "$reporter_pid"
   signal -TERM 0
   cleanup
   exit 130
@@ -95,7 +98,7 @@ if [ "${SHELLSPEC_RANDOM:-}" ]; then
   set -- -
 fi
 
-start_profiler
+start_profiler # Do not include in executor function. Can not CTRL+C
 
 # I want to process with non-blocking output
 # and the stdout of runner streams to the reporter
@@ -121,6 +124,11 @@ start_profiler
     )
 ) 3>&1 4>&2 &&:
 exit_status=$?
+
+if [ -e "$SHELLSPEC_TMPBASE/profiler.timeout" ]; then
+  warn "Forced terminate the profiler due to a timed out" \
+    "(Occasionally occurs with zsh)."
+fi
 
 case $exit_status in
   0) ;; # Running specs exit with successfully.

@@ -62,26 +62,4 @@ Describe "libexec/runner.sh"
       The lines of stdout should eq 3
     End
   End
-
-  Describe "sleep_wait()"
-    Before 'called=""'
-
-    It "waits with sleep"
-      sleep() { echo sleep; }
-      condition() {
-        called="$called."
-        [ "${#called}" -le 2 ]
-      }
-      When call sleep_wait condition
-      The lines of stdout should eq 2
-    End
-
-    It "can specify a timeout"
-      sleep() { echo sleep; }
-      condition() { true; }
-      When call sleep_wait 3 condition
-      The lines of stdout should eq 3
-      The status should be failure
-    End
-  End
 End

@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+#shellcheck shell=sh disable=SC2016,SC2004
 
 % INFILE: "$SHELLSPEC_SPECDIR/fixture/infile"
 
@@ -60,6 +60,32 @@ Describe 'libexec.sh'
       When call find_specfiles _ -
       The line 1 of output should eq "file2"
       The line 2 of output should eq "dir2"
+    End
+  End
+
+  Describe "sleep_wait()"
+    parepare() {
+      called=""
+      begin_time=$(date +%s)
+    }
+    Before parepare
+
+    It "waits with sleep"
+      sleep() { echo sleep; }
+      condition() {
+        called="$called."
+        [ "${#called}" -le 2 ]
+      }
+      When call sleep_wait condition
+      The lines of stdout should eq 2
+    End
+
+    It "can specify a timeout"
+      date() { echo "$(($begin_time + ${#called}))"; }
+      condition() { called="$called."; }
+      When call sleep_wait 3 condition
+      The status should be failure
+      The value "${#called}" should eq 3
     End
   End
 End

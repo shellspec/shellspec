@@ -240,6 +240,13 @@ shellspec_sequence_() {
   shellspec_sequence_ "$1" $(($2 + $4)) "$3" "$4" "$5"
 }
 
+shellspec_loop() {
+  if [ "$2" -gt 0 ]; then
+    "$1"
+    shellspec_loop "$1" $(($2 - 1))
+  fi
+}
+
 shellspec_escape_quote() {
   SHELLSPEC_EVAL="
     shellspec_reset_params '\$$1' \"'\"; \
