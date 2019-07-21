@@ -195,7 +195,8 @@ case $method in
 esac
 echo
 
-prompt "Do you want to continue? [y/N] " "$YES" || abort "Canceled"
+[ -e /dev/tty ] && input=/dev/tty || input=/dev/stdin
+prompt "Do you want to continue? [y/N] " "$YES" < "$input" || abort "Canceled"
 
 case $method in
   git)
