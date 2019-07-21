@@ -3,7 +3,7 @@
 
 set -eu
 
-export SHELLSPEC_PROFILER_PID=''
+export SHELLSPEC_PROFILER_SIGNAL="$SHELLSPEC_TMPBASE/profiler.signal"
 
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
@@ -11,21 +11,13 @@ export SHELLSPEC_PROFILER_PID=''
 start_profiler() {
   [ "$SHELLSPEC_PROFILER" ] || return 0
   $SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-profiler.sh" &
-  sleep 1
-  read_pid_file SHELLSPEC_PROFILER_PID "$SHELLSPEC_TMPBASE/profiler.pid" 1000
-  [ "$SHELLSPEC_PROFILER_PID" ] && return 0
-  warn "Failed to activate profiler (trap not supported?)"
-  SHELLSPEC_PROFILER=''
-}
+} 2>/dev/null
 
 stop_profiler() {
   [ "$SHELLSPEC_PROFILER" ] || return 0
-  signal -TERM "$SHELLSPEC_PROFILER_PID" ||:
-  if ! sleep_wait 3 [ ! -e "$SHELLSPEC_TMPBASE/profiler.done" ]; then
-    : > "$SHELLSPEC_TMPBASE/profiler.done"
-    : > "$SHELLSPEC_TMPBASE/profiler.timeout"
+  if [ -e "$SHELLSPEC_PROFILER_SIGNAL" ]; then
+    rm "$SHELLSPEC_PROFILER_SIGNAL"
   fi
-  signal -KILL "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
 }
 
 cleanup() {
@@ -41,13 +33,14 @@ interrupt() {
   stop_profiler
   reporter_pid=''
   read_pid_file reporter_pid "$SHELLSPEC_TMPBASE/reporter.pid" 0
-  [ "$reporter_pid" ] && sleep_wait signal -0 "$reporter_pid"
+  [ "$reporter_pid" ] && sleep_wait signal -0 "$reporter_pid" 2>/dev/null
   signal -TERM 0
   cleanup
   exit 130
 }
 
 executor() {
+  start_profiler
   executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
   # shellcheck disable=SC2086
   $SHELLSPEC_TIME $SHELLSPEC_SHELL "$executor" "$@" 3>&2 2>"$SHELLSPEC_TIME_LOG"
@@ -97,8 +90,6 @@ if [ "${SHELLSPEC_RANDOM:-}" ]; then
   eval "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'} >"$SHELLSPEC_INFILE"
   set -- -
 fi
-
-start_profiler # Do not include in executor function. Can not CTRL+C
 
 # I want to process with non-blocking output
 # and the stdout of runner streams to the reporter

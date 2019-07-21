@@ -2,7 +2,6 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use signal
 
 mktempdir() {
   (umask 0077; mkdir "$1"; chmod 0700 "$1")

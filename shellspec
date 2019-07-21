@@ -59,7 +59,6 @@ export SHELLSPEC_PROFILER=''
 export SHELLSPEC_PROFILER_LOG=''
 export SHELLSPEC_PROFILER_LIMIT=10
 export SHELLSPEC_PROFILER_REPORT="profiler.log"
-export SHELLSPEC_PROFILER_WAIT=10
 export SHELLSPEC_DEFECT_READONLY=''
 export SHELLSPEC_DEFECT_REDEFINE=''
 export SHELLSPEC_KILL='kill'
@@ -172,7 +171,6 @@ Usage: shellspec [options] [files or directories]
                                         [quiet]    mute repeated messages and non-temporarily messages
   -p  --[no-]profile                  Enable profiling of examples and list the slowest examples
       --profile-limit N               List the top N slowest examples (default: 10)
-      --profile-wait N                Increase number when profile data is dropped (default: 0)
 
   **** Ranges / Filters ****
 
@@ -333,9 +331,6 @@ parse_options() {
       --no-profile) SHELLSPEC_PROFILER='' ;;
       --profile-limit) [ "${2:-}" ] || abort 'Require N.'
         SHELLSPEC_PROFILER_LIMIT="$2"
-        shift ;;
-      --profile-wait) [ "${2:-}" ] || abort 'Require N.'
-        SHELLSPEC_PROFILER_WAIT="$2"
         shift ;;
       --init | --task | --translate | --syntax-check) SHELLSPEC_MODE=${1#--} ;;
       --count) SHELLSPEC_MODE=list SHELLSPEC_LIST='' ;;

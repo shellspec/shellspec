@@ -19,6 +19,7 @@ shellspec_redefinable shellspec_callback
 shellspec_unbuiltin "ps"
 shellspec_unbuiltin "last"
 shellspec_unbuiltin "sleep"
+shellspec_unbuiltin "date"
 
 shellspec_spec_helper_configure() {
   shellspec_import 'support/custom_matcher'

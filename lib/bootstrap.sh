@@ -57,3 +57,15 @@ shellspec_call_configure() {
   done
 }
 shellspec_call_configure "$SHELLSPEC_REQUIRES"
+
+if [ "$SHELLSPEC_PROFILER" ]; then
+  shellspec_profile_start() { shellspec_profile_wait; }
+  shellspec_profile_end() { shellspec_profile_wait; }
+  shellspec_profile_wait() {
+    echo = > "$SHELLSPEC_PROFILER_SIGNAL"
+    while [ -s "$SHELLSPEC_PROFILER_SIGNAL" ]; do :; done
+  }
+else
+  shellspec_profile_start() { :; }
+  shellspec_profile_end() { :; }
+fi

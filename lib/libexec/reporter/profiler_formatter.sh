@@ -5,14 +5,17 @@
 profiler_output() {
   [ "$SHELLSPEC_PROFILER" ] || return 0
   case $1 in (end)
-    _i=0
-    puts "${BOLD}${BLACK}Profile $profiler_count examples"
+    _i=0 _slowest=$SHELLSPEC_PROFILER_LIMIT
+    [ "$profiler_count" -le "$_slowest" ] && _slowest=$profiler_count
+    puts "${BOLD}${BLACK}"
+    putsn "Top $_slowest slowest examples of the $profiler_count examples"
+
     if [ "$example_count" -gt 0 ] && [ "$profiler_count" -eq 0 ]; then
-      puts " (Profiler failed. An error has occurred)"
+      putsn "(Warning, An error has occurred in the profiler)"
     elif [ "$example_count" -ne "$profiler_count" ]; then
-      puts " (Does not match example count, A drop or an error has occurred)"
+      putsn "(Warning, A drop or an error has occurred in the profiler)"
     fi
-    putsn "${RESET}"
+    puts "${RESET}"
 
     while [ $_i -lt "$profiler_count" ]; do
       eval "putsn \$profiler_tick$_i \$profiler_time$_i \"\$profiler_line$_i\""

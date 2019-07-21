@@ -238,21 +238,3 @@ shellspec_abort() {
   [ "${3:-}" ] && shellspec_putsn "${3:-}" >&2
   exit "${1:-1}"
 }
-
-if [ "$SHELLSPEC_PROFILER" ]; then
-  shellspec_profile_start() {
-    shellspec_loop shellspec_profile_wait "$SHELLSPEC_PROFILER_WAIT"
-    shellspec_signal -USR1 "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
-  }
-  shellspec_profile_end() {
-    shellspec_loop shellspec_profile_wait "$SHELLSPEC_PROFILER_WAIT"
-    shellspec_signal -USR1 "$SHELLSPEC_PROFILER_PID" 2>/dev/null ||:
-  }
-  shellspec_profile_wait() {
-    "$SHELLSPEC_SLEEP" 0
-  }
-else
-  shellspec_profile_start() { :; }
-  shellspec_profile_end() { :; }
-  shellspec_profile_wait() { :; }
-fi

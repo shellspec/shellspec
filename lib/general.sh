@@ -418,13 +418,3 @@ shellspec_chomp() {
   "
   eval "$SHELLSPEC_EVAL"
 }
-
-if $SHELLSPEC_KILL -0 $$ 2>/dev/null; then
-  shellspec_signal() {
-    "$SHELLSPEC_KILL" "$1" "$2"
-  }
-else
-  shellspec_signal() {
-    "$SHELLSPEC_KILL" -s "${1#-}" "$2"
-  }
-fi

@@ -111,4 +111,15 @@ sleep_wait() {
   eval "$sleep_wait_eval"
 }
 
+
+if $SHELLSPEC_KILL -0 $$ 2>/dev/null; then
+  signal() {
+    "$SHELLSPEC_KILL" "$1" "$2"
+  }
+else
+  signal() {
+    "$SHELLSPEC_KILL" -s "${1#-}" "$2"
+  }
+fi
+
 use puts putsn

@@ -4,7 +4,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use import reset_params constants sequence replace each padding trim signal
+use import reset_params constants sequence replace each padding trim
 
 count() {
   count_specfiles=0 count_examples=0
@@ -98,16 +98,14 @@ inc() {
 
 read_profiler() {
   tick_total=0 time_real_nano=0
-  while IFS=" " read -r tick; do
-    tick_total=$(($tick_total + $tick))
-  done < "$2"
+  read -r tick_total < "$2.total"
 
-  shellspec_shift10 time_real_nano "$3" 6
+  shellspec_shift10 time_real_nano "$3" 4
 
   i=0
   while IFS=" " read -r tick; do
     duration=$(($time_real_nano * $tick / $tick_total))
-    shellspec_shift10 duration "$duration" -6
+    shellspec_shift10 duration "$duration" -4
     $1 "$i" "$tick" "$duration"
     i=$(($i + 1))
   done < "$2"
