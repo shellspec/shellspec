@@ -8,6 +8,15 @@
 
 set -eu
 
+[ $# -eq 0 ] && set -- general
+
+case ${1:-} in ( general | make | bpkg | basher ) ;; (*)
+cat <<'USAGE'
+Usage: installer_test.sh [ general | make | bpkg | basher ]
+USAGE
+  exit 0
+esac
+
 iid='' iidfile=$(mktemp -t shellspec.XXXXXXXX)
 dockerfile="dockerfiles/.installer-test"
 
@@ -18,7 +27,9 @@ cleanup() {
 trap 'exit 1' INT
 trap 'cleanup' EXIT
 
-docker build --target=installer -t "shellspec:installer" - < "$dockerfile"
-docker build --target=test --iidfile "$iidfile" . -f "$dockerfile"
+docker build --target=${1}_installer -t "shellspec:${1}_installer" - < "$dockerfile"
+sleep 5
+docker build --target=test --build-arg TYPE=$1 --iidfile "$iidfile" . -f "$dockerfile"
 iid=$(cat "$iidfile")
+shift
 docker run -it --rm "$iid" "$@"

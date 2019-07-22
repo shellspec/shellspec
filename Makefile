@@ -8,7 +8,7 @@ all: shellspec
 install:
 	install -d $(LIBDIR)/$(BIN)
 	cp -r shellspec lib libexec $(LIBDIR)/$(BIN)
-	install -D bin/shellspec.stub $(BINDIR)/$(BIN)
+	install -D stub/shellspec $(BINDIR)/$(BIN)
 
 uninstall:
 	rm -rf $(LIBDIR)/$(BIN) $(BINDIR)/$(BIN)

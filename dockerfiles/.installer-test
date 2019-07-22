@@ -1,5 +1,7 @@
-FROM alpine as installer
-RUN apk --no-cache add bash git curl make
+ARG TYPE="general"
+
+FROM alpine as general_installer
+RUN apk --no-cache add git curl
 RUN echo 'cd $(dirname $(which _$1)); mv _$1 $1' > /usr/local/bin/enable \
  && echo 'cd $(dirname $(which  $1)); mv $1 _$1' > /usr/local/bin/disable \
  && chmod +x /usr/local/bin/*
@@ -12,6 +14,38 @@ WORKDIR /root
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "/bin/sh" ]
 
-FROM shellspec:installer as test
-COPY ./install.sh ./
-COPY ./ ./shellspec-local
+FROM alpine as make_installer
+RUN apk --no-cache add make
+WORKDIR /root/shellspec
+
+FROM alpine as bpkg_installer
+RUN apk --no-cache add bash git curl make coreutils
+RUN curl -sLo- http://get.bpkg.sh | bash
+RUN echo '#!/bin/sh' > /entrypoint.sh \
+ && echo 'echo Usage: bpkg install shellspec/shellspec' >> /entrypoint.sh \
+ && echo 'echo Usage: bpkg install shellspec/shellspec@0.19.0' >> /entrypoint.sh \
+ && echo 'echo Usage: bpkg install shellspec/shellspec -g' >> /entrypoint.sh \
+ && echo 'exec "$@"' >> /entrypoint.sh \
+ && chmod +x /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]
+WORKDIR /root/project
+CMD [ "/bin/bash", "-l" ]
+
+FROM alpine as basher_installer
+RUN apk --no-cache add bash git
+RUN git clone https://github.com/basherpm/basher.git ~/.basher
+RUN echo 'export PATH="$HOME/.basher/bin:$PATH"' >> ~/.bash_profile
+RUN echo 'eval "$(basher init -)"' >> ~/.bash_profile
+RUN echo '#!/bin/sh' > /entrypoint.sh \
+ && echo 'echo Usage: basher install shellspec/shellspec' >> /entrypoint.sh \
+ && echo 'echo Usage: basher install shellspec/shellspec@0.19.0' >> /entrypoint.sh \
+ && echo 'echo Usage: basher link ./shellspec shellspec/shellspec' >> /entrypoint.sh \
+ && echo 'exec "$@"' >> /entrypoint.sh \
+ && chmod +x /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]
+WORKDIR /root
+CMD [ "/bin/bash", "-l" ]
+
+FROM shellspec:${TYPE}_installer as test
+COPY ./install.sh /root/
+COPY ./ /root/shellspec
