@@ -13,5 +13,8 @@ install:
 uninstall:
 	rm -rf $(LIBDIR)/$(BIN) $(BINDIR)/$(BIN)
 
+package:
+	contrib/make_package_json.sh > package.json
+
 test:
 	./shellspec
