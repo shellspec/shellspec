@@ -2,6 +2,7 @@
   "name": "shellspec",
   "version": "0.19.0",
   "description": "BDD style unit testing framework for POSIX compliant shell script",
-  "scripts": [ "shellspec" ],
+  "scripts": ["shellspec"],
+  "files": ["lib", "libexec"],
   "install": "make install"
 }
