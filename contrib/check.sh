@@ -43,6 +43,13 @@ count sample $(samples)
 count total $(sources; specs; samples)
 echo
 
+echo "Checking package.json..."
+
+contrib/make_package_json.sh | diff -u package.json - &&:
+package_json_status=$?
+[ "$package_json_status" -eq 0 ] && echo "ok"
+echo
+
 if ! docker --version >/dev/null 2>&1; then
   echo "You need docker to run shellcheck" >&2
   exit 1
@@ -59,5 +66,7 @@ trap 'docker rmi "$tag" >/dev/null 2>&1' EXIT
 docker build -t "$tag" . -f dockerfiles/.shellcheck > /dev/null
 docker run -i --rm "$tag" --version
 docker run -i --rm "$tag" -C $(sources; specs; samples)
+
+[ "$package_json_status" -ne 0 ] && exit "$package_json_status"
 
 echo "ok"
