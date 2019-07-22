@@ -9,7 +9,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 [![Travis CI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI)](https://travis-ci.org/shellspec/shellspec)
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI)](https://cirrus-ci.com/github/shellspec/shellspec)
 [![Circle CI](https://img.shields.io/circleci/build/github/shellspec/shellspec.svg?label=CircleCI)](https://circleci.com/gh/shellspec/shellspec)
-[![Kcov](https://img.shields.io/badge/dynamic/json.svg?label=kcov&query=percent_covered&suffix=%25&url=https%3A%2F%2Fcircleci.com%2Fapi%2Fv1.1%2Fproject%2Fgithub%2Fshellspec%2Fshellspec%2Flatest%2Fartifacts%2F0%2Froot%2Fshellspec%2Fcoverage%2Fcoverage.json)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html)
+[![Kcov](https://img.shields.io/badge/dynamic/json.svg?label=kcov&query=percent_covered&suffix=%25&url=https%3A%2F%2Fcircleci.com%2Fapi%2Fv1.1%2Fproject%2Fgithub%2Fshellspec%2Fshellspec%2Flatest%2Fartifacts%2F0%2Froot%2Fshellspec%2Fcoverage%2Fcoverage.json%3Fbranch%3Dmaster)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html?branch=master)
 [![Coveralls](https://img.shields.io/coveralls/github/shellspec/shellspec.svg?label=coveralls)](https://coveralls.io/github/shellspec/shellspec?branch=master)
 [![Codecov](https://img.shields.io/codecov/c/github/shellspec/shellspec.svg?label=codecov)](https://codecov.io/gh/shellspec/shellspec)
 [![CodeFactor](https://www.codefactor.io/repository/github/shellspec/shellspec/badge)](https://www.codefactor.io/repository/github/shellspec/shellspec)
