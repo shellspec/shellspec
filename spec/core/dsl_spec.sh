@@ -19,6 +19,8 @@ Describe "core/dsl.sh"
   Describe "shellspec_example()"
     Context 'when example is execution target'
       shellspec_around_invoke() {
+        shellspec_profile_start() { :; }
+        shellspec_profile_end() { :; }
         SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
         shellspec_output() { echo "$1"; }
         shellspec_invoke_example() { echo 'invoke_example'; }
@@ -32,6 +34,8 @@ Describe "core/dsl.sh"
 
     Context 'when example is aborted'
       shellspec_around_invoke() {
+        shellspec_profile_start() { :; }
+        shellspec_profile_end() { :; }
         SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
         shellspec_output() { echo "$1"; }
         shellspec_invoke_example() { return 12; }
@@ -59,6 +63,7 @@ Describe "core/dsl.sh"
 
     Context 'when dry-run mode'
       shellspec_around_invoke() {
+        # shellcheck disable=SC2034
         SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=1
         shellspec_output() { echo "$1"; }
         shellspec_invoke_example() { echo 'invoke_example'; }
