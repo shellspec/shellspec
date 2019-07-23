@@ -46,18 +46,6 @@ ENTRYPOINT [ "/entrypoint.sh" ]
 WORKDIR /root
 CMD [ "/bin/bash", "-l" ]
 
-FROM alpine as npm_installer
-RUN apk --no-cache add npm
-RUN echo '#!/bin/sh' > /entrypoint.sh \
- && echo 'echo Usage: npm install shellspec/shellspec' >> /entrypoint.sh \
- && echo 'echo Usage: npm install shellspec/shellspec@0.19.0' >> /entrypoint.sh \
- && echo 'echo Usage: npm link ../shellspec' >> /entrypoint.sh \
- && echo 'exec "$@"' >> /entrypoint.sh \
- && chmod +x /entrypoint.sh
-ENTRYPOINT [ "/entrypoint.sh" ]
-WORKDIR /root/project
-CMD [ "/bin/sh" ]
-
 FROM shellspec:${TYPE}_installer as test
 COPY ./install.sh /root/
 COPY ./ /root/shellspec
