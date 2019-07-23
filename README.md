@@ -146,7 +146,13 @@ $ wget -O- https://git.io/shellspec | sh
 <details>
 <summary>Advanced installation / upgrade / uninstall</summary>
 
-**Upgrade the latest release version.**
+**Install the specified version.**
+
+```console
+$ curl -fsSL https://git.io/shellspec | sh -s 0.19.1
+```
+
+**Upgrade to the latest release version.**
 
 ```console
 $ curl -fsSL https://git.io/shellspec | sh -s -- --switch
