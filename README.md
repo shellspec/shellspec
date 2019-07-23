@@ -142,24 +142,26 @@ $ wget -O- https://git.io/shellspec | sh
 ```
 
 <details>
-<summary>Upgrade / Switch version</summary>
+<summary>Advanced installation / upgrade / uninstall</summary>
 
-Upgrade the latest release version.
+**Upgrade the latest release version.**
 
 ```console
 $ curl -fsSL https://git.io/shellspec | sh -s -- --switch
 ```
 
-Switch to the specified version.
+**Switch to the specified version.**
 
 ```console
 $ curl -fsSL https://git.io/shellspec | sh -s 0.18.0 --switch
 ```
 
-</details>
+**Uninstall**
 
-<details>
-<summary>Advanced installation</summary>
+1. Delete the shellspec executable file [default: `$HOME/bin/shellspec`].
+2. Delete the shellspec installation directpry [default: `$HOME/lib/shellspec`].
+
+**Other usage**
 
 ```console
 $ curl -fsSL https://git.io/shellspec | sh -s -- --help
@@ -181,9 +183,9 @@ VERSION:
     .               Install from local directory
 
 OPTIONS:
-  -p, --prefix PREFIX   Specify prefix          [default: $HOME]
-  -b, --bin BIN         Specify bin directory   [default: <PREFIX>/bin]
-  -d, --dir DIR         Specify directory name  [default: .shellspec]
+  -p, --prefix PREFIX   Specify prefix                 [default: $HOME]
+  -b, --bin BIN         Specify bin directory          [default: <PREFIX>/bin]
+  -d, --dir DIR         Specify installation directory [default: <PREFIX>/lib/shellspec]
   -s, --switch          Switch version (requires installed via git)
   -l, --list            List available versions (tags)
       --pre             Include pre-release
@@ -191,7 +193,52 @@ OPTIONS:
   -y, --yes             Automatic yes to prompts
   -h, --help            You're looking at it
 ```
+</details>
 
+<details>
+<summary>Using package manager (basher / bpkg)</summary>
+
+**The official support is shellspec 0.19.1 and later.**
+
+Installation with [basher](https://github.com/basherpm/basher)
+
+```console
+$ basher install shellspec/shellspec
+```
+
+Installation with [bpkg](https://github.com/bpkg/bpkg)
+
+```console
+$ bpkg install shellspec/shellspec
+```
+</details>
+
+<details>
+<summary>Using make</summary>
+
+**Installation**
+
+Install to `/usr/local/bin` and `/usr/local/lib`
+
+```console
+$ sudo make install
+```
+
+Install to `$HOME/bin` and `$HOME/lib`
+
+```console
+$ make install PREFIX=$HOME
+```
+
+**Uninstallation**
+
+```console
+$ sudo make uninstall
+```
+
+```console
+$ make uninstall PREFIX=$HOME
+```
 </details>
 
 <details>
@@ -228,15 +275,6 @@ exec /SOME/WHERE/TO/INSTALL/shellspec/shellspec "$@"
 HERE
 $ chmod +x /EXECUTABLE/PATH/shellspec
 ```
-
-</details>
-
-<details>
-<summary>Uninstall</summary>
-
-1. Delete the shellspec installation directpry [default: $HOME/opt/shellspec].
-2. Delete the shellspec executable file [default: $HOME/bin/shellspec].
-
 </details>
 
 ### Getting started

@@ -29,7 +29,7 @@ VERSION:
 OPTIONS:
   -p, --prefix PREFIX   Specify prefix                 [default: \\\$HOME]
   -b, --bin BIN         Specify bin directory          [default: <PREFIX>/bin]
-  -d, --dir DIR         Specify installation directory [default: <PREFIX>/opt/$project]
+  -d, --dir DIR         Specify installation directory [default: <PREFIX>/lib/$project]
   -s, --switch          Switch version (requires installed via git)
   -l, --list            List available versions (tags)
       --pre             Include pre-release
@@ -153,7 +153,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-BIN=${BIN:-${PREFIX%/}/bin} DIR=${DIR:-${PREFIX%/}/opt/$project}
+BIN=${BIN:-${PREFIX%/}/bin} DIR=${DIR:-${PREFIX%/}/lib/$project}
 
 __ main __
 
