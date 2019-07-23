@@ -126,7 +126,8 @@ latest_version() {
 ${__SOURCED__:+return}
 
 trap finished EXIT
-VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH='' done=''
+VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH=''
+done='' mode=install
 
 __ parse_option __
 
@@ -140,7 +141,7 @@ while [ $# -gt 0 ]; do
                     DIR=$2 && shift ;;
     -s | --switch ) SWITCH=1 ;;
     -y | --yes    ) YES=y ;;
-    -l | --list   ) list_versions && finish ;;
+    -l | --list   ) mode=list ;;
          --pre    ) PRE=1 ;;
          --fetch  ) [ "${2:-}" ] || abort "FETCH not specified"
                     case $2 in ( curl | wget ) FETCH=$2 && shift ;;
@@ -152,6 +153,11 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
+
+if [ "$mode" = "list" ]; then
+  list_versions
+  finish
+fi
 
 BIN=${BIN:-${PREFIX%/}/bin} DIR=${DIR:-${PREFIX%/}/lib/$project}
 
