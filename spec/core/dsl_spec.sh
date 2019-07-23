@@ -16,6 +16,63 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_example()"
+    Context 'when example is execution target'
+      shellspec_around_invoke() {
+        SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
+        shellspec_output() { echo "$1"; }
+        shellspec_invoke_example() { echo 'invoke_example'; }
+        "$@"
+      }
+      It 'invokes example'
+        When invoke shellspec_example
+        The stdout should include 'invoke_example'
+      End
+    End
+
+    Context 'when example is aborted'
+      shellspec_around_invoke() {
+        SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
+        shellspec_output() { echo "$1"; }
+        shellspec_invoke_example() { return 12; }
+        "$@"
+      }
+      It 'outputs abort protocol'
+        When invoke shellspec_example
+        The stdout should include 'ABORTED'
+        The stdout should include 'FAILED'
+      End
+    End
+
+    Context 'when example is not execution target'
+      shellspec_around_invoke() {
+        SHELLSPEC_ENABLED='' SHELLSPEC_FILTER='' SHELLSPEC_DRYRUN=''
+        shellspec_output() { echo "$1"; }
+        shellspec_invoke_example() { echo 'invoke_example'; }
+        "$@"
+      }
+      It 'not invokes example'
+        When invoke shellspec_example
+        The stdout should not include 'invoke_example'
+      End
+    End
+
+    Context 'when dry-run mode'
+      shellspec_around_invoke() {
+        SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=1
+        shellspec_output() { echo "$1"; }
+        shellspec_invoke_example() { echo 'invoke_example'; }
+        "$@"
+      }
+      It 'always succeeds'
+        When invoke shellspec_example
+        The stdout should not include 'invoke_example'
+        The stdout should include 'EXAMPLE'
+        The stdout should include 'SUCCEEDED'
+      End
+    End
+  End
+
   Describe "shellspec_invoke_example()"
     prepare() { :; }
     shellspec_around_invoke() {

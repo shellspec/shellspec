@@ -63,10 +63,18 @@ shellspec_example() {
       shellspec_output SUCCEEDED
     else
       shellspec_profile_start
-      # This {} is workaround for zsh 5.4.2
-      # I think this bug is related to #12 in contrib/bugs.sh
-      # But I do not know why this works well.
-      { shellspec_invoke_example; }
+      case $- in
+        *e*) set -- 'set +e' 'set -e' ;;
+        *)   set -- '' '' ;;
+      esac
+      eval "$1"
+      (set -e; shellspec_invoke_example )
+      set -- "$@" $?
+      eval "$2"
+      if [ "$3" -ne 0 ]; then
+        shellspec_output ABORTED "$3"
+        shellspec_output FAILED
+      fi
       shellspec_profile_end
     fi
   fi

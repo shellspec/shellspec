@@ -166,6 +166,11 @@ shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
     "$(shellspec_output_syntax_name) is not a $2"
 }
 
+shellspec_output_ABORTED() {
+  shellspec_output_raw statement "tag:bad" "note:" "fail:y" \
+    "message:Example aborted (exit status: $1)" "failure_message:"
+}
+
 shellspec_output_SUCCEEDED() {
   shellspec_output_raw result "tag:succeeded" "note:" "fail:"
 }
