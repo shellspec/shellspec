@@ -131,6 +131,8 @@ Currently used external (not shell built-in) commands.
 
 ### Installation
 
+**Install the latest release version.**
+
 ```console
 $ curl -fsSL https://git.io/shellspec | sh
 ```
@@ -203,14 +205,23 @@ OPTIONS:
 Installation with [basher](https://github.com/basherpm/basher)
 
 ```console
+# Install from master branch
 $ basher install shellspec/shellspec
+
+# To specify a version (example: 0.19.1)
+$ basher install shellspec/shellspec@0.19.1
 ```
 
 Installation with [bpkg](https://github.com/bpkg/bpkg)
 
 ```console
+# Install from master branch
 $ bpkg install shellspec/shellspec
+
+# To specify a version (example: 0.19.1)
+$ bpkg install shellspec/shellspec@0.19.1
 ```
+
 </details>
 
 <details>
