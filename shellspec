@@ -3,7 +3,7 @@
 
 set -eu
 
-export SHELLSPEC_VERSION='0.19.1-pre'
+export SHELLSPEC_VERSION='0.19.1'
 export SHELLSPEC_PATH=''
 export SHELLSPEC_ROOT=''
 export SHELLSPEC_PROJECT_ROOT=''
