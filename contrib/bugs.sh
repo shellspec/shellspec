@@ -377,4 +377,14 @@ HERE
   [ "$ret" = "1" ] && affect || no_problem
 )
 
+(
+  title='39: can not set -e options with eval (pdksh, mksh, posh)'
+  set -e
+  eval "set +e"
+  case $- in
+    *e*) affect ;;
+    *) no_problem ;;
+  esac
+)
+
 echo Done
