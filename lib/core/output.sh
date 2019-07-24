@@ -8,15 +8,6 @@ shellspec_output() {
 shellspec_output_raw() {
   [ $# -gt 0 ] || return 0
 
-  # shellcheck disable=SC2145
-  case $1 in
-    example) set -- "type:$@" \
-      "lineno_range:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END" ;;
-    statement) set -- "type:$@" \
-      "lineno:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}" ;;
-    *) set -- "type:$@" ;;
-  esac
-
   shellspec_output_buf="${shellspec_output_buf:-}$SHELLSPEC_RS"
   while [ $# -gt 1 ]; do
     shellspec_output_buf="${shellspec_output_buf}$1${SHELLSPEC_US}"
@@ -29,6 +20,34 @@ shellspec_output_raw() {
 shellspec_output_raw_append() {
   shellspec_puts "$SHELLSPEC_US"
   shellspec_putsn "$@"
+}
+
+shellspec_output_meta() {
+  eval shellspec_output_raw type:meta ${1:+'"$@"'}
+}
+
+shellspec_output_finished() {
+  eval shellspec_output_raw type:finished ${1:+'"$@"'}
+}
+
+shellspec_output_begin() {
+  eval shellspec_output_raw type:begin ${1:+'"$@"'}
+}
+
+shellspec_output_end() {
+  eval shellspec_output_raw type:end ${1:+'"$@"'}
+}
+
+shellspec_output_example() {
+  eval shellspec_output_raw type:example ${1:+'"$@"'} "lineno_range:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END"
+}
+
+shellspec_output_statement() {
+  eval shellspec_output_raw type:statement ${1:+'"$@"'} "lineno:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}"
+}
+
+shellspec_output_result() {
+  eval shellspec_output_raw type:result ${1:+'"$@"'}
 }
 
 shellspec_output_if() {

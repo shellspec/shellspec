@@ -24,17 +24,23 @@ shellspec_register_hook() {
 }
 
 shellspec_call_before_hooks() {
-  set -- "${1:-1}"
-  [ "$1" -gt "$SHELLSPEC_BEFORE_INDEX" ] && return 0
-  shellspec_call_hook "SHELLSPEC_BEFORE_$1" || return $?
-  shellspec_call_before_hooks $(($1 + 1))
+  if [ $# -eq 0 ]; then
+    shellspec_call_before_hooks 1
+  else
+    [ "$1" -gt "$SHELLSPEC_BEFORE_INDEX" ] && return 0
+    shellspec_call_hook "SHELLSPEC_BEFORE_$1" || return $?
+    shellspec_call_before_hooks $(($1 + 1))
+  fi
 }
 
 shellspec_call_after_hooks() {
-  set -- "${1:-$SHELLSPEC_AFTER_INDEX}"
-  [ "$1" -lt 1 ] && return 0
-  shellspec_call_hook "SHELLSPEC_AFTER_$1" || return $?
-  shellspec_call_after_hooks $(($1 - 1))
+  if [ $# -eq 0 ]; then
+    shellspec_call_after_hooks "$SHELLSPEC_AFTER_INDEX"
+  else
+    [ "$1" -lt 1 ] && return 0
+    shellspec_call_hook "SHELLSPEC_AFTER_$1" || return $?
+    shellspec_call_after_hooks $(($1 - 1))
+  fi
 }
 
 shellspec_call_hook() {
