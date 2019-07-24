@@ -15,6 +15,13 @@ affect()      { echo "[affect] $title"; }
 no_problem()  { echo "[------] $title"; }
 skip()        { echo "[skip  ] $title [skip reason: $1]"; }
 
+if { file=$(mktemp -t tmp.XXXXXX); } 2>/dev/null; then
+  maketemp() { mktemp -t tmp.XXXXXX; }
+  rm "$file"
+else
+  maketemp() { mktemp tmp.XXXXXX; }
+fi
+
 (
   title="01: set -e option is reset (posh)"
   set -eu
@@ -206,7 +213,7 @@ HERE
 
 (
   title='22: internal error: j_async: bad nzombie (0) (posh = around 0.6.13)'
-  file=$(mktemp -t tmp.XXXXXXXX)
+  file=$(maketemp)
   (
     sleep 0 &
     wait $!
@@ -222,7 +229,7 @@ HERE
 
 (
   title='23: can not read after reading null character (yash = around 2.46)'
-  file=$(mktemp -t tmp.XXXXXXXX)
+  file=$(maketemp)
   printf 'foo\0bar' > "$file"
   IFS= read -r ret < "$file"
   IFS= read -r ret <<HERE
@@ -271,7 +278,7 @@ HERE
 
 (
   title='27: set -C not working (posh = around 0.10.2)'
-  file=$(mktemp -t tmp.XXXXXXXXXX)
+  file=$(maketemp)
   (set -C; : > "$file") 2>/dev/null &&:
   ret=$?
   rm "$file"
@@ -363,13 +370,15 @@ HERE
     printf '%s' "$line"             # not freeze
   done > /dev/null
 
-  file=$(mktemp -t tmp.XXXXXXXXXX)
+  [ -e /usr/bin/printf ] && printf=/usr/bin/printf || printf=/bin/printf
+
+  file=$(maketemp)
   # Code for detection. Output one line only.
   { echo 1; echo 2; } | {
     while IFS= read -r line; do
       echo "$line"
     done | cat | while read -r line; do
-      /usr/bin/printf '%s' "$line"
+      $printf '%s' "$line"
     done
   } > $file
   ret=$(cat "$file")
@@ -385,6 +394,15 @@ HERE
     *e*) affect ;;
     *) no_problem ;;
   esac
+)
+
+(
+  title='40: can not return exit status from subshell (bash 4.1.5, 4.2)'
+  ret() { return $1; }
+  func() { set -e; ret 123; }
+  set +e
+  (func)
+  [ $? = 123 ] && no_problem || affect
 )
 
 echo Done
