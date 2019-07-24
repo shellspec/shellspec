@@ -64,15 +64,17 @@ shellspec_example() {
     else
       shellspec_profile_start
       case $- in
-        *e*) set -- 'set +e' 'set -e' ;;
-        *)   set -- '' '' ;;
+        *e*)
+          set +e
+          (set -e; shellspec_invoke_example )
+          set -e -- $?
+          ;;
+        *)
+          (set -e; shellspec_invoke_example )
+          set -- $?
       esac
-      eval "$1"
-      (set -e; shellspec_invoke_example )
-      set -- "$@" $?
-      eval "$2"
-      if [ "$3" -ne 0 ]; then
-        shellspec_output ABORTED "$3"
+      if [ "$1" -ne 0 ]; then
+        shellspec_output ABORTED "$1"
         shellspec_output FAILED
       fi
       shellspec_profile_end
