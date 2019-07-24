@@ -516,7 +516,7 @@ Describe "core/dsl.sh"
 
   Describe "Include"
     Include "$LIB/include.sh" # comment
-    Before 'unset __SOURCED__ ||:'
+    Before 'unset __SOURCED__'
 
     It 'includes script'
       The result of "foo()" should eq "foo"

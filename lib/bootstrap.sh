@@ -32,6 +32,25 @@ else
   shellspec_unbuiltin() { :; }
 fi
 
+if ! (unset A ||:; unset A); then
+  case $SHELLSPEC_SHELL_TYPE in
+    bash|zsh)
+      shellspec_fix_unset() {
+        eval 'unset() { builtin unset "$@" ||:; }'
+      }
+      ;;
+    *)
+      shellspec_unset() {
+        while [ $# -gt 0 ]; do eval "\unset $1 ||:" && shift; done
+      }
+      shellspec_fix_unset() {
+        eval 'alias unset=shellspec_unset'
+      }
+  esac
+else
+  shellspec_fix_unset() { :; }
+fi
+
 if [ "${SHELLSPEC_DEFECT_READONLY:-}" ]; then
   alias readonly=''
 fi

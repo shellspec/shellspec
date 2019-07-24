@@ -5,7 +5,7 @@ Describe "core/matchers/be/variable.sh"
   subject() { false; }
 
   Describe 'be defined matcher'
-    Before 'shellspec_set var1=1' 'shellspec_unset var2'
+    Before 'var1=1' 'unset var2'
     Example 'example'
       The variable var1 should be defined
       The variable var2 should not be defined
@@ -34,7 +34,7 @@ Describe "core/matchers/be/variable.sh"
   End
 
   Describe 'be undefined matcher'
-    Before 'shellspec_unset var1' 'shellspec_set var2=1'
+    Before 'unset var1' 'var2=1'
     Example 'example'
       The variable var1 should be undefined
       The variable var2 should not be undefined
@@ -63,7 +63,7 @@ Describe "core/matchers/be/variable.sh"
   End
 
   Describe 'be present matcher'
-    Before 'shellspec_set var1="x" var2=""'
+    Before 'var1="x" var2=""'
     Example 'example'
       The variable var1 should be present
       The variable var2 should not be present
@@ -100,7 +100,7 @@ Describe "core/matchers/be/variable.sh"
   End
 
   Describe 'be blank matcher'
-    Before 'shellspec_set var1="" var2="x"'
+    Before 'var1="" var2="x"'
     Example 'example'
       The variable var1 should be blank
       The variable var2 should not be blank

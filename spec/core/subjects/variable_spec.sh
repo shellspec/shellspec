@@ -5,14 +5,14 @@ Describe "core/subjects/variable.sh"
 
   Describe "variable subject"
     Context 'when var is foo'
-      Before 'shellspec_set var=foo'
+      Before 'var=foo'
       Example 'example'
         The variable var should equal foo
       End
     End
 
     Context 'when the variable exists'
-      Before 'shellspec_set var="test${LF}"'
+      Before 'var="test${LF}"'
       It 'uses the value of variable as subject'
         When invoke shellspec_subject variable var _modifier_
         The entire stdout should equal "test${LF}"
@@ -20,7 +20,7 @@ Describe "core/subjects/variable.sh"
     End
 
     Context 'when the variable not exists'
-      Before 'shellspec_unset var'
+      Before 'unset var'
       It 'uses undefined as subject'
         When invoke shellspec_subject variable var _modifier_
         The status should be failure
