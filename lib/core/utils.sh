@@ -23,3 +23,15 @@ shellspec_capture() {
   "
   eval "$SHELLSPEC_EVAL"
 }
+
+shellspec_shell_option() {
+  eval "set -- ${*:-}"
+  while [ $# -gt 0 ]; do
+    case $1 in
+      *:on) set -o "${1%:*}" ;;
+      *:off) set +o "${1%:*}" ;;
+      *) shellspec_error "shellspec_shell_option: invalid option '$1'"
+    esac
+    shift
+  done
+}

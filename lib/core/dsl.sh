@@ -3,6 +3,7 @@
 SHELLSPEC_DESCRIPTION=''
 SHELLSPEC_PATH_ALIAS=:
 SHELLSPEC_INTERCEPTOR='|'
+SHELLSPEC_SHELL_OPTIONS=''
 
 # to suppress shellcheck SC2034
 : "${SHELLSPEC_EXPECTATION:-} ${SHELLSPEC_EVALUATION:-}"
@@ -91,6 +92,7 @@ shellspec_invoke_example() {
 
   # Output SKIP message if skipped in outer group.
   shellspec_output_if SKIP || {
+    shellspec_shell_option "$SHELLSPEC_SHELL_OPTIONS"
     if ! shellspec_call_before_hooks; then
       SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
       shellspec_output FAILED_BEFORE_HOOK
@@ -237,6 +239,13 @@ shellspec_intercept() {
     esac
     shift
   done
+}
+
+shellspec_set() {
+  IFS=" $IFS"
+  eval "set -- $SHELLSPEC_SHELL_OPTIONS ${*:-}"
+  SHELLSPEC_SHELL_OPTIONS="${*:-}"
+  IFS=${IFS# }
 }
 
 shellspec_marker() {

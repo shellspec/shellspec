@@ -572,4 +572,22 @@ Describe "core/dsl.sh"
       The variable SHELLSPEC_INTERCEPTOR should eq "|foo:__foo__|bar:__bar__|"
     End
   End
+
+  Describe "Set"
+    Context 'when set errexit on'
+      Set errexit:on
+      It 'sets shell option'
+        When call echo "$-"
+        The stdout should include "e"
+      End
+    End
+
+    Context 'when set errexit off'
+      Set errexit:off
+      It 'sets shell option'
+        When call echo "$-"
+        The stdout should not include "e"
+      End
+    End
+  End
 End

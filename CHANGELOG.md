@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `Set` helper for set shell option
+
 ## [0.19.1] - 2019-07-23
 
 ### Added

@@ -1,15 +1,15 @@
 # References
 
-- [Example Group](#Example-Group)
-- [Example](#Example)
-  - [Evaluation](#Evaluation)
-  - [Expectation](#Expectation)
-    - [Subject](#Subject)
-    - [Modifier](#Modifier)
-    - [Matcher](#Matcher)
-- [Helper](#Helper)
-- [Directive](#Directive)
-- [Envronment Variables](#Envronment-Variables)
+- [Example Group](#example-group)
+- [Example](#example)
+  - [Evaluation](#evaluation)
+  - [Expectation](#expectation)
+    - [Subject](#subject)
+    - [Modifier](#modifier)
+    - [Matcher](#matcher)
+- [Helper](#helper)
+- [Directive](#directive)
+- [Envronment Variables](#envronment-variables)
 
 ## Example Group
 
@@ -146,6 +146,7 @@ other
 | Skip if `<REASON>` `<FUNCTION> [ARGUMENTS...]` | Skip current block with conditional.              |
 | Pending `<REASON>`                             | Pending current block.                            |
 | Intercept `[NAMES...]`                         | Define an interceptor.                            |
+| Set `[OPTION:<on | off>...]`                   | Set shell option before running each example.     |
 
 ## Directive
 
