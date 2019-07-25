@@ -64,19 +64,32 @@ else
 fi
 
 shellspec_import() {
-  shellspec_reset_params '"$1" $SHELLSPEC_LOAD_PATH' ':'
-  eval "$SHELLSPEC_RESET_PARAMS"
-  while [ $# -gt 1 ]; do
-    shellspec_import_ "${2%/}/$1.sh" && return 0
-    shellspec_import_ "${2%/}/$1/${1##*/}.sh" && return 0
-    shellspec_splice_params $# 1 1
-    eval "$SHELLSPEC_RESET_PARAMS"
-  done
-  shellspec_error "Import failed, '$1' not found"
+  shellspec_import_deep "$SHELLSPEC_LOAD_PATH" "$1"
 }
 
-# shellcheck disable=SC1090
-shellspec_import_() { [ -e "$1" ] && . "$1"; }
+shellspec_import_deep() {
+  if shellspec_import_ "${1%%:*}" "$2"; then
+    return 0
+  fi
+  case $1 in
+    *:*) shellspec_import_deep "${1#*:}" "$2" ;;
+    *)
+      shellspec_error "Import failed, '$1' not found"
+      return 1
+  esac
+}
+
+shellspec_import_() {
+  if [ -e "$1/$2.sh" ]; then
+    . "$1/$2.sh"
+    return 0
+  fi
+  if [ -e "$1/$2/$2.sh" ]; then
+    . "$1/$2/$2.sh"
+    return 0
+  fi
+  return 1
+}
 
 if [ "$SHELLSPEC_SHELL_TYPE" = "zsh" ]; then
   shellspec_find_files() {
