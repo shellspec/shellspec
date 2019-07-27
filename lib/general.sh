@@ -81,10 +81,12 @@ shellspec_import_deep() {
 
 shellspec_import_() {
   if [ -e "$1/$2.sh" ]; then
+    # shellcheck disable=SC1090
     . "$1/$2.sh"
     return 0
   fi
   if [ -e "$1/$2/$2.sh" ]; then
+    # shellcheck disable=SC1090
     . "$1/$2/$2.sh"
     return 0
   fi
