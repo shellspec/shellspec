@@ -131,6 +131,7 @@ shellspec_invoke_example() {
 shellspec_statement() {
   shellspec_off SYNTAX_ERROR
   shellspec_if SKIP && return 0
+  # shellcheck disable=SC2145
   "shellspec_$@"
   shellspec_if SYNTAX_ERROR && shellspec_on FAILED
   return 0

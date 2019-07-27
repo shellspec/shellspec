@@ -89,6 +89,7 @@ else
   shellspec_profile_end() { :; }
 fi
 
+# shellcheck disable=SC2034
 case $- in
   *e*) SHELLSPEC_ERREXIT=1 ;;
   *) SHELLSPEC_ERREXIT=''; set -e ;;
