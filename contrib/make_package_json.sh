@@ -6,7 +6,7 @@ version() {
 
 files() {
   echo "["
-  files="$(find bin lib libexec -type f,l -exec echo "    \"{}\"," \;)"
+  files="$(find bin lib libexec \( -type f -o -type l \) -exec echo "    \"{}\"," \; | sort)"
   echo "${files%,}"
   echo "  ]"
 }
