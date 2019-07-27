@@ -318,17 +318,18 @@ shellspec_escape_pattern() {
 
 # shellcheck disable=SC2194
 if case "a[d]" in (*"a[d]"*) false; esac; then
-  # workaround for posh. ok: 0.13.0, 0.12.3, 0.6.12 bad:0.12.6, 0.10.2, 0.8.5
+  # workaround for posh. ok: 0.13.0, 0.6.12 bad:0.12.6, 0.10.2, 0.8.5
   shellspec_includes() {
     shellspec_includes_pattern="$2"
     shellspec_escape_pattern shellspec_includes_pattern
     set -- "$1" "$shellspec_includes_pattern"
-    case $1 in (*$2*) return 0 ;esac
+    case $1 in (*$2*) eval :; return 0; esac
     return 1
   }
 else
   shellspec_includes() {
-    case $1 in (*"$2"*) return 0; esac
+    # workaround for pdksh on debian 2.2, Memory fault without eval
+    case $1 in (*"$2"*) eval :; return 0; esac
     return 1
   }
 fi

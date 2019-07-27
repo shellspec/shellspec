@@ -186,6 +186,7 @@ specfile() {
 
     putsn "shellspec_marker '$specfile' ---"
     putsn "(shellspec_begin '$specfile' '$spec_no'"
+    putsn "if [ \"\$SHELLSPEC_ERREXIT\" ]; then set -e; else set +e; fi"
     putsn "shellspec_perform '$enabled' '$filter'"
     initialize
     putsn "shellspec_marker '$specfile' BOF"

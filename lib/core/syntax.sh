@@ -52,7 +52,10 @@ shellspec_syntax_dispatch() {
 
   if shellspec_includes "$SHELLSPEC_SYNTAXES" "|shellspec_$1_${2:-}|"; then
     SHELLSPEC_SYNTAX_NAME="shellspec_$1_$2" && shift 2
-    eval "$SHELLSPEC_SYNTAX_NAME ${1+\"\$@\"}"
+    case $# in
+      0) "$SHELLSPEC_SYNTAX_NAME" ;;
+      *) "$SHELLSPEC_SYNTAX_NAME" "$@" ;;
+    esac
     return $?
   fi
   shellspec_output SYNTAX_ERROR_DISPATCH_FAILED "$@"

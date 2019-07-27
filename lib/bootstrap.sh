@@ -88,3 +88,8 @@ else
   shellspec_profile_start() { :; }
   shellspec_profile_end() { :; }
 fi
+
+case $- in
+  *e*) SHELLSPEC_ERREXIT=1 ;;
+  *) SHELLSPEC_ERREXIT=''; set -e ;;
+esac
