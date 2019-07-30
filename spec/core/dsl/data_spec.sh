@@ -30,7 +30,7 @@ Describe 'Data helper'
     End
 
     It 'reads data as stdin with run evaluation type'
-      When run cat -
+      When call command cat -
       The first line of output should eq 'aaa'
       The second line of output should eq 'bbb'
       The third line of output should eq "ccc"

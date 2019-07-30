@@ -50,32 +50,38 @@ Describe "core/evaluation.sh"
       When call cat
       The stdout should equal 'data'
     End
-  End
-
-  Describe 'run evaluation'
-    cat() { echo "fake cat"; return 1; }
 
     It 'calls external command'
-      When run cat /dev/null
+      cat() { echo "fake cat"; return 1; }
+      When call command cat /dev/null
       The status should equal 0
     End
-
-    It 'calls shellspec_evaluation_cleanup() after evaluation'
-      shellspec_around_invoke() {
-        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
-        "$@"
-      }
-      When invoke shellspec_evaluation_run false
-      The first word of stdout should equal 'cleanup:'
-      The second word of stdout should be failure
-    End
-
-    It 'reads data from stdin'
-      Data "data"
-      When run cat
-      The stdout should equal 'data'
-    End
   End
+
+#  Describe 'run evaluation'
+#    cat() { echo "fake cat"; return 1; }
+#
+#    It 'calls external command'
+#      When call command cat /dev/null
+#      The status should equal 0
+#    End
+#
+#    It 'calls shellspec_evaluation_cleanup() after evaluation'
+#      shellspec_around_invoke() {
+#        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
+#        "$@"
+#      }
+#      When invoke shellspec_evaluation_run false
+#      The first word of stdout should equal 'cleanup:'
+#      The second word of stdout should be failure
+#    End
+#
+#    It 'reads data from stdin'
+#      Data "data"
+#      When call command cat
+#      The stdout should equal 'data'
+#    End
+#  End
 
   Describe 'invoke evaluation'
     It 'called then retrives stdout and stderr'
@@ -133,7 +139,7 @@ Describe "core/evaluation.sh"
 
   Describe 'execute evaluation'
     Specify 'The script runs without any problems'
-      When run "$BIN/script.sh"
+      When call "$BIN/script.sh"
       The status should be success
     End
 

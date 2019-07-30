@@ -5,30 +5,35 @@ SHELLSPEC_STDOUT_FILE="$SHELLSPEC_TMPBASE/$$.stdout"
 SHELLSPEC_STDERR_FILE="$SHELLSPEC_TMPBASE/$$.stderr"
 
 shellspec_syntax 'shellspec_evaluation_call'
-shellspec_syntax 'shellspec_evaluation_run'
+#shellspec_syntax 'shellspec_evaluation_run'
 shellspec_syntax 'shellspec_evaluation_invoke'
 shellspec_syntax 'shellspec_evaluation_execute'
 
 shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
 shellspec_evaluation_call() {
-  if [ "${SHELLSPEC_DATA:-}" ]; then
-    set -- shellspec_evaluation_with_data "$@"
-  fi
-  "$@" >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
+  {
+    [ "${SHELLSPEC_DATA:-}" ] && shellspec_data > "$SHELLSPEC_STDIN_FILE"
+    if [ "$1" != command ]; then
+      eval '"$@"' ${SHELLSPEC_DATA:+'< "$SHELLSPEC_STDIN_FILE"'} '&&:'
+    else
+      shift
+      eval 'command "$@"' ${SHELLSPEC_DATA:+'< "$SHELLSPEC_STDIN_FILE"'} '&&:'
+    fi
+  } >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
 }
 
-shellspec_evaluation_run() {
-  ( if [ "${SHELLSPEC_DATA:-}" ]; then
-      shellspec_data > "$SHELLSPEC_STDIN_FILE"
-      command "$@" < "$SHELLSPEC_STDIN_FILE"
-    else
-      command "$@"
-    fi
-  ) >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
-  shellspec_evaluation_cleanup $?
-}
+#shellspec_evaluation_run() {
+#  ( if [ "${SHELLSPEC_DATA:-}" ]; then
+#      shellspec_data > "$SHELLSPEC_STDIN_FILE"
+#      command "$@" < "$SHELLSPEC_STDIN_FILE"
+#    else
+#      command "$@"
+#    fi
+#  ) >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
+#  shellspec_evaluation_cleanup $?
+#}
 
 shellspec_around_invoke() { "$@"; }
 

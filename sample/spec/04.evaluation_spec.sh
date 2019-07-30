@@ -33,12 +33,10 @@ Describe 'evaluation sample'
       The value 123 should eq 123
       When call echo 1 # can not be called after expectation.
     End
-  End
 
-  Describe 'run evaluation'
-    It 'runs external command'
+    It 'calls external command'
       expr() { echo "not called"; }
-      When run expr 1 + 2
+      When call command expr 1 + 2
       The output should eq 3
     End
   End
