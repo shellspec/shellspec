@@ -171,6 +171,40 @@ shellspec_when() {
   shellspec_output EVALUATION
 }
 
+shellspec_around_call() {
+  shellspec_call_before_call_hooks || {
+    set -- $?
+    echo "BeforeCall hook '$SHELLSPEC_HOOK' failed" >&2
+    return "$1"
+  }
+  "$@"
+  set -- $?
+  [ "$1" -ne 0 ] && return "$1"
+  shellspec_call_after_call_hooks || {
+    set -- $?
+    echo "AfterCall hook '$SHELLSPEC_HOOK' failed" >&2
+    return "$1"
+  }
+  return "$1"
+}
+
+shellspec_around_run() {
+  shellspec_call_before_run_hooks || {
+    set -- $?
+    echo "BeforeRun hook '$SHELLSPEC_HOOK' failed" >&2
+    return "$1"
+  }
+  "$@"
+  set -- $?
+  [ "$1" -ne 0 ] && return "$1"
+  shellspec_call_after_run_hooks || {
+    set -- $?
+    echo "AfterRun hook '$SHELLSPEC_HOOK' failed" >&2
+    return "$1"
+  }
+  return "$1"
+}
+
 shellspec_the() {
   eval shellspec_join SHELLSPEC_EXPECTATION The ${1+'"$@"'}
   shellspec_off NOT_IMPLEMENTED
@@ -185,8 +219,29 @@ shellspec_the() {
   shellspec_statement_preposition "$@"
 }
 
-shellspec_before() { eval shellspec_before_hook ${1+'"$@"'}; }
-shellspec_after()  { eval shellspec_after_hook ${1+'"$@"'}; }
+shellspec_before() {
+  eval shellspec_before_hook ${1+'"$@"'}
+}
+
+shellspec_after()  {
+  eval shellspec_after_hook ${1+'"$@"'}
+}
+
+shellspec_before_call() {
+  eval shellspec_before_call_hook ${1+'"$@"'}
+}
+
+shellspec_after_call()  {
+  eval shellspec_after_call_hook ${1+'"$@"'}
+}
+
+shellspec_before_run() {
+  eval shellspec_before_run_hook ${1+'"$@"'}
+}
+
+shellspec_after_run()  {
+  eval shellspec_after_run_hook ${1+'"$@"'}
+}
 
 shellspec_path() {
   while [ $# -gt 0 ]; do

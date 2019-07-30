@@ -54,6 +54,10 @@ mapping() {
     Dir         )   control path        "$2" ;;
     Before      )   control before      "$2" ;;
     After       )   control after       "$2" ;;
+    BeforeCall  )   control before_call "$2" ;;
+    AfterCall   )   control after_call  "$2" ;;
+    BeforeRun   )   control before_run  "$2" ;;
+    AfterRun    )   control after_run   "$2" ;;
     Pending     )   control pending     "$2" ;;
     Set         )   control set         "$2" ;;
     Skip        )   skip                "$2" ;;

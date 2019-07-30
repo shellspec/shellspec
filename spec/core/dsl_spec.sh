@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2004
 
 % LIB: "$SHELLSPEC_SPECDIR/fixture/lib"
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
@@ -587,6 +587,164 @@ Describe "core/dsl.sh"
       It 'sets shell option'
         When call echo "$-"
         The stdout should not include "e"
+      End
+    End
+  End
+
+  Describe 'BeforeCall / AfterCall'
+    before() { echo before; }
+    after() { echo after; }
+    foo() { echo foo; }
+    BeforeCall before
+    AfterCall after
+
+    It 'called before / after expectation'
+      When call foo
+      The line 1 of stdout should eq before
+      The line 2 of stdout should eq foo
+      The line 3 of stdout should eq after
+    End
+
+    It 'can be specified multiple'
+      BeforeCall 'echo before2'
+      AfterCall 'echo after2'
+      When call foo
+      The line 1 of stdout should eq before
+      The line 2 of stdout should eq before2
+      The line 3 of stdout should eq foo
+      The line 4 of stdout should eq after2
+      The line 5 of stdout should eq after
+    End
+
+    It 'calls same scope with evaluation'
+      before() { value='before'; }
+      foo() { value="$value foo"; }
+      after() { echo "$value after"; }
+      When call foo
+      The stdout should eq "before foo after"
+    End
+
+    Describe 'BeforeCall'
+      It 'failed and evaluation not call'
+        before() { return 123; }
+        When call foo
+        The stdout should not include 'foo'
+        The status should eq 123
+        The stderr should be present
+      End
+    End
+
+    Describe 'AfterCall'
+      Context 'errexit is on'
+        Set errexit:on
+        It 'not called when evaluation failure'
+          foo() { echo foo; false; }
+          When call foo
+          The line 1 of stdout should eq before
+          The line 2 of stdout should eq foo
+          The line 3 of stdout should be undefined
+          The status should be failure
+        End
+      End
+
+      Context 'errexit is off'
+        Set errexit:off
+        It 'not called when evaluation failure'
+          foo() { echo foo; false; }
+          When call foo
+          The line 1 of stdout should eq before
+          The line 2 of stdout should eq foo
+          The line 3 of stdout should be undefined
+          The status should be failure
+        End
+      End
+
+      It 'fails cause evaluation to be failure'
+        after() { return 123; }
+        When call foo
+        The status should eq 123
+        The line 1 of stdout should eq 'before'
+        The line 2 of stdout should eq 'foo'
+        The stderr should be present
+      End
+    End
+  End
+
+  Describe 'BeforeRun / AfterRun'
+    before() { echo before; }
+    after() { echo after; }
+    foo() { echo foo; }
+    BeforeRun before
+    AfterRun after
+
+    It 'run before / after expectation'
+      When run foo
+      The line 1 of stdout should eq before
+      The line 2 of stdout should eq foo
+      The line 3 of stdout should eq after
+    End
+
+    It 'can be specified multiple'
+      BeforeRun 'echo before2'
+      AfterRun 'echo after2'
+      When run foo
+      The line 1 of stdout should eq before
+      The line 2 of stdout should eq before2
+      The line 3 of stdout should eq foo
+      The line 4 of stdout should eq after2
+      The line 5 of stdout should eq after
+    End
+
+    It 'runs same scope with evaluation'
+      before() { value='before'; }
+      foo() { value="$value foo"; }
+      after() { echo "$value after"; }
+      When run foo
+      The stdout should eq "before foo after"
+    End
+
+    Describe 'BeforeRun'
+      It 'failed and evaluation not run'
+        before() { return 123; }
+        When run foo
+        The stdout should not include 'foo'
+        The status should eq 123
+        The stderr should be present
+      End
+    End
+
+    Describe 'AfterRun'
+      Context 'errexit is on'
+        Set errexit:on
+        It 'not run when evaluation failure'
+          foo() { echo foo; false; }
+          When run foo
+          The line 1 of stdout should eq before
+          The line 2 of stdout should eq foo
+          The line 3 of stdout should be undefined
+          The status should be failure
+        End
+      End
+
+      Context 'errexit is off'
+        Set errexit:off
+        It 'not run when evaluation failure'
+          foo() { echo foo; false; }
+          When run foo
+          The line 1 of stdout should eq before
+          The line 2 of stdout should eq foo
+          The line 3 of stdout should be undefined
+          The status should be failure
+        End
+      End
+
+      It 'fails cause evaluation to be failure'
+        after() { return 123; }
+        When run foo
+        The status should eq 123
+        The line 1 of stdout should eq 'before'
+        The line 2 of stdout should eq 'foo'
+        The stderr should be present
       End
     End
   End

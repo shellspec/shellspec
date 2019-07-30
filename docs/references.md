@@ -31,17 +31,26 @@ You can write structured *Example* by below DSL.
 
 ### Evaluation
 
-The line start with `When` is the evaluation. The evaluation type follows after `When`.
+The line start with `When` is the evaluation.
 
-| evaluation type                             | Description                                          |
-| :------------------------------------------ | :--------------------------------------------------- |
-| call `<FUNCTION | COMMAND> [ARGUMENTS...]`  | Call shell function or external command.             |
-| invoke `<FUNCTION| COMMAND> [ARGUMENTS...]` | Call shell function or external command in subshell. |
-| run `<COMMAND> [ARGUMENTS...]`              | Run external command.                                |
-| execute `<SCRIPT> [ARGUMENTS...]`           | Execute shell script file.                           |
+| Evaluation                                     | Description                              |
+| :--------------------------------------------- | :--------------------------------------- |
+| When call `<FUNCTION> [ARGUMENTS...]`          | Call function without subshell.          |
+| When run `<FUNCTION | COMMAND> [ARGUMENTS...]` | Run function or command within subshell. |
+| When run command `<COMMAND> [ARGUMENTS...]`    | Run external command within subshell.    |
+| When run source `<SCRIPT> [ARGUMENTS...]`      | Run script within subshell.              |
 
-Normally you will use `call`. `invoke` is similar to `call` but execute in subshell.
-`invoke` usefull for *override function in evaluation only* and trap `exit`.
+The difference between `call` and `run` / `run command` / `run source`
+
+|                    | `call`                 | `run`                | `run command`        | `run source`         |
+| ------------------ | ---------------------- | -------------------- | -------------------- | -------------------- |
+| Use of subshell    | call without subshell  | run within subshell  | run within subshell  | run within subshell  |
+| target             | function               | function / command   | command              | shell script         |
+| Stop with `set -e` | x                      | o                    | -                    | o                    |
+| Catch `exit`       | x                      | o                    | -                    | o                    |
+| Variable reference | o                      | x                    | -                    | x                    |
+| Expectation Hooks  | BeforeCall / AfterCall | BeforeRun / AfterRun | BeforeRun / AfterRun | BeforeRun / AfterRun |
+| Intercept          | x                      | x                    | -                    | o                    |
 
 ### Expectation
 

@@ -56,32 +56,98 @@ Describe "core/evaluation.sh"
       When call command cat /dev/null
       The status should equal 0
     End
+
+    It 'can not aborts with set -e'
+      evaluation() { set -e; echo 1; false; echo 2; }
+      When call evaluation
+      The stdout should equal "1${LF}2"
+      The status should equal 0
+    End
   End
 
-#  Describe 'run evaluation'
-#    cat() { echo "fake cat"; return 1; }
-#
-#    It 'calls external command'
-#      When call command cat /dev/null
-#      The status should equal 0
-#    End
-#
-#    It 'calls shellspec_evaluation_cleanup() after evaluation'
-#      shellspec_around_invoke() {
-#        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
-#        "$@"
-#      }
-#      When invoke shellspec_evaluation_run false
-#      The first word of stdout should equal 'cleanup:'
-#      The second word of stdout should be failure
-#    End
-#
-#    It 'reads data from stdin'
-#      Data "data"
-#      When call command cat
-#      The stdout should equal 'data'
-#    End
-#  End
+  Describe 'run evaluation'
+    cat() { echo "fake cat"; return 1; }
+
+    It 'called then retrives stdout and stderr'
+      evaluation() { echo ok; echo err >&2; return 0; }
+      When run evaluation
+      The stdout should equal 'ok'
+      The stderr should equal 'err'
+      The status should equal 0
+    End
+
+    It 'can not able to change variable.'
+      evaluation() { VAR=456; }
+      When run evaluation
+      The value "$VAR" should equal 123
+    End
+
+    It 'restore mocked function after evaluation'
+      echo_foo() { echo 'foo'; }
+      mock_foo() {
+        echo_foo() { echo 'FOO'; }
+      }
+      When run mock_foo
+      The result of 'echo_foo()' should equal 'foo'
+    End
+
+    It 'prevents exit'
+      do_exit() { exit "$1"; }
+      When run do_exit 12
+      The status should equal 12
+    End
+
+    It 'runs external command'
+      When run command cat /dev/null
+      The status should equal 0
+    End
+
+    It 'calls shellspec_evaluation_cleanup() after evaluation'
+      shellspec_around_invoke() {
+        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
+        "$@"
+      }
+      When invoke shellspec_evaluation_run false
+      The first word of stdout should equal 'cleanup:'
+      The second word of stdout should be failure
+    End
+
+    It 'ensures errno 0 before evaluating function'
+      relay_errno() { return ${?}; }
+      When run relay_errno
+      The status should equal 0
+    End
+
+    It 'reads data from stdin'
+      Data "data"
+      When run command cat
+      The stdout should equal 'data'
+    End
+
+    Describe 'abort test'
+      evaluation() { set -e; echo line1; "$BIN/exit.sh" 12; echo line2; }
+
+      Context "when errexit is on"
+        Set errexit:on
+        It 'aborts with set -e'
+          When run evaluation
+          The stdout should equal line1
+          The status should equal 12
+          The value "$-" should include "e"
+        End
+      End
+
+      Context "when errexit is off"
+        Set errexit:off
+        It 'aborts with set -e'
+          When run evaluation
+          The stdout should equal line1
+          The status should equal 12
+          The value "$-" should not include "e"
+        End
+      End
+    End
+  End
 
   Describe 'invoke evaluation'
     It 'called then retrives stdout and stderr'
