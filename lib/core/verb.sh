@@ -18,7 +18,6 @@ shellspec_verb_should() {
 
   shellspec_proxy "shellspec_matcher_do_match" \
                   "shellspec_matcher_do_match_positive"
-
   shellspec_off MATCHED
   shellspec_matcher "$@"
   shellspec_if SYNTAX_ERROR && shellspec_on FAILED && return 0

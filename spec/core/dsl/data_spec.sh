@@ -21,16 +21,8 @@ Describe 'Data helper'
       The lines of entire output should eq 4
     End
 
-    It 'reads data as stdin with invoke evaluation type'
-      When invoke output
-      The first line of output should eq 'aaa'
-      The second line of output should eq 'bbb'
-      The third line of output should eq "ccc"
-      The lines of entire output should eq 4
-    End
-
     It 'reads data as stdin with run evaluation type'
-      When call command cat -
+      When run output
       The first line of output should eq 'aaa'
       The second line of output should eq 'bbb'
       The third line of output should eq "ccc"

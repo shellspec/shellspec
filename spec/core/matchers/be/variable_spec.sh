@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/be/variable.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
 
   Describe 'be defined matcher'
     Before 'var1=1' 'unset var2'
@@ -11,25 +10,22 @@ Describe "core/matchers/be/variable.sh"
       The variable var2 should not be defined
     End
 
-    Context 'when subject is empty string'
+    It 'matches empty string'
       subject() { %- ""; }
-      It 'matches'
-        When invoke shellspec_matcher be defined
-        The status should be success
-      End
+      When run shellspec_matcher_be_defined
+      The status should be success
     End
 
-    Context 'when subject is undefined'
-      It 'does not match'
-        When invoke shellspec_matcher be defined
-        The status should be failure
-      End
+    It 'does not match undefined'
+      subject() { false; }
+      When run shellspec_matcher_be_defined
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be defined foo
+      subject() { %- ""; }
+      When run shellspec_matcher_be_defined foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -40,25 +36,22 @@ Describe "core/matchers/be/variable.sh"
       The variable var2 should not be undefined
     End
 
-    Context 'when subject is empty string'
+    It 'does not match empty string'
       subject() { %- ""; }
-      It 'does not match'
-        When invoke shellspec_matcher be undefined
-        The status should be failure
-      End
+      When run shellspec_matcher_be_undefined
+      The status should be failure
     End
 
-    Context 'when subject is undefined'
-      It 'matches'
-        When invoke shellspec_matcher be undefined
-        The status should be success
-      End
+    It 'matches undefined'
+      subject() { false; }
+      When run shellspec_matcher_be_undefined
+      The status should be success
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be undefined foo
+      subject() { %- ""; }
+      When run shellspec_matcher_be_undefined foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -69,33 +62,28 @@ Describe "core/matchers/be/variable.sh"
       The variable var2 should not be present
     End
 
-    Context 'when subject is non zero length string'
+    It 'matches non zero length string'
       subject() { %- "x"; }
-      It 'matches'
-        When invoke shellspec_matcher be present
-        The status should be success
-      End
+      When run shellspec_matcher_be_present
+      The status should be success
     End
 
-    Context 'when subject is zero length string'
+    It 'does not match zero length string'
       subject() { %- ""; }
-      It 'does not match'
-        When invoke shellspec_matcher be present
-        The status should be failure
-      End
+      When run shellspec_matcher_be_present
+      The status should be failure
     End
 
-    Context 'when subject is undefind'
-      It 'does not match'
-        When invoke shellspec_matcher be present
-        The status should be failure
-      End
+    It 'does not match undefind'
+      subject() { false; }
+      When run shellspec_matcher_be_present
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be present foo
+      subject() { %- "x"; }
+      When run shellspec_matcher_be_present foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -106,33 +94,28 @@ Describe "core/matchers/be/variable.sh"
       The variable var2 should not be blank
     End
 
-    Context 'when subject is zero length string'
+    It 'matches zero length string'
       subject() { %- ""; }
-      It 'matches'
-        When invoke shellspec_matcher be blank
-        The status should be success
-      End
+      When run shellspec_matcher_be_blank
+      The status should be success
     End
 
-    Context 'when subject is undefind'
-      It 'matches'
-        When invoke shellspec_matcher be blank
-        The status should be success
-      End
+    It 'matches undefind'
+      subject() { false; }
+      When run shellspec_matcher_be_blank
+      The status should be success
     End
 
-    Context 'when subject is non zero length string'
+    It 'does not match non zero length string'
       subject() { %- "x"; }
-      It 'does not match'
-        When invoke shellspec_matcher be blank
-        The status should be failure
-      End
+      When run shellspec_matcher_be_blank
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be blank foo
+      subject() { %- ""; }
+      When run shellspec_matcher_be_blank foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End

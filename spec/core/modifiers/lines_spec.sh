@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/modifiers/lines.sh"
-  Before set_subject intercept_shellspec_modifier
-  subject() { false; }
+  BeforeRun set_subject modifier_mock
 
   Describe "lines modifier"
     get_text() {
@@ -15,47 +14,39 @@ Describe "core/modifiers/lines.sh"
       The lines of stdout should equal 3
     End
 
-    Context 'when subject is "foo<LF>bar<LF>" (with last LF)'
+    It 'counts as 2 lines when subject is "foo<LF>bar<LF>" (with last LF)'
       subject() { %= "foo${LF}bar"; }
-      It 'counts as 2 lines'
-        When invoke shellspec_modifier lines _modifier_
-        The stdout should equal 2
-      End
+      When run shellspec_modifier_lines _modifier_
+      The stdout should equal 2
     End
 
-    Context 'when subject is "foo<LF>bar" (without last LF)'
+    It 'counts as 2 lines when subject is "foo<LF>bar" (without last LF)'
       subject() { %- "foo${LF}bar"; }
-      It 'counts as 2 lines'
-        When invoke shellspec_modifier lines _modifier_
-        The stdout should equal 2
-      End
+      When run shellspec_modifier_lines _modifier_
+      The stdout should equal 2
     End
 
-    Context 'when subject is "foo<LF>bar<LF><LF>"'
+    It 'counts as 3 lines when subject is "foo<LF>bar<LF><LF>"'
       subject() { %= "foo${LF}bar${LF}"; }
-      It 'counts as 3 lines'
-        When invoke shellspec_modifier lines _modifier_
-        The stdout should equal 3
-      End
+      When run shellspec_modifier_lines _modifier_
+      The stdout should equal 3
     End
 
-    Context 'when subject is empty string'
+    It 'counts as 0 lines when subject is empty string'
       subject() { %- ""; }
-      It 'counts as 0 lines'
-        When invoke shellspec_modifier lines _modifier_
-        The stdout should equal 0
-      End
+      When run shellspec_modifier_lines _modifier_
+      The stdout should equal 0
     End
 
-    Context 'when subject is undefined'
-      It 'can not counts lines'
-        When invoke shellspec_modifier lines _modifier_
-        The status should be failure
-      End
+    It 'can not counts lines when subject is undefined'
+      subject() { false; }
+      When run shellspec_modifier_lines _modifier_
+      The status should be failure
     End
 
     It 'outputs error if next word is missing'
-      When invoke shellspec_modifier lines
+      subject() { %= "foo${LF}bar"; }
+      When run shellspec_modifier_lines
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

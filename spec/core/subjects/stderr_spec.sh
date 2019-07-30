@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/subjects/stderr.sh"
-  Before set_stderr intercept_shellspec_subject
-  stderr() { false; }
+  BeforeRun set_stderr subject_mock
 
   Describe "stderr subject"
     Example 'example'
@@ -12,23 +11,21 @@ Describe "core/subjects/stderr.sh"
       The error should equal "foo" # alias for stderr
     End
 
-    Context 'when stderr is defined'
+    It 'uses stderr as subject when stderr is defined'
       stderr() { %= "test"; }
-      It 'uses stderr as subject'
-        When invoke shellspec_subject stderr _modifier_
-        The entire stdout should equal 'test'
-      End
+      When run shellspec_subject_stderr _modifier_
+      The entire stdout should equal 'test'
     End
 
-    Context 'when stderr is undefined'
-      It 'uses undefined as subject'
-        When invoke shellspec_subject stderr _modifier_
-        The status should be failure
-      End
+    It 'uses undefined as subject when stderr is undefined'
+      stderr() { false; }
+      When run shellspec_subject_stderr _modifier_
+      The status should be failure
     End
 
     It 'outputs error if next word is missing'
-      When invoke shellspec_subject stderr
+      stderr() { %= "test"; }
+      When run shellspec_subject_stderr
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End
@@ -41,23 +38,21 @@ Describe "core/subjects/stderr.sh"
       The entire error should equal "foo${LF}"
     End
 
-    Context 'when stderr is defined'
+    It 'uses stderr including last LF as subject when stderr is defined'
       stderr() { %= "test"; }
-      It 'uses stderr including last LF as subject'
-        When invoke shellspec_subject entire stderr _modifier_
-        The entire stdout should equal "test${LF}"
-      End
+      When run shellspec_subject_entire_stderr _modifier_
+      The entire stdout should equal "test${LF}"
     End
 
-    Context 'when stderr is undefined'
-      It 'uses undefined as subject'
-        When invoke shellspec_subject entire stderr _modifier_
-        The status should be failure
-      End
+    It 'uses undefined as subject when stderr is undefined'
+      stderr() { false; }
+      When run shellspec_subject_entire_stderr _modifier_
+      The status should be failure
     End
 
     It 'outputs error if next word is missing'
-      When invoke shellspec_subject entire stderr
+      stderr() { %= "test"; }
+      When run shellspec_subject_entire_stderr
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

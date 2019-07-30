@@ -50,29 +50,17 @@ shellspec_spec_helper_configure() {
     shellspec_puts "$SHELLSPEC_SUBJECT"
   }
 
-  intercept_shellspec_subject() {
-    shellspec_around_invoke() {
-      shellspec_output() { shellspec_puts "$1" >&2; }
-      "$@"
-    }
+  subject_mock() {
+    shellspec_output() { shellspec_puts "$1" >&2; }
   }
 
-  intercept_shellspec_modifier() {
-    shellspec_around_invoke() {
-      shellspec_output() { shellspec_puts "$1" >&2; }
-      "$@"
-    }
+  modifier_mock() {
+    shellspec_output() { shellspec_puts "$1" >&2; }
   }
 
-  intercept_shellspec_matcher() {
-    shellspec_around_invoke() {
-      shellspec_output() { shellspec_puts "$1" >&2; }
-      shellspec_is() { shellspec_puts "is:" "$@"; }
-      shellspec_proxy "shellspec_matcher_do_match" \
-                      "shellspec_matcher_do_match_positive"
-      "$@"
-      shellspec_if MATCHED
-    }
+  matcher_mock() {
+    shellspec_output() { shellspec_puts "$1" >&2; }
+    shellspec_proxy "shellspec_matcher_do_match" "shellspec_matcher__match"
   }
 
   shellspec_syntax_alias 'shellspec_subject_switch' 'shellspec_subject_value'

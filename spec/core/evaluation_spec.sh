@@ -30,12 +30,12 @@ Describe "core/evaluation.sh"
     End
 
     It 'calls shellspec_evaluation_cleanup() after evaluation'
-      shellspec_around_invoke() {
+      mock() {
         shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
-        "$@"
       }
       evaluation() { return 123; }
-      When invoke shellspec_evaluation_call evaluation
+      BeforeRun mock
+      When run shellspec_evaluation_call evaluation
       The stdout should equal 'cleanup: 123'
     End
 
@@ -66,8 +66,6 @@ Describe "core/evaluation.sh"
   End
 
   Describe 'run evaluation'
-    cat() { echo "fake cat"; return 1; }
-
     It 'called then retrives stdout and stderr'
       evaluation() { echo ok; echo err >&2; return 0; }
       When run evaluation
@@ -97,17 +95,12 @@ Describe "core/evaluation.sh"
       The status should equal 12
     End
 
-    It 'runs external command'
-      When run command cat /dev/null
-      The status should equal 0
-    End
-
     It 'calls shellspec_evaluation_cleanup() after evaluation'
-      shellspec_around_invoke() {
+      mock() {
         shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
-        "$@"
       }
-      When invoke shellspec_evaluation_run false
+      BeforeRun mock
+      When run shellspec_evaluation_run false
       The first word of stdout should equal 'cleanup:'
       The second word of stdout should be failure
     End
@@ -147,100 +140,49 @@ Describe "core/evaluation.sh"
         End
       End
     End
-  End
 
-  Describe 'invoke evaluation'
-    It 'called then retrives stdout and stderr'
-      evaluation() { echo ok; echo err >&2; return 0; }
-      When invoke evaluation
-      The stdout should equal 'ok'
-      The stderr should equal 'err'
-      The status should equal 0
+    Describe 'run command evaluation'
+      It 'runs external command'
+        cat() { echo "fake cat"; return 1; }
+        When run command cat /dev/null
+        The status should equal 0
+      End
     End
 
-    It 'can not able to change variable.'
-      evaluation() { VAR=456; }
-      When invoke evaluation
-      The value "$VAR" should equal 123
-    End
+    Describe 'run source evaluation'
+      It 'executes script'
+        When run source "$BIN/script.sh"
+        The status should be success
+      End
 
-    It 'restore mocked function after evaluation'
-      echo_foo() { echo 'foo'; }
-      mock_foo() {
-        echo_foo() { echo 'FOO'; }
-      }
-      When invoke mock_foo
-      The result of 'echo_foo()' should equal 'foo'
-    End
+      It 'calls shellspec_intercept'
+        Intercept intercept
 
-    It 'prevents exit'
-      do_exit() { exit "$1"; }
-      When invoke do_exit 12
-      The status should equal 12
-    End
+        # You can overrite here
+        __intercept__() {
+          iconv() { echo "overrided"; }
+        }
 
-    It 'calls shellspec_evaluation_cleanup() after evaluation'
-      shellspec_around_invoke() {
-        shellspec_evaluation_cleanup() { echo "cleanup: $1"; }
-        "$@"
-      }
-      evaluation() { return 123; }
-      When invoke shellspec_evaluation_invoke evaluation
-      The stdout should equal 'cleanup: 123'
-    End
+        When run source "$BIN/script.sh" --command iconv -l
+        The status should be success
+        The stdout should equal "overrided"
+      End
 
-    It 'ensures errno 0 before calling external command'
-      shellspec_around_invoke() { "$@"; }
-      relay_errno() { return ${?}; }
-      When invoke relay_errno
-      The status should equal 0
-    End
+      It 'can pass arguments'
+        When run source "$BIN/script.sh" --dump-params a b c
+        The status should be success
+        The stdout should equal "--dump-params a b c"
+      End
 
-    It 'reads data from stdin'
-      Data "data"
-      When invoke cat
-      The stdout should equal 'data'
-    End
-  End
+      It 'catches exit code'
+        When run source "$BIN/script.sh" --exit-with 123
+        The status should eq 123
+      End
 
-  Describe 'execute evaluation'
-    Specify 'The script runs without any problems'
-      When call "$BIN/script.sh"
-      The status should be success
-    End
-
-    It 'executes script'
-      When execute "$BIN/script.sh"
-      The status should be success
-    End
-
-    It 'calls shellspec_intercept'
-      Intercept intercept
-
-      # You can overrite here
-      __intercept__() {
-        iconv() { echo "overrided"; }
-      }
-
-      When execute "$BIN/script.sh" --command iconv -l
-      The status should be success
-      The stdout should equal "overrided"
-    End
-
-    It 'can pass arguments'
-      When execute "$BIN/script.sh" --dump-params a b c
-      The status should be success
-      The stdout should equal "--dump-params a b c"
-    End
-
-    It 'catches exit code'
-      When execute "$BIN/script.sh" --exit-with 123
-      The status should eq 123
-    End
-
-    Specify '"test" return to the original behavior'
-      When execute "$BIN/script.sh" --command test
-      The status should be failure
+      Specify '"test" return to the original behavior'
+        When run source "$BIN/script.sh" --command test
+        The status should be failure
+      End
     End
   End
 

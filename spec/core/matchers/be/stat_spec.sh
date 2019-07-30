@@ -3,8 +3,7 @@
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 
 Describe "core/matchers/be/stat.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
 
   not_exist() { [ ! -e "$FIXTURE/$1" ]; }
   check_root() { [ "$(id -u)" = 0 ]; }
@@ -15,26 +14,22 @@ Describe "core/matchers/be/stat.sh"
       The path exist-file should be exist
     End
 
-    Context 'when path exists'
+    It 'matches when path exists'
       subject() { %- "$FIXTURE/exist"; }
-      It 'matches'
-        When invoke shellspec_matcher be exist
-        The status should be success
-      End
+      When run shellspec_matcher_be_exist
+      The status should be success
     End
 
-    Context 'when path does not exist'
+    It 'does not match when path does not exist'
       subject() { %- "$FIXTURE/exist.not-exists"; }
-      It 'does not match'
-        When invoke shellspec_matcher be exist
-        The status should be failure
-      End
+      When run shellspec_matcher_be_exist
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be exist foo
+      subject() { %- "$FIXTURE/exist"; }
+      When run shellspec_matcher_be_exist foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -44,26 +39,22 @@ Describe "core/matchers/be/stat.sh"
       The path regular-file should be file
     End
 
-    Context 'when path is regular file'
+    It 'matches when path is regular file'
       subject() { %- "$FIXTURE/file"; }
-      It 'matches'
-        When invoke shellspec_matcher be file
-        The status should be success
-      End
+      When run shellspec_matcher_be_file
+      The status should be success
     End
 
-    Context 'when path is not regular file'
+    It 'does not match when path is not regular file'
       subject() { %- "$FIXTURE/dir"; }
-      It 'does not match'
-        When invoke shellspec_matcher be file
-        The status should be failure
-      End
+      When run shellspec_matcher_be_file
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be file foo
+      subject() { %- "$FIXTURE/file"; }
+      When run shellspec_matcher_be_file foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -73,26 +64,22 @@ Describe "core/matchers/be/stat.sh"
       The path directory should be directory
     End
 
-    Context 'when path is directory'
+    It 'matches when path is directory'
       subject() { %- "$FIXTURE/dir"; }
-      It 'matches'
-        When invoke shellspec_matcher be directory
-        The status should be success
-      End
+      When run shellspec_matcher_be_directory
+      The status should be success
     End
 
-    Context 'when path is not directory'
+    It 'does not match when path is not directory'
       subject() { %- "$FIXTURE/file"; }
-      It 'does not match'
-        When invoke shellspec_matcher be directory
-        The status should be failure
-      End
+      When run shellspec_matcher_be_directory
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be directory foo
+      subject() { %- "$FIXTURE/dir"; }
+      When run shellspec_matcher_be_directory foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -104,26 +91,22 @@ Describe "core/matchers/be/stat.sh"
       The path symlink should be symlink
     End
 
-    Context 'when path is symlink'
+    It 'matches when path is symlink'
       subject() { %- "$FIXTURE/stat/symlink"; }
-      It 'matches'
-        When invoke shellspec_matcher be symlink
-        The status should be success
-      End
+      When run shellspec_matcher_be_symlink
+      The status should be success
     End
 
-    Context 'when path is not symlink'
+    It 'does not match when path is not symlink'
       subject() { %- "$FIXTURE/file"; }
-      It 'does not match'
-        When invoke shellspec_matcher be symlink
-        The status should be failure
-      End
+      When run shellspec_matcher_be_symlink
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be symlink foo
+      subject() { %- "$FIXTURE/stat/symlink"; }
+      When run shellspec_matcher_be_symlink foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -135,26 +118,22 @@ Describe "core/matchers/be/stat.sh"
       The path pipe should be pipe
     End
 
-    Context 'when path is pipe'
+    It 'matches when path is pipe'
       subject() { %- "$FIXTURE/stat/pipe"; }
-      It 'matches'
-        When invoke shellspec_matcher be pipe
-        The status should be success
-      End
+      When run shellspec_matcher_be_pipe
+      The status should be success
     End
 
-    Context 'when path is not pipe'
+    It 'does not match when path is not pipe'
       subject() { %- "$FIXTURE/file"; }
-      It 'does not match'
-        When invoke shellspec_matcher be pipe
-        The status should be failure
-      End
+      When run shellspec_matcher_be_pipe
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be pipe foo
+      subject() { %- "$FIXTURE/stat/pipe"; }
+      When run shellspec_matcher_be_pipe foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -166,26 +145,22 @@ Describe "core/matchers/be/stat.sh"
       The path socket should be socket
     End
 
-    Context 'when path is socket'
+    It 'matches when path is socket'
       subject() { %- "$FIXTURE/stat/socket"; }
-      It 'matches'
-        When invoke shellspec_matcher be socket
-        The status should be success
-      End
+      When run shellspec_matcher_be_socket
+      The status should be success
     End
 
-    Context 'when path is not socket'
+    It 'does not match when path is not socket'
       subject() { %- "$FIXTURE/file"; }
-      It 'does not match'
-        When invoke shellspec_matcher be socket
-        The status should be failure
-      End
+      When run shellspec_matcher_be_socket
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be socket foo
+      subject() { %- "$FIXTURE/stat/socket"; }
+      When run shellspec_matcher_be_socket foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -197,27 +172,23 @@ Describe "core/matchers/be/stat.sh"
       The path readable should be readable
     End
 
-    Context 'when path is readable'
+    It 'matches when path is readable'
       subject() { %- "$FIXTURE/stat/readable"; }
-      It 'matches'
-        When invoke shellspec_matcher be readable
-        The status should be success
-      End
+      When run shellspec_matcher_be_readable
+      The status should be success
     End
 
-    Context 'when path is not readable'
-      subject() { %- "$FIXTURE/stat/no-permission"; }
+    It 'does not match when path is not readable'
       Skip if "I am root" check_root
-      It 'does not match'
-        When invoke shellspec_matcher be readable
-        The status should be failure
-      End
+      subject() { %- "$FIXTURE/stat/no-permission"; }
+      When run shellspec_matcher_be_readable
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be readable foo
+      subject() { %- "$FIXTURE/stat/readable"; }
+      When run shellspec_matcher_be_readable foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -229,27 +200,23 @@ Describe "core/matchers/be/stat.sh"
       The path readable should be writable
     End
 
-    Context 'when path is writable'
+    It 'matches when path is writable'
       subject() { %- "$FIXTURE/stat/writable"; }
-      It 'matches'
-        When invoke shellspec_matcher be writable
-        The status should be success
-      End
+      When run shellspec_matcher_be_writable
+      The status should be success
     End
 
-    Context 'when path is not writable'
-      subject() { %- "$FIXTURE/stat/no-permission"; }
+    It 'does not match when path is not writable'
       Skip if "I am root" check_root
-      It 'does not match'
-        When invoke shellspec_matcher be writable
-        The status should be failure
-      End
+      subject() { %- "$FIXTURE/stat/no-permission"; }
+      When run shellspec_matcher_be_writable
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be writable foo
+      subject() { %- "$FIXTURE/stat/writable"; }
+      When run shellspec_matcher_be_writable foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -261,26 +228,22 @@ Describe "core/matchers/be/stat.sh"
       The path executable should be executable
     End
 
-    Context 'when path is executable'
+    It 'matches when path is executable'
       subject() { %- "$FIXTURE/stat/executable"; }
-      It 'matches'
-        When invoke shellspec_matcher be executable
-        The status should be success
-      End
+      When run shellspec_matcher_be_executable
+      The status should be success
     End
 
-    Context 'when path is not executable'
+    It 'does not match when path is not executable'
       subject() { %- "$FIXTURE/stat/no-permission"; }
-      It 'does not match'
-        When invoke shellspec_matcher be executable
-        The status should be failure
-      End
+      When run shellspec_matcher_be_executable
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be executable foo
+      subject() { %- "$FIXTURE/stat/executable"; }
+      When run shellspec_matcher_be_executable foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -292,26 +255,22 @@ Describe "core/matchers/be/stat.sh"
       The path block-device should be block device
     End
 
-    Context 'when path is block device'
+    It 'matches when path is block device'
       subject() { %- "$FIXTURE/stat/block-device"; }
-      It 'matches'
-        When invoke shellspec_matcher be block device
-        The status should be success
-      End
+      When run shellspec_matcher_be_block_device
+      The status should be success
     End
 
-    Context 'when path is not block device'
+    It 'does not match when path is not block device'
       subject() { %- "$FIXTURE/file"; }
-      It 'does not match'
-        When invoke shellspec_matcher be block device
-        The status should be failure
-      End
+      When run shellspec_matcher_be_block_device
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be block device foo
+      subject() { %- "$FIXTURE/stat/block-device"; }
+      When run shellspec_matcher_be_block_device foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -323,26 +282,22 @@ Describe "core/matchers/be/stat.sh"
       The path charactor-device should be charactor device
     End
 
-    Context 'when path is charactor device'
+    It 'matches when path is charactor device'
       subject() { %- "$FIXTURE/stat/charactor-device"; }
-      It 'matches'
-        When invoke shellspec_matcher be charactor device
-        The status should be success
-      End
+      When run shellspec_matcher_be_charactor_device
+      The status should be success
     End
 
-    Context 'when path is not charactor device'
+    It 'does not match when path is not charactor device'
       subject() { %- "$FIXTURE/file"; }
-      It 'does not match'
-        When invoke shellspec_matcher be charactor device
-        The status should be failure
-      End
+      When run shellspec_matcher_be_charactor_device
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be charactor device foo
+      subject() { %- "$FIXTURE/stat/charactor-device"; }
+      When run shellspec_matcher_be_charactor_device foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End

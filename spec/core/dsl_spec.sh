@@ -5,72 +5,62 @@
 
 Describe "core/dsl.sh"
   Describe "shellspec_example_group()"
-    shellspec_around_invoke() {
+    mock() {
       shellspec_output() { echo "$1"; }
       shellspec_yield() { echo 'yield'; }
-      "$@"
     }
     It 'calls yield block'
-      When invoke shellspec_example_group
+      BeforeRun mock
+      When run shellspec_example_group
       The stdout should include 'yield'
     End
   End
 
   Describe "shellspec_example()"
+    mock() {
+      shellspec_profile_start() { :; }
+      shellspec_profile_end() { :; }
+      shellspec_output() { echo "$1"; }
+    }
+    BeforeRun mock prepare
+
     Context 'when example is execution target'
-      shellspec_around_invoke() {
-        shellspec_profile_start() { :; }
-        shellspec_profile_end() { :; }
-        SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
-        shellspec_output() { echo "$1"; }
-        shellspec_invoke_example() { echo 'invoke_example'; }
-        "$@"
-      }
+      prepare() { shellspec_invoke_example() { echo 'invoke_example'; }; }
+      BeforeRun SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
+
       It 'invokes example'
-        When invoke shellspec_example
+        When run shellspec_example
         The stdout should include 'invoke_example'
       End
     End
 
     Context 'when example is aborted'
-      shellspec_around_invoke() {
-        shellspec_profile_start() { :; }
-        shellspec_profile_end() { :; }
-        SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
-        shellspec_output() { echo "$1"; }
-        shellspec_invoke_example() { return 12; }
-        "$@"
-      }
+      prepare() { shellspec_invoke_example() { return 12; }; }
+      BeforeRun SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
+
       It 'outputs abort protocol'
-        When invoke shellspec_example
+        When run shellspec_example
         The stdout should include 'ABORTED'
         The stdout should include 'FAILED'
       End
     End
 
     Context 'when example is not execution target'
-      shellspec_around_invoke() {
-        SHELLSPEC_ENABLED='' SHELLSPEC_FILTER='' SHELLSPEC_DRYRUN=''
-        shellspec_output() { echo "$1"; }
-        shellspec_invoke_example() { echo 'invoke_example'; }
-        "$@"
-      }
+      prepare() { shellspec_invoke_example() { echo 'invoke_example'; }; }
+      BeforeRun SHELLSPEC_ENABLED='' SHELLSPEC_FILTER='' SHELLSPEC_DRYRUN=''
+
       It 'not invokes example'
-        When invoke shellspec_example
+        When run shellspec_example
         The stdout should not include 'invoke_example'
       End
     End
 
     Context 'when dry-run mode'
-      shellspec_around_invoke() {
-        # shellcheck disable=SC2034
-        SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=1
-        shellspec_output() { echo "$1"; }
-        shellspec_invoke_example() { echo 'invoke_example'; }
-        "$@"
-      }
+      prepare() { shellspec_invoke_example() { echo 'invoke_example'; }; }
+      BeforeRun SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=1
+
       It 'always succeeds'
-        When invoke shellspec_example
+        When run shellspec_example
         The stdout should not include 'invoke_example'
         The stdout should include 'EXAMPLE'
         The stdout should include 'SUCCEEDED'
@@ -79,27 +69,17 @@ Describe "core/dsl.sh"
   End
 
   Describe "shellspec_invoke_example()"
-    prepare() { :; }
-    shellspec_around_invoke() {
-      prepare
+    expectation() { shellspec_on EXPECTATION; shellspec_off NOT_IMPLEMENTED; }
+    mock() {
       shellspec_output() { echo "$1"; }
-      shellspec_yield() { echo yield; }
-      if [ "${2:-}" ]; then
-        eval "shellspec_yield() {
-          echo yield
-          shellspec_on EXPECTATION
-          shellspec_off NOT_IMPLEMENTED
-          $2
-        }"
-      fi
-      "$@"
+      shellspec_yield0() { echo "yield"; block; }
     }
+    BeforeRun SHELLSPEC_BLOCK_NO=0 mock
 
     It 'skippes the all if skipped outside of example'
       prepare() { shellspec_on SKIP; }
-      block() { :; }
-      When invoke shellspec_invoke_example block
-      The stdout should not include 'yield'
+      BeforeRun prepare
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'SKIP'
       The stdout line 3 should equal 'SKIPPED'
@@ -107,8 +87,7 @@ Describe "core/dsl.sh"
 
     It 'skipps the rest if skipped inside of example'
       block() { shellspec_skip 1; }
-      When invoke shellspec_invoke_example block
-      The stdout should include 'yield'
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'SKIP'
@@ -116,9 +95,8 @@ Describe "core/dsl.sh"
     End
 
     It 'is fail if failed before skipping'
-      block() { shellspec_on FAILED; shellspec_skip 1; }
-      When invoke shellspec_invoke_example block
-      The stdout should include 'yield'
+      block() { expectation; shellspec_on FAILED; shellspec_skip 1; }
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'SKIP'
@@ -126,7 +104,8 @@ Describe "core/dsl.sh"
     End
 
     It 'is unimplemented if there is nothing inside of example'
-      When invoke shellspec_invoke_example
+      block() { :; }
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'NOT_IMPLEMENTED'
@@ -134,16 +113,16 @@ Describe "core/dsl.sh"
     End
 
     It 'is failed if FAILED switch is on'
-      block() { shellspec_on FAILED; }
-      When invoke shellspec_invoke_example block
+      block() { expectation; shellspec_on FAILED; }
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'FAILED'
     End
 
     It 'is warned and be status unhandled if UNHANDLED_STATUS switch is on'
-      block() { shellspec_on UNHANDLED_STATUS; }
-      When invoke shellspec_invoke_example block
+      block() { expectation; shellspec_on UNHANDLED_STATUS; }
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STATUS'
@@ -151,8 +130,8 @@ Describe "core/dsl.sh"
     End
 
     It 'is warned and be stdout unhandled if UNHANDLED_STDOUT switch is on'
-      block() { shellspec_on UNHANDLED_STDOUT; }
-      When invoke shellspec_invoke_example block
+      block() { expectation; shellspec_on UNHANDLED_STDOUT; }
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STDOUT'
@@ -160,8 +139,8 @@ Describe "core/dsl.sh"
     End
 
     It 'is warned and be stderr unhandled if UNHANDLED_STDOUT switch is on'
-      block() { shellspec_on UNHANDLED_STDERR; }
-      When invoke shellspec_invoke_example block
+      block() { expectation; shellspec_on UNHANDLED_STDERR; }
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'UNHANDLED_STDERR'
@@ -169,24 +148,24 @@ Describe "core/dsl.sh"
     End
 
     It 'is success if example ends successfully'
-      block() { :; }
-      When invoke shellspec_invoke_example block
+      block() { expectation; }
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'SUCCEEDED'
     End
 
     It 'is todo if FAILED and PENDING switch is on'
-      block() { shellspec_on FAILED PENDING; }
-      When invoke shellspec_invoke_example block
+      block() { expectation; shellspec_on FAILED PENDING; }
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'TODO'
     End
 
     It 'is fixed if PENDING switch is on but not FAILED'
-      block() { shellspec_on PENDING; }
-      When invoke shellspec_invoke_example block
+      block() { expectation; shellspec_on PENDING; }
+      When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'FIXED'
@@ -194,323 +173,197 @@ Describe "core/dsl.sh"
   End
 
   Describe "shellspec_when()"
-    prepare() { :; }
-    shellspec_around_invoke() {
+    init() {
       shellspec_off EVALUATION EXPECTATION
       shellspec_on NOT_IMPLEMENTED
-      prepare
+    }
+
+    mock() {
       shellspec_output() { echo "output:$1"; }
       shellspec_statement_evaluation() { :; }
       shellspec_on() { echo "on:$*"; }
       shellspec_off() { echo "off:$*"; }
-      "$@"
     }
 
-    Context 'when evaluation runs successfully'
-      It 'turns off the NOT_IMPLEMENTED switch'
-        When invoke shellspec_when call true
-        The stdout should include 'off:NOT_IMPLEMENTED'
-      End
-
-      It 'turns on the EVALUATION switch'
-        When invoke shellspec_when call true
-        The stdout should include 'on:EVALUATION'
-      End
-
-      It 'outputs EVALUATION'
-        When invoke shellspec_when call true
-        The stdout should include 'output:EVALUATION'
-      End
+    It 'calls evaluation'
+      BeforeRun init mock
+      When run shellspec_when call true
+      The stdout should include 'off:NOT_IMPLEMENTED'
+      The stdout should include 'on:EVALUATION'
+      The stdout should include 'output:EVALUATION'
     End
 
-    Context 'when evaluation type missing'
-      It 'turns off the NOT_IMPLEMENTED switch'
-        When invoke shellspec_when
-        The stdout should include 'off:NOT_IMPLEMENTED'
-      End
-
-      It 'turns on the EVALUATION switch'
-        When invoke shellspec_when
-        The stdout should include 'on:EVALUATION'
-      End
-
-      It 'turns on the FAILED switch'
-        When invoke shellspec_when
-        The stdout should include 'on:FAILED'
-      End
-
-      It 'outputs SYNTAX_ERROR'
-        When invoke shellspec_when
-        The stdout should include 'output:SYNTAX_ERROR'
-      End
+    It 'is syntax error when evaluation missing'
+      BeforeRun init mock
+      When run shellspec_when
+      The stdout should include 'off:NOT_IMPLEMENTED'
+      The stdout should include 'on:EVALUATION'
+      The stdout should include 'on:FAILED'
+      The stdout should include 'output:SYNTAX_ERROR'
     End
 
-    Context 'when already executed evaluation'
+    It 'is syntax error when already executed evaluation'
       prepare() { shellspec_on EVALUATION; }
-      It 'is syntax error'
-        When invoke shellspec_when call true
-        The stdout line 1 should equal 'off:NOT_IMPLEMENTED'
-        The stdout line 2 should equal 'output:SYNTAX_ERROR_EVALUATION'
-        The stdout line 3 should equal 'on:FAILED'
-      End
+      BeforeRun init prepare mock
+      When run shellspec_when call true
+      The stdout line 1 should equal 'off:NOT_IMPLEMENTED'
+      The stdout line 2 should equal 'output:SYNTAX_ERROR_EVALUATION'
+      The stdout line 3 should equal 'on:FAILED'
     End
 
-    Context 'when already executed expectation'
+    It 'is syntax error when already executed expectation'
       prepare() { shellspec_on EXPECTATION; }
-
-      It 'turns off the NOT_IMPLEMENTED switch'
-        When invoke shellspec_when
-        The stdout should include 'off:NOT_IMPLEMENTED'
-      End
-
-      It 'turns on the EVALUATION switch'
-        When invoke shellspec_when
-        The stdout should include 'on:EVALUATION'
-      End
-
-      It 'turns on the FAILED switch'
-        When invoke shellspec_when
-        The stdout should include 'on:FAILED'
-      End
-
-      It 'outputs SYNTAX_ERROR'
-        When invoke shellspec_when
-        The stdout should include 'output:SYNTAX_ERROR'
-      End
+      BeforeRun init prepare mock
+      When run shellspec_when
+      The stdout should include 'off:NOT_IMPLEMENTED'
+      The stdout should include 'on:EVALUATION'
+      The stdout should include 'on:FAILED'
+      The stdout should include 'output:SYNTAX_ERROR'
     End
   End
 
   Describe "shellspec_statement()"
-    prepare() { :; }
-    shellspec_around_invoke() {
-      prepare
-      "$@"
+    shellspec__statement_() { echo 'called'; }
+    inspect() {
       shellspec_if SYNTAX_ERROR && echo 'SYNTAX_ERROR:on' || echo 'SYNTAX_ERROR:off'
       shellspec_if FAILED && echo 'FAILED:on' || echo 'FAILED:off'
     }
+    AfterRun inspect
 
-    Context 'when execute statement exit normally'
-      shellspec__statement_() { echo 'called'; }
-
-      It 'turns off the SYNTAX_ERROR switch'
-        When invoke shellspec_statement _statement_ dummy
-        The stdout should include 'SYNTAX_ERROR:off'
-      End
-
-      It 'turns off the FAILED switch'
-        When invoke shellspec_statement _statement_ dummy
-        The stdout should include 'FAILED:off'
-      End
-
-      It 'calls specified statement'
-        When invoke shellspec_statement _statement_ dummy
-        The stdout should include 'called'
-      End
+    It 'calls statement'
+      When run shellspec_statement _statement_ dummy
+      The stdout should include 'SYNTAX_ERROR:off'
+      The stdout should include 'FAILED:off'
+      The stdout should include 'called'
     End
 
-    Context 'when execute statement is syntax error'
+    It 'is syntax error when statement raises syntax error'
       shellspec__statement_() { shellspec_on SYNTAX_ERROR; }
-
-      It 'turns on the SYNTAX_ERROR switch'
-        When invoke shellspec_statement _statement_ dummy
-        The stdout should include 'SYNTAX_ERROR:on'
-      End
-
-      It 'turns on the FAILED switch'
-        When invoke shellspec_statement _statement_ dummy
-        The stdout should include 'FAILED:on'
-      End
-
-      It 'does not call specified statement'
-        When invoke shellspec_statement _statement_ dummy
-        The stdout should not include 'called'
-      End
+      When run shellspec_statement _statement_ dummy
+      The stdout should include 'SYNTAX_ERROR:on'
+      The stdout should include 'FAILED:on'
+      The stdout should not include 'called'
     End
 
-    Context 'when already skipped'
-      shellspec__statement_() { echo 'called'; }
+    It 'does not call statement when already skipped'
       prepare() { shellspec_on SKIP; }
-
-      It 'does not call specified statement'
-        When invoke shellspec_statement _statement_ dummy
-        The stdout should not include 'called'
-      End
+      BeforeRun prepare
+      When run shellspec_statement _statement_ dummy
+      The stdout should not include 'called'
     End
   End
 
   Describe "shellspec_the()"
-    shellspec_around_invoke() {
-      shellspec_on NOT_IMPLEMENTED
-      shellspec_statement_preposition() { :; }
+    prepare() { shellspec_on NOT_IMPLEMENTED; }
+
+    mock() {
+      shellspec_statement_preposition() { echo expectation; }
       shellspec_on() { echo "on:$*"; }
       shellspec_off() { echo "off:$*"; }
-      "$@"
     }
 
-    It 'turns off the NOT_IMPLEMENTED switch'
-      When invoke shellspec_the dummy
+    It 'calls expectation'
+      BeforeRun prepare mock
+      When run shellspec_the expectation
       The stdout should include 'off:NOT_IMPLEMENTED'
-    End
-
-    It 'turns on the EXPECTATION switch'
-      When invoke shellspec_the dummy
       The stdout should include 'on:EXPECTATION'
+      The stdout should include 'expectation'
     End
   End
 
   Describe "shellspec_skip()"
-    example_no() { SHELLSPEC_EXAMPLE_NO=1; }
-    prepare() { :; }
-    shellspec_around_invoke() {
-      example_no
-      prepare
+    init() { SHELLSPEC_EXAMPLE_NO=1; }
+    mock() {
       shellspec_output() { echo "output:$1"; }
-      "$@"
+    }
+    inspect() {
       shellspec_if SKIP && echo 'SKIP:on' || echo 'SKIP:off'
       echo "skip_id:${SHELLSPEC_SKIP_ID-[unset]}"
       echo "skip_reason:${SHELLSPEC_SKIP_REASON-[unset]}"
       echo "example_no:${SHELLSPEC_EXAMPLE_NO-[unset]}"
     }
+    BeforeRun init mock
+    AfterRun inspect
 
-    Context 'when inside of example'
-      It 'outputs SKIP'
-        When invoke shellspec_skip 123 "reason"
-        The stdout should include 'output:SKIP'
-      End
-
-      It 'turns on the SKIP switch'
-        When invoke shellspec_skip 123 "reason"
-        The stdout should include 'SKIP:on'
-      End
-
-      It 'sets skip related variables'
-        When invoke shellspec_skip 123 "reason"
-        The stdout should include 'skip_id:123'
-        The stdout should include 'skip_reason:reason'
-        The stdout should include 'example_no:1'
-      End
+    It 'skips example when inside of example'
+      When run shellspec_skip 123 "reason"
+      The stdout should include 'output:SKIP'
+      The stdout should include 'SKIP:on'
+      The stdout should include 'skip_id:123'
+      The stdout should include 'skip_reason:reason'
+      The stdout should include 'example_no:1'
     End
 
-    Context 'when outside of example'
-      example_no() { SHELLSPEC_EXAMPLE_NO=; }
-
-      It 'does not output SKIP'
-        When invoke shellspec_skip 123 "skip reason"
-        The stdout line 1 should equal 'SKIP:on'
-      End
+    It 'skips example when outside of example'
+      init() { SHELLSPEC_EXAMPLE_NO=; }
+      When run shellspec_skip 123 "skip reason"
+      The stdout line 1 should equal 'SKIP:on'
     End
 
-    Context 'when already skipped'
+    It 'do nothing when already skipped'
       prepare() { shellspec_on SKIP; }
-
-      It 'does not output SKIP'
-        When invoke shellspec_skip 123 "skip reason"
-        The stdout should not include 'output:SKIP'
-      End
-
-      It 'turns on the SKIP switch'
-        When invoke shellspec_skip 123 "skip reason"
-        The stdout should include 'SKIP:on'
-      End
-
-      It 'sets skip related variables'
-        When invoke shellspec_skip 123 "skip reason"
-        The stdout should include 'skip_id:[unset]'
-        The stdout should include 'skip_reason:[unset]'
-        The stdout should include 'example_no:1'
-      End
+      BeforeRun prepare
+      When run shellspec_skip 123 "skip reason"
+      The stdout should not include 'output:SKIP'
+      The stdout should include 'SKIP:on'
+      The stdout should include 'skip_id:[unset]'
+      The stdout should include 'skip_reason:[unset]'
+      The stdout should include 'example_no:1'
     End
 
-    Describe "with conditional"
-      Context 'when satisfy condition'
-        It 'outputs SKIP'
-          When invoke shellspec_skip 123 if "reason" true
-          The stdout should include 'output:SKIP'
-        End
+    It 'skips example when satisfy condition'
+      When run shellspec_skip 123 if "reason" true
+      The stdout should include 'output:SKIP'
+      The stdout should include 'SKIP:on'
+    End
 
-        It 'turns on the SKIP switch'
-          When invoke shellspec_skip 123 "skip reason"
-          The stdout should include 'SKIP:on'
-        End
-      End
-
-      Context 'when not satisfy condition'
-        It 'does not outputs SKIP'
-          When invoke shellspec_skip 123 if "reason" false
-          The stdout should include 'SKIP:off'
-        End
-
-        It 'turns off the SKIP switch'
-          When invoke shellspec_skip 123 if "reason" false
-          The stdout should include 'SKIP:off'
-        End
-      End
+    It 'does not skip example when not satisfy condition'
+      When run shellspec_skip 123 if "reason" false
+      The stdout should not include 'output:SKIP'
+      The stdout should include 'SKIP:off'
     End
   End
 
   Describe "shellspec_pending()"
-    example_no() { SHELLSPEC_EXAMPLE_NO=1; }
-    prepare() { :; }
-    shellspec_around_invoke() {
-      example_no
-      prepare
+
+    init() { SHELLSPEC_EXAMPLE_NO=1; }
+    mock() {
       shellspec_output() { echo "output:$1"; }
-      "$@"
+    }
+    inspect() {
       shellspec_if PENDING && echo 'pending:on' || echo 'pending:off'
     }
+    BeforeRun init mock
+    AfterRun inspect
 
-    Context 'when inside of example'
-      It 'outputs PENDING'
-        When invoke shellspec_pending
-        The stdout should include 'output:PENDING'
-      End
-
-      It 'turns on the PENDING switch'
-        When invoke shellspec_pending
-        The stdout should include 'pending:on'
-      End
+    It 'pending example when inside of example'
+      When run shellspec_pending
+      The stdout should include 'output:PENDING'
+      The stdout should include 'pending:on'
     End
 
-    Context 'when already failed'
+    It 'does not pending example when already failed'
       prepare() { shellspec_on FAILED; }
-
-      It 'does not output PENDING'
-        When invoke shellspec_pending
-        The stdout should include 'output:PENDING'
-      End
-
-      It 'turns off the PENDING switch'
-        When invoke shellspec_pending
-        The stdout should include 'pending:off'
-      End
+      BeforeRun prepare
+      When run shellspec_pending
+      The stdout should include 'output:PENDING'
+      The stdout should include 'pending:off'
     End
 
-    Context 'when already skipped'
+    It 'does not pending example when already skipped'
       prepare() { shellspec_on SKIP; }
-
-      It 'does not output PENDING'
-        When invoke shellspec_pending
-        The stdout should not include 'output:PENDING'
-      End
-
-      It 'turns off the PENDING switch'
-        When invoke shellspec_pending
-        The stdout should include 'pending:off'
-      End
+      BeforeRun prepare
+      When run shellspec_pending
+      The stdout should not include 'output:PENDING'
+      The stdout should include 'pending:off'
     End
 
-    Context 'when outside of example'
+    It 'does not pending example when outside of example'
       prepare() { SHELLSPEC_EXAMPLE_NO=; }
-
-      It 'does not output PENDING'
-        When invoke shellspec_pending
-        The stdout should not include 'output:PENDING'
-      End
-
-      It 'turns on the PENDING switch'
-        When invoke shellspec_pending
-        The stdout should include 'pending:on'
-      End
+      BeforeRun prepare
+      When run shellspec_pending
+      The stdout should not include 'output:PENDING'
+      The stdout should include 'pending:on'
     End
   End
 

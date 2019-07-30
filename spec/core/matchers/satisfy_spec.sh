@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/satisfy.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
 
   Describe 'satisfy matcher'
     greater_than() { [ "$SHELLSPEC_SUBJECT" -gt "$1" ]; }
@@ -12,24 +11,22 @@ Describe "core/matchers/satisfy.sh"
       The value 10 should not satisfy greater_than 20
     End
 
-    Context 'when subject is 10'
+    It 'matches when satisfies condition'
       subject() { %- 10; }
+      When run shellspec_matcher_satisfy greater_than 5
+      The status should be success
+    End
 
-      It 'satisfies greater than 5'
-        When invoke shellspec_matcher satisfy greater_than 5
-        The status should be success
-      End
-
-      It 'does not satisfies greater than 20'
-        When invoke shellspec_matcher satisfy greater_than 20
-        The status should be failure
-      End
+    It 'does not match when not satisfies condition'
+      subject() { %- 10; }
+      When run shellspec_matcher_satisfy greater_than 20
+      The status should be failure
     End
 
     It 'outputs error if parameters is missing'
-      When invoke shellspec_matcher satisfy
+      subject() { %- 10; }
+      When run shellspec_matcher_satisfy
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End

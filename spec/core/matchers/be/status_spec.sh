@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/be/status.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
 
   Describe 'be success matcher'
     Example 'example'
@@ -10,50 +9,40 @@ Describe "core/matchers/be/status.sh"
       The value 1 should not be success
     End
 
-    Context 'when subject is 0'
+    It 'matches 0'
       subject() { %- 0; }
-      It 'matches'
-        When invoke shellspec_matcher be success
-        The status should be success
-      End
+      When run shellspec_matcher_be_success
+      The status should be success
     End
 
-    Context 'when subject is 1'
+    It 'does not match 1'
       subject() { %- 1; }
-      It 'does not match'
-        When invoke shellspec_matcher be success
-        The status should be failure
-      End
+      When run shellspec_matcher_be_success
+      The status should be failure
     End
 
-    Context 'when subject is non numeric values'
+    It 'does not match non numeric values'
       subject() { %- "a"; }
-      It 'does not match'
-        When invoke shellspec_matcher be success
-        The status should be failure
-      End
+      When run shellspec_matcher_be_success
+      The status should be failure
     End
 
-    Context 'when subject is zero length string'
+    It 'does not match zero length string'
       subject() { %- ""; }
-      It 'does not match'
-        When invoke shellspec_matcher be success
-        The status should be failure
-      End
+      When run shellspec_matcher_be_success
+      The status should be failure
     End
 
-    Context 'when subject is undefined'
+    It 'does not match undefined'
       subject() { false; }
-      It 'does not match'
-        When invoke shellspec_matcher be success
-        The status should be failure
-      End
+      When run shellspec_matcher_be_success
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be success foo
+      subject() { %- 0; }
+      When run shellspec_matcher_be_success foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -63,73 +52,58 @@ Describe "core/matchers/be/status.sh"
       The value 0 should not be failure
     End
 
-    Context 'when subject is 1'
+    It 'matches 1'
       subject() { %- 1; }
-      It 'matches'
-        When invoke shellspec_matcher be failure
-        The status should be success
-      End
+      When run shellspec_matcher_be_failure
+      The status should be success
     End
 
-    Context 'when subject is 0'
+    It 'does not match 0'
       subject() { %- 0; }
-      It 'does not match'
-        When invoke shellspec_matcher be failure
-        The status should be failure
-      End
+      When run shellspec_matcher_be_failure
+      The status should be failure
     End
 
-    Context 'when subject is -1'
+    It 'does not match -1'
       subject() { %- -1; }
-      It 'does not match'
-        When invoke shellspec_matcher be failure
-        The status should be failure
-      End
+      When run shellspec_matcher_be_failure
+      The status should be failure
     End
 
-    Context 'when subject is 255'
+    It 'matches 255'
       subject() { %- 255; }
-      It 'matches'
-        When invoke shellspec_matcher be failure
-        The status should be success
-      End
+      When run shellspec_matcher_be_failure
+      The status should be success
     End
 
-    Context 'when subject is 256'
+    It 'does not match 256'
       subject() { %- 256; }
-      It 'does not match'
-        When invoke shellspec_matcher be failure
-        The status should be failure
-      End
+      When run shellspec_matcher_be_failure
+      The status should be failure
     End
 
-    Context 'when subject is non numeric values'
+    It 'does not match non numeric values'
       subject() { %- "a"; }
-      It 'does not match'
-        When invoke shellspec_matcher be failure
-        The status should be failure
-      End
+      When run shellspec_matcher_be_failure
+      The status should be failure
     End
 
-    Context 'when subject is zero length string'
+    It 'does not match zero length string'
       subject() { %- ""; }
-      It 'does not match'
-        When invoke shellspec_matcher be failure
-        The status should be failure
-      End
+      When run shellspec_matcher_be_failure
+      The status should be failure
     End
 
-    Context 'when subject is undefined'
-      It 'does not match'
-        When invoke shellspec_matcher be failure
-        The status should be failure
-      End
+    It 'does not match undefined'
+      subject() { false; }
+      When run shellspec_matcher_be_failure
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be failure foo
+      subject() { %- 1; }
+      When run shellspec_matcher_be_failure foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End

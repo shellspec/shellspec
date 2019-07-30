@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/subjects/stdout.sh"
-  Before set_stdout intercept_shellspec_subject
-  stdout() { false; }
+  BeforeRun set_stdout subject_mock
 
   Describe "stdout subject"
     Example 'example'
@@ -12,23 +11,21 @@ Describe "core/subjects/stdout.sh"
       The output should equal "foo" # alias for stdout
     End
 
-    Context 'when stdout is defined'
+    It "uses stdout as subject when stdout is defined"
       stdout() { %= "test"; }
-      It "uses stdout as subject"
-        When invoke shellspec_subject stdout _modifier_
-        The entire stdout should equal 'test'
-      End
+      When run shellspec_subject_stdout _modifier_
+      The entire stdout should equal 'test'
     End
 
-    Context 'when stdout is undefined'
-      It "uses undefined as subject"
-        When invoke shellspec_subject stdout _modifier_
-        The status should be failure
-      End
+    It "uses undefined as subject when stdout is undefined"
+      stdout() { false; }
+      When run shellspec_subject_stdout _modifier_
+      The status should be failure
     End
 
     It 'outputs error if next word is missing'
-      When invoke shellspec_subject stdout
+      stdout() { %= "test"; }
+      When run shellspec_subject_stdout
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End
@@ -41,23 +38,21 @@ Describe "core/subjects/stdout.sh"
       The entire output should equal "foo${LF}" # alias for entire stdout
     End
 
-    Context 'when stdout is defined'
+    It "uses stdout including last LF as subject when stdout is defined"
       stdout() { %= "test"; }
-      It "uses stdout including last LF as subject"
-        When invoke shellspec_subject entire stdout _modifier_
-        The entire stdout should equal "test${LF}"
-      End
+      When run shellspec_subject_entire_stdout _modifier_
+      The entire stdout should equal "test${LF}"
     End
 
-    Context 'when stdout is undefined'
-      It "uses undefined as subject"
-        When invoke shellspec_subject entire stdout _modifier_
-        The status should be failure
-      End
+    It "uses undefined as subject when stdout is undefined"
+      stdout() { false; }
+      When run shellspec_subject_entire_stdout _modifier_
+      The status should be failure
     End
 
     It 'output error if next word is missing'
-      When invoke shellspec_subject entire stdout
+      stdout() { %= "test"; }
+      When run shellspec_subject_entire_stdout
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

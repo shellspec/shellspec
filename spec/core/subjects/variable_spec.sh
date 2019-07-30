@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2016
 
 Describe "core/subjects/variable.sh"
-  Before intercept_shellspec_subject
+  BeforeRun subject_mock
 
   Describe "variable subject"
     Context 'when var is foo'
@@ -14,7 +14,7 @@ Describe "core/subjects/variable.sh"
     Context 'when the variable exists'
       Before 'var="test${LF}"'
       It 'uses the value of variable as subject'
-        When invoke shellspec_subject variable var _modifier_
+        When run shellspec_subject variable var _modifier_
         The entire stdout should equal "test${LF}"
       End
     End
@@ -22,18 +22,18 @@ Describe "core/subjects/variable.sh"
     Context 'when the variable not exists'
       Before 'unset var'
       It 'uses undefined as subject'
-        When invoke shellspec_subject variable var _modifier_
+        When run shellspec_subject variable var _modifier_
         The status should be failure
       End
     End
 
     It 'outputs error if value is missing'
-      When invoke shellspec_subject variable
+      When run shellspec_subject variable
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
     It 'outputs error if next word is missing'
-      When invoke shellspec_subject variable var
+      When run shellspec_subject variable var
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

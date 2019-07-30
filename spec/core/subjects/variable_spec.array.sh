@@ -8,7 +8,7 @@
 # prove that all shells start with the same index.
 
 Describe "core/subjects/variable.array.sh"
-  Before intercept_shellspec_subject
+  BeforeRun subject_mock
 
   Describe "variable subject"
     Context 'when var[2] is foo'
@@ -21,7 +21,7 @@ Describe "core/subjects/variable.array.sh"
     Context 'when the variable is array'
       Before 'var=(foo foo foo)'
       It 'accepts variable with index'
-        When invoke shellspec_subject variable "var[2]" _modifier_
+        When run shellspec_subject variable "var[2]" _modifier_
         The stdout should equal "foo"
       End
     End

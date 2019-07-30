@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/subjects/status.sh"
-  Before set_status intercept_shellspec_subject
-  status() { false; }
+  BeforeRun set_status subject_mock
 
   Describe "status subject"
     Example 'example'
@@ -11,23 +10,21 @@ Describe "core/subjects/status.sh"
       The status should equal 12
     End
 
-    Context 'when status is defined'
+    It 'uses status as subject when status is defined'
       status() { %- 123; }
-      It 'uses status as subject'
-        When invoke shellspec_subject status _modifier_
-        The stdout should equal 123
-      End
+      When run shellspec_subject_status _modifier_
+      The stdout should equal 123
     End
 
-    Context 'when status is undefind'
-      It 'uses undefined as subject'
-        When invoke shellspec_subject status _modifier_
-        The status should be failure
-      End
+    It 'uses undefined as subject when status is undefind'
+      status() { false; }
+      When run shellspec_subject_status _modifier_
+      The status should be failure
     End
 
     It 'outputs error if next word is missing'
-      When invoke shellspec_subject status
+      status() { %- 123; }
+      When run shellspec_subject_status
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

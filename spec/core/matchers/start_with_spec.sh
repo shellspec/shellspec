@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/start_with.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
 
   Describe 'start with matcher'
     Example 'example'
@@ -10,30 +9,34 @@ Describe "core/matchers/start_with.sh"
       The value "foobarbaz" should not start with "FOO"
     End
 
-    Context 'when subject is abcdef'
+    It 'matches the string with same start'
       subject() { %- "abcdef"; }
+      When run shellspec_matcher_start_with "abc"
+      The status should be success
+    End
 
-      It 'matches string that start with "abc"'
-        When invoke shellspec_matcher start with "abc"
-        The status should be success
-      End
+    It 'does not matches the string with different start'
+      subject() { %- "abcdef"; }
+      When run shellspec_matcher_start_with "ABC"
+      The status should be failure
+    End
 
-      It 'does not match string that start with "ABC"'
-        When invoke shellspec_matcher start with "ABC"
-        The status should be failure
-      End
+    It 'does not matches undefined'
+      subject() { false; }
+      When run shellspec_matcher_start_with ""
+      The status should be failure
     End
 
     It 'outputs error if parameters is missing'
-      When invoke shellspec_matcher start with
+      subject() { %- "abcdef"; }
+      When run shellspec_matcher_start_with
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher start with "foo" "bar"
+      subject() { %- "abcdef"; }
+      When run shellspec_matcher_start_with "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End

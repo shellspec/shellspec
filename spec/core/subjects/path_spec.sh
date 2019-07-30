@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/subjects/path.sh"
-  Before intercept_shellspec_subject
+  BeforeRun subject_mock
 
   Describe "path subject"
     Example 'example'
@@ -13,28 +13,24 @@ Describe "core/subjects/path.sh"
       The directory "/tmp/foo" should equal "/tmp/foo" # alias for path
     End
 
-    Context 'when path alias is not exists'
-      It "uses parameter as subject"
-        When invoke shellspec_subject path foo _modifier_
-        The stdout should equal 'foo'
-      End
+    It "uses parameter as subject When run shellspec_subject_path"
+      When run shellspec_subject_path foo _modifier_
+      The stdout should equal 'foo'
     End
 
-    Context 'when path alias is exists'
-      Before 'shellspec_path bar=/tmp/bar'
-      It "converts alias to path and uses as subject"
-        When invoke shellspec_subject path bar _modifier_
-        The stdout should equal '/tmp/bar'
-      End
+    It "converts alias to path and uses as subject when path alias is exists"
+      Path bar=/tmp/bar
+      When run shellspec_subject_path bar _modifier_
+      The stdout should equal '/tmp/bar'
     End
 
     It 'outputs error if path is missing'
-      When invoke shellspec_subject path
+      When run shellspec_subject_path
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
     It 'outputs error if next word is missing'
-      When invoke shellspec_subject path bar
+      When run shellspec_subject_path bar
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

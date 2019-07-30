@@ -5,7 +5,8 @@ shellspec_syntax 'shellspec_matcher_include'
 shellspec_matcher_include() {
   shellspec_matcher__match() {
     SHELLSPEC_EXPECT=$1
-    shellspec_includes "${SHELLSPEC_SUBJECT:-}" "$SHELLSPEC_EXPECT"
+    [ "${SHELLSPEC_SUBJECT+x}" ] || return 1
+    shellspec_includes "$SHELLSPEC_SUBJECT" "$SHELLSPEC_EXPECT"
   }
 
   shellspec_matcher__failure_message() {

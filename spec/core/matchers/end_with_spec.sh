@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/end_with.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
 
   Describe "end with matcher"
     Example 'example'
@@ -10,30 +9,34 @@ Describe "core/matchers/end_with.sh"
       The value "foobarbaz" should not end with "BAZ"
     End
 
-    Context 'when subject is abcdef'
+    It 'matches the string with same end'
       subject() { %- "abcdef"; }
+      When run shellspec_matcher_end_with "def"
+      The status should be success
+    End
 
-      It 'matches string that end with "def"'
-        When invoke shellspec_matcher end with "def"
-        The status should be success
-      End
+    It 'does not matches the string with different end'
+      subject() { %- "abcdef"; }
+      When run shellspec_matcher_end_with "DEF"
+      The status should be failure
+    End
 
-      It 'does not match string that end with "DEF"'
-        When invoke shellspec_matcher end with "DEF"
-        The status should be failure
-      End
+    It 'does not matches undefined'
+      subject() { false; }
+      When run shellspec_matcher_end_with ""
+      The status should be failure
     End
 
     It 'outputs error if parameters is missing'
-      When invoke shellspec_matcher end with
+      subject() { %- "abcdef"; }
+      When run shellspec_matcher_end_with
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher end with "foo" "bar"
+      subject() { %- "abcdef"; }
+      When run shellspec_matcher_end_with "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End

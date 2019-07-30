@@ -132,13 +132,13 @@ Describe "general.sh"
 
   Describe 'shellspec_import()'
     It 'exits when module not found'
-      When invoke shellspec_import not-found-module
+      When run shellspec_import not-found-module
       The status should be failure
       The stderr should be defined
     End
 
     It 'outputs error message to stderr'
-      When invoke shellspec_import not-found-module
+      When run shellspec_import not-found-module
       The status should be defined
       The stderr should be present
     End

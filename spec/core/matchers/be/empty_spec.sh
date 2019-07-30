@@ -4,8 +4,7 @@
 % EMPTYDIR: "$SHELLSPEC_TMPBASE/emptydir"
 
 Describe "core/matchers/be/empty.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
 
   Path empty-file="$FIXTURE/empty"
   Path not-empty-file="$FIXTURE/file"
@@ -18,34 +17,28 @@ Describe "core/matchers/be/empty.sh"
       The path not-exists-file should not be empty file
     End
 
-    Context 'when path is empty file'
+    It 'matches empty file'
       subject() { %- "$FIXTURE/empty"; }
-      It 'matches'
-        When invoke shellspec_matcher be empty file
-        The status should be success
-      End
+      When run shellspec_matcher_be_empty_file
+      The status should be success
     End
 
-    Context 'when path is not empty file'
+    It 'does not match not empty file'
       subject() { %- "$FIXTURE/file"; }
-      It 'does not match'
-        When invoke shellspec_matcher be empty file
-        The status should be failure
-      End
+      When run shellspec_matcher_be_empty_file
+      The status should be failure
     End
 
-    Context 'when path does not exist'
+    It 'does not match not exist file'
       subject() { %- "$FIXTURE/not-exists"; }
-      It 'does not match'
-        When invoke shellspec_matcher be empty file
-        The status should be failure
-      End
+      When run shellspec_matcher_be_empty_file
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be empty file foo
+      subject() { %- "$FIXTURE/empty"; }
+      When run shellspec_matcher_be_empty_file foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -59,36 +52,31 @@ Describe "core/matchers/be/empty.sh"
       The path empty-dir should be empty dir
     End
 
-    Context 'when path is empty file'
+    It 'does not matches empty file'
       subject() { %- "$FIXTURE/empty"; }
-      It 'does not matches'
-        When invoke shellspec_matcher be empty directory
-        The status should be failure
-      End
+      When run shellspec_matcher_be_empty_directory
+      The status should be failure
     End
 
-    Context 'when path does not exists'
+    It 'does not matches not exists directory'
       subject() { %- "$FIXTURE/not-exists"; }
-      It 'does not matches'
-        When invoke shellspec_matcher be empty directory
-        The status should be failure
-      End
+      When run shellspec_matcher_be_empty_directory
+      The status should be failure
     End
 
-    Context 'when path empty directory'
+    It 'matches empty directory'
       subject() { %- "$EMPTYDIR"; }
-      It 'matches'
-        When invoke shellspec_matcher be empty directory
-        The status should be success
-      End
+      When run shellspec_matcher_be_empty_directory
+      The status should be success
     End
 
     Context 'when directory contains "file" file'
       Before 'touch "$EMPTYDIR/file"'
       After 'rm "$EMPTYDIR/file"'
-      subject() { %- "$EMPTYDIR"; }
+
       It 'does not matches'
-        When invoke shellspec_matcher be empty directory
+        subject() { %- "$EMPTYDIR"; }
+        When run shellspec_matcher_be_empty_directory
         The status should be failure
       End
     End
@@ -96,9 +84,10 @@ Describe "core/matchers/be/empty.sh"
     Context 'when directory contains "*" file'
       Before 'touch "$EMPTYDIR/*"'
       After 'rm "$EMPTYDIR/*"'
-      subject() { %- "$EMPTYDIR"; }
+
       It 'does not matches'
-        When invoke shellspec_matcher be empty directory
+        subject() { %- "$EMPTYDIR"; }
+        When run shellspec_matcher_be_empty_directory
         The status should be failure
       End
     End
@@ -106,9 +95,10 @@ Describe "core/matchers/be/empty.sh"
     Context 'when directory contains ".dot" file'
       Before 'touch "$EMPTYDIR/.dot"'
       After 'rm "$EMPTYDIR/.dot"'
-      subject() { %- "$EMPTYDIR"; }
-      It 'does not matches'
-        When invoke shellspec_matcher be empty directory
+
+      It 'does not matches contains ".dot" file'
+        subject() { %- "$EMPTYDIR"; }
+        When run shellspec_matcher_be_empty_directory
         The status should be failure
       End
     End
@@ -117,10 +107,9 @@ Describe "core/matchers/be/empty.sh"
       Before 'touch "$EMPTYDIR/file"'
       After 'rm "$EMPTYDIR/file"'
       Before 'set -o noglob'
-
       subject() { %- "$EMPTYDIR"; }
       It 'does not matches'
-        When invoke shellspec_matcher be empty directory
+        When run shellspec_matcher_be_empty_directory
         The status should be failure
       End
     End
@@ -129,17 +118,17 @@ Describe "core/matchers/be/empty.sh"
       Skip if 'shell is not bash' [ "$SHELLSPEC_SHELL_TYPE" != "bash" ]
       Before '{ shopt -s failglob ||:; } 2>/dev/null'
 
-      subject() { %- "$EMPTYDIR"; }
       It 'matches'
-        When invoke shellspec_matcher be empty directory
+        subject() { %- "$EMPTYDIR"; }
+        When run shellspec_matcher_be_empty_directory
         The status should be success
       End
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be empty directory foo
+      subject() { %- "$EMPTYDIR"; }
+      When run shellspec_matcher_be_empty_directory foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End

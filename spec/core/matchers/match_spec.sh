@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/match.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
 
   Describe 'match matcher'
     Example 'example'
@@ -10,37 +9,34 @@ Describe "core/matchers/match.sh"
       The value "foobarbaz" should not match "FOO*"
     End
 
-    Context 'when subject is foobarbaz'
+    It 'match a string containing a pattern'
       subject() { %- "foobarbaz"; }
-
-      It 'matches with pattern "foo*"'
-        When invoke shellspec_matcher match "foo*"
-        The status should be success
-      End
-
-      It 'does not match with pattern "FOO*"'
-        When invoke shellspec_matcher match "FOO*"
-        The status should be failure
-      End
+      When run shellspec_matcher_match "foo*"
+      The status should be success
     End
 
-    Context 'when subject is undefined'
-      It 'does not match with pattern "*"'
-        When invoke shellspec_matcher match "*"
-        The status should be failure
-      End
+    It 'does not match a string not containing a pattern'
+      subject() { %- "foobarbaz"; }
+      When run shellspec_matcher_match "FOO*"
+      The status should be failure
+    End
+
+    It 'does not match undefined'
+      subject() { false; }
+      When run shellspec_matcher_match "*"
+      The status should be failure
     End
 
     It 'outputs error if parameters is missing'
-      When invoke shellspec_matcher match
+      subject() { %- "foobarbaz"; }
+      When run shellspec_matcher_match
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher match "foo" "bar"
+      subject() { %- "foobarbaz"; }
+      When run shellspec_matcher_match "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End

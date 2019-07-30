@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/be/valid.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
 
   Describe 'be a number matcher'
     Example 'example'
@@ -16,25 +15,28 @@ Describe "core/matchers/be/valid.sh"
       The value "abc" should not be valid as a number
     End
 
-    Context 'when subject is 123'
-      subject() { %= 123; }
-      It 'matches'
-        When invoke shellspec_matcher be valid as a number
-        The stdout should equal "is: number 123"
-      End
+    It 'matches number'
+      subject() { %- 123; }
+      When run shellspec_matcher_be_valid_number
+      The status should be success
     End
 
-    Context 'when subject is undefined'
-      It 'does not match'
-        When invoke shellspec_matcher be valid as number
-        The stdout should equal "is: number "
-      End
+    It 'does not match non-number'
+      subject() { %- 123a; }
+      When run shellspec_matcher_be_valid_number
+      The status should be failure
+    End
+
+    It 'does not match undefined'
+      subject() { false; }
+      When run shellspec_matcher_be_valid_number
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be valid number foo
+      subject() { %- 123; }
+      When run shellspec_matcher_be_valid_number foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -50,25 +52,22 @@ Describe "core/matchers/be/valid.sh"
       The value "123" should not be valid as a funcname
     End
 
-    Context 'when subject is foo_bar'
-      subject() { %= "foo_bar"; }
-      It 'matches'
-        When invoke shellspec_matcher be valid as a funcname
-        The stdout should equal "is: funcname foo_bar"
-      End
+    It 'matches function name'
+      subject() { %- "foo_bar"; }
+      When run shellspec_matcher_be_valid_funcname
+      The status should be success
     End
 
-    Context 'when subject is undefined'
-      It 'does not match'
-        When invoke shellspec_matcher be valid as funcname
-        The stdout should equal "is: funcname "
-      End
+    It 'does not match undefined'
+      subject() { false; }
+      When run shellspec_matcher_be_valid_funcname
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher be valid funcname foo
+      subject() { %- "foo_bar"; }
+      When run shellspec_matcher_be_valid_funcname foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End

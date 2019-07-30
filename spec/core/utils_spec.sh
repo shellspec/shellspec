@@ -69,7 +69,7 @@ Describe "core/utils.sh"
     End
 
     It 'raise error with invalid type'
-      When invoke shellspec_is invalid-type
+      When run shellspec_is invalid-type
       The error should be present
       The status should be failure
     End

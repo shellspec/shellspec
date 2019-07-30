@@ -44,26 +44,29 @@ Describe 'evaluation sample'
   Describe 'invoke evaluation'
     It 'can trap exit'
       abort() { exit 1; }
-      When invoke abort # if use "call evaluation", shellspec is terminate
+      When run abort # if use "call evaluation", shellspec is terminate
       The status should be failure
     End
 
     It 'can not modify variable because it run with in subshell'
       set_value() { SHELLSPEC_VERSION=$1; }
-      When invoke set_value 'no-version'
+      When run set_value 'no-version'
       The value "$SHELLSPEC_VERSION" should not eq 'no-version'
     End
 
-    It 'calls shellspec_around_invoke hook'
-      shellspec_around_invoke() {
+    It 'calls BeforeRun/AfterRun hook'
+      before_run() {
         # You can temporarily redefine function here
         # redefined function is restored after invoke evaluation
         # because invoke evaluation runs with in subshell
         echo before
-        "$@" # run "echo 123"
+      }
+      after_run() {
         echo after
       }
-      When invoke echo 123
+      BeforeRun before_run
+      AfterRun after_run
+      When run echo 123
       The line 1 of output should eq 'before'
       The line 2 of output should eq 123
       The line 3 of output should eq 'after'

@@ -3,81 +3,68 @@
 % FILE: "$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
 
 Describe "core/modifiers/contents.sh"
-  Before set_subject set_contents intercept_shellspec_modifier
-  subject() { false; }
+  BeforeRun set_subject modifier_mock
 
   Describe "contents modifier"
-    set_contents() { contents="a"; }
-
     Example 'example'
-      The contents of file "$FILE" should equal "$contents"
-      The contents of the file "$FILE" should equal "$contents"
-      The file "$FILE" contents should equal "$contents"
+      The contents of file "$FILE" should equal "a"
+      The contents of the file "$FILE" should equal "a"
+      The file "$FILE" contents should equal "a"
     End
 
-    Context 'when file exists'
+    It 'reads the contents of the file when file exists'
       subject() { %- "$FILE"; }
-      It 'reads the contents of the file'
-        When invoke shellspec_modifier contents _modifier_
-        The entire stdout should equal "$contents"
-      End
+      When run shellspec_modifier_contents _modifier_
+      The entire stdout should equal "a"
     End
 
-    Context 'when file not exists'
+    It 'can not reads the contents of the file when file not exists'
       subject() { %- "$FILE.not-exists"; }
-      It 'cannot reads the contents of the file'
-        When invoke shellspec_modifier contents _modifier_
-        The status should be failure
-      End
+      When run shellspec_modifier_contents _modifier_
+      The status should be failure
     End
 
-    Context 'when file not specified'
-      It 'cannot reads the contents of the file'
-        When invoke shellspec_modifier contents _modifier_
-        The status should be failure
-      End
+    It 'can not reads the contents of the file when file not specified'
+      subject() { false; }
+      When run shellspec_modifier_contents _modifier_
+      The status should be failure
     End
 
     It 'outputs error if next modifier is missing'
-      When invoke shellspec_modifier contents
+      subject() { %- "$FILE"; }
+      When run shellspec_modifier_contents
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End
 
   Describe "entire contents modifier"
-    set_contents() { contents="a${LF}${LF}"; }
-
     Example 'example'
-      The entire contents of file "$FILE" should equal "$contents"
-      The entire contents of the file "$FILE" should equal "$contents"
-      The file "$FILE" entire contents should equal "$contents"
+      The entire contents of file "$FILE" should equal "a${LF}${LF}"
+      The entire contents of the file "$FILE" should equal "a${LF}${LF}"
+      The file "$FILE" entire contents should equal "a${LF}${LF}"
     End
 
-    Context 'when file exists'
+    It 'reads the entire contents of the file when file exists'
       subject() { %- "$FILE"; }
-      It 'reads the entire contents of the file'
-        When invoke shellspec_modifier entire contents _modifier_
-        The entire stdout should equal "$contents"
-      End
+      When run shellspec_modifier_entire_contents _modifier_
+      The entire stdout should equal "a${LF}${LF}"
     End
 
-    Context 'when file not exists'
+    It 'can not reads the entire contents of the file when file not exists'
       subject() { %- "$FILE.not-exists"; }
-      It 'can not reads the entire contents of the file'
-        When invoke shellspec_modifier entire contents _modifier_
-        The status should be failure
-      End
+      When run shellspec_modifier_entire_contents _modifier_
+      The status should be failure
     End
 
-    Context 'when file not specified'
-      It 'can not read the entire contents of the file'
-        When invoke shellspec_modifier entire contents _modifier_
-        The status should be failure
-      End
+    It 'can not read the entire contents of the file when file not specified'
+      subject() { false; }
+      When run shellspec_modifier_entire_contents _modifier_
+      The status should be failure
     End
 
     It 'outputs error if next modifier is missing'
-      When invoke shellspec_modifier entire contents
+      subject() { %- "$FILE"; }
+      When run shellspec_modifier_entire_contents
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
   End

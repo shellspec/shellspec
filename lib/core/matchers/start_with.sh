@@ -6,7 +6,8 @@ shellspec_syntax_compound 'shellspec_matcher_start'
 shellspec_matcher_start_with() {
   shellspec_matcher__match() {
     SHELLSPEC_EXPECT=$1
-    case ${SHELLSPEC_SUBJECT:-} in ($SHELLSPEC_EXPECT*) return 0; esac
+    [ "${SHELLSPEC_SUBJECT+x}" ] || return 1
+    case $SHELLSPEC_SUBJECT in ($SHELLSPEC_EXPECT*) return 0; esac
     return 1
   }
 

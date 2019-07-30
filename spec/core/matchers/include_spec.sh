@@ -1,8 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/matchers/include.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
 
   Describe 'include matcher'
     Example 'example'
@@ -10,32 +9,34 @@ Describe "core/matchers/include.sh"
       The value "foobarbaz" should not include "BAR"
     End
 
-    Context 'when subject is foo<LF>bar<LF>baz<LF>'
+    It 'matches that include string'
       subject() { %= "foo${LF}bar${LF}baz"; }
-      It 'matches that include "bar"'
-        When invoke shellspec_matcher include "bar"
-        The status should be success
-      End
+      When run shellspec_matcher_include "bar"
+      The status should be success
     End
 
-    Context 'when subject is foo<LF>BAR<LF>baz<LF>'
+    It 'does not matches that not include string'
       subject() { %= "foo${LF}BAR${LF}baz"; }
-      It 'does not matches that include "bar"'
-        When invoke shellspec_matcher include "bar"
-        The status should be failure
-      End
+      When run shellspec_matcher_include "bar"
+      The status should be failure
+    End
+
+    It 'does not matches undefined'
+      subject() { false; }
+      When run shellspec_matcher_include ""
+      The status should be failure
     End
 
     It 'outputs error if parameters is missing'
-      When invoke shellspec_matcher include
+      subject() { %= "foo${LF}bar${LF}baz"; }
+      When run shellspec_matcher_include
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher include "foo" "bar"
+      subject() { %= "foo${LF}bar${LF}baz"; }
+      When run shellspec_matcher_include "foo" "bar"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End

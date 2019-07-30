@@ -3,8 +3,8 @@
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 
 Describe "core/matchers/has/stat.sh"
-  Before set_subject intercept_shellspec_matcher
-  subject() { false; }
+  BeforeRun set_subject matcher_mock
+
   not_exist() { [ ! -e "$FIXTURE/$1" ]; }
 
   Describe 'has setgid matcher'
@@ -16,26 +16,22 @@ Describe "core/matchers/has/stat.sh"
       The path target should has setgid flag
     End
 
-    Context 'when path has setgid flag'
+    It 'matches when path has setgid flag'
       subject() { %- "$FIXTURE/stat/setgid"; }
-      It 'matches'
-        When invoke shellspec_matcher has setgid
-        The status should be success
-      End
+      When run shellspec_matcher_has_setgid
+      The status should be success
     End
 
-    Context 'when path does not have setgid flag'
+    It 'does not match when path does not have setgid flag'
       subject() { %- "$FIXTURE/file"; }
-      It 'does not match'
-        When invoke shellspec_matcher has setgid
-        The status should be failure
-      End
+      When run shellspec_matcher_has_setgid
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher has setgid foo
+      subject() { %- "$FIXTURE/stat/setgid"; }
+      When run shellspec_matcher_has_setgid foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 
@@ -48,26 +44,22 @@ Describe "core/matchers/has/stat.sh"
       The path target should has setuid flag
     End
 
-    Context 'when path has setuid flag'
+    It 'matches when path has setuid flag'
       subject() { %- "$FIXTURE/stat/setuid"; }
-      It 'matches'
-        When invoke shellspec_matcher has setuid
-        The status should be success
-      End
+      When run shellspec_matcher_has_setuid
+      The status should be success
     End
 
-    Context 'when path does not have setuid flag'
+    It 'does not match when path does not have setuid flag'
       subject() { %- "$FIXTURE/file"; }
-      It 'does not match'
-        When invoke shellspec_matcher has setuid
-        The status should be failure
-      End
+      When run shellspec_matcher_has_setuid
+      The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      When invoke shellspec_matcher has setuid foo
+      subject() { %- "$FIXTURE/stat/setuid"; }
+      When run shellspec_matcher_has_setuid foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
-      The status should be failure
     End
   End
 End
