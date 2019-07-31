@@ -3,7 +3,7 @@
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture/install"
 % TMPBASE: "$SHELLSPEC_TMPBASE/install"
 
-Describe "execute ./install.sh"
+Describe "source ./install.sh"
   Intercept parse_option main
 
   __parse_option__() {
@@ -15,13 +15,13 @@ Describe "execute ./install.sh"
   }
 
   It 'outputs usage'
-    When execute ./install.sh --help
+    When run source ./install.sh --help
     The status should be success
     The output should be present
   End
 
   It "exits with an error when specified invalid option"
-    When execute ./install.sh --invalid
+    When run source ./install.sh --invalid
     The status should be failure
     The error should be present
   End

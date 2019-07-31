@@ -30,7 +30,7 @@ Describe 'intercept sample'
     }
   }
   Example 'test cpunum.sh with stubbed cat /cpu/info'
-    When execute ./count_cpus.sh
+    When run source ./count_cpus.sh
     The stdout should eq 3
   End
 End
