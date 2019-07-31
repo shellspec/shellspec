@@ -53,7 +53,7 @@ Describe "core/evaluation.sh"
 
     It 'calls external command'
       cat() { echo "fake cat"; return 1; }
-      When call command cat /dev/null
+      When run command cat /dev/null
       The status should equal 0
     End
 

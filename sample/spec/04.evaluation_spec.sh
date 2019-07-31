@@ -36,7 +36,7 @@ Describe 'evaluation sample'
 
     It 'calls external command'
       expr() { echo "not called"; }
-      When call command expr 1 + 2
+      When run command expr 1 + 2
       The output should eq 3
     End
   End
