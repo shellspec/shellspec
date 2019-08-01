@@ -145,9 +145,7 @@ Describe "general.sh"
   End
 
   Describe 'shellspec_find_files()'
-    found() {
-      echo "${1#"$FIXTURE/files/"}"
-    }
+    found() { echo "${1#"$FIXTURE/files/"}"; }
     It "finds files"
       When call shellspec_find_files found "$FIXTURE/files"
       The output should include "file1"
@@ -337,14 +335,13 @@ Describe "general.sh"
   End
 
   Describe 'shellspec_escape_quote()'
-    example() {
-      var=$1
-      shellspec_escape_quote var
-      eval "ret='$var'"
-    }
+    prepare() { var="te'st"; }
+    decode() { eval "ret='$var'"; }
 
     It 'returns escaped string that evaluatable by eval'
-      When call example "te'st"
+      BeforeCall prepare
+      AfterCall decode
+      When call shellspec_escape_quote var
       The variable ret should equal "te'st"
     End
   End
@@ -536,13 +533,10 @@ Describe "general.sh"
   End
 
   Describe "shellspec_chomp()"
-    set_var() {
-      var="string${LF}${LF}${LF}"
-    }
-    Before set_var
+    Before 'var="string${LF}${LF}${LF}"'
     It "removes trailing LF"
       When call shellspec_chomp var
-      The value "$var" should eq "string"
+      The variable var should eq "string"
     End
   End
 End

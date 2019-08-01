@@ -264,6 +264,7 @@ shellspec_loop() {
 
 shellspec_escape_quote() {
   SHELLSPEC_EVAL="
+    [ $# -gt 1 ] && $1=\${2:-}; \
     shellspec_reset_params '\$$1' \"'\"; \
     eval \"\$SHELLSPEC_RESET_PARAMS\"; $1=''; \
     while [ \$# -gt 0 ]; do \
