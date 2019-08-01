@@ -85,4 +85,10 @@ shellspec_spec_helper_configure() {
     [ "$ans" = -2 ] && return 1
     return 0
   }
+
+  not_exist_failglob() {
+    #shellcheck disable=SC2039
+    shopt -s failglob 2>/dev/null && return 1
+    return 0
+  }
 }

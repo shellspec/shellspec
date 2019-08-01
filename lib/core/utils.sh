@@ -28,10 +28,28 @@ shellspec_shell_option() {
   eval "set -- ${*:-}"
   while [ $# -gt 0 ]; do
     case $1 in
-      *:on) set -o "${1%:*}" ;;
-      *:off) set +o "${1%:*}" ;;
+      *:on) shellspec_shell_option_on "${1%:*}" ;;
+      *:off) shellspec_shell_option_off "${1%:*}" ;;
       *) shellspec_error "shellspec_shell_option: invalid option '$1'"
     esac
     shift
   done
 }
+
+if [ "${BASH_VERSION:-}" ]; then
+  shellspec_shell_option_on() {
+    #shellcheck disable=SC2039
+    shopt -s "$1" 2>/dev/null || set -o "$1"
+  }
+  shellspec_shell_option_off() {
+    #shellcheck disable=SC2039
+    shopt -u "$1" 2>/dev/null  || set +o "$1"
+  }
+else
+  shellspec_shell_option_on() {
+    set -o "$1"
+  }
+  shellspec_shell_option_off() {
+    set +o "$1"
+  }
+fi

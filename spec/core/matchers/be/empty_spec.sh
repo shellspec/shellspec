@@ -106,17 +106,18 @@ Describe "core/matchers/be/empty.sh"
     Context 'when disabled noglob'
       Before 'touch "$EMPTYDIR/file"'
       After 'rm "$EMPTYDIR/file"'
-      Before 'set -o noglob'
-      subject() { %- "$EMPTYDIR"; }
+      Set noglob:on
+
       It 'does not matches'
+        subject() { %- "$EMPTYDIR"; }
         When run shellspec_matcher_be_empty_directory
         The status should be failure
       End
     End
 
     Context 'when enabled failglob in bash'
-      Skip if 'shell is not bash' [ "$SHELLSPEC_SHELL_TYPE" != "bash" ]
-      Before '{ shopt -s failglob ||:; } 2>/dev/null'
+      Skip if 'failglob shell option not exist' not_exist_failglob
+      Set failglob:on
 
       It 'matches'
         subject() { %- "$EMPTYDIR"; }
