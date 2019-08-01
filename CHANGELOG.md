@@ -10,6 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `Set` helper for set shell option
+- Add `BeforeCall` / `AfterCall` helper.
+- Add `BeforeRun` / `AfterRun` helper.
+
+### Changed
+
+- Redesign `run` evaluation [**major breaking change.**]
+  - Change the behavior to close to the `run` of bats.
+  - New `run` evaluation allows the execution of functions and commands.
+  - Use `run command` to execute only the commands. (old `run` -> use `run command`)
+  - Merge `invoke` evaluation to `run` evaluation. (old `invoke` -> use `run`)
+  - Merge `execute` evaluation to `run` evaluation. (old `execute` -> use `run source`)
+
+### Removed
+
+- Drop support for posh 0.10.2 and similar versions as the handling of the shell flag is broken.
 
 ## [0.19.1] - 2019-07-23
 
