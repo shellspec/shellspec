@@ -41,7 +41,7 @@ Describe 'evaluation sample'
     End
   End
 
-  Describe 'invoke evaluation'
+  Describe 'run evaluation'
     It 'can trap exit'
       abort() { exit 1; }
       When run abort # if use "call evaluation", shellspec is terminate
@@ -57,8 +57,8 @@ Describe 'evaluation sample'
     It 'calls BeforeRun/AfterRun hook'
       before_run() {
         # You can temporarily redefine function here
-        # redefined function is restored after invoke evaluation
-        # because invoke evaluation runs with in subshell
+        # redefined function is restored after run evaluation
+        # because run evaluation runs with in subshell
         echo before
       }
       after_run() {
