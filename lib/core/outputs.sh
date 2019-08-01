@@ -167,8 +167,16 @@ shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
 }
 
 shellspec_output_ABORTED() {
+  if [ -s "$SHELLSPEC_STDOUT_FILE" ]; then
+    shellspec_readfile SHELLSPEC_STDOUT "$SHELLSPEC_STDOUT_FILE"
+    set -- "$1" "${2:-}stdout:${SHELLSPEC_STDOUT}${LF}"
+  fi
+  if [ -s "$SHELLSPEC_STDERR_FILE" ]; then
+    shellspec_readfile SHELLSPEC_STDERR "$SHELLSPEC_STDERR_FILE"
+    set -- "$1" "${2:-}stderr:${SHELLSPEC_STDERR}${LF}"
+  fi
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:Example aborted (exit status: $1)" "failure_message:"
+    "message:Example aborted (exit status: $1)" "failure_message:$2"
 }
 
 shellspec_output_SUCCEEDED() {
