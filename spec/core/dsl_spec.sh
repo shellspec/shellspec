@@ -386,21 +386,17 @@ Describe "core/dsl.sh"
   End
 
   Describe "shellspec_logger()"
-    Context "when SHELLSPEC_LOGFILE=/dev/stdout"
-      Before SHELLSPEC_LOGFILE=/dev/stdout
-      It 'outputs to logfile'
-        When call shellspec_logger "logger test"
-        The stdout should eq "logger test"
-      End
+    It 'outputs to logfile'
+      BeforeCall SHELLSPEC_LOGFILE="$SHELLSPEC_TMPBASE/test-logfile"
+      When call shellspec_logger "logger test"
+      The contents of file "$SHELLSPEC_LOGFILE" should eq "logger test"
     End
 
-    Context "when SHELLSPEC_LOGFILE=/dev/null"
-      Before SHELLSPEC_LOGFILE=/dev/null
+    It 'sleeps to make the log easy to read'
       sleep() { echo sleep; }
-      It 'sleeps to make the log easy to read'
-        When call shellspec_logger "logger test"
-        The stdout should eq "sleep"
-      End
+      BeforeCall SHELLSPEC_LOGFILE=/dev/null
+      When call shellspec_logger "logger test"
+      The stdout should eq "sleep"
     End
   End
 
