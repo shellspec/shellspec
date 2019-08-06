@@ -19,7 +19,7 @@ package:
 demo:
 	ttyrec -e "ghostplay contrib/demo.sh"
 	seq2gif -l 5000 -h 32 -w 139 -p win -i ttyrecord -o docs/demo.gif
-	gifsicle -i docs/demo.gif -O3 --colors 16 -o docs/demo.gif
+	gifsicle -i docs/demo.gif -O3 -o docs/demo.gif
 
 test:
 	./shellspec
