@@ -334,6 +334,15 @@ Describe "general.sh"
     End
   End
 
+  Describe 'shellspec_loop()'
+    callback() { %- "called "; }
+
+    It 'calls callback specified times'
+      When call shellspec_loop callback 3
+      The output should eq "called called called "
+    End
+  End
+
   Describe 'shellspec_escape_quote()'
     prepare() { var="te'st"; }
     decode() { eval "ret='$var'"; }
