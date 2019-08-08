@@ -193,7 +193,7 @@ shellspec_output_WARNED() {
 }
 
 shellspec_output_TODO() {
-  shellspec_output_esult "tag:todo" "note:PENDING" "fail:"
+  shellspec_output_result "tag:todo" "note:PENDING" "fail:"
 }
 
 shellspec_output_FIXED() {
