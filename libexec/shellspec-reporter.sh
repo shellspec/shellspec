@@ -27,7 +27,7 @@ field_type='' field_tag='' field_block_no='' field_focused=''
 field_conditional='' field_skipid='' field_pending=''
 
 # shellcheck disable=SC2034
-specfile_count=0 detail_index=0 expected_example_count=0 example_count=0 \
+specfile_count=0 expected_example_count=0 example_count=0 \
 succeeded_count='' failed_count='' warned_count='' \
 todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count='' \
 profiler_count=0 profiler_line=''
@@ -105,10 +105,7 @@ each_line() {
         if [ ! "$example_index" ]; then
           inc current_example_index
           example_index=$current_example_index
-          # shellcheck disable=SC2034
-          detail_index=0
         fi
-        inc detail_index
         break
       done
       ;;

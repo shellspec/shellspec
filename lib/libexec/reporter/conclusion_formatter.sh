@@ -5,6 +5,7 @@
 : "${field_evaluation:-} ${field_message:-} ${field_failure_message:-}"
 
 conclusion_evaluation=''
+conclusion_last_example_index='' conclusion_detail_index=''
 create_buffers conclusion
 
 conclusion_each() {
@@ -19,9 +20,12 @@ conclusion_each() {
   conclusion '|=' "Examples:${LF}"
   _label="  $example_index) "
   padding _indent ' ' ${#_label}
-  if [ "$detail_index" -eq 1 ]; then
+  if [ "$example_index" != "$conclusion_last_example_index" ]; then
     conclusion '+=' "${WHITE}${_label}$(field_description)${RESET}${LF}"
+    conclusion_last_example_index=$example_index
+    conclusion_detail_index=0
   fi
+  inc conclusion_detail_index
 
   if [ "$conclusion_evaluation" ]; then
     conclusion '+=' "${BOLD}${CYAN}${_indent}${conclusion_evaluation}${RESET}"
@@ -29,7 +33,7 @@ conclusion_each() {
     conclusion_evaluation=''
   fi
 
-  _label="${_indent}${example_index}.${detail_index}) "
+  _label="${_indent}${example_index}.${conclusion_detail_index}) "
   padding _indent ' ' ${#_label}
 
   _message="${field_note:+[}$field_note${field_note:+] }$field_message"
