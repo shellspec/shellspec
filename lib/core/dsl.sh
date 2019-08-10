@@ -121,6 +121,9 @@ shellspec_invoke_example() {
 
   shellspec_if PENDING && {
     shellspec_if FAILED && shellspec_output TODO && return 0
+    [ "$SHELLSPEC_WARNING_AS_FAILURE" ] && shellspec_if WARNED && {
+      shellspec_output TODO && return 0
+    }
     shellspec_output FIXED && return 0
   }
 
