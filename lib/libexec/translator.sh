@@ -20,7 +20,9 @@ finalize() {
 one_line_syntax_check() { :; }
 
 check_filter() {
-  eval "set -- $1"
+  escaped_syntax=''
+  escape_one_line_syntax escaped_syntax "$1"
+  eval "set -- $escaped_syntax"
   if [ $# -gt 0 ]; then
     match "$1" "$SHELLSPEC_EXAMPLE_FILTER" && return 0
     shift
@@ -30,11 +32,29 @@ check_filter() {
     case $SHELLSPEC_TAG_FILTER in (*,$1,*) return 0; esac
     case $1 in
       *:*) case $SHELLSPEC_TAG_FILTER in (*,${1%%:*},*) return 0; esac ;;
-      *  ) case $SHELLSPEC_TAG_FILTER in (*,$1:*) return 0 ; esac ;;
+      *  ) case $SHELLSPEC_TAG_FILTER in (*,$1,*) return 0 ; esac ;;
     esac
     shift
   done
   return 1
+}
+
+escape_one_line_syntax() {
+  eval="
+    set -- \"\$2\" '' ''; \
+    while [ \"\$1\" ]; do \
+      $1=\${1#?}; \
+      case \$3\$1 in \
+        \\\$* | \\\`*) set -- \"\$1\" \"\$2\\\\\" '' ;; \
+        \'*)  set -- \"\$1\" \"\$2\" q ;; \
+        q\'*) set -- \"\$1\" \"\$2\" '' ;; \
+      esac; \
+      $1=\${1%\"\${$1}\"}; \
+      set -- \"\${1#?}\" \"\$2\${$1}\" \"\$3\"; \
+    done; \
+    $1=\$2
+  "
+  eval "$eval"
 }
 
 is_constant_name() {
