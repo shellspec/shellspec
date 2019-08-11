@@ -32,7 +32,7 @@ references_each() {
     end)
       [ "$example_count_per_file" -eq "$field_example_count" ] && return 0
 
-      set -- "${RED}shellspec $field_specfile${RESET}" \
+      set -- "${BOLD}${RED}shellspec $field_specfile${RESET}" \
         "$CYAN# expected $field_example_count examples," \
         "but only ran $example_count_per_file examples${RESET}"
 
