@@ -14,100 +14,39 @@ Describe "general.sh"
       "
     }
 
-    Context '${.sh.version} not available'
+    Context '${.sh.version} not available shell'
       Before SHELLSPEC_SH_VERSION=''
 
-      Context 'pretend to be bash'
-        Before 'pretend bash "4.4.19(1)-release"'
-        It 'detects as bash'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'bash'
-        End
+      Parameters
+        bash  bash "4.4.19(1)-release"
+        zsh   zsh  "5.4.2"
+        yash  yash "2.46"
+        posh  posh "0.13.1"
+        mksh  ksh  "@(#)MIRBSD KSH R56 2018/01/14"
+        pdksh ksh  "@(#)PD KSH v5.2.14 99/07/13.2"
+        ksh   ksh "ksh Version AJM 93u+ 2012-08-01"
+        sh    ""    ""
       End
 
-      Context 'pretend to be zsh'
-        Before 'pretend zsh "5.4.2"'
-        It 'detects as zsh'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'zsh'
-        End
-      End
-
-      Context 'pretend to be yash'
-        Before 'pretend yash "2.46"'
-        It 'detects as yash'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'yash'
-        End
-      End
-
-      Context 'pretend to be posh'
-        Before 'pretend posh "0.13.1"'
-        It 'detects as yash'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'posh'
-        End
-      End
-
-      Context 'pretend to be mksh'
-        Before 'pretend ksh "@(#)MIRBSD KSH R56 2018/01/14"'
-        It 'detects as mksh'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'mksh'
-        End
-      End
-
-      Context 'pretend to be pdksh'
-        Before 'pretend ksh "@(#)PD KSH v5.2.14 99/07/13.2"'
-        It 'detects as pdksh'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'pdksh'
-        End
-      End
-
-      Context 'pretend to be sh'
-        Before 'pretend "" ""'
-        It 'detects as sh'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'sh'
-        End
-      End
-
-      Context 'pretend to be ksh'
-        Before 'pretend ksh "ksh Version AJM 93u+ 2012-08-01"'
-        It 'detects as ksh'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'ksh'
-        End
+      It "detects as $1"
+        BeforeCall "pretend '$2' '$3'"
+        When call shellspec_shell_info
+        The variable SHELLSPEC_SHELL_TYPE should eq "$1"
       End
     End
 
-    Context '${.sh.version} not available'
-      Context 'pretend to be old ksh'
-        Before 'SHELLSPEC_SH_VERSION="Version M 1993-12-28 q"'
-        Before 'pretend sh ""'
-        It 'detects as ksh'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'ksh'
-        End
+    Context '${.sh.version} available shell'
+      Parameters
+        ksh   "Version M 1993-12-28 q"
+        bosh  "bosh version bosh 2019/02/05 a+"
+        pbosh "pbosh version pbosh 2019/02/05 a+"
       End
 
-      Context 'pretend to be bosh'
-        Before 'SHELLSPEC_SH_VERSION="bosh version bosh 2019/02/05 a+"'
-        Before 'pretend sh ""'
-        It 'detects as bosh'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'bosh'
-        End
-      End
-
-      Context 'pretend to be posh'
-        Before 'SHELLSPEC_SH_VERSION="pbosh version pbosh 2019/02/05 a+"'
-        Before 'pretend sh ""'
-        It 'detects as pbosh'
-          When call shellspec_shell_info
-          The variable SHELLSPEC_SHELL_TYPE should eq 'pbosh'
-        End
+      It "detects as $1"
+        BeforeCall "SHELLSPEC_SH_VERSION='$2'"
+        BeforeCall 'pretend sh ""'
+        When call shellspec_shell_info
+        The variable SHELLSPEC_SHELL_TYPE should eq "$1"
       End
     End
   End
