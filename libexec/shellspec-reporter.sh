@@ -22,8 +22,8 @@ color_constants "${SHELLSPEC_COLOR:-}"
 exit_status=0 found_focus='' no_examples='' aborted=1 coverage_failed=''
 fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-}
 current_example_index=0 example_index=''
-last_block_no='' last_skip_id='' not_enough_examples=''
-field_type='' field_tag='' field_block_no='' field_focused=''
+last_example_no='' last_skip_id='' not_enough_examples=''
+field_type='' field_tag='' field_example_no='' field_focused=''
 field_conditional='' field_skipid='' field_pending=''
 
 # shellcheck disable=SC2034
@@ -68,7 +68,7 @@ parse_fields() {
 each_line() {
   case $field_type in
     begin)
-      field_example_count='' last_block_no=0 last_skip_id=''
+      field_example_count='' last_example_no=0 last_skip_id=''
       inc specfile_count
       # shellcheck disable=SC2034
       example_count_per_file=0 succeeded_count_per_file=0 \
@@ -78,12 +78,13 @@ each_line() {
     example)
       # shellcheck disable=SC2034
       field_evaluation='' field_pending=''
-      if [ "$field_block_no" -le "$last_block_no" ]; then
-        abort "Illegal executed the same block (that in a loop?)" \
-          "in ${field_specfile:-}" "line ${field_lineno_range:-}"
+      if [ "$field_example_no" -le "$last_example_no" ]; then
+        abort "${LF}Illegal executed the same example" \
+          "(did you execute in a loop?) in ${field_specfile:-}" \
+          "line ${field_lineno_range:-}"
       fi
       [ "$field_focused" = "focus" ] && found_focus=1
-      example_index='' last_block_no=$field_block_no
+      example_index='' last_example_no=$field_example_no
       eval "profiler_line$example_count=\$field_specfile:\$field_lineno_range"
       ;;
     statement)

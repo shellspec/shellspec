@@ -19,8 +19,8 @@ shellspec_output_END() {
 
 shellspec_output_EXAMPLE() {
   shellspec_output_example "id:${SHELLSPEC_EXAMPLE_ID:-}" \
-    "block_no:${SHELLSPEC_BLOCK_NO:-}" "focused:${SHELLSPEC_FOCUSED:-}" \
-    "description:$SHELLSPEC_DESCRIPTION"
+    "block_no:${SHELLSPEC_BLOCK_NO:-}" "example_no:${SHELLSPEC_EXAMPLE_NO:-}" \
+    "focused:${SHELLSPEC_FOCUSED:-}" "description:$SHELLSPEC_DESCRIPTION"
 }
 
 shellspec_output_EVALUATION() {

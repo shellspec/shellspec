@@ -24,7 +24,7 @@ trans_block_example() {
   putsn "block${block_no}() { "
   putsn "LINENO_BEGIN=$lineno_begin" "EXAMPLE_ID=$example_id"
   putsn "FILTER=\${FILTER}${filter:-0}" "ENABLED=\${ENABLED}${enabled:-0}"
-  putsn "yield"
+  putsn "yield $parameter_count"
 }
 
 trans_block_end() {
@@ -36,7 +36,7 @@ trans_block_end() {
 }
 
 yield() {
-  case $ENABLED in (*1*) case $FILTER in (*1*) proc; esac; esac
+  case $ENABLED in (*1*) case $FILTER in (*1*) proc "$1"; esac; esac
 }
 
 syntax_error() {
@@ -69,12 +69,13 @@ case ${SHELLSPEC_LIST%:*} in
     specfile() { putsn "$2"; }; ;;
   examples | '')
     specfile() { list_code eval "$@"; }
-    example() { examples=$(($examples + 1)); }
+    example() { examples=$(($examples + $1)); }
     # shellcheck disable=SC2153
     case ${SHELLSPEC_LIST#examples:} in
-      id | examples) proc() { example; putsn "$SPECFILE:@$EXAMPLE_ID"; }; ;;
-      lineno)        proc() { example; putsn "$SPECFILE:$LINENO_BEGIN"; }; ;;
-      '')            proc() { example; }; ;;
+      id      ) proc() { example "$1"; putsn "$SPECFILE:@$EXAMPLE_ID"; }; ;;
+      examples) proc() { example "$1"; putsn "$SPECFILE:@$EXAMPLE_ID"; }; ;;
+      lineno)   proc() { example "$1"; putsn "$SPECFILE:$LINENO_BEGIN"; }; ;;
+      '')       proc() { example "$1"; }; ;;
     esac
 esac
 

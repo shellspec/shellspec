@@ -39,7 +39,10 @@ trans_block_example() {
   [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
   [ "$filter" ] && putsn "SHELLSPEC_FILTER=$filter"
   [ "$enabled" ] && putsn "SHELLSPEC_ENABLED=$enabled"
-  putsn "shellspec_example $1"
+  putsn "shellspec_example_block"
+  putsn "}; shellspec_example${block_no}() { "
+  putsn "if [ \$# -eq 0 ]; then shellspec_example $1"
+  putsn "else shellspec_example $1 \"\$@\"; fi"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
 
@@ -128,6 +131,18 @@ trans_out() {
   esac
 }
 
+trans_parameters_begin() {
+  putsn "shellspec_parameters() { :;"
+}
+
+trans_parameters() {
+  putsn "shellspec_parameterized_example $1"
+}
+
+trans_parameters_end() {
+  putsn "}; PARAMETER_COUNT=$1"
+}
+
 trans_constant() {
   ( eval "putsn $1=\\'$2\\'" ) ||:
 }
@@ -179,10 +194,10 @@ putsn "shellspec_metadata $metadata"
 
 specfile() {
   (
-    specfile=$2 ranges="${3:-}" example_count=''
+    specfile=$2 ranges=${3:-} run_all=''
     escape_quote specfile
     [ "$ranges" ] && enabled='' || enabled=1
-    [ "${enabled}" ] && [ "${filter}" ] && example_count=0
+    [ "$enabled" ] && [ "$filter" ] && run_all=1
 
     putsn "shellspec_marker '$specfile' ---"
     putsn "(shellspec_begin '$specfile' '$spec_no'"
@@ -193,8 +208,7 @@ specfile() {
     translate < "$2"
     putsn "shellspec_marker '$specfile' EOF"
     finalize
-    [ "$example_count" ] && example_count=$example_no
-    putsn "shellspec_end '$example_count')"
+    putsn "shellspec_end ${run_all:+$(($example_no - 1))})"
   )
   spec_no=$(($spec_no + 1))
 }

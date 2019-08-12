@@ -21,14 +21,20 @@ documentation_each() {
     result)
       _id=$_last_id _current_id=$field_id
       _description=$field_description _indent='' _last_id=$field_id
-      while [ "${_id%%-*}" = "${_current_id%%-*}" ]; do
-        _id=${_id#*-} _current_id=${_current_id#*-}
-        _description=${_description#*$VT} _indent="${_indent}  "
-      done
-      until case $_description in (*$VT*) false; esac; do
-        documentation '+=' "${_indent}${_description%%$VT*}${LF}"
-        _description=${_description#*$VT} _indent="${_indent}  "
-      done
+      if [ "$_id" = "$_current_id" ]; then
+        until case $_description in (*$VT*) false; esac; do
+          _description=${_description#*$VT} _indent="${_indent}  "
+        done
+      else
+        while [ "${_id%%-*}" = "${_current_id%%-*}" ]; do
+          _id=${_id#*-} _current_id=${_current_id#*-}
+          _description=${_description#*$VT} _indent="${_indent}  "
+        done
+        until case $_description in (*$VT*) false; esac; do
+          documentation '+=' "${_indent}${_description%%$VT*}${LF}"
+          _description=${_description#*$VT} _indent="${_indent}  "
+        done
+      fi
 
       set -- "${_indent}${field_color}${_description}"
       [ "$example_index" ] && set -- "$@" "($field_note - $example_index)"

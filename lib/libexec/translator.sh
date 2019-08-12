@@ -6,8 +6,8 @@ use constants trim match
 load grammar
 
 initialize() {
-  lineno=0 block_no=0 example_no=0 skip_id=0 error='' focused=''
-  _block_no=0 _block_no_stack=''
+  lineno=0 block_no=0 example_no=1 skip_id=0 error='' focused=''
+  _block_no=0 _block_no_stack='' _parameter_count_stack=''
 }
 
 finalize() {
@@ -88,6 +88,7 @@ block_example_group() {
   eval trans block_example_group ${1+'"$@"'}
 
   _block_no_stack="$_block_no_stack $_block_no" filter=''
+  _parameter_count_stack="$_parameter_count_stack $parameter_count"
 }
 
 block_example() {
@@ -104,14 +105,16 @@ block_example() {
   check_filter "$1" && filter=1
 
   increase_example_id
-  _block_no=$(($_block_no + 1)) example_no=$(($example_no + 1))
+  _block_no=$(($_block_no + 1))
   block_no=$_block_no lineno_begin=$lineno
   eval "block_lineno_begin${block_no}=$lineno"
 
   eval trans block_example ${1+'"$@"'}
 
-  _block_no_stack="$_block_no_stack $_block_no" filter=''
-  inside_of_example="yes"
+  _block_no_stack="$_block_no_stack $_block_no"
+  example_no=$(($example_no + $parameter_count))
+  _parameter_count_stack="$_parameter_count_stack $parameter_count"
+  filter='' inside_of_example="yes"
 }
 
 block_end() {
@@ -133,7 +136,9 @@ block_end() {
   eval trans block_end ${1+'"$@"'}
   enabled=''
 
-  _block_no_stack="${_block_no_stack% *}"
+  _block_no_stack=${_block_no_stack% *}
+  parameter_count=${_parameter_count_stack##* }
+  _parameter_count_stack=${_parameter_count_stack% *}
   inside_of_example=""
 }
 
@@ -217,6 +222,38 @@ out() {
   eval trans out ${1+'"$@"'}
 }
 
+parameters() {
+  if [ "$inside_of_example" ]; then
+    syntax_error "Parameters cannot be defined inside of Example"
+    return 0
+  fi
+
+  #shellcheck disable=SC2145
+  "parameters_$@"
+}
+
+parameters_block() {
+  trans parameters_begin
+  parameter_count=0
+
+  while IFS= read -r line || [ "$line" ]; do
+    lineno=$(($lineno + 1))
+    trim line "$line"
+    case $line in (End | End\ * ) break; esac
+    case $line in (\#* | '') continue; esac
+
+    trans parameters "$line"
+    parameter_count=$(($parameter_count + 1))
+    until case $line in (*\\) false; esac; do
+      lineno=$(($lineno + 1))
+      IFS= read -r line
+      trans line "$line"
+    done
+  done
+
+  trans parameters_end "$parameter_count"
+}
+
 constant() {
   if [ "$_block_no_stack" ]; then
     syntax_error "Constant should be defined outside of Example Group/Example"
@@ -281,7 +318,7 @@ remove_from_ranges() {
 }
 
 translate() {
-  example_id='' inside_of_example='' inside_of_text=''
+  example_id='' inside_of_example='' inside_of_text='' parameter_count=1
   while IFS= read -r line || [ "$line" ]; do
     lineno=$(($lineno + 1)) work=''
     trim work "$line"

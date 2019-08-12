@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2004
 
 SHELLSPEC_DESCRIPTION=''
 SHELLSPEC_PATH_ALIAS=:
@@ -25,7 +25,10 @@ shellspec_finished() {
 }
 
 shellspec_yield() {
-  "shellspec_yield$SHELLSPEC_BLOCK_NO"
+  case $# in
+    0) "shellspec_yield$SHELLSPEC_BLOCK_NO" ;;
+    *) "shellspec_yield$SHELLSPEC_BLOCK_NO" "$@" ;;
+  esac
   # shellcheck disable=SC2034
   SHELLSPEC_LINENO=''
 }
@@ -41,7 +44,7 @@ shellspec_perform() {
 
 shellspec_end() {
   # shellcheck disable=SC2034
-  SHELLSPEC_EXAMPLE_COUNT=$1
+  SHELLSPEC_EXAMPLE_COUNT=${1:-}
   shellspec_output END
 }
 
@@ -55,8 +58,27 @@ shellspec_example_group() {
   shellspec_yield
 }
 
+shellspec_parameters() {
+  "shellspec_example$SHELLSPEC_BLOCK_NO"
+}
+
+shellspec_example_block() {
+  shellspec_parameters
+}
+
+shellspec_parameterized_example() {
+  (
+    case $# in
+      0) "shellspec_example$SHELLSPEC_BLOCK_NO" ;;
+      *) "shellspec_example$SHELLSPEC_BLOCK_NO" "$@" ;;
+    esac
+  )
+  SHELLSPEC_EXAMPLE_NO=$(($SHELLSPEC_EXAMPLE_NO + 1))
+}
+
 shellspec_example() {
   shellspec_description "example" "${1:-}"
+  [ $# -gt 0 ] && shift
 
   if [ "$SHELLSPEC_ENABLED" ] && [ "$SHELLSPEC_FILTER" ]; then
     if [ "$SHELLSPEC_DRYRUN" ]; then
@@ -67,11 +89,23 @@ shellspec_example() {
       case $- in
         *e*)
           set +e
-          (set -e; shellspec_invoke_example )
+          (
+            set -e
+            case $# in
+              0) shellspec_invoke_example ;;
+              *) shellspec_invoke_example "$@" ;;
+            esac
+          )
           set -e -- $?
           ;;
         *)
-          (set -e; shellspec_invoke_example )
+          (
+            set -e
+            case $# in
+              0) shellspec_invoke_example ;;
+              *) shellspec_invoke_example "$@" ;;
+            esac
+          )
           set -- $?
       esac
       if [ "$1" -ne 0 ]; then
@@ -100,7 +134,10 @@ shellspec_invoke_example() {
       return 0
     fi
     shellspec_output_if PENDING ||:
-    shellspec_yield
+    case $# in
+      0) shellspec_yield ;;
+      *) shellspec_yield "$@" ;;
+    esac
     if ! shellspec_call_after_hooks; then
       SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
       shellspec_output FAILED_AFTER_HOOK
