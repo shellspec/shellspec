@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004,SC2034,SC2119,SC2120
+#shellcheck shell=sh disable=SC2004,SC2034,SC2119,SC2120,SC2016
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
@@ -251,6 +251,30 @@ parameters_block() {
     done
   done
 
+  trans parameters_end "$parameter_count"
+}
+
+parameters_dynamic() {
+  trans parameters_begin
+  code=''
+
+  while IFS= read -r line || [ "$line" ]; do
+    lineno=$(($lineno + 1))
+    trim line "$line"
+    case $line in (End | End\ * ) break; esac
+
+    case $line in
+      %data | %data\ *)
+        line=${line#%data}
+        trans parameters "$line"
+        line='count=$(($count + 1))'
+        ;;
+      *) trans line "$line"
+    esac
+    code="${code}${line}${LF}"
+  done
+
+  eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
   trans parameters_end "$parameter_count"
 }
 

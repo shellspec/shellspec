@@ -67,6 +67,7 @@ mapping() {
     Data:expand       )   data expand         "$2" ;;
     Parameters        )   parameters block    "$2" ;;
     Parameters:block  )   parameters block    "$2" ;;
+    Parameters:dynamic)   parameters dynamic  "$2" ;;
     Include           )   include             "$2" ;;
     %text             )   text_begin raw      "$2" ;;
     %text:raw         )   text_begin raw      "$2" ;;
