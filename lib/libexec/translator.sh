@@ -228,6 +228,7 @@ constant() {
   trim value "${line#*:}"
   if is_constant_name "$name"; then
     trans constant "$name" "$value"
+    eval "$name=\$value"
   else
     syntax_error "Constant name should match pattern [A-Z_][A-Z0-9_]*"
   fi
