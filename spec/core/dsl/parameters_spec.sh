@@ -37,4 +37,16 @@ Describe 'Parameters helper'
       The output should eq "$1"
     End
   End
+
+  Describe 'matrix style'
+    Parameters:matrix
+      foo bar
+      1 2 3
+    End
+
+    It "example $1 $2"
+      When call echo "$1 $2"
+      The output should be present
+    End
+  End
 End

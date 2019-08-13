@@ -278,6 +278,44 @@ parameters_dynamic() {
   trans parameters_end "$parameter_count"
 }
 
+parameters_matrix() {
+  trans parameters_begin
+  code='' nest=0 arguments=''
+
+  while IFS= read -r line || [ "$line" ]; do
+    lineno=$(($lineno + 1))
+    trim line "$line"
+    case $line in (End | End\ * ) break; esac
+    case $line in (\#* | '') continue; esac
+
+    nest=$(($nest + 1))
+    parameters_matrix_code "for shellspex_matrix${nest} in $line"
+    arguments="$arguments\"\$shellspex_matrix${nest}\" "
+    until case $line in (*\\) false; esac; do
+      lineno=$(($lineno + 1))
+      IFS= read -r line
+      parameters_matrix_code "$line"
+    done
+    parameters_matrix_code "do"
+  done
+
+  trans parameters "$arguments"
+  code="${code}count=\$((\$count + 1))${LF}"
+
+  while [ $nest -gt 0 ]; do
+    parameters_matrix_code "done"
+    nest=$(($nest - 1))
+  done
+
+  eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
+  trans parameters_end "$parameter_count"
+}
+
+parameters_matrix_code() {
+  trans line "$1"
+  code="${code}${1}${LF}"
+}
+
 constant() {
   if [ "$_block_no_stack" ]; then
     syntax_error "Constant should be defined outside of Example Group/Example"
