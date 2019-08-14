@@ -68,8 +68,8 @@ shellspec_example_block() {
 
 shellspec_parameterized_example() {
   ( case $# in
-      0) "shellspec_example$SHELLSPEC_BLOCK_NO" -- ;;
-      *) "shellspec_example$SHELLSPEC_BLOCK_NO" -- "$@" ;;
+      0) "shellspec_example$SHELLSPEC_BLOCK_NO" ;;
+      *) "shellspec_example$SHELLSPEC_BLOCK_NO" "$@" ;;
     esac
   )
   SHELLSPEC_EXAMPLE_NO=$(($SHELLSPEC_EXAMPLE_NO + 1))

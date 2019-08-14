@@ -41,8 +41,8 @@ trans_block_example() {
   [ "$enabled" ] && putsn "SHELLSPEC_ENABLED=$enabled"
   putsn "shellspec_example_block"
   putsn "}; shellspec_example${block_no}() { "
-  putsn "if [ \$# -eq 0 ]; then shellspec_example $1"
-  putsn "else shellspec_example $1 \"\$@\"; fi"
+  putsn "if [ \$# -eq 0 ]; then shellspec_example $1 --"
+  putsn "else shellspec_example $1 -- \"\$@\"; fi"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
 

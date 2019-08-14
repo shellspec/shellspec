@@ -1,6 +1,10 @@
 #shellcheck shell=sh disable=SC2016
 
 Describe 'Parameters helper'
+  desc() {
+    echo "${SHELLSPEC_DESCRIPTION##*$SHELLSPEC_VT}"
+  }
+
   Describe 'block style'
     Parameters
       # value1 value2 answer
@@ -8,9 +12,10 @@ Describe 'Parameters helper'
         2      3      5
     End
 
-    It "example $1 + $2"
+    It "example $1 + $2" tag
       When call echo "$(($1 + $2))"
       The output should eq "$3"
+      The result of 'desc()' should eq "example $1 + $2"
     End
 
     Parameters:block
@@ -21,6 +26,7 @@ Describe 'Parameters helper'
     It "example $1 + $2"
       When call echo "$(($1 + $2))"
       The output should eq "$3"
+      The result of 'desc()' should eq "example $1 + $2"
     End
   End
 
@@ -35,6 +41,7 @@ Describe 'Parameters helper'
     It "example $1"
       When call echo "$1"
       The output should eq "$1"
+      The result of 'desc()' should eq "example $1"
     End
   End
 
@@ -47,6 +54,7 @@ Describe 'Parameters helper'
     It "example $1 $2"
       When call echo "$1 $2"
       The output should be present
+      The result of 'desc()' should eq "example $1 $2"
     End
   End
 
@@ -56,6 +64,7 @@ Describe 'Parameters helper'
     It "example $1"
       When call echo "$1"
       The output should be present
+      The result of 'desc()' should eq "example $1"
     End
   End
 End
