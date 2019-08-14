@@ -14,6 +14,8 @@ shellspec_redefinable shellspec_off
 shellspec_redefinable shellspec_is
 shellspec_redefinable shellspec_syntax_dispatch
 shellspec_redefinable shellspec_callback
+shellspec_redefinable shellspec_shell_option_set_on
+shellspec_redefinable shellspec_shell_option_set_off
 
 # Workaround for busybox-1.1.3
 shellspec_unbuiltin "ps"

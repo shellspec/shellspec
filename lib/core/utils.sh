@@ -36,20 +36,22 @@ shellspec_shell_option() {
   done
 }
 
+shellspec_shell_option_set_on() {
+  set -o "$1"
+}
+shellspec_shell_option_set_off() {
+  set +o "$1"
+}
+shellspec_proxy shellspec_shell_option_on shellspec_shell_option_set_on
+shellspec_proxy shellspec_shell_option_off shellspec_shell_option_set_off
+
 if [ "${BASH_VERSION:-}" ]; then
   shellspec_shell_option_on() {
     #shellcheck disable=SC2039
-    shopt -s "$1" 2>/dev/null || set -o "$1"
+    shopt -s "$1" 2>/dev/null || shellspec_shell_option_set_on "$1"
   }
   shellspec_shell_option_off() {
     #shellcheck disable=SC2039
-    shopt -u "$1" 2>/dev/null  || set +o "$1"
-  }
-else
-  shellspec_shell_option_on() {
-    set -o "$1"
-  }
-  shellspec_shell_option_off() {
-    set +o "$1"
+    shopt -u "$1" 2>/dev/null || shellspec_shell_option_set_off "$1"
   }
 fi

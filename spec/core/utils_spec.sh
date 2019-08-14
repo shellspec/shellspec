@@ -100,4 +100,21 @@ Describe "core/utils.sh"
       End
     End
   End
+
+  Describe 'shellspec_shell_option()'
+    shellspec_shell_option_set_on() { echo "on:$1"; }
+    shellspec_shell_option_set_off() { echo "off:$1"; }
+
+    It 'sets shell options'
+      When call shellspec_shell_option 'foo:on bar:off'
+      The line 1 of stdout should eq 'on:foo'
+      The line 2 of stdout should eq 'off:bar'
+    End
+
+    It 'raise error when specified invalid parameter'
+      When run shellspec_shell_option 'foo:err'
+      The stderr should be present
+      The status should be failure
+    End
+  End
 End
