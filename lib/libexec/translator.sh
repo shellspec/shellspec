@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants trim match
+use constants trim match ends_with_backslash
 load grammar
 
 initialize() {
@@ -228,14 +228,29 @@ parameters() {
     return 0
   fi
 
+  parameter_count=0
+  trans parameters_begin
   #shellcheck disable=SC2145
   "parameters_$@"
+  trans parameters_end "$parameter_count"
+}
+
+parameters_generate_code() {
+  trans line "$1"
+  code="${code}${1}${LF}"
+}
+
+parameters_continuation_line() {
+  line=$1
+  shift
+  while ends_with_backslash "$line"; do
+    lineno=$(($lineno + 1))
+    IFS= read -r line
+    "$@" "$line"
+  done
 }
 
 parameters_block() {
-  trans parameters_begin
-  parameter_count=0
-
   while IFS= read -r line || [ "$line" ]; do
     lineno=$(($lineno + 1))
     trim line "$line"
@@ -244,18 +259,11 @@ parameters_block() {
 
     trans parameters "$line"
     parameter_count=$(($parameter_count + 1))
-    until case $line in (*\\) false; esac; do
-      lineno=$(($lineno + 1))
-      IFS= read -r line
-      trans line "$line"
-    done
+    parameters_continuation_line "$line" trans line
   done
-
-  trans parameters_end "$parameter_count"
 }
 
 parameters_dynamic() {
-  trans parameters_begin
   code=''
 
   while IFS= read -r line || [ "$line" ]; do
@@ -275,11 +283,9 @@ parameters_dynamic() {
   done
 
   eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
-  trans parameters_end "$parameter_count"
 }
 
 parameters_matrix() {
-  trans parameters_begin
   code='' nest=0 arguments=''
 
   while IFS= read -r line || [ "$line" ]; do
@@ -289,41 +295,30 @@ parameters_matrix() {
     case $line in (\#* | '') continue; esac
 
     nest=$(($nest + 1))
-    parameters_matrix_code "for shellspex_matrix${nest} in $line"
+    parameters_generate_code "for shellspex_matrix${nest} in $line"
     arguments="$arguments\"\$shellspex_matrix${nest}\" "
-    parameters_matrix_code "do"
+    parameters_continuation_line "$line" parameters_generate_code
+    parameters_generate_code "do"
   done
 
   trans parameters "$arguments"
   code="${code}count=\$((\$count + 1))${LF}"
 
   while [ $nest -gt 0 ]; do
-    parameters_matrix_code "done"
+    parameters_generate_code "done"
     nest=$(($nest - 1))
   done
 
   eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
-  trans parameters_end "$parameter_count"
-}
-
-parameters_matrix_code() {
-  trans line "$1"
-  code="${code}${1}${LF}"
 }
 
 parameters_value() {
-  trans parameters_begin
-
   code=''
-  trim line "$line"
-  parameters_matrix_code "for shellspex_matrix in ${line#* }"
-  parameters_matrix_code "do"
+  parameters_generate_code "for shellspex_matrix in ${*:-}; do"
   trans parameters "\"\$shellspex_matrix\""
   code="${code}count=\$((\$count + 1))${LF}"
-  parameters_matrix_code "done"
-
+  parameters_generate_code "done"
   eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
-  trans parameters_end "$parameter_count"
 }
 
 constant() {
@@ -393,7 +388,7 @@ translate() {
   example_id='' inside_of_example='' inside_of_text='' parameter_count=1
   while IFS= read -r line || [ "$line" ]; do
     lineno=$(($lineno + 1)) work=''
-    until case $line in (*\\) false; esac; do
+    while ends_with_backslash "$line"; do
       lineno=$(($lineno + 1))
       IFS= read -r work
       line="${line}${LF}${work}"

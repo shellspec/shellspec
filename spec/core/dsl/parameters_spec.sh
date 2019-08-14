@@ -19,7 +19,8 @@ Describe 'Parameters helper'
     End
 
     Parameters:block
-      1 2 3
+      1 2 \
+          3
       2 3 5
     End
 
@@ -32,10 +33,11 @@ Describe 'Parameters helper'
 
   Describe 'dynamic style'
     Parameters:dynamic
-      for i in foo bar; do
+      for i in foo bar; \
+      do
         %data "$i"
       done
-      %data baz
+      %data "b a z"
     End
 
     It "example $1"
@@ -47,7 +49,8 @@ Describe 'Parameters helper'
 
   Describe 'matrix style'
     Parameters:matrix
-      foo bar
+      foo \
+        "b a r"
       1 2 3
     End
 
@@ -59,7 +62,8 @@ Describe 'Parameters helper'
   End
 
   Describe 'value style'
-    Parameters:value foo bar baz
+    Parameters:value foo bar baz \
+      "[ contains spaces ]"
 
     It "example $1"
       When call echo "$1"

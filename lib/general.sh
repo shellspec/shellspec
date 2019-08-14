@@ -388,6 +388,17 @@ elif case "a[d]" in (*"a[d]"*) false; esac; then
   }
 fi
 
+shellspec_ends_with_backslash() {
+  case $1 in (*\\) true ;; (*) false ;; esac
+}
+
+# workaround for posh 0.3.14, 0.5.4
+if ! shellspec_ends_with_backslash "\\"; then
+  shellspec_ends_with_backslash() {
+    case $1 in (*\\\\) true ;; (*) false ;; esac
+  }
+fi
+
 shellspec_match() {
   [ "${2:-}" ] && eval "case \${1:-} in ($2) true ;; (*) false ;; esac &&:"
 }
