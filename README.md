@@ -67,8 +67,12 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [When (evaluation)](#when-evaluation)
     - [The (expectation)](#the-expectation)
     - [Skip / Pending](#skip--pending)
-    - [Before / After (hook)](#before--after-hook)
+    - [Set (set shell option)](#set-set-shell-option)
+    - [Before / After (example hook)](#before--after-example-hook)
+    - [BeforeCall / AfterCall (call evaluation hook)](#beforecall--aftercall-call-evaluation-hook)
+    - [BeforeRun / AfterRun (run evaluation hook)](#beforerun--afterrun-run-evaluation-hook)
     - [Data (input for evaluation)](#data-input-for-evaluation)
+    - [Parameters (parameterized example)](#parameters-parameterized-example)
     - [subject / modifier / matcher](#subject--modifier--matcher)
   - [Directive](#directive)
     - [%const (constant definition)](#const-constant-definition)
@@ -91,6 +95,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 * Implemented by shell script with Minimal dependencies (use only a few basic POSIX compliant command)
 * Nestable block with scope like lexical scope
 * Mocking and stubbing in the scope (temporary function override)
+* Parameterized Example
 * The before/after hook and the skip/pending of the examples
 * Execution filtering (line number, id, focus, tag and example name)
 * Parallel execution, random ordering execution, dry-run executions
@@ -127,8 +132,8 @@ shellspec is implemented in a pure shell script with a shell built-in commands a
 Currently used external (not shell built-in) commands.
 
 - `cat`, `date`, `ls`, `mkdir`, `od` (or `hexdump` not posix), `rm`, `sleep`, `sort`, `time`
-- `ps` (used on systems without procfs, but not required.)
-- `kill`, `printf` (used but almost shell built-in.)
+- `ps` (used to auto detect the current shell in environments that do not implement procfs)
+- `kill`, `printf` (used but almost shell built-in)
 
 ## Tutorial
 
@@ -687,10 +692,35 @@ to be implementation. You can temporary skip `Describe`, `Context`, `Example`,
 `Specify`, `It` block. To skip, add prefixing `x` and modify to `xDescribe`,
 `xContext`, `xExample`, `xSpecify`, `xIt`.
 
-#### Before / After (hook)
+#### Set (set shell option)
 
-You can define hooks called before/after running example by `Before`, `After`.
-The hook is called for each example.
+Set shell option before execute each example.
+The shell option name is the long name of `set` or the name of `shopt`.
+
+e.g.
+
+```sh
+Set 'errexit:off' 'noglob:on'
+```
+
+#### Before / After (example hook)
+
+You can define before / after hooks by `Before`, `After`.
+The hooks are called for each example.
+
+#### BeforeCall / AfterCall (call evaluation hook)
+
+You can define before / after call hooks by `BeforeCall`, `AfterCall`.
+The hooks are called for before or after "call evaluation".
+
+#### BeforeRun / AfterRun (run evaluation hook)
+
+You can define before / after run hooks by `BeforeRun`, `AfterRun`.
+The hooks are called for before or after "run evaluation".
+
+These hooks are executed in the same subshell as "run evaluation". So you can
+mock/stub the function before run. And you can accessing variable for
+evaluation after run.
 
 #### Data (input for evaluation)
 
@@ -707,6 +737,58 @@ Describe 'Data helper'
     End
     When call awk '{total+=$2} END{print total}'
     The output should eq 1368
+  End
+End
+```
+
+#### Parameters (parameterized example)
+
+You can Data Driven Test (aka Parameterized Test) with `Parameters`.
+
+```sh
+Describe 'example'
+  Parameters
+    "#1" 1 2 3
+    "#2" 1 2 3
+  End
+
+  Example "example $1"
+    When call echo "$(($2 + $3))"
+    The output should eq "$4"
+  End
+```
+
+The following four styles are supported.
+
+```sh
+  # block style (default: same as Parameters)
+  Parameters:block
+    "#1" 1 2 3
+    "#2" 1 2 3
+  End
+
+  # value style
+  Parameters:value foo bar baz
+
+  # matrix style
+  Parameters:matrix
+    foo bar
+    1 2
+    # expanded as follows
+    #   foo 1
+    #   foo 2
+    #   bar 1
+    #   bar 2
+  End
+
+  # dynamic style
+  #   Only %data directive can be used within Parameters:dynamic block.
+  #   You can not call function or accessing variable defined within specfile.
+  #   You can refer to variables defined with %const.
+  Parameters:dynamic
+    for i in 1 2 3; do
+      %data "#$i" 1 2 3
+    done
   End
 End
 ```

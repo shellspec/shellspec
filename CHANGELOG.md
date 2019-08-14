@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add **parameterized example**. (`Parameters` helper)
 - Add `Set` helper for set shell option
 - Add `BeforeCall` / `AfterCall` helper.
 - Add `BeforeRun` / `AfterRun` helper.
+- Use `hexdump` if `od` does not exist.
 
 ### Changed
 
@@ -21,10 +23,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Use `run command` to execute only the commands. (old `run` -> use `run command`)
   - Merge `invoke` evaluation to `run` evaluation. (old `invoke` -> use `run`)
   - Merge `execute` evaluation to `run` evaluation. (old `execute` -> use `run source`)
+- Export %const values to the translation process
 
 ### Removed
 
 - Drop support for posh 0.10.2 and similar versions as the handling of the shell flag is broken.
+
+### Fixed
+
+- Fixes bug for related with tag
 
 ## [0.19.1] - 2019-07-23
 
