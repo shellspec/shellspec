@@ -69,6 +69,7 @@ mapping() {
     Parameters:block  )   parameters block    "$2" ;;
     Parameters:dynamic)   parameters dynamic  "$2" ;;
     Parameters:matrix )   parameters matrix   "$2" ;;
+    Parameters:value  )   parameters value    "$2" ;;
     Include           )   include             "$2" ;;
     %text             )   text_begin raw      "$2" ;;
     %text:raw         )   text_begin raw      "$2" ;;

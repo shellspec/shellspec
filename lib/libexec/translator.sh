@@ -316,6 +316,26 @@ parameters_matrix_code() {
   code="${code}${1}${LF}"
 }
 
+parameters_value() {
+  trans parameters_begin
+
+  code=''
+  trim line "$line"
+  parameters_matrix_code "for shellspex_matrix in ${line#* }"
+  until case $line in (*\\) false; esac; do
+    lineno=$(($lineno + 1))
+    IFS= read -r line
+    parameters_matrix_code "$line"
+  done
+  parameters_matrix_code "do"
+  trans parameters "\"\$shellspex_matrix\""
+  code="${code}count=\$((\$count + 1))${LF}"
+  parameters_matrix_code "done"
+
+  eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
+  trans parameters_end "$parameter_count"
+}
+
 constant() {
   if [ "$_block_no_stack" ]; then
     syntax_error "Constant should be defined outside of Example Group/Example"

@@ -49,4 +49,13 @@ Describe 'Parameters helper'
       The output should be present
     End
   End
+
+  Describe 'value style'
+    Parameters:value foo bar baz
+
+    It "example $1"
+      When call echo "$1"
+      The output should be present
+    End
+  End
 End
