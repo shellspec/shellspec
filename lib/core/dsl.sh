@@ -197,13 +197,13 @@ shellspec_when() {
   }
 
   if [ $# -eq 0 ]; then
-    shellspec_output SYNTAX_ERROR_EVALUATION "Missing evaluation"
+    shellspec_output SYNTAX_ERROR_EVALUATION "Missing evaluation type"
     shellspec_on FAILED
     return 0
   fi
 
   if [ $# -eq 1 ]; then
-    shellspec_output SYNTAX_ERROR_EVALUATION "Missing evaluation type"
+    shellspec_output SYNTAX_ERROR_EVALUATION "Missing evaluation"
     shellspec_on FAILED
     return 0
   fi

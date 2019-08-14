@@ -4,6 +4,36 @@
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 
 Describe "core/dsl.sh"
+  Describe "shellspec_metadata()"
+    mock() { shellspec_output() { echo "$1"; }; }
+    BeforeRun mock
+
+    It 'does not output METADATA if not supplied flag'
+      When run shellspec_metadata
+      The stdout should not include 'METADATA'
+    End
+
+    It 'outputs METADATA if supplied flag'
+      When run shellspec_metadata 1
+      The stdout should eq 'METADATA'
+    End
+  End
+
+  Describe "shellspec_finished()"
+    mock() { shellspec_output() { echo "$1"; }; }
+    BeforeRun mock
+
+    It 'does not output FINISHED if not supplied flag'
+      When run shellspec_finished
+      The stdout should not include 'FINISHED'
+    End
+
+    It 'outputs FINISHED if supplied flag'
+      When run shellspec_finished 1
+      The stdout should eq 'FINISHED'
+    End
+  End
+
   Describe "shellspec_example_group()"
     mock() {
       shellspec_output() { echo "$1"; }
@@ -220,6 +250,28 @@ Describe "core/dsl.sh"
       The stdout line 2 should equal 'yield'
       The stdout line 3 should equal 'FIXED'
     End
+
+    It 'is failure if shellspec_call_before_hooks failed'
+      mock_hooks() { shellspec_call_before_hooks() { return 1; }; }
+      BeforeRun mock_hooks
+      block() { expectation; }
+      When run shellspec_invoke_example
+      The stdout line 1 should equal 'EXAMPLE'
+      The stdout line 2 should equal 'FAILED_BEFORE_HOOK'
+      The stdout line 3 should equal 'FAILED'
+      The stdout should not include 'yield'
+    End
+
+    It 'is failure if shellspec_call_after_hooks failed'
+      mock_hooks() { shellspec_call_after_hooks() { return 1; }; }
+      BeforeRun mock_hooks
+      block() { expectation; }
+      When run shellspec_invoke_example
+      The stdout line 1 should equal 'EXAMPLE'
+      The stdout line 3 should equal 'FAILED_AFTER_HOOK'
+      The stdout line 4 should equal 'FAILED'
+      The stdout should include 'yield'
+    End
   End
 
   Describe "shellspec_when()"
@@ -243,9 +295,18 @@ Describe "core/dsl.sh"
       The stdout should include 'output:EVALUATION'
     End
 
-    It 'is syntax error when evaluation missing'
+    It 'is syntax error when evaluation type missing'
       BeforeRun init mock
       When run shellspec_when
+      The stdout should include 'off:NOT_IMPLEMENTED'
+      The stdout should include 'on:EVALUATION'
+      The stdout should include 'on:FAILED'
+      The stdout should include 'output:SYNTAX_ERROR'
+    End
+
+    It 'is syntax error when evaluation missing'
+      BeforeRun init mock
+      When run shellspec_when call
       The stdout should include 'off:NOT_IMPLEMENTED'
       The stdout should include 'on:EVALUATION'
       The stdout should include 'on:FAILED'
@@ -308,6 +369,7 @@ Describe "core/dsl.sh"
 
     mock() {
       shellspec_statement_preposition() { echo expectation; }
+      shellspec_output() { echo "output:$1"; }
       shellspec_on() { echo "on:$*"; }
       shellspec_off() { echo "off:$*"; }
     }
@@ -315,9 +377,21 @@ Describe "core/dsl.sh"
     It 'calls expectation'
       BeforeRun prepare mock
       When run shellspec_the expectation
+      The stdout should not include 'output:SYNTAX_ERROR_EXPECTATION'
       The stdout should include 'off:NOT_IMPLEMENTED'
       The stdout should include 'on:EXPECTATION'
+      The stdout should not include 'on:FAILED'
       The stdout should include 'expectation'
+    End
+
+    It 'calls expectation'
+      BeforeRun prepare mock
+      When run shellspec_the
+      The stdout should include 'output:SYNTAX_ERROR_EXPECTATION'
+      The stdout should include 'off:NOT_IMPLEMENTED'
+      The stdout should include 'on:EXPECTATION'
+      The stdout should include 'on:FAILED'
+      The stdout should not include 'expectation'
     End
   End
 
@@ -469,6 +543,33 @@ Describe "core/dsl.sh"
     It 'registor multiple interceptors at once'
       When call shellspec_intercept foo bar
       The variable SHELLSPEC_INTERCEPTOR should eq "|foo:__foo__|bar:__bar__|"
+    End
+  End
+
+  Describe "shellspec_abort()"
+    It 'aborts'
+      When run shellspec_abort
+      The stderr should be blank
+      The status should eq 1
+    End
+
+    It 'aborts with exit status'
+      When run shellspec_abort 12
+      The stderr should be blank
+      The status should eq 12
+    End
+
+    It 'aborts with message'
+      When run shellspec_abort 1 'error'
+      The stderr should eq 'error'
+      The status should be failure
+    End
+
+    It 'aborts with extra message'
+      When run shellspec_abort 1 'error' 'extra'
+      The line 1 of stderr should eq 'error'
+      The line 2 of stderr should eq 'extra'
+      The status should be failure
     End
   End
 
