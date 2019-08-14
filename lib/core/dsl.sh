@@ -67,10 +67,9 @@ shellspec_example_block() {
 }
 
 shellspec_parameterized_example() {
-  (
-    case $# in
-      0) "shellspec_example$SHELLSPEC_BLOCK_NO" ;;
-      *) "shellspec_example$SHELLSPEC_BLOCK_NO" "$@" ;;
+  ( case $# in
+      0) "shellspec_example$SHELLSPEC_BLOCK_NO" -- ;;
+      *) "shellspec_example$SHELLSPEC_BLOCK_NO" -- "$@" ;;
     esac
   )
   SHELLSPEC_EXAMPLE_NO=$(($SHELLSPEC_EXAMPLE_NO + 1))
@@ -78,7 +77,11 @@ shellspec_parameterized_example() {
 
 shellspec_example() {
   shellspec_description "example" "${1:-}"
-  [ $# -gt 0 ] && shift
+  if [ $# -gt 0 ]; then
+    while shift && [ $# -gt 0 ]; do
+      [ "$1" = "--" ] && shift && break
+    done
+  fi
 
   if [ "$SHELLSPEC_ENABLED" ] && [ "$SHELLSPEC_FILTER" ]; then
     if [ "$SHELLSPEC_DRYRUN" ]; then
@@ -89,8 +92,7 @@ shellspec_example() {
       case $- in
         *e*)
           set +e
-          (
-            set -e
+          ( set -e
             case $# in
               0) shellspec_invoke_example ;;
               *) shellspec_invoke_example "$@" ;;
@@ -99,8 +101,7 @@ shellspec_example() {
           set -e -- $?
           ;;
         *)
-          (
-            set -e
+          ( set -e
             case $# in
               0) shellspec_invoke_example ;;
               *) shellspec_invoke_example "$@" ;;

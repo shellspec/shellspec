@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004
+#shellcheck shell=sh disable=SC2004,SC2016
 
 % LIB: "$SHELLSPEC_SPECDIR/fixture/lib"
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
@@ -16,6 +16,24 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_parameterized_example()"
+    shellspec_example0() { IFS=' '; echo "shellspec_example $*"; }
+    BeforeRun SHELLSPEC_BLOCK_NO=0 SHELLSPEC_EXAMPLE_NO=123
+    AfterRun 'echo $SHELLSPEC_EXAMPLE_NO'
+
+    It 'calls shellspec_example0'
+      When run shellspec_parameterized_example
+      The line 1 of stdout should eq 'shellspec_example --'
+      The line 2 of stdout should eq 124
+    End
+
+    It 'calls shellspec_example0 with arguments'
+      When run shellspec_parameterized_example arg
+      The line 1 of stdout should eq 'shellspec_example -- arg'
+      The line 2 of stdout should eq 124
+    End
+  End
+
   Describe "shellspec_example()"
     mock() {
       shellspec_profile_start() { :; }
@@ -28,9 +46,32 @@ Describe "core/dsl.sh"
       prepare() { shellspec_invoke_example() { echo 'invoke_example'; }; }
       BeforeRun SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
 
-      It 'invokes example'
-        When run shellspec_example
-        The stdout should include 'invoke_example'
+      Context 'errexit is on'
+        Set 'errexit:on'
+
+        It 'invokes example'
+          When run shellspec_example 'description'
+          The stdout should include 'invoke_example'
+        End
+
+        It 'invokes example with arguments'
+          When run shellspec_example 'description' -- tag
+          The stdout should include 'invoke_example'
+        End
+      End
+
+      Context 'errexit is off'
+        Set 'errexit:off'
+
+        It 'invokes example'
+          When run shellspec_example 'description'
+          The stdout should include 'invoke_example'
+        End
+
+        It 'invokes example with arguments'
+          When run shellspec_example 'description' -- tag
+          The stdout should include 'invoke_example'
+        End
       End
     End
 
@@ -64,6 +105,15 @@ Describe "core/dsl.sh"
         The stdout should not include 'invoke_example'
         The stdout should include 'EXAMPLE'
         The stdout should include 'SUCCEEDED'
+      End
+    End
+
+    Context 'with tag and parameters'
+      prepare() { shellspec_invoke_example() { IFS=' '; echo "$*"; }; }
+
+      It 'passes parameters only'
+        When run shellspec_example 'description' tag1 tag2 -- a b c
+        The stdout should eq 'a b c'
       End
     End
   End
