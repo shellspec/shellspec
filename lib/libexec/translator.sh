@@ -291,11 +291,6 @@ parameters_matrix() {
     nest=$(($nest + 1))
     parameters_matrix_code "for shellspex_matrix${nest} in $line"
     arguments="$arguments\"\$shellspex_matrix${nest}\" "
-    until case $line in (*\\) false; esac; do
-      lineno=$(($lineno + 1))
-      IFS= read -r line
-      parameters_matrix_code "$line"
-    done
     parameters_matrix_code "do"
   done
 
@@ -322,11 +317,6 @@ parameters_value() {
   code=''
   trim line "$line"
   parameters_matrix_code "for shellspex_matrix in ${line#* }"
-  until case $line in (*\\) false; esac; do
-    lineno=$(($lineno + 1))
-    IFS= read -r line
-    parameters_matrix_code "$line"
-  done
   parameters_matrix_code "do"
   trans parameters "\"\$shellspex_matrix\""
   code="${code}count=\$((\$count + 1))${LF}"
@@ -403,6 +393,11 @@ translate() {
   example_id='' inside_of_example='' inside_of_text='' parameter_count=1
   while IFS= read -r line || [ "$line" ]; do
     lineno=$(($lineno + 1)) work=''
+    until case $line in (*\\) false; esac; do
+      lineno=$(($lineno + 1))
+      IFS= read -r work
+      line="${line}${LF}${work}"
+    done
     trim work "$line"
 
     [ "$inside_of_text" ] && text "$work" && continue
