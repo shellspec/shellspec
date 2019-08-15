@@ -1,0 +1,10 @@
+FROM buildpack-deps
+RUN VERSION=schily-2019-08-13 \
+ && URL=https://sourceforge.net/projects/schilytools/files/$VERSION.tar.bz2/download \
+ && wget -nv -O- --trust-server-names "$URL" | tar xfj - \
+ && cd $VERSION && make install \
+ && apt-get update && apt-get install -y sudo \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && adduser --disabled-password user
+USER user
+ENV SH="bosh" PATH="/opt/schily/bin:$PATH"

@@ -91,8 +91,9 @@ These are tested by Docker (`contrib/test_in_docker.sh`).
 | ---------------------- | -------- | -------- |
 | Linux (buildpack-deps) | 20181030 | 20181030 |
 | Linux (buildpack-deps) | 20190311 | 20190311 |
+| Linux (buildpack-deps) | 20190813 | 20190813 |
 
-I confirmed that works with [Schily Bourne Shell][bosh] (`bosh`, `pbosh`) linux build, but not well tested.
+* The version of [Schily Bourne Shell][bosh] was chosen with reference to [pkgsrc.se](http://pkgsrc.se/shells/bosh).
 
 [bosh]: http://schilytools.sourceforge.net/bosh.html
 
