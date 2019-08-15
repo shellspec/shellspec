@@ -25,6 +25,24 @@ Default shell: `busybox`
 | LEDE 17.01.7    |      | 1.25.1  | -    | -     |      |     |
 | OpenWrt 18.06.4 |      | 1.28.4  | -    | -     |      |     |
 
+#### CentOS / Fedora
+
+Default shell: `bash`
+
+| Platform  | bash   | busybox | dash | ksh | mksh | yash | zsh |
+| --------- | ------ | ------- | ---- | --- | ---- | ---- | --- |
+| CentOS 6  | 4.1.2  |         |      |     |      | -    |     |
+| CentOS 7  | 4.2.46 | -       | -    |     |      | -    |     |
+| fedora 20 | 4.2.53 |         |      |     |      |      |     |
+| fedora 21 | 4.3.30 |         |      |     |      |      |     |
+| fedora 22 | 4.3.42 |         |      |     |      |      |     |
+| fedora 25 | 4.3.43 |         |      |     |      |      |     |
+| fedora 26 | 4.4.12 |         |      |     |      |      |     |
+| fedora 27 | 4.4.23 |         |      |     |      |      |     |
+| fedora 30 | 5.0.7  |         |      |     |      |      |     |
+
+* Testing bash 4.1.2- is POSIX mode only.
+
 #### Debian / Ubuntu
 
 Default shell: `dash` or `bash` (until debian 5.0)
@@ -48,6 +66,8 @@ Default shell: `dash` or `bash` (until debian 5.0)
 | Ubuntu 18.04  | 4.4.20 | 1.27.2     | 0.5.8         | 93u+ 2012-08-01 | R56c | -        | 0.13.1   | 2.46 | 5.4.2  |
 | Ubuntu 19.04  |        |            |               |                 |      | -        |          |      | 5.5.1  |
 
+* Testing bash 2.03-3.2.39 is both POSIX and non-POSIX mode. bash 4.1.5- is non-POSIX mode only.
+
 #### FreeBSD
 
 Default shell: `ash`
@@ -62,14 +82,14 @@ Default shell: `ash`
 
 Default shell: `bash`
 
-| Platform           | bash   | dash     | ksh             | mksh | posh       | yash | zsh   |
-| ------------------ | ------ | -------- | --------------- | ---- | ---------- | ---- | ----- |
-| macOS 10.10        | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.0.5 |
-| macOS 10.11        | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.0.8 |
-| macOS 10.12        | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.2   |
-| macOS 10.13        | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.3   |
-| macOS 10.14        | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.3   |
-| macOS 10.14 (brew) | 5.0.3  | 0.5.10.2 | 93u+ 2012-08-01 | R56c | ~~0.13.2~~ | 2.47 | 5.7.1 |
+| Platform               | sh          | bash   | dash     | ksh             | mksh | posh       | yash | zsh   |
+| ---------------------- | ----------- | ------ | -------- | --------------- | ---- | ---------- | ---- | ----- |
+| macOS 10.10            | bash 3.2.57 | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.0.5 |
+| macOS 10.11            | bash 3.2.57 | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.0.8 |
+| macOS 10.12            | bash 3.2.57 | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.2   |
+| macOS 10.13            | bash 3.2.57 | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.3   |
+| macOS 10.14            | bash 3.2.57 | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.3   |
+| macOS 10.14 (homebrew) | -           | 5.0.3  | 0.5.10.2 | 93u+ 2012-08-01 | R56c | ~~0.13.2~~ | 2.47 | 5.7.1 |
 
 * `posh` on macOS 10.14 (brew) is broken?
 
@@ -77,11 +97,11 @@ Default shell: `bash`
 
 Default shell: `bash`
 
-| Platform          | bash   | busybox | dash     | mksh | posh   | zsh   |
-| ----------------- | ------ | ------- | -------- | ---- | ------ | ----- |
-| Windows (gitbash) | 4.4.23 | -       | unknown  | -    | -      | -     |
-| Windows (msys)    | 4.4.23 | 1.23.2  | 0.5.10.2 | R57  | -      | 5.7.1 |
-| Windows (cygwin)  | 4.4.12 | unknown | unknown  | R56  | 0.13.1 | 5.7.1 |
+| Platform                      | bash   | busybox | dash     | mksh | posh   | zsh   |
+| ----------------------------- | ------ | ------- | -------- | ---- | ------ | ----- |
+| Windows Server 2019 (gitbash) | 4.4.23 | -       | unknown  | -    | -      | -     |
+| Windows Server 2019 (msys)    | 4.4.23 | 1.23.2  | 0.5.10.2 | R57  | -      | 5.7.1 |
+| Windows Server 2019 (cygwin)  | 4.4.12 | unknown | unknown  | R56  | 0.13.1 | 5.7.1 |
 
 ### Self build
 

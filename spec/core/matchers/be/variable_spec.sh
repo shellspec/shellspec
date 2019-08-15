@@ -4,7 +4,7 @@ Describe "core/matchers/be/variable.sh"
   BeforeRun set_subject matcher_mock
 
   Describe 'be defined matcher'
-    Before 'var1=1' 'unset var2'
+    Before 'var1=1' 'unset var2 ||:'
     Example 'example'
       The variable var1 should be defined
       The variable var2 should not be defined
@@ -30,7 +30,7 @@ Describe "core/matchers/be/variable.sh"
   End
 
   Describe 'be undefined matcher'
-    Before 'unset var1' 'var2=1'
+    Before 'unset var1 ||:' 'var2=1'
     Example 'example'
       The variable var1 should be undefined
       The variable var2 should not be undefined

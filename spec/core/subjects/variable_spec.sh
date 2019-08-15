@@ -20,7 +20,7 @@ Describe "core/subjects/variable.sh"
     End
 
     Context 'when the variable not exists'
-      Before 'unset var'
+      Before 'unset var ||:'
       It 'uses undefined as subject'
         When run shellspec_subject variable var _modifier_
         The status should be failure

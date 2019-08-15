@@ -23,9 +23,6 @@ shellspec_unbuiltin "last"
 shellspec_unbuiltin "sleep"
 shellspec_unbuiltin "date"
 
-# Workaround for bash <= 2.05a, zsh <= 4.2.5, ksh <= 93s
-shellspec_fix_unset
-
 shellspec_spec_helper_configure() {
   shellspec_import 'support/custom_matcher'
 

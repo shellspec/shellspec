@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Replace /bin/sh to target shell to easy test.
+[ "$1" = "sh" ] && exit
 if [ "${1% *}" = "busybox" ] || [ -e /etc/alpine-release ] || [ -e /etc/openwrt_release ]; then
   # Avoid unsupported busybox 0.60.5 freeze
   busybox ash -c 'busybox ash -c false' && exit 0

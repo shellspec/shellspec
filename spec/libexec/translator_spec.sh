@@ -33,7 +33,7 @@ Describe "libexec/translator.sh"
       End
 
       It 'does not cause an error use the variable'
-        BeforeRun 'unset no_such_variable'
+        BeforeRun 'unset no_such_variable ||:'
         When run check_filter '"desc $no_such_variable"'
         The status should be failure
       End
