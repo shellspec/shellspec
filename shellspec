@@ -61,6 +61,7 @@ export SHELLSPEC_PROFILER_LIMIT=10
 export SHELLSPEC_PROFILER_REPORT="profiler.log"
 export SHELLSPEC_DEFECT_READONLY=''
 export SHELLSPEC_DEFECT_REDEFINE=''
+export SHELLSPEC_DEFECT_SHELL_FLAG=''
 export SHELLSPEC_KILL='kill'
 export SHELLSPEC_SLEEP='sleep'
 
@@ -400,6 +401,11 @@ if ( [ "$( ( readonly value=123 ) 2>&1 )" ] ) 2>/dev/null; then
   # Still working but not officially supported.
   warn "Unsupported shell (defect of readonly): $SHELLSPEC_SHELL"
   SHELLSPEC_DEFECT_READONLY=1
+fi
+
+if $SHELLSPEC_SHELL -c 'set -u; unset v ||:; : $v' 2>/dev/null; then
+  warn "Unsupported shell (shell flag handling broken): $SHELLSPEC_SHELL"
+  SHELLSPEC_DEFECT_SHELL_FLAG=1
 fi
 
 if [ "$SHELLSPEC_KCOV" ]; then
