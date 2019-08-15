@@ -35,15 +35,11 @@ error_handler() {
         line=${line#${SHELLSPEC_SYN}shellspec_marker:}
         specfile=${line% *} lineno=${line##* }
         ;;
-      *)
-        # Workaround for posh 0.6.13
-        # Display 'internal error: j_async: bad nzombie' when run in background
-        case $line in (*internal\ error:\ j_async:\ bad\ nzombie*)
-          continue
-        esac
-        errors="$errors$line${SHELLSPEC_LF}"
-        error_handler_status=1
-        ;;
+      # Workaround for posh 0.6.13 when executed as a background process
+      *internal\ error:\ j_async:\ bad\ nzombie*) ;;
+      # Workaround for loksh 6.5 when executed as a background process
+      *internal\ error:\ j_set_async:\ bad\ nzombie*) ;;
+      *) errors="$errors$line${SHELLSPEC_LF}" error_handler_status=1
     esac
   done
 
