@@ -83,7 +83,7 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Testing a single file script.](#testing-a-single-file-script)
     - [Sourced Return](#sourced-return)
     - [Intercept](#intercept)
-- [For developer](#for-developer)
+- [For developers](#for-developers)
 - [Version history](#version-history)
 
 ## Introduction
@@ -118,7 +118,7 @@ Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.c
 | FreeBSD 10.x, 11.x, 12.x                                  | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
 | Windows Server 2019 (Git bash, msys2, cygwin)             | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
 | Debian 2.2, 3.0, 3.1, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0  | docker                                                        |
-| Alpine, Busybox, LEDE 17.01, OpenWrt 18.06                | docker                                                        |
+| Alpine, BusyBox, LEDE 17.01, OpenWrt 18.06                | docker                                                        |
 | Windows 10 1903 (Ubuntu 18.04 on WSL)                     | manual                                                        |
 | Solaris 10, 11                                            | manual                                                        |
 
@@ -481,11 +481,13 @@ groups / examples in specfiles. (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`)
 
 ### Coverage
 
-shellspec is integrated with coverage for ease of use
-(Requires to [install kcov](https://github.com/SimonKagstrom/kcov).
-Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html)).
-It works with the default settings, but you may need to adjust kcov's options
-to make it more accurate.
+shellspec is integrated with coverage for ease of use. It works with the default
+settings, but you may need to adjust options to make it more accurate.
+
+[kcov](https://github.com/SimonKagstrom/kcov) is required to use coverage.
+
+* How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
+* Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html).
 
 **Be aware of the shell can be used for coverage is `bash` only.**
 
@@ -949,7 +951,7 @@ Describe "sample"
 End
 ```
 
-## For developer
+## For developers
 
 If you want to know shellspec architecture and self test, see [CONTRIBUTING.md](CONTRIBUTING.md)
 
