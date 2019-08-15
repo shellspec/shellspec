@@ -1,0 +1,9 @@
+FROM openwrt:10.03.1
+RUN mkdir -p /var/lock /home \
+ && opkg update \
+ && opkg install sudo shadow-groupadd shadow-useradd \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && groupadd user \
+ && useradd -m user -g user
+USER user
+ENV SH="busybox ash"
