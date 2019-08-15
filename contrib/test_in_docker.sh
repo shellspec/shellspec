@@ -28,6 +28,15 @@ fi
 LF="
 "
 
+import() {
+  if [ -z "$(docker images "$1" -q)" ]; then
+    docker import "$2" "$1"
+  fi
+}
+
+import openwrt:18.06.4 "https://downloads.openwrt.org/releases/18.06.4/targets/x86/64/openwrt-18.06.4-x86-64-generic-rootfs.tar.gz"
+import lede:17.01.7 "https://downloads.openwrt.org/releases/17.01.7/targets/x86/64/lede-17.01.7-x86-64-generic-rootfs.tar.gz"
+
 failures='' count=0 failures_count=0 total_count=0
 
 main() {

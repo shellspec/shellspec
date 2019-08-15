@@ -1,0 +1,8 @@
+FROM lede:17.01.7
+RUN mkdir -p /var/lock /home \
+ && opkg update \
+ && opkg install sudo shadow-useradd \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && useradd -m user
+USER user
+ENV SH="busybox ash"

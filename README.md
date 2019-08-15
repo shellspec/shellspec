@@ -118,8 +118,7 @@ Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.c
 | FreeBSD 10.x, 11.x, 12.x                                  | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
 | Windows Server 2019 (Git bash, msys2, cygwin)             | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
 | Debian 2.2, 3.0, 3.1, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0  | docker                                                        |
-| Alpine Linux                                              | docker                                                        |
-| OpenWrt 18.06.4                                           | manual                                                        |
+| Alpine, Busybox, LEDE 17.01, OpenWrt 18.06                | docker                                                        |
 | Windows 10 1903 (Ubuntu 18.04 on WSL)                     | manual                                                        |
 | Solaris 10, 11                                            | manual                                                        |
 

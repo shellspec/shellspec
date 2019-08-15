@@ -14,14 +14,16 @@
 [travis]: https://travis-ci.org/shellspec/shellspec
 [cirrus]: https://cirrus-ci.com/github/shellspec/shellspec
 
-#### Alpine / BusyBox
+#### Alpine / BusyBox / OpenWrt (LEDE)
 
 Default shell: `busybox`
 
-| Platform       | bash | busybox | dash | mksh | loksh | zsh |
-| -------------- | ---- | ------- | ---- | ---- | ----- | --- |
-| Alpine 3.10.1  |      | 1.30.1  |      |      | 6.5   |     |
-| BusyBox 1.31.0 | -    | 1.31.0  | -    | -    | -     | -   |
+| Platform        | bash | busybox | dash | loksh | mksh | zsh |
+| --------------- | ---- | ------- | ---- | ----- | ---- | --- |
+| Alpine 3.10.1   |      | 1.30.1  |      | 6.5   |      |     |
+| BusyBox 1.31.0  | -    | 1.31.0  | -    | -     | -    | -   |
+| LEDE 17.01.7    |      | 1.25.1  | -    | -     |      |     |
+| OpenWrt 18.06.4 |      | 1.28.4  | -    | -     |      |     |
 
 #### Debian / Ubuntu
 
