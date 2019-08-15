@@ -1,9 +1,0 @@
-FROM lpenz/debian-potato-i386
-RUN apt-get update && apt-get -y install zsh sudo \
- && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && addgroup user \
- && useradd user -g user \
- && mkdir /home/user \
- && chown user:user /home/user
-USER user
-ENV SH="zsh"

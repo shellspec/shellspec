@@ -2,6 +2,6 @@ FROM debian:experimental
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
  && apt-get update && apt-get -y -t experimental install ksh sudo \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && adduser --disabled-password --gecos "" user
+ && useradd -m user
 USER user
 ENV SH="ksh"

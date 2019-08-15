@@ -17,6 +17,7 @@ Run tests in docker
 Examples
   contrib/test_in_docker.sh dockerfiles/*
   contrib/test_in_docker.sh dockerfiles/debian-9-*
+  contrib/test_in_docker.sh dockerfiles/*-o # ends with -o is supported os
   contrib/test_in_docker.sh dockerfiles/*bash* -- contrib/bugs.sh
 
 To delete all shellspec images

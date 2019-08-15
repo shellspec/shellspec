@@ -5,6 +5,6 @@ RUN VERSION=schily-2019-08-13 \
  && cd $VERSION && make install \
  && apt-get update && apt-get install -y sudo \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && adduser --disabled-password user
+ && useradd -m user
 USER user
 ENV SH="bosh" PATH="/opt/schily/bin:$PATH"

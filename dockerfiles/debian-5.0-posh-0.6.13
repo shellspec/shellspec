@@ -1,7 +1,0 @@
-FROM lpenz/debian-lenny-i386
-RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
- && apt-get update && apt-get -y --force-yes install posh sudo \
- && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && adduser --disabled-password --gecos "" user
-USER user
-ENV SH="posh"

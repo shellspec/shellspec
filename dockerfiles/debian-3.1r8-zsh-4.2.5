@@ -1,0 +1,6 @@
+FROM lpenz/debian-sarge-i386
+RUN apt-get update && apt-get -y install zsh sudo \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && groupadd user && useradd -m user -g user
+USER user
+ENV SH="zsh"

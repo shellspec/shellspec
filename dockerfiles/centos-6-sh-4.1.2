@@ -1,6 +1,0 @@
-FROM centos:6
-RUN yum install -y sudo \
- && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && adduser -m user
-USER user
-ENV SH="sh"

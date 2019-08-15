@@ -1,6 +1,6 @@
 FROM fedora:20
 RUN yum install -y sudo which \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && adduser -m user
+ && useradd -m user
 USER user
 ENV SH="sh"

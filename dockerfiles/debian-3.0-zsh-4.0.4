@@ -1,6 +1,0 @@
-FROM lpenz/debian-woody-i386
-RUN apt-get update && apt-get -y install zsh sudo \
- && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && adduser --disabled-password --gecos "" user
-USER user
-ENV SH="zsh"

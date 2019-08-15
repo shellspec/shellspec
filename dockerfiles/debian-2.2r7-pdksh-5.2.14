@@ -1,0 +1,7 @@
+FROM lpenz/debian-potato-i386
+RUN echo "pdksh" > /shell \
+ && apt-get update && apt-get -y install pdksh sudo \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && groupadd user && useradd -m user -g user
+USER user
+ENV SH="ksh"

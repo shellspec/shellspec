@@ -1,9 +1,0 @@
-# sourced script can not stop with return
-# xor not supported
-FROM lpenz/debian-woody-i386
-RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
- && apt-get update && apt-get -y install sudo ash \
- && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && adduser --disabled-password --gecos "" user
-USER user
-ENV SH="ash"

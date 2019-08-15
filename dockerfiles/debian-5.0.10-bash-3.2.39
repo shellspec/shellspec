@@ -1,0 +1,7 @@
+FROM lpenz/debian-lenny-i386-minbase
+RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
+ && apt-get update && apt-get -y --force-yes install sudo \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && useradd -m user
+USER user
+ENV SH="bash"
