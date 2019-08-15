@@ -1,6 +1,6 @@
-FROM alpine:edge
-RUN apk add --no-cache sudo \
+FROM alpine:3.10.1
+RUN apk add --no-cache sudo loksh \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
  && adduser user -D
 USER user
-ENV SH="busybox ash"
+ENV SH="ksh"

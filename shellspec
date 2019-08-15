@@ -370,7 +370,7 @@ fi
 
 #shellcheck disable=SC2123
 # posh 0.8.5 implements kill but not support any signals. meaningless.
-if [ ! "$(PATH=; kill -l 2>/dev/null)"  ]; then
+if [ ! "$(PATH=; (kill -l) 2>/dev/null)" ]; then
   SHELLSPEC_KILL=$(command_path kill) ||:
 fi
 if [ ! "$SHELLSPEC_KILL" ]; then

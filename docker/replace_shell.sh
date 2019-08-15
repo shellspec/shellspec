@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Replace /bin/sh to target shell to easy test.
-if [ "${1% *}" = "busybox" ]; then
+if [ "${1% *}" = "busybox" ] || [ -e /etc/alpine-release ]; then
   # Avoid unsupported busybox 0.60.5 freeze
   busybox ash -c 'busybox ash -c false' && exit 0
 
