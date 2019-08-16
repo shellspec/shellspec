@@ -22,6 +22,9 @@ matrix:
     - os: linux # Ubuntu 18.04
       dist: bionic
       env: OS="Ubuntu 18.04" PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+    - os: osx  # macOS 10.14 Mojave 2018-06
+      osx_image: xcode10.2
+      env: OS="macOS 10.14" FORMULAS="dash bash zsh ksh mksh yash"
     - os: osx # macOS 10.10 Yosemite 2014-06
       osx_image: xcode6.4
       env: OS="macOS 10.10" SHELLS="sh bash zsh ksh"
@@ -37,9 +40,6 @@ matrix:
     - os: osx # macOS 10.14 Mojave 2018-06
       osx_image: xcode10.2
       env: OS="macOS 10.14" SHELLS="sh bash zsh ksh"
-    - os: osx  # macOS 10.14 Mojave 2018-06
-      osx_image: xcode10.2
-      env: OS="macOS 10.14" FORMULAS="dash bash zsh ksh mksh yash"
     - os: osx  # macOS 10.14 Mojave 2018-06
       osx_image: xcode10.2
       env: OS="macOS 10.14" FORMULAS="bash kcov" COVERAGE=1
