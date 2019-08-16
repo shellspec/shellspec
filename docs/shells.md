@@ -1,6 +1,6 @@
 # Shells
 
-## Tested shell and version
+## Tested shells and versions
 
 * **The version of strikethrough is does not work.**
 * **The version of italic may work but it is not supported due to a bug.**

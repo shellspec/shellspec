@@ -88,28 +88,36 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 ## Introduction
 
+shellspec was developed as a cross-platform testing tool for develop
+POSIX-compliant shell scripts that work in many environments.
+
+Works not only PC but also in restricted environments like cloud and embedded OS.
+And provides first-class features equivalent to other language testing tools.
+
+of course shellspec is tested by shellspec.
+
 ### Features
 
-* Support POSIX compliant shell (dash, bash, ksh, busybox, etc...)
-* Specfile is BDD style syntax with shell scripts compatible
-* Implemented by shell script with Minimal dependencies (use only a few basic POSIX compliant command)
-* Nestable block with scope like lexical scope
-* Mocking and stubbing in the scope (temporary function override)
-* Parameterized Example
-* The before/after hook and the skip/pending of the examples
-* Execution filtering (line number, id, focus, tag and example name)
-* Parallel execution, random ordering execution, dry-run executions
-* Modern reporting (colorize, line number, progress/documentation/TAP/JUnit formatter)
+* Works with all POSIX compliant shells (dash, bash, zsh, ksh, busybox, etc...)
+* Implemented by shell script with minimal dependencies (use only a few basic POSIX compliant command)
+* BDD style syntax specfile that interpretable as a shell script
+* Support nestable block with scope like lexical scope
+* Easy to mocking and stubbing in cooperation with scope
+* The skip / pending of the examples, and support easy-to-skip "x" known as "xit"
+* The before / after examples hooks
+* Parameterized example for Data-Driven tests
+* Execution filtering by line number, id, focus, tag and example name
+* Parallel execution, random ordering execution and dry-run execution
+* Modern reporting (colorize, failed line number, progress / documentation / TAP / JUnit formatter)
 * Coverage ([kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
 * Built-in simple task runner
 * Extensible architecture (custom matcher, custom formatter, etc...)
-* shellspec is tested by shellspec
 
 ### Supported shells
 
 `dash`, `bash`, `ksh`, `mksh`, `oksh`, `pdksh`, `zsh`, `posh`, `yash`, `busybox (ash)`, `bosh`, `pbosh`
 
-Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.cirrus.yml))
+Tested Platforms
 
 | Platform                                                  | Test                                                          |
 | --------------------------------------------------------- | ------------------------------------------------------------- |
@@ -127,8 +135,10 @@ Tested Platforms (See tested shells [.travis.yml](.travis.yml), [.cirrus.yml](.c
 ### Requires
 
 shellspec is implemented by a pure shell script and uses only shell built-in
-and a few basic POSIX-compliant commands to support many environments.
+and a few basic [POSIX-compliant commands][utilities] to support widely environments.
 (except `kcov` for optionally coverage).
+
+[utilities]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/contents.html
 
 Currently used external (not shell built-in) commands.
 

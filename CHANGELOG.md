@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Redesign `run` evaluation [**major breaking change.**]
+- Redesign `run` evaluation. [**major breaking change**]
   - Change the behavior to close to the `run` of bats.
   - New `run` evaluation allows the execution of functions and commands.
   - Use `run command` to execute only the commands. (old `run` -> use `run command`)
