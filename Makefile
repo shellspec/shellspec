@@ -24,7 +24,7 @@ demo:
 	gifsicle -i docs/demo.gif -O3 -o docs/demo.gif
 
 kcov:
-	docker build -t shellspec/kcov - < dockerfiles/.kcov
+	docker build -t shellspec/kcov --build-arg VERSION - < dockerfiles/.kcov
 
 coverage:
 	contrib/coverage.sh
