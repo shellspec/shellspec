@@ -1,0 +1,11 @@
+FROM debian:10
+RUN apt-get update && apt-get install -y sudo wget cmake python build-essential \
+    binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev \
+ && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
+ && useradd -m user
+RUN VERSION=v36 \
+ && URL=https://github.com/SimonKagstrom/kcov/archive/${VERSION}.tar.gz \
+ && wget -nv -O- --trust-server-names "$URL" | tar xzf - \
+ && cd kcov-${VERSION#v} && cmake . && make install
+USER user
+ENV SH="sh"

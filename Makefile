@@ -3,6 +3,8 @@ PREFIX ?= /usr/local
 BINDIR := $(PREFIX)/bin
 LIBDIR := $(PREFIX)/lib
 
+.PHONY: coverage
+
 all: shellspec
 
 install:
@@ -20,6 +22,9 @@ demo:
 	ttyrec -e "ghostplay contrib/demo.sh"
 	seq2gif -l 5000 -h 32 -w 139 -p win -i ttyrecord -o docs/demo.gif
 	gifsicle -i docs/demo.gif -O3 -o docs/demo.gif
+
+coverage:
+	contrib/coverage.sh
 
 testall:
 	contrib/test_in_docker.sh dockerfiles/* -- shellspec -j 2
