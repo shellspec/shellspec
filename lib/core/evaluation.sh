@@ -91,11 +91,10 @@ shellspec_evaluation_run_instruction() {
 
 shellspec_evaluation_run_source() {
   test() {
-    if [ $# -eq 0 ]; then
-      test() { eval [ ${1+'"$@"'} ]; }
-    else
-      eval [ ${1+'"$@"'} ]
-    fi
+    case $# in
+      0) test() { case $# in (0) false ;; (*) [ "$@" ]; esac; } ;;
+      *) [ "$@" ] ;;
+    esac
   }
   __() { shellspec_interceptor "$@"; }
   eval "shift; . $1"

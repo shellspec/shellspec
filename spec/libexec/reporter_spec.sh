@@ -37,7 +37,7 @@ Describe "libexec/reporter.sh"
   End
 
   Describe "field_description()"
-    Before field_description="foo${VT}bar${VT}baz"
+    Before 'field_description="foo${VT}bar${VT}baz"'
 
     It 'outputs field_description split by space'
       When call field_description
