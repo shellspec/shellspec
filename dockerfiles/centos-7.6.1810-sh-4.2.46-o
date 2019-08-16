@@ -1,5 +1,6 @@
 FROM centos:7.6.1810
-RUN yum install -y sudo which \
+RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 \
+ && yum install -y sudo which \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
  && useradd -m user
 USER user
