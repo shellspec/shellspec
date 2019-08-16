@@ -2,6 +2,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <unistd.h>
 
 #define UNIX_PATH_MAX 108
 
