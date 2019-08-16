@@ -29,6 +29,9 @@ kcov:
 coverage:
 	contrib/coverage.sh
 
+check:
+	contrib/check.sh
+
 testall:
 	contrib/test_in_docker.sh dockerfiles/* -- shellspec -j 2
 
