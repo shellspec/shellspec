@@ -1,9 +1,21 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2004,SC2016
 
 % FILE: "$SHELLSPEC_SPECDIR/fixture/time_log.txt"
+% PROFILER_LOG: "$SHELLSPEC_SPECDIR/fixture/profiler/profiler.log"
 
 Describe "libexec/reporter.sh"
   Include "$SHELLSPEC_LIB/libexec/reporter.sh"
+
+  Describe "count()"
+    fake_list() { echo '10 100'; }
+    Before SHELLSPEC_SHELL="fake_list"
+
+    It 'counts examples'
+      When call count spec
+      The variable count_specfiles should eq 10
+      The variable count_examples should eq 100
+    End
+  End
 
   Describe "read_time_log()"
     It "does not read anything if file missing"
@@ -21,6 +33,15 @@ Describe "libexec/reporter.sh"
       The variable prefix_sys should equal 12.45
       The variable prefix_ should be undefined
       The status should be success
+    End
+  End
+
+  Describe "field_description()"
+    Before field_description="foo${VT}bar${VT}baz"
+
+    It 'outputs field_description split by space'
+      When call field_description
+      The output should eq "foo bar baz"
     End
   End
 
@@ -201,6 +222,26 @@ Describe "libexec/reporter.sh"
       When call inc value1 value2
       The variable value1 should eq 1
       The variable value2 should eq 2
+    End
+  End
+
+  Describe "read_profiler()"
+    BeforeCall index_total=0 tick_total=0 duration_total=0
+    AfterCall 'shellspec_shift10 duration_total "$duration_total" -4'
+
+    callback() {
+      index=$1 tick=$2 duration=$3
+      index_total=$(($index_total + $index))
+      tick_total=$(($tick_total + $tick))
+      shellspec_shift10 duration "$duration" 4
+      duration_total=$(($duration_total + $duration))
+    }
+
+    It 'reads profiler.log'
+      When call read_profiler callback "$PROFILER_LOG" "13.56"
+      The variable index_total should eq 174345
+      The variable tick_total should eq 1381353
+      The variable duration_total should eq 6.6802
     End
   End
 End

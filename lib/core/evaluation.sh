@@ -51,9 +51,7 @@ shellspec_evaluation_run_data() {
 
 if [ "${ZSH_VERSION:-}" ] && (exit 1); then
   shellspec_evaluation_run_trap_exit_status() {
-    SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_TMPBASE/$$.exit_codes"
-    SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_ZSH_EXIT_CODES.$SHELLSPEC_SPEC_NO"
-    SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_ZSH_EXIT_CODES.$SHELLSPEC_EXAMPLE_NO"
+    SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_TMPBASE/$$.exit_codes.$SHELLSPEC_SPEC_NO.$SHELLSPEC_EXAMPLE_NO"
     : > "$SHELLSPEC_ZSH_EXIT_CODES"
     set +e
     (

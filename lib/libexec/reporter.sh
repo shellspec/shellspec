@@ -8,8 +8,10 @@ use import reset_params constants sequence replace each padding trim
 
 count() {
   count_specfiles=0 count_examples=0
+  IFS=" $IFS"
   #shellcheck shell=sh disable=SC2046
   set -- $($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-list.sh" "$@")
+  IFS=${IFS#?}
   count_specfiles=$1 count_examples=$2
 }
 

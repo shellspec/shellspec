@@ -2,6 +2,8 @@
 
 set -eu
 
+test "" && exit # should not exit
+
 test || __() { :; }
 
 __ intercept __
