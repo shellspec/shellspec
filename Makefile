@@ -21,5 +21,8 @@ demo:
 	seq2gif -l 5000 -h 32 -w 139 -p win -i ttyrecord -o docs/demo.gif
 	gifsicle -i docs/demo.gif -O3 -o docs/demo.gif
 
+testall:
+	contrib/test_in_docker.sh dockerfiles/* -- shellspec -j 2
+
 test:
 	./shellspec
