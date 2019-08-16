@@ -22,9 +22,6 @@ matrix:
     - os: linux # Ubuntu 18.04
       dist: bionic
       env: OS="Ubuntu 18.04" PACKAGES="dash bash zsh ksh mksh yash posh busybox"
-    - os: linux # Ubuntu 18.04
-      dist: bionic
-      env: OS="Ubuntu 18.04" COVERAGE=1
     - os: osx # macOS 10.10 Yosemite 2014-06
       osx_image: xcode6.4
       env: OS="macOS 10.10" SHELLS="sh bash zsh ksh"
@@ -43,21 +40,13 @@ matrix:
     - os: osx  # macOS 10.14 Mojave 2018-06
       osx_image: xcode10.2
       env: OS="macOS 10.14" FORMULAS="dash bash zsh ksh mksh yash"
+    - os: osx  # macOS 10.14 Mojave 2018-06
+      osx_image: xcode10.2
+      env: OS="macOS 10.14" FORMULAS="bash kcov" COVERAGE=1
 before_install:
   - if [ "$PACKAGES" ]; then sudo apt-get install -y $PACKAGES; fi
   - if [ "$FORMULAS" ]; then brew install $FORMULAS; fi
 before_script:
-  - |
-      if [ "$COVERAGE" ]; then
-        sudo apt-get install -y libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev
-        wget https://github.com/SimonKagstrom/kcov/archive/v36.tar.gz
-        tar zxvf v36.tar.gz
-        cd kcov-36
-        cmake -DCMAKE_INSTALL_PREFIX=${HOME}/kcov .
-        make -j4
-        make -j4 install
-        cd ..
-      fi
   - ./shellspec --shell sh --task fixture:stat:prepare
 script:
   - if [ ! "$COVERAGE" ]; then contrib/all.sh contrib/various_test.sh; fi
