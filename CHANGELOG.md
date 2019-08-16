@@ -31,7 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixes bug for related with tag
+- Fixed bug for related with tag.
+- Fixed bug where coverage might not work on macOS.
 
 ## [0.19.1] - 2019-07-23
 
