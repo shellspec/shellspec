@@ -27,10 +27,8 @@ jobs:
   coverage:
     working_directory: ~/shellspec
     docker:
-      - image: kcov/kcov
+      - image: shellspec/kcov
     steps:
-      - run: apt-get update
-      - run: apt-get install -y ca-certificates
       - checkout
       - run: ./shellspec --task fixture:stat:prepare
       - run: ./shellspec --kcov
