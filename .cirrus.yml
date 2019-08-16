@@ -6,6 +6,7 @@ freebsd_task:
       - image: freebsd-12-0-release-amd64
   install_script: pkg install -y dash bash zsh ksh93 mksh oksh pdksh
   prepare_script:
+    - echo --force-color > ~/.shellspec
     - ./shellspec --task fixture:stat:prepare
   script:
     - contrib/all.sh contrib/various_test.sh
@@ -19,6 +20,7 @@ gitbash_task:
   prepare_script:
     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
     - bash -c "mount"
+    - bash -c "echo --force-color > ~/.shellspec"
     - bash -c "./shellspec --task fixture:stat:prepare"
   script:
     - bash -c "contrib/all.sh contrib/various_test.sh"
@@ -36,6 +38,7 @@ msys_task:
   prepare_script:
     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
     - bash -c "mount"
+    - bash -c "echo --force-color > ~/.shellspec"
     - bash -c "./shellspec --task fixture:stat:prepare"
   script:
     - bash -c "contrib/all.sh shellspec"
@@ -52,6 +55,7 @@ cygwin_task:
   prepare_script:
     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
     - bash -c "mount"
+    - bash -c "echo --force-color > ~/.shellspec"
     - bash -c "./shellspec --task fixture:stat:prepare"
     # I don't know why but tests using below files fail in cirrus ci environment.
     - bash -c "rm -f ./spec/fixture/stat/{readable,writable}"
