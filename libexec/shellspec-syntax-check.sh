@@ -24,12 +24,15 @@ syntax_error() {
 }
 
 error_handler() {
-  warning=0
+  error=0
   while IFS= read -r line; do
-    error "$line"
-    warning=1
+    case $line in
+      # Do not fail the warnings of ksh 2020.0.0
+      *:\ warning:\ line\ *) warn "$line"; ;;
+      *) error "$line"; error=1
+    esac
   done
-  return "$warning"
+  return "$error"
 }
 
 syntax_check() {
@@ -56,7 +59,7 @@ specfile() {
         read -r xs
         [ "$xs" -ne 0 ] && exit "$xs"
         read -r xs
-        [ "$SHELLSPEC_WARNING_AS_FAILURE" ] && [ "$xs" -ne 0 ] && exit "$xs"
+        [ "$xs" -ne 0 ] && exit "$xs"
         exit 0
       ) \
   ) 4>&1 || exit_status=1
