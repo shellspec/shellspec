@@ -13,6 +13,8 @@ finished() {
     rm "$iidfile" ||:
   fi
   if [ -f "$cidfile" ]; then
+    cid=$(cat "$cidfile")
+    docker rm "$cid" >/dev/null
     rm "$cidfile" ||:
   fi
 }
@@ -38,11 +40,10 @@ docker build --iidfile "$iidfile" -t "$image" --build-arg "IMAGE=$base_image" . 
 new_image=$(cat "$iidfile")
 
 if [ "$old_image" ] && [ "$old_image" != "$new_image" ]; then
-  docker rmi "$old_image" ||:
+  docker rmi "$old_image" >/dev/null ||:
 fi
 rm "$cidfile"
 docker run --cidfile "$cidfile" -it "$image" shellspec --kcov
 cid=$(cat "$cidfile")
 rm -rf coverage
 docker cp "$cid:/shellspec/coverage" "coverage"
-docker rm "$cid"
