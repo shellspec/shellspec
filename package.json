@@ -48,7 +48,6 @@
     "lib/core/syntax.sh",
     "lib/core/utils.sh",
     "lib/core/verb.sh",
-    "lib/core2.sh_",
     "lib/ext/ext.sh",
     "lib/general.sh",
     "lib/libexec.sh",
