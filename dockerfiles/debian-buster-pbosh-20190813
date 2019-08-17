@@ -1,11 +1,14 @@
-FROM buildpack-deps
+FROM buildpack-deps:buster as builder
 RUN VERSION=schily-2019-08-13 \
  && URL=https://sourceforge.net/projects/schilytools/files/$VERSION.tar.bz2/download \
  && wget -nv -O- --trust-server-names "$URL" | tar xfj - \
- && cd $VERSION && make install \
- && export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
+ && cd $VERSION && make install
+
+FROM debian:buster-slim
+COPY --from=builder /opt/schily/bin/* /usr/local/bin/
+RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
  && apt-get update && apt-get install -y sudo \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
  && useradd -m user
 USER user
-ENV SH="pbosh" PATH="/opt/schily/bin:$PATH"
+ENV SH="pbosh"

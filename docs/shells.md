@@ -113,11 +113,11 @@ Default shell: `bash`
 
 These are tested by Docker (`contrib/test_in_docker.sh`).
 
-| Platform               | bosh     | pbosh    |
-| ---------------------- | -------- | -------- |
-| Linux (buildpack-deps) | 20181030 | 20181030 |
-| Linux (buildpack-deps) | 20190311 | 20190311 |
-| Linux (buildpack-deps) | 20190813 | 20190813 |
+| Platform      | bosh     | pbosh    |
+| ------------- | -------- | -------- |
+| Debian buster | 20181030 | 20181030 |
+| Debian buster | 20190311 | 20190311 |
+| Debian buster | 20190813 | 20190813 |
 
 * The version of [Schily Bourne Shell][bosh](`bosh`, `pbosh`) was chosen with reference to [The NetBSD package collection][pkgsrc].
 
