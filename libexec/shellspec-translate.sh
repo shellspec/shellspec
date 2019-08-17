@@ -132,7 +132,8 @@ trans_out() {
 }
 
 trans_parameters_begin() {
-  putsn "shellspec_parameters() { :;"
+  putsn "SHELLSPEC_PARAMETER_NO=$1"
+  putsn "shellspec_parameters$1() { :;"
 }
 
 trans_parameters() {
@@ -140,7 +141,7 @@ trans_parameters() {
 }
 
 trans_parameters_end() {
-  putsn "}; PARAMETER_COUNT=$1"
+  putsn "}"
 }
 
 trans_constant() {
@@ -165,7 +166,7 @@ trans_with_function() {
 
 syntax_error() {
   set -- "Syntax error: $1 in $specfile line $lineno" "${2:-}"
-  putsn "shellspec_abort 2 \"$1\" \"$2\""
+  putsn "shellspec_abort 1 \"$1\" \"$2\""
 }
 
 metadata=1 finished=1 ft='' fd='' spec_no=1

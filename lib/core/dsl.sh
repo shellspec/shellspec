@@ -58,12 +58,18 @@ shellspec_example_group() {
   shellspec_yield
 }
 
-shellspec_parameters() {
-  "shellspec_example$SHELLSPEC_BLOCK_NO"
+shellspec_example_block() {
+  if [ "${SHELLSPEC_PARAMETER_NO:-}" ]; then
+    shellspec_parameters 1
+  else
+    "shellspec_example$SHELLSPEC_BLOCK_NO"
+  fi
 }
 
-shellspec_example_block() {
-  shellspec_parameters
+shellspec_parameters() {
+  "shellspec_parameters$1"
+  [ "$1" -eq "$SHELLSPEC_PARAMETER_NO" ] && return 0
+  shellspec_parameters "$(($1 + 1))"
 }
 
 shellspec_parameterized_example() {

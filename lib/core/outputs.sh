@@ -176,7 +176,7 @@ shellspec_output_ABORTED() {
     set -- "$1" "${2:-}stderr:${SHELLSPEC_STDERR}${LF}"
   fi
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:Example aborted (exit status: $1)" "failure_message:$2"
+    "message:Example aborted (exit status: $1)" "failure_message:${2:-}"
 }
 
 shellspec_output_SUCCEEDED() {

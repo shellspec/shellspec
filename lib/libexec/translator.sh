@@ -7,7 +7,8 @@ load grammar
 
 initialize() {
   lineno=0 block_no=0 example_no=1 skip_id=0 error='' focused=''
-  _block_no=0 _block_no_stack='' _parameter_count_stack=''
+  _block_no=0 _block_no_stack=''
+  parameter_count='' parameter_no=0 _parameter_count_stack=''
 }
 
 finalize() {
@@ -88,7 +89,7 @@ block_example_group() {
   eval trans block_example_group ${1+'"$@"'}
 
   _block_no_stack="$_block_no_stack $_block_no" filter=''
-  _parameter_count_stack="$_parameter_count_stack $parameter_count"
+  _parameter_count_stack="$_parameter_count_stack $parameter_no:$parameter_count"
 }
 
 block_example() {
@@ -112,8 +113,8 @@ block_example() {
   eval trans block_example ${1+'"$@"'}
 
   _block_no_stack="$_block_no_stack $_block_no"
-  example_no=$(($example_no + $parameter_count))
-  _parameter_count_stack="$_parameter_count_stack $parameter_count"
+  example_no=$(($example_no + ${parameter_count:-1}))
+  _parameter_count_stack="$_parameter_count_stack $parameter_no:$parameter_count"
   filter='' inside_of_example="yes"
 }
 
@@ -138,6 +139,8 @@ block_end() {
 
   _block_no_stack=${_block_no_stack% *}
   parameter_count=${_parameter_count_stack##* }
+  parameter_no=${parameter_count%:*}
+  parameter_count=${parameter_count#*:}
   _parameter_count_stack=${_parameter_count_stack% *}
   inside_of_example=""
 }
@@ -228,11 +231,11 @@ parameters() {
     return 0
   fi
 
-  parameter_count=0
-  trans parameters_begin
+  parameter_no=$(($parameter_no + 1))
+  trans parameters_begin "$parameter_no"
   #shellcheck disable=SC2145
   "parameters_$@"
-  trans parameters_end "$parameter_count"
+  trans parameters_end
 }
 
 parameters_generate_code() {
@@ -385,7 +388,7 @@ remove_from_ranges() {
 }
 
 translate() {
-  example_id='' inside_of_example='' inside_of_text='' parameter_count=1
+  example_id='' inside_of_example='' inside_of_text=''
   while IFS= read -r line || [ "$line" ]; do
     lineno=$(($lineno + 1)) work=''
     while ends_with_backslash "$line"; do

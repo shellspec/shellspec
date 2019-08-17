@@ -17,7 +17,9 @@ Describe 'Parameters helper'
       The output should eq "$3"
       The result of 'desc()' should eq "example $1 + $2"
     End
+  End
 
+  Describe 'block style'
     Parameters:block
       1 2 \
           3
@@ -69,6 +71,23 @@ Describe 'Parameters helper'
       When call echo "$1"
       The output should be present
       The result of 'desc()' should eq "example $1"
+    End
+  End
+
+  Describe 'allow multiple parameters'
+    Parameters:matrix
+      foo bar
+      1 2
+    End
+
+    Parameters
+      baz 1
+    End
+
+    It "example $1 $2"
+      When call echo "$1 $2"
+      The output should be present
+      The result of 'desc()' should eq "example $1 $2"
     End
   End
 End
