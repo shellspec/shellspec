@@ -757,6 +757,8 @@ End
 
 You can Data Driven Test (aka Parameterized Test) with `Parameters`.
 
+Note: Multiple `Parameters` definitions are merged.
+
 ```sh
 Describe 'example'
   Parameters
@@ -768,6 +770,7 @@ Describe 'example'
     When call echo "$(($2 + $3))"
     The output should eq "$4"
   End
+End
 ```
 
 The following four styles are supported.
