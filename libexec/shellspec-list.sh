@@ -24,7 +24,7 @@ trans_block_example() {
   putsn "block${block_no}() { "
   putsn "LINENO_BEGIN=$lineno_begin" "EXAMPLE_ID=$example_id"
   putsn "FILTER=\${FILTER}${filter:-0}" "ENABLED=\${ENABLED}${enabled:-0}"
-  putsn "yield $parameter_count"
+  putsn "yield ${parameter_count:-1}"
 }
 
 trans_block_end() {
