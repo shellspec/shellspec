@@ -90,11 +90,9 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 shellspec was developed as a cross-platform testing tool for develop
 POSIX-compliant shell scripts that work in many environments.
-
 Works not only PC but also in restricted environments like cloud and embedded OS.
 And provides first-class features equivalent to other language testing tools.
-
-of course shellspec is tested by shellspec.
+Of course shellspec is tested by shellspec.
 
 ### Features
 
