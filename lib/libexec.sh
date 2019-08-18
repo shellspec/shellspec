@@ -29,6 +29,18 @@ load() {
   done
 }
 
+unixtime() {
+  IFS=" $IFS"
+  #shellcheck disable=SC2046
+  set -- $(date -u +'%Y %m %d %H %M %S') "$1"
+  IFS=${IFS# }
+  set -- $(( (( (365 * $1 + ($1 / 4) - ($1 / 100) + ($1 / 400) \
+              + (306 * (${2#0} + 1) / 10) - 428 + ${3#0} ) - 719163) * 86400 \
+              + ${4#0} * 3600) + (${5#0} * 60) + ${6#0} \
+          )) "$7"
+  eval "$2=$1"
+}
+
 is_specfile() {
   # This &&: workaround for #21 in contrib/bugs.sh
   eval "case \${1%%:*} in ($SHELLSPEC_PATTERN) true ;; (*) false ; esac &&:"
