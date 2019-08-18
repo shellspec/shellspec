@@ -5,6 +5,14 @@
 Describe 'libexec.sh'
   Include "$SHELLSPEC_LIB/libexec.sh"
 
+  Describe 'unixtime()'
+    date() { echo "2019 08 18 08 17 44"; }
+    It 'gets unixtime'
+      When call unixtime ut
+      The variable ut should eq 1566116264
+    End
+  End
+
   Describe 'is_specfile()'
     Before SHELLSPEC_PATTERN="*_spec.sh"
 
