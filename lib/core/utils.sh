@@ -24,9 +24,15 @@ shellspec_capture() {
   eval "$SHELLSPEC_EVAL"
 }
 
+SHELLSPEC_SHELL_OPTION=""
 shellspec_proxy shellspec_append_shell_option shellspec_append_set
 if [ "${BASH_VERSION:-}" ]; then
   shellspec_proxy shellspec_append_shell_option shellspec_append_shopt
+fi
+
+if ( set +e; eval "set -e"; case $- in (*e*) false; esac ); then
+  #shellcheck disable=SC2034
+  SHELLSPEC_SHELL_OPTION="shellspec_set_option"
 fi
 
 shellspec_append_set() {
@@ -51,4 +57,20 @@ shellspec_shopt() {
     -o) shopt -s "$2" 2>/dev/null || set -o "$2" ;;
     +o) shopt -u "$2" 2>/dev/null || set +o "$2" ;;
   esac
+}
+
+shellspec_set_option() {
+  SHELLSPEC_IFSORIG=$IFS
+  IFS=";"
+  #shellcheck disable=SC2153
+  eval "set -- $SHELLSPEC_SHELL_OPTIONS"
+  IFS=$SHELLSPEC_IFSORIG
+
+  while [ $# -gt 0 ]; do
+    case $1 in
+      set\ -o*) set -o "${1#set -o }" ;;
+      set\ +o*) set +o "${1#set +o }" ;;
+    esac
+    shift
+  done
 }
