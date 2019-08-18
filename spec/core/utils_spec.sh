@@ -101,18 +101,45 @@ Describe "core/utils.sh"
     End
   End
 
-  Describe 'shellspec_shell_option()'
-    shellspec_shell_option_set_on() { echo "on:$1"; }
-    shellspec_shell_option_set_off() { echo "off:$1"; }
+  Describe 'shellspec_append_set()'
+    Before options=''
 
-    It 'sets shell options'
-      When call shellspec_shell_option 'foo:on bar:off'
-      The line 1 of stdout should eq 'on:foo'
-      The line 2 of stdout should eq 'off:bar'
+    append_set() {
+      while [ $# -gt 0 ]; do
+        shellspec_append_set options "$1"
+        shift
+      done
+    }
+
+    It 'appends shell options'
+      When call append_set foo:on bar:off
+      The variable options should eq "set -o foo;set +o bar;"
     End
 
     It 'raise error when specified invalid parameter'
-      When run shellspec_shell_option 'foo:err'
+      When run shellspec_append_set options 'foo:err'
+      The stderr should be present
+      The status should be failure
+    End
+  End
+
+  Describe 'shellspec_append_shopt()'
+    Before options=''
+
+    append_shopt() {
+      while [ $# -gt 0 ]; do
+        shellspec_append_shopt options "$1"
+        shift
+      done
+    }
+
+    It 'appends shell options'
+      When call append_shopt foo:on bar:off
+      The variable options should eq "shellspec_shopt -o foo;shellspec_shopt +o bar;"
+    End
+
+    It 'raise error when specified invalid parameter'
+      When run shellspec_append_shopt options 'foo:err'
       The stderr should be present
       The status should be failure
     End
