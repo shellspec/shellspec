@@ -62,8 +62,8 @@ shellspec_shopt() {
 shellspec_set_option() {
   SHELLSPEC_IFSORIG=$IFS
   IFS=";"
-  #shellcheck disable=SC2153
-  eval "set -- $SHELLSPEC_SHELL_OPTIONS"
+  #shellcheck disable=SC2086,SC2153
+  set -- $SHELLSPEC_SHELL_OPTIONS
   IFS=$SHELLSPEC_IFSORIG
 
   while [ $# -gt 0 ]; do
