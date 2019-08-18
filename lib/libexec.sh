@@ -100,15 +100,6 @@ sleep_wait() {
   case $1 in
     *[!0-9]*) while "$@"; do sleep 0; done; return 0 ;;
   esac
-
-  sleep_wait_eval="
-    shift; \
-    while \"\$@\"; do \
-      [ \"\$(( \$(date +%s) - $(date +%s) ))\" -ge $1 ] && return 1; \
-      sleep 0; \
-    done
-  "
-  eval "$sleep_wait_eval"
 }
 
 
