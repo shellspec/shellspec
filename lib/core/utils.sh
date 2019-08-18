@@ -24,34 +24,31 @@ shellspec_capture() {
   eval "$SHELLSPEC_EVAL"
 }
 
-shellspec_shell_option() {
-  eval "set -- ${*:-}"
-  while [ $# -gt 0 ]; do
-    case $1 in
-      *:on) shellspec_shell_option_on "${1%:*}" ;;
-      *:off) shellspec_shell_option_off "${1%:*}" ;;
-      *) shellspec_error "shellspec_shell_option: invalid option '$1'"
-    esac
-    shift
-  done
-}
-
-shellspec_shell_option_set_on() {
-  set -o "$1"
-}
-shellspec_shell_option_set_off() {
-  set +o "$1"
-}
-shellspec_proxy shellspec_shell_option_on shellspec_shell_option_set_on
-shellspec_proxy shellspec_shell_option_off shellspec_shell_option_set_off
-
+shellspec_proxy shellspec_append_shell_option shellspec_append_set
 if [ "${BASH_VERSION:-}" ]; then
-  shellspec_shell_option_on() {
-    #shellcheck disable=SC2039
-    shopt -s "$1" 2>/dev/null || shellspec_shell_option_set_on "$1"
-  }
-  shellspec_shell_option_off() {
-    #shellcheck disable=SC2039
-    shopt -u "$1" 2>/dev/null || shellspec_shell_option_set_off "$1"
-  }
+  shellspec_proxy shellspec_append_shell_option shellspec_append_shopt
 fi
+
+shellspec_append_set() {
+  case $2 in
+    *:on ) eval "$1=\"\${$1}set -o ${2%:*};\"" ;;
+    *:off) eval "$1=\"\${$1}set +o ${2%:*};\"" ;;
+        *) shellspec_error "shellspec_shell_option: invalid option '$1'"
+  esac
+}
+
+shellspec_append_shopt() {
+  case $2 in
+    *:on ) eval "$1=\"\${$1}shellspec_shopt -o ${2%:*};\"" ;;
+    *:off) eval "$1=\"\${$1}shellspec_shopt +o ${2%:*};\"" ;;
+        *) shellspec_error "shellspec_shell_option: invalid option '$1'"
+  esac
+}
+
+shellspec_shopt() {
+  #shellcheck disable=SC2039
+  case $1 in
+    -o) shopt -s "$2" 2>/dev/null || set -o "$2" ;;
+    +o) shopt -u "$2" 2>/dev/null || set +o "$2" ;;
+  esac
+}
