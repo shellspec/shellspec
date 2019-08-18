@@ -102,40 +102,40 @@ Describe "core/utils.sh"
   End
 
   Describe 'shellspec_append_set()'
-    Before options=''
+    Before op=''
 
     append_set() {
       while [ $# -gt 0 ]; do
-        shellspec_append_set options "$1"
+        shellspec_append_set op "$1"
         shift
       done
     }
 
     It 'appends shell options'
       When call append_set foo:on bar:off
-      The variable options should eq "set -o foo;set +o bar;"
+      The variable op should eq "set -o foo;set +o bar;"
     End
 
     It 'raise error when specified invalid parameter'
-      When run shellspec_append_set options 'foo:err'
+      When run shellspec_append_set op 'foo:err'
       The stderr should be present
       The status should be failure
     End
   End
 
   Describe 'shellspec_append_shopt()'
-    Before options=''
+    Before op=''
 
     append_shopt() {
       while [ $# -gt 0 ]; do
-        shellspec_append_shopt options "$1"
+        shellspec_append_shopt op "$1"
         shift
       done
     }
 
     It 'appends shell options'
       When call append_shopt foo:on bar:off
-      The variable options should eq "shellspec_shopt -o foo;shellspec_shopt +o bar;"
+      The variable op should eq "shellspec_shopt -o foo;shellspec_shopt +o bar;"
     End
 
     It 'raise error when specified invalid parameter'
