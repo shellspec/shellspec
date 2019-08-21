@@ -1,13 +1,9 @@
 #!/bin/sh
 
 for i in "$@"; do
-  case $i in
-    -*) ;;
-    *) set -- "$@" "$i" ;;
-  esac
   shift
+  case $i in (-*) continue; esac
+  set -- "$@" "$i"
 done
 
-if [ $# -gt 0 ]; then
-  mksock "$1"
-fi
+mksock "$@"

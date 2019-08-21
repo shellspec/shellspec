@@ -5,12 +5,12 @@ FROM $IMAGE
 COPY --from=mksock mksock /usr/local/bin/mksock
 COPY ./docker/replace_shell.sh /replace_shell.sh
 RUN echo "--no-banner" > $HOME/.shellspec \
- && $(which sudo) mkdir -p /usr/local/bin \
- && $(which sudo) ln -s /shellspec/docker/fake-nc.sh /usr/local/bin/nc \
- && $(which sudo) ln -s /shellspec/shellspec /usr/local/bin/shellspec \
- && $(which sudo) mkdir /shellspec \
- && $(which sudo) chown user:user /shellspec \
- && $(which sudo) /replace_shell.sh "$SH"
+ && sudo mkdir -p /usr/local/bin \
+ && sudo ln -s /shellspec/docker/fake-nc.sh /usr/local/bin/nc \
+ && sudo ln -s /shellspec/shellspec /usr/local/bin/shellspec \
+ && sudo mkdir /shellspec \
+ && sudo chown user:user /shellspec \
+ && sudo /replace_shell.sh "$SH"
 WORKDIR /shellspec
 ENTRYPOINT [ "./docker/entrypoint.sh" ]
 CMD [ "shellspec" ]

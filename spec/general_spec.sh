@@ -499,4 +499,30 @@ Describe "general.sh"
       The variable var should eq "string"
     End
   End
+
+  Describe "shellspec_which()"
+    Context 'when PATH=/foo:/bin:/bar'
+      Before PATH=/foo:/bin:/bar
+      It "retrieves found path"
+        When call shellspec_which sh
+        The output should eq "/bin/sh"
+      End
+    End
+
+    Context 'when PATH=/foo:/bar'
+      Before PATH=/foo:/bar
+      It "retrieves nothing"
+        When call shellspec_which sh
+        The status should eq 1
+      End
+    End
+
+    Context 'when PATH='
+      Before PATH=
+      It "retrieves nothing"
+        When call shellspec_which sh
+        The status should eq 1
+      End
+    End
+  End
 End

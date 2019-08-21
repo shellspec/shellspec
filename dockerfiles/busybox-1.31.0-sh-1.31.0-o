@@ -1,3 +1,5 @@
 FROM busybox:1.31.0
-RUN adduser -D user
+RUN adduser -D user \
+ && echo 'exec "$@"' > /bin/sudo \
+ && chmod +x /bin/sudo
 ENV SH="busybox ash"

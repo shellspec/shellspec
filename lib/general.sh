@@ -442,3 +442,12 @@ shellspec_chomp() {
   "
   eval "$SHELLSPEC_EVAL"
 }
+
+shellspec_which() {
+  set -- "$1" "${PATH%:}:"
+  while [ "${2%:}" ]; do
+    [ -x "${2%%:*}/$1" ] && echo "${2%%:*}/$1" && return 0
+    set -- "$1" "${2#*:}"
+  done
+  return 1
+}
