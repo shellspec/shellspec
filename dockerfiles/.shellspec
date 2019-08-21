@@ -3,15 +3,16 @@ ARG IMAGE
 FROM shellspec:mksock as mksock
 FROM $IMAGE
 COPY --from=mksock mksock /usr/local/bin/mksock
-COPY ./docker/replace_shell.sh /replace_shell.sh
-RUN echo "--no-banner" > $HOME/.shellspec \
+COPY ./docker/* /docker/
+RUN echo "--no-banner" > /home/user/.shellspec \
+ && if [ "$(id -u)" -eq 0 ]; then ln -s /docker/fake-sudo.sh /bin/sudo; fi \
  && sudo mkdir -p /usr/local/bin \
- && sudo ln -s /shellspec/docker/fake-nc.sh /usr/local/bin/nc \
+ && sudo ln -s /docker/fake-nc.sh /usr/local/bin/nc \
  && sudo ln -s /shellspec/shellspec /usr/local/bin/shellspec \
  && sudo mkdir /shellspec \
  && sudo chown user:user /shellspec \
- && sudo /replace_shell.sh "$SH"
+ && sudo /docker/replace_shell.sh "$SH"
 WORKDIR /shellspec
-ENTRYPOINT [ "./docker/entrypoint.sh" ]
+ENTRYPOINT [ "/docker/entrypoint.sh" ]
 CMD [ "shellspec" ]
 COPY --chown=user:user ./ /shellspec
