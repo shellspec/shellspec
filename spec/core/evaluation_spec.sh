@@ -150,7 +150,7 @@ Describe "core/evaluation.sh"
       End
 
       It 'runs external command in PATH'
-        BeforeRun PATH="$BIN:$PATH"
+        BeforeRun 'PATH="$BIN:$PATH"'
         When run command echo 'bad'
         The output should eq 'fake echo'
       End
