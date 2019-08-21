@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use putsn reset_params
+use puts putsn reset_params which
 
 task() { :; }
 

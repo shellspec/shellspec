@@ -1,5 +1,5 @@
 FROM fedora:25
-RUN dnf install -y sudo which \
+RUN dnf install -y sudo \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
  && useradd -m user
 USER user
