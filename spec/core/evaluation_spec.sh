@@ -148,6 +148,19 @@ Describe "core/evaluation.sh"
         When run command cat /dev/null
         The status should equal 0
       End
+
+      It 'runs external command in PATH'
+        BeforeRun PATH="$BIN:$PATH"
+        When run command echo 'bad'
+        The output should eq 'fake echo'
+      End
+
+      It 'returns 127 when external command not found'
+        BeforeRun PATH=""
+        When run command echo 'bad'
+        The status should eq 127
+        The stderr should be present
+      End
     End
 
     Describe 'run source evaluation'
