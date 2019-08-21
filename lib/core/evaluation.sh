@@ -83,10 +83,24 @@ fi
 
 shellspec_evaluation_run_instruction() {
   case $1 in
-    command) shift; command "$@" ;;
+    command) shift; shellspec_evaluation_run_command "$@" ;;
     source) shift; shellspec_evaluation_run_source "$@" ;;
     *) "$@" ;;
   esac
+}
+
+shellspec_evaluation_run_command() {
+  shellspec_command=$(shellspec_which "$1") &&:
+  if [ "$shellspec_command" ]; then
+    shift
+    case $# in
+      0) "$shellspec_command" ;;
+      *) "$shellspec_command" "$@" ;;
+    esac
+  else
+    shellspec_putsn "$SHELLSPEC_SHELL: $SHELLSPEC_LINENO: $1: not found" >&2
+    return 127
+  fi
 }
 
 shellspec_evaluation_run_source() {
