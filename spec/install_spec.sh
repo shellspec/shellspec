@@ -28,11 +28,6 @@ Describe "source ./install.sh"
 End
 
 Describe "./install.sh"
-  tar_strip_components_not_support() {
-    tar t --strip-components 1 -f "$FIXTURE/b3d5591.tar.gz" >/dev/null 2>&1 &&:
-    #shellcheck disable=SC2181
-    [ $? -ne 0 ]
-  }
   Include ./install.sh
 
   git_ls_remote_tags() {
@@ -52,6 +47,32 @@ Describe "./install.sh"
     It 'returns success when not found executable file'
       When call exists no-such-command
       The status should be failure
+    End
+  End
+
+  Describe "which()"
+    Context 'when PATH=/foo:/bin:/bar'
+      Before PATH=/foo:/bin:/bar
+      It "retrieves found path"
+        When call which sh
+        The output should eq "/bin/sh"
+      End
+    End
+
+    Context 'when PATH=/foo:/bar'
+      Before PATH=/foo:/bar
+      It "retrieves nothing"
+        When call which sh
+        The status should eq 1
+      End
+    End
+
+    Context 'when PATH='
+      Before PATH=
+      It "retrieves nothing"
+        When call which sh
+        The status should eq 1
+      End
     End
   End
 
@@ -77,8 +98,6 @@ Describe "./install.sh"
   End
 
   Describe "fetch()"
-    Skip if "tar --strip-components is not support" tar_strip_components_not_support
-
     curl() { exit 1; }
     wget() { exit 1; }
 
@@ -92,8 +111,9 @@ Describe "./install.sh"
       }
 
       It 'fetchs archive'
-        When call fetch "http://repo.test/master.tar.gz" "$TMPBASE/curl"
+        When call fetch "http://repo.test/b3d5591.tar.gz" "$TMPBASE/curl"
         The file "$TMPBASE/curl/README.md" should be exist
+        The stderr should be defined # ignore stderr
       End
     End
 
@@ -107,8 +127,9 @@ Describe "./install.sh"
       }
 
       It 'fetchs archive'
-        When call fetch "http://repo.test/master.tar.gz" "$TMPBASE/wget"
+        When call fetch "http://repo.test/b3d5591.tar.gz" "$TMPBASE/wget"
         The file "$TMPBASE/wget/README.md" should be exist
+        The stderr should be defined # ignore stderr
       End
     End
 
@@ -117,7 +138,7 @@ Describe "./install.sh"
       curl() { return 1; }
 
       It 'does not create directory'
-        When call fetch "http://repo.test/master.tar.gz" "$TMPBASE/error"
+        When call fetch "http://repo.test/b3d5591.tar.gz" "$TMPBASE/error"
         The directory "$TMPBASE/error" should not be exist
         The status should be failure
       End

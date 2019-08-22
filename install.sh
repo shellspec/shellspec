@@ -49,6 +49,15 @@ exists() {
   ( IFS=:; for p in $PATH; do [ -x "${p%/}/$1" ] && return 0; done; return 1 )
 }
 
+which() {
+  set -- "$1" "${PATH%:}:"
+  while [ "${2%:}" ]; do
+    [ -x "${2%%:*}/$1" ] && echo "${2%%:*}/$1" && return 0
+    set -- "$1" "${2#*:}"
+  done
+  return 1
+}
+
 prompt() {
   ans=${2:-} && printf '%s' "$1"
   [ "$ans" ] && echo "$2"
@@ -57,14 +66,14 @@ prompt() {
 }
 
 fetch() {
-  tmpfile=$(mktemp -t shellspec.XXXXXXXX)
+  tmpfile="${TMPDIR:-/tmp}/${1##*/}.$$"
   case $FETCH in
     curl) curl --head -sSfL -o /dev/null "$1" && curl -SfL "$1" ;;
     wget) wget --spider -q "$1" && wget -O- "$1" ;;
   esac > "$tmpfile" &&:
   error=$?
   if [ "$error" -eq 0 ]; then
-    unarchive "$tmpfile" "$2" &&:
+    unarchive "$tmpfile" "$1" "$2" &&:
     error=$?
     [ "$error" -ne 0 ] && [ -d "$2" ] && rm -rf "$2"
   fi
@@ -73,8 +82,19 @@ fetch() {
 }
 
 unarchive() {
-  mkdir -p "$2"
-  tar x -z --strip-components 1 -f "$1" -C "$2"
+  mkdir -p "${3%/*}"
+  "$(which tar)" x -z -f "$1" -C "${3%/*}"
+  set -- "$1" "${2##*/}" "$3"
+  mv "$(components_path ${3%/*}/$project-${2%.tar.gz}*)" "$3"
+}
+
+components_path() {
+  ( set +u
+    cd "${1%/*}"
+    for p in *; do
+      case $p in (${1##*/}*) echo "${1%/*}/$p"; break ; esac
+    done
+  )
 }
 
 git_remote_tags() {
