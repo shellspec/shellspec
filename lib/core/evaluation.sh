@@ -90,17 +90,15 @@ shellspec_evaluation_run_instruction() {
 }
 
 shellspec_evaluation_run_command() {
-  shellspec_command=$(shellspec_which "$1") &&:
-  if [ "$shellspec_command" ]; then
-    shift
-    case $# in
-      0) "$shellspec_command" ;;
-      *) "$shellspec_command" "$@" ;;
-    esac
-  else
-    shellspec_putsn "$SHELLSPEC_SHELL: $SHELLSPEC_LINENO: $1: not found" >&2
-    return 127
+  set -- "$(shellspec_which "$1")" "$@" &&:
+  if [ ! "$1" ]; then
+    shellspec_abort 127 "$SHELLSPEC_SHELL: $SHELLSPEC_LINENO: $2: not found"
   fi
+  case $# in
+    2) set -- "$1" ;;
+    *) eval "shift 2; set -- \"$1\" \"\$@\"" ;;
+  esac
+  "$@"
 }
 
 shellspec_evaluation_run_source() {
@@ -111,7 +109,7 @@ shellspec_evaluation_run_source() {
     esac
   }
   __() { shellspec_interceptor "$@"; }
-  eval "shift; . $1"
+  eval "shift; . \"$1\""
 }
 
 shellspec_interceptor() {
