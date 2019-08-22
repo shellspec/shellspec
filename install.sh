@@ -83,7 +83,7 @@ fetch() {
 
 unarchive() {
   mkdir -p "${3%/*}"
-  "$(which tar)" x -z -f "$1" -C "${3%/*}"
+  gunzip -c "$1" | "$(which tar)" xf - -C "${3%/*}"
   set -- "$1" "${2##*/}" "$3"
   mv "$(components_path ${3%/*}/$project-${2%.tar.gz}*)" "$3"
 }
