@@ -30,6 +30,7 @@ if [ "${BASH_VERSION:-}" ]; then
   shellspec_proxy shellspec_append_shell_option shellspec_append_shopt
 fi
 
+# Workaround for mksh, pdksh, posh. it can not be set within eval.
 if ( set +e; eval "set -e"; case $- in (*e*) false; esac ); then
   #shellcheck disable=SC2034
   SHELLSPEC_SHELL_OPTION="shellspec_set_option"
@@ -60,17 +61,17 @@ shellspec_shopt() {
 }
 
 shellspec_set_option() {
-  SHELLSPEC_IFSORIG=$IFS
-  IFS=";"
-  #shellcheck disable=SC2086,SC2153
-  set -- $SHELLSPEC_SHELL_OPTIONS
-  IFS=$SHELLSPEC_IFSORIG
-
-  while [ $# -gt 0 ]; do
-    case $1 in
-      set\ -o*) set -o "${1#set -o }" ;;
-      set\ +o*) set +o "${1#set +o }" ;;
+  #shellcheck disable=SC2153
+  set -- "$SHELLSPEC_SHELL_OPTIONS"
+  while [ "$1" ]; do
+    set -- "${1#*;}" "${1%%;*}"
+    case $2 in
+      set\ -o*) shellspec_set_long -"${2#set -o }" ;;
+      set\ +o*) shellspec_set_long +"${2#set +o }" ;;
     esac
-    shift
   done
+}
+
+shellspec_set_long() {
+  set "${1%%[a-zA-Z]*}o" "${1#?}"
 }

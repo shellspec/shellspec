@@ -144,4 +144,16 @@ Describe "core/utils.sh"
       The status should be failure
     End
   End
+
+  Describe 'shellspec_set_option()'
+    Before 'SHELLSPEC_SHELL_OPTIONS="set -o foo;set +o bar;"'
+    shellspec_set_long() { %= "$@"; }
+
+    It 'sets long options'
+      When run shellspec_set_option
+      The line 1 of output should eq "-foo"
+      The line 2 of output should eq "+bar"
+      The lines of output should eq 2
+    End
+  End
 End
