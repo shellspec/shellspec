@@ -251,6 +251,30 @@ Describe "core/dsl.sh"
       The stdout line 3 should equal 'FIXED'
     End
 
+    Context 'when --warning-as-failure'
+      BeforeRun SHELLSPEC_WARNING_AS_FAILURE=1
+
+      It 'is todo if PENDING switch is on and WARNED'
+        block() { expectation; shellspec_on PENDING WARNED; }
+        When run shellspec_invoke_example
+        The stdout line 1 should equal 'EXAMPLE'
+        The stdout line 2 should equal 'yield'
+        The stdout line 3 should equal 'TODO'
+      End
+    End
+
+    Context 'when --no-warning-as-failure'
+      BeforeRun SHELLSPEC_WARNING_AS_FAILURE=''
+
+      It 'is todo if PENDING switch is on and FIXED'
+        block() { expectation; shellspec_on PENDING WARNED; }
+        When run shellspec_invoke_example
+        The stdout line 1 should equal 'EXAMPLE'
+        The stdout line 2 should equal 'yield'
+        The stdout line 3 should equal 'FIXED'
+      End
+    End
+
     It 'is failure if shellspec_call_before_hooks failed'
       mock_hooks() { shellspec_call_before_hooks() { return 1; }; }
       BeforeRun mock_hooks
