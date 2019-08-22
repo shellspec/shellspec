@@ -17,6 +17,8 @@ gitbash_task:
     os_version: 2019
   env:
     PATH: $ProgramFiles\Git\bin;$PATH
+  install_script:
+    - git --version
   prepare_script:
     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
     - bash -c "mount"
@@ -32,9 +34,10 @@ msys_task:
   env:
     PATH: C:\tools\msys64\usr\bin;$PATH
   install_script:
-    - choco install -y msys2
-    - pacman.exe -Syu --noconfirm
-    - pacman.exe -S --noconfirm dash bash busybox mksh zsh
+    - choco install -y --no-progress msys2
+    - pacman.exe -Syu --noprogressbar --noconfirm
+    - pacman.exe -S --noprogressbar --noconfirm dash bash busybox mksh
+    - pacman.exe -Q
   prepare_script:
     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
     - bash -c "mount"
@@ -50,8 +53,9 @@ cygwin_task:
   env:
     PATH: C:\tools\cygwin\bin;$PATH
   install_script:
-    - choco install -y cygwin cyg-get
+    - choco install -y --no-progress cygwin cyg-get
     - cyg-get nc dash bash busybox mksh posh zsh
+    - cygcheck -c
   prepare_script:
     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
     - bash -c "mount"
