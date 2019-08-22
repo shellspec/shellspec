@@ -6,6 +6,8 @@
 * **The version of italic may work but it is not supported due to a bug.**
 * The shell that includes with the supported os (The platform of bold) is the main support.
 * The old shell has been tested, but support may be discontinued.
+* Supported busybox shell is `ash` only. `hush` has many missing features and bugs.
+* Bourne shell is not supported.
 
 ### Packages
 
@@ -16,7 +18,7 @@
 
 #### Alpine / BusyBox / OpenWrt (LEDE)
 
-Default shell: `busybox`
+Default shell: `busybox ash`
 
 | Platform            | bash | busybox  | dash | loksh | mksh | zsh |
 | ------------------- | ---- | -------- | ---- | ----- | ---- | --- |
@@ -103,11 +105,11 @@ Default shell: `bash`
 
 Default shell: `bash`
 
-| Platform                          | bash   | busybox | dash     | mksh | posh   | zsh   |
-| --------------------------------- | ------ | ------- | -------- | ---- | ------ | ----- |
-| **Windows Server 2019 (gitbash)** | 4.4.23 | -       | unknown  | -    | -      | -     |
-| **Windows Server 2019 (msys)**    | 4.4.23 | 1.23.2  | 0.5.10.2 | R57  | -      | 5.7.1 |
-| **Windows Server 2019 (cygwin)**  | 4.4.12 | unknown | unknown  | R56  | 0.13.1 | 5.7.1 |
+| Platform                           | bash   | busybox | dash     | mksh | posh   | zsh   |
+| ---------------------------------- | ------ | ------- | -------- | ---- | ------ | ----- |
+| **Windows Server 2019 (Git Bash)** | 4.4.23 | -       | unknown  | -    | -      | -     |
+| **Windows Server 2019 (msys)**     | 4.4.23 | 1.23.2  | 0.5.10.2 | R57  | -      | 5.7.1 |
+| **Windows Server 2019 (cygwin)**   | 4.4.12 | 1.23.2  | 0.5.9.1  | R56c | 0.13.2 | 5.5.1 |
 
 ### Self build
 
@@ -128,10 +130,10 @@ These are tested by Docker (`contrib/test_in_docker.sh`).
 
 This is not continuous test, it may break sometimes...
 
-| Platform       | bash   | ksh88              | ksh93   | Bourne Shell          |
-| -------------- | ------ | ------------------ | ------- | --------------------- |
-| **Solaris 10** | 3.2.51 | /usr/bin/ksh       | -       | ~~/bin/sh~~           |
-| **Solaris 11** | 4.4.19 | /usr/sunos/bin/ksh | /bin/sh | ~~/usr/sunos/bin/sh~~ |
+| Platform       | bash   | ksh88                            | ksh93                     | Bourne Shell          |
+| -------------- | ------ | -------------------------------- | ------------------------- | --------------------- |
+| **Solaris 10** | 3.2.51 | M-11/16/88i (/usr/bin/ksh)       | -                         | ~~/bin/sh~~           |
+| **Solaris 11** | 4.4.19 | M-11/16/88i (/usr/sunos/bin/ksh) | 93u+ 2012-08-01 (/bin/sh) | ~~/usr/sunos/bin/sh~~ |
 
 ## Confirmation for bug
 
