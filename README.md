@@ -471,7 +471,9 @@ It can be overridden with custom script of `--env-from` option.
 
 ### Parallel execution
 
-You can use parallel execution for fast test with `--jobs` option.
+You can use parallel execution for fast test with `--jobs` option. Parallel
+jobs are executed per the specfile. So it is necessary to separete the specfile
+for effective parallel execution.
 
 ### Random execution
 
