@@ -62,23 +62,27 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Example](#example)
   - [Translation process](#translation-process)
   - [DSL](#dsl)
-    - [Describe / Context (example group)](#describe--context-example-group)
-    - [It / Example / Specify (example)](#it--example--specify-example)
-    - [When (evaluation)](#when-evaluation)
-    - [The (expectation)](#the-expectation)
-    - [Skip / Pending](#skip--pending)
-    - [Set (set shell option)](#set-set-shell-option)
-    - [Before / After (example hook)](#before--after-example-hook)
-    - [BeforeCall / AfterCall (call evaluation hook)](#beforecall--aftercall-call-evaluation-hook)
-    - [BeforeRun / AfterRun (run evaluation hook)](#beforerun--afterrun-run-evaluation-hook)
-    - [Data (input for evaluation)](#data-input-for-evaluation)
-    - [Parameters (parameterized example)](#parameters-parameterized-example)
-    - [subject / modifier / matcher](#subject--modifier--matcher)
+    - [Describe, Context - example group](#describe-context---example-group)
+    - [It, Example, Specify, Todo - example](#it-example-specify-todo---example)
+    - [When - evaluation](#when---evaluation)
+    - [The - expectation](#the---expectation)
+    - [Skip, Pending - skip and pending example](#skip-pending---skip-and-pending-example)
+    - [Include - include shell script](#include---include-shell-script)
+    - [Set - set shell option](#set---set-shell-option)
+    - [Path, File, Dir - path alias](#path-file-dir---path-alias)
+    - [Data - input data for evaluation](#data---input-data-for-evaluation)
+    - [Parameters - parameterized example](#parameters---parameterized-example)
+    - [subject, modifier, matcher](#subject-modifier-matcher)
+  - [Hooks](#hooks)
+    - [Before, After - example hook](#before-after---example-hook)
+    - [BeforeCall, AfterCall - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
+    - [BeforeRun, AfterRun - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
   - [Directive](#directive)
-    - [%const (constant definition)](#const-constant-definition)
-    - [%text (embedded text)](#text-embedded-text)
-    - [%puts / %putsn (output)](#puts--putsn-output)
+    - [%const (%) - constant definition](#const----constant-definition)
+    - [%text - embedded text](#text---embedded-text)
+    - [%puts (%-), %putsn (%=) - put string](#puts---putsn----put-string)
     - [%logger](#logger)
+    - [%data](#data)
   - [Mock and Stub](#mock-and-stub)
   - [Testing a single file script.](#testing-a-single-file-script)
     - [Sourced Return](#sourced-return)
@@ -615,18 +619,19 @@ use the `--translate` option.
 
 ### DSL
 
-#### Describe / Context (example group)
+#### Describe, Context - example group
 
-You can write structured *example* using by `Describe`, `Context`. Example
-groups can be nested. Example groups can contain example groups or examples.
+You can write structured *example* using by `Describe`, `Context` block.
+Example groups can be nested. Example groups can contain example groups or examples.
 Each example groups run in subshell.
 
-#### It / Example / Specify (example)
+#### It, Example, Specify, Todo - example
 
-You can write describe how code behaves using by `It`, `Example`, `Specify`.
+You can write describe how code behaves using by `It`, `Example`, `Specify` block.
 It constitute by maximum of one evaluation and multiple expectations.
+`Todo` is one liner empty example.
 
-#### When (evaluation)
+#### When - evaluation
 
 Defines the action for verification. The evaluation is start with `When`
 It can be defined evaluation up to one for each example.
@@ -639,7 +644,7 @@ When call echo hello world
  +-- The evaluation is start with `When`
 ```
 
-#### The (expectation)
+#### The - expectation
 
 Defines the verification. The expectation is start with `The`
 
@@ -698,7 +703,7 @@ The first word of second line of output should valid number
 The first word of the second line of output should valid as a number
 ```
 
-#### Skip / Pending
+#### Skip, Pending - skip and pending example
 
 You can skip example by `Skip`. If you want to skip only in some cases,
 use conditional skip `Skip if`. You can also use `Pending` to indicate the
@@ -706,7 +711,11 @@ to be implementation. You can temporary skip `Describe`, `Context`, `Example`,
 `Specify`, `It` block. To skip, add prefixing `x` and modify to `xDescribe`,
 `xContext`, `xExample`, `xSpecify`, `xIt`.
 
-#### Set (set shell option)
+#### Include - include shell script
+
+Include the shell script file to test.
+
+#### Set - set shell option
 
 Set shell option before execute each example.
 The shell option name is the long name of `set` or the name of `shopt`.
@@ -717,26 +726,11 @@ e.g.
 Set 'errexit:off' 'noglob:on'
 ```
 
-#### Before / After (example hook)
+#### Path, File, Dir - path alias
 
-You can define before / after hooks by `Before`, `After`.
-The hooks are called for each example.
+*TODO*
 
-#### BeforeCall / AfterCall (call evaluation hook)
-
-You can define before / after call hooks by `BeforeCall`, `AfterCall`.
-The hooks are called for before or after "call evaluation".
-
-#### BeforeRun / AfterRun (run evaluation hook)
-
-You can define before / after run hooks by `BeforeRun`, `AfterRun`.
-The hooks are called for before or after "run evaluation".
-
-These hooks are executed in the same subshell as "run evaluation". So you can
-mock/stub the function before run. And you can accessing variable for
-evaluation after run.
-
-#### Data (input for evaluation)
+#### Data - input data for evaluation
 
 You can use Data Helper that input data from stdin for evaluation.
 After `#|` in the `Data` block is the input data.
@@ -755,7 +749,7 @@ Describe 'Data helper'
 End
 ```
 
-#### Parameters (parameterized example)
+#### Parameters - parameterized example
 
 You can Data Driven Test (aka Parameterized Test) with `Parameters`.
 
@@ -778,39 +772,38 @@ End
 The following four styles are supported.
 
 ```sh
-  # block style (default: same as Parameters)
-  Parameters:block
-    "#1" 1 2 3
-    "#2" 1 2 3
-  End
+# block style (default: same as Parameters)
+Parameters:block
+  "#1" 1 2 3
+  "#2" 1 2 3
+End
 
-  # value style
-  Parameters:value foo bar baz
+# value style
+Parameters:value foo bar baz
 
-  # matrix style
-  Parameters:matrix
-    foo bar
-    1 2
-    # expanded as follows
-    #   foo 1
-    #   foo 2
-    #   bar 1
-    #   bar 2
-  End
+# matrix style
+Parameters:matrix
+  foo bar
+  1 2
+  # expanded as follows
+  #   foo 1
+  #   foo 2
+  #   bar 1
+  #   bar 2
+End
 
-  # dynamic style
-  #   Only %data directive can be used within Parameters:dynamic block.
-  #   You can not call function or accessing variable defined within specfile.
-  #   You can refer to variables defined with %const.
-  Parameters:dynamic
-    for i in 1 2 3; do
-      %data "#$i" 1 2 3
-    done
-  End
+# dynamic style
+#   Only %data directive can be used within Parameters:dynamic block.
+#   You can not call function or accessing variable defined within specfile.
+#   You can refer to variables defined with %const.
+Parameters:dynamic
+  for i in 1 2 3; do
+    %data "#$i" 1 2 3
+  done
 End
 ```
 
-#### subject / modifier / matcher
+#### subject, modifier, matcher
 
 There is more *subject*, *modifier*, *matcher*. please refer to the
 [References](/docs/references.md)
@@ -822,9 +815,30 @@ custom modifier, custom formatter, etc...
 
 see [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
 
+### Hooks
+
+#### Before, After - example hook
+
+You can define before / after hooks by `Before`, `After`.
+The hooks are called for each example.
+
+#### BeforeCall, AfterCall - call evaluation hook
+
+You can define before / after call hooks by `BeforeCall`, `AfterCall`.
+The hooks are called for before or after "call evaluation".
+
+#### BeforeRun, AfterRun - run evaluation hook
+
+You can define before / after run hooks by `BeforeRun`, `AfterRun`.
+The hooks are called for before or after "run evaluation".
+
+These hooks are executed in the same subshell as "run evaluation". So you can
+mock/stub the function before run. And you can accessing variable for
+evaluation after run.
+
 ### Directive
 
-#### %const (constant definition)
+#### %const (%) - constant definition
 
 `%const` (`%` is short hand) directive is define constant value. The characters
 that can be used for variable name is upper capital, number and underscore only.
@@ -838,7 +852,7 @@ This feature assumed use with conditional skip. The conditional skip may runs
 outside of the examples. As a result, sometime you may need variables defined
 outside of the examples.
 
-#### %text (embedded text)
+#### %text - embedded text
 
 You can use `%text` directive instead of hard-to-use heredoc with indented code.
 After `#|` is the input data.
@@ -865,7 +879,7 @@ Describe '%text directive'
 End
 ```
 
-#### %puts / %putsn (output)
+#### %puts (%-),  %putsn (%=) - put string
 
 `%puts` (put string) and `%putsn` (put string with newline) can be used instead of
 (not portable) echo. Unlike echo, not interpret escape sequences all shells.
@@ -874,6 +888,10 @@ End
 #### %logger
 
 Output log to `$SHELLSPEC_LOGFILE` (default: `/dev/tty`) for debugging.
+
+#### %data
+
+See `Parameters`
 
 ### Mock and Stub
 
