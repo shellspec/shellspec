@@ -149,6 +149,12 @@ Describe "core/evaluation.sh"
         The status should equal 0
       End
 
+      It 'catches error of external command'
+        When run command cat --unknown-option
+        The status should be failure
+        The stderr should be present
+      End
+
       It 'runs external command in PATH'
         BeforeRun 'PATH="$BIN:$PATH"'
         When run command echo 'bad'
