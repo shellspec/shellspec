@@ -1,6 +1,6 @@
 {
   "name": "shellspec",
-  "version": "0.20.1",
+  "version": "0.20.2",
   "description": "BDD style unit testing framework for POSIX compliant shell script",
   "homepage": "https://shellspec.info",
   "scripts": ["shellspec"],
