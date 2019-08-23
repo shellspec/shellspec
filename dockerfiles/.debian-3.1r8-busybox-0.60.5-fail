@@ -1,7 +1,6 @@
 FROM lpenz/debian-sarge-i386
-RUN apt-get update && apt-get -y install sudo busybox-static \
- && ln -s /bin/busybox /bin/ash \
- && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && groupadd user && useradd -m user -g user
+RUN groupadd user && useradd -m user -g user \
+ && apt-get update && apt-get -y install busybox-static \
+ && ln -s /bin/busybox /bin/ash
 USER user
 ENV SH="ash"

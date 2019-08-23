@@ -1,6 +1,5 @@
 FROM fedora:24
-RUN dnf install -y sudo tar \
- && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && useradd -m user
+RUN useradd -m user \
+ && dnf install -y tar
 USER user
 ENV SH="sh"
