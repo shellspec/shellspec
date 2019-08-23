@@ -1,6 +1,7 @@
 FROM lpenz/debian-woody-i386
 RUN apt-get update && apt-get -y install sudo busybox \
+ && ln -s /bin/busybox /bin/ash \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
  && groupadd user && useradd -m user -g user
 USER user
-ENV SH="busybox ash"
+ENV SH="ash"

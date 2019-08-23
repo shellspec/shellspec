@@ -5,4 +5,4 @@ RUN mkdir -p /var/lock /home \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
  && useradd -m user
 USER user
-ENV SH="busybox ash"
+ENV SH="ash"

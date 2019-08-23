@@ -450,4 +450,5 @@ if [ "$SHELLSPEC_ENV_FROM" ]; then
 else
   exec="$SHELLSPEC_LIBEXEC/shellspec-${SHELLSPEC_MODE}.sh"
 fi
+
 eval exec "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'}

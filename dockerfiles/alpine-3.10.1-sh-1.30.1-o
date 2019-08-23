@@ -3,4 +3,4 @@ RUN apk add --no-cache sudo \
  && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
  && adduser user -D
 USER user
-ENV SH="busybox ash"
+ENV SH="ash"
