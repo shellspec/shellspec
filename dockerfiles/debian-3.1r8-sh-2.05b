@@ -1,4 +1,5 @@
 FROM lpenz/debian-sarge-i386
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN groupadd user && useradd -m user -g user
 USER user
 ENV SH="sh"

@@ -1,5 +1,5 @@
 FROM openwrt:10.03.1
-RUN mkdir -p /var/lock /home \
+RUN mkdir /var/lock /home \
  && opkg update && opkg install shadow-groupadd shadow-useradd \
  && groupadd user && useradd -m user -g user
 USER user

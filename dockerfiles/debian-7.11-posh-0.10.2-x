@@ -1,6 +1,6 @@
 FROM lpenz/debian-wheezy-amd64-minbase
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
- && export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
  && apt-get update && apt-get -y install posh procps
 USER user
 ENV SH="posh"

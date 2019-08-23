@@ -1,4 +1,5 @@
 FROM lpenz/debian-etch-i386-minbase
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user
 USER user
 ENV SH="bash"

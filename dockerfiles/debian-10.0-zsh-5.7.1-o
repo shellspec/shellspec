@@ -1,6 +1,6 @@
 FROM debian:10.0-slim
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
- && export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
  && apt-get update && apt-get -y install zsh
 USER user
 ENV SH="zsh"

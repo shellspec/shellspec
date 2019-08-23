@@ -1,6 +1,6 @@
 FROM debian:8.11-slim
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
- && export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
  && apt-get update && apt-get -y install ksh
 USER user
 ENV SH="ksh"
