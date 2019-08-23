@@ -1,6 +1,36 @@
 #shellcheck shell=sh disable=SC2004
 
 shellspec_create_hook() {
+  shellspec_create_register_hook "before_$1" "BEFORE_$2"
+  shellspec_create_register_hook "after_$1" "AFTER_$2"
+
+  SHELLSPEC_EVAL="
+    shellspec_call_before_$1_hooks() { \
+      if [ \$# -eq 0 ]; then \
+        shellspec_call_before_$1_hooks 1; \
+      else \
+        [ \"\$1\" -gt \"\$SHELLSPEC_BEFORE_$2_INDEX\" ] && return 0; \
+        shellspec_call_hook \"SHELLSPEC_BEFORE_$2_\$1\" || return \$?; \
+        shellspec_call_before_$1_hooks \$((\$1 + 1)); \
+      fi; \
+    } \
+  "
+  eval "$SHELLSPEC_EVAL"
+  SHELLSPEC_EVAL="
+    shellspec_call_after_$1_hooks() { \
+      if [ \$# -eq 0 ]; then \
+        shellspec_call_after_$1_hooks \"\$SHELLSPEC_AFTER_$2_INDEX\"; \
+      else \
+        [ \"\$1\" -lt 1 ] && return 0; \
+        shellspec_call_hook \"SHELLSPEC_AFTER_$2_\$1\" || return \$?; \
+        shellspec_call_after_$1_hooks \$((\$1 - 1)); \
+      fi; \
+    }; \
+  "
+  eval "$SHELLSPEC_EVAL"
+}
+
+shellspec_create_register_hook() {
   SHELLSPEC_EVAL="
     SHELLSPEC_$2_INDEX=0; \
     shellspec_$1_hook() { \
@@ -11,32 +41,6 @@ shellspec_create_hook() {
       done; \
     } \
   "
-  eval "$SHELLSPEC_EVAL"
-  if [ "${3:-}" = "" ]; then
-    SHELLSPEC_EVAL="
-      shellspec_call_$1_hooks() { \
-        if [ \$# -eq 0 ]; then \
-          shellspec_call_$1_hooks 1; \
-        else \
-          [ \"\$1\" -gt \"\$SHELLSPEC_$2_INDEX\" ] && return 0; \
-          shellspec_call_hook \"SHELLSPEC_$2_\$1\" || return \$?; \
-          shellspec_call_$1_hooks \$((\$1 + 1)); \
-        fi; \
-      } \
-    "
-  else
-    SHELLSPEC_EVAL="
-      shellspec_call_$1_hooks() { \
-        if [ \$# -eq 0 ]; then \
-          shellspec_call_$1_hooks \"\$SHELLSPEC_$2_INDEX\"; \
-        else \
-          [ \"\$1\" -lt 1 ] && return 0; \
-          shellspec_call_hook \"SHELLSPEC_$2_\$1\" || return \$?; \
-          shellspec_call_$1_hooks \$((\$1 - 1)); \
-        fi; \
-      }; \
-    "
-  fi
   eval "$SHELLSPEC_EVAL"
 }
 
@@ -51,11 +55,6 @@ shellspec_call_hook() {
   return $SHELLSPEC_HOOK_STATUS
 }
 
-shellspec_create_hook before_each BEFORE_EACH
-shellspec_create_hook after_each AFTER_EACH rev
-
-shellspec_create_hook before_call BEFORE_CALL
-shellspec_create_hook after_call AFTER_CALL rev
-
-shellspec_create_hook before_run BEFORE_RUN
-shellspec_create_hook after_run AFTER_RUN rev
+shellspec_create_hook each EACH
+shellspec_create_hook call CALL
+shellspec_create_hook run RUN
