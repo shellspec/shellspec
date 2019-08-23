@@ -778,29 +778,29 @@ Parameters:block
   "#2" 1 2 3
 End
 
-# value style
-Parameters:value foo bar baz
+  # value style
+  Parameters:value foo bar baz
 
-# matrix style
-Parameters:matrix
-  foo bar
-  1 2
-  # expanded as follows
-  #   foo 1
-  #   foo 2
-  #   bar 1
-  #   bar 2
-End
+  # matrix style
+  Parameters:matrix
+    foo bar
+    1 2
+    # expanded as follows
+    #   foo 1
+    #   foo 2
+    #   bar 1
+    #   bar 2
+  End
 
-# dynamic style
-#   Only %data directive can be used within Parameters:dynamic block.
-#   You can not call function or accessing variable defined within specfile.
-#   You can refer to variables defined with %const.
-Parameters:dynamic
-  for i in 1 2 3; do
-    %data "#$i" 1 2 3
-  done
-End
+  # dynamic style
+  #   Only %data directive can be used within Parameters:dynamic block.
+  #   You can not call function or accessing variable defined within specfile.
+  #   You can refer to variables defined with %const.
+  Parameters:dynamic
+    for i in 1 2 3; do
+      %data "#$i" 1 2 3
+    done
+  End
 ```
 
 #### subject, modifier, matcher
