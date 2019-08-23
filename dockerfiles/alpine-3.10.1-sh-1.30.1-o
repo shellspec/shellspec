@@ -1,6 +1,4 @@
 FROM alpine:3.10.1
-RUN apk add --no-cache sudo \
- && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && adduser user -D
+RUN adduser -D user
 USER user
 ENV SH="ash"

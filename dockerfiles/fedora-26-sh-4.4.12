@@ -1,6 +1,4 @@
 FROM fedora:26
-RUN dnf install -y sudo \
- && echo "ALL ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
- && useradd -m user
+RUN useradd -m user
 USER user
 ENV SH="sh"

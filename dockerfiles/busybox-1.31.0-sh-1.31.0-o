@@ -1,3 +1,4 @@
 FROM busybox:1.31.0
 RUN adduser -D user
+USER user
 ENV SH="ash"
