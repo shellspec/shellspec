@@ -134,9 +134,9 @@ shellspec_invoke_example() {
   # Output SKIP message if skipped in outer group.
   shellspec_output_if SKIP || {
     "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
-    if ! shellspec_call_before_hooks; then
+    if ! shellspec_call_before_each_hooks; then
       SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
-      shellspec_output FAILED_BEFORE_HOOK
+      shellspec_output FAILED_BEFORE_EACH_HOOK
       shellspec_output FAILED
       return 0
     fi
@@ -145,9 +145,9 @@ shellspec_invoke_example() {
       0) shellspec_yield ;;
       *) shellspec_yield "$@" ;;
     esac
-    if ! shellspec_call_after_hooks; then
+    if ! shellspec_call_after_each_hooks; then
       SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
-      shellspec_output FAILED_AFTER_HOOK
+      shellspec_output FAILED_AFTER_EACH_HOOK
       shellspec_output FAILED
       return 0
     fi
@@ -267,11 +267,11 @@ shellspec_the() {
 }
 
 shellspec_before() {
-  eval shellspec_before_hook ${1+'"$@"'}
+  eval shellspec_before_each_hook ${1+'"$@"'}
 }
 
 shellspec_after()  {
-  eval shellspec_after_hook ${1+'"$@"'}
+  eval shellspec_after_each_hook ${1+'"$@"'}
 }
 
 shellspec_before_call() {

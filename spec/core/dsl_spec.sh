@@ -275,24 +275,24 @@ Describe "core/dsl.sh"
       End
     End
 
-    It 'is failure if shellspec_call_before_hooks failed'
-      mock_hooks() { shellspec_call_before_hooks() { return 1; }; }
+    It 'is failure if shellspec_call_before_each_hooks failed'
+      mock_hooks() { shellspec_call_before_each_hooks() { return 1; }; }
       BeforeRun mock_hooks
       block() { expectation; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'FAILED_BEFORE_HOOK'
+      The stdout line 2 should equal 'FAILED_BEFORE_EACH_HOOK'
       The stdout line 3 should equal 'FAILED'
       The stdout should not include 'yield'
     End
 
-    It 'is failure if shellspec_call_after_hooks failed'
-      mock_hooks() { shellspec_call_after_hooks() { return 1; }; }
+    It 'is failure if shellspec_call_after_each_hooks failed'
+      mock_hooks() { shellspec_call_after_each_hooks() { return 1; }; }
       BeforeRun mock_hooks
       block() { expectation; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 3 should equal 'FAILED_AFTER_HOOK'
+      The stdout line 3 should equal 'FAILED_AFTER_EACH_HOOK'
       The stdout line 4 should equal 'FAILED'
       The stdout should include 'yield'
     End

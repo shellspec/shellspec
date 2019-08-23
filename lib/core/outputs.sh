@@ -77,14 +77,14 @@ shellspec_output_UNHANDLED_STDERR() {
   shellspec_output_raw_append "failure_message:stderr:" "$SHELLSPEC_STDERR"
 }
 
-shellspec_output_FAILED_BEFORE_HOOK() {
+shellspec_output_FAILED_BEFORE_EACH_HOOK() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
     "message:Before hook '$SHELLSPEC_HOOK' failed"
   shellspec_output_raw_append "failure_message:The before hook registered" \
     "at line $SHELLSPEC_HOOK_LINENO returned $SHELLSPEC_HOOK_STATUS"
 }
 
-shellspec_output_FAILED_AFTER_HOOK() {
+shellspec_output_FAILED_AFTER_EACH_HOOK() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
     "message:After hook '$SHELLSPEC_HOOK' failed"
   shellspec_output_raw_append "failure_message:The after hook registered" \

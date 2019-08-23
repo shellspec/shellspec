@@ -51,8 +51,8 @@ shellspec_call_hook() {
   return $SHELLSPEC_HOOK_STATUS
 }
 
-shellspec_create_hook before BEFORE
-shellspec_create_hook after AFTER rev
+shellspec_create_hook before_each BEFORE_EACH
+shellspec_create_hook after_each AFTER_EACH rev
 
 shellspec_create_hook before_call BEFORE_CALL
 shellspec_create_hook after_call AFTER_CALL rev
