@@ -1,6 +1,6 @@
 FROM lpenz/debian-lenny-i386-minbase
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
- && export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
  && apt-get update && apt-get -y --force-yes install busybox \
  && /bin/busybox --install -s
 USER user

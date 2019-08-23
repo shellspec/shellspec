@@ -6,9 +6,9 @@ FROM $IMAGE
 COPY --from=helpers /usr/local/bin/* /usr/local/bin/
 WORKDIR /shellspec
 RUN echo "--no-banner" > /home/user/.shellspec \
- && sudo ln -s /shellspec/shellspec /usr/local/bin/shellspec \
- && sudo sh -c "echo $SH > /etc/invokesh.conf" \
- && [ "$SH" = "sh" ] || sudo ln -snf /usr/local/bin/invokesh /bin/sh
+ && su-exec root ln -s /shellspec/shellspec /usr/local/bin/shellspec \
+ && su-exec root sh -c "echo $SH > /etc/invokesh.conf" \
+ && [ "$SH" = "sh" ] || su-exec root ln -snf /usr/local/bin/invokesh /bin/sh
 
 ENTRYPOINT [ "/shellspec/docker/entrypoint.sh" ]
 CMD [ "shellspec" ]
