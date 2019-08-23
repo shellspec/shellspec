@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.2] - 2019-08-24
+
+### Fixed
+
+- Fixed wrong SHELLSPEC_TMPBASE
+- Fixed for bug that some shell can not call external command same name as builtin.
+
 ## [0.20.1] - 2019-08-19
 
 ### Fixed
@@ -262,7 +269,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial public release.
 
 [Unreleased]: https://github.com/shellspec/shellspec/compare/0.20.1...HEAD
-[0.20.0]: https://github.com/shellspec/shellspec/compare/0.20.0...0.20.1
+[0.20.2]: https://github.com/shellspec/shellspec/compare/0.20.1...0.20.2
+[0.20.1]: https://github.com/shellspec/shellspec/compare/0.20.0...0.20.1
 [0.20.0]: https://github.com/shellspec/shellspec/compare/0.19.0...0.20.0
 [0.19.0]: https://github.com/shellspec/shellspec/compare/0.19.0...0.19.1
 [0.19.0]: https://github.com/shellspec/shellspec/compare/0.18.0...0.19.0
