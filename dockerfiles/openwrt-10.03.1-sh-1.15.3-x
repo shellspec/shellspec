@@ -6,4 +6,4 @@ RUN mkdir -p /var/lock /home \
  && groupadd user \
  && useradd -m user -g user
 USER user
-ENV SH="busybox ash"
+ENV SH="sh"

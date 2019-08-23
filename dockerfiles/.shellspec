@@ -1,18 +1,18 @@
 ARG IMAGE
 
-FROM shellspec:mksock as mksock
+FROM shellspec:helpers as helpers
+
 FROM $IMAGE
-COPY --from=mksock mksock /usr/local/bin/mksock
-COPY ./docker/* /docker/
-RUN echo "--no-banner" > /home/user/.shellspec \
- && if [ "$(id -u)" -eq 0 ]; then ln -s /docker/fake-sudo.sh /bin/sudo; fi \
- && sudo mkdir -p /usr/local/bin \
- && sudo ln -s /docker/fake-nc.sh /usr/local/bin/nc \
- && sudo ln -s /shellspec/shellspec /usr/local/bin/shellspec \
- && sudo mkdir /shellspec \
- && sudo chown user:user /shellspec \
- && sudo /docker/replace_shell.sh "$SH"
+COPY --from=helpers /usr/local/bin/* /usr/local/bin/
 WORKDIR /shellspec
-ENTRYPOINT [ "/docker/entrypoint.sh" ]
+RUN echo "--no-banner" > /home/user/.shellspec \
+ && [ "$(id -u)" -ne 0 ] || ln -s /usr/local/bin/fake-sudo.sh /usr/local/bin/sudo \
+ && sudo ln -s /usr/local/bin/fake-nc.sh /usr/local/bin/nc \
+ && sudo ln -s /shellspec/shellspec /usr/local/bin/shellspec \
+ && sudo sh -c "echo $SH > /etc/invokesh.conf" \
+ && [ "$SH" = "sh" ] || sudo ln -snf /usr/local/bin/invokesh /bin/sh
+
+ENTRYPOINT [ "/shellspec/docker/entrypoint.sh" ]
 CMD [ "shellspec" ]
+
 COPY --chown=user:user ./ /shellspec

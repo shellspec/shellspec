@@ -104,8 +104,8 @@ run() {
   os="${os#.}"
   image="shellspec:$os"
   (
-    cd contrib/mksock
-    docker build -t shellspec:mksock . | grayout
+    cd contrib/helpers
+    docker build -t shellspec:helpers . | grayout
   )
 
   old_image=$(docker images -q --no-trunc "$image")
