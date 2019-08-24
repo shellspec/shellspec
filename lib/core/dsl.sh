@@ -266,29 +266,14 @@ shellspec_the() {
   shellspec_statement_preposition "$@"
 }
 
-shellspec_before() {
-  eval shellspec_before_each_hook ${1+'"$@"'}
-}
+shellspec_proxy shellspec_before "shellspec_register_before_hook EACH"
+shellspec_proxy shellspec_after "shellspec_register_after_hook EACH"
 
-shellspec_after()  {
-  eval shellspec_after_each_hook ${1+'"$@"'}
-}
+shellspec_proxy shellspec_before_call "shellspec_register_before_hook CALL"
+shellspec_proxy shellspec_after_call "shellspec_register_after_hook CALL"
 
-shellspec_before_call() {
-  eval shellspec_before_call_hook ${1+'"$@"'}
-}
-
-shellspec_after_call()  {
-  eval shellspec_after_call_hook ${1+'"$@"'}
-}
-
-shellspec_before_run() {
-  eval shellspec_before_run_hook ${1+'"$@"'}
-}
-
-shellspec_after_run()  {
-  eval shellspec_after_run_hook ${1+'"$@"'}
-}
+shellspec_proxy shellspec_before_run "shellspec_register_before_hook RUN"
+shellspec_proxy shellspec_after_run "shellspec_register_after_hook RUN"
 
 shellspec_path() {
   while [ $# -gt 0 ]; do

@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
 Describe "core/hook.sh"
-  Before 'shellspec_create_hook example EXAMPLE'
+  Before 'shellspec_create_hook EXAMPLE'
 
   Describe 'shellspec_call_before_hooks()'
     Context 'when hooks are empty'
@@ -13,9 +13,9 @@ Describe "core/hook.sh"
 
     Context 'when hooks are exists'
       example_hooks() {
-        shellspec_before_example_hook 'echo 1'
-        shellspec_before_example_hook 'echo 2'
-        shellspec_before_example_hook 'echo 3'
+        shellspec_register_before_hook EXAMPLE 'echo 1'
+        shellspec_register_before_hook EXAMPLE 'echo 2'
+        shellspec_register_before_hook EXAMPLE 'echo 3'
       }
 
       It 'calls hooks in registration order'
@@ -38,9 +38,9 @@ Describe "core/hook.sh"
 
     Context 'when hooks are exists'
       example_hooks() {
-        shellspec_after_example_hook 'echo 1'
-        shellspec_after_example_hook 'echo 2'
-        shellspec_after_example_hook 'echo 3'
+        shellspec_register_after_hook EXAMPLE 'echo 1'
+        shellspec_register_after_hook EXAMPLE 'echo 2'
+        shellspec_register_after_hook EXAMPLE 'echo 3'
       }
 
       It 'calls hooks in reverse registration order'

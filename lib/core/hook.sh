@@ -1,26 +1,26 @@
 #shellcheck shell=sh disable=SC2004
 
 shellspec_create_hook() {
-  shellspec_create_register_hook "before_$1" "BEFORE_$2"
-  shellspec_create_register_hook "after_$1" "AFTER_$2"
+  eval "SHELLSPEC_BEFORE_$1_INDEX=0 SHELLSPEC_AFTER_$1_INDEX=0"
 }
 
-shellspec_create_register_hook() {
+shellspec_register_hook() {
   SHELLSPEC_EVAL="
-    SHELLSPEC_$2_INDEX=0; \
-    shellspec_$1_hook() { \
-      while [ \$# -gt 0 ]; do \
-        SHELLSPEC_$2_INDEX=\$((\$SHELLSPEC_$2_INDEX + 1)); \
-        shellspec_register_hook $2 \$SHELLSPEC_$2_INDEX \"\$1\"; \
-        shift; \
-      done; \
-    } \
+    shift 2; \
+    while [ \$# -gt 0 ]; do \
+      SHELLSPEC_$1_$2_INDEX=\$((\$SHELLSPEC_$1_$2_INDEX + 1)); \
+      shellspec_hook_index $1 $2 \$SHELLSPEC_$1_$2_INDEX \"\$1\"; \
+      shift; \
+    done; \
   "
   eval "$SHELLSPEC_EVAL"
 }
 
-shellspec_register_hook() {
-  eval "SHELLSPEC_$1_$2=\$3:\${SHELLSPEC_AUX_LINENO:-}"
+shellspec_proxy shellspec_register_before_hook "shellspec_register_hook BEFORE"
+shellspec_proxy shellspec_register_after_hook "shellspec_register_hook AFTER"
+
+shellspec_hook_index() {
+  eval "SHELLSPEC_$1_$2_$3=\$4:\${SHELLSPEC_AUX_LINENO:-}"
 }
 
 shellspec_call_hook() {
@@ -43,6 +43,6 @@ shellspec_call_after_hooks() {
   shellspec_call_after_hooks "$1" $(($2 - 1))
 }
 
-shellspec_create_hook each EACH
-shellspec_create_hook call CALL
-shellspec_create_hook run RUN
+shellspec_create_hook EACH
+shellspec_create_hook CALL
+shellspec_create_hook RUN
