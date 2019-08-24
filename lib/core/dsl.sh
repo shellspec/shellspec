@@ -134,7 +134,7 @@ shellspec_invoke_example() {
   # Output SKIP message if skipped in outer group.
   shellspec_output_if SKIP || {
     "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
-    if ! shellspec_call_before_each_hooks; then
+    if ! shellspec_call_before_hooks EACH; then
       SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
       shellspec_output FAILED_BEFORE_EACH_HOOK
       shellspec_output FAILED
@@ -145,7 +145,7 @@ shellspec_invoke_example() {
       0) shellspec_yield ;;
       *) shellspec_yield "$@" ;;
     esac
-    if ! shellspec_call_after_each_hooks; then
+    if ! shellspec_call_after_hooks EACH; then
       SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
       shellspec_output FAILED_AFTER_EACH_HOOK
       shellspec_output FAILED
@@ -219,7 +219,7 @@ shellspec_when() {
 }
 
 shellspec_around_call() {
-  shellspec_call_before_call_hooks || {
+  shellspec_call_before_hooks CALL || {
     set -- $?
     echo "BeforeCall hook '$SHELLSPEC_HOOK' failed" >&2
     return "$1"
@@ -227,7 +227,7 @@ shellspec_around_call() {
   "$@"
   set -- $?
   [ "$1" -ne 0 ] && return "$1"
-  shellspec_call_after_call_hooks || {
+  shellspec_call_after_hooks CALL || {
     set -- $?
     echo "AfterCall hook '$SHELLSPEC_HOOK' failed" >&2
     return "$1"
@@ -236,7 +236,7 @@ shellspec_around_call() {
 }
 
 shellspec_around_run() {
-  shellspec_call_before_run_hooks || {
+  shellspec_call_before_hooks RUN || {
     set -- $?
     echo "BeforeRun hook '$SHELLSPEC_HOOK' failed" >&2
     return "$1"
@@ -244,7 +244,7 @@ shellspec_around_run() {
   "$@"
   set -- $?
   [ "$1" -ne 0 ] && return "$1"
-  shellspec_call_after_run_hooks || {
+  shellspec_call_after_hooks RUN || {
     set -- $?
     echo "AfterRun hook '$SHELLSPEC_HOOK' failed" >&2
     return "$1"

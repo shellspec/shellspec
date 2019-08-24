@@ -3,10 +3,10 @@
 Describe "core/hook.sh"
   Before 'shellspec_create_hook example EXAMPLE'
 
-  Describe 'shellspec_call_before_example_hooks()'
+  Describe 'shellspec_call_before_hooks()'
     Context 'when hooks are empty'
       It 'does nothing if not exists before hooks'
-        When call shellspec_call_before_example_hooks
+        When call shellspec_call_before_hooks EXAMPLE
         The stdout should be blank
       End
     End
@@ -20,7 +20,7 @@ Describe "core/hook.sh"
 
       It 'calls hooks in registration order'
         BeforeCall example_hooks
-        When call shellspec_call_before_example_hooks
+        When call shellspec_call_before_hooks EXAMPLE
         The line 1 of stdout should equal 1
         The line 2 of stdout should equal 2
         The line 3 of stdout should equal 3
@@ -28,10 +28,10 @@ Describe "core/hook.sh"
     End
   End
 
-  Describe 'shellspec_call_after_example_hooks()'
+  Describe 'shellspec_call_after_hooks()'
     Context 'when hooks are empty'
       It 'does nothing if not exists after hooks'
-        When call shellspec_call_after_example_hooks
+        When call shellspec_call_after_hooks EXAMPLE
         The stdout should be blank
       End
     End
@@ -45,7 +45,7 @@ Describe "core/hook.sh"
 
       It 'calls hooks in reverse registration order'
         BeforeCall example_hooks
-        When call shellspec_call_after_example_hooks
+        When call shellspec_call_after_hooks EXAMPLE
         The line 1 of stdout should equal 3
         The line 2 of stdout should equal 2
         The line 3 of stdout should equal 1

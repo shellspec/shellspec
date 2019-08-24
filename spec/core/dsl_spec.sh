@@ -276,7 +276,7 @@ Describe "core/dsl.sh"
     End
 
     It 'is failure if shellspec_call_before_each_hooks failed'
-      mock_hooks() { shellspec_call_before_each_hooks() { return 1; }; }
+      mock_hooks() { shellspec_before 'return 1'; }
       BeforeRun mock_hooks
       block() { expectation; }
       When run shellspec_invoke_example
@@ -287,7 +287,7 @@ Describe "core/dsl.sh"
     End
 
     It 'is failure if shellspec_call_after_each_hooks failed'
-      mock_hooks() { shellspec_call_after_each_hooks() { return 1; }; }
+      mock_hooks() { shellspec_after 'return 1'; }
       BeforeRun mock_hooks
       block() { expectation; }
       When run shellspec_invoke_example
