@@ -31,16 +31,24 @@ shellspec_call_hook() {
 }
 
 shellspec_call_before_hooks() {
-  eval "[ \"\${2:-1}\" -gt \"\$SHELLSPEC_BEFORE_$1_INDEX\" ] &&:" && return 0
-  shellspec_call_hook "SHELLSPEC_BEFORE_$1_${2:-1}" || return $?
-  shellspec_call_before_hooks "$1" "$((${2:-1} + 1))"
+  if [ $# -le 1 ]; then
+    shellspec_call_before_hooks "$1" 1
+  else
+    eval "[ \"\${2:-1}\" -gt \"\$SHELLSPEC_BEFORE_$1_INDEX\" ] &&:" && return 0
+    shellspec_call_hook "SHELLSPEC_BEFORE_$1_${2:-1}" || return $?
+    shellspec_call_before_hooks "$1" "$((${2:-1} + 1))"
+  fi
 }
 
 shellspec_call_after_hooks() {
-  [ $# -le 1 ] && eval "set -- \"\$1\" \"\$SHELLSPEC_AFTER_$1_INDEX\""
-  [ "$2" -lt 1 ] && return 0
-  shellspec_call_hook "SHELLSPEC_AFTER_$1_$2" || return $?
-  shellspec_call_after_hooks "$1" $(($2 - 1))
+  if [ $# -le 1 ]; then
+    eval "set -- \"\$1\" \"\$SHELLSPEC_AFTER_$1_INDEX\""
+    shellspec_call_after_hooks "$1" "$2"
+  else
+    [ "$2" -lt 1 ] && return 0
+    shellspec_call_hook "SHELLSPEC_AFTER_$1_$2" || return $?
+    shellspec_call_after_hooks "$1" $(($2 - 1))
+  fi
 }
 
 shellspec_create_hook EACH
