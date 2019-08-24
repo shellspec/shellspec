@@ -27,8 +27,8 @@ trap 'finished' EXIT
 image="shellspec:coverage"
 
 (
-  cd contrib/mksock
-  docker build -t shellspec:mksock .
+  cd contrib/helpers
+  docker build -t shellspec:helpers .
 )
 
 old_image=$(docker images -q --no-trunc "$image")

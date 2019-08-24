@@ -8,6 +8,7 @@ WORKDIR /shellspec
 RUN echo "--no-banner" > /home/user/.shellspec \
  && su-exec root ln -s /shellspec/shellspec /usr/local/bin/shellspec \
  && su-exec root sh -c "echo $SH > /etc/invokesh.conf" \
+ && su-exec root chown user:user /shellspec \
  && [ "$SH" = "sh" ] || su-exec root ln -snf /usr/local/bin/invokesh /bin/sh
 
 ENTRYPOINT [ "/shellspec/docker/entrypoint.sh" ]
