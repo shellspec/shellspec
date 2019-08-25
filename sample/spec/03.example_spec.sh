@@ -20,7 +20,7 @@ Describe 'example sample'
     :
   End
 
-  Todo 'what to do' # same as "Not yot implemented" example but not block'
+  Todo 'what to do' # same as "Not yot implemented" example but not block
 
   It 'not allows define "example group" in "example"'
     # Describe 'example group'
