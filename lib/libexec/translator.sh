@@ -81,7 +81,7 @@ block_example_group() {
 
   check_filter "$1" && filter=1
 
-  increase_example_id
+  increase_block_id
   _block_no=$(($_block_no + 1))
   block_no=$_block_no lineno_begin=$lineno
   eval "block_lineno_begin${_block_no}=$lineno"
@@ -105,7 +105,7 @@ block_example() {
 
   check_filter "$1" && filter=1
 
-  increase_example_id
+  increase_block_id
   _block_no=$(($_block_no + 1))
   block_no=$_block_no lineno_begin=$lineno
   eval "block_lineno_begin${block_no}=$lineno"
@@ -124,7 +124,7 @@ block_end() {
     return 0
   fi
 
-  decrease_example_id
+  decrease_block_id
   block_no=${_block_no_stack##* } lineno_end=$lineno
   eval "block_lineno_end${block_no}=$lineno"
   eval "lineno_begin=\$block_lineno_begin${block_no}"
@@ -363,7 +363,7 @@ with_function() {
 
 is_in_range() {
   case $1 in
-    @*) [ "$example_id" = "${1#@}" ] ;;
+    @*) [ "$block_id" = "${1#@}" ] ;;
     *) [ "$lineno_begin" -le "$1" ] && [ "$1" -le "$lineno_end" ] ;;
   esac
 }
@@ -388,7 +388,7 @@ remove_from_ranges() {
 }
 
 translate() {
-  example_id='' inside_of_example='' inside_of_text=''
+  block_id='' inside_of_example='' inside_of_text=''
   while IFS= read -r line || [ "$line" ]; do
     lineno=$(($lineno + 1)) work=''
     while ends_with_backslash "$line"; do

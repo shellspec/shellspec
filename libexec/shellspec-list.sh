@@ -22,7 +22,7 @@ trans_block_example_group() {
 
 trans_block_example() {
   putsn "block${block_no}() { "
-  putsn "LINENO_BEGIN=$lineno_begin" "EXAMPLE_ID=$example_id"
+  putsn "LINENO_BEGIN=$lineno_begin" "EXAMPLE_ID=$block_id"
   putsn "FILTER=\${FILTER}${filter:-0}" "ENABLED=\${ENABLED}${enabled:-0}"
   putsn "yield ${parameter_count:-1}"
 }

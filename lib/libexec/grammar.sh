@@ -97,20 +97,20 @@ mapping() {
   esac
 }
 
-increase_example_id() {
-  [ "$example_id" ] || example_id_increased=1
-  [ "$example_id_increased" ] && example_id=$example_id${example_id:+-}0
-  case $example_id in
-    *-*) example_id=${example_id%-*}-$((${example_id##*-} + 1)) ;;
-    *  ) example_id=$(($example_id + 1)) ;;
+increase_block_id() {
+  [ "$block_id" ] || block_id_increased=1
+  [ "$block_id_increased" ] && block_id=$block_id${block_id:+-}0
+  case $block_id in
+    *-*) block_id=${block_id%-*}-$((${block_id##*-} + 1)) ;;
+    *  ) block_id=$(($block_id + 1)) ;;
   esac
-  example_id_increased=1
+  block_id_increased=1
 }
 
-decrease_example_id() {
-  if [ "$example_id_increased" ]; then
-    example_id_increased=''
+decrease_block_id() {
+  if [ "$block_id_increased" ]; then
+    block_id_increased=''
   else
-    example_id=${example_id%-*}
+    block_id=${block_id%-*}
   fi
 }
