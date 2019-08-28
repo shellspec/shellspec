@@ -53,6 +53,10 @@ main() {
     esac
   done
 
+  cd contrib/helpers
+  docker build -t shellspec:helpers . | grayout
+  cd $OLDPWD
+
   while [ $# -gt 0 ]; do
     case $1 in
       --) break ;;
@@ -103,11 +107,6 @@ run() {
   os="${dockerfile##*/}"
   os="${os#.}"
   image="shellspec:$os"
-  (
-    cd contrib/helpers
-    docker build -t shellspec:helpers . | grayout
-  )
-
   old_image=$(docker images -q --no-trunc "$image")
 
   docker build --iidfile "$iidfile" $options - < "$dockerfile" | grayout
