@@ -20,7 +20,7 @@ shellspec_proxy shellspec_register_before_hook "shellspec_register_hook BEFORE"
 shellspec_proxy shellspec_register_after_hook "shellspec_register_hook AFTER"
 
 shellspec_hook_index() {
-  eval "$1=\$SHELLSPEC_SPEC_NO@\$SHELLSPEC_GROUP_ID@\$SHELLSPEC_AUX_LINENO:\$2"
+  eval "$1=\$SHELLSPEC_SPEC_NO@\${SHELLSPEC_GROUP_ID:-}@\$SHELLSPEC_AUX_LINENO:\$2"
 }
 
 shellspec_call_hook() {
@@ -31,7 +31,7 @@ shellspec_call_hook() {
   case $1 in
     BEFORE-ALL) shellspec_marked_tag "$SHELLSPEC_HOOK_ID" && return 0 ;;
     AFTER-ALL)
-      [ "${SHELLSPEC_HOOK_ID%@*}" = "$SHELLSPEC_SPEC_NO@$SHELLSPEC_GROUP_ID" ] || return 0
+      [ "${SHELLSPEC_HOOK_ID%@*}" = "$SHELLSPEC_SPEC_NO@${SHELLSPEC_GROUP_ID:-}" ] || return 0
       shellspec_marked_tag "${SHELLSPEC_HOOK_ID%@*}" || return 0
   esac
 
@@ -68,8 +68,9 @@ shellspec_call_after_hooks() {
 
 shellspec_mark_executed_group() {
   shellspec_mark_tag "$SHELLSPEC_SPEC_NO@$1"
-  case $1 in (*-*)
-    shellspec_mark_executed_group "${1%-*}"
+  case $1 in
+    *-*) shellspec_mark_executed_group "${1%-*}" ;;
+    *) shellspec_mark_tag "$SHELLSPEC_SPEC_NO@"
   esac
 }
 

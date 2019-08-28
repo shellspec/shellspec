@@ -46,6 +46,7 @@ shellspec_end() {
   # shellcheck disable=SC2034
   SHELLSPEC_EXAMPLE_COUNT=${1:-}
   shellspec_output END
+  shellspec_call_after_hooks ALL
 }
 
 shellspec_description() {
