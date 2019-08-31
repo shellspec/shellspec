@@ -70,18 +70,14 @@ trans_skip() {
   putsn "shellspec_skip ${skip_id} ${1:-}"
 }
 
-here() {
-  putsn "cat <<$1 $2"
-}
-
 trans_data_begin() {
   putsn "shellspec_data() {"
 }
 
 trans_data_here_begin() {
   case $1 in
-    expand) here "$delimiter" "$2" ;;
-    raw)    here "'$delimiter'" "$2" ;;
+    expand) putsn "cat <<$delimiter $2" ;;
+    raw)    putsn "cat <<'$delimiter' $2" ;;
   esac
 }
 
@@ -112,8 +108,8 @@ trans_data_end() {
 
 trans_text_begin() {
   case $1 in
-    expand) here "$delimiter" "$2" ;;
-    raw)    here "'$delimiter'" "$2" ;;
+    expand) putsn "cat <<$delimiter $2" ;;
+    raw)    putsn "cat <<'$delimiter' $2" ;;
   esac
 }
 
