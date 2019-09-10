@@ -123,7 +123,7 @@ fi
 
 case $exit_status in
   0) ;; # Running specs exit with successfully.
-  $SHELLSPEC_SPEC_FAILURE_CODE) ;; # Running specs exit with failure.
+  "$SHELLSPEC_SPEC_FAILURE_CODE") ;; # Running specs exit with failure.
   *) error "Fatal error occurred, terminated with exit status $exit_status."
 esac
 
