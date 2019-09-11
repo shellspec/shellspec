@@ -63,7 +63,8 @@ trap 'exit 1' INT
 trap 'docker rmi "$tag" >/dev/null 2>&1' EXIT
 
 # Volume can not be used on VolFs of WSL.
-docker build -t "$tag" . -f dockerfiles/.shellcheck > /dev/null
+shellcheck_version=$(cat .shellcheck-version)
+docker build -t "$tag" --build-arg "$shellcheck_version" . -f dockerfiles/.shellcheck > /dev/null
 docker run -i --rm "$tag" --version
 docker run -i --rm "$tag" -C $(sources; specs; samples)
 
