@@ -254,6 +254,18 @@ $ bpkg install shellspec/shellspec@0.19.1
 </details>
 
 <details>
+<summary>Using your Linux distribution package manager (ArchLinux)</summary>
+
+Installation on ArchLinux from the AUR [shellspec package](https://aur.archlinux.org/packages/shellspec/) using `aura`:
+
+```console
+# Install the latest stable version
+$ aura -A shellspec
+```
+
+</details>
+
+<details>
 <summary>Using make</summary>
 
 **Installation**
