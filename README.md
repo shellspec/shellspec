@@ -2,7 +2,7 @@
 
 BDD style unit testing framework for POSIX compliant shell script.
 
-**Let’s test the your shell script!**
+**Let’s test your shell script!**
 
 ![demo](docs/demo.gif)
 
@@ -41,7 +41,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 - [shellspec command](#shellspec-command)
   - [Usage](#usage)
   - [Configure default options](#configure-default-options)
-  - [Special environment variable](#special-environment-variable)
+  - [Special environment variables](#special-environment-variables)
   - [Parallel execution](#parallel-execution)
   - [Random execution](#random-execution)
   - [Reporter / Generator](#reporter--generator)
@@ -67,7 +67,7 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [When - evaluation](#when---evaluation)
     - [The - expectation](#the---expectation)
     - [Skip, Pending - skip and pending example](#skip-pending---skip-and-pending-example)
-    - [Include - include shell script](#include---include-shell-script)
+    - [Include - include a shell script](#include---include-shell-a-script)
     - [Set - set shell option](#set---set-shell-option)
     - [Path, File, Dir - path alias](#path-file-dir---path-alias)
     - [Data - input data for evaluation](#data---input-data-for-evaluation)
@@ -93,27 +93,27 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 ## Introduction
 
-shellspec was developed as a cross-platform testing tool for develop
+Shellspec was developed as a cross-platform testing tool for developing
 POSIX-compliant shell scripts that work in many environments.
-Works not only PC but also in restricted environments like cloud and embedded OS.
-And provides first-class features equivalent to other language testing tools.
-Of course shellspec is tested by shellspec.
+It not only works on PC but also in restricted environments like cloud and
+embedded OS. It provides first-class features equivalent to other language
+testing tools. Of course shellspec is tested by shellspec.
 
 ### Features
 
 * Works with all POSIX compliant shells (dash, bash, zsh, ksh, busybox, etc...)
-* Implemented by shell script with minimal dependencies (use only a few basic POSIX compliant command)
-* BDD style syntax specfile that interpretable as a shell script
-* Support nestable block with scope like lexical scope
-* Easy to mocking and stubbing in cooperation with scope
-* The skip / pending of the examples, and support easy-to-skip "x" known as "xit"
-* The before / after examples hooks
-* Parameterized example for Data-Driven tests
+* Implemented by shell scripts with minimal dependencies (use only a few basic POSIX-compliant commands)
+* BDD style specfile interpretable as a shell script
+* Supports nestable blocks with scope like lexical scope
+* Easy to mock and stub in cooperation with scope
+* Skip / pending of the examples, and support of easy-to-skip "x" known as "xit"
+* Hooks before / after examples
+* Parameterized examples for Data-Driven tests
 * Execution filtering by line number, id, focus, tag and example name
-* Parallel execution, random ordering execution and dry-run execution
-* Modern reporting (colorize, failed line number, progress / documentation / TAP / JUnit formatter)
+* Parallel execution, random ordered execution and dry-run execution
+* Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
 * Coverage ([kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
-* Built-in simple task runner
+* Builtin simple task runner
 * Extensible architecture (custom matcher, custom formatter, etc...)
 
 ### Supported shells
@@ -135,20 +135,20 @@ Tested Platforms
 
 [Tested version details](docs/shells.md)
 
-### Requires
+### Requirements
 
-shellspec is implemented by a pure shell script and uses only shell built-in
-and a few basic [POSIX-compliant commands][utilities] to support widely environments.
-(except `kcov` for optionally coverage).
+Shellspec is implemented by a pure shell script and uses only shell builtins
+and a few basic [POSIX-compliant commands][utilities] to support widely environments
+(except `kcov` for optional coverage).
 
 [utilities]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/contents.html
 
-Currently used external (not shell built-in) commands.
+Currently used external (not shell builtins) commands:
 
-- `cat`, `date`, `ls`, `mkdir`, `od` (or `hexdump` not posix), `rm`, `sleep`, `sort`, `time`
-- `ps` (Used to auto detect the current shell in environments that do not implement procfs)
-- `ln` (Used only when generating coverage)
-- `kill`, `printf` (Used but almost shell built-in)
+- `cat`, `date`, `ls`, `mkdir`, `od` (or not POSIX `hexdump`), `rm`, `sleep`, `sort`, `time`
+- `ps` (used to autodetect the current shell in environments which do not implement procfs)
+- `ln` (used only when generating coverage report)
+- `kill`, `printf` (used but almost shell builtins)
 
 ## Tutorial
 
@@ -190,7 +190,7 @@ $ curl -fsSL https://git.io/shellspec | sh -s 0.18.0 --switch
 **Uninstall**
 
 1. Delete the shellspec executable file [default: `$HOME/bin/shellspec`].
-2. Delete the shellspec installation directpry [default: `$HOME/lib/shellspec`].
+2. Delete the shellspec installation directory [default: `$HOME/lib/shellspec`].
 
 **Other usage**
 
@@ -229,7 +229,7 @@ OPTIONS:
 <details>
 <summary>Using package manager (basher / bpkg)</summary>
 
-**The official support is shellspec 0.19.1 and later.**
+**The officially supported version is shellspec 0.19.1 and later.**
 
 Installation with [basher](https://github.com/basherpm/basher)
 
@@ -296,7 +296,7 @@ $ make uninstall PREFIX=$HOME
 <details>
 <summary>Manual installation</summary>
 
-**Just get the shellspec and create a symlink in your executable PATH!**
+**Just get shellspec and create a symlink in your executable PATH!**
 
 From git
 
@@ -334,7 +334,7 @@ $ chmod +x /EXECUTABLE/PATH/shellspec
 **Just create your project directory and run `shellspec --init` to setup to your project**
 
 ```console
-# Create your project directory. for example "hello".
+# Create your project directory, for example "hello".
 $ mkdir hello
 $ cd hello
 
@@ -359,7 +359,7 @@ HERE
 $ mkdir lib
 $ touch lib/hello.sh
 
-# It goes fail because hello function not implemented.
+# It will fail because the hello function is not implemented.
 $ shellspec
 
 # Write hello function
@@ -369,7 +369,7 @@ hello() {
 }
 HERE
 
-# It goes success!
+# It will success!
 $ shellspec
 ```
 
@@ -471,47 +471,48 @@ Usage: shellspec [options] [files or directories]
 
 ### Configure default options
 
-To change default options for `shellspec` command, create options file.
-Read files in the order the bellows and overrides options.
+To change the default options for the `shellspec` command, create an options
+file. Files are read in the order shown below, options defined last take
+precedence.
 
 1. `$XDG_CONFIG_HOME/shellspec/options`
 2. `$HOME/.shellspec`
 3. `./.shellspec`
 4. `./.shellspec-local` (Do not store in VCS such as git)
 
-### Special environment variable
+### Special environment variables
 
-Special environment variable of shellspec is starts with `SHELLSPEC_`.
-It can be overridden with custom script of `--env-from` option.
+Special environment variables understood by shellspec begin with `SHELLSPEC_`.
+They can be overridden with a custom script using the `--env-from` option.
 
 *Todo: descriptions of many special environment variables.*
 
 ### Parallel execution
 
 You can use parallel execution for fast test with `--jobs` option. Parallel
-jobs are executed per the specfile. So it is necessary to separete the specfile
+jobs are executed per specfile. So it is necessary to separate the specfile
 for effective parallel execution.
 
 ### Random execution
 
-You can randomize the execution order to detect troubles due to
-the test execution order. If `SEED` specified, you can execute same order.
+You can randomize the execution order to detect troubles due to the test
+execution order. If `SEED` is specified, the execution order is deterministic.
 
 ### Reporter / Generator
 
 You can specify one reporter (output to stdout) and multiple generators
-(output to file). Currently builtin formatters are `progress`, `documentation`,
-`tap`, `junit`, `null`, `debug`.
+(output to a file). Currently builtin formatters are `progress`,
+`documentation`, `tap`, `junit`, `null`, `debug`.
 
 ### Ranges / Filters
 
 You can execute specified spec only. It can be specified by line number,
-example id, example name, tag and focues. To focus, prepend `f` to
-groups / examples in specfiles. (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`)
+example id, example name, tag and focus. To focus, prepend `f` to
+groups / examples in specfiles (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`).
 
 ### Coverage
 
-shellspec is integrated with coverage for ease of use. It works with the default
+Shellspec is integrated with coverage for ease of use. It works with the default
 settings, but you may need to adjust options to make it more accurate.
 
 [kcov](https://github.com/SimonKagstrom/kcov) is required to use coverage.
@@ -519,11 +520,11 @@ settings, but you may need to adjust options to make it more accurate.
 * How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
 * Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html).
 
-**Be aware of the shell can be used for coverage is `bash` only.**
+**Be aware that `bash` is the only shell which can be used for coverage analysis.**
 
 ### Profiler
 
-When specified `--profile` option, profiler is enabled and list the slow examples.
+When the `--profile` option is specified, the profiler is enabled and lists the slow examples.
 
 ### Task runner
 
@@ -571,7 +572,7 @@ Directory where the generator outputs reports.
 
 ### coverage/
 
-Directory where the kcov outputs coverge.
+Directory where kcov outputs coverage reports.
 
 ### spec/
 
@@ -579,24 +580,26 @@ Directory where you create specfiles.
 
 ### banner
 
-If exists `spec/banner` file, shows banner when `shellspec` command executed.
-To disable shows banner with `--no-banner` option.
+If `spec/banner` file exists, the banner is shown when the `shellspec` command
+is executed. Disable that behavior with the `--no-banner` option.
 
 ### spec_helper.sh
 
-The *spec_helper.sh* loaded by `--require spec_helper` option.
-This file use to preparation for running examples, define custom matchers, and etc.
+The *spec_helper.sh* loaded by the `--require spec_helper` option.
+This file is used to prepare for running examples, to define custom matchers,
+etc.
 
 ### support/
 
-This directory use to create file for custom matchers, tasks and etc.
+This directory is used to store files for custom matchers, tasks, etc.
 
 ## Specfile
 
 ### Example
 
-**The best place to learn how to write specfile is [sample/spec](/sample/spec) directory. You must see it!**
-*(Those samples includes failure examples on purpose.)*
+**The best place to learn how to write a specfile is the
+[sample/spec](/sample/spec) directory. You should take a look at it !**
+*(Those samples include failure examples on purpose.)*
 
 ```sh
 Describe 'sample' # example group
@@ -622,11 +625,11 @@ End
 
 ### Translation process
 
-The specfile is a valid shell script syntax, but performs translation process
-to implements the scope and line number etc. Each example group block and
-example block are translate to subsshell. Therefore changes inside the block
-do not affect the outside of the block. In other words it realize local
-variables and local functions in the specfile. This is very useful for
+The specfile is a valid shell script, but a translation process is performed
+to implement the scope, line number etc. Each example group block and
+example block is translated to commands in a subshell. Therefore changes inside
+those blocks do not affect the outside of the block. In other words it realizes
+local variables and local functions in the specfile. This is very useful for
 describing a structured spec. If you are interested in how to translate,
 use the `--translate` option.
 
@@ -634,44 +637,44 @@ use the `--translate` option.
 
 #### Describe, Context - example group
 
-You can write structured *example* using by `Describe`, `Context` block.
-Example groups can be nested. Example groups can contain example groups or examples.
-Each example groups run in subshell.
+You can write a structured *example* by using the `Describe`, `Context` block.
+Example groups can be nested. They can contain example groups or examples.
+Each example group runs in a subshell.
 
 #### It, Example, Specify, Todo - example
 
-You can write describe how code behaves using by `It`, `Example`, `Specify` block.
-It constitute by maximum of one evaluation and multiple expectations.
-`Todo` is one liner empty example.
+You can describe how code behaves by using the `It`, `Example`, `Specify` block.
+It is composed by a maximum of one evaluation and multiple expectations.
+`Todo` is a one liner empty example.
 
 #### When - evaluation
 
-Defines the action for verification. The evaluation is start with `When`
-It can be defined evaluation up to one for each example.
+Defines the action for verification. The evaluation begins with `When`.
+Only one evaluation can be defined for each example.
 
 ```
 When call echo hello world
  |    |    |
  |    |    +-- The rest is action for verification
- |    +-- The evaluation type `call` is call a function or external command.
- +-- The evaluation is start with `When`
+ |    +-- The evaluation type `call` calls a function or external command.
+ +-- The evaluation keyword
 ```
 
 #### The - expectation
 
-Defines the verification. The expectation is start with `The`
+Defines the verification. The expectation begins with `The`.
 
-Verify the *subject* with the *matcher*.
+Verifies the *subject* with the *matcher*.
 
 ```
 The output should equal 4
  |    |           |
- |    |           +-- The `equal` matcher verify a subject is expected value 4.
+ |    |           +-- The `equal` matcher verifies the subject value is 4.
  |    +-- The `output` subject uses the stdout as a subject for verification.
- +-- The expectation is start with `The`
+ +-- The expectation keyword
 ```
 
-You can reverses the verification with *should not*.
+You can reverse the verification with *should not*.
 
 ```
 The output should not equal 4
@@ -682,7 +685,7 @@ You can use the *modifier* to modify the *subject*.
 ```
 The line 2 of output should equal 4
     |
-    +-- The `line` modifier use specified line 2 of output as subject.
+    +-- The `line` modifier use the specified line 2 of output as subject.
 ```
 
 The *modifier* is chainable.
@@ -698,15 +701,15 @@ The second line of output should equal 4
 ```
 
 
-shellspec supports to improve readability *language chains* like chai.js.
-It is only improve readability, does not any effect the expectation.
+Shellspec supports *language chains* like [chai.js](https://www.chaijs.com/).
+It only improves readability, does not affect the expectation:
 
 * a
 * an
 * as
 * the
 
-The following two sentences are the same meaning.
+The following two sentences have the same meaning:
 
 ```
 The first word of second line of output should valid number
@@ -718,22 +721,20 @@ The first word of the second line of output should valid as a number
 
 #### Skip, Pending - skip and pending example
 
-You can skip example by `Skip`. If you want to skip only in some cases,
-use conditional skip `Skip if`. You can also use `Pending` to indicate the
-to be implementation. You can temporary skip `Describe`, `Context`, `Example`,
-`Specify`, `It` block. To skip, add prefixing `x` and modify to `xDescribe`,
-`xContext`, `xExample`, `xSpecify`, `xIt`.
+You can skip an example by using the `Skip` keyword. If you want to skip only in
+some cases, use a conditional skip `Skip if`. You can also use `Pending` to
+indicate that the example needs to be implemented. You can temporary skip
+`Describe`, `Context`, `Example`, `Specify`, `It` blocks by prefixing with `x`
+(`xDescribe`, `xContext`, `xExample`, `xSpecify`, `xIt`).
 
-#### Include - include shell script
+#### Include - include a shell script
 
 Include the shell script file to test.
 
 #### Set - set shell option
 
-Set shell option before execute each example.
-The shell option name is the long name of `set` or the name of `shopt`.
-
-e.g.
+Set shell option before executing each example.
+The shell option name is the long name of `set` or the name of `shopt`:
 
 ```sh
 Set 'errexit:off' 'noglob:on'
@@ -745,8 +746,8 @@ Set 'errexit:off' 'noglob:on'
 
 #### Data - input data for evaluation
 
-You can use Data Helper that input data from stdin for evaluation.
-After `#|` in the `Data` block is the input data.
+You can use the Data Helper which inputs data from stdin for evaluation.
+The input data is specified after `#|` in the `Data` block.
 
 ```sh
 Describe 'Data helper'
@@ -818,51 +819,52 @@ End
 
 #### subject, modifier, matcher
 
-There is more *subject*, *modifier*, *matcher*. please refer to the
+There are more *subjects*, *modifiers*, *matchers*. please refer to the
 [References](/docs/references.md)
 
 *Custom matcher*
 
-shellspec has extensible architecture. So you can create custom matcher,
-custom modifier, custom formatter, etc...
+Shellspec has an extensible architecture. So you can create custom matchers,
+custom modifiers, custom formatters, etc.
 
-see [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
+See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
 
 ### Hooks
 
 #### BeforeAll, AfterAll - example group hook
 
-You can define before all / after all hooks by `BeforeAll`, `AfterAll`.
-The hooks are called before or after for all examples.
+You can define before all / after all hooks by using `BeforeAll`, `AfterAll`.
+The hooks are called before or after all examples.
 
 #### Before, After - example hook
 
-You can define before / after hooks by `Before`, `After`.
+You can define before / after hooks by using `Before`, `After`.
 The hooks are called for each example.
 
 #### BeforeCall, AfterCall - call evaluation hook
 
-You can define before / after call hooks by `BeforeCall`, `AfterCall`.
-The hooks are called for before or after "call evaluation".
+You can define before / after call hooks by using `BeforeCall`, `AfterCall`.
+The hooks are called before or after a "call evaluation".
 
 #### BeforeRun, AfterRun - run evaluation hook
 
-You can define before / after run hooks by `BeforeRun`, `AfterRun`.
-The hooks are called for before or after "run evaluation".
+You can define before / after run hooks by using `BeforeRun`, `AfterRun`.
+The hooks are called before or after a "run evaluation".
 
-These hooks are executed in the same subshell as "run evaluation". So you can
-mock/stub the function before run. And you can accessing variable for
+These hooks are executed in the same subshell as the "run evaluation". So you
+can mock/stub the function before run. And you can access a variable for
 evaluation after run.
 
 ### Directive
 
 #### %const (%) - constant definition
 
-`%const` (`%` is short hand) directive is define constant value. The characters
-that can be used for variable name is upper capital, number and underscore only.
-It can not be define inside of the example group or the example.
+`%const` (`%` is short hand) directive defines a constant value. The characters
+which can be used for variable names are uppercase letters `[A-Z]`, digits
+`[0-9]` and underscore `_` only. It can not be defined inside an example
+group nor an example.
 
-The timing of evaluation of the value is the specfile translation process.
+The value is evaluated during the specfile translation process.
 So you can access shellspec variables, but you can not access variable or
 function in the specfile.
 
@@ -872,8 +874,8 @@ outside of the examples.
 
 #### %text - embedded text
 
-You can use `%text` directive instead of hard-to-use heredoc with indented code.
-After `#|` is the input data.
+You can use the `%text` directive instead of an hard-to-use heredoc with
+indented code. The input data is specified after `#|`.
 
 ```sh
 Describe '%text directive'
@@ -899,9 +901,10 @@ End
 
 #### %puts (%-),  %putsn (%=) - put string
 
-`%puts` (put string) and `%putsn` (put string with newline) can be used instead of
-(not portable) echo. Unlike echo, not interpret escape sequences all shells.
-`%-` is an alias of `%puts`, `%=` is an alias of `%putsn`.
+`%puts` (put string) and `%putsn` (put string with newline) can be used instead
+of (not portable) echo. Unlike echo, it does not interpret escape sequences
+regardless of the shell. `%-` is an alias of `%puts`, `%=` is an alias of
+`%putsn`.
 
 #### %logger
 
@@ -909,16 +912,16 @@ Output log to `$SHELLSPEC_LOGFILE` (default: `/dev/tty`) for debugging.
 
 #### %data
 
-See `Parameters`
+See `Parameters`.
 
 ### Mock and Stub
 
-Currentry, shellspec is not provide any special function for mocking / stubbing.
-But redefine shell function can override existing shell function or external
-command. It can use as mocking / stubbing.
+Currently, shellspec does not provide any special function for mocking / stubbing.
+But redefining a shell function can override existing shell function or external
+command. It can be used for mocking / stubbing.
 
-Remember to `Describe`, `Context`, `It`, `Example`, `Specify` block running in
-subshell. When going out of the block restore redefined function.
+Remember that `Describe`, `Context`, `It`, `Example`, `Specify` blocks run in a
+subshell. When going out of the block, redefined functions are restored.
 
 ```sh
 Describe 'mock stub sample'
@@ -939,16 +942,17 @@ Describe 'mock stub sample'
 End
 ```
 
-### Testing a single file script.
+### Testing a single file script
 
-Shell scripts are often made up of a single file. shellspec provides two ways
-to test a single shell script.
+Shell scripts are often made up of a single file. Shellspec provides two ways
+of testing a single shell script.
 
 #### Sourced Return
 
 This is a method for testing functions defined in shell scripts. Loading a
-script with `Include` defines a `__SOURCED__` variable. If the `__SOURCE__`
-variable is defined, return in your shell script process.
+script with `Include` defines a `__SOURCED__` variable available in the sourced
+script. If the `__SOURCED__` variable is defined, return in your shell script
+process.
 
 ```sh
 #!/bin/sh
@@ -973,8 +977,9 @@ End
 
 #### Intercept
 
-This is a method to mock/stub functions and commands when executing shell scripts.
-By placing intercept points in your script, you can call the hooks defined in specfile.
+This is a method to mock/stub functions and commands when executing shell
+scripts. By placing intercept points in your script, you can call the hooks
+defined in specfile.
 
 ```sh
 #!/bin/sh
