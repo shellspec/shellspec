@@ -2,11 +2,13 @@
 
 ## Tested shells and versions
 
-* **The version of strikethrough is does not work.**
-* **The version of italic may work but it is not supported due to a bug.**
-* The shell that includes with the supported os (The platform of bold) is the main support.
+* **The version with a dash does not work.**
+* **The version in italic may work but it is not supported due to a bug.**
+* The shell included with the supported OS (the platform in bold) is the main
+  supported shell.
 * The old shell has been tested, but support may be discontinued.
-* Supported busybox shell is `ash` only. `hush` has many missing features and bugs.
+* Supported busybox shell is `ash` only. `hush` has many missing features and
+  bugs.
 * Bourne shell is not supported.
 
 ### Packages
@@ -47,7 +49,7 @@ Default shell: `bash`
 | **fedora 29**       | 4.4.23 |         |      |     |      |      |     |
 | **fedora 30**       | 5.0.7  |         |      |     |      |      |     |
 
-* Testing bash 4.1.2- is POSIX mode only.
+* Testing bash 4.1.2- in POSIX mode only.
 
 #### Debian / Ubuntu
 
@@ -73,7 +75,7 @@ Default shell: `dash` or `bash` (until debian 5.0)
 | **Ubuntu 19.04** |        |            |               |                 |      | -        |          |      | 5.5.1  |
 
 * Using https://github.com/lpenz/docker-debian-releases/ for older (7.11 and before) Debian docker images.
-* Testing bash 2.03-3.2.39 is both POSIX and non-POSIX mode. bash 4.1.5- is non-POSIX mode only.
+* Testing bash 2.03-3.2.39 in both POSIX and non-POSIX mode. bash 4.1.5- is non-POSIX mode only.
 
 #### FreeBSD
 
@@ -151,7 +153,7 @@ Usage: `contrib/builtins.sh`
 
 * This is not complete list.
 * It may not be implemented in older versions.
-* It may implemented in newer versions.
+* It may be implemented in newer versions.
 * The options implemented may be different.
 * Commands in bold are implemented in all shells.
 * zsh has many builtin command begin with "comp" and "z".
