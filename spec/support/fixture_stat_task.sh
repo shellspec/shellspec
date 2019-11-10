@@ -121,7 +121,7 @@ fixture_stat_files() {
   "$1" file    "$fixture/stat/setuid"           a=,u+s "---S"
   "$1" file    "$fixture/stat/setgid"           a=,g+s "------S"
   "$1" device  "$fixture/stat/block-device"     b 0 0 # Unnamed devices
-  "$1" device  "$fixture/stat/charactor-device" c 1 3 # Null device
+  "$1" device  "$fixture/stat/character-device" c 1 3 # Null device
 }
 
 fixture_stat_prepare_task() {

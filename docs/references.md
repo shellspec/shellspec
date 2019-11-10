@@ -103,7 +103,7 @@ stat (the subject expect file path)
 | be writable                        | The file should be a writable.              |
 | be executable                      | The file should be an executable.           |
 | be block_device                    | The file should be a block device.          |
-| be charactor_device                | The file should be a charactor device.      |
+| be character_device                | The file should be a character device.      |
 | has setgid                         | The file should has setgid.                 |
 | has setuid                         | The file should has setuid.                 |
 
