@@ -106,7 +106,7 @@ Describe "libexec/translator.sh"
       The variable desc should eq "'\$foo' bar"
     End
 
-    It 'does not escape meta charactor'
+    It 'does not escape meta character'
       When call escape_one_line_syntax desc "var[2] * ? \\ end"
       The variable desc should eq "var[2] * ? \\ end"
     End

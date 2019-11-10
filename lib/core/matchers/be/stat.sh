@@ -14,8 +14,8 @@ shellspec_syntax 'shellspec_matcher_be_executable'
 
 shellspec_syntax_compound 'shellspec_matcher_be_block'
 shellspec_syntax 'shellspec_matcher_be_block_device'
-shellspec_syntax_compound 'shellspec_matcher_be_charactor'
-shellspec_syntax 'shellspec_matcher_be_charactor_device'
+shellspec_syntax_compound 'shellspec_matcher_be_character'
+shellspec_syntax 'shellspec_matcher_be_character_device'
 
 shellspec_make_file_matcher() {
   SHELLSPEC_EVAL="
@@ -51,4 +51,4 @@ shellspec_make_file_matcher readable         "-r" "is readable"
 shellspec_make_file_matcher writable         "-w" "is writable"
 
 shellspec_make_file_matcher block_device     "-b" "is a block device"
-shellspec_make_file_matcher charactor_device "-c" "is a charactor device"
+shellspec_make_file_matcher character_device "-c" "is a character device"

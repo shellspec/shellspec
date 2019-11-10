@@ -274,29 +274,29 @@ Describe "core/matchers/be/stat.sh"
     End
   End
 
-  Describe 'be charactor device matcher'
-    Skip if "not exist charactor-device file" not_exist "stat/charactor-device"
+  Describe 'be character device matcher'
+    Skip if "not exist character-device file" not_exist "stat/character-device"
 
     Example 'example'
-      Path charactor-device="$FIXTURE/stat/charactor-device"
-      The path charactor-device should be charactor device
+      Path character-device="$FIXTURE/stat/character-device"
+      The path character-device should be character device
     End
 
-    It 'matches when path is charactor device'
-      subject() { %- "$FIXTURE/stat/charactor-device"; }
-      When run shellspec_matcher_be_charactor_device
+    It 'matches when path is character device'
+      subject() { %- "$FIXTURE/stat/character-device"; }
+      When run shellspec_matcher_be_character_device
       The status should be success
     End
 
-    It 'does not match when path is not charactor device'
+    It 'does not match when path is not character device'
       subject() { %- "$FIXTURE/file"; }
-      When run shellspec_matcher_be_charactor_device
+      When run shellspec_matcher_be_character_device
       The status should be failure
     End
 
     It 'outputs error if parameters count is invalid'
-      subject() { %- "$FIXTURE/stat/charactor-device"; }
-      When run shellspec_matcher_be_charactor_device foo
+      subject() { %- "$FIXTURE/stat/character-device"; }
+      When run shellspec_matcher_be_character_device foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
   End

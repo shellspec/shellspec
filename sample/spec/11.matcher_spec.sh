@@ -36,7 +36,7 @@ Describe 'matcher sample'
 
     # There are many other stat matchers.
     #   be empty, be symlink, be pipe, be socket, be readable, be writable,
-    #   be executable, be block_device, be charactor_device,
+    #   be executable, be block_device, be character_device,
     #   has setgid, has setuid
   End
 
