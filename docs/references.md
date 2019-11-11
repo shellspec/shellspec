@@ -9,29 +9,29 @@
     - [Matcher](#matcher)
 - [Helper](#helper)
 - [Directive](#directive)
-- [Envronment Variables](#envronment-variables)
+- [Environment Variables](#environment-variables)
 
 ## Example Group
 
-You can write structured *Example* by below DSL.
+You can write a structured *Example* by using the DSL shown below:
 
-| DSL              | Description                                                  |
-| :--------------- | :----------------------------------------------------------- |
-| Describe ... End | Define a block for Example group. Example group is nestable. |
-| Context ... End  | Synonym for `Describe`.                                      |
+| DSL              | Description                                                         |
+| :--------------- | :------------------------------------------------------------------ |
+| Describe ... End | Define a block for examples grouping. Examples groups are nestable. |
+| Context ... End  | Synonym for `Describe`.                                             |
 
 ## Example
 
-| DSL             | Description                                                                                  |
-| :-------------- | :------------------------------------------------------------------------------------------- |
-| Example ... End | Define a block for Example. write your example.                                              |
-| Specify ... End | Synonym for `Example`.                                                                       |
-| It ... End      | Synonym for `Example`.                                                                       |
-| Todo            | Same as empty example, but not a block. One-liner syntax that it means to be implementation. |
+| DSL             | Description                                                                                    |
+| :-------------- | :--------------------------------------------------------------------------------------------- |
+| Example ... End | Define a block for Example. Write your example.                                                |
+| Specify ... End | Synonym for `Example`.                                                                         |
+| It ... End      | Synonym for `Example`.                                                                         |
+| Todo            | Same as empty example, but not a block. One-liner syntax meaning it needs to be implementated. |
 
 ### Evaluation
 
-The line start with `When` is the evaluation.
+The line beginning with `When` is the evaluation.
 
 | Evaluation                                     | Description                              |
 | :--------------------------------------------- | :--------------------------------------- |
@@ -40,7 +40,7 @@ The line start with `When` is the evaluation.
 | When run command `<COMMAND> [ARGUMENTS...]`    | Run external command within subshell.    |
 | When run source `<SCRIPT> [ARGUMENTS...]`      | Run script within subshell.              |
 
-The difference between `call` and `run` / `run command` / `run source`
+The differences between `call` and `run` / `run command` / `run source`:
 
 |                    | `call`                 | `run`                | `run command`        | `run source`         |
 | ------------------ | ---------------------- | -------------------- | -------------------- | -------------------- |
@@ -54,7 +54,7 @@ The difference between `call` and `run` / `run command` / `run source`
 
 ### Expectation
 
-The line start with `The` is the evaluation. The *subject* or the *modifier* follows after `The`. And last is the *matcher*.
+The line beginning with `The` is the evaluation. The *subject* or the *modifier* follows after `The`. And last is the *matcher*.
 
 #### Subject
 
@@ -80,18 +80,18 @@ The line start with `The` is the evaluation. The *subject* or the *modifier* fol
 
 #### Matcher
 
-status (the subject expect status)
+status (the subject expected status)
 
 | Matcher    | Description                   |
 | :--------- | :---------------------------- |
 | be success | The status should be success. |
 | be failure | The status should be failure. |
 
-stat (the subject expect file path)
+stat (the subject expected file path)
 
 | Matcher                            | Description                                 |
 | :--------------------------------- | :------------------------------------------ |
-| be exist                           | The file should be exist.                   |
+| be exist                           | The file should exist.                      |
 | be file                            | The file should be a file.                  |
 | be directory                       | The file should be a directory.             |
 | be empty file                      | The file should be an empty file.           |
@@ -99,20 +99,20 @@ stat (the subject expect file path)
 | be symlink                         | The file should be a symlink.               |
 | be pipe                            | The file should be a pipe.                  |
 | be socket                          | The file should be a socket.                |
-| be readable                        | The file should be a readable.              |
-| be writable                        | The file should be a writable.              |
-| be executable                      | The file should be an executable.           |
+| be readable                        | The file should be readable.                |
+| be writable                        | The file should be writable.                |
+| be executable                      | The file should be executable.              |
 | be block_device                    | The file should be a block device.          |
 | be character_device                | The file should be a character device.      |
-| has setgid                         | The file should has setgid.                 |
-| has setuid                         | The file should has setuid.                 |
+| has setgid                         | The file should have the `setgid` flag set. |
+| has setuid                         | The file should have the `setuid` flag set. |
 
 valid
 
 | Matcher           | Description                                |
 | :---------------- | :----------------------------------------- |
-| be valid number   | The subject should be valid as a number.   |
-| be valid funcname | The subject should be valid as a funcname. |
+| be valid number   | The subject should be a valid number.      |
+| be valid funcname | The subject should be a valid funcname.    |
 
 variable (the subject expect variable)
 
@@ -146,7 +146,7 @@ other
 | Include `<NAME>`                               | Include other files.                              |
 | Before                                         | Define a hook called before running each example. |
 | After                                          | Define a hook called after running each example.  |
-| Path<br>File<br>Dir                            | Define path alias.                                |
+| Path<br>File<br>Dir                            | Define a path alias.                              |
 | Data `[ | FILTER ]`... End                     | Define stdin data for evaluation.                 |
 | Data `<FUNCTION> [ARGUMENTS...] [ | FILTER ]`  | Use function for stdin data for evaluation.       |
 | Data `"<STRING>"`<br>Data `'<STRING>'`         | Use string for stdin data for evaluation.         |
@@ -167,11 +167,11 @@ other
 | %puts, %-  | Output arguments.                             |
 | %logger    | Output log message.                           |
 
-## Envronment Variables
+## Environment Variables
 
 | Name                | Description                                   | Value                                                         |
 | :------------------ | :-------------------------------------------- | ------------------------------------------------------------- |
-| SHELLSPEC_ROOT      | shellspec root directory                      | If not specified, it detect automatically.                    |
+| SHELLSPEC_ROOT      | shellspec root directory                      | If not specified, it is automatically detected.               |
 | SHELLSPEC_LIB       | shellspec lib directory                       | `$SHELLSPEC_ROOT/lib` if not specified.                       |
 | SHELLSPEC_LIBEXEC   | shellspec libexec directory                   | `$SHELLSPEC_ROOT/libexec` if not specified.                   |
 | SHELLSPEC_TMPDIR    | Temporary directory used by shellspec         | `$TMPDIR` or `/tmp` if not specified.                         |

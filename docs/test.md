@@ -8,22 +8,22 @@ Usage: `contrib/all.sh [COMMNAD (shellspec and etc)]`
 
 ## contrib/test_in_docker.sh
 
-Use `contrib/test_in_docker.sh` to test on supported shells (Requires docker).
+Use `contrib/test_in_docker.sh` to test on supported shells (requires Docker).
 
 Usage: `contrib/test_in_docker.sh <DOCKERFILES...> [-- COMMAND]`
 
-Dockerfile is in `dockerfiles` directory
-(The filename begin with `.` is not a supported shell).
+The Dockerfiles are in the `dockerfiles` directory (the files whose name begin
+with `.` are for unsupported shells).
 
 ## contrib/check.sh
 
-Use `contrib/check.sh` to check syntax whole project (Requires docker).
+Use `contrib/check.sh` to check syntax on the whole project (requires docker).
 
 Usage: `contrib/check.sh`
 
 ## contrib/installr_test.sh
 
-`contrib/installr_test.sh` is useful for creating a test environmen for the
-installer. (Requires docker).
+`contrib/installr_test.sh` is useful for creating a test environment for the
+installer (requires docker).
 
 Usage: `contrib/installr_test.sh`
