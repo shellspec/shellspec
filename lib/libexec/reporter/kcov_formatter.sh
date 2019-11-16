@@ -28,8 +28,8 @@ kcov_end() {
   done < "$_coverage"
 
   _color=$RED
-  [ ${_percent_covered%.*} -ge "${_percent_low%.*}" ] && _color=$YELLOW
-  [ ${_percent_covered%.*} -ge "${_percent_high%.*}" ] && _color=$GREEN
+  [ "${_percent_covered%.*}" -ge "${_percent_low%.*}" ] && _color=$YELLOW
+  [ "${_percent_covered%.*}" -ge "${_percent_high%.*}" ] && _color=$GREEN
   [ "$_color" = "$RED" ] && coverage_failed=1
 
   kcov '=' "$_color"
