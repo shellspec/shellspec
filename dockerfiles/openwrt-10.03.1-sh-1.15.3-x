@@ -1,4 +1,4 @@
-FROM openwrt:10.03.1
+FROM shellspec/openwrt:10.03.1
 RUN mkdir /var/lock /home \
  && opkg update && opkg install shadow-groupadd shadow-useradd \
  && groupadd user && useradd -m user -g user

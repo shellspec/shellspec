@@ -29,19 +29,6 @@ fi
 LF="
 "
 
-import() {
-  if [ -z "$(docker images "$1" -q)" ]; then
-    docker import "$2" "$1"
-  fi
-}
-
-import openwrt:10.03.1  "http://archive.openwrt.org/backfire/10.03.1/x86_generic/openwrt-x86-generic-rootfs.tar.gz"
-import openwrt:12.09    "http://archive.openwrt.org/attitude_adjustment/12.09/x86/generic/openwrt-x86-generic-rootfs.tar.gz"
-import openwrt:14.07    "http://archive.openwrt.org/barrier_breaker/14.07/x86/generic/openwrt-x86-generic-Generic-rootfs.tar.gz"
-import openwrt:15.05.1  "http://archive.openwrt.org/chaos_calmer/15.05.1/x86/generic/openwrt-15.05.1-x86-generic-Generic-rootfs.tar.gz"
-import lede:17.01.7     "https://downloads.openwrt.org/releases/17.01.7/targets/x86/64/lede-17.01.7-x86-64-generic-rootfs.tar.gz"
-import openwrt:18.06.4  "https://downloads.openwrt.org/releases/18.06.4/targets/x86/64/openwrt-18.06.4-x86-64-generic-rootfs.tar.gz"
-
 failures='' count=0 failures_count=0 total_count=0
 
 main() {

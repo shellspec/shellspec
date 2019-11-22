@@ -1,4 +1,4 @@
-FROM shellspec/schilytools:2018-10-30
+FROM shellspec/schilytools:2019-09-22
 RUN useradd -m user
 USER user
 ENV SH="pbosh"

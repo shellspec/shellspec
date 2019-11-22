@@ -1,4 +1,4 @@
-FROM busybox:1.31.0
+FROM alpine:3.10.3
 RUN adduser -D user
 USER user
 ENV SH="ash"
