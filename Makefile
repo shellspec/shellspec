@@ -23,9 +23,6 @@ demo:
 	seq2gif -l 5000 -h 32 -w 139 -p win -i ttyrecord -o docs/demo.gif
 	gifsicle -i docs/demo.gif -O3 -o docs/demo.gif
 
-kcov:
-	docker build -t shellspec/kcov --build-arg VERSION - < dockerfiles/.kcov
-
 coverage:
 	contrib/coverage.sh
 
