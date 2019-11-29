@@ -63,6 +63,18 @@ Describe "core/evaluation.sh"
       The stdout should equal "1${LF}2"
       The status should equal 0
     End
+
+    It "ensures no pipe and term"
+      evaluation() {
+        [ -p /dev/stdin ] && echo "pipe" || echo "no pipe"
+        [ -t 0 ] && echo "term" || echo "no term"
+      }
+      term() { exists_tty && echo "term" || echo "no term"; }
+
+      When call evaluation
+      The line 1 of stdout should equal 'no pipe'
+      The line 2 of stdout should equal "$(term)"
+    End
   End
 
   Describe 'run evaluation'
@@ -115,6 +127,18 @@ Describe "core/evaluation.sh"
       Data "data"
       When run command cat
       The stdout should equal 'data'
+    End
+
+    It "ensures no pipe and term"
+      evaluation() {
+        [ -p /dev/stdin ] && echo "pipe" || echo "no pipe"
+        [ -t 0 ] && echo "term" || echo "no term"
+      }
+      term() { exists_tty && echo "term" || echo "no term"; }
+
+      When run evaluation
+      The line 1 of stdout should equal 'no pipe'
+      The line 2 of stdout should equal "$(term)"
     End
 
     Describe 'abort test'
