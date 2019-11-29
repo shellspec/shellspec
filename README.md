@@ -74,7 +74,6 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [Parameters - parameterized example](#parameters---parameterized-example)
     - [subject, modifier, matcher](#subject-modifier-matcher)
   - [Hooks](#hooks)
-    - [BeforeAll, AfterAll - example group hook](#beforeall-afterall---example-group-hook)
     - [Before, After - example hook](#before-after---example-hook)
     - [BeforeCall, AfterCall - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
     - [BeforeRun, AfterRun - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
@@ -830,11 +829,6 @@ custom modifiers, custom formatters, etc.
 See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
 
 ### Hooks
-
-#### BeforeAll, AfterAll - example group hook
-
-You can define before all / after all hooks by using `BeforeAll`, `AfterAll`.
-The hooks are called before or after all examples.
 
 #### Before, After - example hook
 
