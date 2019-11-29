@@ -52,8 +52,6 @@ mapping() {
     Path              )   control path        "$2" ;;
     File              )   control path        "$2" ;;
     Dir               )   control path        "$2" ;;
-    BeforeAll         )   control before_all  "$2" ;;
-    AfterAll          )   control after_all   "$2" ;;
     Before            )   control before      "$2" ;;
     After             )   control after       "$2" ;;
     BeforeCall        )   control before_call "$2" ;;

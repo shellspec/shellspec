@@ -56,7 +56,6 @@ shellspec_description() {
 shellspec_example_group() {
   shellspec_description "example_group" "${1:-}${1:+$SHELLSPEC_VT}"
   shellspec_yield
-  shellspec_call_after_hooks ALL
 }
 
 shellspec_example_block() {
@@ -95,8 +94,6 @@ shellspec_example() {
       shellspec_output EXAMPLE
       shellspec_output SUCCEEDED
     else
-      shellspec_call_before_hooks ALL
-      shellspec_mark_executed_group "$SHELLSPEC_GROUP_ID"
       shellspec_profile_start
       case $- in
         *e*)
@@ -268,9 +265,6 @@ shellspec_the() {
 
   shellspec_statement_preposition "$@"
 }
-
-shellspec_proxy shellspec_before_all "shellspec_register_before_hook ALL"
-shellspec_proxy shellspec_after_all "shellspec_register_after_hook ALL"
 
 shellspec_proxy shellspec_before "shellspec_register_before_hook EACH"
 shellspec_proxy shellspec_after "shellspec_register_after_hook EACH"

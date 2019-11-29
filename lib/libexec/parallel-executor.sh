@@ -31,7 +31,7 @@ reduce() {
 }
 
 executor() {
-  SHELLSPEC_JOBDIR="$SHELLSPEC_TMPBASE/$$.jobs"
+  SHELLSPEC_JOBDIR="$SHELLSPEC_TMPBASE/jobs"
 
   mkdir "$SHELLSPEC_JOBDIR"
 
