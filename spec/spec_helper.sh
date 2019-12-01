@@ -86,4 +86,9 @@ shellspec_spec_helper_configure() {
     shopt -s failglob 2>/dev/null && return 1
     return 0
   }
+
+  exists_tty() {
+    (: < /dev/tty) 2>/dev/null
+  }
+
 }

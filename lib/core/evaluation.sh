@@ -4,6 +4,9 @@ SHELLSPEC_STDIN_FILE="$SHELLSPEC_TMPBASE/$$.stdin"
 SHELLSPEC_STDOUT_FILE="$SHELLSPEC_TMPBASE/$$.stdout"
 SHELLSPEC_STDERR_FILE="$SHELLSPEC_TMPBASE/$$.stderr"
 
+SHELLSPEC_STDIN_DEV=/dev/null
+(: < /dev/tty) 2>/dev/null && SHELLSPEC_STDIN_DEV=/dev/tty
+
 shellspec_syntax 'shellspec_evaluation_call'
 shellspec_syntax 'shellspec_evaluation_run'
 
@@ -11,7 +14,7 @@ shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
 shellspec_evaluation_call() {
   if [ ! "${SHELLSPEC_DATA:-}" ]; then
-    shellspec_around_call "$@"
+    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV"
   else
     shellspec_data > "$SHELLSPEC_STDIN_FILE"
     shellspec_around_call "$@" < "$SHELLSPEC_STDIN_FILE"
@@ -42,7 +45,7 @@ fi
 
 shellspec_evaluation_run_data() {
   if [ ! "${SHELLSPEC_DATA:-}" ]; then
-    shellspec_evaluation_run_trap_exit_status "$@"
+    shellspec_evaluation_run_trap_exit_status "$@" < "$SHELLSPEC_STDIN_DEV"
   else
     shellspec_data > "$SHELLSPEC_STDIN_FILE"
     shellspec_evaluation_run_trap_exit_status "$@" < "$SHELLSPEC_STDIN_FILE"
