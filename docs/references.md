@@ -147,7 +147,7 @@ other
 | Before                                                                           | Define a hook called before running each example. |
 | After                                                                            | Define a hook called after running each example.  |
 | Path<br>File<br>Dir                                                              | Define a path alias.                              |
-| Data <code>[ \| FILTER ]</code><br>#\|...<br>End                                           | Define stdin data for evaluation.                 |
+| Data <code>[ \| FILTER ]</code><br>#\|...<br>End                                 | Define stdin data for evaluation.                 |
 | Data <code>&lt;FUNCTION&gt; [ARGUMENTS...] [ \| FILTER ]</code>                  | Use function for stdin data for evaluation.       |
 | Data <code>"&lt;STRING&gt;"</code><br>Data <code>'&lt;STRING&gt;'</code>         | Use string for stdin data for evaluation.         |
 | Data <code>&lt; &lt;FILE&gt; [ \| FILTER ]</code>                                | Use file for stdin data for evaluation.           |
@@ -156,6 +156,11 @@ other
 | Pending <code>&lt;REASON&gt;</code>                                              | Pending current block.                            |
 | Intercept <code>[NAMES...]</code>                                                | Define an interceptor.                            |
 | Set <code>[OPTION:&lt;on \| off&gt;...]</code>                                   | Set shell option before running each example.     |
+| Parameters ... End                                                               | Define parameters (block style)                   |
+| Parameters:block ... End                                                         | Same as Parameters                                |
+| Parameters:value <code>[VALUES...]</code>                                        | Define parameters (value style)                   |
+| Parameters:matrix ... End                                                        | Define parameters (matrix style)                  |
+| Parameters:dynamic ... End                                                       | Define parameters (dynamic style)                 |
 
 ## Directive
 
