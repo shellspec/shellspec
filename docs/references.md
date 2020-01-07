@@ -33,12 +33,12 @@ You can write a structured *Example* by using the DSL shown below:
 
 The line beginning with `When` is the evaluation.
 
-| Evaluation                                     | Description                              |
-| :--------------------------------------------- | :--------------------------------------- |
-| When call `<FUNCTION> [ARGUMENTS...]`          | Call function without subshell.          |
-| When run `<FUNCTION | COMMAND> [ARGUMENTS...]` | Run function or command within subshell. |
-| When run command `<COMMAND> [ARGUMENTS...]`    | Run external command within subshell.    |
-| When run source `<SCRIPT> [ARGUMENTS...]`      | Run script within subshell.              |
+| Evaluation                                                       | Description                              |
+| :--------------------------------------------------------------- | :--------------------------------------- |
+| When call <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code>           | Call function without subshell.          |
+| When run <code>&lt;FUNCTION \| COMMAND&gt; [ARGUMENTS...]</code> | Run function or command within subshell. |
+| When run command <code>&lt;COMMAND&gt; [ARGUMENTS...]</code>     | Run external command within subshell.    |
+| When run source <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run script within subshell.              |
 
 The differences between `call` and `run` / `run command` / `run source`:
 
@@ -58,25 +58,25 @@ The line beginning with `The` is the evaluation. The *subject* or the *modifier*
 
 #### Subject
 
-| Subject                                         | Description                                   |
-| :---------------------------------------------- | :-------------------------------------------- |
-| output<br>stdout                                | Use the stdout of *Evaluation* as subject.    |
-| error<br>stderr                                 | Use the stderr of *Evaluation* as subject.    |
-| status                                          | Use the status of *Evaluation* as subject.    |
-| path `<PATH>`<br> file `<PATH>`<br>dir `<PATH>` | Use the alias resolved path as the subject.   |
-| value `<VALUE>`<br>function `<VALUE>`           | Use the value as the subject.                 |
-| variable `<NAME>`                               | Use the value of the variable as the subject. |
+| Subject                                                                                           | Description                                   |
+| :------------------------------------------------------------------------------------------------ | :-------------------------------------------- |
+| output<br>stdout                                                                                  | Use the stdout of *Evaluation* as subject.    |
+| error<br>stderr                                                                                   | Use the stderr of *Evaluation* as subject.    |
+| status                                                                                            | Use the status of *Evaluation* as subject.    |
+| path <code>&lt;PATH&gt;</code><br>file <code>&lt;PATH&gt;</code><br>dir <code>&lt;PATH&gt;</code> | Use the alias resolved path as the subject.   |
+| value <code>&lt;VALUE&gt;</code><br>function <code>&lt;VALUE&gt;</code>                           | Use the value as the subject.                 |
+| variable <code>&lt;NAME&gt;</code>                                                                | Use the value of the variable as the subject. |
 
 #### Modifier
 
-| Modifier        | Description                           |
-| :-------------- | :------------------------------------ |
-| line `<NUMBER>` | The specified line of the subject.    |
-| lines           | The number of lines of the subject.   |
-| word `<NUMBER>` | The specified word of the subject.    |
-| length          | The length of the subject.            |
-| contents        | The contents of the file (subject).   |
-| result          | The result of the function (subject). |
+| Modifier                         | Description                           |
+| :------------------------------- | :------------------------------------ |
+| line <code>&lt;NUMBER&gt;</code> | The specified line of the subject.    |
+| lines                            | The number of lines of the subject.   |
+| word <code>&lt;NUMBER&gt;</code> | The specified word of the subject.    |
+| length                           | The length of the subject.            |
+| contents                         | The contents of the file (subject).   |
+| result                           | The result of the function (subject). |
 
 #### Matcher
 
@@ -109,10 +109,10 @@ stat (the subject expected file path)
 
 valid
 
-| Matcher           | Description                                |
-| :---------------- | :----------------------------------------- |
-| be valid number   | The subject should be a valid number.      |
-| be valid funcname | The subject should be a valid funcname.    |
+| Matcher           | Description                             |
+| :---------------- | :-------------------------------------- |
+| be valid number   | The subject should be a valid number.   |
+| be valid funcname | The subject should be a valid funcname. |
 
 variable (the subject expect variable)
 
@@ -125,37 +125,37 @@ variable (the subject expect variable)
 
 string
 
-| Matcher                           | Description                              |
-| :-------------------------------- | :--------------------------------------- |
-| equal `<STRING>`<br>eq `<STRING>` | The subject should equal `<STRING>`      |
-| start with `<STRING>`             | The subject should start with `<STRING>` |
-| end with `<STRING>`               | The subject should end with `<STRING>`   |
-| include `<STRING>`                | The subject should include `<STRING>`    |
-| match `<PATTERN>`                 | The subject should match `<PATTERN>`     |
+| Matcher                                                             | Description                                               |
+| :------------------------------------------------------------------ | :-------------------------------------------------------- |
+| equal <code>&lt;STRING&gt;</code><br>eq <code>&lt;STRING&gt;</code> | The subject should equal <code>&lt;STRING&gt;</code>      |
+| start with <code>&lt;STRING&gt;</code>                              | The subject should start with <code>&lt;STRING&gt;</code> |
+| end with <code>&lt;STRING&gt;</code>                                | The subject should end with <code>&lt;STRING&gt;</code>   |
+| include <code>&lt;STRING&gt;</code>                                 | The subject should include <code>&lt;STRING&gt;</code>    |
+| match <code>&lt;PATTERN&gt;</code>                                  | The subject should match <code>&lt;PATTERN&gt;</code>     |
 
 other
 
-| Matcher                             | Description                             |
-| :---------------------------------- | :-------------------------------------- |
-| satisfy `<FUNCTION> [ARGUMENTS...]` | The subject should satisfy `<FUNCTION>` |
+| Matcher                                              | Description                                              |
+| :--------------------------------------------------- | :------------------------------------------------------- |
+| satisfy <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code> | The subject should satisfy <code>&lt;FUNCTION&gt;</code> |
 
 ## Helper
 
-| DSL                                            | Description                                       |
-| :--------------------------------------------- | :------------------------------------------------ |
-| Include `<NAME>`                               | Include other files.                              |
-| Before                                         | Define a hook called before running each example. |
-| After                                          | Define a hook called after running each example.  |
-| Path<br>File<br>Dir                            | Define a path alias.                              |
-| Data `[ | FILTER ]`... End                     | Define stdin data for evaluation.                 |
-| Data `<FUNCTION> [ARGUMENTS...] [ | FILTER ]`  | Use function for stdin data for evaluation.       |
-| Data `"<STRING>"`<br>Data `'<STRING>'`         | Use string for stdin data for evaluation.         |
-| Data `< <FILE> [ | FILTER ]`                   | Use file for stdin data for evaluation.           |
-| Skip `<REASON>`                                | Skip current block.                               |
-| Skip if `<REASON>` `<FUNCTION> [ARGUMENTS...]` | Skip current block with conditional.              |
-| Pending `<REASON>`                             | Pending current block.                            |
-| Intercept `[NAMES...]`                         | Define an interceptor.                            |
-| Set `[OPTION:<on | off>...]`                   | Set shell option before running each example.     |
+| DSL                                                                              | Description                                       |
+| :------------------------------------------------------------------------------- | :------------------------------------------------ |
+| Include <code>&lt;NAME&gt;</code>                                                | Include other files.                              |
+| Before                                                                           | Define a hook called before running each example. |
+| After                                                                            | Define a hook called after running each example.  |
+| Path<br>File<br>Dir                                                              | Define a path alias.                              |
+| Data <code>[ \| FILTER ]</code><br>#\|...<br>End                                           | Define stdin data for evaluation.                 |
+| Data <code>&lt;FUNCTION&gt; [ARGUMENTS...] [ \| FILTER ]</code>                  | Use function for stdin data for evaluation.       |
+| Data <code>"&lt;STRING&gt;"</code><br>Data <code>'&lt;STRING&gt;'</code>         | Use string for stdin data for evaluation.         |
+| Data <code>&lt; &lt;FILE&gt; [ \| FILTER ]</code>                                | Use file for stdin data for evaluation.           |
+| Skip <code>&lt;REASON&gt;</code>                                                 | Skip current block.                               |
+| Skip if <code>&lt;REASON&gt;</code> <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code> | Skip current block with conditional.              |
+| Pending <code>&lt;REASON&gt;</code>                                              | Pending current block.                            |
+| Intercept <code>[NAMES...]</code>                                                | Define an interceptor.                            |
+| Set <code>[OPTION:&lt;on \| off&gt;...]</code>                                   | Set shell option before running each example.     |
 
 ## Directive
 
