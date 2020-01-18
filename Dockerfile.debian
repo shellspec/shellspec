@@ -1,0 +1,30 @@
+ARG BASE=standard
+
+FROM debian:10 as standard-base
+
+FROM debian:10 AS builder
+WORKDIR /usr/local/src
+RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
+ && apt-get update && apt-get install -y \
+      build-essential cmake ninja-build python3 \
+      binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev
+ARG KCOV=v38
+ADD https://github.com/SimonKagstrom/kcov/archive/$KCOV.tar.gz kcov.tar.gz
+RUN tar xzf kcov.tar.gz -C ./ --strip-components 1 \
+ && echo "Build kcov $KCOV" && mkdir build && cd build \
+ && cmake -G Ninja .. && cmake --build . --target install
+
+FROM debian:10 as kcov-base
+RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
+ && apt-get update && apt-get install -y binutils libcurl4 zlib1g libdw1 \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /usr/local/bin/kcov* /usr/local/bin/
+COPY --from=builder /usr/local/share/doc/kcov /usr/local/share/doc/kcov
+
+FROM ${BASE}-base
+ENV PATH /opt/shellspec/:$PATH
+WORKDIR /src
+COPY shellspec /opt/shellspec/shellspec
+COPY lib /opt/shellspec/lib
+COPY libexec /opt/shellspec/libexec
+ENTRYPOINT [ "shellspec" ]

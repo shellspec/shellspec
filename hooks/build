@@ -1,0 +1,8 @@
+#!/bin/sh
+
+BASE=standard
+case $DOCKER_TAG in (kcov | *-kcov)
+  BASE=kcov
+esac
+
+docker build --build-arg BASE="$BASE" -f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" .
