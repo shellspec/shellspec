@@ -1,14 +1,17 @@
+# Build two images with Automated Build using Docker Hub hooks.
+#   See https://github.com/shellspec/shellspec/tree/master/hooks
+
 # Specify base image (standard or kcov)
 ARG BASE=standard
 
 # ======================================================================
-# Standard base
+# Standard image
 #   TAG: shellspec:latest, shellspec:[VERSION]
 # ======================================================================
 FROM alpine:3.11 as standard-base
 
 # ======================================================================
-# Kcov base
+# Kcov image
 #   TAG: shellspec:kcov, shellspec:[VERSION]-kcov
 # ======================================================================
 FROM alpine:edge as builder
@@ -32,8 +35,7 @@ COPY --from=builder /usr/local/share/doc/kcov /usr/local/share/doc/kcov
 FROM ${BASE}-base
 ENV PATH /opt/shellspec/:$PATH
 WORKDIR /src
-COPY LICENSE /opt/shellspec/LICENSE
-COPY shellspec /opt/shellspec/shellspec
+COPY shellspec LICENSE /opt/shellspec/
 COPY lib /opt/shellspec/lib
 COPY libexec /opt/shellspec/libexec
 ENTRYPOINT [ "shellspec" ]
