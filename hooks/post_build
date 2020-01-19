@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/sh -eux
 
 case $DOCKER_TAG in
   latest) IMAGE_NAME="$DOCKER_REPO:kcov" ;;
   *     ) IMAGE_NAME="$IMAGE_NAME-kcov" ;;
 esac
 
-docker push "$IMAGE_NAME"
+docker build --build-arg BASE=kcov -f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" .
