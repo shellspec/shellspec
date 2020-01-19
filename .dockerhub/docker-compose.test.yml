@@ -2,14 +2,13 @@ version: "3"
 services:
   sut:
     build:
-      context: .
-      dockerfile: ${DOCKERFILE_PATH:-}
+      context: ..
+      dockerfile: .dockerhub/${DOCKERFILE_PATH:-Dockerfile}
       args:
-        - BASE=kcov
+        - BASE=standard
     entrypoint: /bin/sh -eux -c
     command:
       - |
         shellspec --version
         shellspec --init
         shellspec -f tap
-        kcov --version
