@@ -1,0 +1,8 @@
+#!/bin/sh
+
+case $DOCKER_TAG in
+  latest) IMAGE_NAME="$DOCKER_REPO:kcov" ;;
+  *     ) IMAGE_NAME="$IMAGE_NAME-kcov" ;;
+esac
+
+docker push "$IMAGE_NAME"
