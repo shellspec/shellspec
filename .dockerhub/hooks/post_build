@@ -5,4 +5,4 @@ case $DOCKER_TAG in
   *     ) IMAGE_NAME="$IMAGE_NAME-kcov" ;;
 esac
 
-docker build --build-arg BASE=kcov -f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" ..
+docker build --target kcov -f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" ..

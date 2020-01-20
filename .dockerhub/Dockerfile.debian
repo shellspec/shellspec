@@ -1,14 +1,12 @@
 # Build two images with Automated Build using Docker Hub hooks.
 #   See https://github.com/shellspec/shellspec/tree/master/hooks
-
-# Specify base image (standard or kcov)
-ARG BASE=standard
-
-# ======================================================================
-# Standard image
-#   TAG: shellspec-debian:latest, shellspec-debian:[VERSION]
-# ======================================================================
-FROM debian:10 as standard-base
+FROM debian:10 as release
+ENV PATH /opt/shellspec/:$PATH
+WORKDIR /src
+COPY shellspec LICENSE /opt/shellspec/
+COPY lib /opt/shellspec/lib
+COPY libexec /opt/shellspec/libexec
+ENTRYPOINT [ "shellspec" ]
 
 # ======================================================================
 # Kcov image
@@ -25,7 +23,7 @@ RUN tar xzf kcov.tar.gz -C ./ --strip-components 1 \
  && mkdir build && cd build \
  && cmake -G Ninja .. && cmake --build . --target install
 
-FROM debian:10 as kcov-base
+FROM release as kcov
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
  && apt-get update && apt-get install -y binutils libcurl4 zlib1g libdw1 \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -33,12 +31,7 @@ COPY --from=builder /usr/local/bin/kcov* /usr/local/bin/
 COPY --from=builder /usr/local/share/doc/kcov /usr/local/share/doc/kcov
 
 # ======================================================================
-# Build from specified base image
+# Standard image
+#   TAG: shellspec-debian:latest, shellspec-debian:[VERSION]
 # ======================================================================
-FROM ${BASE}-base
-ENV PATH /opt/shellspec/:$PATH
-WORKDIR /src
-COPY shellspec LICENSE /opt/shellspec/
-COPY lib /opt/shellspec/lib
-COPY libexec /opt/shellspec/libexec
-ENTRYPOINT [ "shellspec" ]
+FROM releaase as standard
