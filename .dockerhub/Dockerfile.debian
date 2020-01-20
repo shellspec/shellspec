@@ -34,4 +34,4 @@ COPY --from=builder /usr/local/share/doc/kcov /usr/local/share/doc/kcov
 # Standard image
 #   TAG: shellspec-debian:latest, shellspec-debian:[VERSION]
 # ======================================================================
-FROM releaase as standard
+FROM release as standard

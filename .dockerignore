@@ -1,4 +1,4 @@
-*
+/*
 !/lib
 !/libexec
 !/dockerfiles/.shellspec-entrypoint.sh
