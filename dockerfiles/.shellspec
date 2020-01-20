@@ -11,7 +11,8 @@ RUN echo "--no-banner" > /home/user/.shellspec \
  && su-exec root chown user:user /shellspec \
  && [ "$SH" = "sh" ] || su-exec root ln -snf /usr/local/bin/invokesh /bin/sh
 
-ENTRYPOINT [ "/shellspec/docker/entrypoint.sh" ]
+ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "shellspec" ]
 
+COPY --chown=user:user ./dockerfiles/.shellspec-entrypoint.sh /entrypoint.sh
 COPY --chown=user:user ./ /shellspec
