@@ -1,37 +1,49 @@
-# Build two images with Automated Build using Docker Hub hooks.
+# Build two images with Automated Builds using Docker Hub hooks.
 #   See https://github.com/shellspec/shellspec/tree/master/hooks
-FROM debian:10 as release
-ENV PATH /opt/shellspec/:$PATH
-WORKDIR /src
+
+# ======================================================================
+# source code
+# ======================================================================
+FROM scratch as source
 COPY shellspec LICENSE /opt/shellspec/
 COPY lib /opt/shellspec/lib
 COPY libexec /opt/shellspec/libexec
-ENTRYPOINT [ "shellspec" ]
+
+# ======================================================================
+# Kcov builder
+# ======================================================================
+FROM debian:10 AS builder
+ENV KCOV=v38 DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+WORKDIR /usr/local/src
+RUN apt-get update && apt-get install -y \
+      build-essential cmake ninja-build python3 wget \
+      binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev
+RUN wget -q https://github.com/SimonKagstrom/kcov/archive/$KCOV.tar.gz
+RUN tar xzf $KCOV.tar.gz -C ./ --strip-components 1
+RUN mkdir build && cd build \
+ && cmake -G Ninja .. && cmake --build . --target install
 
 # ======================================================================
 # Kcov image
 #   TAG: shellspec-debian:kcov, shellspec-debian:[VERSION]-kcov
 # ======================================================================
-FROM debian:10 AS builder
-WORKDIR /usr/local/src
-RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
- && apt-get update && apt-get install -y \
-      build-essential cmake ninja-build python3 \
-      binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev
-ADD https://github.com/SimonKagstrom/kcov/archive/v38.tar.gz kcov.tar.gz
-RUN tar xzf kcov.tar.gz -C ./ --strip-components 1 \
- && mkdir build && cd build \
- && cmake -G Ninja .. && cmake --build . --target install
-
-FROM release as kcov
+FROM debian:10 as kcov
+ENV PATH /opt/shellspec/:$PATH
+WORKDIR /src
+ENTRYPOINT [ "shellspec" ]
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes \
  && apt-get update && apt-get install -y binutils libcurl4 zlib1g libdw1 \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /usr/local/bin/kcov* /usr/local/bin/
 COPY --from=builder /usr/local/share/doc/kcov /usr/local/share/doc/kcov
+COPY --from=source /opt/shellspec /opt/shellspec
 
 # ======================================================================
-# Standard image
+# Standard image (default)
 #   TAG: shellspec-debian:latest, shellspec-debian:[VERSION]
 # ======================================================================
-FROM release as standard
+FROM debian:10 as standard
+ENV PATH /opt/shellspec/:$PATH
+WORKDIR /src
+ENTRYPOINT [ "shellspec" ]
+COPY --from=source /opt/shellspec /opt/shellspec
