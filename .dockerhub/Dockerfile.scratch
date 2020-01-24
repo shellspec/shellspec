@@ -1,0 +1,7 @@
+# ======================================================================
+# source code
+# ======================================================================
+FROM scratch as source
+COPY shellspec LICENSE /opt/shellspec/
+COPY lib /opt/shellspec/lib
+COPY libexec /opt/shellspec/libexec

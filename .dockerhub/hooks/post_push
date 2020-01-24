@@ -1,8 +1,16 @@
 #!/bin/sh -eux
 
+# IMAGE_NAME ($DOCKER_REPO:$DOCKER_TAG)
+#   shellspec/shellspec:<TAG>
+#   shellspec/shellspec-<VARIANT>:<VERSION>
+
+case $DOCKER_REPO in
+  *-scratch) exit
+esac
+
+# Push kcov image
 case $DOCKER_TAG in
   latest) IMAGE_NAME="$DOCKER_REPO:kcov" ;;
   *     ) IMAGE_NAME="$IMAGE_NAME-kcov" ;;
 esac
-
 docker push "$IMAGE_NAME"
