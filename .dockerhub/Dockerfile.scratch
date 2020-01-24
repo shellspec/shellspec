@@ -23,4 +23,5 @@ COPY --from=source /opt/shellspec /opt/shellspec
 # Source image (default)
 #   TAG: shellspec-scratch:latest, shellspec-scratch:[VERSION]
 # ======================================================================
-FROM source
+FROM scratch
+COPY --from=source /opt/shellspec /opt/shellspec
