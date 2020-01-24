@@ -41,8 +41,8 @@ ARG REFNAME
 LABEL org.opencontainers.image.created=$CREATED \
       org.opencontainers.image.authors="Koichi Nakashima <koichi@nksm.name>" \
       org.opencontainers.image.url="https://shellspec.info/" \
-      org.opencontainers.image.documentation="https://github.com/shellspec/shellspec/README.md" \
-      org.opencontainers.image.source="https://github.com/shellspec/shellspec" \
+      org.opencontainers.image.documentation="https://github.com/shellspec/shellspec" \
+      org.opencontainers.image.source="https://github.com/shellspec/shellspec.git" \
       org.opencontainers.image.version=$VERSION \
       org.opencontainers.image.revision=$REVISION \
       org.opencontainers.image.vendor="shellspec" \
@@ -67,8 +67,8 @@ ARG REFNAME
 LABEL org.opencontainers.image.created=$CREATED \
       org.opencontainers.image.authors="Koichi Nakashima <koichi@nksm.name>" \
       org.opencontainers.image.url="https://shellspec.info/" \
-      org.opencontainers.image.documentation="https://github.com/shellspec/shellspec/README.md" \
-      org.opencontainers.image.source="https://github.com/shellspec/shellspec" \
+      org.opencontainers.image.documentation="https://github.com/shellspec/shellspec" \
+      org.opencontainers.image.source="https://github.com/shellspec/shellspec.git" \
       org.opencontainers.image.version=$VERSION \
       org.opencontainers.image.revision=$REVISION \
       org.opencontainers.image.vendor="shellspec" \
