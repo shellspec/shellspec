@@ -29,6 +29,9 @@ coverage:
 check:
 	contrib/check.sh
 
+build:
+	contrib/build.sh .dockerhub/Dockerfile*
+
 testall:
 	contrib/test_in_docker.sh dockerfiles/* -- shellspec -j 2
 
