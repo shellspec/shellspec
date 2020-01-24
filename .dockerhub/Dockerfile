@@ -27,6 +27,19 @@ RUN mkdir build && cd build \
 #   TAG: shellspec:kcov, shellspec:[VERSION]-kcov
 # ======================================================================
 FROM alpine:edge as kcov
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="shellspec:kcov" \
+      org.label-schema.description="shellspec (alpine based with kcov)" \
+      org.label-schema.url="https://shellspec.info/" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/shellspec/shellspec" \
+      org.label-schema.vendor="shellspec" \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0"
 ENV PATH /opt/shellspec/:$PATH
 WORKDIR /src
 ENTRYPOINT [ "shellspec" ]
@@ -40,6 +53,19 @@ COPY --from=source /opt/shellspec /opt/shellspec
 #   TAG: shellspec:latest, shellspec:[VERSION]
 # ======================================================================
 FROM alpine:3.11 as standard
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="shellspec" \
+      org.label-schema.description="shellspec (alpine based)" \
+      org.label-schema.url="https://shellspec.info/" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/shellspec/shellspec" \
+      org.label-schema.vendor="shellspec" \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0"
 ENV PATH /opt/shellspec/:$PATH
 WORKDIR /src
 ENTRYPOINT [ "shellspec" ]

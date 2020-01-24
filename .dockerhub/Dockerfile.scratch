@@ -24,4 +24,16 @@ COPY --from=source /opt/shellspec /opt/shellspec
 #   TAG: shellspec-scratch:latest, shellspec-scratch:[VERSION]
 # ======================================================================
 FROM scratch
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="shellspec-scratch" \
+      org.label-schema.description="shellspec (scratch based)" \
+      org.label-schema.url="https://shellspec.info/" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/shellspec/shellspec" \
+      org.label-schema.vendor="shellspec" \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0"
 COPY --from=source /opt/shellspec /opt/shellspec

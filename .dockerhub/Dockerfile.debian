@@ -28,6 +28,19 @@ RUN mkdir build && cd build \
 #   TAG: shellspec-debian:kcov, shellspec-debian:[VERSION]-kcov
 # ======================================================================
 FROM debian:10 as kcov
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="shellspec-debian:kcov" \
+      org.label-schema.description="shellspec (debian based with kcov)" \
+      org.label-schema.url="https://shellspec.info/" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/shellspec/shellspec" \
+      org.label-schema.vendor="shellspec" \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0"
 ENV PATH /opt/shellspec/:$PATH
 WORKDIR /src
 ENTRYPOINT [ "shellspec" ]
@@ -43,6 +56,19 @@ COPY --from=source /opt/shellspec /opt/shellspec
 #   TAG: shellspec-debian:latest, shellspec-debian:[VERSION]
 # ======================================================================
 FROM debian:10 as standard
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="shellspec-debian" \
+      org.label-schema.description="shellspec (debian based)" \
+      org.label-schema.url="https://shellspec.info/" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/shellspec/shellspec" \
+      org.label-schema.vendor="shellspec" \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0"
 ENV PATH /opt/shellspec/:$PATH
 WORKDIR /src
 ENTRYPOINT [ "shellspec" ]
