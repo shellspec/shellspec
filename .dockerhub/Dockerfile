@@ -27,6 +27,13 @@ RUN mkdir build && cd build \
 #   TAG: shellspec:kcov, shellspec:[VERSION]-kcov
 # ======================================================================
 FROM alpine:edge as kcov
+ENV PATH /opt/shellspec/:$PATH
+WORKDIR /src
+ENTRYPOINT [ "shellspec" ]
+RUN apk add --no-cache bash binutils-dev curl-dev elfutils-libelf
+COPY --from=builder /usr/local/bin/kcov* /usr/local/bin/
+COPY --from=builder /usr/local/share/doc/kcov /usr/local/share/doc/kcov
+COPY --from=source /opt/shellspec /opt/shellspec
 ARG CREATED
 ARG VERSION
 ARG REVISION
@@ -43,19 +50,16 @@ LABEL org.opencontainers.image.created=$CREATED \
       org.opencontainers.image.ref.name=$REFNAME \
       org.opencontainers.image.title="shellspec+kcov" \
       org.opencontainers.image.description="Shellspec (Alpine based with Kcov)"
-ENV PATH /opt/shellspec/:$PATH
-WORKDIR /src
-ENTRYPOINT [ "shellspec" ]
-RUN apk add --no-cache bash binutils-dev curl-dev elfutils-libelf
-COPY --from=builder /usr/local/bin/kcov* /usr/local/bin/
-COPY --from=builder /usr/local/share/doc/kcov /usr/local/share/doc/kcov
-COPY --from=source /opt/shellspec /opt/shellspec
 
 # ======================================================================
 # Standard image (default)
 #   TAG: shellspec:latest, shellspec:[VERSION]
 # ======================================================================
 FROM alpine:3.11 as standard
+ENV PATH /opt/shellspec/:$PATH
+WORKDIR /src
+ENTRYPOINT [ "shellspec" ]
+COPY --from=source /opt/shellspec /opt/shellspec
 ARG CREATED
 ARG VERSION
 ARG REVISION
@@ -72,7 +76,3 @@ LABEL org.opencontainers.image.created=$CREATED \
       org.opencontainers.image.ref.name=$REFNAME \
       org.opencontainers.image.title="shellspec" \
       org.opencontainers.image.description="Shellspec (Alpine based)"
-ENV PATH /opt/shellspec/:$PATH
-WORKDIR /src
-ENTRYPOINT [ "shellspec" ]
-COPY --from=source /opt/shellspec /opt/shellspec

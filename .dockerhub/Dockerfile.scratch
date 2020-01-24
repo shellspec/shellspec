@@ -24,6 +24,7 @@ COPY --from=source /opt/shellspec /opt/shellspec
 #   TAG: shellspec-scratch:latest, shellspec-scratch:[VERSION]
 # ======================================================================
 FROM scratch
+COPY --from=source /opt/shellspec /opt/shellspec
 ARG CREATED
 ARG VERSION
 ARG REVISION
@@ -40,4 +41,3 @@ LABEL org.opencontainers.image.created=$CREATED \
       org.opencontainers.image.ref.name=$REFNAME \
       org.opencontainers.image.title="shellspec-scratch" \
       org.opencontainers.image.description="Shellspec (Scratch based)"
-COPY --from=source /opt/shellspec /opt/shellspec
