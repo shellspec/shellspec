@@ -35,11 +35,12 @@ COPY --from=builder /usr/local/bin/kcov* /usr/local/bin/
 COPY --from=builder /usr/local/share/doc/kcov /usr/local/share/doc/kcov
 COPY --from=source /opt/shellspec /opt/shellspec
 ARG CREATED
+ARG AUTHORS
 ARG VERSION
 ARG REVISION
 ARG REFNAME
 LABEL org.opencontainers.image.created=$CREATED \
-      org.opencontainers.image.authors="Koichi Nakashima <koichi@nksm.name>" \
+      org.opencontainers.image.authors=$AUTHORS \
       org.opencontainers.image.url="https://shellspec.info/" \
       org.opencontainers.image.documentation="https://github.com/shellspec/shellspec" \
       org.opencontainers.image.source="https://github.com/shellspec/shellspec.git" \
@@ -61,11 +62,12 @@ WORKDIR /src
 ENTRYPOINT [ "shellspec" ]
 COPY --from=source /opt/shellspec /opt/shellspec
 ARG CREATED
+ARG AUTHORS
 ARG VERSION
 ARG REVISION
 ARG REFNAME
 LABEL org.opencontainers.image.created=$CREATED \
-      org.opencontainers.image.authors="Koichi Nakashima <koichi@nksm.name>" \
+      org.opencontainers.image.authors=$AUTHORS \
       org.opencontainers.image.url="https://shellspec.info/" \
       org.opencontainers.image.documentation="https://github.com/shellspec/shellspec" \
       org.opencontainers.image.source="https://github.com/shellspec/shellspec.git" \
