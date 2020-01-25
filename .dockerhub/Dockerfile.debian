@@ -1,5 +1,5 @@
 # Build two images with Automated Builds using Docker Hub hooks.
-#   See https://github.com/shellspec/shellspec/tree/master/hooks
+#   See https://github.com/shellspec/shellspec/tree/master/.dockerhub/hooks
 
 # ======================================================================
 # source code
