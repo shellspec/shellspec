@@ -6,6 +6,8 @@
 
 These docker images are for running shellspec easily and suitable for incorporating into CI.
 
+The tag with `kcov` means [Kcov](https://github.com/SimonKagstrom/kcov) is included. The tag `latest` is latest release version.
+
 ## Alpine based
 
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/shellspec/shellspec)
@@ -17,9 +19,11 @@ https://hub.docker.com/r/shellspec/shellspec
 Tags:
 
 - shellspec/shellspec:latest
-- shellspec/shellspec:kcov (latest with Kcov)
+- shellspec/shellspec:kcov
+- shellspec/shellspec:master
+- shellspec/shellspec:master-kcov
 - shellspec/shellspec:[VERSION]
-- shellspec/shellspec:[VERSION]-kcov (VERSION with Kcov)
+- shellspec/shellspec:[VERSION]-kcov
 
 ## Debian based
 
@@ -32,9 +36,11 @@ https://hub.docker.com/r/shellspec/shellspec-debian
 Tags:
 
 - shellspec/shellspec-debian:latest
-- shellspec/shellspec-debian:kcov (latest with Kcov)
+- shellspec/shellspec-debian:kcov
+- shellspec/shellspec-debian:master
+- shellspec/shellspec-debian:master-kcov
 - shellspec/shellspec-debian:[VERSION]
-- shellspec/shellspec-debian:[VERSION]-kcov (VERSION with Kcov)
+- shellspec/shellspec-debian:[VERSION]-kcov
 
 ## Scratch based
 
@@ -47,4 +53,5 @@ https://hub.docker.com/r/shellspec/shellspec-scratch
 Tags:
 
 - shellspec/shellspec-scratch:latest
+- shellspec/shellspec-scratch:master
 - shellspec/shellspec-scratch:[VERSION]

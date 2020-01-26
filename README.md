@@ -37,6 +37,7 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Requirements](#requirements)
 - [Tutorial](#tutorial)
   - [Installation](#installation)
+  - [Use with Docker](#use-with-docker)
   - [Getting started](#getting-started)
 - [shellspec command](#shellspec-command)
   - [Usage](#usage)
@@ -53,10 +54,10 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [.shellspec](#shellspec)
   - [.shellspec-local](#shellspec-local)
   - [report/](#report)
-  - [coverage/](#coverage)
+  - [coverage/](#coverage-1)
   - [spec/](#spec)
   - [banner](#banner)
-  - [spec_helper.sh](#spechelpersh)
+  - [spec_helper.sh](#spec_helpersh)
   - [support/](#support)
 - [Specfile](#specfile)
   - [Example](#example)
@@ -80,7 +81,7 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Directive](#directive)
     - [%const (%) - constant definition](#const----constant-definition)
     - [%text - embedded text](#text---embedded-text)
-    - [%puts (%-), %putsn (%=) - put string](#puts---putsn----put-string)
+    - [%puts (%-),  %putsn (%=) - put string](#puts---putsn----put-string)
     - [%logger](#logger)
     - [%data](#data)
   - [Mock and Stub](#mock-and-stub)
@@ -111,7 +112,8 @@ testing tools. Of course shellspec is tested by shellspec.
 * Execution filtering by line number, id, focus, tag and example name
 * Parallel execution, random ordered execution and dry-run execution
 * Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
-* Coverage ([kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
+* Coverage ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
+* Friendly with Docker and CI
 * Builtin simple task runner
 * Extensible architecture (custom matcher, custom formatter, etc...)
 
@@ -327,6 +329,13 @@ HERE
 $ chmod +x /EXECUTABLE/PATH/shellspec
 ```
 </details>
+
+### Use with Docker
+
+You can run shellspec without installation by using Docker. The shellspec and
+specfiles run in a Docker container.
+
+See [How to use shellspec with Docker](docs/docker.md).
 
 ### Getting started
 

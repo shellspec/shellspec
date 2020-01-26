@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add shellspec docker images
+
 ## [0.20.2] - 2019-08-24
 
 ### Fixed

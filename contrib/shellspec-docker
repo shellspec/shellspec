@@ -15,7 +15,7 @@ docker_run() {
   docker run -it --rm --entrypoint=/shellspec-docker "$@"
 }
 
-# You can override docker_run with initrc to changes options,
+# You can override docker_run() with initrc to changes options,
 # pass environment variables, etc.
 if [ -e .shellspec-docker/initrc ]; then
   . .shellspec-docker/initrc
