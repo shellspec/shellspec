@@ -1,0 +1,24 @@
+#!/bin/sh -eu
+
+: "${SHELLSPEC_DOCKER:=shellspec/shellspec}"
+UID=$(id -u) GID=$(id -g)
+
+case $(uname -r) in (*Microsoft*)
+  PWD=$(wslpath -wa .)
+  if [ "${PWD##[a-zA-Z]:[\\/]*}" ]; then
+    echo "'$PWD' is not a valid Windows path" >&2
+    exit 1
+  fi
+esac
+
+docker_run() {
+  docker run -it --rm --entrypoint=/shellspec-docker "$@"
+}
+
+# You can override docker_run with initrc to changes options,
+# pass environment variables, etc.
+if [ -e .shellspec-docker/initrc ]; then
+  . .shellspec-docker/initrc
+fi
+
+docker_run -u "$UID:$GID" -v "$PWD:/src" "$SHELLSPEC_DOCKER" "$@"

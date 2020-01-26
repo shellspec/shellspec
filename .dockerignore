@@ -1,4 +1,5 @@
 *
+!.dockerhub/shellspec-docker-entrypoint.sh
 !lib
 !libexec
 !dockerfiles/.shellspec-entrypoint.sh
