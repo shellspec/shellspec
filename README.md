@@ -9,7 +9,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 [![Travis CI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/shellspec/shellspec)
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI&style=flat-square)](https://cirrus-ci.com/github/shellspec/shellspec)
 [![Circle CI](https://img.shields.io/circleci/build/github/shellspec/shellspec.svg?label=CircleCI&style=flat-square)](https://circleci.com/gh/shellspec/shellspec)
-[![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/shellspec/shellspec?style=flat-square&label=DockerHub)![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/shellspec/shellspec?style=flat-square&label=builds)](https://hub.docker.com/r/shellspec/shellspec)
+[![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/shellspec/shellspec?style=flat-square&label=DockerHub)![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/shellspec/shellspec?style=flat-square&label=builds)](https://hub.docker.com/r/shellspec/shellspec)<br>
 [![Kcov](https://img.shields.io/badge/dynamic/json.svg?label=kcov&query=percent_covered&suffix=%25&url=https%3A%2F%2Fcircleci.com%2Fapi%2Fv1.1%2Fproject%2Fgithub%2Fshellspec%2Fshellspec%2Flatest%2Fartifacts%2F0%2Froot%2Fshellspec%2Fcoverage%2Fcoverage.json%3Fbranch%3Dmaster&style=flat-square)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html?branch=master)
 [![Coveralls](https://img.shields.io/coveralls/github/shellspec/shellspec.svg?label=coveralls&style=flat-square)](https://coveralls.io/github/shellspec/shellspec?branch=master)
 [![Codecov](https://img.shields.io/codecov/c/github/shellspec/shellspec.svg?label=codecov&style=flat-square)](https://codecov.io/gh/shellspec/shellspec)
@@ -26,9 +26,6 @@ BDD style unit testing framework for POSIX compliant shell script.
 ![posh](https://img.shields.io/badge/posh-%3E%3D0.3.14-lightgrey.svg?style=flat)
 ![yash](https://img.shields.io/badge/yash-%3E%3D2.30-lightgrey.svg?style=flat)
 ![zsh](https://img.shields.io/badge/zsh-%3E%3D3.1.9-lightgrey.svg?style=flat)
-
-**Project status: Implementation of practical features has been completed.**
-**I will add more tests and improve the documentation.**
 
 *Table of Contents*
 
