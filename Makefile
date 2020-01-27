@@ -7,6 +7,9 @@ LIBDIR := $(PREFIX)/lib
 
 all: shellspec
 
+archive: LICENSE shellspec lib libexec
+	tar -czf shellspec.tar.gz $^ --transform 's,^,shellspec/,'
+
 install:
 	install -d $(LIBDIR)/$(BIN)
 	cp -r shellspec lib libexec $(LIBDIR)/$(BIN)

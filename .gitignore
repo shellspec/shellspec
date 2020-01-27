@@ -1,5 +1,6 @@
 .env
 .shellspec-local
+/*.tar.gz
 report
 coverage
 ttyrecord
