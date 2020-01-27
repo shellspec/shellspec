@@ -3,7 +3,7 @@ services:
   sut:
     build:
       context: ..
-      dockerfile: .dockerhub/${DOCKERFILE_PATH:-Dockerfile}
+      dockerfile: ${DOCKERFILE_BASE:-}${DOCKERFILE_PATH:-Dockerfile}
       target: standard
     entrypoint: /bin/sh -eux -c
     command:

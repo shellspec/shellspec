@@ -30,7 +30,11 @@ check:
 	contrib/check.sh
 
 build:
-	contrib/build.sh .dockerhub/Dockerfile*
+	contrib/build.sh .dockerhub/Dockerfile         shellspec
+	contrib/build.sh .dockerhub/Dockerfile         shellspec kcov
+	contrib/build.sh .dockerhub/Dockerfile.debian  shellspec-debian
+	contrib/build.sh .dockerhub/Dockerfile.debian  shellspec-debian kcov
+	contrib/build.sh .dockerhub/Dockerfile.scratch shellspec-scratch
 
 testall:
 	contrib/test_in_docker.sh dockerfiles/* -- shellspec -j 2

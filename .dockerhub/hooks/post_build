@@ -13,9 +13,5 @@ case $DOCKER_TAG in
   latest) IMAGE_NAME="$DOCKER_REPO:kcov" ;;
   *     ) IMAGE_NAME="$IMAGE_NAME-kcov" ;;
 esac
-docker build --target kcov -f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" .. \
-  --build-arg CREATED="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-  --build-arg AUTHORS="$AUTHORS" \
-  --build-arg VERSION="$(../shellspec --version)" \
-  --build-arg REVISION="$(git rev-parse --short HEAD)" \
-  --build-arg REFNAME="${IMAGE_NAME#*:}"
+DOCKER_TAG=${IMAGE_NAME#*:}
+"$(dirname "$0")/build" --target kcov

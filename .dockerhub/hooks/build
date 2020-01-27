@@ -1,8 +1,12 @@
 #!/bin/sh -eux
 
-docker build -f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" .. \
-  --build-arg CREATED="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+CREATED=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+VERSION=$(../shellspec --version)
+REVISION=$(echo "$SOURCE_COMMIT" | cut -c-10)
+
+docker build "$@" -f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" .. \
+  --build-arg CREATED="$CREATED" \
   --build-arg AUTHORS="$AUTHORS" \
-  --build-arg VERSION="$(../shellspec --version)" \
-  --build-arg REVISION="$(git rev-parse --short HEAD)" \
+  --build-arg VERSION="$VERSION" \
+  --build-arg REVISION="$REVISION" \
   --build-arg REFNAME="$DOCKER_TAG"

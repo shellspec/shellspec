@@ -98,3 +98,15 @@ COPY ./ /src
 $ docker build -t your-project-name .
 $ docker run -it your-project-name
 ```
+
+## Build shellspec docker image
+
+**Example**
+
+```
+contrib/build.sh .dockerhub/Dockerfile         shellspec
+contrib/build.sh .dockerhub/Dockerfile         shellspec kcov
+contrib/build.sh .dockerhub/Dockerfile.debian  shellspec-debian
+contrib/build.sh .dockerhub/Dockerfile.debian  shellspec-debian kcov
+contrib/build.sh .dockerhub/Dockerfile.scratch shellspec-scratch
+```
