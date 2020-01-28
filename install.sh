@@ -101,8 +101,8 @@ git_remote_tags() {
   git ls-remote --tags "$repo" | while read -r line; do
     tag=${line##*/} && pre=${tag#${tag%%[-+]*}}
     [ "${1:-}" = "--pre" ] || case $pre in (-*) continue; esac
-    echo "$tag"
-  done
+    echo "${tag%^\{\}}"
+  done | uniq
 }
 
 get_versions() {

@@ -144,7 +144,8 @@ Describe "./install.sh"
       #|02e7ee71099b42b9bb508781cb363ab97b85a2e9        refs/tags/0.18.0
       #|d3e2a30edcbd29794b8b7ef8966e5bc859c87791        refs/tags/0.5.0
       #|40cdd9c0e415fdc6a2281db6dc81e4fadd7d3f1e        refs/tags/0.6.0
-      #|6481c5435845d9dba4ffcc0ec0daffb256d9f30f        refs/tags/latest
+      #|0bb8cfdc84f3704d9371a9473cceb18de6a17ad9        refs/tags/latest
+      #|710897366fe86fcfd237854f115817badcaf3b2b        refs/tags/latest^{}
     }
 
     result() {
