@@ -44,3 +44,13 @@ testall:
 
 test:
 	./shellspec
+
+release:
+	$(eval VER := $(shell ./shellspec --version))
+	@echo -n "Release $(VER)? [y/N] " && read ans && [ $${ans:-N} = y ]
+	git tag -a $(VER) -m '$(VER)'
+	git push origin $(VER)
+	@echo -n "Update $(VER) to latest? [y/N] " && read ans && [ $${ans:-N} = y ]
+	git tag -f latest $(VER)
+	git push -f origin latest
+	@echo done
