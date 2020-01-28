@@ -113,7 +113,10 @@ version_sort() {
   while read -r version; do
     ver=${version%%+*} && num=${ver%%-*} && pre=${ver#$num}
     #shellcheck disable=SC2086
-    IFS=. && set -- $num
+    case $num in
+      *[!0-9.]*)  set -- 0 0 0 0 ;;
+      *) IFS=. && set -- $num ;;
+    esac
     printf '%08d%08d%08d%08d' "${1:-0}" "${2:-0}" "${3:-0}" "${4:-0}"
     printf '%s %s\n' "${pre:-=}" "$version"
   done | LC_ALL=C sort -k 1 | while read -r kv; do echo "${kv#* }"; done

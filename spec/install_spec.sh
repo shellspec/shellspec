@@ -30,14 +30,6 @@ End
 Describe "./install.sh"
   Include ./install.sh
 
-  git_ls_remote_tags() {
-    %text
-    #|ec87d1d2aa29d814cb6d55b9f859cfe7cd9a8551        refs/tags/0.17.0
-    #|02e7ee71099b42b9bb508781cb363ab97b85a2e9        refs/tags/0.18.0
-    #|d3e2a30edcbd29794b8b7ef8966e5bc859c87791        refs/tags/0.5.0
-    #|40cdd9c0e415fdc6a2281db6dc81e4fadd7d3f1e        refs/tags/0.6.0
-  }
-
   Describe "exists()"
     It 'returns success when found executable file'
       When call exists sh
@@ -146,7 +138,14 @@ Describe "./install.sh"
   End
 
   Describe "git_remote_tags()"
-    git() { git_ls_remote_tags; }
+    git() {
+      %text
+      #|ec87d1d2aa29d814cb6d55b9f859cfe7cd9a8551        refs/tags/0.17.0
+      #|02e7ee71099b42b9bb508781cb363ab97b85a2e9        refs/tags/0.18.0
+      #|d3e2a30edcbd29794b8b7ef8966e5bc859c87791        refs/tags/0.5.0
+      #|40cdd9c0e415fdc6a2281db6dc81e4fadd7d3f1e        refs/tags/0.6.0
+      #|6481c5435845d9dba4ffcc0ec0daffb256d9f30f        refs/tags/latest
+    }
 
     result() {
       %text
@@ -154,6 +153,7 @@ Describe "./install.sh"
       #|0.18.0
       #|0.5.0
       #|0.6.0
+      #|latest
     }
 
     It 'retrives tags'
@@ -177,16 +177,29 @@ Describe "./install.sh"
   End
 
   Describe "list_versions()"
-    git() { git_ls_remote_tags; }
+    get_versions() {
+      %text
+      #|0.17.0
+      #|latest
+      #|0.18.0
+      #|0.5.0
+      #|0.6.0
+    }
 
     It 'lists versions'
       When call list_versions
-      The stdout should eq "0.5.0, 0.6.0, 0.17.0, 0.18.0"
+      The stdout should eq "latest, 0.5.0, 0.6.0, 0.17.0, 0.18.0"
     End
   End
 
   Describe "latest_version()"
-    git() { git_ls_remote_tags; }
+    get_versions() {
+      %text
+      #|0.17.0
+      #|0.18.0
+      #|0.5.0
+      #|0.6.0
+    }
 
     It 'gets latest version'
       When call latest_version
@@ -201,9 +214,11 @@ Describe "./install.sh"
       #|1.0.0
       #|1.0.0-alpha+001
       #|2.1.1
+      #|latest
       #|1.0.0-beta+exp.sha.5114f85
       #|1.0.0-alpha.1
       #|1.0.0-x.7.z.92
+      #|alpha
       #|2.1.0
       #|1.0.0+20130313144700
       #|1.0.0-0.3.7
@@ -214,6 +229,8 @@ Describe "./install.sh"
 
     result() {
       %text
+      #|alpha
+      #|latest
       #|1.0.0-0.3.7
       #|1.0.0-alpha
       #|1.0.0-alpha+001
