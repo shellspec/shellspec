@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Make archive
-      run: make archive
+    - name: Make dist archive
+      run: make dist
     - name: Create release
       id: create_release
       uses: actions/create-release@v1.0.0
