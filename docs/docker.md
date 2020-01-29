@@ -69,7 +69,7 @@ Invoked after executed shellspec inside of the docker container.
 ```Dockerfile
 # Dockerfile
 FROM shellspec/shellspec
-ADD apk add --no-cache add-your-required-packages
+RUN apk add --no-cache add-your-required-packages
 COPY ./ /src
 ```
 
@@ -86,8 +86,9 @@ $ docker run -it your-project-name
 ```Dockerfile
 # Dockerfile
 FROM buildpack-deps
-ADD apt-get update && apt-get install -y add-your-required-packages
-COPY --from=shellspec/shellspec-scratch /opt/shellspec /usr/local/bin/
+RUN apt-get update && apt-get install -y add-your-required-packages
+COPY --from=shellspec/shellspec-scratch /opt/shellspec /opt/shellspec
+ENV PATH /opt/shellspec/:$PATH
 WORKDIR /src
 ENTRYPOINT [ "shellspec" ]
 COPY ./ /src
