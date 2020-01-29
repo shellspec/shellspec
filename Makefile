@@ -7,8 +7,8 @@ LIBDIR := $(PREFIX)/lib
 
 all: shellspec
 
-archive: LICENSE shellspec lib libexec
-	tar -czf shellspec.tar.gz $^ --transform 's,^,shellspec/,'
+dist: LICENSE shellspec lib libexec
+	tar -czf shellspec.dist.tar.gz $^ --transform 's,^,shellspec/,'
 
 install:
 	install -d $(LIBDIR)/$(BIN)
@@ -46,11 +46,4 @@ test:
 	./shellspec
 
 release:
-	$(eval VER := $(shell ./shellspec --version))
-	@echo -n "Release $(VER)? [y/N] " && read ans && [ $${ans:-N} = y ]
-	git tag -a $(VER) -m '$(VER)'
-	git push origin $(VER)
-	@echo -n "Update $(VER) to latest? [y/N] " && read ans && [ $${ans:-N} = y ]
-	git tag -f latest $(VER)
-	git push -f origin latest
-	@echo done
+	contrib/release.sh
