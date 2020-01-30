@@ -93,6 +93,7 @@ run() {
   count=$(($count + 1))
   os="${dockerfile##*/}"
   os="${os#.}"
+  os="${os%-!}"
   image="shellspec:$os"
   old_image=$(docker images -q --no-trunc "$image")
 

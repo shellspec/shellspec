@@ -1,6 +1,6 @@
-FROM debian:10.1-slim
+FROM debian:10.2-slim
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
- && apt-get update && apt-get -y install yash
+ && apt-get update && apt-get -y install zsh
 USER user
-ENV SH="yash"
+ENV SH="zsh"
