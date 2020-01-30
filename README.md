@@ -165,6 +165,8 @@ or
 $ wget -O- https://git.io/shellspec | sh
 ```
 
+Note: See [Releases](https://github.com/shellspec/shellspec/releases) page if you want to download distribution archive.
+
 <details>
 <summary>Advanced installation / upgrade / uninstall</summary>
 

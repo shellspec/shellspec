@@ -8,7 +8,7 @@ LIBDIR := $(PREFIX)/lib
 all: shellspec
 
 dist: LICENSE shellspec lib libexec
-	tar -czf shellspec.dist.tar.gz $^ --transform 's,^,shellspec/,'
+	tar -czf shellspec-dist.tar.gz $^ --transform 's,^,shellspec/,'
 
 install:
 	install -d $(LIBDIR)/$(BIN)
