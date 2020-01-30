@@ -26,5 +26,5 @@ run git push origin "$version"
 is_prerelease "$version" && exit 0
 
 confirm "Update $version to latest?" || exit 0
-run git tag -f latest "$version"
+run git tag -f latest
 run git push -f origin latest
