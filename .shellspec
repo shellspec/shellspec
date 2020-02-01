@@ -2,4 +2,4 @@
 --skip-message moderate
 --fail-no-examples
 --env-from spec/env.sh
---kcov-common-options "--path-strip-level=1 --include-path=./lib,./libexec,./shellspec,./install.sh"
+--kcov-options "--include-pattern= --include-path=./shellspec,./install.sh,./lib,./libexec"

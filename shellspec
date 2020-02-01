@@ -122,10 +122,10 @@ fi
 while IFS= read -r option; do
   SHELLSPEC_KCOV_COMMON_OPTS="$SHELLSPEC_KCOV_COMMON_OPTS$option "
 done <<HERE
---path-strip-level=1
+--exclude-pattern=/coverage/,/spec/,/report/
 --include-path=.
 --include-pattern=.sh
---exclude-pattern=/coverage/,/spec/,/report/
+--path-strip-level=1
 HERE
 SHELLSPEC_KCOV_FILENAME="$SHELLSPEC_PROJECT_NAME [specfiles]"
 SHELLSPEC_KCOV_IN_FILE="$SHELLSPEC_TMPBASE/kcov/$SHELLSPEC_KCOV_FILENAME"
@@ -197,13 +197,14 @@ Usage: shellspec [options] [files or directories]
       --[no-]kcov                     Enable coverage using kcov [default: disabled]
                                         Note: Requires kcov and bash, parallel execution is ignored.
       --kcov-path PATH                Specify kcov path [default: kcov]
-      --kcov-common-options OPTIONS   Specify kcov common options [default: see below]
-                                        --path-strip-level=1
-                                        --include-path=.
-                                        --include-pattern=.sh
-                                        --exclude-pattern=/spec/,/coverage/,/report/
-      --kcov-options OPTIONS          Specify additional kcov options
-                                        coverage limits, coveralls id, etc...
+      --kcov-options OPTIONS          Kcov options to overwrite and add (coverage limits, coveralls id, etc...)
+                                        Default specified options:
+                                          --exclude-pattern=/spec/,/coverage/,/report/
+                                          --include-path=.
+                                          --include-pattern=.sh
+                                          --path-strip-level=1
+                                        To include files without extension, specify --include-pattern
+                                        without '.sh' and filter with --include-*/--exclude-* options
 
   **** Utility ****
 
@@ -326,6 +327,7 @@ parse_options() {
         shift ;;
       --kcov-common-options) [ "${2:-}" ] || abort 'Require OPTIONS.'
         SHELLSPEC_KCOV_COMMON_OPTS="$2"
+        warn "--kcov-common-options is deprecated, merge into --kcov-options"
         shift ;;
       --kcov-options) [ "${2:-}" ] || abort 'Require OPTIONS.'
         SHELLSPEC_KCOV_OPTS="${SHELLSPEC_KCOV_OPTS}${SHELLSPEC_KCOV_OPTS:+ }$2"
