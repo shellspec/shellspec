@@ -24,7 +24,6 @@ cleanup() {
   if (trap - INT) 2>/dev/null; then trap '' INT; fi
   [ "$SHELLSPEC_TMPBASE" ] || return 0
   tmpbase="$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
-  [ -f "$SHELLSPEC_KCOV_IN_FILE" ] && rm "$SHELLSPEC_KCOV_IN_FILE"
   [ "$SHELLSPEC_KEEP_TEMPDIR" ] || rmtempdir "$tmpbase"
 }
 
