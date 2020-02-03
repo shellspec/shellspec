@@ -86,10 +86,47 @@ fi
 
 shellspec_evaluation_run_instruction() {
   case $1 in
+    script) shift; shellspec_evaluation_run_script "$@" ;;
     command) shift; shellspec_evaluation_run_command "$@" ;;
     source) shift; shellspec_evaluation_run_source "$@" ;;
     *) "$@" ;;
   esac
+}
+
+shellspec_shebang_arguments() {
+  read -r line
+  case $line in (\#!/usr/bin/env\ * | \#!/bin/env\ *)
+    shellspec_trim line "${line#* }"
+    line="#!$line"
+  esac
+  case $line in (\#!*)
+    shellspec_trim line "$line"
+    case $line in (*\ *)
+      shellspec_trim line "${line#* }"
+      shellspec_putsn "$line"
+    esac
+  esac
+}
+
+shellspec_evaluation_run_script() {
+  if [ ! -e "$1" ]; then
+    eval "$SHELLSPEC_SHELL \"\$@\""
+  elif [ ! -x "$1" ]; then
+    command "$@"
+  else
+    if [ "$SHELLSPEC_SHEBANG_MULTIARG" ]; then
+      IFS=" $IFS"
+      # shellcheck disable=SC2046
+      set -- $(shellspec_shebang_arguments < "$1") "$@"
+      IFS=${IFS# }
+    else
+      set -- "$(shellspec_shebang_arguments < "$1")" "$@"
+      [ "$1" ] || shift
+    fi
+    # shellcheck disable=SC1090
+    [ "$SHELLSPEC_COVERAGE_ENV" ] && . "$SHELLSPEC_COVERAGE_ENV"
+    eval "$SHELLSPEC_SHELL \"\$@\""
+  fi
 }
 
 shellspec_evaluation_run_command() {
