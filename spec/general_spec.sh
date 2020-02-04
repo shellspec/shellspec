@@ -158,7 +158,9 @@ Describe "general.sh"
 
     It 'calls callback with index and value'
       When call shellspec_each callback a b c
-      The stdout should equal "a:1:3${LF}b:2:3${LF}c:3:3"
+      The line 1 of stdout should equal "a:1:3"
+      The line 2 of stdout should equal "b:2:3"
+      The line 3 of stdout should equal "c:3:3"
     End
 
     It 'calls callback with no params'
@@ -245,30 +247,30 @@ Describe "general.sh"
   Describe 'shellspec_putsn()'
     It 'does not output anything without arguments'
       When call shellspec_putsn
-      The entire stdout should equal "${LF}"
+      The entire stdout should equal "${IFS%?}"
     End
 
     It 'outputs append with LF'
       When call shellspec_putsn "a"
-      The entire stdout should equal "a${LF}"
+      The entire stdout should equal "a${IFS%?}"
     End
 
     It 'joins arguments with space and outputs append with LF'
       When call shellspec_putsn "a" "b"
-      The entire stdout should equal "a b${LF}"
+      The entire stdout should equal "a b${IFS%?}"
     End
 
     It 'outputs with raw string append with LF'
       When call shellspec_putsn 'a\b'
-      The entire stdout should equal "a\\b${LF}"
+      The entire stdout should equal "a\\b${IFS%?}"
       The length of entire stdout should equal 4
     End
 
     Context 'when change IFS'
-      Before 'IFS=@'
       It 'joins arguments with spaces'
-        When call shellspec_putsn a b c
-        The entire stdout should equal "a b c${LF}"
+        BeforeRun 'IFS=@'
+        When run shellspec_putsn a b c
+        The entire stdout should equal "a b c${IFS%?}"
       End
     End
   End
@@ -304,17 +306,17 @@ Describe "general.sh"
     End
 
     It 'calls callback by each line'
-      When call shellspec_lines callback "a${LF}b"
+      When call shellspec_lines callback "a${IFS%?}b"
       The stdout should eq "1:a 2:b "
     End
 
     It 'ignores last LF'
-      When call shellspec_lines callback "a${LF}b${LF}"
+      When call shellspec_lines callback "a${IFS%?}b${IFS%?}"
       The stdout should eq "1:a 2:b "
     End
 
     It 'can cancels calls of callback.'
-      When call shellspec_lines callback_with_cancel "a${LF}b"
+      When call shellspec_lines callback_with_cancel "a${IFS%?}b"
       The stdout should eq "1:a "
     End
   End
@@ -366,18 +368,13 @@ Describe "general.sh"
   Describe 'shellspec_readfile()'
     It 'reads the file as is'
       When call shellspec_readfile var "$FIXTURE/end-with-multiple-lf.txt"
-      The variable var should equal "a${LF}${LF}"
+      The variable var should equal "a${IFS%?}${IFS%?}"
     End
   End
 
   Describe "shellspec_trim()"
-    It 'trims space'
-      When call shellspec_trim value "  abc  "
-      The value "$value" should eq 'abc'
-    End
-
-    It 'trims tab'
-      When call shellspec_trim value "${TAB}${TAB}abc${TAB}${TAB}"
+    It 'trims white space'
+      When call shellspec_trim value " $IFS abc $IFS "
       The value "$value" should eq 'abc'
     End
   End
@@ -493,7 +490,7 @@ Describe "general.sh"
   End
 
   Describe "shellspec_chomp()"
-    Before 'var="string${LF}${LF}${LF}"'
+    Before "var='string${IFS%?}${IFS%?}${IFS%?}'"
     It "removes trailing LF"
       When call shellspec_chomp var
       The variable var should eq "string"

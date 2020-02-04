@@ -62,9 +62,6 @@ shellspec_spec_helper_configure() {
   switch_on() { shellspec_if "$SHELLSPEC_SUBJECT"; }
   switch_off() { shellspec_unless "$SHELLSPEC_SUBJECT"; }
 
-  # shellcheck disable=SC2034
-  LF="$SHELLSPEC_LF" TAB="$SHELLSPEC_TAB"
-
   posh_pattern_matching_bug() {
     # shellcheck disable=SC2194
     case "a[d]" in (*"a[d]"*) false; esac # posh <= 0.12.6

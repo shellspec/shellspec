@@ -88,7 +88,7 @@ Describe "core/utils.sh"
       func() { %= "ok"; }
       It 'captures "ok<LF>"'
         When call shellspec_capture var func
-        The variable var should equal "ok${LF}"
+        The variable var should equal "ok${IFS%?}"
       End
     End
 

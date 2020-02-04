@@ -60,7 +60,8 @@ Describe "core/evaluation.sh"
     It 'can not aborts with set -e'
       evaluation() { set -e; echo 1; false; echo 2; }
       When call evaluation
-      The stdout should equal "1${LF}2"
+      The line 1 of stdout should equal "1"
+      The line 2 of stdout should equal "2"
       The status should equal 0
     End
 

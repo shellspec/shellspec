@@ -12,7 +12,7 @@ Describe "core/subjects/stdout.sh"
     End
 
     It "uses stdout as subject when stdout is defined"
-      stdout() { %= "test"; }
+      stdout() { echo "test"; }
       When run shellspec_subject_stdout _modifier_
       The entire stdout should equal 'test'
     End
@@ -24,7 +24,7 @@ Describe "core/subjects/stdout.sh"
     End
 
     It 'outputs error if next word is missing'
-      stdout() { %= "test"; }
+      stdout() { echo "test"; }
       When run shellspec_subject_stdout
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
@@ -34,14 +34,14 @@ Describe "core/subjects/stdout.sh"
     Example 'example'
       func() { echo "foo"; }
       When call func
-      The entire stdout should equal "foo${LF}"
-      The entire output should equal "foo${LF}" # alias for entire stdout
+      The entire stdout should equal "foo${IFS%?}"
+      The entire output should equal "foo${IFS%?}"
     End
 
     It "uses stdout including last LF as subject when stdout is defined"
-      stdout() { %= "test"; }
+      stdout() { echo "test"; }
       When run shellspec_subject_entire_stdout _modifier_
-      The entire stdout should equal "test${LF}"
+      The entire stdout should equal "test${IFS%?}"
     End
 
     It "uses undefined as subject when stdout is undefined"
@@ -51,7 +51,7 @@ Describe "core/subjects/stdout.sh"
     End
 
     It 'output error if next word is missing'
-      stdout() { %= "test"; }
+      stdout() { echo "test"; }
       When run shellspec_subject_entire_stdout
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

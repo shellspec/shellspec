@@ -12,10 +12,10 @@ Describe "core/subjects/variable.sh"
     End
 
     Context 'when the variable exists'
-      Before 'var="test${LF}"'
+      Before "var='test${IFS%?}'"
       It 'uses the value of variable as subject'
         When run shellspec_subject variable var _modifier_
-        The entire stdout should equal "test${LF}"
+        The entire stdout should equal "test${IFS%?}"
       End
     End
 

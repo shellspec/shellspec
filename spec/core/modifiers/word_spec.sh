@@ -9,7 +9,7 @@ Describe "core/modifiers/word.sh"
     End
 
     It 'gets the specified word'
-      subject() { %- "foo  bar $TAB baz $LF qux"; }
+      subject() { printf 'foo  bar \t baz \n qux'; }
       When run shellspec_modifier_word 4 _modifier_
       The stdout should equal qux
     End
@@ -21,19 +21,19 @@ Describe "core/modifiers/word.sh"
     End
 
     It 'outputs error if value is not a number'
-      subject() { %- "foo  bar $TAB baz $LF qux"; }
+      subject() { printf 'foo  bar \t baz \n qux'; }
       When run shellspec_modifier_word ni _modifier_
       The stderr should equal SYNTAX_ERROR_PARAM_TYPE
     End
 
     It 'outputs error if value is missing'
-      subject() { %- "foo  bar $TAB baz $LF qux"; }
+      subject() { printf 'foo  bar \t baz \n qux'; }
       When run shellspec_modifier_word
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
     It 'outputs error if next word is missing'
-      subject() { %- "foo  bar $TAB baz $LF qux"; }
+      subject() { printf 'foo  bar \t baz \n qux'; }
       When run shellspec_modifier_word 2
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

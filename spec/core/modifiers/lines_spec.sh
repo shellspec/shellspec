@@ -15,19 +15,19 @@ Describe "core/modifiers/lines.sh"
     End
 
     It 'counts as 2 lines when subject is "foo<LF>bar<LF>" (with last LF)'
-      subject() { %= "foo${LF}bar"; }
+      subject() { printf 'foo\nbar\n'; }
       When run shellspec_modifier_lines _modifier_
       The stdout should equal 2
     End
 
     It 'counts as 2 lines when subject is "foo<LF>bar" (without last LF)'
-      subject() { %- "foo${LF}bar"; }
+      subject() { printf 'foo\nbar'; }
       When run shellspec_modifier_lines _modifier_
       The stdout should equal 2
     End
 
     It 'counts as 3 lines when subject is "foo<LF>bar<LF><LF>"'
-      subject() { %= "foo${LF}bar${LF}"; }
+      subject() { printf 'foo\nbar\n\n'; }
       When run shellspec_modifier_lines _modifier_
       The stdout should equal 3
     End
@@ -45,7 +45,7 @@ Describe "core/modifiers/lines.sh"
     End
 
     It 'outputs error if next word is missing'
-      subject() { %= "foo${LF}bar"; }
+      subject() { printf 'foo\nbar\n'; }
       When run shellspec_modifier_lines
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
