@@ -13,6 +13,7 @@ shellspec_syntax 'shellspec_evaluation_run'
 shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
 shellspec_evaluation_call() {
+  shellspec_coverage_start
   if [ ! "${SHELLSPEC_DATA:-}" ]; then
     shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV"
   else
@@ -20,14 +21,17 @@ shellspec_evaluation_call() {
     shellspec_around_call "$@" < "$SHELLSPEC_STDIN_FILE"
   fi >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
+  shellspec_coverage_stop
 }
 
 shellspec_evaluation_run() {
+  shellspec_coverage_start
   case $- in
     *e*) set +e; shellspec_evaluation_run_subshell -e "$@"; set -e -- $? ;;
     *) shellspec_evaluation_run_subshell +e "$@"; set -- $? ;;
   esac
   shellspec_evaluation_cleanup "$1"
+  shellspec_coverage_stop
 }
 
 if [ "${SHELLSPEC_SHELL_TYPE#p}" = "bosh" ]; then
