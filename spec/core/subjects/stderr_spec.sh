@@ -12,7 +12,7 @@ Describe "core/subjects/stderr.sh"
     End
 
     It 'uses stderr as subject when stderr is defined'
-      stderr() { %= "test"; }
+      stderr() { echo "test"; }
       When run shellspec_subject_stderr _modifier_
       The entire stdout should equal 'test'
     End
@@ -24,7 +24,7 @@ Describe "core/subjects/stderr.sh"
     End
 
     It 'outputs error if next word is missing'
-      stderr() { %= "test"; }
+      stderr() { echo "test"; }
       When run shellspec_subject_stderr
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End
@@ -34,14 +34,14 @@ Describe "core/subjects/stderr.sh"
     Example 'example'
       func() { echo "foo" >&2; }
       When call func
-      The entire stderr should equal "foo${LF}"
-      The entire error should equal "foo${LF}"
+      The entire stderr should equal "foo${IFS%?}"
+      The entire error should equal "foo${IFS%?}"
     End
 
     It 'uses stderr including last LF as subject when stderr is defined'
-      stderr() { %= "test"; }
+      stderr() { echo "test"; }
       When run shellspec_subject_entire_stderr _modifier_
-      The entire stdout should equal "test${LF}"
+      The entire stdout should equal "test${IFS%?}"
     End
 
     It 'uses undefined as subject when stderr is undefined'
@@ -51,7 +51,7 @@ Describe "core/subjects/stderr.sh"
     End
 
     It 'outputs error if next word is missing'
-      stderr() { %= "test"; }
+      stderr() { echo "test"; }
       When run shellspec_subject_entire_stderr
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

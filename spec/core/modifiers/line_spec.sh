@@ -9,37 +9,37 @@ Describe "core/modifiers/line.sh"
     End
 
     It 'gets the first line'
-      subject() { %- "foo"; }
+      subject() { printf 'foo'; }
       When run shellspec_modifier_line 1 _modifier_
       The entire stdout should equal foo
     End
 
     It 'gets the specified line'
-      subject() { %- "foo${LF}bar${LF}baz"; }
+      subject() { printf 'foo\nbar\nbaz'; }
       When run shellspec_modifier_line 2 _modifier_
       The entire stdout should equal bar
     End
 
     It 'gets undefined when missing line'
-      subject() { %- "foo${LF}"; }
+      subject() { printf 'foo\n'; }
       When run shellspec_modifier_line 2 _modifier_
       The status should be failure
     End
 
     It 'gets the specified empty line'
-      subject() { %- "foo${LF}${LF}"; }
+      subject() { printf 'foo\n\n'; }
       When run shellspec_modifier_line 2 _modifier_
       The entire stdout should equal ""
     End
 
     It 'can not get the first line when subject is empty'
-      subject() { %- ""; }
+      subject() { printf ''; }
       When run shellspec_modifier_line 1 _modifier_
       The status should be failure
     End
 
     It 'gets the first line as "" when subject is "<LF>"'
-      subject() { %- "${LF}"; }
+      subject() { printf '\n'; }
       When run shellspec_modifier_line 1 _modifier_
       The entire stdout should equal ""
     End
@@ -51,19 +51,19 @@ Describe "core/modifiers/line.sh"
     End
 
     It 'outputs error if value is not a number'
-      subject() { %- "foo"; }
+      subject() { printf 'foo'; }
       When run shellspec_modifier_line ni
       The stderr should equal SYNTAX_ERROR_PARAM_TYPE
     End
 
     It 'outputs error if value is missing'
-      subject() { %- "foo"; }
+      subject() { printf 'foo'; }
       When run shellspec_modifier_line
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
 
     It 'outputs error if next word is missing'
-      subject() { %- "foo"; }
+      subject() { printf 'foo'; }
       When run shellspec_modifier_line 2
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
     End

@@ -39,15 +39,15 @@ Describe "core/modifiers/contents.sh"
 
   Describe "entire contents modifier"
     Example 'example'
-      The entire contents of file "$FILE" should equal "a${LF}${LF}"
-      The entire contents of the file "$FILE" should equal "a${LF}${LF}"
-      The file "$FILE" entire contents should equal "a${LF}${LF}"
+      The entire contents of file "$FILE" should equal "a${IFS%?}${IFS%?}"
+      The entire contents of the file "$FILE" should equal "a${IFS%?}${IFS%?}"
+      The file "$FILE" entire contents should equal "a${IFS%?}${IFS%?}"
     End
 
     It 'reads the entire contents of the file when file exists'
       subject() { %- "$FILE"; }
       When run shellspec_modifier_entire_contents _modifier_
-      The entire stdout should equal "a${LF}${LF}"
+      The entire stdout should equal "a${IFS%?}${IFS%?}"
     End
 
     It 'can not reads the entire contents of the file when file not exists'
