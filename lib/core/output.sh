@@ -62,19 +62,20 @@ shellspec_output_unless() {
 
 shellspec_output_failure_message() {
   shellspec_puts "${SHELLSPEC_US}failure_message:"
-  shellspec_matcher__failure_message \
-    "$(shellspec_output_subject)" "$(shellspec_output_expect)"
+  set -- "$(shellspec_output_subject)" "$(shellspec_output_expect)"
+  shellspec_matcher__failure_message "$@"
 }
 
 shellspec_output_failure_message_when_negated() {
   shellspec_puts "${SHELLSPEC_US}failure_message:"
-  shellspec_matcher__failure_message_when_negated \
-    "$(shellspec_output_subject)" "$(shellspec_output_expect)"
+  set -- "$(shellspec_output_subject)" "$(shellspec_output_expect)"
+  shellspec_matcher__failure_message_when_negated "$@"
 }
 
 shellspec_output_following_words() {
   SHELLSPEC_EVAL="
-    shellspec_reset_params '\${SHELLSPEC_SYNTAXES#|}' '|'; \
+    set -- \"\${SHELLSPEC_SYNTAXES#\|}\"; \
+    shellspec_reset_params '\${1%\|}' '|'; \
     eval \"\$SHELLSPEC_RESET_PARAMS\"; \
     callback() { case \${1#$1_} in (*_*) return 1; esac; }; \
     shellspec_find callback \"\$@\"; \

@@ -46,6 +46,13 @@ Describe "libexec/reporter.sh"
   End
 
   Describe "buffer()"
+    It 'creates buffer'
+      When call buffer example
+      The result of 'example()' should eq ''
+    End
+  End
+
+  Describe "buffer functions"
     Before 'buffer example'
 
     Context 'when initial state'

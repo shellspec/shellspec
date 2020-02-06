@@ -68,6 +68,7 @@ export SHELLSPEC_DEFECT_REDEFINE=''
 export SHELLSPEC_DEFECT_SHELL_FLAG=''
 export SHELLSPEC_KILL='kill'
 export SHELLSPEC_SLEEP='sleep'
+export SHELLSPEC_ALIAS='alias'
 export SHELLSPEC_SHEBANG_MULTIARG=''
 
 #shellcheck disable=SC2039

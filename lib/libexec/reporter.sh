@@ -23,7 +23,7 @@ read_time_log() {
     case $time_log_name in (real|user|sys) ;; (*) continue; esac
     case $time_log_value in (*[!0-9.]*) continue; esac
     eval "$1_${time_log_name}=\"\$time_log_value\""
-  done < "$2"
+  done < "$2" &&:
 }
 
 field_description() {
@@ -110,5 +110,5 @@ read_profiler() {
     shellspec_shift10 duration "$duration" -4
     $1 "$i" "$tick" "$duration"
     i=$(($i + 1))
-  done < "$2"
+  done < "$2" &&:
 }

@@ -39,6 +39,7 @@ read_cmdline() {
 }
 
 read_ps() {
+  #shellcheck disable=SC2015
   ps -f 2>/dev/null | {
     IFS=" " pid=$1 p=0 c=0 _pid=''
     IFS= read -r line
@@ -65,7 +66,7 @@ read_ps() {
     case $line in (\{*) line=${line#*\} }; esac
 
     echo "$line"
-  } ||:
+  } &&: ||:
 }
 
 current_shell() {

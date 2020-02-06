@@ -4,6 +4,7 @@
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 
 Describe "core/evaluation.sh"
+  Include "$SHELLSPEC_LIB/core/evaluation.sh"
   Before 'VAR=123'
 
   Describe 'call evaluation'

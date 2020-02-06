@@ -61,17 +61,17 @@ shellspec_call_configure "$SHELLSPEC_REQUIRES"
 if [ "$SHELLSPEC_PROFILER" ]; then
   shellspec_profile_start() { shellspec_profile_wait; }
   shellspec_profile_end() { shellspec_profile_wait; }
-  shellspec_profile_wait() {
-    echo = > "$SHELLSPEC_PROFILER_SIGNAL"
-    while [ -s "$SHELLSPEC_PROFILER_SIGNAL" ]; do :; done
-  }
 else
   shellspec_profile_start() { :; }
   shellspec_profile_end() { :; }
 fi
+shellspec_profile_wait() {
+  echo = > "$SHELLSPEC_PROFILER_SIGNAL"
+  while [ -s "$SHELLSPEC_PROFILER_SIGNAL" ]; do :; done
+}
 
-# shellcheck disable=SC2034
+#shellcheck disable=SC2034
 case $- in
   *e*) SHELLSPEC_ERREXIT=1 ;;
-  *) SHELLSPEC_ERREXIT=''; set -e ;;
+  *) SHELLSPEC_ERREXIT=; set -e ;;
 esac

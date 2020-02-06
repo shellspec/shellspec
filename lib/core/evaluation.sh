@@ -49,11 +49,13 @@ fi
 
 shellspec_evaluation_run_data() {
   if [ ! "${SHELLSPEC_DATA:-}" ]; then
-    shellspec_evaluation_run_trap_exit_status "$@" < "$SHELLSPEC_STDIN_DEV"
+    shellspec_evaluation_run_trap_exit_status "$@" < "$SHELLSPEC_STDIN_DEV" \
+      >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE"
   else
     shellspec_data > "$SHELLSPEC_STDIN_FILE"
-    shellspec_evaluation_run_trap_exit_status "$@" < "$SHELLSPEC_STDIN_FILE"
-  fi >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE"
+    shellspec_evaluation_run_trap_exit_status "$@" < "$SHELLSPEC_STDIN_FILE" \
+      >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE"
+  fi
 }
 
 if [ "${ZSH_VERSION:-}" ] && (exit 1); then
