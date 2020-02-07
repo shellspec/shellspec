@@ -71,6 +71,12 @@ find_specfiles() {
   fi
 }
 
+edit_in_place() {
+  if [ -e "$1" ]; then
+    eval 'shift; putsn "$("$@" < "'"$1"'")" > "'"$1"'"'
+  fi
+}
+
 display() {
   (
     while IFS= read -r line || [ "$line" ]; do

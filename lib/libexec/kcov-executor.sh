@@ -3,25 +3,18 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 
-kcov_prepare() {
+use replace
+
+kcov_preprocess() {
   [ -d "$SHELLSPEC_COVERAGE_DIR" ] || return 0
 
-  ( cd "$SHELLSPEC_COVERAGE_DIR"
-
-    # Cleanup previous coverage data
-    if [ -L "$SHELLSPEC_KCOV_FILENAME" ]; then
-      link=$(ls -dl "$SHELLSPEC_KCOV_FILENAME")
-      link=${link#*" $SHELLSPEC_KCOV_FILENAME -> "}
-      rm -rf "$link"
-    fi
-  )
+  # Cleanup previous coverage data
+  rm -rf "${SHELLSPEC_COVERAGE_DIR:?}/${SHELLSPEC_KCOV_FILENAME:?}"*
 }
 
 executor() {
   #shellcheck disable=SC2039
   [ "$(ulimit -n)" -lt 1024 ] && ulimit -n 1024
-
-  kcov_prepare
 
   #shellcheck disable=SC2034
   SHELLSPEC_COVERAGE_SETUP="$SHELLSPEC_LIB/cov/kcov-setup.sh"
@@ -33,6 +26,8 @@ executor() {
   mkdir -p "${SHELLSPEC_KCOV_IN_FILE%/*}"
   translator --coverage --fd=537 "$@" > "$SHELLSPEC_KCOV_IN_FILE"
 
+  kcov_preprocess
+
   #shellcheck disable=SC2039,SC2086
   "$SHELLSPEC_KCOV_PATH" \
     $SHELLSPEC_KCOV_COMMON_OPTS \
@@ -43,43 +38,64 @@ executor() {
     --configure=command-name="shellspec $*" \
     "$SHELLSPEC_COVERAGE_DIR" "$SHELLSPEC_KCOV_IN_FILE" 537>&1
 
-  kcov_cleanup
+  kcov_postprocess
 }
 
-kcov_cleanup() {
+kcov_postprocess() {
   [ -d "$SHELLSPEC_COVERAGE_DIR" ] || return 0
 
   ( cd "$SHELLSPEC_COVERAGE_DIR"
+    # Delete unnecessary files and directories
+    rm -f bash-helper.sh bash-helper-debug-trap.sh libbash_execve_redirector.so
+    rmdir kcov-merged ||:
 
-    # Fix symbolic link to relative path
+    # Swap directory and symlink
     if [ -L "$SHELLSPEC_KCOV_FILENAME" ]; then
       link=$(ls -dl "$SHELLSPEC_KCOV_FILENAME")
       link=${link#*" $SHELLSPEC_KCOV_FILENAME -> "}
-      link=${link%/}
-      link=${link##*/}
-      rm "$SHELLSPEC_KCOV_FILENAME" 2>/dev/null ||:
+      link=${link%/} && link=${link##*/}
       set -- "$link" "$SHELLSPEC_KCOV_FILENAME"
-      ln -snf "$@" 2>/dev/null ||:
-      kcov_fix_path index.json "$@" # kcov v35 only
-      kcov_fix_path index.js "$@"
+      { rm "$2" && mv "$1" "$2" && ln -s "$2" "$1"; } ||:
+      edit_in_place "index.json" kcov_fix_index "$1" "$2" # kcov version = v35
+      edit_in_place "index.js" kcov_fix_index "$1" "$2" # kcov version >= v36
     fi
 
-    # Delete unnecessary files
-    rm bash-helper.sh 2>/dev/null ||:
-    rm bash-helper-debug-trap.sh 2>/dev/null ||:
-    rm libbash_execve_redirector.so 2>/dev/null ||:
-    rmdir kcov-merged 2>/dev/null ||:
-  )
+    # Replace physical path to logical path
+    cd "$SHELLSPEC_PROJECT_ROOT"
+    set -- "$(pwd -P)" "$(pwd -L)" "$SHELLSPEC_KCOV_FILENAME"
+    cd "$SHELLSPEC_COVERAGE_DIR"
+    for file in coverage.json sonarqube.xml cobertura.xml; do
+      edit_in_place "$3/$file" "kcov_fix_${file%.*}" "$1" "$2"
+      ln -snf "$3/$file" "$file" ||:
+    done
+  ) 2>/dev/null
 }
 
-kcov_fix_path() {
-  [ -e "$1" ] || return 0
-  data=''
+kcov_fix_index() {
   while IFS= read -r line; do
-    case $line in (*"$2"*)
-      line="${line%%"$2"*}$3${line#*"$2"}"
-    esac
-    data="$data$line$SHELLSPEC_LF"
-  done < "$1"
-  echo "$data" > "$1"
+    case $line in (*"\"link\":\"$1/"*) replace line "$1" "$2"; esac
+    putsn "$line"
+  done
+}
+
+kcov_fix_coverage() {
+  while IFS= read -r line; do
+    case $line in (*"\"file\": \"$1/"*) replace line "$1" "$2"; esac
+    putsn "$line"
+  done
+}
+
+kcov_fix_sonarqube() {
+  while IFS= read -r line; do
+    case $line in (*"<file path=\"$1/"*) replace line "$1" "$2"; esac
+    putsn "$line"
+  done
+}
+
+kcov_fix_cobertura() {
+  while IFS= read -r line; do
+    case $line in (*"<source>$1"*) replace line "$1" "$2"; esac
+    case $line in (*"$2/</source>"*) replace line "/</source>" "</source>"; esac
+    putsn "$line"
+  done
 }
