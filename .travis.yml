@@ -48,9 +48,9 @@ matrix:
 before_install:
   - if [ "$PACKAGES" ]; then sudo apt-get install -y $PACKAGES; fi
   - if [ "$FORMULAS" ]; then brew install $FORMULAS; fi
-  - if [ "$CC" ]; then curl -sSL $CC_TEST_REPORTER_URL > /cc-test-reporter; fi
-  - if [ "$CC" ]; then chmod +x /cc-test-reporter; fi
-  - if [ "$CC" ]; then /cc-test-reporter before-build; fi
+  - if [ "$CC" ]; then curl -sSL $CC_TEST_REPORTER_URL > ./cc-test-reporter; fi
+  - if [ "$CC" ]; then chmod +x ./cc-test-reporter; fi
+  - if [ "$CC" ]; then ./cc-test-reporter before-build; fi
 before_script:
   - ./shellspec --shell sh --task fixture:stat:prepare
 script:
@@ -58,5 +58,5 @@ script:
   - if [   "$COVERAGE" ]; then ./shellspec --kcov --kcov-options "--coveralls-id=${TRAVIS_JOB_ID}"; fi
 after_success:
   - if [ "$CODECOV" ]; then bash <(curl -s https://codecov.io/bash) -s coverage; fi
-  - if [ "$CC" ]; then /cc-test-reporter format-coverage coverage/cobertura.xml -t cobertura; fi
-  - if [ "$CC" ]; then /cc-test-reporter upload-coverage; fi
+  - if [ "$CC" ]; then ./cc-test-reporter format-coverage coverage/cobertura.xml -t cobertura; fi
+  - if [ "$CC" ]; then ./cc-test-reporter upload-coverage; fi
