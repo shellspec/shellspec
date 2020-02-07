@@ -38,7 +38,7 @@ The line beginning with `When` is the evaluation.
 | When call <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code>           | Call shell function without subshell.                                |
 | When run <code>&lt;FUNCTION \| COMMAND&gt; [ARGUMENTS...]</code> | Run shell function (within subshell) or external command.            |
 | When run command <code>&lt;COMMAND&gt; [ARGUMENTS...]</code>     | Run external command (including non-shell scripts).                  |
-| When run script <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run shell script by                 |
+| When run script <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run shell script by new process of the current shell.                |
 | When run source <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run shell script in the current shell by `.` command (aka `source`). |
 
 Comparison
