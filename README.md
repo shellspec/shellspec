@@ -669,6 +669,10 @@ When call echo hello world
  +-- The evaluation keyword
 ```
 
+There are two types of evaluation, `When call` and `When run`. and `When run` has sub types of `command`, `script` and `source`.
+
+See more details of [Evaluation](/docs/references.md#evaluation)
+
 #### The - expectation
 
 Defines the verification. The expectation begins with `The`.

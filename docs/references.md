@@ -33,24 +33,25 @@ You can write a structured *Example* by using the DSL shown below:
 
 The line beginning with `When` is the evaluation.
 
-| Evaluation                                                       | Description                              |
-| :--------------------------------------------------------------- | :--------------------------------------- |
-| When call <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code>           | Call function without subshell.          |
-| When run <code>&lt;FUNCTION \| COMMAND&gt; [ARGUMENTS...]</code> | Run function or command within subshell. |
-| When run command <code>&lt;COMMAND&gt; [ARGUMENTS...]</code>     | Run external command within subshell.    |
-| When run source <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run script within subshell.              |
+| Evaluation                                                       | Description                                                          |
+| :--------------------------------------------------------------- | :------------------------------------------------------------------- |
+| When call <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code>           | Call shell function without subshell.                                |
+| When run <code>&lt;FUNCTION \| COMMAND&gt; [ARGUMENTS...]</code> | Run shell function (within subshell) or external command.            |
+| When run command <code>&lt;COMMAND&gt; [ARGUMENTS...]</code>     | Run external command (including non-shell scripts).                  |
+| When run script <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run shell script by                 |
+| When run source <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run shell script in the current shell by `.` command (aka `source`). |
 
-The differences between `call` and `run` / `run command` / `run source`:
+Comparison
 
-|                    | `call`                 | `run`                | `run command`        | `run source`         |
-| ------------------ | ---------------------- | -------------------- | -------------------- | -------------------- |
-| Use of subshell    | call without subshell  | run within subshell  | run within subshell  | run within subshell  |
-| target             | function               | function / command   | command              | shell script         |
-| Stop with `set -e` | x                      | o                    | -                    | o                    |
-| Catch `exit`       | x                      | o                    | -                    | o                    |
-| Variable reference | o                      | x                    | -                    | x                    |
-| Expectation Hooks  | BeforeCall / AfterCall | BeforeRun / AfterRun | BeforeRun / AfterRun | BeforeRun / AfterRun |
-| Intercept          | x                      | x                    | -                    | o                    |
+|                    | `call`                 | `run`                | `run command`        | `run script `        | `run source`         |
+| ------------------ | ---------------------- | -------------------- | -------------------- | -------------------- | -------------------- |
+| Run in subshell    | No                     | Yes                  | Yes                  | Yes                  | Yes                  |
+| Target             | function               | function / command   | command              | shell script         | shell script         |
+| Stop with `set -e` | No                     | Yes                  | -                    | Yes                  | Yes                  |
+| Catch `exit`       | No                     | Yes                  | -                    | Yes                  | Yes                  |
+| Expectation Hooks  | BeforeCall / AfterCall | BeforeRun / AfterRun | BeforeRun / AfterRun | BeforeRun / AfterRun | BeforeRun / AfterRun |
+| Intercept          | No                     | No                   | -                    | No                   | Yes                  |
+| Coverage           | Yes                    | Yes (function only)  | No                   | Yes                  | Yes                  |
 
 ### Expectation
 
