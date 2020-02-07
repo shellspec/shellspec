@@ -4,30 +4,53 @@
 
 There are official images on the [Docker Hub](https://hub.docker.com/r/shellspec/shellspec).
 
-| Name                            | Linux  | Packages                         |
-| ------------------------------- | ------ | -------------------------------- |
-| shellspec/shellspec             | Alpine | busybox (ash)                    |
-| shellspec/shellspec:kcov        | Alpine | busybox (ash), bash, kcov        |
-| shellspec/shellspec-debian      | Debian | dash, bash                       |
-| shellspec/shellspec-debian:kcov | Debian | dash, bash, kcov                 |
-| shellspec/shellspec-scratch     | None   | None (shellspec only tiny image) |
+| Name                            | Linux  | Included                  |  Size |
+| ------------------------------- | ------ | ------------------------- | ----: |
+| shellspec/shellspec             | Alpine | busybox (ash)             |  3 MB |
+| shellspec/shellspec:kcov        | Alpine | busybox (ash), bash, kcov | 14 MB |
+| shellspec/shellspec-debian      | Debian | dash, bash                | 48 MB |
+| shellspec/shellspec-debian:kcov | Debian | dash, bash, kcov          | 68 MB |
+| shellspec/shellspec-scratch     | None   | none (shellspec only)     | 40 KB |
 
-- shellspec/shellspec:kcov is beta (currently using alpine:edge not stable).
-- Version specified images are also available (VERSION: 0.21.0 and above).
+- shellspec/shellspec:kcov is **beta** (currently using alpine:edge not stable)
+- Version specified images are also available (VERSION: 0.21.0 and above)
   - `shellspec/shellspec[-VARIANT]:<VERSION | master>[-kcov]`
 
 ## Using shellspec docker image
 
 ### 1. Run shellspec and your specfiles within container
 
+```sh
+# Run docker command on the project root
+$ docker run -it --rm -v "$PWD:/src" shellspec/shellspec
+
+# Display help
+$ docker run -it --rm -v "$PWD:/src" shellspec/shellspec --help
+
+# Run with kcov (requires kcov supported image)
+$ docker run -it --rm -u $(id -u):$(id -g) \
+    -v "$PWD:/src" shellspec/shellspec:kcov --kcov
+
+# For users using Docker Desktop for Windows within WSL 1
+$ docker run -it --rm -v "$(wslpath -wa .):/src" shellspec/shellspec
+```
+
+### 2. Run simple with helper script and extra hooks
+
 Use [contrib/shellspec-docker](../contrib/shellspec-docker) helper script.
 
 ```sh
-# Specify the Docker image to use
+# Specify the Docker image to use (default: shellspec/shellspec)
 $ export SHELLSPEC_DOCKER=shellspec/shellspec
 
-# Run shellspec with Docker
+# Run helper script on the project root
 $ shellspec-docker
+
+# Display help
+$ shellspec-docker --help
+
+# Run with kcov (requires kcov supported image)
+$ shellspec-docker --kcov
 
 # Enter the Docker container
 $ shellspec-docker -
@@ -62,7 +85,7 @@ Invoked before execute shellspec inside of the docker container.
 
 Invoked after executed shellspec inside of the docker container.
 
-### 2. Using shellspec image as parent image
+### 3. Using shellspec image as parent image
 
 **Example**
 
@@ -79,7 +102,7 @@ $ docker build -t your-project-name .
 $ docker run -it your-project-name
 ```
 
-### 3. Include shellspec into another image
+### 4. Include shellspec into another image
 
 **Example**
 
@@ -100,7 +123,9 @@ $ docker build -t your-project-name .
 $ docker run -it your-project-name
 ```
 
-## Build shellspec docker image
+## Appendix
+
+### How to build official shellspec docker image yourself
 
 **Example**
 
