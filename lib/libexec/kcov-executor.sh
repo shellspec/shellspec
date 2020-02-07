@@ -3,7 +3,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 
-use replace
+use includes replace
 
 kcov_preprocess() {
   [ -d "$SHELLSPEC_COVERAGE_DIR" ] || return 0
@@ -73,29 +73,29 @@ kcov_postprocess() {
 
 kcov_fix_index() {
   while IFS= read -r line; do
-    case $line in (*"\"link\":\"$1/"*) replace line "$1" "$2"; esac
+    includes "$line" "\"link\":\"$1/" && replace line "$1" "$2"
     putsn "$line"
   done
 }
 
 kcov_fix_coverage() {
   while IFS= read -r line; do
-    case $line in (*"\"file\": \"$1/"*) replace line "$1" "$2"; esac
+    includes "$line" "\"file\": \"$1/" && replace line "$1" "$2"
     putsn "$line"
   done
 }
 
 kcov_fix_sonarqube() {
   while IFS= read -r line; do
-    case $line in (*"<file path=\"$1/"*) replace line "$1" "$2"; esac
+    includes "$line" "<file path=\"$1/" && replace line "$1" "$2"
     putsn "$line"
   done
 }
 
 kcov_fix_cobertura() {
   while IFS= read -r line; do
-    case $line in (*"<source>$1"*) replace line "$1" "$2"; esac
-    case $line in (*"$2/</source>"*) replace line "/</source>" "</source>"; esac
+    includes "$line" "<source>$1" && replace line "$1" "$2"
+    includes "$line" "$2/</source>" && replace line "/</source>" "</source>"
     putsn "$line"
   done
 }
