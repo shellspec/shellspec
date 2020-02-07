@@ -3,6 +3,8 @@ env:
   global:
     - HOMEBREW_NO_AUTO_UPDATE=1
     - PATH=${PATH}:${HOME}/kcov/bin
+    - CC_TEST_REPORTER_URL=https://codeclimate.com/downloads/test-reporter/test-reporter-latest-darwin-amd64
+    - CC_TEST_REPORTER_ID=67e0534ee993a6bbd10ae205ef4e807956c01564564ed64738932db123b1b87a
 addons:
   apt:
     update: true
@@ -42,14 +44,19 @@ matrix:
       env: OS="macOS 10.14" SHELLS="sh bash zsh ksh"
     - os: osx  # macOS 10.14 Mojave 2018-06
       osx_image: xcode10.2
-      env: OS="macOS 10.14" FORMULAS="bash kcov" COVERAGE=1
+      env: OS="macOS 10.14" FORMULAS="bash kcov" COVERAGE=1 CODECOV=1 CC=1
 before_install:
   - if [ "$PACKAGES" ]; then sudo apt-get install -y $PACKAGES; fi
   - if [ "$FORMULAS" ]; then brew install $FORMULAS; fi
+  - if [ "$CC" ]; then curl -sSL $CC_TEST_REPORTER_URL > /cc-test-reporter; fi
+  - if [ "$CC" ]; then chmod +x /cc-test-reporter; fi
+  - if [ "$CC" ]; then /cc-test-reporter before-build; fi
 before_script:
   - ./shellspec --shell sh --task fixture:stat:prepare
 script:
   - if [ ! "$COVERAGE" ]; then contrib/all.sh contrib/various_test.sh; fi
   - if [   "$COVERAGE" ]; then ./shellspec --kcov --kcov-options "--coveralls-id=${TRAVIS_JOB_ID}"; fi
 after_success:
-  - if [ "$COVERAGE" ]; then bash <(curl -s https://codecov.io/bash) -s coverage; fi
+  - if [ "$CODECOV" ]; then bash <(curl -s https://codecov.io/bash) -s coverage; fi
+  - if [ "$CC" ]; then /cc-test-reporter format-coverage coverage/cobertura.xml -t cobertura; fi
+  - if [ "$CC" ]; then /cc-test-reporter upload-coverage; fi
