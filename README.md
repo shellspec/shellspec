@@ -451,13 +451,14 @@ Usage: shellspec [options] [files or directories]
       --[no-]kcov                     Enable coverage using kcov [default: disabled]
                                         Note: Requires kcov and bash, parallel execution is ignored.
       --kcov-path PATH                Specify kcov path [default: kcov]
-      --kcov-common-options OPTIONS   Specify kcov common options [default: see below]
-                                        --path-strip-level=1
-                                        --include-path=.
-                                        --include-pattern=.sh
-                                        --exclude-pattern=/spec/,/coverage/,/report/
-      --kcov-options OPTIONS          Specify additional kcov options
-                                        coverage limits, coveralls id, etc...
+      --kcov-options OPTIONS          Kcov options to overwrite and add (coverage limits, coveralls id, etc...)
+                                        Default specified options:
+                                          --exclude-pattern=/spec/,/coverage/,/report/
+                                          --include-path=.
+                                          --include-pattern=.sh
+                                          --path-strip-level=1
+                                        To include files without extension, specify --include-pattern
+                                        without '.sh' and filter with --include-*/--exclude-* options
 
   **** Utility ****
 

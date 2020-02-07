@@ -1,6 +1,8 @@
 #shellcheck shell=sh
 
 Describe "core/statement.sh"
+  Include "$SHELLSPEC_LIB/core/statement.sh"
+
   Describe "shellspec_statement_preposition()"
     the() {
       shellspec_statement_ordinal() { echo "the" "$@"; }

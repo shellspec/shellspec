@@ -149,7 +149,9 @@ trans_constant() {
 trans_include() {
   putsn "if shellspec_unless SKIP; then"
   putsn "  __SOURCED__=${1# }"
+  putsn "  shellspec_coverage_start"
   putsn "  . $1"
+  putsn "  shellspec_coverage_stop"
   putsn "  unset __SOURCED__ ||:"
   putsn "fi"
 }
@@ -167,13 +169,13 @@ syntax_error() {
   putsn "shellspec_abort 1 \"$1\" \"$2\""
 }
 
-metadata=1 finished=1 ft='' fd='' spec_no=1
+metadata=1 finished=1 coverage='' fd='' spec_no=1
 
 for param in "$@"; do
   case $param in
     --no-metadata) metadata='' ;;
     --no-finished) finished='' ;;
-    --functrace  ) ft=1 ;;
+    --coverage   ) coverage=1 ;;
     --fd=*       ) fd=${param#*=} ;;
     --spec-no=*  ) spec_no=${param#*=} ;;
     *) set -- "$@" "$param" ;;
@@ -186,7 +188,14 @@ filter=1
 [ "$SHELLSPEC_TAG_FILTER" ] && filter=''
 [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
 
-[ "$ft" ] && putsn "set -o functrace"
+putsn "#!/bin/sh"
+putsn "shellspec_coverage_start() { :; }"
+putsn "shellspec_coverage_stop() { :; }"
+if [ "$coverage" ]; then
+  putsn "set -o functrace"
+  putsn "[ \"\$SHELLSPEC_COVERAGE_SETUP\" ] && . \"\$SHELLSPEC_COVERAGE_SETUP\""
+  putsn "shellspec_coverage_stop"
+fi
 [ "$fd" ] && putsn "exec 1>&$fd"
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_metadata $metadata"

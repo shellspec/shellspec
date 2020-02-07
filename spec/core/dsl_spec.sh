@@ -3,6 +3,9 @@
 % LIB: "$SHELLSPEC_SPECDIR/fixture/lib"
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 
+# This Include do not place inside of Describe. posh fails.
+Include "$SHELLSPEC_LIB/core/dsl.sh"
+
 Describe "core/dsl.sh"
   Describe "shellspec_metadata()"
     mock() { shellspec_output() { echo "$1"; }; }
@@ -34,6 +37,61 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_yield()"
+    shellspec_yield12345() { echo "yield12345 $#"; }
+    echo_lineno() { echo "[$SHELLSPEC_LINENO]"; }
+    BeforeRun "SHELLSPEC_BLOCK_NO=12345"
+    AfterRun echo_lineno
+
+    It 'calls current block'
+      When run shellspec_yield
+      The line 1 of stdout should eq "yield12345 0"
+      The line 2 of stdout should eq "[]"
+    End
+
+    It 'calls current block with arguments'
+      When run shellspec_yield arg
+      The line 1 of stdout should eq "yield12345 1"
+      The line 2 of stdout should eq "[]"
+    End
+  End
+
+  Describe "shellspec_begin()"
+    mock() { shellspec_output() { echo "$1"; }; }
+    echo_specfile_specno() { echo "$SHELLSPEC_SPECFILE $SHELLSPEC_SPEC_NO"; }
+    BeforeRun mock
+    AfterRun echo_specfile_specno
+
+    It 'outputs BEGIN'
+      When run shellspec_begin specfile 123
+      The line 1 of stdout should eq "BEGIN"
+      The line 2 of stdout should eq "specfile 123"
+    End
+  End
+
+  Describe "shellspec_perform()"
+    echo_enabled_filter() { echo "$SHELLSPEC_ENABLED $SHELLSPEC_FILTER"; }
+    AfterRun echo_enabled_filter
+
+    It 'sets filter variables'
+      When run shellspec_perform enabled filter
+      The stdout should eq "enabled filter"
+    End
+  End
+
+  Describe "shellspec_end()"
+    mock() { shellspec_output() { echo "$1"; }; }
+    echo_example_count() { echo "$SHELLSPEC_EXAMPLE_COUNT"; }
+    BeforeRun mock
+    AfterRun echo_example_count
+
+    It 'outputs END'
+      When run shellspec_end 1234
+      The line 1 of stdout should eq "END"
+      The line 2 of stdout should eq "1234"
+    End
+  End
+
   Describe "shellspec_example_group()"
     mock() {
       shellspec_output() { echo "$1"; }
@@ -43,6 +101,40 @@ Describe "core/dsl.sh"
       BeforeRun mock
       When run shellspec_example_group
       The stdout should include 'yield'
+    End
+  End
+
+  Describe "shellspec_example_block()"
+    mock() {
+      shellspec_parameters() { echo "called shellspec_parameters" "$@"; }
+      shellspec_example123() { echo "called shellspec_example123"; }
+    }
+
+    It 'calls shellspec_parameters if not defined SHELLSPEC_PARAMETER_NO exists'
+      BeforeRun mock SHELLSPEC_PARAMETER_NO=1000 SHELLSPEC_BLOCK_NO=123
+      When run shellspec_example_block
+      The stdout should eq 'called shellspec_parameters 1'
+    End
+
+    It 'calls shellspec_example if defined SHELLSPEC_PARAMETER_NO'
+      BeforeRun mock SHELLSPEC_PARAMETER_NO= SHELLSPEC_BLOCK_NO=123
+      When run shellspec_example_block
+      The stdout should eq 'called shellspec_example123'
+    End
+  End
+
+  Describe "shellspec_parameters()"
+    shellspec_parameters1000() { echo shellspec_parameters1000; }
+    shellspec_parameters1001() { echo shellspec_parameters1001; }
+    shellspec_parameters1002() { echo shellspec_parameters1002; }
+
+    It 'calls shellspec_parameters if not defined SHELLSPEC_PARAMETER_NO exists'
+      BeforeRun SHELLSPEC_PARAMETER_NO=1002
+      When run shellspec_parameters 1000
+      The line 1 of stdout should eq 'shellspec_parameters1000'
+      The line 2 of stdout should eq 'shellspec_parameters1001'
+      The line 3 of stdout should eq 'shellspec_parameters1002'
+      The lines of stdout should eq 3
     End
   End
 
@@ -152,7 +244,7 @@ Describe "core/dsl.sh"
     expectation() { shellspec_on EXPECTATION; shellspec_off NOT_IMPLEMENTED; }
     mock() {
       shellspec_output() { echo "$1"; }
-      shellspec_yield0() { echo "yield"; block; }
+      shellspec_yield0() { echo "yield $#"; block; }
     }
     BeforeRun SHELLSPEC_BLOCK_NO=0 mock
 
@@ -167,9 +259,9 @@ Describe "core/dsl.sh"
 
     It 'skipps the rest if skipped inside of example'
       block() { shellspec_skip 1; }
-      When run shellspec_invoke_example
+      When run shellspec_invoke_example 1
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'yield'
+      The stdout line 2 should equal 'yield 1'
       The stdout line 3 should equal 'SKIP'
       The stdout line 4 should equal 'SKIPPED'
     End
@@ -178,7 +270,7 @@ Describe "core/dsl.sh"
       block() { expectation; shellspec_on FAILED; shellspec_skip 1; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'yield'
+      The stdout line 2 should equal 'yield 0'
       The stdout line 3 should equal 'SKIP'
       The stdout line 4 should equal 'FAILED'
     End
@@ -187,7 +279,7 @@ Describe "core/dsl.sh"
       block() { :; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'yield'
+      The stdout line 2 should equal 'yield 0'
       The stdout line 3 should equal 'NOT_IMPLEMENTED'
       The stdout line 4 should equal 'TODO'
     End
@@ -196,7 +288,7 @@ Describe "core/dsl.sh"
       block() { expectation; shellspec_on FAILED; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'yield'
+      The stdout line 2 should equal 'yield 0'
       The stdout line 3 should equal 'FAILED'
     End
 
@@ -204,7 +296,7 @@ Describe "core/dsl.sh"
       block() { expectation; shellspec_on UNHANDLED_STATUS; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'yield'
+      The stdout line 2 should equal 'yield 0'
       The stdout line 3 should equal 'UNHANDLED_STATUS'
       The stdout line 4 should equal 'WARNED'
     End
@@ -213,7 +305,7 @@ Describe "core/dsl.sh"
       block() { expectation; shellspec_on UNHANDLED_STDOUT; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'yield'
+      The stdout line 2 should equal 'yield 0'
       The stdout line 3 should equal 'UNHANDLED_STDOUT'
       The stdout line 4 should equal 'WARNED'
     End
@@ -222,7 +314,7 @@ Describe "core/dsl.sh"
       block() { expectation; shellspec_on UNHANDLED_STDERR; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'yield'
+      The stdout line 2 should equal 'yield 0'
       The stdout line 3 should equal 'UNHANDLED_STDERR'
       The stdout line 4 should equal 'WARNED'
     End
@@ -231,7 +323,7 @@ Describe "core/dsl.sh"
       block() { expectation; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'yield'
+      The stdout line 2 should equal 'yield 0'
       The stdout line 3 should equal 'SUCCEEDED'
     End
 
@@ -239,7 +331,7 @@ Describe "core/dsl.sh"
       block() { expectation; shellspec_on FAILED PENDING; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'yield'
+      The stdout line 2 should equal 'yield 0'
       The stdout line 3 should equal 'TODO'
     End
 
@@ -247,7 +339,7 @@ Describe "core/dsl.sh"
       block() { expectation; shellspec_on PENDING; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'yield'
+      The stdout line 2 should equal 'yield 0'
       The stdout line 3 should equal 'FIXED'
     End
 
@@ -258,7 +350,7 @@ Describe "core/dsl.sh"
         block() { expectation; shellspec_on PENDING WARNED; }
         When run shellspec_invoke_example
         The stdout line 1 should equal 'EXAMPLE'
-        The stdout line 2 should equal 'yield'
+        The stdout line 2 should equal 'yield 0'
         The stdout line 3 should equal 'TODO'
       End
     End
@@ -270,7 +362,7 @@ Describe "core/dsl.sh"
         block() { expectation; shellspec_on PENDING WARNED; }
         When run shellspec_invoke_example
         The stdout line 1 should equal 'EXAMPLE'
-        The stdout line 2 should equal 'yield'
+        The stdout line 2 should equal 'yield 0'
         The stdout line 3 should equal 'FIXED'
       End
     End
@@ -416,6 +508,16 @@ Describe "core/dsl.sh"
       The stdout should include 'on:EXPECTATION'
       The stdout should include 'on:FAILED'
       The stdout should not include 'expectation'
+    End
+  End
+
+  Describe "shellspec_path()"
+    echo_path_alias() { echo "$SHELLSPEC_PATH_ALIAS"; }
+    AfterRun echo_path_alias
+
+    It 'sets path alias'
+      When run shellspec_path path1 path2 path3
+      The stdout should eq ":path1:path2:path3:"
     End
   End
 
@@ -567,6 +669,23 @@ Describe "core/dsl.sh"
     It 'registor multiple interceptors at once'
       When call shellspec_intercept foo bar
       The variable SHELLSPEC_INTERCEPTOR should eq "|foo:__foo__|bar:__bar__|"
+    End
+  End
+
+  Describe "shellspec_set()"
+    shellspec_append_shell_option() { echo "$1 $2"; }
+
+    It 'calls shellspec_append_shell_option'
+      When run shellspec_set errexit:on noglob:off
+      The line 1 of stdout should eq "SHELLSPEC_SHELL_OPTIONS errexit:on"
+      The line 2 of stdout should eq "SHELLSPEC_SHELL_OPTIONS noglob:off"
+    End
+  End
+
+  Describe "shellspec_marker()"
+    It 'outputs maker'
+      When run shellspec_marker specfile 1234
+      The stderr should eq "${SHELLSPEC_SYN}shellspec_marker:specfile 1234"
     End
   End
 

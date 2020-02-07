@@ -8,7 +8,7 @@ kcov_end() {
   _line='' _key='' _value='' _color=''
   _percent_covered='' _covered_lines='' _total_lines=''
   _percent_low='' _percent_high=''
-  _coverage="$SHELLSPEC_COVERAGEDIR/$SHELLSPEC_KCOV_FILENAME/coverage.json"
+  _coverage="$SHELLSPEC_COVERAGE_DIR/$SHELLSPEC_KCOV_FILENAME/coverage.json"
   #shellcheck disable=SC2034
    _command='' _date=''
 

@@ -23,7 +23,7 @@ generate() {
 
 generate ".shellspec" <<DATA
 --require spec_helper
-# --kcov-common-options "--path-strip-level=1 --include-path=. --include-pattern=.sh --exclude-pattern=/spec/,/coverage/,/report/"
+# --kcov-options "--include-path=. --include-pattern=.sh --exclude-pattern=/spec/,/coverage/,/report/"
 DATA
 
 generate "spec/spec_helper.sh" <<DATA

@@ -1,6 +1,8 @@
 #shellcheck shell=sh
 
 Describe "core/utils.sh"
+  Include "$SHELLSPEC_LIB/core/utils.sh"
+
   Describe 'shellspec_get_nth()'
     It 'fetch nth value seperate by ,'
       When call shellspec_get_nth var 3 ',' "a,b,c,d,e"
@@ -145,6 +147,20 @@ Describe "core/utils.sh"
     End
   End
 
+  Describe 'shellspec_shopt()'
+    shopt() { return 1; }
+
+    It 'sets option'
+      When call shellspec_shopt -o allexport
+      The value $- should include "a"
+    End
+
+    It 'unsets option'
+      When call shellspec_shopt +o allexport
+      The value $- should not include "a"
+    End
+  End
+
   Describe 'shellspec_set_option()'
     Before 'SHELLSPEC_SHELL_OPTIONS="set -o foo;set +o bar;"'
     shellspec_set_long() { %= "$@"; }
@@ -154,6 +170,18 @@ Describe "core/utils.sh"
       The line 1 of output should eq "-foo"
       The line 2 of output should eq "+bar"
       The lines of output should eq 2
+    End
+  End
+
+  Describe 'shellspec_set_long()'
+    It 'sets long options'
+      When call shellspec_set_long -allexport
+      The value $- should include "a"
+    End
+
+    It 'unsets long options'
+      When call shellspec_set_long +allexport
+      The value $- should not include "a"
     End
   End
 End

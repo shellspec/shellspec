@@ -1,8 +1,10 @@
 #shellcheck shell=sh disable=SC2016
 
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
+% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 
 Describe "core/evaluation.sh"
+  Include "$SHELLSPEC_LIB/core/evaluation.sh"
   Before 'VAR=123'
 
   Describe 'call evaluation'
@@ -163,6 +165,72 @@ Describe "core/evaluation.sh"
           The stdout should equal line1
           The status should equal 12
           The value "$-" should not include "e"
+        End
+      End
+    End
+
+    Describe 'run script evaluation'
+      Before SHELLSPEC_COVERAGE_ENV=''
+
+      Describe 'shellspec_shebang_arguments()'
+        Parameters
+          "#!/bin/sh -u"            "-u"
+          "#!/bin/sh   -u -u  "     "-u -u"
+          "#!/bin/sh          "     ""
+          "/bin/sh -u"              ""
+          "#!/usr/bin/env bash"     ""
+          "#!/bin/env bash"         ""
+        End
+
+        shebang_arguments() {
+          echo "$1" | shellspec_shebang_arguments
+        }
+
+        It 'gets shebang arguments'
+          When call shebang_arguments "$1"
+          The stdout should equal "$2"
+        End
+      End
+
+      It 'should be error if not exists file'
+        When run script not-exists-file
+        The stderr should be present
+        The status should be failure
+      End
+
+      It 'should be error if not executable file'
+        When run script "$FIXTURE/file"
+        The stderr should be present
+        The status should be failure
+      End
+
+      Describe 'shebang arguments'
+        set_fake_shell() { export SHELLSPEC_SHELL="printf '%s\n'"; }
+        shellspec_shebang_arguments() { %= "-u -u -u -u"; }
+        Before set_fake_shell
+
+        Context 'Not support shebang multiple arguments'
+          Before SHELLSPEC_SHEBANG_MULTIARG=''
+          It 'treats as one argument'
+            When run script "$BIN/echo"
+            The lines of stdout should equal 2
+          End
+        End
+
+        Context 'Support shebang multiple arguments'
+          Before SHELLSPEC_SHEBANG_MULTIARG=1
+          It 'treats as multiple arguments'
+            When run script "$BIN/echo"
+            The lines of stdout should equal 5
+          End
+        End
+      End
+
+      Describe 'loading SHELLSPEC_COVERAGE_ENV'
+        Before SHELLSPEC_COVERAGE_ENV="$FIXTURE/env-script.sh"
+        It 'loads SHELLSPEC_COVERAGE_ENV script'
+          When run script "$BIN/null.sh"
+          The stdout should equal "env-script"
         End
       End
     End

@@ -50,7 +50,9 @@ export SHELLSPEC_DEFAULT_PATH=spec
 export SHELLSPEC_INFILE=file
 export SHELLSPEC_RANDOM=''
 export SHELLSPEC_SEED=''
-export SHELLSPEC_COVERAGEDIR=''
+export SHELLSPEC_COVERAGE_SETUP=''
+export SHELLSPEC_COVERAGE_ENV=''
+export SHELLSPEC_COVERAGE_DIR=''
 export SHELLSPEC_KCOV=''
 export SHELLSPEC_KCOV_PATH='kcov'
 export SHELLSPEC_KCOV_COMMON_OPTS=''
@@ -66,6 +68,8 @@ export SHELLSPEC_DEFECT_REDEFINE=''
 export SHELLSPEC_DEFECT_SHELL_FLAG=''
 export SHELLSPEC_KILL='kill'
 export SHELLSPEC_SLEEP='sleep'
+export SHELLSPEC_ALIAS='alias'
+export SHELLSPEC_SHEBANG_MULTIARG=''
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -99,7 +103,7 @@ SHELLSPEC_PROJECT_ROOT="$PWD"
 SHELLSPEC_PROJECT_NAME="${SHELLSPEC_PROJECT_ROOT##*/}"
 SHELLSPEC_SPECDIR="$SHELLSPEC_PROJECT_ROOT/spec"
 SHELLSPEC_REPORTDIR="$SHELLSPEC_PROJECT_ROOT/report"
-SHELLSPEC_COVERAGEDIR="$SHELLSPEC_PROJECT_ROOT/coverage"
+SHELLSPEC_COVERAGE_DIR="$SHELLSPEC_PROJECT_ROOT/coverage"
 SHELLSPEC_LOAD_PATH="$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_REPORTERLIB"
 SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$SHELLSPEC_UNIXTIME.$$"
 SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/time.log"
@@ -122,13 +126,13 @@ fi
 while IFS= read -r option; do
   SHELLSPEC_KCOV_COMMON_OPTS="$SHELLSPEC_KCOV_COMMON_OPTS$option "
 done <<HERE
---path-strip-level=1
+--exclude-pattern=/coverage/,/spec/,/report/
 --include-path=.
 --include-pattern=.sh
---exclude-pattern=/coverage/,/spec/,/report/
+--path-strip-level=1
 HERE
 SHELLSPEC_KCOV_FILENAME="$SHELLSPEC_PROJECT_NAME [specfiles]"
-SHELLSPEC_KCOV_IN_FILE="$SHELLSPEC_PROJECT_ROOT/$SHELLSPEC_KCOV_FILENAME"
+SHELLSPEC_KCOV_IN_FILE="$SHELLSPEC_TMPBASE/kcov/$SHELLSPEC_KCOV_FILENAME"
 
 usage() {
 while IFS= read -r line; do echo "$line"; done <<USAGE
@@ -197,13 +201,14 @@ Usage: shellspec [options] [files or directories]
       --[no-]kcov                     Enable coverage using kcov [default: disabled]
                                         Note: Requires kcov and bash, parallel execution is ignored.
       --kcov-path PATH                Specify kcov path [default: kcov]
-      --kcov-common-options OPTIONS   Specify kcov common options [default: see below]
-                                        --path-strip-level=1
-                                        --include-path=.
-                                        --include-pattern=.sh
-                                        --exclude-pattern=/spec/,/coverage/,/report/
-      --kcov-options OPTIONS          Specify additional kcov options
-                                        coverage limits, coveralls id, etc...
+      --kcov-options OPTIONS          Kcov options to overwrite and add (coverage limits, coveralls id, etc...)
+                                        Default specified options:
+                                          --exclude-pattern=/spec/,/coverage/,/report/
+                                          --include-path=.
+                                          --include-pattern=.sh
+                                          --path-strip-level=1
+                                        To include files without extension, specify --include-pattern
+                                        without '.sh' and filter with --include-*/--exclude-* options
 
   **** Utility ****
 
@@ -326,6 +331,7 @@ parse_options() {
         shift ;;
       --kcov-common-options) [ "${2:-}" ] || abort 'Require OPTIONS.'
         SHELLSPEC_KCOV_COMMON_OPTS="$2"
+        warn "--kcov-common-options is deprecated, merge into --kcov-options"
         shift ;;
       --kcov-options) [ "${2:-}" ] || abort 'Require OPTIONS.'
         SHELLSPEC_KCOV_OPTS="${SHELLSPEC_KCOV_OPTS}${SHELLSPEC_KCOV_OPTS:+ }$2"
@@ -408,6 +414,10 @@ fi
 if $SHELLSPEC_SHELL -c 'set -u; unset v ||:; : $v' 2>/dev/null; then
   warn "Unsupported shell (shell flag handling broken): $SHELLSPEC_SHELL"
   SHELLSPEC_DEFECT_SHELL_FLAG=1
+fi
+
+if "$SHELLSPEC_LIBEXEC/shellspec-shebang" 2>/dev/null; then
+  SHELLSPEC_SHEBANG_MULTIARG=1
 fi
 
 if [ "$SHELLSPEC_KCOV" ]; then

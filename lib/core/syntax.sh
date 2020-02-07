@@ -1,6 +1,7 @@
 #shellcheck shell=sh
 
-SHELLSPEC_SYNTAXES="|" SHELLSPEC_COMPOUNDS="|"
+SHELLSPEC_SYNTAXES=${SHELLSPEC_SYNTAXES:-|}
+SHELLSPEC_COMPOUNDS="${SHELLSPEC_COMPOUNDS:-|}"
 
 shellspec_syntax() {
   SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}$1|"
@@ -29,7 +30,10 @@ shellspec_syntax_alias() {
 shellspec_syntax_dispatch() {
   if [ "$1" = "subject" ]; then
     case $2 in (*"()")
-      eval "shift 2; set -- subject function \"${2%??}\" \"\$@\""
+      case $# in
+        2) eval "shift 2; set -- subject function \"${2%??}\"" ;;
+        *) eval "shift 2; set -- subject function \"${2%??}\" \"\$@\"" ;;
+      esac
     esac
   fi
 
@@ -80,4 +84,7 @@ shellspec_syntax_param() {
   return 1
 }
 
-shellspec_syntax_param_check() { shift; "$@"; }
+shellspec_syntax_param_check() {
+  shift
+  "$@"
+}

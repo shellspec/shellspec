@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `--kcov-common-options` is deprecated, merge into `--kcov-options`
+
 ## [0.21.0] - 2020-01-30
 
 ### Added
