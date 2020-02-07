@@ -146,7 +146,7 @@ Currently used external (not shell builtins) commands:
 
 - `cat`, `date`, `ls`, `mkdir`, `od` (or not POSIX `hexdump`), `rm`, `sleep`, `sort`, `time`
 - `ps` (used to autodetect the current shell in environments which do not implement procfs)
-- `ln` (used only when generating coverage report)
+- `ln`, `mv` (used only when generating coverage report)
 - `kill`, `printf` (used but almost shell builtins)
 
 ## Tutorial

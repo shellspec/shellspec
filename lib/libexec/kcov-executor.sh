@@ -46,8 +46,8 @@ kcov_postprocess() {
 
   ( cd "$SHELLSPEC_COVERAGE_DIR"
     # Delete unnecessary files and directories
-    rm -f bash-helper.sh bash-helper-debug-trap.sh libbash_execve_redirector.so
-    rmdir kcov-merged ||:
+    rm -rf bash-helper.sh bash-helper-debug-trap.sh \
+      libbash_execve_redirector.so kcov-merged ||:
 
     # Swap directory and symlink
     if [ -L "$SHELLSPEC_KCOV_FILENAME" ]; then
