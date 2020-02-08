@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 
   char bin[max_size];
   if ( fgets(bin, max_size, fp) == NULL ) {
+    fclose(fp);
     return EXIT_FAILURE;
   }
 
