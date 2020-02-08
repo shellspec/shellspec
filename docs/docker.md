@@ -87,7 +87,7 @@ Invoked after executed shellspec inside of the docker container.
 
 ### 3. Using shellspec image as parent image
 
-**Example**
+Example
 
 ```Dockerfile
 # Dockerfile
@@ -104,7 +104,7 @@ $ docker run -it your-project-name
 
 ### 4. Include shellspec into another image
 
-**Example**
+Example
 
 ```Dockerfile
 # Dockerfile
@@ -127,9 +127,9 @@ $ docker run -it your-project-name
 
 ### How to build official shellspec docker image yourself
 
-**Example**
+Example
 
-```
+```sh
 contrib/build.sh .dockerhub/Dockerfile         shellspec
 contrib/build.sh .dockerhub/Dockerfile         shellspec kcov
 contrib/build.sh .dockerhub/Dockerfile.debian  shellspec-debian

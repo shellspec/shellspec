@@ -43,7 +43,7 @@ The line beginning with `When` is the evaluation.
 
 Comparison
 
-|                    | `call`                 | `run`                | `run command`        | `run script `        | `run source`         |
+|                    | `call`                 | `run`                | `run command`        | `run script`         | `run source`         |
 | ------------------ | ---------------------- | -------------------- | -------------------- | -------------------- | -------------------- |
 | Run in subshell    | No                     | Yes                  | Yes                  | Yes                  | Yes                  |
 | Target             | function               | function / command   | command              | shell script         | shell script         |

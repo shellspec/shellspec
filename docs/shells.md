@@ -32,8 +32,8 @@ Default shell: `busybox ash`
 | OpenWrt 12.09       |        | _1.19.4_ |      | -     |      | -    | -   |
 | OpenWrt 14.07       |        | 1.22.1   |      | -     |      | -    |     |
 | OpenWrt 15.05.1     |        | 1.23.2   | -    | -     |      | -    |     |
-| **OpenWrt 18.06.6** |        | 1.28.4   | -    | -     |      | -    |     |
-| **OpenWrt 19.07.0** |        | 1.30.1   | -    | -     |      | -    |     |
+| **OpenWrt 18.06.7** |        | 1.28.4   | -    | -     |      | -    |     |
+| **OpenWrt 19.07.1** |        | 1.30.1   | -    | -     |      | -    |     |
 
 #### CentOS / Fedora
 
@@ -77,7 +77,7 @@ Default shell: `dash` or `bash` (until debian 5.0)
 | **Ubuntu 18.04** | 4.4.20 | 1.27.2     | 0.5.8         | 93u+ 2012-08-01 | R56c | -        | 0.13.1   | 2.46 | 5.4.2  |
 | **Ubuntu 19.04** |        |            |               |                 |      | -        |          |      | 5.5.1  |
 
-* Using https://github.com/lpenz/docker-debian-releases/ for older (7.11 and before) Debian docker images.
+* Using [lpenz/docker-debian-releases](https://github.com/lpenz/docker-debian-releases/) for older (7.11 and before) Debian docker images.
 * Testing bash 2.03-3.2.39 in both POSIX and non-POSIX mode. bash 4.1.5- is non-POSIX mode only.
 
 #### FreeBSD
@@ -128,7 +128,8 @@ These are tested by Docker (`contrib/test_in_docker.sh`).
 | Debian buster + Schily AN-2019-10-07 | 2019/09/27   |
 | Debian buster + Schily AN-2019-12-05 | 2019/10/25   |
 
-* The version of [Schily Bourne Shell][bosh](`bosh`, `pbosh`) was chosen with reference to [The NetBSD package collection][pkgsrc].
+* [Schily Bourne Shell][bosh] (`bosh`, `pbosh`) packages are available on [The NetBSD package collection][pkgsrc].
+* Versions before 2018/10/07 does not work.
 
 [bosh]: http://schilytools.sourceforge.net/bosh.html
 [pkgsrc]: http://pkgsrc.se/shells/bosh

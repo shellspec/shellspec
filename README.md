@@ -38,6 +38,9 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Requirements](#requirements)
 - [Tutorial](#tutorial)
   - [Installation](#installation)
+    - [Online installer](#online-installer)
+    - [Package manager](#package-manager)
+    - [Others (make / manual)](#others-make--manual)
   - [Use with Docker](#use-with-docker)
   - [Getting started](#getting-started)
 - [shellspec command](#shellspec-command)
@@ -75,6 +78,7 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [Data - input data for evaluation](#data---input-data-for-evaluation)
     - [Parameters - parameterized example](#parameters---parameterized-example)
     - [subject, modifier, matcher](#subject-modifier-matcher)
+      - [Custom matcher](#custom-matcher)
   - [Hooks](#hooks)
     - [Before, After - example hook](#before-after---example-hook)
     - [BeforeCall, AfterCall - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
@@ -102,21 +106,21 @@ testing tools. Of course shellspec is tested by shellspec.
 
 ### Features
 
-* Works with all POSIX compliant shells (dash, bash, zsh, ksh, busybox, etc...)
-* Implemented by shell scripts with minimal dependencies (use only a few basic POSIX-compliant commands)
-* BDD style specfile interpretable as a shell script
-* Supports nestable blocks with scope like lexical scope
-* Easy to mock and stub in cooperation with scope
-* Skip / pending of the examples, and support of easy-to-skip "x" known as "xit"
-* Hooks before / after examples
-* Parameterized examples for Data-Driven tests
-* Execution filtering by line number, id, focus, tag and example name
-* Parallel execution, random ordered execution and dry-run execution
-* Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
-* Coverage ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
-* Friendly with Docker and CI
-* Builtin simple task runner
-* Extensible architecture (custom matcher, custom formatter, etc...)
+- Works with all POSIX compliant shells (dash, bash, zsh, ksh, busybox, etc...)
+- Implemented by shell scripts with minimal dependencies (use only a few basic POSIX-compliant commands)
+- BDD style specfile interpretable as a shell script
+- Supports nestable blocks with scope like lexical scope
+- Easy to mock and stub in cooperation with scope
+- Skip / pending of the examples, and support of easy-to-skip "x" known as "xit"
+- Hooks before / after examples
+- Parameterized examples for Data-Driven tests
+- Execution filtering by line number, id, focus, tag and example name
+- Parallel execution, random ordered execution and dry-run execution
+- Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
+- Coverage ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
+- Friendly with Docker and CI
+- Builtin simple task runner
+- Extensible architecture (custom matcher, custom formatter, etc...)
 
 ### Supported shells
 
@@ -156,16 +160,18 @@ Currently used external (not shell builtins) commands:
 
 ### Installation
 
+#### Online installer
+
 **Install the latest release version.**
 
-```console
-$ curl -fsSL https://git.io/shellspec | sh
+```sh
+curl -fsSL https://git.io/shellspec | sh
 ```
 
 or
 
-```console
-$ wget -O- https://git.io/shellspec | sh
+```sh
+wget -O- https://git.io/shellspec | sh
 ```
 
 Note: See [Releases](https://github.com/shellspec/shellspec/releases) page if you want to download distribution archive.
@@ -175,28 +181,28 @@ Note: See [Releases](https://github.com/shellspec/shellspec/releases) page if yo
 
 **Install the specified version.**
 
-```console
-$ curl -fsSL https://git.io/shellspec | sh -s 0.19.1
+```sh
+curl -fsSL https://git.io/shellspec | sh -s 0.19.1
 ```
 
 **Upgrade to the latest release version.**
 
-```console
-$ curl -fsSL https://git.io/shellspec | sh -s -- --switch
+```sh
+curl -fsSL https://git.io/shellspec | sh -s -- --switch
 ```
 
 **Switch to the specified version.**
 
-```console
-$ curl -fsSL https://git.io/shellspec | sh -s 0.18.0 --switch
+```sh
+curl -fsSL https://git.io/shellspec | sh -s 0.18.0 --switch
 ```
 
-**Uninstall**
+**How to uninstall.**
 
 1. Delete the shellspec executable file [default: `$HOME/bin/shellspec`].
 2. Delete the shellspec installation directory [default: `$HOME/lib/shellspec`].
 
-**Other usage**
+**Other usage.**
 
 ```console
 $ curl -fsSL https://git.io/shellspec | sh -s -- --help
@@ -228,14 +234,29 @@ OPTIONS:
   -y, --yes             Automatic yes to prompts
   -h, --help            You're looking at it
 ```
+
+</details>
+
+#### Package manager
+
+<details>
+<summary>Arch Linux</summary>
+
+Installation on Arch Linux from the AUR [shellspec package](https://aur.archlinux.org/packages/shellspec/) using `aura`:
+
+```console
+# Install the latest stable version
+$ aura -A shellspec
+```
+
 </details>
 
 <details>
-<summary>Using package manager (basher / bpkg)</summary>
-
-**The officially supported version is shellspec 0.19.1 and later.**
+<summary>basher</summary>
 
 Installation with [basher](https://github.com/basherpm/basher)
+
+**The officially supported version is shellspec 0.19.1 and later.**
 
 ```console
 # Install from master branch
@@ -245,7 +266,14 @@ $ basher install shellspec/shellspec
 $ basher install shellspec/shellspec@0.19.1
 ```
 
+</details>
+
+<details>
+<summary>bpkg</summary>
+
 Installation with [bpkg](https://github.com/bpkg/bpkg)
+
+**The officially supported version is shellspec 0.19.1 and later.**
 
 ```console
 # Install from master branch
@@ -257,44 +285,35 @@ $ bpkg install shellspec/shellspec@0.19.1
 
 </details>
 
-<details>
-<summary>Using your Linux distribution package manager (ArchLinux)</summary>
-
-Installation on ArchLinux from the AUR [shellspec package](https://aur.archlinux.org/packages/shellspec/) using `aura`:
-
-```console
-# Install the latest stable version
-$ aura -A shellspec
-```
-
-</details>
+#### Others (make / manual)
 
 <details>
-<summary>Using make</summary>
+<summary>Make</summary>
 
-**Installation**
+**How to install.**
 
 Install to `/usr/local/bin` and `/usr/local/lib`
 
-```console
-$ sudo make install
+```sh
+sudo make install
 ```
 
 Install to `$HOME/bin` and `$HOME/lib`
 
-```console
-$ make install PREFIX=$HOME
+```sh
+make install PREFIX=$HOME
 ```
 
-**Uninstallation**
+**How to uninstall.**
 
-```console
-$ sudo make uninstall
+```sh
+sudo make uninstall
 ```
 
-```console
-$ make uninstall PREFIX=$HOME
+```sh
+make uninstall PREFIX=$HOME
 ```
+
 </details>
 
 <details>
@@ -331,6 +350,7 @@ exec /SOME/WHERE/TO/INSTALL/shellspec/shellspec "$@"
 HERE
 $ chmod +x /EXECUTABLE/PATH/shellspec
 ```
+
 </details>
 
 ### Use with Docker
@@ -529,8 +549,8 @@ settings, but you may need to adjust options to make it more accurate.
 
 [kcov](https://github.com/SimonKagstrom/kcov) is required to use coverage.
 
-* How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
-* Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html).
+- How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
+- Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html).
 
 **Be aware that `bash` is the only shell which can be used for coverage analysis.**
 
@@ -692,7 +712,7 @@ The output should equal 4
 
 You can reverse the verification with *should not*.
 
-```
+```sh
 The output should not equal 4
 ```
 
@@ -706,32 +726,31 @@ The line 2 of output should equal 4
 
 The *modifier* is chainable.
 
-```
+```sh
 The word 1 of line 2 of output should equal 4
 ```
 
 You can use ordinal numbers.
 
-```
+```sh
 The second line of output should equal 4
 ```
-
 
 Shellspec supports *language chains* like [chai.js](https://www.chaijs.com/).
 It only improves readability, does not affect the expectation:
 
-* a
-* an
-* as
-* the
+- a
+- an
+- as
+- the
 
 The following two sentences have the same meaning:
 
-```
+```sh
 The first word of second line of output should valid number
 ```
 
-```
+```sh
 The first word of the second line of output should valid as a number
 ```
 
@@ -838,7 +857,7 @@ End
 There are more *subjects*, *modifiers*, *matchers*. please refer to the
 [References](/docs/references.md)
 
-*Custom matcher*
+##### Custom matcher
 
 Shellspec has an extensible architecture. So you can create custom matchers,
 custom modifiers, custom formatters, etc.
