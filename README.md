@@ -38,9 +38,9 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Requirements](#requirements)
 - [Tutorial](#tutorial)
   - [Installation](#installation)
-    - [Online installer](#online-installer)
+    - [Web installer](#web-installer)
     - [Package manager](#package-manager)
-    - [Others (make / manual)](#others-make--manual)
+    - [Others (archive / make / manual)](#others-archive--make--manual)
   - [Use with Docker](#use-with-docker)
   - [Getting started](#getting-started)
 - [shellspec command](#shellspec-command)
@@ -160,7 +160,7 @@ Currently used external (not shell builtins) commands:
 
 ### Installation
 
-#### Online installer
+#### Web installer
 
 **Install the latest release version.**
 
@@ -173,8 +173,6 @@ or
 ```sh
 wget -O- https://git.io/shellspec | sh
 ```
-
-Note: See [Releases](https://github.com/shellspec/shellspec/releases) page if you want to download distribution archive.
 
 <details>
 <summary>Advanced installation / upgrade / uninstall</summary>
@@ -285,7 +283,14 @@ $ bpkg install shellspec/shellspec@0.19.1
 
 </details>
 
-#### Others (make / manual)
+#### Others (archive / make / manual)
+
+<details>
+<summary>Archive</summary>
+
+See [Releases](https://github.com/shellspec/shellspec/releases) page if you want to download distribution archive.
+
+</details>
 
 <details>
 <summary>Make</summary>
