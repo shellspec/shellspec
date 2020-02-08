@@ -20,16 +20,17 @@ BDD style unit testing framework for POSIX compliant shell script.
 [![GitHub release](https://img.shields.io/github/release/shellspec/shellspec.svg?style=flat-square)](https://github.com/shellspec/shellspec/releases/latest)
 [![License](https://img.shields.io/github/license/shellspec/shellspec.svg?style=flat-square)](https://github.com/shellspec/shellspec/blob/master/LICENSE)
 
-![bash](https://img.shields.io/badge/bash-%3E%3D2.03-lightgrey.svg?style=flat)
-![busybox](https://img.shields.io/badge/busybox-%3E%3D1.10.2-lightgrey.svg?style=flat)
-![dash](https://img.shields.io/badge/dash-%3E%3D0.5.2-lightgrey.svg?style=flat)
-![ksh](https://img.shields.io/badge/ksh-%3E%3D93s-lightgrey.svg?style=flat)
-![mksh](https://img.shields.io/badge/mksh-%3E%3D28-lightgrey.svg?style=flat)
-![posh](https://img.shields.io/badge/posh-%3E%3D0.3.14-lightgrey.svg?style=flat)
-![yash](https://img.shields.io/badge/yash-%3E%3D2.30-lightgrey.svg?style=flat)
-![zsh](https://img.shields.io/badge/zsh-%3E%3D3.1.9-lightgrey.svg?style=flat)
+[![bash](https://img.shields.io/badge/bash-2.03-lightgrey.svg?style=flat)](https://www.gnu.org/software/bash/)
+[![bosh](https://img.shields.io/badge/bosh-2018%2F10%2F07-lightgrey.svg?style=flat)](http://schilytools.sourceforge.net/bosh.html)
+[![busybox](https://img.shields.io/badge/busybox-1.10.2-lightgrey.svg?style=flat)](https://www.busybox.net/)
+[![dash](https://img.shields.io/badge/dash-0.5.2-lightgrey.svg?style=flat)](http://gondor.apana.org.au/~herbert/dash/)
+[![ksh](https://img.shields.io/badge/ksh-93s-lightgrey.svg?style=flat)](kornshell.org)
+[![mksh](https://img.shields.io/badge/mksh-28-lightgrey.svg?style=flat)](http://www.mirbsd.org/mksh.htm)
+[![posh](https://img.shields.io/badge/posh-0.3.14-lightgrey.svg?style=flat)](https://salsa.debian.org/clint/posh)
+[![yash](https://img.shields.io/badge/yash-2.30-lightgrey.svg?style=flat)](https://yash.osdn.jp/)
+[![zsh](https://img.shields.io/badge/zsh-3.1.9-lightgrey.svg?style=flat)](https://www.zsh.org/)
 
-*Table of Contents*
+## Table of Contents <!-- omit in toc -->
 
 - [Introduction](#introduction)
   - [Features](#features)
