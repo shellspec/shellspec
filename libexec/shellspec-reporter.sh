@@ -57,7 +57,7 @@ parse_fields() {
   eval "$RESET_PARAMS"
 
   for field in "$@"; do
-    eval "field_${field%%:*}=\${field#*:}"
+    eval "field_${field%%:*}=\"\${field#*:}\""
     set -- "$@" "${field%%:*}"
     shift
   done
