@@ -1,4 +1,3 @@
 FROM alpine:edge
 RUN adduser -D user && apk add --no-cache bash
-USER user
 ENV SH="bash"

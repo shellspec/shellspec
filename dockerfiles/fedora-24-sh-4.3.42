@@ -1,5 +1,4 @@
 FROM fedora:24
 RUN useradd -m user \
  && dnf install -y tar
-USER user
 ENV SH="sh"

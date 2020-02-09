@@ -1,4 +1,3 @@
 FROM shellspec/schilytools:2019-12-05
 RUN useradd -m user
-USER user
 ENV SH="bosh"

@@ -5,14 +5,15 @@ FROM shellspec:helpers as helpers
 FROM $IMAGE
 COPY --from=helpers /usr/local/bin/* /usr/local/bin/
 WORKDIR /shellspec
-RUN echo "--no-banner" > /home/user/.shellspec \
- && su-exec root ln -s /shellspec/shellspec /usr/local/bin/shellspec \
- && su-exec root sh -c "echo $SH > /etc/invokesh.conf" \
- && su-exec root chown user:user /shellspec \
- && [ "$SH" = "sh" ] || su-exec root ln -snf /usr/local/bin/invokesh /bin/sh
+RUN chmod ug+s /usr/local/bin/su-exec \
+ && echo "--no-banner" > /home/user/.shellspec \
+ && ln -s /shellspec/shellspec /usr/local/bin/shellspec \
+ && echo "$SH" > /etc/invokesh.conf \
+ && [ "$SH" = "sh" ] || ln -snf /usr/local/bin/invokesh /bin/sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "shellspec" ]
 
-COPY --chown=user:user ./dockerfiles/.shellspec-entrypoint.sh /entrypoint.sh
-COPY --chown=user:user ./ /shellspec
+COPY ./dockerfiles/.shellspec-entrypoint.sh /entrypoint.sh
+COPY ./ /shellspec
+USER user

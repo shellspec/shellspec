@@ -1,4 +1,3 @@
 FROM lpenz/debian-woody-i386
 RUN groupadd user && useradd -m user -g user
-USER user
 ENV SH="bash"
