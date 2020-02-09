@@ -118,7 +118,9 @@ shellspec_evaluation_run_script() {
   if [ ! -e "$1" ]; then
     eval "$SHELLSPEC_SHELL \"\$@\""
   elif [ ! -x "$1" ]; then
-    command "$@"
+    # Execute non-executable file always fails. This is getting error message.
+    command "$@" &
+    wait $! # wait is workaround for ksh 93r. sometimes fail to get stderr.
   else
     if [ "$SHELLSPEC_SHEBANG_MULTIARG" ]; then
       IFS=" $IFS"
