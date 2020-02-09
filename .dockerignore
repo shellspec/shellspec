@@ -1,12 +1,16 @@
 *
 !.dockerhub/shellspec-docker-entrypoint.sh
+!bin
 !lib
 !libexec
 !dockerfiles/.shellspec-entrypoint.sh
 !sample
 !spec
+!stub
 spec/fixture/stat/*
 !.shellspec
 !shellspec
 !install.sh
 !LICENSE
+!Makefile
+!package.json

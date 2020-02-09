@@ -20,7 +20,7 @@ WORKDIR /root/shellspec
 
 FROM alpine as bpkg_installer
 RUN apk --no-cache add bash git curl make coreutils
-RUN curl -sLo- http://get.bpkg.sh | bash
+RUN curl -sLo- http://get.bpkg.sh | PREFIX=/usr/local bash
 RUN echo '#!/bin/sh' > /entrypoint.sh \
  && echo 'echo Usage: bpkg install shellspec/shellspec' >> /entrypoint.sh \
  && echo 'echo Usage: bpkg install shellspec/shellspec@0.19.0' >> /entrypoint.sh \
