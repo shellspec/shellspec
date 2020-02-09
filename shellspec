@@ -54,6 +54,7 @@ export SHELLSPEC_COVERAGE_SETUP=''
 export SHELLSPEC_COVERAGE_ENV=''
 export SHELLSPEC_COVERAGE_DIR=''
 export SHELLSPEC_KCOV=''
+export SHELLSPEC_KCOV_VERSION=''
 export SHELLSPEC_KCOV_PATH='kcov'
 export SHELLSPEC_KCOV_COMMON_OPTS=''
 export SHELLSPEC_KCOV_OPTS=''
@@ -421,9 +422,16 @@ if "$SHELLSPEC_LIBEXEC/shellspec-shebang" 2>/dev/null; then
 fi
 
 if [ "$SHELLSPEC_KCOV" ]; then
-  if ! kcov --version 2>/dev/null 1>&2; then
-    abort "Not found kcov for to running coverage."
-  fi
+  kcov_version() {
+    if ! command_path "$SHELLSPEC_KCOV_PATH" >/dev/null; then
+      abort "Kcov not found."
+    fi
+    version=$("$SHELLSPEC_KCOV_PATH" --version 2>/dev/null) || version=''
+    ver=${version#"${version%%[0-9]*}"} && ver=${ver%%[!0-9]*}
+    [ "${ver:-0}" -ge 35 ] && echo "$version" && return
+    abort "Kcov v35 or later required (current: ${version:-kcov v30 or below})"
+  }
+  SHELLSPEC_KCOV_VERSION=$(kcov_version)
   if [ ! "$($SHELLSPEC_SHELL -c 'echo "${BASH_VERSION:-}"')" ]; then
     abort "Require to use bash to run kcov. (e.g: --shell bash)"
   fi
