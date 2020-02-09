@@ -1,4 +1,3 @@
-BIN ?= shellspec
 PREFIX ?= /usr/local
 BINDIR := $(PREFIX)/bin
 LIBDIR := $(PREFIX)/lib
@@ -11,12 +10,14 @@ dist: LICENSE shellspec lib libexec
 	tar -czf shellspec-dist.tar.gz $^ --transform 's,^,shellspec/,'
 
 install:
-	install -d $(LIBDIR)/$(BIN)
-	cp -r shellspec lib libexec $(LIBDIR)/$(BIN)
-	install -D stub/shellspec $(BINDIR)/$(BIN)
+	install -d "$(BINDIR)" "$(LIBDIR)"
+	install stub/shellspec "$(BINDIR)/shellspec"
+	find lib libexec -type d -exec install -d "$(LIBDIR)/shellspec/{}" \;
+	find LICENSE lib -type f -exec install -m 644 {} "$(LIBDIR)/shellspec/{}" \;
+	find shellspec libexec -type f -exec install {} "$(LIBDIR)/shellspec/{}" \;
 
 uninstall:
-	rm -rf $(LIBDIR)/$(BIN) $(BINDIR)/$(BIN)
+	rm -rf "$(BINDIR)/shellspec" "$(LIBDIR)/shellspec"
 
 package:
 	contrib/make_package_json.sh > package.json
