@@ -552,7 +552,7 @@ groups / examples in specfiles (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`).
 Shellspec is integrated with coverage for ease of use. It works with the default
 settings, but you may need to adjust options to make it more accurate.
 
-[kcov](https://github.com/SimonKagstrom/kcov) is required to use coverage.
+[kcov](https://github.com/SimonKagstrom/kcov) (v35 or later) is required to use coverage feature.
 
 - How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
 - Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html).
