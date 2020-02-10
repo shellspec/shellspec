@@ -555,7 +555,7 @@ settings, but you may need to adjust options to make it more accurate.
 [kcov](https://github.com/SimonKagstrom/kcov) is required to use coverage.
 
 - How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
-- Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/root/shellspec/coverage/index.html).
+- Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html).
 
 **Be aware that `bash` is the only shell which can be used for coverage analysis.**
 
