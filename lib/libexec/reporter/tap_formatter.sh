@@ -10,19 +10,19 @@ tap_initialize() {
 }
 
 tap_begin() {
-  tap '=' "1..${count_examples}${LF}"
+  tap '=' "${WHITE}1..${count_examples}${LF}"
 }
 
 tap_each() {
   case $field_type in (result)
-    tap '=' "${field_fail:+not }ok $example_count" \
-      "- $(field_description)${field_note:+ # }$field_note${LF}"
+    tap '=' "${field_fail+${GREEN}}${field_fail:+${RED}not }ok $example_count${RESET}" \
+      "- $(field_description)${field_note:+ ${WHITE}# ${MAGENTA}}$field_note${field_note:+ ${WHITE}${field_message}}${RESET}${LF}"
   esac
 }
 
 tap_end() {
   [ "$aborted" ] || return 0
-  tap '=' "not ok $(($count_examples + 1)) - aborted by unexpected error${LF}"
+  tap '=' "${RED}not ok $(($count_examples + 1))${RESET} - aborted by unexpected error${LF}"
 }
 
 tap_output() {
