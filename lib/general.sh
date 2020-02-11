@@ -409,6 +409,10 @@ shellspec_match() {
   [ "${2:-}" ] && eval "case \${1:-} in ($2) true ;; (*) false ;; esac &&:"
 }
 
+shellspec_match_pattern() {
+  [ "${2:-}" ] && eval "case \${1:-} in ($2) true ;; (*) false ;; esac &&:"
+}
+
 shellspec_join() {
   IFS=" $IFS"
   eval "shift; $1=\${*:-}"
