@@ -315,7 +315,7 @@ shellspec_pending() {
 
 shellspec_logger() {
   sleep 0
-  shellspec_putsn "$@" >"$SHELLSPEC_LOGFILE"
+  shellspec_putsn "$@" >>"$SHELLSPEC_LOGFILE"
 }
 
 shellspec_intercept() {

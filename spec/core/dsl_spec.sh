@@ -637,9 +637,15 @@ Describe "core/dsl.sh"
 
   Describe "shellspec_logger()"
     It 'outputs to logfile'
+      logger_test() {
+        shellspec_logger "logger test1"
+        shellspec_logger "logger test2"
+      }
+      Path log="$SHELLSPEC_TMPBASE/test-logfile"
       BeforeCall SHELLSPEC_LOGFILE="$SHELLSPEC_TMPBASE/test-logfile"
-      When call shellspec_logger "logger test"
-      The contents of file "$SHELLSPEC_LOGFILE" should eq "logger test"
+      When call logger_test
+      The line 1 of contents of file log should eq "logger test1"
+      The line 2 of contents of file log should eq "logger test2"
     End
 
     It 'sleeps to make the log easy to read'
