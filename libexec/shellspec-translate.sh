@@ -15,7 +15,9 @@ trans() {
 }
 
 trans_block_example_group() {
-  putsn "(" \
+  putsn "("
+  [ "$skipped" ] && trans_skip ""
+  putsn \
     "SHELLSPEC_BLOCK_NO=$block_no" \
     "SHELLSPEC_GROUP_ID=$block_id" \
     "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
@@ -29,7 +31,9 @@ trans_block_example_group() {
 }
 
 trans_block_example() {
-  putsn "(" \
+  putsn "("
+  [ "$skipped" ] && trans_skip ""
+  putsn \
     "SHELLSPEC_BLOCK_NO=$block_no" \
     "SHELLSPEC_EXAMPLE_ID=$block_id" \
     "SHELLSPEC_LINENO_BEGIN=$lineno_begin" \

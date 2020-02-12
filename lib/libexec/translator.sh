@@ -6,7 +6,7 @@ use constants trim match ends_with_backslash
 load grammar
 
 initialize() {
-  lineno=0 block_no=0 example_no=1 skip_id=0 error='' focused=''
+  lineno=0 block_no=0 example_no=1 skip_id=0 error='' focused='' skipped=''
   _block_no=0 _block_no_stack=''
   parameter_count='' parameter_no=0 _parameter_count_stack=''
 }
@@ -145,7 +145,11 @@ block_end() {
   inside_of_example=""
 }
 
-x() { "$@"; skip; }
+x() {
+  skipped=1 skip_id=$(($skip_id + 1))
+  "$@"
+  skipped=''
+}
 
 f() {
   focused="focus" filter=1
