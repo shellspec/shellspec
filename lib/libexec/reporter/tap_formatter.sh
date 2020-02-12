@@ -1,7 +1,8 @@
 #shellcheck shell=sh disable=SC2004
 
-: "${count_examples:-} ${aborted:-} ${example_count:-} ${field_type:-}"
-: "${field_note:-} ${field_fail:-} ${field_description:-} ${field_message:-}"
+: "${count_examples:-} ${aborted:-} ${example_count:-} ${reason:-}"
+: "${field_type:-} ${field_note:-} ${field_fail:-} ${field_description:-}"
+: "${field_message:-}"
 
 create_buffers tap
 
@@ -16,7 +17,7 @@ tap_begin() {
 tap_each() {
   case $field_type in (result)
     tap '=' "${field_fail+${GREEN}}${field_fail:+${RED}not }ok $example_count${RESET}" \
-      "- $(field_description)${field_note:+ ${WHITE}# ${MAGENTA}}$field_note${field_note:+ ${WHITE}${field_message}}${RESET}${LF}"
+      "- $(field_description)${field_note:+ ${WHITE}# ${MAGENTA}}$field_note${reason:+ ${WHITE}${reason}}${RESET}${LF}"
   esac
 }
 

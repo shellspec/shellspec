@@ -20,11 +20,11 @@ import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
 
 exit_status=0 found_focus='' no_examples='' aborted=1 coverage_failed=''
-fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-}
+fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-} reason=''
 current_example_index=0 example_index=''
 last_example_no='' last_skip_id='' not_enough_examples=''
 field_type='' field_tag='' field_example_no='' field_focused=''
-field_conditional='' field_skipid='' field_pending=''
+field_conditional='' field_skipid='' field_pending='' field_message=''
 
 # shellcheck disable=SC2034
 specfile_count=0 expected_example_count=0 example_count=0 \
@@ -77,7 +77,7 @@ each_line() {
       ;;
     example)
       # shellcheck disable=SC2034
-      field_evaluation='' field_pending=''
+      field_evaluation='' field_pending='' reason=''
       if [ "$field_example_no" -le "$last_example_no" ]; then
         abort "${LF}Illegal executed the same example" \
           "(did you execute in a loop?) in ${field_specfile:-}" \
@@ -102,6 +102,9 @@ each_line() {
                 last_skip_id=$field_skipid
             esac
         esac
+
+        # shellcheck disable=SC2034
+        case $field_tag in (pending | skip) reason=$field_message; esac
 
         if [ ! "$example_index" ]; then
           inc current_example_index

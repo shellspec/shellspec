@@ -30,14 +30,12 @@ shellspec_output_EVALUATION() {
 
 shellspec_output_SKIP() {
   if [ "$SHELLSPEC_SKIP_REASON" ]; then
-    shellspec_output_statement "tag:skip" "note:" "fail:" \
-      "skipid:$SHELLSPEC_SKIP_ID" "conditional:y" \
-      "message:Skipped because $SHELLSPEC_SKIP_REASON"
+    set -- "conditional:y" "message:$SHELLSPEC_SKIP_REASON"
   else
-    shellspec_output_statement "tag:skip" "note:" "fail:" \
-      "skipid:$SHELLSPEC_SKIP_ID" "conditional:" \
-      "message:Temporarily skipped"
+    set -- "conditional:" "message:Temporarily skipped"
   fi
+  shellspec_output_statement "tag:skip" "note:SKIPPED" "fail:" \
+    "skipid:$SHELLSPEC_SKIP_ID" "$@"
 }
 
 shellspec_output_PENDING() {
@@ -47,7 +45,7 @@ shellspec_output_PENDING() {
 
 shellspec_output_NOT_IMPLEMENTED() {
   shellspec_output_statement "tag:pending" "note:PENDING" "fail:" \
-    "pending:y" "message:Not yet implemented"
+    "pending:y" "message:Not yet implemented" "reason:Not yet implemented"
 }
 
 shellspec_output_EXPECTATION() {
