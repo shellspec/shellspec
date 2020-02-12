@@ -68,6 +68,9 @@ kcov_postprocess() {
       edit_in_place "$3/$file" "kcov_fix_${file%.*}" "$1" "$2"
       ln -snf "$3/$file" "$file" ||:
     done
+
+    edit_in_place "index.html" kcov_add_extra_info
+
   ) 2>/dev/null
 }
 
@@ -96,6 +99,24 @@ kcov_fix_cobertura() {
   while IFS= read -r line; do
     includes "$line" "<source>$1" && replace line "$1" "$2"
     includes "$line" "$2/</source>" && replace line "/</source>" "</source>"
+    putsn "$line"
+  done
+}
+
+kcov_add_extra_info() {
+  while IFS= read -r line; do
+    if includes "$line" "</body>"; then
+      putsn "<table width='100%' class='shellspecInfo'>"
+      putsn "<tr>" \
+              "<td class='versionInfo shellspecVersionInfo'>" \
+                "Tested by <a href='https://shellspec.info'>shellspec</a>" \
+                "$SHELLSPEC_VERSION" \
+                "(with $SHELLSPEC_SHELL_TYPE $SHELLSPEC_SHELL_VERSION" \
+                "and $SHELLSPEC_KCOV_VERSION)" \
+              "</td>" \
+            "</tr>"
+      putsn "</table>"
+    fi
     putsn "$line"
   done
 }
