@@ -7,9 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Improve kcov version detection
+- Colored TAP formatter (Kylie McClain)
+
 ### Changed
 
+- New kcov integration
+  - Do not create translated specfile in project directory
+  - Suppress unnecessary coverage measurement
+- make install compatibile with BSD and macOS
+- Suppress unnecessary before/after hooks of skipped examples
+
+### Deprecated
+
 - `--kcov-common-options` is deprecated, merge into `--kcov-options`
+
+### Fixed
+
+- Fixed broken test in docker on Linux
 
 ## [0.21.0] - 2020-01-30
 
@@ -17,6 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Provide docker images.
 - Provide distribution archive.
+
+### Changed
+
+- docs: Improve English quality (Damien Flament)
 
 ## [0.20.2] - 2019-08-24
 
@@ -126,6 +147,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed bug that `be empty` (renamed to `be empty file`) matcher matches not exists file, etc.
+- Ensure call & invoke start with errno zero (Rowan Thorpe)
 
 ## [0.14.0] - 2019-05-15
 
