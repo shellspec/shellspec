@@ -318,6 +318,11 @@ shellspec_logger() {
   shellspec_putsn "$@" >>"$SHELLSPEC_LOGFILE"
 }
 
+shellspec_deprecated() {
+  set -- "${SHELLSPEC_SPECFILE:-}:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}" "$@"
+  shellspec_putsn "$@" >>"$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE"
+}
+
 shellspec_intercept() {
   while [ $# -gt 0 ]; do
     case $1 in

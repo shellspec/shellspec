@@ -45,6 +45,8 @@ export SHELLSPEC_PATTERN="*_spec.sh"
 export SHELLSPEC_UNIXTIME=''
 export SHELLSPEC_TMPDIR=${TMPDIR:-/tmp}
 export SHELLSPEC_LOGFILE=/dev/tty
+export SHELLSPEC_DEPRECATION_LOG=1
+export SHELLSPEC_DEPRECATION_LOGFILE="deprecation.log"
 export SHELLSPEC_KEEP_TEMPDIR=''
 export SHELLSPEC_DEFAULT_PATH=spec
 export SHELLSPEC_INFILE=file
@@ -179,7 +181,9 @@ Usage: shellspec [options] [files or directories]
                                         [moderate] mute repeated messages
                                         [quiet]    mute repeated messages and non-temporarily messages
   -p  --[no-]profile                  Enable profiling of examples and list the slowest examples
-      --profile-limit N               List the top N slowest examples (default: 10)
+      --profile-limit N               List the top N slowest examples [default: 10]
+      --show-deprecations             Display deprecations details [default]
+      --hide-deprecations             Hide deprecations details
 
   **** Ranges / Filters ****
 
@@ -347,6 +351,8 @@ parse_options() {
       --profile-limit) [ "${2:-}" ] || abort 'Require N.'
         SHELLSPEC_PROFILER_LIMIT="$2"
         shift ;;
+      --show-deprecations) SHELLSPEC_DEPRECATION_LOG=1 ;;
+      --hide-deprecations) SHELLSPEC_DEPRECATION_LOG='' ;;
       --init | --task | --translate | --syntax-check) SHELLSPEC_MODE=${1#--} ;;
       --count) SHELLSPEC_MODE=list SHELLSPEC_LIST='' ;;
       --list) [ "${2:-}" ] || abort 'Require LIST.'

@@ -182,4 +182,18 @@ if [ "$found_focus" ] && [ ! "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
         "to run focused (underlined) example(s) only.$LF"
 fi
 
+if [ -e "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE" ]; then
+  deprecated_count=0
+  while IFS= read -r deprecated; do
+    [ "$SHELLSPEC_DEPRECATION_LOG" ] && info "$deprecated"
+    inc deprecated_count
+  done < "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE"
+  deprecated="$deprecated_count deprecated syntax"
+  [ "$deprecated_count" -ne 1 ] && deprecated="${deprecated}es"
+  info "Found $deprecated. Please replace to new syntax."
+  if [ "$SHELLSPEC_DEPRECATION_LOG" ]; then
+    info "This message can be reduced with --hide-deprecations."
+  fi
+fi
+
 exit "$exit_status"

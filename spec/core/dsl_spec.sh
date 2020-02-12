@@ -656,6 +656,16 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_deprecated()"
+    It 'outputs to logfile'
+      Path log="$SHELLSPEC_TMPBASE/test-deprecation.log"
+      BeforeRun SHELLSPEC_SPECFILE=spec.sh SHELLSPEC_LINENO=10
+      BeforeRun SHELLSPEC_DEPRECATION_LOGFILE=test-deprecation.log
+      When run shellspec_deprecated "deprecated test"
+      The contents of file log should eq "spec.sh:10 deprecated test"
+    End
+  End
+
   Describe "shellspec_intercept()"
     It 'registor interceptor with default name'
       When call shellspec_intercept foo
