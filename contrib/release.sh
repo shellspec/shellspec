@@ -20,11 +20,11 @@ is_prerelease() {
 version=$(./shellspec --version)
 
 confirm "Release $version?" || exit 0
-run git tag -a "$version" -m "$version"
+run git tag -s -a "$version" -m "$version"
 run git push origin "$version"
 
 is_prerelease "$version" && exit 0
 
 confirm "Update $version to latest?" || exit 0
-run git tag -f latest
+run git tag -s -f latest
 run git push -f origin latest
