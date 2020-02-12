@@ -53,6 +53,7 @@ export SHELLSPEC_SEED=''
 export SHELLSPEC_COVERAGE_SETUP=''
 export SHELLSPEC_COVERAGE_ENV=''
 export SHELLSPEC_COVERAGE_DIR=''
+export SHELLSPEC_COVERAGE_EXTRA_INFO=''
 export SHELLSPEC_KCOV=''
 export SHELLSPEC_KCOV_VERSION=''
 export SHELLSPEC_KCOV_PATH='kcov'
@@ -210,6 +211,7 @@ Usage: shellspec [options] [files or directories]
                                           --path-strip-level=1
                                         To include files without extension, specify --include-pattern
                                         without '.sh' and filter with --include-*/--exclude-* options
+      --coverage-extra-info           Extra information to coverage report
 
   **** Utility ****
 
@@ -336,6 +338,9 @@ parse_options() {
         shift ;;
       --kcov-options) [ "${2:-}" ] || abort 'Require OPTIONS.'
         SHELLSPEC_KCOV_OPTS="${SHELLSPEC_KCOV_OPTS}${SHELLSPEC_KCOV_OPTS:+ }$2"
+        shift ;;
+      --coverage-extra-info) [ "${2:-}" ] || abort 'Require MESSAGE.'
+        SHELLSPEC_COVERAGE_EXTRA_INFO=$2
         shift ;;
       -p | --profile) SHELLSPEC_PROFILER=1 ;;
       --no-profile) SHELLSPEC_PROFILER='' ;;

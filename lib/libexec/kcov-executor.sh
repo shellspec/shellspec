@@ -106,14 +106,19 @@ kcov_fix_cobertura() {
 kcov_add_extra_info() {
   while IFS= read -r line; do
     if includes "$line" "</body>"; then
-      putsn "<table width='100%' class='shellspecInfo'>"
+      putsn "<table width='100%' class='shellspecVersionInfo'>"
       putsn "<tr>" \
-              "<td class='versionInfo shellspecVersionInfo'>" \
-                "Tested by <a href='https://shellspec.info'>shellspec</a>" \
+              "<td class='versionInfo'>" \
+                "Tested by: <a href='https://shellspec.info'>Shellspec</a>" \
                 "$SHELLSPEC_VERSION" \
                 "(with $SHELLSPEC_SHELL_TYPE $SHELLSPEC_SHELL_VERSION" \
                 "and $SHELLSPEC_KCOV_VERSION)" \
               "</td>" \
+            "</tr>"
+      putsn "</table>"
+      putsn "<table width='100%' class='shellspecExtraInfo'>"
+      putsn "<tr>" \
+              "<td class='versionInfo'>$SHELLSPEC_COVERAGE_EXTRA_INFO</td>" \
             "</tr>"
       putsn "</table>"
     fi
