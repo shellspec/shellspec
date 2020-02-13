@@ -189,9 +189,12 @@ if [ -e "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE" ]; then
   done < "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE"
   deprecated="$deprecated_count deprecated syntax"
   [ "$deprecated_count" -ne 1 ] && deprecated="${deprecated}es"
-  info "Found $deprecated. Please replace to new syntax."
   if [ "$SHELLSPEC_DEPRECATION_LOG" ]; then
+    info "Found $deprecated. Please replace to the new syntax." \
+      "It will be obsolete in the future."
     info "This message can be reduced with --hide-deprecations."
+  else
+    info "Found $deprecated. Show more details with --show-deprecations."
   fi
 fi
 
