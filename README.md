@@ -455,7 +455,9 @@ Usage: shellspec [options] [files or directories]
                                         [moderate] mute repeated messages
                                         [quiet]    mute repeated messages and non-temporarily messages
   -p  --[no-]profile                  Enable profiling of examples and list the slowest examples
-      --profile-limit N               List the top N slowest examples (default: 10)
+      --profile-limit N               List the top N slowest examples [default: 10]
+      --show-deprecations             Display deprecations details [default]
+      --hide-deprecations             Hide deprecations details
 
   **** Ranges / Filters ****
 
@@ -487,6 +489,7 @@ Usage: shellspec [options] [files or directories]
                                           --path-strip-level=1
                                         To include files without extension, specify --include-pattern
                                         without '.sh' and filter with --include-*/--exclude-* options
+      --coverage-extra-info           Extra information to coverage report
 
   **** Utility ****
 
