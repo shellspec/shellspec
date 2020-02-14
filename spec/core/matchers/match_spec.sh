@@ -3,7 +3,7 @@
 Describe "core/matchers/match.sh"
   BeforeRun set_subject matcher_mock
 
-  Describe 'match (old) matcher'
+  Describe 'match (deprecated) matcher'
     Example 'example'
       The value "foobarbaz" should match "foo*"
       The value "foobarbaz" should not match "FOO*"

@@ -9,11 +9,12 @@ shellspec_matcher_match() {
     return $?
   fi
 
+  shellspec_deprecated "'match' matcher deprecated, use 'match pattern' matcher instead"
   shellspec_syntax_param count [ $# -eq 1 ] || return 0
-  shellspec_matcher_old_match "$@"
+  shellspec_matcher_deprecated_match "$@"
 }
 
-shellspec_matcher_old_match() {
+shellspec_matcher_deprecated_match() {
   shellspec_matcher__match() {
     # shellcheck disable=SC2034
     SHELLSPEC_EXPECT=$1
