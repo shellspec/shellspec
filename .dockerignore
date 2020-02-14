@@ -1,6 +1,7 @@
 *
 !.dockerhub/shellspec-docker-entrypoint.sh
 !bin
+!contrib/bugs.sh
 !lib
 !libexec
 !dockerfiles/.shellspec-entrypoint.sh
