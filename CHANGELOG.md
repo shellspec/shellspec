@@ -9,24 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Improve kcov version detection
-- Colored TAP formatter (Kylie McClain)
+- Improve kcov version detection.
+- Colored TAP formatter. (Kylie McClain)
+- Added `--show-deprecations` and  `--hide-deprecations` options.
 
 ### Changed
 
-- New kcov integration
-  - Do not create translated specfile in project directory
-  - Suppress unnecessary coverage measurement
-- make install compatibile with BSD and macOS
-- Suppress unnecessary before/after hooks of skipped examples
+- New kcov integration.
+  - Do not create translated specfile in project directory.
+  - Suppress unnecessary coverage measurement to improve testing speed.
+  - Added `--coverage-report-info` to add extra information to coverage report.
+- make install compatible with BSD and macOS.
+- Suppress unnecessary before/after hooks of skipped examples.
 
 ### Deprecated
 
-- `--kcov-common-options` is deprecated, merge into `--kcov-options`
+- `--kcov-common-options` is deprecated, merge into `--kcov-options`.
+- Deprecates the `match` matcher due to cause many syntax errors. Use `match pattern` matcher instead.
 
 ### Fixed
 
-- Fixed broken test in docker on Linux
+- Fixed broken test in docker on Linux.
+- Fixed `--example` option to avoid syntax error.
+- Append to LOGFILE instead of overwriting.
 
 ## [0.21.0] - 2020-01-30
 

@@ -551,15 +551,21 @@ groups / examples in specfiles (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`).
 
 ### Coverage
 
-Shellspec is integrated with coverage for ease of use. It works with the default
-settings, but you may need to adjust options to make it more accurate.
+Shellspec has integrated coverage feature. To use this feature [Kcov][] (v35 or later) is required.
 
-[kcov](https://github.com/SimonKagstrom/kcov) (v35 or later) is required to use coverage feature.
+[Kcov]: https://github.com/SimonKagstrom/kcov
 
 - How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
-- Sample of [coverage report](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html).
+- Be aware that `bash` is the only shell which can be used for coverage.
 
-**Be aware that `bash` is the only shell which can be used for coverage analysis.**
+By default only `*.sh` files are coverage targeted. If you want to include except `*.sh` files,
+you need to adjust options with `--kcov-options`. Coverage measures only Evaluation and `Include`.
+
+[Coverage report][] and `cobertura.xml` and `sonarqube.xml` files are generated under the `coverage` directory by Kcov.
+You can easily integrate with [Coveralls](https://coveralls.io/), [Code Climate](https://codeclimate.com/),
+[Codecov](https://codecov.io/) and more.
+
+[Coverage report]: https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html
 
 ### Profiler
 

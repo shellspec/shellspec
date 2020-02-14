@@ -2,11 +2,17 @@
 
 - [Example Group](#example-group)
 - [Example](#example)
-  - [Evaluation](#evaluation)
-  - [Expectation](#expectation)
-    - [Subject](#subject)
-    - [Modifier](#modifier)
-    - [Matcher](#matcher)
+- [Evaluation](#evaluation)
+- [Expectation](#expectation)
+  - [Subject](#subject)
+  - [Modifier](#modifier)
+  - [Matcher](#matcher)
+    - [status](#status)
+    - [stat](#stat)
+    - [valid](#valid)
+    - [variable](#variable)
+    - [string](#string)
+    - [other](#other)
 - [Helper](#helper)
 - [Directive](#directive)
 - [Environment Variables](#environment-variables)
@@ -29,7 +35,7 @@ You can write a structured *Example* by using the DSL shown below:
 | It ... End      | Synonym for `Example`.                                                                         |
 | Todo            | Same as empty example, but not a block. One-liner syntax meaning it needs to be implementated. |
 
-### Evaluation
+## Evaluation
 
 The line beginning with `When` is the evaluation.
 
@@ -53,11 +59,11 @@ Comparison
 | Intercept          | No                     | No                   | -                    | No                   | Yes                  |
 | Coverage           | Yes                    | Yes (function only)  | No                   | Yes                  | Yes                  |
 
-### Expectation
+## Expectation
 
 The line beginning with `The` is the evaluation. The *subject* or the *modifier* follows after `The`. And last is the *matcher*.
 
-#### Subject
+### Subject
 
 | Subject                                                                                           | Description                                   |
 | :------------------------------------------------------------------------------------------------ | :-------------------------------------------- |
@@ -68,7 +74,7 @@ The line beginning with `The` is the evaluation. The *subject* or the *modifier*
 | value <code>&lt;VALUE&gt;</code><br>function <code>&lt;VALUE&gt;</code>                           | Use the value as the subject.                 |
 | variable <code>&lt;NAME&gt;</code>                                                                | Use the value of the variable as the subject. |
 
-#### Modifier
+### Modifier
 
 | Modifier                         | Description                           |
 | :------------------------------- | :------------------------------------ |
@@ -79,16 +85,20 @@ The line beginning with `The` is the evaluation. The *subject* or the *modifier*
 | contents                         | The contents of the file (subject).   |
 | result                           | The result of the function (subject). |
 
-#### Matcher
+### Matcher
 
-status (the subject expected status)
+#### status
+
+the subject expected status
 
 | Matcher    | Description                   |
 | :--------- | :---------------------------- |
 | be success | The status should be success. |
 | be failure | The status should be failure. |
 
-stat (the subject expected file path)
+#### stat
+
+the subject expected file path
 
 | Matcher                            | Description                                 |
 | :--------------------------------- | :------------------------------------------ |
@@ -108,14 +118,18 @@ stat (the subject expected file path)
 | has setgid                         | The file should have the `setgid` flag set. |
 | has setuid                         | The file should have the `setuid` flag set. |
 
-valid
+#### valid
+
+**Plan to deprecate in the future.**
 
 | Matcher           | Description                             |
 | :---------------- | :-------------------------------------- |
 | be valid number   | The subject should be a valid number.   |
 | be valid funcname | The subject should be a valid funcname. |
 
-variable (the subject expect variable)
+#### variable
+
+the subject expect variable
 
 | Matcher      | Description                                                 |
 | :----------- | :---------------------------------------------------------- |
@@ -124,17 +138,27 @@ variable (the subject expect variable)
 | be present   | The variable should be present (non-zero length string).    |
 | be blank     | The variable should be blank (unset or zero length string). |
 
-string
+#### string
 
-| Matcher                                                             | Description                                               |
-| :------------------------------------------------------------------ | :-------------------------------------------------------- |
-| equal <code>&lt;STRING&gt;</code><br>eq <code>&lt;STRING&gt;</code> | The subject should equal <code>&lt;STRING&gt;</code>      |
-| start with <code>&lt;STRING&gt;</code>                              | The subject should start with <code>&lt;STRING&gt;</code> |
-| end with <code>&lt;STRING&gt;</code>                                | The subject should end with <code>&lt;STRING&gt;</code>   |
-| include <code>&lt;STRING&gt;</code>                                 | The subject should include <code>&lt;STRING&gt;</code>    |
-| match <code>&lt;PATTERN&gt;</code>                                  | The subject should match <code>&lt;PATTERN&gt;</code>     |
+| Matcher                                                             | Description                                                          |
+| :------------------------------------------------------------------ | :------------------------------------------------------------------- |
+| equal <code>&lt;STRING&gt;</code><br>eq <code>&lt;STRING&gt;</code> | The subject should equal <code>&lt;STRING&gt;</code>                 |
+| start with <code>&lt;STRING&gt;</code>                              | The subject should start with <code>&lt;STRING&gt;</code>            |
+| end with <code>&lt;STRING&gt;</code>                                | The subject should end with <code>&lt;STRING&gt;</code>              |
+| include <code>&lt;STRING&gt;</code>                                 | The subject should include <code>&lt;STRING&gt;</code>               |
+| ~~match <code>&lt;PATTERN&gt;</code>~~                              | Deprecated ~~The subject should match <code>&lt;PATTERN&gt;</code>~~ |
+| match pattern <code>&lt;PATTERN&gt;</code>                          | The subject should match <code>&lt;PATTERN&gt;</code>                |
 
-other
+| PATTERN examples |
+| ---------------- |
+| `foo*`           |
+| `foo?`           |
+| `[fF]oo`         |
+| `[!F]oo`         |
+| `[a-z]`          |
+| `foo|bar`        |
+
+#### other
 
 | Matcher                                              | Description                                              |
 | :--------------------------------------------------- | :------------------------------------------------------- |
