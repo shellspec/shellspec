@@ -184,11 +184,6 @@ Describe "libexec/kcov-executor.sh"
       #|Tested by: <a href='https://shellspec.info'>Shellspec</a> 0.0.0 (with shell 0.1.0 and kcov 35)
       #|</td></tr>
       #|</table>
-      #|<table width='100%' class='shellspecExtraInfo'>
-      #|<tr><td class='versionInfo'>
-      #|extra info
-      #|</td></tr>
-      #|</table>
       #|</body>
       #|</html>
     }
@@ -196,7 +191,6 @@ Describe "libexec/kcov-executor.sh"
     BeforeRun "SHELLSPEC_VERSION='0.0.0'"
     BeforeRun "SHELLSPEC_KCOV_VERSION='kcov 35'"
     BeforeRun "SHELLSPEC_SHELL_TYPE='shell'" "SHELLSPEC_SHELL_VERSION='0.1.0'"
-    BeforeRun "SHELLSPEC_COVERAGE_EXTRA_INFO='extra info'"
     It 'adds extra info'
       When run kcov_add_extra_info
       The stdout should eq "$(result)"

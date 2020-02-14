@@ -489,7 +489,6 @@ Usage: shellspec [options] [files or directories]
                                           --path-strip-level=1
                                         To include files without extension, specify --include-pattern
                                         without '.sh' and filter with --include-*/--exclude-* options
-      --coverage-extra-info           Extra information to coverage report
 
   **** Utility ****
 

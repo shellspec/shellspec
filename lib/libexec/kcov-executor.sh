@@ -114,11 +114,6 @@ kcov_add_extra_info() {
               "and $SHELLSPEC_KCOV_VERSION)"
       putsn "</td></tr>"
       putsn "</table>"
-      putsn "<table width='100%' class='shellspecExtraInfo'>"
-      putsn "<tr><td class='versionInfo'>"
-      putsn "$SHELLSPEC_COVERAGE_EXTRA_INFO"
-      putsn "</td></tr>"
-      putsn "</table>"
     fi
     putsn "$line"
   done
