@@ -56,11 +56,10 @@ parse_fields() {
   reset_params '$1' "$US"
   eval "$RESET_PARAMS"
 
-  for field in "$@"; do
-    eval "field_${field%%:*}=\"\${field#*:}\""
-    set -- "$@" "${field%%:*}"
-    shift
-  done
+  # Workaround: Do not merge two 'for'. A bug occurs in variable expansion
+  # rarely in busybox-1.10.2.
+  for field in "$@"; do eval "field_${field%%:*}=\"\${field#*:}\""; done
+  for field in "$@"; do set -- "$@" "${field%%:*}" && shift; done
 
   each_line "$@"
 }
