@@ -147,16 +147,16 @@ the subject expect variable
 | end with <code>&lt;STRING&gt;</code>                                | The subject should end with <code>&lt;STRING&gt;</code>              |
 | include <code>&lt;STRING&gt;</code>                                 | The subject should include <code>&lt;STRING&gt;</code>               |
 | ~~match <code>&lt;PATTERN&gt;</code>~~                              | Deprecated ~~The subject should match <code>&lt;PATTERN&gt;</code>~~ |
-| match pattern <code>&lt;PATTERN&gt;</code>                          | The subject should match <code>&lt;PATTERN&gt;</code>                |
+| match pattern <code>&lt;PATTERN&gt;</code>                          | The subject should match pattern <code>&lt;PATTERN&gt;</code>        |
 
-| PATTERN examples |
-| ---------------- |
-| `foo*`           |
-| `foo?`           |
-| `[fF]oo`         |
-| `[!F]oo`         |
-| `[a-z]`          |
-| `foo|bar`        |
+PATTERN examples
+
+- `foo*`
+- `foo?`
+- `[fF]oo`
+- `[!F]oo`
+- `[a-z]`
+- `foo|bar`
 
 #### other
 
