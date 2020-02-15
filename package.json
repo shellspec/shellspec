@@ -81,6 +81,7 @@
     "lib/libexec/translator.sh",
     "libexec/shellspec-executor.sh",
     "libexec/shellspec-init.sh",
+    "libexec/shellspec-inspection.sh",
     "libexec/shellspec-list.sh",
     "libexec/shellspec-load-env.sh",
     "libexec/shellspec-profiler.sh",
