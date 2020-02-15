@@ -161,7 +161,7 @@ Describe "core/utils.sh"
 
   Describe 'shellspec_shopt()'
     # shellcheck disable=SC2039,SC2123
-    not_exists_shopt() { (PATH=''; ! shopt -s nullglob 2>/dev/null); }
+    not_exists_shopt() { (PATH=''; ! shopt -s nullglob 2>/dev/null &&:); }
     Skip if "'shopt' not implemented" not_exists_shopt
 
     Describe "shopt option"
@@ -198,7 +198,7 @@ Describe "core/utils.sh"
     cannot_preserve_set_in_function() {
       set +a
       set_allexport
-       [ "${-#*a}" = "$-" ]
+      case $- in (*a*) false ;; (*) true ;; esac
     }
     # ksh88
     Skip if "Cannot preserve 'set' in function" cannot_preserve_set_in_function
