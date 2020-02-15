@@ -147,20 +147,6 @@ Describe "core/utils.sh"
     End
   End
 
-  Describe 'shellspec_shopt()'
-    shopt() { return 1; }
-
-    It 'sets option'
-      When call shellspec_shopt -o allexport
-      The value $- should include "a"
-    End
-
-    It 'unsets option'
-      When call shellspec_shopt +o allexport
-      The value $- should not include "a"
-    End
-  End
-
   Describe 'shellspec_set_option()'
     Before 'SHELLSPEC_SHELL_OPTIONS="set -o foo;set +o bar;"'
     shellspec_set_long() { %= "$@"; }
@@ -173,7 +159,50 @@ Describe "core/utils.sh"
     End
   End
 
+  Describe 'shellspec_shopt()'
+    # shellcheck disable=SC2039,SC2123
+    not_exists_shopt() { (PATH=''; ! shopt -s nullglob 2>/dev/null); }
+    Skip if "'shopt' not implemented" not_exists_shopt
+
+    Describe "shopt option"
+      AfterRun "shopt -p nullglob ||:"
+
+      It 'sets option'
+        When run shellspec_shopt -o nullglob
+        The output should eq "shopt -s nullglob"
+      End
+
+      It 'unsets option'
+        When run shellspec_shopt +o nullglob
+        The output should eq "shopt -u nullglob"
+      End
+    End
+
+    Describe "sh option"
+      AfterRun 'echo $-'
+
+      It 'sets option'
+        When run shellspec_shopt -o allexport
+        The output should include "a"
+      End
+
+      It 'unsets option'
+        When run shellspec_shopt +o allexport
+        The output should not include "a"
+      End
+    End
+  End
+
   Describe 'shellspec_set_long()'
+    set_allexport() { set -a; }
+    cannot_preserve_set_in_function() {
+      set +a
+      set_allexport
+       [ "${-#*a}" = "$-" ]
+    }
+    # ksh88
+    Skip if "Cannot preserve 'set' in function" cannot_preserve_set_in_function
+
     It 'sets long options'
       When call shellspec_set_long -allexport
       The value $- should include "a"

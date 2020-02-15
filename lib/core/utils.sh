@@ -52,14 +52,6 @@ shellspec_append_shopt() {
   esac
 }
 
-shellspec_shopt() {
-  #shellcheck disable=SC2039
-  case $1 in
-    -o) shopt -s "$2" 2>/dev/null || set -o "$2" ;;
-    +o) shopt -u "$2" 2>/dev/null || set +o "$2" ;;
-  esac
-}
-
 shellspec_set_option() {
   #shellcheck disable=SC2153
   set -- "$SHELLSPEC_SHELL_OPTIONS"
@@ -70,6 +62,14 @@ shellspec_set_option() {
       set\ +o*) shellspec_set_long +"${2#set +o }" ;;
     esac
   done
+}
+
+shellspec_shopt() {
+  #shellcheck disable=SC2039
+  case $1 in
+    -o) shopt -s "$2" 2>/dev/null || set -o "$2" ;;
+    +o) shopt -u "$2" 2>/dev/null || set +o "$2" ;;
+  esac
 }
 
 shellspec_set_long() {
