@@ -420,7 +420,7 @@ Describe "general.sh"
     End
   End
 
-  Describe "shellspec_match()"
+  Describe "shellspec_match() (deprecated)"
     It 'returns success if value mactches with pattern'
       When call shellspec_match foo "[fF]?*"
       The status should be success
@@ -429,6 +429,36 @@ Describe "general.sh"
     It 'returns failure if value mactches with pattern'
       When call shellspec_match bar "[fF]?*"
       The status should be failure
+    End
+  End
+
+  Describe "shellspec_match_pattern()"
+    It 'can use shell script pattern'
+      When call shellspec_match_pattern foobar "[fF]??b*"
+      The status should be success
+    End
+
+    It 'can use negative pattern'
+      When call shellspec_match_pattern foobar "[!fF]??b*"
+      The status should be failure
+    End
+
+    It 'can use OR'
+      When call shellspec_match_pattern foo "foo|bar"
+      The status should be success
+    End
+
+    It 'escapes symbol internally to avoid syntax error'
+      string() { echo "!\"#\$%&'()-=^~\\@\`{;+:},<.>/\_"; }
+      When call shellspec_match_pattern "$(string)" "$(string)"
+      The status should be success
+    End
+
+    It 'escapes spaces internally to avoid syntax error'
+      # Do not modify this string
+      string() { printf "= \b = \f = \n = \r = \t = \v = "; }
+      When call shellspec_match_pattern "$(string)" "$(string)"
+      The status should be success
     End
   End
 

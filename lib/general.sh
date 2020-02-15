@@ -405,8 +405,24 @@ if ! shellspec_ends_with_backslash "\\"; then
   }
 fi
 
+# shellspec_match() deprecated
 shellspec_match() {
   [ "${2:-}" ] && eval "case \${1:-} in ($2) true ;; (*) false ;; esac &&:"
+}
+
+shellspec_match_pattern() {
+  [ "${2:-}" ] || return 1
+  shellspec_match_pattern=$2
+  set -- \\ \" \# \$ \& \' \( \) \; \< \> \` \~ '=' '^' "$SHELLSPEC_TAB" "$1"
+  while [ $# -gt 1 ]; do
+    shellspec_replace shellspec_match_pattern "$1" "\\$1"
+    shift
+  done
+  shellspec_replace shellspec_match_pattern " " '" "'
+  shellspec_replace shellspec_match_pattern "$SHELLSPEC_LF" '"$SHELLSPEC_LF"'
+  shellspec_replace shellspec_match_pattern "$SHELLSPEC_CR" '"$SHELLSPEC_CR"'
+  shellspec_replace shellspec_match_pattern "$SHELLSPEC_VT" '"$SHELLSPEC_VT"'
+  eval "case \$1 in ($shellspec_match_pattern) true ;; (*) false ;; esac &&:" 2>/dev/null
 }
 
 shellspec_join() {

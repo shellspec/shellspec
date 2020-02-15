@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants trim match ends_with_backslash
+use constants trim match_pattern ends_with_backslash
 load grammar
 
 initialize() {
@@ -25,7 +25,7 @@ check_filter() {
   escape_one_line_syntax escaped_syntax "$1"
   eval "set -- $escaped_syntax"
   if [ $# -gt 0 ]; then
-    match "$1" "$SHELLSPEC_EXAMPLE_FILTER" && return 0
+    match_pattern "$1" "$SHELLSPEC_EXAMPLE_FILTER" && return 0
     shift
   fi
   [ "$SHELLSPEC_TAG_FILTER" ] || return 1
