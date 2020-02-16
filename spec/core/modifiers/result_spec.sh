@@ -48,6 +48,12 @@ Describe "core/modifiers/result.sh"
       The status should be failure
     End
 
+    It 'outputs error if invalid function name specified'
+      subject() { %- "foo -a"; }
+      When run shellspec_modifier_result
+      The stderr should equal SYNTAX_ERROR
+    End
+
     It 'outputs error if next modifier is missing'
       subject() { %- "success_with_stdout"; }
       success_with_stdout() { echo ok; true; }
