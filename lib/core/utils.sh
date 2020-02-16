@@ -21,6 +21,12 @@ shellspec_is_function() {
   return 0
 }
 
+shellspec_is_identifier() {
+  case ${1:-} in ([a-zA-Z_]*) ;; (*) return 1; esac
+  case ${1:-} in (*[!a-zA-Z0-9_]*) return 1; esac
+  return 0
+}
+
 shellspec_capture() {
   SHELLSPEC_EVAL="
     if $1=\"\$($2 && echo _)\"; then $1=\${$1%_}; else unset $1 ||:; fi

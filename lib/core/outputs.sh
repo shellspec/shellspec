@@ -172,6 +172,23 @@ shellspec_output_RESULT_ERROR() {
     "message:${SHELLSPEC_EXPECTATION:-}" "failure_message:$1$2"
 }
 
+shellspec_output_SATISFY_WARN() {
+  shellspec_readfile SHELLSPEC_SATISFY_WARN "$2"
+  set -- "satisfy matcher unexpected output (exit status: $1)${SHELLSPEC_LF}" \
+    "$SHELLSPEC_SATISFY_WARN${SHELLSPEC_LF}"
+  shellspec_output_statement "tag:warn" "note:WARNING" \
+    "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
+    "message:${SHELLSPEC_EXPECTATION:-}" "failure_message:$1$2"
+}
+
+shellspec_output_SATISFY_ERROR() {
+  shellspec_readfile SHELLSPEC_SATISFY_ERROR "$2"
+  set -- "satisfy matcher error (exit status: $1)${SHELLSPEC_LF}" \
+    "$SHELLSPEC_SATISFY_ERROR${SHELLSPEC_LF}"
+  shellspec_output_statement "tag:bad" "note:" "fail:y" \
+    "message:${SHELLSPEC_EXPECTATION:-}" "failure_message:$1$2"
+}
+
 shellspec_output_ABORTED() {
   if [ -s "$SHELLSPEC_STDOUT_FILE" ]; then
     shellspec_readfile SHELLSPEC_STDOUT "$SHELLSPEC_STDOUT_FILE"

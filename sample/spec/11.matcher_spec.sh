@@ -106,10 +106,10 @@ Describe 'matcher sample'
   End
 
   Describe 'satisfy matcher'
-    greater_than() { [ "$SHELLSPEC_SUBJECT" -gt "$1" ]; }
+    value() { return $(($@)); }
 
     It 'checks if satisfy condition'
-      The value 10 should satisfy greater_than 5
+      The value 10 should satisfy "value >= 5"
     End
   End
 End
