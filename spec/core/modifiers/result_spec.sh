@@ -12,6 +12,20 @@ Describe "core/modifiers/result.sh"
       The result of 'bar()' should equal ok # also capture stderr
     End
 
+    Describe 'example with stdout, stderr and status'
+      foo() { echo stdout; echo stderr >&2; return 123; }
+      get_stdout() { echo "$1"; }
+      get_stderr() { echo "$2"; }
+      get_status() { echo "$3"; }
+
+      It "retrives result of evaluation"
+        When call foo
+        The result of 'get_stdout()' should equal "stdout"
+        The result of 'get_stderr()' should equal "stderr"
+        The result of 'get_status()' should equal 123
+      End
+    End
+
     It 'gets stdout and stderr when subject is function that returns success'
       subject() { %- "success_with_output"; }
       success_with_output() { echo stdout; echo stderr >&2; true; }
