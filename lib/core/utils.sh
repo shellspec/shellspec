@@ -9,11 +9,15 @@ shellspec_get_nth() {
 shellspec_is() {
   case $1 in
     number) case ${2:-} in ( '' | *[!0-9]* ) return 1; esac ;;
-    funcname)
-      case ${2:-} in ([a-zA-Z_]*) ;; (*) return 1; esac
-      case ${2:-} in (*[!a-zA-Z0-9_]*) return 1; esac ;;
+    funcname) shellspec_is_function "${2:-}" || return 1 ;;
     *) shellspec_error "shellspec_is: invalid type name '$1'"
   esac
+  return 0
+}
+
+shellspec_is_function() {
+  case ${1:-} in ([a-zA-Z_]*) ;; (*) return 1; esac
+  case ${1:-} in (*[!a-zA-Z0-9_]*) return 1; esac
   return 0
 }
 
