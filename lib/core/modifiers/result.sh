@@ -19,7 +19,9 @@ shellspec_modifier_result() {
     else
       unset SHELLSPEC_SUBJECT ||:
     fi
-    [ -s "$SHELLSPEC_RESULT_STDERR_FILE" ] && return 1
+    if [ -s "$SHELLSPEC_RESULT_STDERR_FILE" ]; then
+      return 1
+    fi
   else
     unset SHELLSPEC_SUBJECT ||:
   fi
