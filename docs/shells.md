@@ -127,6 +127,7 @@ These are tested by Docker (`contrib/test_in_docker.sh`).
 | Debian buster + Schily AN-2019-09-22 | 2019/08/25   |
 | Debian buster + Schily AN-2019-10-07 | 2019/09/27   |
 | Debian buster + Schily AN-2019-12-05 | 2019/10/25   |
+| Debian buster + Schily AN-2020-02-11 | 2020/01/24   |
 
 * [Schily Bourne Shell][bosh] (`bosh`, `pbosh`) packages are available on [The NetBSD package collection][pkgsrc].
 * Versions before 2018/10/07 does not work.
