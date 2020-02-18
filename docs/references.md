@@ -85,6 +85,20 @@ The line beginning with `The` is the evaluation. The *subject* or the *modifier*
 | contents                         | The contents of the file (subject).   |
 | result                           | The result of the function (subject). |
 
+result examples
+
+```sh
+get_version() {
+  # The result of the evaluation is passed as arguments
+  # $1: stdout, $2: stderr, $3: status
+  echo "$1" | grep -o '[0-9.]*' | head -1
+}
+
+When call echo "GNU bash, version 4.4.20(1)-release (x86_64-pc-linux-gnu)"
+The result of function get_version should equal "4.4.20"
+The result of "get_version()" should equal "4.4.20" # shorthand
+```
+
 ### Matcher
 
 #### status
@@ -163,6 +177,24 @@ PATTERN examples
 | Matcher                                              | Description                                              |
 | :--------------------------------------------------- | :------------------------------------------------------- |
 | satisfy <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code> | The subject should satisfy <code>&lt;FUNCTION&gt;</code> |
+
+satisfy examples
+
+```sh
+value() {
+  # The subject is stored in the same variable name as the function name
+  test "${value:?}" "$1" "$2"
+}
+
+formula() {
+  value=${fomula:?}
+  [ $(($1)) -eq 1 ]
+}
+
+When call echo "50"
+The output should satisfy value -gt 10
+The output should satisfy formula "10 <= value && value <= 100"
+```
 
 ## Helper
 
