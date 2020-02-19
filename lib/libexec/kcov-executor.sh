@@ -24,7 +24,7 @@ executor() {
   # The directory of $SHELLSPEC_KCOV_IN_FILE should be empty
   # kcov try to parse files around $SHELLSPEC_KCOV_IN_FILE
   mkdir -p "${SHELLSPEC_KCOV_IN_FILE%/*}"
-  translator --coverage --fd=537 "$@" > "$SHELLSPEC_KCOV_IN_FILE"
+  translator --coverage --fd=537 --progress "$@" > "$SHELLSPEC_KCOV_IN_FILE"
 
   kcov_preprocess
 
