@@ -6,11 +6,11 @@
 Describe "libexec/shellspec.sh"
   Include "$SHELLSPEC_LIB/libexec/shellspec.sh"
 
-  Describe "read_dot_file()"
+  Describe "read_options_file()"
     parser() { printf '%s\n' "$@"; }
 
-    It "reads dot file"
-      When call read_dot_file "$SHELLSPEC_SPECDIR" "$DOT_SHELLSPEC" parser
+    It "reads options file"
+      When call read_options_file "$SHELLSPEC_SPECDIR/$DOT_SHELLSPEC" parser
       The line 1 of stdout should equal "--require"
       The line 2 of stdout should equal "spec_helper"
       The line 3 of stdout should equal "--format"
@@ -23,10 +23,48 @@ Describe "libexec/shellspec.sh"
       The status should be success
     End
 
-    It "does not read dot file if not specified directory"
-      When call read_dot_file "" "$DOT_SHELLSPEC" parser
+    It "does not read options file if not exist file"
+      When call read_options_file "$DOT_SHELLSPEC" parser
       The stdout should be blank
       The status should be success
+    End
+  End
+
+  Describe "enum_options_file()"
+    callback() { printf '%s\n' "$@"; }
+
+    Context 'When HOME environemnt variable exists, XDG_CONFIG_HOME not exists'
+      Before HOME=/home/user XDG_CONFIG_HOME=''
+      It "enumerates options file"
+        When call enum_options_file callback
+        The line 1 of stdout should eq "/home/user/.config/shellspec/options"
+        The line 2 of stdout should eq "/home/user/.shellspec"
+        The line 3 of stdout should eq ".shellspec"
+        The line 4 of stdout should eq ".shellspec-local"
+        The lines of stdout should eq 4
+      End
+    End
+
+    Context 'When HOME, XDG_CONFIG_HOME environemnt variable exists'
+      Before HOME=/home/user XDG_CONFIG_HOME=/home/user/config
+      It "enumerates options file"
+        When call enum_options_file callback
+        The line 1 of stdout should eq "/home/user/config/shellspec/options"
+        The line 2 of stdout should eq "/home/user/.shellspec"
+        The line 3 of stdout should eq ".shellspec"
+        The line 4 of stdout should eq ".shellspec-local"
+        The lines of stdout should eq 4
+      End
+    End
+
+    Context 'When HOME environemnt variable not exists'
+      Before HOME=''
+      It "enumerates options file"
+        When call enum_options_file callback
+        The line 1 of stdout should eq ".shellspec"
+        The line 2 of stdout should eq ".shellspec-local"
+        The lines of stdout should eq 2
+      End
     End
   End
 

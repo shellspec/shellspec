@@ -242,15 +242,15 @@ parse_options() {
     case $1 in
       --banner) SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner" ;;
       --no-banner) SHELLSPEC_BANNER='' ;;
-      -f | --format) [ "${2:-}" ] || abort 'Require FORMATTER.'
-        case $2 in (*[!a-z0-9_]*) abort 'Invalid FORMATTER name.'; esac
+      -f | --format) [ "${2:-}" ] || invalid 'Require FORMATTER.'
+        case $2 in (*[!a-z0-9_]*) invalid 'Invalid FORMATTER name.'; esac
         SHELLSPEC_FORMATTER=$2
         for formatter in $formatters; do
           case $formatter in ($2*) SHELLSPEC_FORMATTER=$formatter; esac
         done
         shift ;;
-      -o | --output) [ "${2:-}" ] || abort 'Require GENERATOR.'
-        case $2 in (*[!a-z0-9_]*) abort 'Invalid GENERATOR name.'; esac
+      -o | --output) [ "${2:-}" ] || invalid 'Require GENERATOR.'
+        case $2 in (*[!a-z0-9_]*) invalid 'Invalid GENERATOR name.'; esac
         SHELLSPEC_GENERATORS="$SHELLSPEC_GENERATORS $2"
         for formatter in $formatters; do
           case $formatter in ($2*)
@@ -260,64 +260,64 @@ parse_options() {
         shift ;;
       --force-color | --force-colour) SHELLSPEC_COLOR=1 ;;
       --no-color | --no-colour) SHELLSPEC_COLOR='' ;;
-      -s | --shell) [ "${2:-}" ] || abort 'Require SHELL.'
+      -s | --shell) [ "${2:-}" ] || invalid 'Require SHELL.'
         SHELLSPEC_SHELL=$2
         shift ;;
-      --random) [ "${2:-}" ] || abort 'Require TYPE[:SEED].'
+      --random) [ "${2:-}" ] || invalid 'Require TYPE[:SEED].'
         case ${2%%:*} in
           none) SHELLSPEC_RANDOM='' ;;
           specfiles|examples) SHELLSPEC_RANDOM=${2%%:*} ;;
-          *) abort 'Invalid TYPE[:SEED].'
+          *) invalid 'Invalid TYPE[:SEED].'
         esac
         case $2 in (*:*) SHELLSPEC_SEED=${2#*:} ;; (*) SHELLSPEC_SEED=''; esac
         shift ;;
-      -j | --jobs) [ "${2:-}" ] || abort 'Require JOBS.'
+      -j | --jobs) [ "${2:-}" ] || invalid 'Require JOBS.'
         SHELLSPEC_JOBS=$2
         shift ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
       --keep-tempdir) SHELLSPEC_KEEP_TEMPDIR=1 ;;
       --focus) SHELLSPEC_FOCUS_FILTER=1 ;;
-      --pattern) [ "${2:-}" ] || abort 'Require PATTERN.'
+      --pattern) [ "${2:-}" ] || invalid 'Require PATTERN.'
         SHELLSPEC_PATTERN=$2
         shift ;;
-      --example) [ "${2:-}" ] || abort 'Require PATTERN.'
+      --example) [ "${2:-}" ] || invalid 'Require PATTERN.'
         if [ "$SHELLSPEC_EXAMPLE_FILTER" ]; then
           SHELLSPEC_EXAMPLE_FILTER="$SHELLSPEC_EXAMPLE_FILTER|$2"
         else
           SHELLSPEC_EXAMPLE_FILTER="$2"
         fi
         shift ;;
-      --tag) [ "${2:-}" ] || abort 'Require TAG.'
+      --tag) [ "${2:-}" ] || invalid 'Require TAG.'
         SHELLSPEC_TAG_FILTER="${SHELLSPEC_TAG_FILTER%,},$2,"
         shift ;;
-      --default-path) [ "${2:-}" ] || abort 'Require PATH.'
+      --default-path) [ "${2:-}" ] || invalid 'Require PATH.'
         SHELLSPEC_DEFAULT_PATH=$2
         shift ;;
-      -e | --env) [ "${2:-}" ] || abort 'Require NAME=VALUE.'
+      -e | --env) [ "${2:-}" ] || invalid 'Require NAME=VALUE.'
         #shellcheck disable=SC2034
         case $2 in
           *=*) name=${2%%=*} value=${2#*=} ;;
           *) name=$2 value='' ;;
         esac
-        case $name in ([!a-zA-Z_]*) abort 'Invalid environment name.'; esac
-        case $name in (*[!a-zA-Z0-9_]*) abort 'Invalid environment name.'; esac
+        case $name in ([!a-zA-Z_]*) invalid 'Invalid environment name.'; esac
+        case $name in (*[!a-zA-Z0-9_]*) invalid 'Invalid environment name.'; esac
         eval "export $name=\$value"
         shift ;;
-      --env-from) [ "${2:-}" ] || abort 'Require ENV-SCRIPT.'
-        [ -e "$2" ] || abort "Not found ENV-SCRIPT '$2'."
+      --env-from) [ "${2:-}" ] || invalid 'Require ENV-SCRIPT.'
+        [ -e "$2" ] || invalid "Not found ENV-SCRIPT '$2'."
         case $2 in
           /* | ./* | ../*) SHELLSPEC_ENV_FROM=$2 ;;
           *) SHELLSPEC_ENV_FROM="./$2" ;;
         esac
         shift ;;
-      -r | --require) [ "${2:-}" ] || abort 'Require PATH.'
+      -r | --require) [ "${2:-}" ] || invalid 'Require PATH.'
         SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
         shift ;;
       --warning-as-failure) SHELLSPEC_WARNING_AS_FAILURE=1 ;;
       --no-warning-as-failure) SHELLSPEC_WARNING_AS_FAILURE='' ;;
-      --skip-message) [ "${2:-}" ] || abort 'Require VERBOSE.'
+      --skip-message) [ "${2:-}" ] || invalid 'Require VERBOSE.'
         case $2 in (verbose|moderate|quiet) ;;
-          *) abort 'Invalid VERBOSE.'
+          *) invalid 'Invalid VERBOSE.'
         esac
         SHELLSPEC_SKIP_MESSAGE="$2"
         shift ;;
@@ -333,44 +333,52 @@ parse_options() {
       --no-fail-low-coverage) SHELLSPEC_FAIL_LOW_COVERAGE='' ;;
       --kcov) SHELLSPEC_KCOV=1 ;;
       --no-kcov) SHELLSPEC_KCOV='' ;;
-      --kcov-path) [ "${2:-}" ] || abort 'Require PATH.'
+      --kcov-path) [ "${2:-}" ] || invalid 'Require PATH.'
         SHELLSPEC_KCOV_PATH="$2"
         shift ;;
-      --kcov-common-options) [ "${2:-}" ] || abort 'Require OPTIONS.'
+      --kcov-common-options) [ "${2:-}" ] || invalid 'Require OPTIONS.'
         SHELLSPEC_KCOV_COMMON_OPTS="$2"
         warn "--kcov-common-options is deprecated, merge into --kcov-options"
         shift ;;
-      --kcov-options) [ "${2:-}" ] || abort 'Require OPTIONS.'
+      --kcov-options) [ "${2:-}" ] || invalid 'Require OPTIONS.'
         SHELLSPEC_KCOV_OPTS="${SHELLSPEC_KCOV_OPTS}${SHELLSPEC_KCOV_OPTS:+ }$2"
         shift ;;
       -p | --profile) SHELLSPEC_PROFILER=1 ;;
       --no-profile) SHELLSPEC_PROFILER='' ;;
-      --profile-limit) [ "${2:-}" ] || abort 'Require N.'
+      --profile-limit) [ "${2:-}" ] || invalid 'Require N.'
         SHELLSPEC_PROFILER_LIMIT="$2"
         shift ;;
       --show-deprecations) SHELLSPEC_DEPRECATION_LOG=1 ;;
       --hide-deprecations) SHELLSPEC_DEPRECATION_LOG='' ;;
       --init | --task | --translate | --syntax-check) SHELLSPEC_MODE=${1#--} ;;
       --count) SHELLSPEC_MODE=list SHELLSPEC_LIST='' ;;
-      --list) [ "${2:-}" ] || abort 'Require LIST.'
+      --list) [ "${2:-}" ] || invalid 'Require LIST.'
         case $2 in (specfiles|examples|examples:id|examples:lineno|debug) ;;
-          *) abort 'Invalid LIST.'
+          *) invalid 'Invalid LIST.'
         esac
         SHELLSPEC_MODE=list SHELLSPEC_LIST=$2
         shift ;;
       -h | --help) usage && exit 0;;
       -v | --version) echo "$SHELLSPEC_VERSION" && exit 0 ;;
-      -*) abort "Unknown option '$1'" ;;
+      -*) invalid "Unknown option '$1'" ;;
       *) params="$params \"\${$(($length - $# + 1))}\""
     esac
     shift
   done
 }
 
-read_dot_file "${XDG_CONFIG_HOME:-}" "shellspec/options" parse_options
-read_dot_file "${HOME:-}" ".shellspec" parse_options
-read_dot_file "." ".shellspec" parse_options
-read_dot_file "." ".shellspec-local" parse_options
+invalid() {
+  [ "${options_file:-}" ] && set -- "$@" "[$options_file]"
+  abort "$@"
+}
+
+options_file() {
+  options_file=$1
+  read_options_file "$1" parse_options
+  unset options_file
+}
+
+enum_options_file options_file
 [ $# -gt 0 ] && parse_options "$@" && eval "set -- $params"
 
 if [ ! "$SHELLSPEC_SHELL" ]; then
