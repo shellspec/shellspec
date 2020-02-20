@@ -5,19 +5,32 @@
 use reset_params
 load binary
 
-read_dot_file() {
-  [ "$1" ] || return 0
-  [ -e "$1/$2" ] || return 0
-  file="$1/$2" parser=$3
+read_options_file() {
+  [ -e "$1" ] || return 0
+  file="$1" parser=$2
   set --
   while IFS= read -r line || [ "$line" ]; do
-    if [ $# -eq 0 ]; then
-      eval "set -- $line"
-    else
-      eval "set -- \"\$@\" $line"
-    fi
+    case $# in
+      0) eval "set -- $line" ;;
+      *) eval "set -- \"\$@\" $line" ;;
+    esac
   done < "$file" &&:
   [ $# -eq 0 ] || "$parser" "$@"
+}
+
+enum_options_file() {
+  callback=$1
+  set -- ".shellspec" ".shellspec-local"
+  [ "${HOME:-}" ] && set -- "$HOME/.shellspec" "$@"
+  if [ "${XDG_CONFIG_HOME:-}" ]; then
+    set -- "$XDG_CONFIG_HOME/shellspec/options" "$@"
+  elif [ "${HOME:-}" ]; then
+    set -- "$HOME/.config/shellspec/options" "$@"
+  fi
+  while [ $# -gt 0 ]; do
+    "$callback" "$1"
+    shift
+  done
 }
 
 read_cmdline() {

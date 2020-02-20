@@ -27,7 +27,7 @@ VERSION:
     .               Install from local directory
 
 OPTIONS:
-  -p, --prefix PREFIX   Specify prefix                 [default: \\\$HOME]
+  -p, --prefix PREFIX   Specify prefix                 [default: \\\$HOME/.local]
   -b, --bin BIN         Specify bin directory          [default: <PREFIX>/bin]
   -d, --dir DIR         Specify installation directory [default: <PREFIX>/lib/$project]
   -s, --switch          Switch version (requires installed via git)
@@ -149,7 +149,7 @@ latest_version() {
 ${__SOURCED__:+return}
 
 trap finished EXIT
-VERSION='' PREFIX=$HOME BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH=''
+VERSION='' PREFIX=$HOME/.local BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH=''
 done='' mode=install
 
 __ parse_option __
