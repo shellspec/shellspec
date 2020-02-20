@@ -173,7 +173,7 @@ syntax_error() {
   putsn "shellspec_abort 1 \"$1\" \"$2\""
 }
 
-metadata=1 finished=1 coverage='' fd='' spec_no=1
+metadata=1 finished=1 coverage='' fd='' spec_no=1 progress=''
 
 for param in "$@"; do
   case $param in
@@ -182,6 +182,7 @@ for param in "$@"; do
     --coverage   ) coverage=1 ;;
     --fd=*       ) fd=${param#*=} ;;
     --spec-no=*  ) spec_no=${param#*=} ;;
+    --progress   ) progress=1 ;;
     *) set -- "$@" "$param" ;;
   esac
   shift
@@ -204,7 +205,16 @@ fi
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_metadata $metadata"
 
+log() { if [ -e /dev/tty ]; then puts "$@" >/dev/tty; fi; }
+
+specfile_count=0
+count_specfile() {
+  specfile_count=$(($specfile_count + 1))
+}
+[ "$progress" ] && eval find_specfiles count_specfile ${1+'"$@"'}
+
 specfile() {
+  [ "$progress" ] && log "${CR}Translate[$spec_no/$specfile_count]: $2${ESC}[K"
   (
     specfile=$2 ranges=${3:-} run_all=''
     escape_quote specfile
@@ -225,5 +235,6 @@ specfile() {
   spec_no=$(($spec_no + 1))
 }
 eval find_specfiles specfile ${1+'"$@"'}
+[ "$progress" ] && log "${CR}${ESC}[2K"
 
 putsn "shellspec_finished $finished"
