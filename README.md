@@ -222,7 +222,7 @@ VERSION:
     .               Install from local directory
 
 OPTIONS:
-  -p, --prefix PREFIX   Specify prefix                 [default: $HOME]
+  -p, --prefix PREFIX   Specify prefix                 [default: $HOME/.local]
   -b, --bin BIN         Specify bin directory          [default: <PREFIX>/bin]
   -d, --dir DIR         Specify installation directory [default: <PREFIX>/lib/shellspec]
   -s, --switch          Switch version (requires installed via git)

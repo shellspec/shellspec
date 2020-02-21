@@ -5,7 +5,7 @@ set -eu
 
 [ "${PPID:-}" ] || { echo "Unsupported shell (Bourne shell?)" >&2; exit 1; }
 
-export SHELLSPEC_VERSION='0.22.0-dev'
+export SHELLSPEC_VERSION='0.22.0'
 export SHELLSPEC_PATH=''
 export SHELLSPEC_ROOT=''
 export SHELLSPEC_PROJECT_ROOT=''

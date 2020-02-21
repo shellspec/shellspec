@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.0] - 2020-02-22
+
 ### Added
 
 - Improve kcov version detection.
@@ -21,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `--coverage-report-info` to add extra information to coverage report.
 - make install compatible with BSD and macOS.
 - Suppress unnecessary before/after hooks of skipped examples.
+- install.sh: Install to under $HOME/.local by default
+- Use $HOME/.config if not defined XDG_CONFIG_HOME
 
 ### Deprecated
 
@@ -307,6 +311,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial public release.
 
 [Unreleased]: https://github.com/shellspec/shellspec/compare/0.21.0...HEAD
+[0.22.0]: https://github.com/shellspec/shellspec/compare/0.21.0...0.22.0
 [0.21.0]: https://github.com/shellspec/shellspec/compare/0.20.2...0.21.0
 [0.20.2]: https://github.com/shellspec/shellspec/compare/0.20.1...0.20.2
 [0.20.1]: https://github.com/shellspec/shellspec/compare/0.20.0...0.20.1
