@@ -46,6 +46,16 @@ ENTRYPOINT [ "/entrypoint.sh" ]
 WORKDIR /root
 CMD [ "/bin/bash", "-l" ]
 
+FROM linuxbrew/brew as brew_installer
+RUN echo '#!/bin/sh' > /entrypoint.sh \
+ && echo 'echo "Usage: brew tap shellspec/shellspec"' >> /entrypoint.sh \
+ && echo 'echo "       brew install shellspec"' >> /entrypoint.sh \
+ && echo 'echo "       brew test shellspec"' >> /entrypoint.sh \
+ && echo 'exec "$@"' >> /entrypoint.sh \
+ && chmod +x /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "/bin/bash", "-l" ]
+
 FROM shellspec:${TYPE}_installer as test
 COPY ./install.sh /root/
 COPY ./ /root/shellspec

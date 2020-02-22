@@ -10,9 +10,9 @@ set -eu
 
 [ $# -eq 0 ] && set -- general
 
-case ${1:-} in ( general | make | bpkg | basher ) ;; (*)
+case ${1:-} in ( general | make | bpkg | basher | brew) ;; (*)
 cat <<'USAGE'
-Usage: installer_test.sh [ general | make | bpkg | basher ]
+Usage: installer_test.sh [ general | make | bpkg | basher | brew]
 USAGE
   exit 0
 esac
