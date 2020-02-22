@@ -42,8 +42,7 @@ unixtime() {
 }
 
 is_specfile() {
-  # This &&: workaround for #21 in contrib/bugs.sh
-  eval "case \${1%%:*} in ($SHELLSPEC_PATTERN) true ;; (*) false ; esac &&:"
+  shellspec_match "${1%%:*}" "$SHELLSPEC_PATTERN"
 }
 
 found_specfile() {
