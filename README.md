@@ -250,6 +250,17 @@ $ aura -A shellspec
 </details>
 
 <details>
+<summary>Homebrew / Linuxbrew</summary>
+
+```console
+# Install the latest stable version
+$ brew tap shellspec/shellspec
+$ brew install shellspec
+```
+
+</details>
+
+<details>
 <summary>basher</summary>
 
 Installation with [basher](https://github.com/basherpm/basher)
