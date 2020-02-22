@@ -479,6 +479,9 @@ case $SHELLSPEC_MODE in (runner | list)
     SHELLSPEC_SEED=$(( ($SHELLSPEC_UNIXTIME * $$ / 7 + $$) % 100000))
     info "Randomized with seed $SHELLSPEC_SEED" >&2
   fi
+  for file; do
+    SHELLSPEC_PATTERN="$SHELLSPEC_PATTERN|$file"
+  done
 esac
 
 if [ "$SHELLSPEC_ENV_FROM" ]; then
