@@ -119,15 +119,17 @@ sleep_wait() {
   esac
 }
 
-
-if $SHELLSPEC_KILL -0 $$ 2>/dev/null; then
-  signal() {
-    "$SHELLSPEC_KILL" "$1" "$2"
-  }
-else
-  signal() {
-    "$SHELLSPEC_KILL" -s "${1#-}" "$2"
-  }
-fi
+signal() {
+  if $SHELLSPEC_KILL -0 $$ 2>/dev/null; then
+    signal() {
+      "$SHELLSPEC_KILL" "$1" "$2"
+    }
+  else
+    signal() {
+      "$SHELLSPEC_KILL" -s "${1#-}" "$2"
+    }
+  fi
+  signal "$@"
+}
 
 use puts putsn

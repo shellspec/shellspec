@@ -84,4 +84,21 @@ Describe 'libexec.sh'
       The lines of stdout should eq 2
     End
   End
+
+  Describe "signal()"
+    posix_kill() { eval SHELLSPEC_KILL=echo && true; }
+    non_posix_kill() { eval SHELLSPEC_KILL=echo && false; }
+
+    It "calls kill (posix)"
+      BeforeCall SHELLSPEC_KILL=posix_kill
+      When call signal -TERM 0
+      The stdout should eq "-TERM 0"
+    End
+
+    It "calls kill (non-posix)"
+      BeforeCall SHELLSPEC_KILL=non_posix_kill
+      When call signal -TERM 0
+      The stdout should eq "-s TERM 0"
+    End
+  End
 End
