@@ -187,7 +187,7 @@ value() {
 }
 
 formula() {
-  value=${fomula:?}
+  value=${formula:?}
   [ $(($1)) -eq 1 ]
 }
 
