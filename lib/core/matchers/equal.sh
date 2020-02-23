@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 shellspec_syntax 'shellspec_matcher_equal'
 shellspec_syntax_alias 'shellspec_matcher_eq' 'shellspec_matcher_equal'
@@ -11,15 +11,12 @@ shellspec_matcher_equal() {
     return 0
   }
 
-  shellspec_matcher__failure_message() {
-    shellspec_putsn "expected: $2"
-    shellspec_putsn "     got: $1"
-  }
-
-  shellspec_matcher__failure_message_when_negated() {
-    shellspec_putsn "expected: not equal $2"
-    shellspec_putsn "     got: $1"
-  }
+  shellspec_syntax_failure_message + \
+    'expected: $2' \
+    '     got: $1'
+  shellspec_syntax_failure_message - \
+    'expected: not equal $2' \
+    '     got: $1'
 
   shellspec_syntax_param count [ $# -eq 1 ] || return 0
   shellspec_matcher_do_match "$@"

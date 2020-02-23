@@ -88,3 +88,16 @@ shellspec_syntax_param_check() {
   shift
   "$@"
 }
+
+shellspec_syntax_failure_message() {
+  case $1 in
+    +) SHELLSPEC_EVAL="shellspec_matcher__failure_message() {" ;;
+    -) SHELLSPEC_EVAL="shellspec_matcher__failure_message_when_negated() {" ;;
+  esac
+  shift
+  while [ $# -gt 0 ]; do
+    SHELLSPEC_EVAL="${SHELLSPEC_EVAL}${SHELLSPEC_LF}shellspec_putsn \"$1\""
+    shift
+  done
+  eval "${SHELLSPEC_EVAL}${SHELLSPEC_LF}}"
+}

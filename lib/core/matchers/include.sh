@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 shellspec_syntax 'shellspec_matcher_include'
 
@@ -9,13 +9,8 @@ shellspec_matcher_include() {
     shellspec_includes "$SHELLSPEC_SUBJECT" "$SHELLSPEC_EXPECT"
   }
 
-  shellspec_matcher__failure_message() {
-    shellspec_putsn "expected $1 to include $2"
-  }
-
-  shellspec_matcher__failure_message_when_negated() {
-    shellspec_putsn "expected $1 not to include $2"
-  }
+  shellspec_syntax_failure_message + 'expected $1 to include $2'
+  shellspec_syntax_failure_message - 'expected $1 not to include $2'
 
   shellspec_syntax_param count [ $# -eq 1 ] || return 0
   shellspec_matcher_do_match "$@"

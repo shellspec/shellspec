@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 shellspec_syntax 'shellspec_matcher_match'
 
@@ -22,13 +22,8 @@ shellspec_matcher_deprecated_match() {
     shellspec_match "$SHELLSPEC_SUBJECT" "$1"
   }
 
-  shellspec_matcher__failure_message() {
-    shellspec_putsn "expected $1 to match $2"
-  }
-
-  shellspec_matcher__failure_message_when_negated() {
-    shellspec_putsn "expected $1 not to match $2"
-  }
+  shellspec_syntax_failure_message + 'expected $1 to match $2'
+  shellspec_syntax_failure_message - 'expected $1 not to match $2'
 
   shellspec_syntax_param count [ $# -eq 1 ] || return 0
   shellspec_matcher_do_match "$@"
@@ -42,13 +37,8 @@ shellspec_matcher_match_pattern() {
     shellspec_match_pattern "$SHELLSPEC_SUBJECT" "$1"
   }
 
-  shellspec_matcher__failure_message() {
-    shellspec_putsn "expected $1 to match pattern $2"
-  }
-
-  shellspec_matcher__failure_message_when_negated() {
-    shellspec_putsn "expected $1 not to match pattern $2"
-  }
+  shellspec_syntax_failure_message + 'expected $1 to match pattern $2'
+  shellspec_syntax_failure_message - 'expected $1 not to match pattern $2'
 
   shellspec_syntax_param count [ $# -eq 1 ] || return 0
   shellspec_matcher_do_match "$@"

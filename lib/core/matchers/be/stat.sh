@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 shellspec_syntax 'shellspec_matcher_be_exist'
 shellspec_syntax 'shellspec_matcher_be_file'
@@ -23,14 +23,12 @@ shellspec_make_file_matcher() {
       shellspec_matcher__match() { \
         [ $2 \"\${SHELLSPEC_SUBJECT:-}\" ]; \
       }; \
-      shellspec_matcher__failure_message() { \
-        shellspec_putsn \"The specified path ${4:-${3%% *} not ${3#* }}\"; \
-        shellspec_putsn \"path: \$SHELLSPEC_SUBJECT\"; \
-      }; \
-      shellspec_matcher__failure_message_when_negated() { \
-        shellspec_putsn \"The specified path $3\"; \
-        shellspec_putsn \"path: \$SHELLSPEC_SUBJECT\"; \
-      }; \
+      shellspec_syntax_failure_message + \
+        'The specified path ${4:-${3%% *} not ${3#* }}' \
+        'path: \$SHELLSPEC_SUBJECT'; \
+      shellspec_syntax_failure_message - \
+        'The specified path $3' \
+        'path: \$SHELLSPEC_SUBJECT'; \
       shellspec_syntax_param count [ \$# -eq 0 ] || return 0; \
       shellspec_matcher_do_match; \
     }

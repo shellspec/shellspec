@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 shellspec_syntax 'shellspec_matcher_start_with'
 shellspec_syntax_compound 'shellspec_matcher_start'
@@ -11,13 +11,8 @@ shellspec_matcher_start_with() {
     return 1
   }
 
-  shellspec_matcher__failure_message() {
-    shellspec_putsn "expected $1 to start with $2"
-  }
-
-  shellspec_matcher__failure_message_when_negated() {
-    shellspec_putsn "expected $1 not to start with $2"
-  }
+  shellspec_syntax_failure_message + 'expected $1 to start with $2'
+  shellspec_syntax_failure_message - 'expected $1 not to start with $2'
 
   shellspec_syntax_param count [ $# -eq 1 ] || return 0
   shellspec_matcher_do_match "$@"
