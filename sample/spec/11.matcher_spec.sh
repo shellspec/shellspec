@@ -100,16 +100,19 @@ Describe 'matcher sample'
     Describe 'match'
       It 'checks if subject match specified pattern'
         # Using shell script's pattern matching
-        The value "foobarbaz" should match "f??bar*"
+        The value "foobarbaz" should match pattern "f??bar*"
       End
     End
   End
 
   Describe 'satisfy matcher'
-    value() { return $(($@)); }
+    formula() {
+      eval "value=${formula:?}"
+      [ $(($1)) -eq 1 ]
+    }
 
     It 'checks if satisfy condition'
-      The value 10 should satisfy "value >= 5"
+      The value 10 should satisfy formula "value >= 5"
     End
   End
 End
