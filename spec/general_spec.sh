@@ -463,17 +463,26 @@ Describe "general.sh"
   End
 
   Describe "shellspec_join()"
-    Before value=''
-    It 'joins arguments by space'
-      When call shellspec_join value foo bar baz
-      The variable value should eq 'foo bar baz'
+    Context "when no arguments"
+      It 'returns empty'
+        When call shellspec_join value "@"
+        The variable value should eq ""
+      End
     End
 
-    Context 'when IFS is @'
-      Before IFS='@'
-      It 'joins arguments by space'
-        When call shellspec_join value foo bar baz
-        The variable value should eq 'foo bar baz'
+    Context "when one argument"
+      It 'returns argument'
+        When call shellspec_join value "@" foo
+        The variable value should eq "foo"
+      End
+    End
+
+    Context "when multiple arguments"
+      Parameters:value " " "<>" "a" "|"
+
+      It "joins by '$1'"
+        When call shellspec_join value "$1" foo bar baz
+        The variable value should eq "foo$1bar$1baz"
       End
     End
   End

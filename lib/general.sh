@@ -426,9 +426,12 @@ shellspec_match_pattern() {
 }
 
 shellspec_join() {
-  IFS=" $IFS"
-  eval "shift; $1=\${*:-}"
-  IFS=${IFS#?}
+  [ $# -le 3 ] && eval "$1=\${3:-}" && return 0
+  SHELLSPEC_EVAL="
+    $1=\$3 && shift 3; \
+    while [ \$# -gt 0 ]; do $1=\"\${$1}$2\$1\" && shift; done \
+  "
+  eval "$SHELLSPEC_EVAL"
 }
 
 shellspec_shift10() {

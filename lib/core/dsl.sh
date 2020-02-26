@@ -185,7 +185,7 @@ shellspec_statement() {
 }
 
 shellspec_when() {
-  eval shellspec_join SHELLSPEC_EVALUATION ${1+'"$@"'}
+  eval shellspec_join SHELLSPEC_EVALUATION '" "' ${1+'"$@"'}
   shellspec_off NOT_IMPLEMENTED
 
   shellspec_if EVALUATION && {
@@ -253,7 +253,7 @@ shellspec_around_run() {
 }
 
 shellspec_the() {
-  eval shellspec_join SHELLSPEC_EXPECTATION The ${1+'"$@"'}
+  eval shellspec_join SHELLSPEC_EXPECTATION '" "' The ${1+'"$@"'}
   shellspec_off NOT_IMPLEMENTED
   shellspec_on EXPECTATION
 
