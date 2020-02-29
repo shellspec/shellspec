@@ -4,13 +4,13 @@
 
 There are official images on the [Docker Hub](https://hub.docker.com/r/shellspec/shellspec).
 
-| Name                            | Linux  | Included                  |  Size |
-| ------------------------------- | ------ | ------------------------- | ----: |
-| shellspec/shellspec             | Alpine | busybox (ash)             |  3 MB |
-| shellspec/shellspec:kcov        | Alpine | busybox (ash), bash, kcov | 14 MB |
-| shellspec/shellspec-debian      | Debian | dash, bash                | 48 MB |
-| shellspec/shellspec-debian:kcov | Debian | dash, bash, kcov          | 68 MB |
-| shellspec/shellspec-scratch     | None   | none (shellspec only)     | 40 KB |
+| Name                            | Linux  | Included                  |                                                                                                           Size |
+| ------------------------------- | ------ | ------------------------- | -------------------------------------------------------------------------------------------------------------: |
+| shellspec/shellspec             | Alpine | busybox (ash)             |         ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/shellspec/shellspec/latest?label=) |
+| shellspec/shellspec:kcov        | Alpine | busybox (ash), bash, kcov |           ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/shellspec/shellspec/kcov?label=) |
+| shellspec/shellspec-debian      | Debian | dash, bash                |  ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/shellspec/shellspec-debian/latest?label=) |
+| shellspec/shellspec-debian:kcov | Debian | dash, bash, kcov          |    ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/shellspec/shellspec-debian/kcov?label=) |
+| shellspec/shellspec-scratch     | None   | none (shellspec only)     | ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/shellspec/shellspec-scratch/latest?label=) |
 
 - shellspec/shellspec:kcov is **beta** (currently using alpine:edge not stable)
 - Version specified images are also available (VERSION: 0.21.0 and above)
