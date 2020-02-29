@@ -594,4 +594,20 @@ Describe "general.sh"
       End
     End
   End
+
+  Describe "shellspec_difference_values()"
+    Before var=@1:@2-1:@1:@2-2:@3
+    It "removes specified values"
+      When call shellspec_difference_values var ":" "@5:@1:@2-2:@1"
+      The variable var should eq "@2-1:@3"
+    End
+  End
+
+  Describe "shellspec_union_values()"
+    Before var=@1:@2-1:@1:@2-2:@3
+    It "removes specified values"
+      When call shellspec_union_values var ":" "@1:@2-1:@2-3:@3:@4:@3"
+      The variable var should eq "@1:@2-1:@2-2:@3:@2-3:@4"
+    End
+  End
 End
