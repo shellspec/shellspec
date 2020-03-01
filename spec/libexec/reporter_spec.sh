@@ -251,4 +251,116 @@ Describe "libexec/reporter.sh"
       The variable duration_total should eq 6.6802
     End
   End
+
+  Describe "quick feature"
+    Before init_quick_data
+    callback() { echo "$1: [$2] [$3]"; }
+
+    Describe "init_quick_data()"
+      It 'initializes quick data'
+        AfterCall 'list_quick_data callback'
+        When call init_quick_data
+        The output should be blank
+        The lines of output should eq 0
+      End
+    End
+
+    Describe "pass_quick_data()"
+      It 'adds quick data'
+        process() {
+          pass_quick_data "spec/general_spec.sh" "1-1" no
+          pass_quick_data "spec/general_spec.sh" "1-2" no
+          pass_quick_data "spec/test1_spec.sh" "2-1" no
+          pass_quick_data "spec/test2_spec.sh" "3-1" no
+          pass_quick_data "spec/test1_spec.sh" "2-2" no
+          pass_quick_data "spec/general_spec.sh" "1-3" yes
+        }
+        AfterCall 'list_quick_data callback'
+        When call process
+        The line 1 of output should eq 'spec/general_spec.sh: [@1-3] [@1-1:@1-2]'
+        The line 2 of output should eq 'spec/test1_spec.sh: [] [@2-1:@2-2]'
+        The line 3 of output should eq 'spec/test2_spec.sh: [] [@3-1]'
+        The lines of output should eq 3
+      End
+    End
+
+    Describe "find_quick_data()"
+      setup() { pass_quick_data "spec/general_spec.sh" "1-1" no; }
+      BeforeCall setup
+      It 'finds quick data'
+        When call find_quick_data callback "spec/general_spec.sh"
+        The line 1 of output should eq 'spec/general_spec.sh: [] [@1-1]'
+        The lines of output should eq 1
+      End
+    End
+
+    Describe "remove_quick_data()"
+      setup() {
+        pass_quick_data "spec/general_spec.sh" "1-1" no
+      }
+      BeforeCall setup
+      AfterCall 'list_quick_data callback'
+
+      It 'removes quick data'
+        When call remove_quick_data "spec/general_spec.sh"
+        The output should be blank
+        The lines of output should eq 0
+      End
+    End
+
+    Describe "filter_quick_file()"
+      Data
+        #|spec/libexec/general_spec.sh:@1-1:@1-2:@2-1
+        #|spec/libexec/reporter_spec.sh:@1-11-4-1
+      End
+
+      Context 'ran specfiles without any errors'
+        setup() {
+          pass_quick_data "spec/libexec/general_spec.sh" "1-1" yes
+          pass_quick_data "spec/libexec/general_spec.sh" "1-2" no
+        }
+        BeforeCall setup
+
+        Parameters
+          "spec" \
+            eq "spec/libexec/general_spec.sh:@1-2" \
+            be undefined
+
+          "spec/libexec/reporter_spec.sh" \
+            eq "spec/libexec/general_spec.sh:@1-2:@2-1" \
+            be undefined
+        End
+
+        It 'removes quick data with matching path'
+          When call filter_quick_file "1" "$1"
+          The line 1 of output should "$2" "$3"
+          The line 2 of output should "$4" "$5"
+        End
+      End
+
+      Context 'ran specfiles with some errors'
+        setup() {
+          pass_quick_data "spec/libexec/general_spec.sh" "1-1" yes
+          pass_quick_data "spec/libexec/general_spec.sh" "1-2" no
+        }
+        BeforeCall setup
+
+        Parameters
+          "spec" \
+            eq "spec/libexec/general_spec.sh:@1-2:@2-1" \
+            eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
+
+          "spec/libexec/reporter_spec.sh" \
+            eq "spec/libexec/general_spec.sh:@1-2:@2-1" \
+            eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
+        End
+
+        It 'removes quick data with matching path'
+          When call filter_quick_file "" "$1"
+          The line 1 of output should "$2" "$3"
+          The line 2 of output should "$4" "$5"
+        End
+      End
+    End
+  End
 End

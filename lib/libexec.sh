@@ -132,4 +132,32 @@ signal() {
   signal "$@"
 }
 
-use puts putsn
+read_quickfile() {
+  eval "{ IFS= read -r $1 || [ \"\$$1\" ]; } &&:" && {
+    case $# in
+      2) eval "$2=\${$1%%:*}" ;;
+      *) eval "$2=\${$1%%:*} $3=\${$1#*:}" ;;
+    esac
+  }
+}
+
+match_files_pattern() {
+  SHELLSPEC_EVAL="
+    shift; \
+    while [ \$# -lt $(($#*2-2)) ]; do \
+      $1=\$1; \
+      escape_pattern $1; \
+      set -- \"\$@\" \"\$1\"; \
+      set -- \"\$@\" \"\$1/*\"; \
+      shift; \
+    done; \
+    $1=''; \
+    while [ \$# -gt 0 ]; do \
+      $1=\"\${$1}\${$1:+|}\$1\"; \
+      shift; \
+    done \
+  "
+  eval "$SHELLSPEC_EVAL"
+}
+
+use puts putsn escape_pattern
