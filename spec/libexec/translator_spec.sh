@@ -1,7 +1,35 @@
 #shellcheck shell=sh disable=SC2016
 
+% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
+
 Describe "libexec/translator.sh"
   Include "$SHELLSPEC_LIB/libexec/translator.sh"
+
+  Describe "read_specfile()"
+    process() {
+      lineno=0 line=''
+      while read_specfile line; do
+        echo "$line"
+      done < "$1"
+      echo "$lineno"
+    }
+
+    It 'reads file'
+      When run process "$FIXTURE/specfile-lf.txt"
+      The line 1 of stdout should eq foo
+      The line 2 of stdout should eq bar
+      The line 3 of stdout should eq baz
+      The line 4 of stdout should eq 3
+    End
+
+    It 'reads file which windows line endings'
+      When run process "$FIXTURE/specfile-crlf.txt"
+      The line 1 of stdout should eq foo
+      The line 2 of stdout should eq bar
+      The line 3 of stdout should eq baz
+      The line 4 of stdout should eq 3
+    End
+  End
 
   Describe "check_filter()"
     Context 'when no description'
