@@ -1,1 +1,2 @@
 dockerfiles/* linguist-language=Dockerfile
+spec/fixture/** -text

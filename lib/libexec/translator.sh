@@ -18,6 +18,12 @@ finalize() {
   while [ "$_block_no_stack" ]; do block_end ""; done
 }
 
+read_specfile() {
+  eval "{ IFS= read -r $1 || [ \"\$$1\" ]; } && $1=\${$1%\"\$CR\"}" && {
+    lineno=$(($lineno + 1))
+  }
+}
+
 one_line_syntax_check() { :; }
 
 check_filter() {
@@ -190,8 +196,8 @@ data() {
   case ${2:-} in
     '' | \#* | \|*)
       trans data_here_begin "$1" "${2:-}"
-      while IFS= read -r line || [ "$line" ]; do
-        lineno=$(($lineno + 1))
+      line=''
+      while read_specfile line; do
         trim line "$line"
         case $line in
           \#\|*) trans data_here_line "$line" ;;
@@ -251,15 +257,13 @@ parameters_continuation_line() {
   line=$1
   shift
   while ends_with_backslash "$line"; do
-    lineno=$(($lineno + 1))
-    IFS= read -r line
+    read_specfile line ||:
     "$@" "$line"
   done
 }
 
 parameters_block() {
-  while IFS= read -r line || [ "$line" ]; do
-    lineno=$(($lineno + 1))
+  while read_specfile line; do
     trim line "$line"
     case $line in (End | End\ * ) break; esac
     case $line in (\#* | '') continue; esac
@@ -273,8 +277,7 @@ parameters_block() {
 parameters_dynamic() {
   code=''
 
-  while IFS= read -r line || [ "$line" ]; do
-    lineno=$(($lineno + 1))
+  while read_specfile line; do
     trim line "$line"
     case $line in (End | End\ * ) break; esac
 
@@ -295,8 +298,7 @@ parameters_dynamic() {
 parameters_matrix() {
   code='' nest=0 arguments=''
 
-  while IFS= read -r line || [ "$line" ]; do
-    lineno=$(($lineno + 1))
+  while read_specfile line; do
     trim line "$line"
     case $line in (End | End\ * ) break; esac
     case $line in (\#* | '') continue; esac
@@ -392,12 +394,10 @@ remove_from_ranges() {
 }
 
 translate() {
-  block_id='' inside_of_example='' inside_of_text=''
-  while IFS= read -r line || [ "$line" ]; do
-    lineno=$(($lineno + 1)) work=''
+  block_id='' inside_of_example='' inside_of_text='' work=''
+  while read_specfile line; do
     while ends_with_backslash "$line"; do
-      lineno=$(($lineno + 1))
-      IFS= read -r work
+      read_specfile work ||:
       line="${line}${LF}${work}"
     done
     trim work "$line"
