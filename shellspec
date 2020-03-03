@@ -440,16 +440,11 @@ if "$SHELLSPEC_LIBEXEC/shellspec-shebang" 2>/dev/null; then
 fi
 
 if [ "$SHELLSPEC_KCOV" ]; then
-  kcov_version() {
-    if ! command_path "$SHELLSPEC_KCOV_PATH" >/dev/null; then
-      abort "Kcov not found."
-    fi
-    version=$("$SHELLSPEC_KCOV_PATH" --version 2>/dev/null) || version=''
-    ver=${version#"${version%%[0-9]*}"} && ver=${ver%%[!0-9]*}
-    [ "${ver:-0}" -ge 35 ] && echo "$version" && return
-    abort "Kcov v35 or later required (current: ${version:-kcov v30 or below})"
-  }
-  SHELLSPEC_KCOV_VERSION=$(kcov_version)
+  SHELLSPEC_KCOV_VERSION=$(kcov_version) || abort "Kcov not found."
+  if [ "$(kcov_version_number "$SHELLSPEC_KCOV_VERSION")" -lt 35 ]; then
+    abort "Kcov v35 or later required" \
+      "[current: ${SHELLSPEC_KCOV_VERSION:-unknown (kcov v30 or below)}]"
+  fi
   if [ ! "$($SHELLSPEC_SHELL -c 'echo "${BASH_VERSION:-}"')" ]; then
     abort "Require to use bash to run kcov. (e.g: --shell bash)"
   fi

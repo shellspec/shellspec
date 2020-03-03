@@ -135,3 +135,14 @@ random_seed() {
   # Poor random number is enough for seed
   eval "$1=$(( ($2 / ($3 % 79 + 1) + $3) % 100000))"
 }
+
+kcov_version() {
+  command_path "$SHELLSPEC_KCOV_PATH" >/dev/null || return 1
+  version=$("$SHELLSPEC_KCOV_PATH" --version 2>/dev/null) || version=''
+  echo "$version"
+}
+
+kcov_version_number() {
+  ver=${1:-0} && ver=${ver#"${ver%%[0-9]*}"} && ver=${ver%%[!0-9]*}
+  echo "$ver"
+}
