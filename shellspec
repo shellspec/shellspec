@@ -1,9 +1,9 @@
 #!/bin/sh
 #shellcheck disable=SC2004,SC2016
 
-set -eu
+[ "$PPID" ] || { echo "Unsupported shell. (Bourne shell?)" >&2; exit 1; }
 
-[ "${PPID:-}" ] || { echo "Unsupported shell (Bourne shell?)" >&2; exit 1; }
+set -eu
 
 export SHELLSPEC_VERSION='0.23.0-dev'
 export SHELLSPEC_PATH=''
@@ -56,6 +56,7 @@ export SHELLSPEC_COVERAGE_SETUP=''
 export SHELLSPEC_COVERAGE_ENV=''
 export SHELLSPEC_COVERAGE_DIR=''
 export SHELLSPEC_KCOV=''
+export SHELLSPEC_KCOV_COMPATIBLE_SHELL=''
 export SHELLSPEC_KCOV_VERSION=''
 export SHELLSPEC_KCOV_PATH='kcov'
 export SHELLSPEC_KCOV_COMMON_OPTS=''
@@ -72,8 +73,6 @@ export SHELLSPEC_DEFECT_READONLY=''
 export SHELLSPEC_DEFECT_REDEFINE=''
 export SHELLSPEC_DEFECT_SHELL_FLAG=''
 export SHELLSPEC_KILL='kill'
-export SHELLSPEC_SLEEP='sleep'
-export SHELLSPEC_ALIAS='alias'
 export SHELLSPEC_SHEBANG_MULTIARG=''
 
 #shellcheck disable=SC2039
@@ -360,7 +359,7 @@ parse_options() {
         shift ;;
       -h | --help) usage && exit 0;;
       -v | --version) echo "$SHELLSPEC_VERSION" && exit 0 ;;
-      -*) invalid "Unknown option '$1'" ;;
+      -*) invalid "Unknown option '$1'." ;;
       *) params="$params \"\${$(($length - $# + 1))}\""
     esac
     shift
@@ -382,29 +381,23 @@ enum_options_file options_file
 [ $# -gt 0 ] && parse_options "$@" && eval "set -- $params"
 
 if [ ! "$SHELLSPEC_SHELL" ]; then
-  if [ "$SHELLSPEC_KCOV" ]; then
-    SHELLSPEC_SHELL=bash
-  else
-    SHELLSPEC_SHELL=$(current_shell "$0" "$$")
-  fi
+  [ "$SHELLSPEC_KCOV" ] && shell=bash || shell=$(current_shell "$0" "$$")
+  SHELLSPEC_SHELL=$shell
 fi
 if [ -z "$SHELLSPEC_SHELL" ]; then
   warn "Failed to detect the current shell," \
        "because the ps command does not exist or not compatible."
   warn "Use 'sh' instead. You can specify the shell with --shell option."
 fi
-
 shell=$(command_path "${SHELLSPEC_SHELL:-sh}") ||:
-if ! [ -x "${shell%% *}" ]; then
-  abort "Not found specified shell: $SHELLSPEC_SHELL"
-fi
+[ -x "${shell%% *}" ] || abort "Not found specified shell: $SHELLSPEC_SHELL."
 SHELLSPEC_SHELL=$shell
 
 {
   eval "$($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-inspection.sh")"
 
   if [ "$SHELLSPEC_DEFECT_ARITHMETIC" ]; then
-    abort "Unsupported shell (arithmetic expansion not supported)"
+    abort "Unsupported shell (arithmetic expansion not supported)."
   fi
 
   if [ "$SHELLSPEC_DEFECT_SIGNALS" ];then
@@ -420,51 +413,44 @@ SHELLSPEC_SHELL=$shell
 
   if [ "$SHELLSPEC_DEFECT_REDEFINE" ]; then
     # busybox 1.1.3
-    warn "Unsupported shell (builtin commands can not redefine)"
+    warn "Unsupported shell (builtin commands can not redefine)."
   fi
 
   if [ "$SHELLSPEC_DEFECT_READONLY" ]; then
     # pdksh 5.2.14 (debian-2.2), ksh 93q, ksh 93r
     # busybox 1.15.3, busybox 1.19.4
-    warn "Unsupported shell (readonly malfunction)"
+    warn "Unsupported shell (readonly malfunction)."
   fi
 
   if [ "$SHELLSPEC_DEFECT_SHELL_FLAG" ]; then
     # posh 0.10.2
-    warn "Unsupported shell (shell flag handling broken)"
+    warn "Unsupported shell (shell flag handling broken)."
   fi
 }
-
-if "$SHELLSPEC_LIBEXEC/shellspec-shebang" 2>/dev/null; then
-  SHELLSPEC_SHEBANG_MULTIARG=1
-fi
 
 if [ "$SHELLSPEC_KCOV" ]; then
   SHELLSPEC_KCOV_VERSION=$(kcov_version) || abort "Kcov not found."
   if [ "$(kcov_version_number "$SHELLSPEC_KCOV_VERSION")" -lt 35 ]; then
-    abort "Kcov v35 or later required" \
+    abort "Kcov v35 or later required." \
       "[current: ${SHELLSPEC_KCOV_VERSION:-unknown (kcov v30 or below)}]"
   fi
-  if [ ! "$($SHELLSPEC_SHELL -c 'echo "${BASH_VERSION:-}"')" ]; then
-    abort "Require to use bash to run kcov. (e.g: --shell bash)"
+  if [ ! "$SHELLSPEC_KCOV_COMPATIBLE_SHELL" ]; then
+    abort "Require to use bash to run kcov (e.g: --shell bash)."
   fi
 fi
 
-if [ "$SHELLSPEC_PROFILER" ]; then
-  if [ "$SHELLSPEC_JOBS" -gt 0 ]; then
-    abort "Can not be specified profiler" \
-      "and paralell execution at the same time"
-  fi
-  SHELLSPEC_SLEEP=$(command_path sleep)
+if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_JOBS" -gt 0 ]; then
+  abort "Cannot be specified profiler and parallel execution at the same time."
 fi
 
-case $SHELLSPEC_MODE in (init | task) ;; (*)
+case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
   [ $# -eq 0 ] && set -- "$SHELLSPEC_DEFAULT_PATH"
   for p in "$@"; do
-    [ -e "${p%%:*}" ] || abort "Not found path: ${p%%:*}"
+    [ -e "${p%%:*}" ] || abort "Not found path: ${p%%:*}."
+    [ -f "${p%%:*}" ] && SHELLSPEC_PATTERN="$SHELLSPEC_PATTERN|${p%%:*}"
     case $p in (*:*)
-      [ -d "${p%%:*}" ] && abort "Invalid range for directory: $p"
-      check_range "${p#*:}" || abort "Invalid range: $p"
+      [ -d "${p%%:*}" ] && abort "Invalid range for directory: $p."
+      check_range "${p#*:}" || abort "Invalid range: $p."
     esac
   done
 esac
@@ -474,15 +460,8 @@ case $SHELLSPEC_MODE in (runner | list)
     random_seed SHELLSPEC_SEED "$SHELLSPEC_UNIXTIME" "$$"
     info "Randomized with seed $SHELLSPEC_SEED" >&2
   fi
-  for file; do
-    SHELLSPEC_PATTERN="$SHELLSPEC_PATTERN|$file"
-  done
 esac
 
-if [ "$SHELLSPEC_ENV_FROM" ]; then
-  exec="$SHELLSPEC_LIBEXEC/shellspec-load-env.sh"
-else
-  exec="$SHELLSPEC_LIBEXEC/shellspec-${SHELLSPEC_MODE}.sh"
-fi
-
+[ "$SHELLSPEC_ENV_FROM" ] && exec="load-env" || exec=$SHELLSPEC_MODE
+exec="$SHELLSPEC_LIBEXEC/shellspec-${exec}.sh"
 eval exec "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'}

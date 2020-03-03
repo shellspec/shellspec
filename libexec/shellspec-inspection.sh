@@ -24,3 +24,11 @@ fi
 if (set -u; unset v ||:; : "$v") 2>/dev/null; then
   echo "SHELLSPEC_DEFECT_SHELL_FLAG=1"
 fi
+
+if "${0%/*}/shellspec-shebang" 2>/dev/null; then
+  echo "SHELLSPEC_SHEBANG_MULTIARG=1"
+fi
+
+if [ "${BASH_VERSION:-}" ]; then
+  echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
+fi
