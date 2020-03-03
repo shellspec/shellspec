@@ -120,3 +120,18 @@ check_range() {
   done
   return 0
 }
+
+random_seed() {
+  # Prevent 32bit overflow
+  while [ ${#2} -ge 10 ]; do
+    set -- "$1" "${2#?}" "$3"
+  done
+
+  # Remove leading zeros
+  until [ "${2#0}" = "$2" ]; do
+    set -- "$1" "${2#0}" "$3"
+  done
+
+  # Poor random number is enough for seed
+  eval "$1=$(( ($2 / ($3 % 79 + 1) + $3) % 100000))"
+}

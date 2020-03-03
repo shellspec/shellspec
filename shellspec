@@ -476,7 +476,7 @@ esac
 
 case $SHELLSPEC_MODE in (runner | list)
   if [ "$SHELLSPEC_RANDOM" ] && [ ! "$SHELLSPEC_SEED" ]; then
-    SHELLSPEC_SEED=$(( ($SHELLSPEC_UNIXTIME * $$ / 7 + $$) % 100000))
+    random_seed SHELLSPEC_SEED "$SHELLSPEC_UNIXTIME" "$$"
     info "Randomized with seed $SHELLSPEC_SEED" >&2
   fi
   for file; do

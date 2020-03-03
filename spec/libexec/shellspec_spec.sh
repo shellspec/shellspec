@@ -261,4 +261,19 @@ Describe "libexec/shellspec.sh"
       The status should be failure
     End
   End
+
+  Describe "random_seed()"
+    MAX_64BIT_PID=4194304
+
+    Parameters
+       1577936096 "$MAX_64BIT_PID" 14198 # 2020-01-02 12:34:56
+       3000512096 "$MAX_64BIT_PID"  8144 # 2065-01-30 12:34:56
+      11847440096 "$MAX_64BIT_PID" 98090 # 2345-06-07 12:34:56
+    End
+
+    It "returns random seed (unixtime: $1, pid:$2)"
+      When call random_seed var "$1" "$2"
+      The variable var should eq "$3"
+    End
+  End
 End
