@@ -462,6 +462,39 @@ Describe "general.sh"
     End
   End
 
+  Describe "shellspec_escape_pattern()"
+    check() {
+      [ $# -eq 1 ] && set -- "$1" "$1"
+      pattern=$1
+      shellspec_escape_pattern pattern
+      eval "case \"\$2\" in ($pattern) true ;; (*) false ;; esac &&:"
+    }
+
+    It 'escapes pattern metacharacters'
+      When call check "!\"#\$%&'()-=^~\\@\`{;+:},<.>/\_"
+      The status should be success
+    End
+
+    Describe "pattern metacharacters"
+      Parameters
+         "*" "a*"
+         "??" "a?"
+         "[a]" "a"
+         "a|b" "a"
+      End
+
+      It "should be match ($1 = $1)"
+        When call check "$1"
+        The status should be success
+      End
+
+      It "should not be match ($1 != $2)"
+        When call check "$1" "$2"
+        The status should be failure
+      End
+    End
+  End
+
   Describe "shellspec_join()"
     Context "when no arguments"
       It 'returns empty'

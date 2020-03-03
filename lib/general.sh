@@ -441,6 +441,15 @@ shellspec_match_pattern() {
   eval "case \$1 in ($2) true ;; (*) false ;; esac &&:" 2>/dev/null
 }
 
+shellspec_escape_pattern() {
+  shellspec_escape_syntax "$1"
+  shellspec_replace "$1" "|" "\\|"
+  shellspec_replace "$1" "[" "\\["
+  shellspec_replace "$1" "]" "\\]"
+  shellspec_replace "$1" "*" "\\*"
+  shellspec_replace "$1" "?" "\\?"
+}
+
 shellspec_join() {
   [ $# -le 3 ] && eval "$1=\${3:-}" && return 0
   SHELLSPEC_EVAL="
