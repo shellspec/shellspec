@@ -301,20 +301,20 @@ shellspec_padding_() {
 }
 
 # workaround for posh
-shellspec_escape_pattern() {
-  eval "shellspec_escape_pattern=\$$1"
+shellspec_escape_meta_posh() {
+  eval "shellspec_escape_meta_posh=\$$1"
   set -- "$1" ""
-  while [ "$shellspec_escape_pattern" ]; do
+  while [ "$shellspec_escape_meta_posh" ]; do
     # shellcheck disable=SC1003
-    case $shellspec_escape_pattern in
+    case $shellspec_escape_meta_posh in
       [*]*) set -- "$1" "$2[*]" ;;
       [?]*) set -- "$1" "$2[?]" ;;
       [[]*) set -- "$1" "$2[[]" ;;
       '\\'*) set -- "$1" "$2"'\\' ;;
       *) set -- "$1" \
-          "$2${shellspec_escape_pattern%"${shellspec_escape_pattern#?}"}"
+          "$2${shellspec_escape_meta_posh%"${shellspec_escape_meta_posh#?}"}"
     esac
-    shellspec_escape_pattern=${shellspec_escape_pattern#?}
+    shellspec_escape_meta_posh=${shellspec_escape_meta_posh#?}
   done
   eval "$1=\$2"
 }
@@ -324,7 +324,7 @@ if case "a[d]" in (*"a[d]"*) false; esac; then
   # workaround for posh. ok: 0.13.0, 0.6.12 bad:0.12.6, 0.10.2, 0.8.5
   shellspec_includes() {
     shellspec_includes_pattern="$2"
-    shellspec_escape_pattern shellspec_includes_pattern
+    shellspec_escape_meta_posh shellspec_includes_pattern
     set -- "$1" "$shellspec_includes_pattern"
     case $1 in (*$2*) eval :; return 0; esac
     return 1
@@ -384,7 +384,7 @@ elif case "a[d]" in (*"a[d]"*) false; esac; then
   shellspec_replace() {
     eval "shellspec_replace_rest=\${$1} shellspec_replace=''"
     shellspec_replace_pattern=$2
-    shellspec_escape_pattern shellspec_replace_pattern
+    shellspec_escape_meta_posh shellspec_replace_pattern
     set -- "$1" "$shellspec_replace_pattern" "$3"
     until case $shellspec_replace_rest in (*$2*) false; esac; do
       shellspec_replace=${shellspec_replace}${shellspec_replace_rest%%$2*}$3
