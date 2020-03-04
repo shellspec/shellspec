@@ -186,7 +186,7 @@ Usage: shellspec [options] [files or directories]
       --show-deprecations             Display deprecations details [default]
       --hide-deprecations             Hide deprecations details
 
-  **** Ranges / Filters ****
+  **** Ranges / Filters / Focus ****
 
     You can select examples range to run by appending the line numbers or id to the filename
 
@@ -196,8 +196,6 @@ Usage: shellspec [options] [files or directories]
     You can filter examples to run with the following options
 
       --focus                         Run focused groups / examples only
-                                        To focus, prepend 'f' to groups / examples in specfiles
-                                        e.g. Describe -> fDescribe, It -> fIt
       --pattern PATTERN               Load files matching pattern [default: "*_spec.sh"]
       --example PATTERN               Run examples whose names include PATTERN
       --tag TAG[:VALUE]               Run examples with the specified TAG

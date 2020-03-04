@@ -176,9 +176,16 @@ elif [ "$SHELLSPEC_FAIL_LOW_COVERAGE" ] && [ "$coverage_failed" ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 fi
 
-if [ "$found_focus" ] && [ ! "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
-  info "You need to specify --focus option" \
-        "to run focused (underlined) example(s) only.$LF"
+if [ "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
+  if [ ! "$found_focus" ]; then
+    info "You specified --focus option, but not found any focused examples."
+    info "To focus, prepend 'f' to groups / examples (e.g. fDescribe, fIt).$LF"
+  fi
+else
+  if [ "$found_focus" ]; then
+    info "You need to specify --focus option" \
+      "to run focused (underlined) example(s) only.$LF"
+  fi
 fi
 
 if [ -e "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE" ]; then

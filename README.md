@@ -43,14 +43,14 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [Others (archive / make / manual)](#others-archive--make--manual)
   - [Use with Docker](#use-with-docker)
   - [Getting started](#getting-started)
-- [shellspec command](#shellspec-command)
+- [shellspec features](#shellspec-features)
   - [Usage](#usage)
   - [Configure default options](#configure-default-options)
   - [Special environment variables](#special-environment-variables)
   - [Parallel execution](#parallel-execution)
   - [Random execution](#random-execution)
   - [Reporter / Generator](#reporter--generator)
-  - [Ranges / Filters](#ranges--filters)
+  - [Ranges / Filters / Focus](#ranges--filters--focus)
   - [Coverage](#coverage)
   - [Profiler](#profiler)
   - [Task runner](#task-runner)
@@ -420,7 +420,7 @@ HERE
 $ shellspec
 ```
 
-## shellspec command
+## shellspec features
 
 ### Usage
 
@@ -470,7 +470,7 @@ Usage: shellspec [options] [files or directories]
       --show-deprecations             Display deprecations details [default]
       --hide-deprecations             Hide deprecations details
 
-  **** Ranges / Filters ****
+  **** Ranges / Filters / Focus ****
 
     You can select examples range to run by appending the line numbers or id to the filename
 
@@ -480,8 +480,6 @@ Usage: shellspec [options] [files or directories]
     You can filter examples to run with the following options
 
       --focus                         Run focused groups / examples only
-                                        To focus, prepend 'f' to groups / examples in specfiles
-                                        e.g. Describe -> fDescribe, It -> fIt
       --pattern PATTERN               Load files matching pattern [default: "*_spec.sh"]
       --example PATTERN               Run examples whose names include PATTERN
       --tag TAG[:VALUE]               Run examples with the specified TAG
@@ -554,11 +552,15 @@ You can specify one reporter (output to stdout) and multiple generators
 (output to a file). Currently builtin formatters are `progress`,
 `documentation`, `tap`, `junit`, `null`, `debug`.
 
-### Ranges / Filters
+### Ranges / Filters / Focus
 
-You can execute specified spec only. It can be specified by line number,
-example id, example name, tag and focus. To focus, prepend `f` to
-groups / examples in specfiles (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`).
+You can run specific example(s) or example group(s) only.
+
+It can be specified by line number (`a_spec.sh:10:20`), example id (`a_spec.sh:@1-5:@1-6`),
+example name (`--example` option), tag (`--tag` option) and focus (`--focus` option).
+
+To focus, prepend `f` to groups / examples in specfiles (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`)
+and run with `--focus` option.
 
 ### Coverage
 
