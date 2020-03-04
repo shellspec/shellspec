@@ -169,8 +169,8 @@ trans_with_function() {
 }
 
 syntax_error() {
-  set -- "Syntax error: $1 in $specfile line $lineno" "${2:-}"
-  putsn "shellspec_abort 1 \"$1\" \"$2\""
+  set -- "${LF}Syntax error: $1 in $specfile line $lineno" "${2:-}"
+  putsn "shellspec_abort $SHELLSPEC_SYNTAX_ERROR_CODE \"$1\" \"$2\""
 }
 
 metadata=1 finished=1 coverage='' fd='' spec_no=1 progress=''

@@ -13,7 +13,7 @@ else
   # shellcheck source=lib/libexec/serial-executor.sh
   . "${SHELLSPEC_LIB:-./lib}/libexec/serial-executor.sh"
 fi
-use trim
+use constants trim
 load grammar
 
 translator() {
@@ -27,19 +27,19 @@ error_handler() {
   while IFS= read -r line; do
     error_captured=1
     case $line in
-      ${SHELLSPEC_SYN}shellspec_marker:*)
+      ${SYN}shellspec_marker:*)
         if [ "$errors" ]; then
           detect_unexpected_error "$specfile" "$lineno" "$errors"
           errors=''
         fi
-        line=${line#${SHELLSPEC_SYN}shellspec_marker:}
+        line=${line#${SYN}shellspec_marker:}
         specfile=${line% *} lineno=${line##* }
         ;;
       # Workaround for posh 0.6.13 when executed as a background process
       *internal\ error:\ j_async:\ bad\ nzombie*) ;;
       # Workaround for loksh 6.5 when executed as a background process
       *internal\ error:\ j_set_async:\ bad\ nzombie*) ;;
-      *) errors="$errors$line${SHELLSPEC_LF}" error_handler_status=1
+      *) errors="$errors$line${LF}" error_handler_status=1
     esac
   done
 
@@ -61,13 +61,14 @@ detect_unexpected_error() {
   if [ "$2" ]; then
     range=$(detect_range "$2" < "$1")
     if [ "$3" ]; then
-      putsn "Unexpected output to the stderr at line $range in '$1'"
+      putsn "${LF}Unexpected output to the stderr at line $range in '$1'"
     else
-      putsn "Unexpected exit at line $range in '$1'"
+      putsn "${LF}Unexpected exit at line $range in '$1'"
     fi
   else
-    putsn "Unexpected error (syntax error?) occurred in '$1'"
+    putsn "${LF}Unexpected error (syntax error?) occurred in '$1'"
   fi
+  sleep 0
 }
 
 is_separetor_statement() {

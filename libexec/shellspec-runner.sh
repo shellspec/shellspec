@@ -59,7 +59,7 @@ error_handler() {
   done
 
   if [ "$error_occurred" ]; then
-    exit "$SHELLSPEC_UNEXPECTED_STDERR"
+    exit "$SHELLSPEC_STDERR_OUTPUT_CODE"
   fi
 }
 
@@ -105,8 +105,8 @@ fi
       else
         for xs in "$xs1" "$xs2" "$xs3"; do
           case $xs in (0 | "") continue; esac
-          error "An unexpected error occurred or output to the stderr." \
-            "[$xs1] [$xs2] [$xs3]"
+          error "An unexpected error occurred." \
+            "[executor: $xs1] [reporter: $xs2] [error handler: $xs3]"
           break
         done
       fi
