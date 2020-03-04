@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support windows line endings.
+- Syntax check for missing `End` of `parameters`.
+
+### Changed
+
+- Run the specfile specified by arguments even not end with `_spec.sh`.
+
+### Fixed
+
+- Fixed `--pattern` option to avoid syntax error.
+- Return exit status code on the specfile properly.
+
 ## [0.22.0] - 2020-02-22
 
 ### Added
