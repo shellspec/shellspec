@@ -1,6 +1,8 @@
 #shellcheck shell=sh disable=SC2016
 
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
+% EMPTY_FILE: "$SHELLSPEC_SPECDIR/fixture/empty"
+% NON_EMPTY_FILE: "$SHELLSPEC_SPECDIR/fixture/file"
 
 Describe "general.sh"
   Describe 'shellspec_shell_info()'
@@ -608,6 +610,23 @@ Describe "general.sh"
     It "removes specified values"
       When call shellspec_union_values var ":" "@1:@2-1:@2-3:@3:@4:@3"
       The variable var should eq "@1:@2-1:@2-2:@3:@2-3:@4"
+    End
+  End
+
+  Describe "shellspec_is_empty_file()"
+    It "returns success if file is empty"
+      When call shellspec_is_empty_file "$EMPTY_FILE"
+      The status should be success
+    End
+
+    It "returns failure if file is not empty"
+      When call shellspec_is_empty_file "$NON_EMPTY_FILE"
+      The status should be failure
+    End
+
+    It "returns failure if file does not exist"
+      When call shellspec_is_empty_file "$FIXTURE/not-exists"
+      The status should be failure
     End
   End
 End

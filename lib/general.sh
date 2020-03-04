@@ -545,3 +545,7 @@ shellspec_union_values() {
   "
   eval "$SHELLSPEC_EVAL"
 }
+
+shellspec_is_empty_file() {
+  [ "${1:-}" ] && [ -f "${1:-}" ] && [ ! -s "${1:-}" ]
+}
