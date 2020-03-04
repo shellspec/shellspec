@@ -9,6 +9,7 @@ initialize() {
   lineno=0 block_no=0 example_no=1 skip_id=0 error='' focused='' skipped=''
   _block_no=0 _block_no_stack=''
   parameter_count='' parameter_no=0 _parameter_count_stack=''
+  parameters_need_example=''
 }
 
 finalize() {
@@ -104,6 +105,8 @@ block_example() {
     return 0
   fi
 
+  parameters_need_example=''
+
   if ! one_line_syntax_check error ": $1"; then
     syntax_error "It/Example/Specify/Todo has occurred an error" "$error"
     return 0
@@ -127,6 +130,12 @@ block_example() {
 block_end() {
   if [ -z "$_block_no_stack" ]; then
     syntax_error "unexpected 'End'"
+    return 0
+  fi
+
+  if [ "$parameters_need_example" ]; then
+    syntax_error "Not found any examples. (Missing 'End' of Parameters?)"
+    parameters_need_example=''
     return 0
   fi
 
@@ -240,6 +249,7 @@ parameters() {
     syntax_error "Parameters cannot be defined inside of Example"
     return 0
   fi
+  parameters_need_example=1
 
   parameter_no=$(($parameter_no + 1))
   trans parameters_begin "$parameter_no"
