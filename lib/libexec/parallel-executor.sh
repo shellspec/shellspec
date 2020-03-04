@@ -45,6 +45,7 @@ executor() {
   translator --no-finished | $SHELLSPEC_SHELL # output only metadata
   callback() { worker "$1" & }
   sequence callback 0 $(($SHELLSPEC_JOBS-1))
-  reduce
+  (reduce) &&:
+  eval "[ $? -ne 0 ] && return $?"
   translator --no-metadata | $SHELLSPEC_SHELL # output only finished
 }

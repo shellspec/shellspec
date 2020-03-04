@@ -38,7 +38,7 @@ executor() {
     --configure=command-name="shellspec $*" \
     "$SHELLSPEC_COVERAGE_DIR" "$SHELLSPEC_KCOV_IN_FILE" 537>&1
 
-  kcov_postprocess
+  eval "kcov_postprocess; return $?"
 }
 
 kcov_postprocess() {

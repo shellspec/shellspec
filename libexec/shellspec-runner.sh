@@ -43,7 +43,7 @@ executor() {
   executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
   # shellcheck disable=SC2086
   $SHELLSPEC_TIME $SHELLSPEC_SHELL "$executor" "$@" 3>&2 2>"$SHELLSPEC_TIME_LOG"
-  stop_profiler
+  eval "stop_profiler; return $?"
 }
 
 reporter() {
