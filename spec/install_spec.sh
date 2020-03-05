@@ -14,6 +14,8 @@ Describe "source ./install.sh"
     exit 0
   }
 
+  BeforeRun "HOME=$SHELLSPEC_TMPBASE/dummy_home"
+
   It 'outputs usage'
     When run source ./install.sh --help
     The status should be success
