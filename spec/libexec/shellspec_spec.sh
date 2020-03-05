@@ -58,7 +58,7 @@ Describe "libexec/shellspec.sh"
     End
 
     Context 'When HOME environemnt variable not exists'
-      Before HOME=''
+      Before HOME='' XDG_CONFIG_HOME=''
       It "enumerates options file"
         When call enum_options_file callback
         The line 1 of stdout should eq ".shellspec"
