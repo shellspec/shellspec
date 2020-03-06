@@ -79,8 +79,9 @@ each_line() {
       field_evaluation='' field_pending='' reason='' temporary_skip=0
       if [ "$field_example_no" -le "$last_example_no" ]; then
         abort "${LF}Illegal executed the same example" \
-          "(did you execute in a loop?) in ${field_specfile:-}" \
-          "line ${field_lineno_range:-}"
+          "in ${field_specfile:-} line ${field_lineno_range:-}${LF}" \
+          "(Did you execute in a loop?" \
+          "Use 'parameterized example' if you want a loop)${LF}"
       fi
       [ "$field_focused" = "focus" ] && found_focus=1
       example_index='' last_example_no=$field_example_no

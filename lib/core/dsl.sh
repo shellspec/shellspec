@@ -189,27 +189,30 @@ shellspec_when() {
   shellspec_off NOT_IMPLEMENTED
 
   shellspec_if EVALUATION && {
-    shellspec_output SYNTAX_ERROR_EVALUATION \
-      "Evaluation has already been executed"
+    set -- "Evaluation has already been executed." \
+      "Only one Evaluation allow per Example." \
+      "(Use 'parameterized example' if you want a loop)"
+    shellspec_output SYNTAX_ERROR_EVALUATION "$1 $2${SHELLSPEC_LF}$3"
     shellspec_on FAILED
     return 0
   }
   shellspec_on EVALUATION
 
   shellspec_if EXPECTATION && {
-    shellspec_output SYNTAX_ERROR_EVALUATION "Expectation has already been executed"
+    set -- "Expectation has already been executed."
+    shellspec_output SYNTAX_ERROR_EVALUATION "$1"
     shellspec_on FAILED
     return 0
   }
 
   if [ $# -eq 0 ]; then
-    shellspec_output SYNTAX_ERROR_EVALUATION "Missing evaluation type"
+    shellspec_output SYNTAX_ERROR_EVALUATION "Missing evaluation type."
     shellspec_on FAILED
     return 0
   fi
 
   if [ $# -eq 1 ]; then
-    shellspec_output SYNTAX_ERROR_EVALUATION "Missing evaluation"
+    shellspec_output SYNTAX_ERROR_EVALUATION "Missing evaluation."
     shellspec_on FAILED
     return 0
   fi
