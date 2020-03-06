@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Support windows line endings.
-- Syntax check for missing `End` of `parameters`.
+- Syntax check for missing `End` of parameters.
+- New **failures formatter**.
 
 ### Changed
 
@@ -31,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- New kcov integration.
+- New **kcov integration**.
   - Do not create translated specfile in project directory.
   - Suppress unnecessary coverage measurement to improve testing speed.
   - Added `--coverage-report-info` to add extra information to coverage report.
@@ -55,8 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Provide docker images.
-- Provide distribution archive.
+- Provide **docker images**.
+- Provide **distribution archive**.
 
 ### Changed
 
@@ -115,7 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add installer (It has not been officially released, but you can used it already).
-- Testing for single script file (Add `execute` evaluation, `Intercept` and `__SOURCED__` variable).
+- Testing for **single script file** (Add `execute` evaluation, `Intercept` and `__SOURCED__` variable).
 - Add `--keep-tempdir` option.
 - Add `Data < <FILE>` syntax.
 
@@ -129,22 +130,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Profiler feature (`--profile`)
+- **Profiler feature** (`--profile`)
 - Time attribute for JUnit XML.
 
 ## [0.17.0] - 2019-07-06
 
 ### Added
 
-- Coverage reporting.
+- **Coverage reporting**.
 - Add `--fail-low-coverage` option.
 
 ## [0.16.0] - 2019-07-03
 
 ### Added
 
-- Coverage support (kcov integration)
-- Add JUnit formatter and report generator.
+- **Coverage** support (kcov integration)
+- Add **JUnit formatter** and **report generator**.
 - Add `--warning-as-failure` option.
 - Support [Unofficial Bash Strict Mode](http://redsymbol.net/articles/unofficial-bash-strict-mode/).
 - Support for [Schily Bourne Shell](http://schilytools.sourceforge.net/bosh.html) (`bosh`, `pbosh`).
@@ -239,15 +240,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Run the example by line number. (`*_spec.sh:#`)
-- Run focused groups / examples. (`fDescribe`, `fContext`, `fExample`, `fSpecify`, `fIt`)
+- Run **the example by line number**. (`*_spec.sh:#`)
+- Run **focused groups / examples**. (`fDescribe`, `fContext`, `fExample`, `fSpecify`, `fIt`)
 - Add `--count` option for count the number of examples without running.
 
 ## [0.10.0] - 2019-04-17
 
 ### Added
 
-- Support parallel execution. (`--jobs` option)
+- Support **parallel execution**. (`--jobs` option)
 
 ### Changed
 
@@ -324,7 +325,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.21.0...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.22.0...HEAD
 [0.22.0]: https://github.com/shellspec/shellspec/compare/0.21.0...0.22.0
 [0.21.0]: https://github.com/shellspec/shellspec/compare/0.20.2...0.21.0
 [0.20.2]: https://github.com/shellspec/shellspec/compare/0.20.1...0.20.2
