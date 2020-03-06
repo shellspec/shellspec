@@ -76,7 +76,7 @@ each_line() {
       ;;
     example)
       # shellcheck disable=SC2034
-      field_evaluation='' field_pending='' reason=''
+      field_evaluation='' field_pending='' reason='' temporary_skip=0
       if [ "$field_example_no" -le "$last_example_no" ]; then
         abort "${LF}Illegal executed the same example" \
           "(did you execute in a loop?) in ${field_specfile:-}" \
@@ -100,6 +100,7 @@ each_line() {
                 [ "$field_skipid" = "$last_skip_id" ] && break
                 last_skip_id=$field_skipid
             esac
+            inc temporary_skip
         esac
 
         # shellcheck disable=SC2034
