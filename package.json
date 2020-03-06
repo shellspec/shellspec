@@ -63,6 +63,7 @@
     "lib/libexec/reporter/conclusion_formatter.sh",
     "lib/libexec/reporter/debug_formatter.sh",
     "lib/libexec/reporter/documentation_formatter.sh",
+    "lib/libexec/reporter/failures_formatter.sh",
     "lib/libexec/reporter/finished_formatter.sh",
     "lib/libexec/reporter/formatter.sh",
     "lib/libexec/reporter/junit_formatter.sh",

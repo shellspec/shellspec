@@ -168,6 +168,7 @@ Usage: shellspec [options] [files or directories]
                                         [d]ocumentation group and example names
                                         [t]ap           TAP format
                                         [j]unit         JUnit XML (time attributre with --profile)
+                                        [f]ailures      file:line:message (suitable for editors integration)
                                         [null]          do not display anything
                                         [debug]         for developer
                                         custom formatter name
@@ -234,7 +235,7 @@ USAGE
 }
 
 parse_options() {
-  length=$# params='' formatters="progress documentation tap junit"
+  length=$# params='' formatters="progress documentation tap junit failures"
   while [ $# -gt 0 ]; do
     case $1 in
       --banner) SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner" ;;
