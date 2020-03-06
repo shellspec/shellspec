@@ -75,13 +75,7 @@ Describe "general.sh"
     It 'exits when module not found'
       When run shellspec_import not-found-module
       The status should be failure
-      The stderr should be defined
-    End
-
-    It 'outputs error message to stderr'
-      When run shellspec_import not-found-module
-      The status should be defined
-      The stderr should be present
+      The stderr should include "not-found-module"
     End
   End
 

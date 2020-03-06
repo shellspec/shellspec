@@ -77,7 +77,7 @@ shellspec_import_deep() {
   shellspec_import_ "${1%%:*}" "$2" && return 0
   case $1 in
     *:*) shellspec_import_deep "${1#*:}" "$2" ;;
-    *) shellspec_error "Import failed, '$1' not found" ;;
+    *) shellspec_error "Import failed, '$2' not found" ;;
   esac
 }
 
