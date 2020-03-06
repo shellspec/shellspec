@@ -167,8 +167,7 @@ Usage: shellspec [options] [files or directories]
                                         [p]rogress      dots [default]
                                         [d]ocumentation group and example names
                                         [t]ap           TAP format
-                                        [j]unit         JUnit XML
-                                                        (Require --profile for time attributre)
+                                        [j]unit         JUnit XML (time attributre with --profile)
                                         [null]          do not display anything
                                         [debug]         for developer
                                         custom formatter name
@@ -199,14 +198,14 @@ Usage: shellspec [options] [files or directories]
       --pattern PATTERN               Load files matching pattern [default: "*_spec.sh"]
       --example PATTERN               Run examples whose names include PATTERN
       --tag TAG[:VALUE]               Run examples with the specified TAG
-      --default-path PATH             Set the default path where shellspec looks for examples [defualt: "spec"]
+      --default-path PATH             Set the default path where looks for examples [defualt: "spec"]
 
   **** Coverage ****
 
       --[no-]kcov                     Enable coverage using kcov [default: disabled]
                                         Note: Requires kcov and bash, parallel execution is ignored.
       --kcov-path PATH                Specify kcov path [default: kcov]
-      --kcov-options OPTIONS          Kcov options to overwrite and add (coverage limits, coveralls id, etc...)
+      --kcov-options OPTIONS          Kcov options to overwrite and add (coverage limits, coveralls id, etc)
                                         Default specified options:
                                           --exclude-pattern=/spec/,/coverage/,/report/
                                           --include-path=.
