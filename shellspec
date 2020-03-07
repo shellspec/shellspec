@@ -82,7 +82,8 @@ export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
 # Based on https://github.com/ko1nksm/readlinkf
 # Changed the interpretation of symlinks to my preference (Remove -P of cd)
 readlinkf() {
-  p=$1; i=0; [ -L "${p%/}" ] && [ ! -e "${p%/}" ] && p=${p%/}
+  [ "${1:-}" ] || return 1; p=$1; until [ "${p%/}" = "$p" ]; do p=${p%/}; done
+  [ -e "$p" ] && p=$1; [ -d "$1" ] && p=$p/; cd . || return 1; i=0
   while [ $i -lt 10 ] && i=$(($i+1)); do set -- "${p%/*}" "${p##*/}" /dev/null
     [ "$p" = "$1" ] || { cd "${1%/}/" 2>"$3" || return 1; p=$2; }
     [ ! -L "$p" ] && p=${PWD%/}${p:+/}$p && printf '%s\n' "${p:-/}" && return 0
