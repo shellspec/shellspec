@@ -38,6 +38,7 @@ OPTIONS:
   -h, --help            You're looking at it
 USAGE
 
+CDPATH=''
 [ "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
 finish() { done=1; exit "${1:-0}"; }

@@ -91,7 +91,7 @@ readlinkf() {
   done 2>/dev/null; cd -L "$2" && [ "$1" -gt 0 ]
 }
 
-SHELLSPEC_PATH=$(readlinkf "$0")
+SHELLSPEC_PATH=$(CDPATH= readlinkf "$0")
 SHELLSPEC_ROOT="${SHELLSPEC_PATH%/*}"
 SHELLSPEC_LIB="$SHELLSPEC_ROOT/lib"
 SHELLSPEC_REPORTERLIB="$SHELLSPEC_LIB/libexec/reporter"

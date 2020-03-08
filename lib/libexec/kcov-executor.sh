@@ -44,7 +44,8 @@ executor() {
 kcov_postprocess() {
   [ -d "$SHELLSPEC_COVERAGE_DIR" ] || return 0
 
-  ( cd "$SHELLSPEC_COVERAGE_DIR"
+  ( CDPATH=
+    cd "$SHELLSPEC_COVERAGE_DIR"
     # Delete unnecessary files and directories
     rm -rf bash-helper.sh bash-helper-debug-trap.sh \
       libbash_execve_redirector.so kcov-merged ||:
@@ -70,7 +71,6 @@ kcov_postprocess() {
     done
 
     edit_in_place "index.html" kcov_add_extra_info
-
   ) 2>/dev/null
 }
 
