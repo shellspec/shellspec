@@ -80,15 +80,15 @@ export SHELLSPEC_SHEBANG_MULTIARG=''
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
 
 # Based on https://github.com/ko1nksm/readlinkf
-# Changed the interpretation of symlinks to my preference (Remove -P of cd)
+# Changed the interpretation of symlinks to my preference (Change cd -P to -L)
 readlinkf() {
   [ "${1:-}" ] || return 1; p=$1; until [ "${p%/}" = "$p" ]; do p=${p%/}; done
-  [ -e "$p" ] && p=$1; [ -d "$1" ] && p=$p/; cd . || return 1; i=0
-  while [ $i -lt 10 ] && i=$(($i+1)); do set -- "${p%/*}" "${p##*/}" /dev/null
-    [ "$p" = "$1" ] || { cd "${1%/}/" 2>"$3" || return 1; p=$2; }
-    [ ! -L "$p" ] && p=${PWD%/}${p:+/}$p && printf '%s\n' "${p:-/}" && return 0
-    l=$(ls -dl "$p" 2>"$3") && p=${l#*" $p -> "} || return 1
-  done; return 1 # maximum recursive loop exceeded
+  [ -e "$p" ] && p=$1; [ -d "$1" ] && p=$p/; set 10 "$PWD"; cd -L . || return 1
+  while [ "$1" -gt 0 ]; do set -- $(($1-1)) "$2" "${p%/*}" "${p##*/}"
+    [ "$p" = "$3" ] || { cd -L "$3/" || { set -- -1 "$2"; break; }; p=$4; }
+    [ ! -L "$p" ] && p=${PWD%/}${p:+/}$p && printf '%s\n' "${p:-/}" && break
+    set -- "$@" "$p"; p=$(ls -dl "$p") || set -- -1 "$2"; p=${p#*" $5 -> "}
+  done 2>/dev/null; cd -L "$2" && [ "$1" -gt 0 ]
 }
 
 SHELLSPEC_PATH=$(readlinkf "$0")
