@@ -75,6 +75,8 @@ export SHELLSPEC_DEFECT_REDEFINE=''
 export SHELLSPEC_DEFECT_SHELL_FLAG=''
 export SHELLSPEC_KILL='kill'
 export SHELLSPEC_SHEBANG_MULTIARG=''
+export SHELLSPEC_QUICK=''
+export SHELLSPEC_QUICK_FILE=".shellspec-quick.log"
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -156,6 +158,7 @@ Usage: shellspec [options] [files or directories]
                                         [specfiles] randomize the order of specfiles
                                         [examples]  randomize the order of examples (slow)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
+      --[no-]quick                    Run only non-passed examples the last time they ran [default: disabled]
       --[no-]warning-as-failure       Treat warning as failure [default: enabled]
       --dry-run                       Print the formatter output without running any examples
       --keep-tempdir                  Do not cleanup temporary directory [default: disabled]
@@ -272,6 +275,8 @@ parse_options() {
       -j | --jobs) [ "${2:-}" ] || invalid 'Require JOBS.'
         SHELLSPEC_JOBS=$2
         shift ;;
+      --quick) SHELLSPEC_QUICK=1 ;;
+      --no-quick) SHELLSPEC_QUICK='' ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
       --keep-tempdir) SHELLSPEC_KEEP_TEMPDIR=1 ;;
       --focus) SHELLSPEC_FOCUS_FILTER=1 ;;
@@ -453,6 +458,23 @@ case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
     esac
   done
 esac
+
+if [ "$SHELLSPEC_MODE" = "runner" ] && [ "$SHELLSPEC_QUICK" ]; then
+  if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
+    count=$# pattern='' line='' specfile=''
+    match_files_pattern pattern "$@"
+    while read_quickfile line specfile; do
+      ! match_pattern "$specfile" "$pattern" || set -- "$@" "$line"
+    done < "$SHELLSPEC_QUICK_FILE"
+    if [ "$#" -gt "$count" ] && shift "$count"; then
+      info "Run only non-passed examples the last time they ran." >&2
+    fi
+  else
+    if ! ( : > "$SHELLSPEC_QUICK_FILE" ) 2>/dev/null; then
+      warn "Failed to write the quick log for the --quick option."
+    fi
+  fi
+fi
 
 case $SHELLSPEC_MODE in (runner | list)
   if [ "$SHELLSPEC_RANDOM" ] && [ ! "$SHELLSPEC_SEED" ]; then
