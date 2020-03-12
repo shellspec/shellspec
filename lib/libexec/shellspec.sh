@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use reset_params
+use reset_params join match_pattern
 load binary
 
 read_options_file() {

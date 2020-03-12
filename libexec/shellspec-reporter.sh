@@ -23,7 +23,7 @@ exit_status=0 found_focus='' no_examples='' aborted=1 coverage_failed=''
 fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-} reason=''
 current_example_index=0 example_index=''
 last_example_no='' last_skip_id='' not_enough_examples=''
-field_type='' field_tag='' field_example_no='' field_focused=''
+field_id='' field_type='' field_tag='' field_example_no='' field_focused=''
 field_conditional='' field_skipid='' field_pending='' field_message=''
 
 # shellcheck disable=SC2034
@@ -31,6 +31,8 @@ specfile_count=0 expected_example_count=0 example_count=0 \
 succeeded_count='' failed_count='' warned_count='' \
 todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count='' \
 profiler_count=0 profiler_line=''
+
+[ -e "$SHELLSPEC_QUICK_FILE" ] && init_quick_data
 
 [ "$SHELLSPEC_GENERATORS" ] && mkdir -p "$SHELLSPEC_REPORTDIR"
 
@@ -124,6 +126,13 @@ each_line() {
       if [ "$field_tag" = "skipped" ] && [ -z "$example_index" ]; then
         inc suppressed_skipped_count
       fi
+      if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
+        if [ "$field_fail" ] || [ "$field_tag" = "todo" ]; then
+          pass_quick_data "$field_specfile" "$field_id" no
+        else
+          pass_quick_data "$field_specfile" "$field_id" yes
+        fi
+      fi
       ;;
     end)
       # field_example_count not provided with range or filter
@@ -188,6 +197,21 @@ else
     info "You need to specify --focus option" \
       "to run focused (underlined) example(s) only.$LF"
   fi
+fi
+
+if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
+  quick_file="$SHELLSPEC_QUICK_FILE" done=1
+  [ "${aborted}${interrupt}${not_enough_examples}${fail_fast}" ] && done=''
+  [ -e "$quick_file" ] && in_quick_file=$quick_file || in_quick_file=/dev/null
+  quick_file_data=$(filter_quick_file "$done" "$@" < "$in_quick_file")
+  if [ -s "$quick_file" ] && [ ! "$quick_file_data" ]; then
+    info "All examples have been passed. Rerun to prevent regression.$LF"
+  fi
+  puts "$quick_file_data${quick_file_data:+"$LF"}" > "$quick_file"
+fi
+
+if [ ! "$SHELLSPEC_QUICK" ] && is_empty_file "$SHELLSPEC_QUICK_FILE"; then
+  rm "$SHELLSPEC_QUICK_FILE"
 fi
 
 if [ -e "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE" ]; then

@@ -1,5 +1,6 @@
 #shellcheck shell=sh disable=SC2016,SC2004
 
+% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 % INFILE: "$SHELLSPEC_SPECDIR/fixture/infile"
 
 Describe 'libexec.sh'
@@ -99,6 +100,60 @@ Describe 'libexec.sh'
       BeforeCall SHELLSPEC_KILL=non_posix_kill
       When call signal -TERM 0
       The stdout should eq "-s TERM 0"
+    End
+  End
+
+  Describe "read_quickfile()"
+    Data
+      #|spec/libexec/general_spec.sh:@1-1
+      #|spec/libexec/reporter_spec.sh:@1-11-4-1
+    End
+
+    _read_quickfile() {
+      while read_quickfile "$@"; do
+        eval "echo $(printf '$%s ' "$@")"
+      done
+    }
+
+    It "reads quickfile"
+      When call _read_quickfile line specfile
+      The word 1 of line 1 of stdout should eq "spec/libexec/general_spec.sh:@1-1"
+      The word 2 of line 1 of stdout should eq "spec/libexec/general_spec.sh"
+      The word 1 of line 2 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
+      The word 2 of line 2 of stdout should eq "spec/libexec/reporter_spec.sh"
+    End
+
+    It "reads quickfile with id"
+      When call _read_quickfile line specfile id
+      The word 1 of line 1 of stdout should eq "spec/libexec/general_spec.sh:@1-1"
+      The word 2 of line 1 of stdout should eq "spec/libexec/general_spec.sh"
+      The word 3 of line 1 of stdout should eq "@1-1"
+      The word 1 of line 2 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
+      The word 2 of line 2 of stdout should eq "spec/libexec/reporter_spec.sh"
+      The word 3 of line 2 of stdout should eq "@1-11-4-1"
+    End
+  End
+
+  Describe "match_files_pattern()"
+    Parameters
+      success "spec"      "spec"
+      success "spec"      "spec/"
+      success "spec"      "spec/file"
+      success "spec/file" "spec/file"
+      failure "spec/file" "spec/file.ext"
+      failure "spec"      "foo"
+      failure "spec"      "spec1"
+    End
+
+    check_match_files_pattern() {
+      pattern=''
+      match_files_pattern pattern "$1"
+      shellspec_match_pattern "$2" "$pattern"
+    }
+
+    It "checks if the path matches the pattern (pattern: $2, path: $3)"
+      When call check_match_files_pattern "$2" "$3"
+      The status should be "$1"
     End
   End
 End

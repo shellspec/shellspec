@@ -1,10 +1,11 @@
 #shellcheck shell=sh disable=SC2004
 
-: "${count_specfiles:-} ${count_examples:-}"
+: "${count_specfiles:-} ${count_examples:-} ${done:-}"
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use import reset_params constants sequence replace each padding trim
+use difference_values union_values match_pattern is_empty_file
 
 count() {
   count_specfiles=0 count_examples=0
@@ -111,4 +112,78 @@ read_profiler() {
     $1 "$i" "$tick" "$duration"
     i=$(($i + 1))
   done < "$2" &&:
+}
+
+init_quick_data() {
+  quick_count=0
+}
+
+pass_quick_data() {
+  i=$quick_count
+  while [ "$i" -gt 0 ]; do
+    eval "[ \"\${quick_$i:-}\" = \"\$1\" ] &&:" && break
+    i=$(($i-1))
+  done
+  if [ "$i" -eq 0 ]; then
+    quick_count=$(($quick_count+1)) && i=$quick_count
+    set -- "$1" "$2" "$3" "quick_$i"
+    eval "$4=\"\$1\" $4_fail='' $4_pass=''"
+  else
+    set -- "$1" "$2" "$3" "quick_$i"
+  fi
+  if [ "$3" = "yes" ]; then
+    eval "$4_pass=\"\$$4_pass\${$4_pass:+:}@\$2\""
+  else
+    eval "$4_fail=\"\$$4_fail\${$4_fail:+:}@\$2\""
+  fi
+}
+
+find_quick_data() {
+  i=1
+  while [ "$i" -le "$quick_count" ]; do
+    set -- "$1" "$2" "quick_$i"
+    eval "set -- \"\$@\" \"\${$3:-}\" \"\${$3_pass:-}\" \"\${$3_fail:-}\""
+    [ "$2" != "$4" ] && i=$(($i+1)) && continue
+    "$1" "$4" "$5" "$6"
+    break
+  done
+}
+
+remove_quick_data() {
+  i=1
+  while [ "$i" -le "$quick_count" ]; do
+    set -- "$1" "quick_$i"
+    eval "set -- \"\$@\" \"\${$2:-}\""
+    [ "$1" != "$3" ] && i=$(($i+1)) && continue
+    unset "$2" "$2_pass" "$2_fail" ||:
+    break
+  done
+}
+
+list_quick_data() {
+  i=1
+  while [ "$i" -le "$quick_count" ]; do
+    set -- "$1" "quick_$i"
+    eval "set -- \"\$@\" \"\${$2:-}\" \"\${$2_pass:-}\" \"\${$2_fail:-}\""
+    [ "$3" ] && "$1" "$3" "$4" "$5"
+    i=$(($i+1))
+  done
+}
+
+filter_quick_file() {
+  line='' specfile='' ids='' done="$1" && shift
+  callback() { if [ "$3" ]; then putsn "$1:$3"; fi; }
+  while read_quickfile line specfile ids; do
+    pattern=''
+    match_files_pattern pattern "$@"
+    [ "$done" ] && match_pattern "$specfile" "$pattern" && ids=''
+    filter_ids() {
+      difference_values ids ":" "$2" # Remove succeeded examples
+      union_values ids ":" "$3" # Add failed examples
+    }
+    find_quick_data filter_ids "$specfile"
+    remove_quick_data "$specfile"
+    callback "$specfile" "" "$ids"
+  done
+  list_quick_data callback
 }
