@@ -44,6 +44,7 @@ syntax_check() {
 }
 
 one_line_syntax_check() {
+  set -- "$1" "shellspec_syntax_check() { : ${2}${LF} }"
   eval "$1=\$( eval \"\$2\" 2>&1 )" && return 0
   eval "$1=\"\${$1%%\$LF*}\""
   eval "$1=\"\${$1##*:}\""

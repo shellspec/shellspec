@@ -81,7 +81,7 @@ block_example_group() {
     return 0
   fi
 
-  if ! one_line_syntax_check error ": $1"; then
+  if ! one_line_syntax_check error "$1"; then
     syntax_error "Describe/Context has occurred an error" "$error"
     return 0
   fi
@@ -107,7 +107,7 @@ block_example() {
 
   parameters_need_example=''
 
-  if ! one_line_syntax_check error ": $1"; then
+  if ! one_line_syntax_check error "$1"; then
     syntax_error "It/Example/Specify/Todo has occurred an error" "$error"
     return 0
   fi
@@ -363,7 +363,7 @@ include() {
     return 0
   fi
 
-  if ! one_line_syntax_check error ": $1"; then
+  if ! one_line_syntax_check error "$1"; then
     syntax_error "Include has occurred an error" "$error"
     return 0
   fi
