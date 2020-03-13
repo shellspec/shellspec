@@ -47,6 +47,7 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Usage](#usage)
   - [Configure default options](#configure-default-options)
   - [Special environment variables](#special-environment-variables)
+  - [Quick execution](#quick-execution)
   - [Parallel execution](#parallel-execution)
   - [Random execution](#random-execution)
   - [Reporter / Generator](#reporter--generator)
@@ -115,6 +116,7 @@ testing tools. Of course shellspec is tested by shellspec.
 - Hooks before / after examples
 - Parameterized examples for Data-Driven tests
 - Execution filtering by line number, id, focus, tag and example name
+- Quick execution to run only non-passed examples the last time they ran
 - Parallel execution, random ordered execution and dry-run execution
 - Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
 - Coverage ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
@@ -440,6 +442,7 @@ Usage: shellspec [options] [files or directories]
                                         [specfiles] randomize the order of specfiles
                                         [examples]  randomize the order of examples (slow)
   -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
+      --[no-]quick                    Run only non-passed examples the last time they ran [default: disabled]
       --[no-]warning-as-failure       Treat warning as failure [default: enabled]
       --dry-run                       Print the formatter output without running any examples
       --keep-tempdir                  Do not cleanup temporary directory [default: disabled]
@@ -534,6 +537,18 @@ Special environment variables understood by shellspec begin with `SHELLSPEC_`.
 They can be overridden with a custom script using the `--env-from` option.
 
 *Todo: descriptions of many special environment variables.*
+
+### Quick execution
+
+Quick execution is to run only non-passed (failed / pending) examples
+the last time they ran. You can enable with `--quick` option.
+
+When specified `--quick` option:
+
+1. Run all specified examples if not exists `.shellspec-quick.log`.
+2. Generate `.shellspec-quick.log` if exists non-passed examples.
+3. Run only non-passed examples if exists `.shellspec-quick.log`.
+4. Remove passed examples from `.shellspec-quick.log`
 
 ### Parallel execution
 

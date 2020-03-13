@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support windows line endings.
 - Syntax check for missing `End` of parameters.
 - New **failures formatter**.
+- New **quick execution**.
 
 ### Changed
 
