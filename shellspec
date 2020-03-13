@@ -98,6 +98,15 @@ SHELLSPEC_ROOT="${SHELLSPEC_PATH%/*}"
 SHELLSPEC_LIB="$SHELLSPEC_ROOT/lib"
 SHELLSPEC_REPORTERLIB="$SHELLSPEC_LIB/libexec/reporter"
 
+if [ "${1:-}" = "-" ]; then
+  echo "SHELLSPEC_LIB=\"$SHELLSPEC_LIB\""
+  echo ". \"\$SHELLSPEC_LIB/libexec/shellspec.sh\""
+  echo 'shell=$(current_shell "$0" "$$")'
+  echo 'shellspec=$(command_path shellspec)'
+  echo 'exec $shell $shellspec "$0" "$@"'
+  return 0
+fi
+
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
 # shellcheck source=lib/libexec/shellspec.sh
