@@ -3,6 +3,8 @@
 # shellcheck source=lib/general.sh
 . "$SHELLSPEC_LIB/general.sh"
 
+shellspec() { :; }
+
 # Workaround for ksh (Version AJM 93u+ 2012-08-01)
 # ksh can not redefine existing function in some cases inside of sub shell.
 #
