@@ -149,9 +149,20 @@ esac
 # Use shellspec_puts or shellspec_putsn replacement of 'echo'.
 # Those commands output arguments as it. (not interpret -n and escape sequence)
 case $SHELLSPEC_SHELL_TYPE in
-  zsh | ksh | mksh | pdksh)
-    # some version of above shell does not implement 'printf' as built-in.
-    shellspec_puts() { IFS=" $IFS"; print -nr -- "${*:-}"; IFS=${IFS#?}; }
+  zsh)
+    # zsh 3.1.9, 4.0.4 not implemented 'printf'
+    shellspec_puts() {
+      IFS=" $IFS"; builtin print -nr -- "${*:-}"; IFS=${IFS#?}
+    }
+    ;;
+  ksh | mksh | pdksh)
+    # 'print' is all built-in.
+    # ksh: 'printf' is all built-in.
+    # mksh: 'printf' is not built-in some versions.
+    # loksh, pdksh: 'printf' is not built-in.
+    shellspec_puts() {
+      IFS=" $IFS"; command print -nr -- "${*:-}"; IFS=${IFS#?}
+    }
     ;;
   posh)
     # posh does not implement 'printf' or 'print' as built-in.
