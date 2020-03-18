@@ -46,8 +46,8 @@ trans_block_example() {
   putsn "shellspec_example_block"
   putsn "}; shellspec_example${block_no}() { "
   putsn "if [ \$# -eq 0 ]"
-  putsn "then shellspec_example $1 --"
-  putsn "else shellspec_example $1 -- \"\$@\""
+  putsn "then shellspec_example ${1:-@} --"
+  putsn "else shellspec_example ${1:-@} -- \"\$@\""
   putsn "fi"
   putsn "}; shellspec_yield${block_no}() { :;"
 }

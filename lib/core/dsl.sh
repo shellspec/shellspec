@@ -49,12 +49,15 @@ shellspec_end() {
 }
 
 shellspec_description() {
-  set -- "${2:-<$1:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END>}"
-  SHELLSPEC_DESCRIPTION="${SHELLSPEC_DESCRIPTION}$1"
+  if [ "${2:-}" = "@" ]; then
+    set -- "$1" "<$1:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END>"
+  fi
+  [ "$1" = "example_group" ] && set -- "$1" "${2:-}${2:+$SHELLSPEC_VT}"
+  SHELLSPEC_DESCRIPTION="${SHELLSPEC_DESCRIPTION}$2"
 }
 
 shellspec_example_group() {
-  shellspec_description "example_group" "${1:-}${1:+$SHELLSPEC_VT}"
+  shellspec_description "example_group" "${1:-}"
   shellspec_yield
 }
 

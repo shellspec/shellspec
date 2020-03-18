@@ -92,6 +92,22 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_description()"
+    BeforeRun SHELLSPEC_DESCRIPTION=
+    BeforeRun SHELLSPEC_LINENO_BEGIN=10 SHELLSPEC_LINENO_END=20
+    AfterRun 'echo "$SHELLSPEC_DESCRIPTION"'
+
+    It 'builds description'
+      When run shellspec_description example_group desc
+      The stdout should eq "desc$SHELLSPEC_VT"
+    End
+
+    It 'translates @ to example lineno'
+      When run shellspec_description example @
+      The stdout should eq "<example:10-20>"
+    End
+  End
+
   Describe "shellspec_example_group()"
     mock() {
       shellspec_output() { echo "$1"; }
