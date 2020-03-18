@@ -124,6 +124,8 @@ testing tools. Of course shellspec is tested by shellspec.
 - Builtin simple task runner
 - Extensible architecture (custom matcher, custom formatter, etc...)
 
+Subproject: [shellmetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer
+
 ### Supported shells
 
 `dash`, `bash`, `ksh`, `mksh`, `oksh`, `pdksh`, `zsh`, `posh`, `yash`, `busybox (ash)`, `bosh`, `pbosh`
