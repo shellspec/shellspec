@@ -214,6 +214,7 @@ count_specfile() {
 [ "$progress" ] && eval find_specfiles count_specfile ${1+'"$@"'}
 
 specfile() {
+  [ -e "$2" ] || return 0
   [ "$progress" ] && log "${CR}Translate[$spec_no/$specfile_count]: $2${ESC}[K"
   (
     specfile=$2 ranges=${3:-} run_all=''

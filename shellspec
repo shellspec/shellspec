@@ -474,6 +474,7 @@ if [ "$SHELLSPEC_MODE" = "runner" ] && [ "$SHELLSPEC_QUICK" ]; then
     match_files_pattern pattern "$@"
     while read_quickfile line specfile; do
       ! match_pattern "$specfile" "$pattern" || set -- "$@" "$line"
+      SHELLSPEC_PATTERN="$SHELLSPEC_PATTERN|$specfile"
     done < "$SHELLSPEC_QUICK_FILE"
     if [ "$#" -gt "$count" ] && shift "$count"; then
       info "Run only non-passed examples the last time they ran." >&2

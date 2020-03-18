@@ -174,6 +174,7 @@ filter_quick_file() {
   line='' specfile='' ids='' done="$1" && shift
   callback() { if [ "$3" ]; then putsn "$1:$3"; fi; }
   while read_quickfile line specfile ids; do
+    [ -e "$specfile" ] || continue
     pattern=''
     match_files_pattern pattern "$@"
     [ "$done" ] && match_pattern "$specfile" "$pattern" && ids=''

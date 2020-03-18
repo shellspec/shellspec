@@ -310,24 +310,24 @@ Describe "libexec/reporter.sh"
 
     Describe "filter_quick_file()"
       Data
-        #|spec/libexec/general_spec.sh:@1-1:@1-2:@2-1
+        #|spec/general_spec.sh:@1-1:@1-2:@2-1
         #|spec/libexec/reporter_spec.sh:@1-11-4-1
       End
 
       Context 'ran specfiles without any errors'
         setup() {
-          pass_quick_data "spec/libexec/general_spec.sh" "1-1" yes
-          pass_quick_data "spec/libexec/general_spec.sh" "1-2" no
+          pass_quick_data "spec/general_spec.sh" "1-1" yes
+          pass_quick_data "spec/general_spec.sh" "1-2" no
         }
         BeforeCall setup
 
         Parameters
           "spec" \
-            eq "spec/libexec/general_spec.sh:@1-2" \
+            eq "spec/general_spec.sh:@1-2" \
             be undefined
 
           "spec/libexec/reporter_spec.sh" \
-            eq "spec/libexec/general_spec.sh:@1-2:@2-1" \
+            eq "spec/general_spec.sh:@1-2:@2-1" \
             be undefined
         End
 
@@ -340,18 +340,18 @@ Describe "libexec/reporter.sh"
 
       Context 'ran specfiles with some errors'
         setup() {
-          pass_quick_data "spec/libexec/general_spec.sh" "1-1" yes
-          pass_quick_data "spec/libexec/general_spec.sh" "1-2" no
+          pass_quick_data "spec/general_spec.sh" "1-1" yes
+          pass_quick_data "spec/general_spec.sh" "1-2" no
         }
         BeforeCall setup
 
         Parameters
           "spec" \
-            eq "spec/libexec/general_spec.sh:@1-2:@2-1" \
+            eq "spec/general_spec.sh:@1-2:@2-1" \
             eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
 
           "spec/libexec/reporter_spec.sh" \
-            eq "spec/libexec/general_spec.sh:@1-2:@2-1" \
+            eq "spec/general_spec.sh:@1-2:@2-1" \
             eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
         End
 
