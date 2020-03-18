@@ -115,16 +115,20 @@ run() {
   xs=$?
   info
   if [ "$xs" -eq 0 ]; then
-    printf '\033[32mexit status: %s\033[0m\n' "$xs" >&2
+    printf '\033[32m##############################\033[0m\n' >&2
+    printf '\033[32m# exit status: %3d           #\033[0m\n' "$xs" >&2
   else
-    printf '\033[31mexit status: %s\033[0m %s\n' "$xs" >&2
+    printf '\033[31m##############################\033[0m\n' >&2
+    printf '\033[31m# exit status: %3d           #\033[0m %s\n' "$xs" >&2
     failures="${failures}- ${os} [$xs]${LF}"
     failures_count=$(($failures_count + 1))
   fi
   if [ "$failures_count" -eq 0 ]; then
-    printf '\033[32m%d / %d (failures: %d)\033[0m\n' "$count" "$total_count" "$failures_count" >&2
+    printf '\033[32m# %3d / %3d (failures: %3d)  #\033[0m\n' "$count" "$total_count" "$failures_count" >&2
+    printf '\033[32m##############################\033[0m\n' >&2
   else
-    printf '\033[31m%d / %d (failures: %d)\033[0m\n' "$count" "$total_count" "$failures_count" >&2
+    printf '\033[31m# %3d / %3d (failures: %3d)  #\033[0m\n' "$count" "$total_count" "$failures_count" >&2
+    printf '\033[31m##############################\033[0m\n' >&2
   fi
   info
 }
