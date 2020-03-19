@@ -199,9 +199,9 @@ else
   fi
 fi
 
-if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
+if [ -e "$SHELLSPEC_QUICK_FILE" ] && [ ! "${interrupt}" ]; then
   quick_file="$SHELLSPEC_QUICK_FILE" done=1
-  [ "${aborted}${interrupt}${not_enough_examples}${fail_fast}" ] && done=''
+  [ "${aborted}${not_enough_examples}${fail_fast}" ] && done=''
   [ -e "$quick_file" ] && in_quick_file=$quick_file || in_quick_file=/dev/null
   quick_file_data=$(filter_quick_file "$done" "$@" < "$in_quick_file")
   if [ -s "$quick_file" ] && [ ! "$quick_file_data" ]; then
