@@ -1,5 +1,5 @@
 {
-  "name": "shellspec",
+  "name": "ShellSpec",
   "version": "0.23.0-dev",
   "description": "BDD style unit testing framework for POSIX compliant shell script",
   "homepage": "https://shellspec.info",

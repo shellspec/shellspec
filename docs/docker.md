@@ -1,4 +1,4 @@
-# How to use shellspec with Docker
+# How to use ShellSpec with Docker
 
 ## Official docker images
 
@@ -16,9 +16,9 @@ There are official images on the [Docker Hub](https://hub.docker.com/r/shellspec
 - Version specified images are also available (VERSION: 0.21.0 and above)
   - `shellspec/shellspec[-VARIANT]:<VERSION | master>[-kcov]`
 
-## Using shellspec docker image
+## Using ShellSpec docker image
 
-### 1. Run shellspec and your specfiles within container
+### 1. Run ShellSpec and your specfiles within container
 
 ```sh
 # Run docker command on the project root
@@ -85,7 +85,7 @@ Invoked before execute shellspec inside of the docker container.
 
 Invoked after executed shellspec inside of the docker container.
 
-### 3. Using shellspec image as parent image
+### 3. Using ShellSpec image as parent image
 
 Example
 
@@ -102,7 +102,7 @@ $ docker build -t your-project-name .
 $ docker run -it your-project-name
 ```
 
-### 4. Include shellspec into another image
+### 4. Include ShellSpec into another image
 
 Example
 
@@ -125,7 +125,7 @@ $ docker run -it your-project-name
 
 ## Appendix
 
-### How to build official shellspec docker image yourself
+### How to build official ShellSpec docker image yourself
 
 Example
 

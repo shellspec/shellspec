@@ -1,4 +1,4 @@
-# shellspec
+# ShellSpec
 
 BDD style unit testing framework for POSIX compliant shell script.
 
@@ -6,7 +6,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 [![demo](docs/demo.gif)](https://shellspec.info/demo)
 
-[![Travis CI](https://img.shields.io/travis/shellspec/shellspec/master.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/shellspec/shellspec)
+[![Travis CI](https://img.shields.io/travis/com/shellspec/shellspec/master.svg?label=TravisCI&style=flat-square)](https://travis-ci.com/shellspec/shellspec)
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI&style=flat-square)](https://cirrus-ci.com/github/shellspec/shellspec)
 [![Circle CI](https://img.shields.io/circleci/build/github/shellspec/shellspec.svg?label=CircleCI&style=flat-square)](https://circleci.com/gh/shellspec/shellspec)
 [![GitHub Actions Status](https://img.shields.io/github/workflow/status/shellspec/shellspec/Release?label=GithubActions&style=flat-square)](https://github.com/shellspec/shellspec/actions)
@@ -43,7 +43,7 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [Others (archive / make / manual)](#others-archive--make--manual)
   - [Use with Docker](#use-with-docker)
   - [Getting started](#getting-started)
-- [shellspec features](#shellspec-features)
+- [ShellSpec features](#shellspec-features)
   - [Usage](#usage)
   - [Configure default options](#configure-default-options)
   - [Special environment variables](#special-environment-variables)
@@ -99,11 +99,11 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 ## Introduction
 
-Shellspec was developed as a cross-platform testing tool for developing
+ShellSpec was developed as a cross-platform testing tool for developing
 POSIX-compliant shell scripts that work in many environments.
 It not only works on PC but also in restricted environments like cloud and
 embedded OS. It provides first-class features equivalent to other language
-testing tools. Of course shellspec is tested by shellspec.
+testing tools. Of course ShellSpec is tested by ShellSpec.
 
 ### Features
 
@@ -124,7 +124,7 @@ testing tools. Of course shellspec is tested by shellspec.
 - Builtin simple task runner
 - Extensible architecture (custom matcher, custom formatter, etc...)
 
-Subproject: [shellmetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer
+Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer
 
 ### Supported shells
 
@@ -134,8 +134,8 @@ Tested Platforms
 
 | Platform                                                  | Test                                                          |
 | --------------------------------------------------------- | ------------------------------------------------------------- |
-| Ubuntu 12.04, 14.04, 16.04, 18.04                         | [Travis CI](https://travis-ci.org/shellspec/shellspec)        |
-| macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 (Homebrew) | [Travis CI](https://travis-ci.org/shellspec/shellspec)        |
+| Ubuntu 12.04, 14.04, 16.04, 18.04                         | [Travis CI](https://travis-ci.com/shellspec/shellspec)        |
+| macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 (Homebrew) | [Travis CI](https://travis-ci.com/shellspec/shellspec)        |
 | FreeBSD 10.x, 11.x, 12.x                                  | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
 | Windows Server 2019 (Git bash, msys2, cygwin)             | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
 | Debian 2.2, 3.0, 3.1, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0  | docker                                                        |
@@ -147,7 +147,7 @@ Tested Platforms
 
 ### Requirements
 
-Shellspec is implemented by a pure shell script and uses only shell builtins
+ShellSpec is implemented by a pure shell script and uses only shell builtins
 and a few basic [POSIX-compliant commands][utilities] to support widely environments
 (except `kcov` for optional coverage).
 
@@ -201,8 +201,8 @@ curl -fsSL https://git.io/shellspec | sh -s 0.18.0 --switch
 
 **How to uninstall.**
 
-1. Delete the shellspec executable file [default: `$HOME/bin/shellspec`].
-2. Delete the shellspec installation directory [default: `$HOME/lib/shellspec`].
+1. Delete the ShellSpec executable file [default: `$HOME/bin/shellspec`].
+2. Delete the ShellSpec installation directory [default: `$HOME/lib/shellspec`].
 
 **Other usage.**
 
@@ -244,7 +244,7 @@ OPTIONS:
 <details>
 <summary>Arch Linux</summary>
 
-Installation on Arch Linux from the AUR [shellspec package](https://aur.archlinux.org/packages/shellspec/) using `aura`:
+Installation on Arch Linux from the AUR [ShellSpec package](https://aur.archlinux.org/packages/shellspec/) using `aura`:
 
 ```console
 # Install the latest stable version
@@ -269,7 +269,7 @@ $ brew install shellspec
 
 Installation with [basher](https://github.com/basherpm/basher)
 
-**The officially supported version is shellspec 0.19.1 and later.**
+**The officially supported version is ShellSpec 0.19.1 and later.**
 
 ```console
 # Install from master branch
@@ -286,7 +286,7 @@ $ basher install shellspec/shellspec@0.19.1
 
 Installation with [bpkg](https://github.com/bpkg/bpkg)
 
-**The officially supported version is shellspec 0.19.1 and later.**
+**The officially supported version is ShellSpec 0.19.1 and later.**
 
 ```console
 # Install from master branch
@@ -339,7 +339,7 @@ make uninstall PREFIX=$HOME
 <details>
 <summary>Manual installation</summary>
 
-**Just get shellspec and create a symlink in your executable PATH!**
+**Just get ShellSpec and create a symlink in your executable PATH!**
 
 From git
 
@@ -375,10 +375,10 @@ $ chmod +x /EXECUTABLE/PATH/shellspec
 
 ### Use with Docker
 
-You can run shellspec without installation by using Docker. The shellspec and
+You can run ShellSpec without installation by using Docker. ShellSpec and
 specfiles run in a Docker container.
 
-See [How to use shellspec with Docker](docs/docker.md).
+See [How to use ShellSpec with Docker](docs/docker.md).
 
 ### Getting started
 
@@ -400,8 +400,8 @@ $ cat<<'HERE'>spec/hello_spec.sh
 Describe 'hello.sh'
   Include lib/hello.sh
   It 'says hello'
-    When call hello shellspec
-    The output should equal 'Hello shellspec!'
+    When call hello ShellSpec
+    The output should equal 'Hello ShellSpec!'
   End
 End
 HERE
@@ -424,7 +424,7 @@ HERE
 $ shellspec
 ```
 
-## shellspec features
+## ShellSpec features
 
 ### Usage
 
@@ -506,7 +506,7 @@ Usage: shellspec [options] [files or directories]
 
   **** Utility ****
 
-      --init                          Initialize your project with shellspec
+      --init                          Initialize your project with ShellSpec
       --count                         Count the number of specfiles and examples
       --list LIST                     List the specfiles / examples
                                         [specfiles]       list the specfiles
@@ -535,7 +535,7 @@ precedence.
 
 ### Special environment variables
 
-Special environment variables understood by shellspec begin with `SHELLSPEC_`.
+Special environment variables understood by ShellSpec begin with `SHELLSPEC_`.
 They can be overridden with a custom script using the `--env-from` option.
 
 *Todo: descriptions of many special environment variables.*
@@ -581,7 +581,7 @@ and run with `--focus` option.
 
 ### Coverage
 
-Shellspec has integrated coverage feature. To use this feature [Kcov][] (v35 or later) is required.
+ShellSpec has integrated coverage feature. To use this feature [Kcov][] (v35 or later) is required.
 
 [Kcov]: https://github.com/SimonKagstrom/kcov
 
@@ -779,7 +779,7 @@ You can use ordinal numbers.
 The second line of output should equal 4
 ```
 
-Shellspec supports *language chains* like [chai.js](https://www.chaijs.com/).
+ShellSpec supports *language chains* like [chai.js](https://www.chaijs.com/).
 It only improves readability, does not affect the expectation:
 
 - a
@@ -902,7 +902,7 @@ There are more *subjects*, *modifiers*, *matchers*. please refer to the
 
 ##### Custom matcher
 
-Shellspec has an extensible architecture. So you can create custom matchers,
+ShellSpec has an extensible architecture. So you can create custom matchers,
 custom modifiers, custom formatters, etc.
 
 See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
@@ -938,7 +938,7 @@ which can be used for variable names are uppercase letters `[A-Z]`, digits
 group nor an example.
 
 The value is evaluated during the specfile translation process.
-So you can access shellspec variables, but you can not access variable or
+So you can access ShellSpec variables, but you can not access variable or
 function in the specfile.
 
 This feature assumed use with conditional skip. The conditional skip may runs
@@ -989,7 +989,7 @@ See `Parameters`.
 
 ### Mock and Stub
 
-Currently, shellspec does not provide any special function for mocking / stubbing.
+Currently, ShellSpec does not provide any special function for mocking / stubbing.
 But redefining a shell function can override existing shell function or external
 command. It can be used for mocking / stubbing.
 
@@ -1017,7 +1017,7 @@ End
 
 ### Testing a single file script
 
-Shell scripts are often made up of a single file. Shellspec provides two ways
+Shell scripts are often made up of a single file. ShellSpec provides two ways
 of testing a single shell script.
 
 #### Sourced Return
@@ -1083,7 +1083,7 @@ End
 
 ## For developers
 
-If you want to know shellspec architecture and self test, see [CONTRIBUTING.md](CONTRIBUTING.md)
+If you want to know ShellSpec architecture and self test, see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Version history
 

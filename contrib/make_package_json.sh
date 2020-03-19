@@ -13,7 +13,7 @@ files() {
 
 cat<<JSON
 {
-  "name": "shellspec",
+  "name": "ShellSpec",
   "version": "$(version)",
   "description": "BDD style unit testing framework for POSIX compliant shell script",
   "homepage": "https://shellspec.info",

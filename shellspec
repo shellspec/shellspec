@@ -229,7 +229,7 @@ Usage: shellspec [options] [files or directories]
 
   **** Utility ****
 
-      --init                          Initialize your project with shellspec
+      --init                          Initialize your project with ShellSpec
       --count                         Count the number of specfiles and examples
       --list LIST                     List the specfiles / examples
                                         [specfiles]       list the specfiles

@@ -1,8 +1,8 @@
-# Shellspec docker images
+# ShellSpec docker images
 
-[Shellspec](https://github.com/shellspec/shellspec) is BDD style unit testing framework for POSIX compliant shell script
+[ShellSpec](https://github.com/shellspec/shellspec) is BDD style unit testing framework for POSIX compliant shell script
 
-These docker images are for running shellspec easily and suitable for incorporating into CI.
+These docker images are for running ShellSpec easily and suitable for incorporating into CI.
 
 The tag with `kcov` means [Kcov](https://github.com/SimonKagstrom/kcov) is included. The tag `latest` is latest release version.
 
