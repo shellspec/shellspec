@@ -1,4 +1,6 @@
-language: sh
+language: shell
+os: linux
+dist: bionic
 env:
   global:
     - HOMEBREW_NO_AUTO_UPDATE=1
@@ -8,9 +10,9 @@ env:
 addons:
   apt:
     update: true
-  homebew:
+  homebrew:
     update: true
-matrix:
+jobs:
   include:
     - os: linux # Ubuntu 12.04
       dist: precise
