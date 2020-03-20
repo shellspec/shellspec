@@ -20,12 +20,12 @@ references_each() {
       [ "$field_focused" = "focus" ] && set -- "${UNDERLINE}$@"
 
       if [ "$field_fail" ]; then
-        references_failure '|=' "${BOLD}Failure examples:" \
-          "(Listed here affect your suite's status)${RESET}${LF}${LF}"
+        references_failure '|=' "${LF}${BOLD}${RED}Failure examples:" \
+          "${RESET}(Listed here affect your suite's status)${LF}${LF}"
         references_failure '+=' "${*:-}${LF}"
       else
-        references_notable '|=' "${BOLD}Notable examples:" \
-          "(Listed here do not affect your suite's status)${RESET}${LF}${LF}"
+        references_notable '|=' "${LF}${BOLD}${YELLOW}Notable examples:" \
+          "${RESET}(Listed here do not affect your suite's status)${LF}${LF}"
         references_notable '+=' "${*:-}${LF}"
       fi
       ;;
@@ -36,8 +36,8 @@ references_each() {
         "$CYAN# expected $field_example_count examples," \
         "but only ran $example_count_per_file examples${RESET}"
 
-      references_failure '|=' "${BOLD}Failure examples:" \
-        "(Listed here affect your suite's status)${RESET}${LF}${LF}"
+      references_failure '|=' "${LF}${BOLD}${RED}Failure examples:" \
+        "${RESET}(Listed here affect your suite's status)${LF}${LF}"
       references_failure '+=' "${*:-}${LF}"
       ;;
   esac

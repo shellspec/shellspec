@@ -40,7 +40,7 @@ shellspec_output_SKIP() {
 
 shellspec_output_PENDING() {
   shellspec_output_statement "tag:pending" "note:PENDING" "fail:" \
-     "pending:y" "message:${SHELLSPEC_PENDING_REASON:-No reason given}"
+    "pending:y" "message:${SHELLSPEC_PENDING_REASON:-No reason given}"
 }
 
 shellspec_output_NOT_IMPLEMENTED() {
@@ -90,7 +90,13 @@ shellspec_output_FAILED_AFTER_EACH_HOOK() {
 }
 
 shellspec_output_MATCHED() {
+  shellspec_if PENDING && shellspec_output_MATCHED_FIXED && return 0
   shellspec_output_statement "tag:good" "note:" "fail:" \
+    "message:$SHELLSPEC_EXPECTATION"
+}
+
+shellspec_output_MATCHED_FIXED() {
+  shellspec_output_statement "tag:good" "note:FIXED" "fail:" \
     "message:$SHELLSPEC_EXPECTATION"
 }
 

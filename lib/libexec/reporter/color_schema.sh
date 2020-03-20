@@ -45,7 +45,7 @@ color_schema() {
         failed   ) field_color=${BOLD}${RED} ;;
         warned   ) field_color=${BOLD}${YELLOW} ;;
         todo     ) field_color=${BOLD}${YELLOW} ;;
-        fixed    ) field_color=${BOLD}${YELLOW} ;;
+        fixed    ) field_color=${BOLD}${GREEN} ;;
         skipped  ) field_color=${BOLD}${MAGENTA} ;;
       esac
   esac
