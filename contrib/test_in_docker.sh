@@ -42,7 +42,7 @@ main() {
 
   cd contrib/helpers
   docker build -t shellspec:helpers . | grayout
-  cd $OLDPWD
+  cd "$OLDPWD"
 
   while [ $# -gt 0 ]; do
     case $1 in
@@ -89,14 +89,15 @@ run() {
   done
 
   info "======================================================================"
-  info "$dockerfile: $@"
-  count=$(($count + 1))
+  info "$dockerfile:" "$@"
+  count=$((count + 1))
   os="${dockerfile##*/}"
   os="${os#.}"
   os="${os%-!}"
   image="shellspec:$os"
   old_image=$(docker images -q --no-trunc "$image")
 
+  # shellcheck disable=SC2086
   docker build --iidfile "$iidfile" $options - < "$dockerfile" | grayout
   base_image=$(cat "$iidfile")
 
@@ -109,27 +110,20 @@ run() {
     docker rmi "$old_image" >/dev/null ||:
   fi
   info
-  info "Starting $dockerfile: $@"
+  info "Starting $dockerfile:" "$@"
   info
   docker run -it --rm "$image" "$@" &&:
   xs=$?
   info
-  if [ "$xs" -eq 0 ]; then
-    printf '\033[32m##############################\033[0m\n' >&2
-    printf '\033[32m# exit status: %3d           #\033[0m\n' "$xs" >&2
-  else
-    printf '\033[31m##############################\033[0m\n' >&2
-    printf '\033[31m# exit status: %3d           #\033[0m %s\n' "$xs" >&2
+  if [ "$xs" -ne 0 ]; then
     failures="${failures}- ${os} [$xs]${LF}"
-    failures_count=$(($failures_count + 1))
+    failures_count=$((failures_count + 1))
   fi
-  if [ "$failures_count" -eq 0 ]; then
-    printf '\033[32m# %3d / %3d (failures: %3d)  #\033[0m\n' "$count" "$total_count" "$failures_count" >&2
-    printf '\033[32m##############################\033[0m\n' >&2
-  else
-    printf '\033[31m# %3d / %3d (failures: %3d)  #\033[0m\n' "$count" "$total_count" "$failures_count" >&2
-    printf '\033[31m##############################\033[0m\n' >&2
-  fi
+  [ "$failures_count" -eq 0 ] && printf '\033[32m' || printf '\033[31m'
+  printf '##############################\n' >&2
+  printf '# exit status: %3d           #\n' "$xs" >&2
+  printf '# %3d / %3d (failures: %3d)  #\n' "$count" "$total_count" "$failures_count" >&2
+  printf '##############################\n\033[m' >&2
   info
 }
 
@@ -137,7 +131,7 @@ count_total() {
   total_count=0
   while [ $# -gt 0 ]; do
     [ "$1" = "--" ] && break
-    total_count=$(($total_count + 1))
+    total_count=$((total_count + 1))
     shift
   done
   echo $total_count
@@ -147,11 +141,11 @@ total_count=$(count_total "$@")
 start=$(date) start_sec=$(date +%s)
 main "$@"
 end=$(date) end_sec=$(date +%s)
-sec=$(($end_sec - $start_sec))
+sec=$((end_sec - start_sec))
 
 echo "$start" >&2
 echo "$end" >&2
-echo "Done. $count tests, $sec sec ($(( $sec / 60)) min)" >&2
+echo "Done. $count tests, $sec sec ($((sec / 60)) min)" >&2
 
 if [ "$failures" ]; then
   exit 1
