@@ -60,10 +60,21 @@ which() {
 }
 
 prompt() {
-  ans=${2:-} && printf '%s' "$1"
-  [ "$ans" ] && echo "$2"
-  [ "$ans" ] || read -r ans
-  ! case $ans in ( [Yy] | [Yy][Ee][Ss] ) false; esac
+  printf "%s " "$1"
+  if ! eval "[ \"\$$2\" ] && :"; then
+    IFS= read -r "$2" < ${3:-/dev/tty} || return 1
+  fi
+  eval "printf \"%s\n\" \"\$$2\""
+}
+
+is_yes() {
+  case $1 in ( [Yy] | [Yy][Ee][Ss] ) return 0; esac
+  return 1
+}
+
+confirm() {
+  prompt "$@" || return 1
+  eval "is_yes \"\$$2\" &&:"
 }
 
 fetch() {
@@ -225,8 +236,7 @@ case $method in
 esac
 echo
 
-[ -e /dev/tty ] && input=/dev/tty || input=/dev/stdin
-prompt "Do you want to continue? [y/N] " "$YES" < "$input" || abort "Canceled"
+confirm "Do you want to continue? [y/N]" YES || abort "Canceled"
 
 case $method in
   git)

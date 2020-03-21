@@ -71,23 +71,73 @@ Describe "./install.sh"
   End
 
   Describe "prompt()"
-    It 'returns yes with y'
-      When call prompt "Question? [y/N] " "y"
-      The stdout should eq "Question? [y/N] y"
-      The status should be success
+    Context "when not pre answered"
+      Before ans=""
+      Data "answer"
+
+      It 'returns the answer'
+        When call prompt "Message:" ans /dev/stdin
+        The output should eq "Message: answer"
+        The variable ans should eq "answer"
+      End
+
+      It "returns error when not exists device"
+        When call prompt "Message:" ans /dev/no-such-a-device
+        The output should eq "Message: "
+        The error should be present
+        The variable ans should eq ""
+        The status should be failure
+      End
     End
 
-    It 'returns no with n'
-      When call prompt "Question? [y/N] " "n"
-      The stdout should eq "Question? [y/N] n"
-      The status should be failure
+    Context "when pre answered"
+      Before ans=pre-answer
+      It 'returns the answer'
+        When call prompt "Message:" ans /dev/no-such-a-device
+        The output should eq "Message: pre-answer"
+        The variable ans should eq "pre-answer"
+      End
     End
+  End
 
-    It 'return the answer from the input'
+  Describe "confirm()"
+    Context "when not pre answered"
+      Before ans=""
       Data "y"
-      When call prompt "Question? [y/N] "
-      The stdout should eq "Question? [y/N] "
-      The status should be success
+
+      It 'returns the answer'
+        When call confirm "Question? [y/N]" ans /dev/stdin
+        The stdout should eq "Question? [y/N] y"
+        The variable ans should eq "y"
+      End
+
+      It "returns error when not exists device"
+        When call confirm "Question? [y/N]" ans /dev/no-such-a-device
+        The output should eq "Question? [y/N] "
+        The error should be present
+        The variable ans should eq ""
+        The status should be failure
+      End
+    End
+
+    Context "when pre answer is y"
+      Before ans="y"
+
+      It 'returns yes with y'
+        When call confirm "Question? [y/N]" ans
+        The stdout should eq "Question? [y/N] y"
+        The status should be success
+      End
+    End
+
+    Context "when pre answer is n"
+      Before ans="n"
+
+      It 'returns no with n'
+        When call confirm "Question? [y/N]" ans
+        The stdout should eq "Question? [y/N] n"
+        The status should be failure
+      End
     End
   End
 
