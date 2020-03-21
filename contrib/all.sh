@@ -16,26 +16,25 @@ set -eu
 : "${TARGET:=sh,ash,dash,bash,zsh,pdksh,ksh,ksh93,mksh,oksh,yash,posh,busybox ash}"
 
 readlinkf() {
-  p=$1
-  while [ -L "$p" ]; do
-    case $p in (*/*) cd "${p%/*}"; p=${p##*/}; esac
-    l=$(ls -dl "$p") && p=${l#*"$p -> "}
-  done
-  case $p in (*/*) cd "${p%/*}"; p=${p##*/}; esac
-  printf '%s\n' "$PWD/$p"
+  [ ${1:+x} ] || return 1; p=$1; until [ "${p%/}" = "$p" ]; do p=${p%/}; done
+  [ -e "$p" ] && p=$1; [ -d "$1" ] && p=$p/; set 10 "$PWD" "${OLDPWD:-}"
+  CDPATH="" cd -L "$2" && while [ "$1" -gt 0 ]; do set "$1" "$2" "$3" "${p%/*}"
+    [ "$p" = "$4" ] || { CDPATH="" cd -L "${4:-/}" || break; p=${p##*/}; }
+    [ ! -L "$p" ] && p=${PWD%/}${p:+/}$p && set "$@" "${p:-/}" && break
+    set $(($1-1)) "$2" "$3" "$p"; p=$(ls -dl "$p") || break; p=${p#*" $4 -> "}
+  done 2>/dev/null; cd -L "$2" && OLDPWD=$3 && [ ${5+x} ] && printf '%s\n' "$5"
 }
 
 each_shells() {
-  (
     callback=$1 IFS=,
     shift
     for shell in $TARGET; do
       shell_path='' real_path=''
+      # shellcheck disable=SC2230
       shell_path=$(which "${shell%% *}" 2>/dev/null) || shell_path=''
       [ -L "${shell_path%% *}" ] && real_path=$(readlinkf "${shell_path%% *}")
       $callback "$@"
     done
-  )
 }
 
 info() {
@@ -48,9 +47,9 @@ run() {
   if [ "$shell_path" ]; then
     echo "--------------------------------------------------"
     echo "$shell : $shell_path${real_path:+ -> }$real_path"
-    echo "$shell $@"
+    echo "$shell" "$@"
     echo "--------------------------------------------------"
-    eval SH=\$shell $shell "$@"
+    eval "SH=\$shell $shell \"\$@\""
   else
     echo "--------------------------------------------------"
     echo "$shell : Skip, shell not found"
@@ -61,8 +60,8 @@ run() {
 
 uname -a
 echo "=================================================="
-each_shells info
+( each_shells info )
 echo "=================================================="
 if [ $# -gt 0 ]; then
-  each_shells run "$@"
+  ( each_shells run "$@" )
 fi

@@ -27,9 +27,9 @@ cleanup() {
 trap 'exit 1' INT
 trap 'cleanup' EXIT
 
-docker build --target=${1}_installer -t "shellspec:${1}_installer" - < "$dockerfile"
+docker build --target="${1}_installer" -t "shellspec:${1}_installer" - < "$dockerfile"
 sleep 5
-docker build --target=test --build-arg TYPE=$1 --iidfile "$iidfile" . -f "$dockerfile"
+docker build --target=test --build-arg "TYPE=$1" --iidfile "$iidfile" . -f "$dockerfile"
 iid=$(cat "$iidfile")
 shift
 docker run -it --rm "$iid" "$@"

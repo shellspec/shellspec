@@ -6,7 +6,7 @@ set -eu
 
 shellspec() {
   set -- $SH shellspec --shell "$SH" "$@"
-  echo "\$ $@" >&2
+  echo '$' "$@" >&2
   "$@"
 }
 

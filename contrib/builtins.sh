@@ -11,7 +11,7 @@ set -eu
 PATH=":"
 
 check() {
-  while IFS=' ' read -r cmd comment; do
+  while read -r cmd && cmd=${cmd%% *}; do
     if type "$cmd" >/dev/null 2>&1; then
       if [ -x /usr/bin/printf ]; then
         /usr/bin/printf "%s " "$cmd"

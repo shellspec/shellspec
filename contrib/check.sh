@@ -27,9 +27,9 @@ samples() {
 count() {
   printf '%6s: ' "$1"
   shift
-  cat $@ | wc -lc | {
+  cat "$@" | wc -lc | {
     read -r lines bytes
-    printf '%3s files, %5s lines, %3s KiB\n' $# $lines $((bytes / 1024))
+    printf '%3s files, %5s lines, %3s KiB\n' $# "$lines" $((bytes / 1024))
   }
 }
 

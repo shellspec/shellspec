@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2004,SC2015,SC2016,SC2034,SC2086,SC2091,SC2123,SC2181,SC2194
 
 # Bugs and compatibility check for shell
 
