@@ -431,49 +431,48 @@ $ shellspec
 ```
 Usage: shellspec [options] [files or directories]
 
-  -s, --shell SHELL                   Specify a path of shell [default: current shell]
-      --[no-]fail-fast[=COUNT]        Abort the run after a certain number of failures [default: 1]
-      --[no-]fail-no-examples         Fail if no examples found [default: disabled]
-      --[no-]fail-low-coverage        Fail on low coverage [default: disabled]
-                                        The coverage threshold is specified by the coverage option
-  -r, --require MODULE                Require a file
-  -e, --env NAME=VALUE                Set environment variable
-      --env-from ENV-SCRIPT           Set environment variable from script file
-      --random TYPE[:SEED]            Run examples by the specified random type
-                                        [none]      run in the defined order [default]
-                                        [specfiles] randomize the order of specfiles
-                                        [examples]  randomize the order of examples (slow)
-  -j, --jobs JOBS                     Number of parallel jobs to run (0 jobs means disabled)
-      --[no-]quick                    Run only non-passed examples the last time they ran [default: disabled]
-      --[no-]warning-as-failure       Treat warning as failure [default: enabled]
-      --dry-run                       Print the formatter output without running any examples
-      --keep-tempdir                  Do not cleanup temporary directory [default: disabled]
+  -s, --shell SHELL               Specify a path of shell [default: current shell]
+      --[no-]fail-fast[=COUNT]    Abort the run after a certain number of failures [default: 1]
+      --[no-]fail-no-examples     Fail if no examples found [default: disabled]
+      --[no-]fail-low-coverage    Fail on low coverage [default: disabled]
+                                    The coverage threshold is specified by the coverage option
+  -r, --require MODULE            Require a file
+  -e, --env NAME=VALUE            Set environment variable
+      --env-from ENV-SCRIPT       Set environment variable from script file
+      --random TYPE[:SEED]        Run examples by the specified random type
+                                    [none]      run in the defined order [default]
+                                    [specfiles] randomize the order of specfiles
+                                    [examples]  randomize the order of examples (slow)
+  -j, --jobs JOBS                 Number of parallel jobs to run (0 jobs means disabled)
+      --[no-]quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
+      --[no-]warning-as-failure   Treat warning as failure [default: enabled]
+      --dry-run                   Print the formatter output without running any examples
+      --keep-tempdir              Do not cleanup temporary directory [default: disabled]
 
   **** Output ****
 
-      --[no-]banner                   Show banner if exist 'spec/banner' [default: enabled]
-  -f, --format FORMATTER              Choose a formatter to use for display
-                                        [p]rogress      dots [default]
-                                        [d]ocumentation group and example names
-                                        [t]ap           TAP format
-                                        [j]unit         JUnit XML (time attributre with --profile)
-                                        [f]ailures      file:line:message (suitable for editors integration)
-                                        [null]          do not display anything
-                                        [debug]         for developer
-                                        custom formatter name
-  -o, --output GENERATOR              Choose a generator(s) to generate a report file(s)
-                                        You can use the same name as FORMATTER
-                                        Multiple options can be specified [default: not specified]
-      --force-color, --force-colour   Force the output to be in color, even if the output is not a TTY
-      --no-color, --no-colour         Force the output to not be in color, even if the output is a TTY
-      --skip-message VERBOSITY        Mute skip message
-                                        [verbose]  do not mute any messages [default]
-                                        [moderate] mute repeated messages
-                                        [quiet]    mute repeated messages and non-temporarily messages
-  -p  --[no-]profile                  Enable profiling of examples and list the slowest examples
-      --profile-limit N               List the top N slowest examples [default: 10]
-      --show-deprecations             Display deprecations details [default]
-      --hide-deprecations             Hide deprecations details
+      --[no-]banner               Show banner if exist 'spec/banner' [default: enabled]
+  -f, --format FORMATTER          Choose a formatter to use for display
+                                    [p]rogress      dots [default]
+                                    [d]ocumentation group and example names
+                                    [t]ap           TAP format
+                                    [j]unit         JUnit XML (time attributre with --profile)
+                                    [f]ailures      file:line:message (suitable for editors integration)
+                                    [null]          do not display anything
+                                    [debug]         for developer
+                                    custom formatter name
+  -o, --output GENERATOR          Choose a generator(s) to generate a report file(s)
+                                    You can use the same name as FORMATTER
+                                    Multiple options can be specified [default: not specified]
+      --[no-]color                Enable or disable color [default: enabled if the output is a TTY]
+      --skip-message VERBOSITY    Mute skip message
+                                    [verbose]  do not mute any messages [default]
+                                    [moderate] mute repeated messages
+                                    [quiet]    mute repeated messages and non-temporarily messages
+  -p, --[no-]profile              Enable profiling of examples and list the slowest examples
+      --profile-limit N           List the top N slowest examples [default: 10]
+      --show-deprecations         Display deprecations details [default]
+      --hide-deprecations         Hide deprecations details
 
   **** Ranges / Filters / Focus ****
 
@@ -484,42 +483,42 @@ Usage: shellspec [options] [files or directories]
 
     You can filter examples to run with the following options
 
-      --focus                         Run focused groups / examples only
-      --pattern PATTERN               Load files matching pattern [default: "*_spec.sh"]
-      --example PATTERN               Run examples whose names include PATTERN
-      --tag TAG[:VALUE]               Run examples with the specified TAG
-      --default-path PATH             Set the default path where looks for examples [defualt: "spec"]
+  -F, --focus                     Run focused groups / examples only
+  -P, --pattern PATTERN           Load files matching pattern [default: "*_spec.sh"]
+  -E, --example PATTERN           Run examples whose names include PATTERN
+  -T, --tag TAG[:VALUE]           Run examples with the specified TAG
+  -D, --default-path PATH         Set the default path where looks for examples [defualt: "spec"]
 
   **** Coverage ****
 
-      --[no-]kcov                     Enable coverage using kcov [default: disabled]
-                                        Note: Requires kcov and bash, parallel execution is ignored.
-      --kcov-path PATH                Specify kcov path [default: kcov]
-      --kcov-options OPTIONS          Kcov options to overwrite and add (coverage limits, coveralls id, etc)
-                                        Default specified options:
-                                          --exclude-pattern=/spec/,/coverage/,/report/
-                                          --include-path=.
-                                          --include-pattern=.sh
-                                          --path-strip-level=1
-                                        To include files without extension, specify --include-pattern
-                                        without '.sh' and filter with --include-*/--exclude-* options
+      --[no-]kcov                 Enable coverage using kcov [default: disabled]
+                                    Note: Requires kcov and bash, parallel execution is ignored.
+      --kcov-path PATH            Specify kcov path [default: kcov]
+      --kcov-options OPTIONS      Kcov options to overwrite and add (coverage limits, coveralls id, etc)
+                                    Default specified options:
+                                      --include-path=.
+                                      --include-pattern=.sh
+                                      --exclude-pattern=/.shellspec,/spec/,/coverage/,/report/
+                                      --path-strip-level=1
+                                    To include files without extension, specify --include-pattern
+                                    without '.sh' and filter with --include-*/--exclude-* options
 
   **** Utility ****
 
-      --init                          Initialize your project with ShellSpec
-      --count                         Count the number of specfiles and examples
-      --list LIST                     List the specfiles / examples
-                                        [specfiles]       list the specfiles
-                                        [examples]        list the examples with id
-                                        [examples:id]     alias for examples
-                                        [examples:lineno] list the examples with lineno
-                                        [debug]           for developer
-                                        affected by --random but TYPE is ignored
-      --syntax-check                  Syntax check of the specfiles without running any examples
-      --translate                     Output translated specfile
-      --task [TASK]                   Run task. If TASK is not specified, show the task list
-  -v, --version                       Display the version
-  -h, --help                          You're looking at it
+      --init                      Initialize your project with ShellSpec
+      --count                     Count the number of specfiles and examples
+      --list LIST                 List the specfiles / examples
+                                    [specfiles]       list the specfiles
+                                    [examples]        list the examples with id
+                                    [examples:id]     alias for examples
+                                    [examples:lineno] list the examples with lineno
+                                    [debug]           for developer
+                                    affected by --random but TYPE is ignored
+      --syntax-check              Syntax check of the specfiles without running any examples
+      --translate                 Output translated specfile
+      --task [TASK]               Run task. If TASK is not specified, show the task list
+  -v, --version                   Display the version
+  -h, --help                      You're looking at it
 ```
 
 ### Configure default options
