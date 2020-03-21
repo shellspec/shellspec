@@ -3,7 +3,7 @@
 
 [ "$PPID" ] || { echo "Unsupported shell. (Bourne shell?)" >&2; exit 1; }
 
-set -eu
+set -e -u
 
 export SHELLSPEC_VERSION='0.23.0-dev'
 export SHELLSPEC_PATH=''
@@ -68,7 +68,6 @@ export SHELLSPEC_PROFILER=''
 export SHELLSPEC_PROFILER_LOG=''
 export SHELLSPEC_PROFILER_LIMIT=10
 export SHELLSPEC_PROFILER_REPORT="profiler.log"
-export SHELLSPEC_DEFECT_ARITHMETIC=''
 export SHELLSPEC_DEFECT_SIGNALS=''
 export SHELLSPEC_DEFECT_READONLY=''
 export SHELLSPEC_DEFECT_REDEFINE=''
@@ -93,7 +92,10 @@ readlinkf() {
   done 2>/dev/null; cd -L "$2" && OLDPWD=$3 && [ ${5+x} ] && printf '%s\n' "$5"
 }
 
-SHELLSPEC_PATH=$(readlinkf "$0")
+if ! SHELLSPEC_PATH=$(readlinkf "$0"); then
+ echo "Failed to detect shellspec real path." >&2
+ exit 1
+fi
 SHELLSPEC_ROOT="${SHELLSPEC_PATH%/*}"
 SHELLSPEC_LIB="$SHELLSPEC_ROOT/lib"
 SHELLSPEC_REPORTERLIB="$SHELLSPEC_LIB/libexec/reporter"
@@ -407,10 +409,10 @@ shell=$(command_path "${SHELLSPEC_SHELL:-sh}") ||:
 SHELLSPEC_SHELL=$shell
 
 {
-  eval "$($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-inspection.sh")"
-
-  if [ "$SHELLSPEC_DEFECT_ARITHMETIC" ]; then
-    abort "Unsupported shell (arithmetic expansion not supported)."
+  inspection="$SHELLSPEC_LIBEXEC/shellspec-inspection.sh"
+  if ! eval "$($SHELLSPEC_SHELL "$inspection" || echo false)" &&:; then
+    abort "Shell inspection failed. This shell is not supported.$SHELLSPEC_LF" \
+      "(It is not a POSIX shell or basic functionality is defective)."
   fi
 
   if [ "$SHELLSPEC_DEFECT_SIGNALS" ];then

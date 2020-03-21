@@ -2,9 +2,11 @@
 
 set -eu
 
-if ! (exit $((0))) 2>/dev/null; then
-  echo "SHELLSPEC_DEFECT_ARITHMETIC=1"
-fi
+# gosh: https://github.com/mvdan/sh v3.0.2 fails
+umask >/dev/null
+
+# mrsh: https://github.com/emersion/mrsh WIP 657ea07 fails
+( false ) 2>/dev/null && exit 1
 
 # shellcheck disable=SC2123
 if [ ! "$(PATH=; (kill -l) 2>/dev/null)" ]; then
@@ -32,3 +34,6 @@ fi
 if [ "${BASH_VERSION:-}" ]; then
   echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
 fi
+
+# arithmetic expansion is also required
+exit $((0))
