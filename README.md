@@ -587,9 +587,23 @@ ShellSpec has integrated coverage feature. To use this feature [Kcov][] (v35 or 
 
 - How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
 - Be aware that `bash` is the only shell which can be used for coverage.
+- Coverage measures only Evaluation and `Include`
 
-By default only `*.sh` files are coverage targeted. If you want to include except `*.sh` files,
-you need to adjust options with `--kcov-options`. Coverage measures only Evaluation and `Include`.
+By default only files whose names contain `.sh` are coverage targeted.
+If you want to include other files, you need to adjust options with `--kcov-options`.
+
+```sh
+# Default kcov (coverage) options
+--kcov-options "--include-path=. --path-strip-level=1"
+--kcov-options "--include-pattern=.sh"
+--kcov-options "--exclude-pattern=/.shellspec,/spec/,/coverage/,/report/"
+
+# Example: Include script "myprog" with no extension
+--kcov-options "--include-pattern=.sh,myprog"
+
+# Example: Only specified files/directories
+--kcov-options "--include-pattern=myprog,/lib/"
+```
 
 [Coverage report][] and `cobertura.xml` and `sonarqube.xml` files are generated under the `coverage` directory by Kcov.
 You can easily integrate with [Coveralls](https://coveralls.io/), [Code Climate](https://codeclimate.com/),

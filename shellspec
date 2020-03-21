@@ -144,9 +144,9 @@ fi
 while IFS= read -r option; do
   SHELLSPEC_KCOV_COMMON_OPTS="$SHELLSPEC_KCOV_COMMON_OPTS$option "
 done <<HERE
---exclude-pattern=/coverage/,/spec/,/report/
 --include-path=.
 --include-pattern=.sh
+--exclude-pattern=/.shellspec,/spec/,/coverage/,/report/
 --path-strip-level=1
 HERE
 SHELLSPEC_KCOV_FILENAME="$SHELLSPEC_PROJECT_NAME [specfiles]"
@@ -222,9 +222,9 @@ Usage: shellspec [options] [files or directories]
       --kcov-path PATH                Specify kcov path [default: kcov]
       --kcov-options OPTIONS          Kcov options to overwrite and add (coverage limits, coveralls id, etc)
                                         Default specified options:
-                                          --exclude-pattern=/spec/,/coverage/,/report/
                                           --include-path=.
                                           --include-pattern=.sh
+                                          --exclude-pattern=/.shellspec,/spec/,/coverage/,/report/
                                           --path-strip-level=1
                                         To include files without extension, specify --include-pattern
                                         without '.sh' and filter with --include-*/--exclude-* options

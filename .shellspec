@@ -2,5 +2,6 @@
 --skip-message moderate
 --fail-no-examples
 --env-from spec/env.sh
---kcov-options "--include-pattern= --include-path=./shellspec,./install.sh,./lib,./libexec"
+--kcov-options "--include-pattern="
+--kcov-options "--include-path=./shellspec,./install.sh,./lib,./libexec"
 --hide-deprecations

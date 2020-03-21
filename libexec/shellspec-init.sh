@@ -23,7 +23,17 @@ generate() {
 
 generate ".shellspec" <<DATA
 --require spec_helper
-# --kcov-options "--include-path=. --include-pattern=.sh --exclude-pattern=/spec/,/coverage/,/report/"
+
+## Default kcov (coverage) options
+# --kcov-options "--include-path=. --path-strip-level=1"
+# --kcov-options "--include-pattern=.sh"
+# --kcov-options "--exclude-pattern=/.shellspec,/spec/,/coverage/,/report/"
+
+## Example: Include script "myprog" with no extension
+# --kcov-options "--include-pattern=.sh,myprog"
+
+## Example: Only specified files/directories
+# --kcov-options "--include-pattern=myprog,/lib/"
 DATA
 
 generate "spec/spec_helper.sh" <<DATA
