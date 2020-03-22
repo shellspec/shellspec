@@ -61,8 +61,8 @@ Describe 'skip sample'
     End
   End
 
-  # "temporarily skip" can not hidden with "--skip-message quiet" option
-  Describe 'temporarily skip'
+  # "temporary skip" can not hidden with "--skip-message quiet" option
+  Describe 'temporary skip'
     Example 'with Skip helper'
       Skip # without reason
       When call foo

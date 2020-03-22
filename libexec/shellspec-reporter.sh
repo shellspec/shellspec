@@ -24,7 +24,7 @@ fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-} reason=''
 current_example_index=0 example_index=''
 last_example_no='' last_skip_id='' not_enough_examples=''
 field_id='' field_type='' field_tag='' field_example_no='' field_focused=''
-field_conditional='' field_skipid='' field_pending='' field_message=''
+field_temporary='' field_skipid='' field_pending='' field_message=''
 
 # shellcheck disable=SC2034
 specfile_count=0 expected_example_count=0 example_count=0 \
@@ -97,11 +97,11 @@ each_line() {
           good) [ "$field_pending" ] || break ;;
           skip)
             case $SHELLSPEC_SKIP_MESSAGE in (quiet)
-              [ ! "$field_conditional" ] || break
+              [ "$field_temporary" ] || break
             esac
             case $SHELLSPEC_SKIP_MESSAGE in (moderate|quiet)
-                [ "$field_skipid" = "$last_skip_id" ] && break
-                last_skip_id=$field_skipid
+              [ "$field_skipid" = "$last_skip_id" ] && break
+              last_skip_id=$field_skipid
             esac
             inc temporary_skip
         esac

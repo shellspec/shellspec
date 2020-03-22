@@ -56,7 +56,7 @@ Describe 'evaluation sample'
 
     It 'calls BeforeRun/AfterRun hook'
       before_run() {
-        # You can temporarily redefine function here
+        # You can temporary redefine function here
         # redefined function is restored after run evaluation
         # because run evaluation runs with in subshell
         echo before

@@ -468,7 +468,7 @@ Usage: shellspec [options] [files or directories]
       --skip-message VERBOSITY    Mute skip message
                                     [verbose]  do not mute any messages [default]
                                     [moderate] mute repeated messages
-                                    [quiet]    mute repeated messages and non-temporarily messages
+                                    [quiet]    mute repeated messages and non-temporary messages
   -p, --[no-]profile              Enable profiling of examples and list the slowest examples
       --profile-limit N           List the top N slowest examples [default: 10]
       --show-deprecations         Display deprecations details [default]

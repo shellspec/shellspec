@@ -71,7 +71,7 @@ trans_control() {
 
 trans_skip() {
   putsn "SHELLSPEC_LINENO=$lineno"
-  putsn "shellspec_skip ${skip_id} ${1:-}"
+  putsn "shellspec_skip $skip_id ${1:-}"
 }
 
 trans_data_begin() {

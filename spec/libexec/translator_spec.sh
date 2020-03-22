@@ -139,4 +139,22 @@ Describe "libexec/translator.sh"
       The variable desc should eq "var[2] * ? \\ end"
     End
   End
+
+  Describe "skip()"
+    BeforeRun skip_id=12345
+    trans() { echo "$@"; }
+    AfterRun 'echo $skip_id'
+
+    It "translates skip"
+      When run skip
+      The line 1 of stdout should eq skip
+      The line 2 of stdout should eq 12346
+    End
+
+    It "translates skip with comment"
+      When run skip "#comment"
+      The line 1 of stdout should eq "skip '# comment'"
+      The line 2 of stdout should eq 12346
+    End
+  End
 End

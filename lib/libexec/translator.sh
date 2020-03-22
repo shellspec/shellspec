@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants trim match_pattern ends_with_backslash
+use constants trim match_pattern ends_with_backslash escape_quote
 load grammar
 
 initialize() {
@@ -197,6 +197,12 @@ control() {
 
 skip() {
   skip_id=$(($skip_id + 1))
+  case ${1:-} in (\#*)
+    temporary_skip=${1#"#"}
+    escape_quote temporary_skip
+    trim temporary_skip "$temporary_skip"
+    set -- "'# $temporary_skip'"
+  esac
   eval trans skip ${1+'"$@"'}
 }
 

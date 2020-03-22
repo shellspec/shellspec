@@ -5,11 +5,6 @@ SHELLSPEC_PATH_ALIAS=:
 SHELLSPEC_INTERCEPTOR='|'
 SHELLSPEC_SHELL_OPTIONS=''
 
-# to suppress shellcheck SC2034
-: "${SHELLSPEC_EXPECTATION:-} ${SHELLSPEC_EVALUATION:-}"
-: "${SHELLSPEC_SKIP_REASON:-} ${SHELLSPEC_CONDITIONAL_SKIP:-}"
-: "${SHELLSPEC_SPECFILE:-} ${SHELLSPEC_SPEC_NO:-} ${SHELLSPEC_LINENO:-}"
-
 shellspec_metadata() {
   if [ "${1:-}" ]; then
     shellspec_output METADATA
@@ -34,6 +29,7 @@ shellspec_yield() {
 }
 
 shellspec_begin() {
+  # shellcheck disable=SC2034
   SHELLSPEC_SPECFILE=$1 SHELLSPEC_SPEC_NO=$2
   shellspec_output BEGIN
 }
@@ -301,6 +297,7 @@ shellspec_skip() {
     shift 2
     ( "$@" ) || return 0
   else
+    # shellcheck disable=SC2034
     SHELLSPEC_SKIP_REASON=${1:-}
   fi
 

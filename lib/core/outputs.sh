@@ -29,13 +29,18 @@ shellspec_output_EVALUATION() {
 }
 
 shellspec_output_SKIP() {
-  if [ "$SHELLSPEC_SKIP_REASON" ]; then
-    set -- "conditional:y" "message:$SHELLSPEC_SKIP_REASON"
-  else
-    set -- "conditional:" "message:Temporarily skipped"
-  fi
+  case $SHELLSPEC_SKIP_REASON in ("" | \# | \#\ *)
+    shellspec_output_TEMPORARY_SKIP
+    return 0
+  esac
   shellspec_output_statement "tag:skip" "note:SKIPPED" "fail:" \
-    "skipid:$SHELLSPEC_SKIP_ID" "$@"
+    "skipid:$SHELLSPEC_SKIP_ID" "temporary:" "message:$SHELLSPEC_SKIP_REASON"
+}
+
+shellspec_output_TEMPORARY_SKIP() {
+  shellspec_output_statement "tag:skip" "note:SKIPPED" "fail:" \
+    "skipid:$SHELLSPEC_SKIP_ID" "temporary:y" \
+    "message:${SHELLSPEC_SKIP_REASON:-"# Temporarily skipped"}"
 }
 
 shellspec_output_PENDING() {
