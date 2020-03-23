@@ -233,22 +233,36 @@ Describe "libexec/reporter.sh"
   End
 
   Describe "read_profiler()"
-    BeforeCall index_total=0 tick_total=0 duration_total=0
-    AfterCall 'shellspec_shift10 duration_total "$duration_total" -4'
+    # $1:tick_total $2:time_real $3:profiler_count $4:tick $5:duration
+    # duration=$(($2 * $4 / $1))
+    callback() { echo "$@"; }
 
-    callback() {
-      index=$1 tick=$2 duration=$3
-      index_total=$(($index_total + $index))
-      tick_total=$(($tick_total + $tick))
-      shellspec_shift10 duration "$duration" 4
-      duration_total=$(($duration_total + $duration))
-    }
+    Data # tick list
+      #|1736
+      #|2270
+      #|2319
+      #|2007
+      #|1787
+    End
 
     It 'reads profiler.log'
-      When call read_profiler callback "$PROFILER_LOG" "13.56"
-      The variable index_total should eq 174345
-      The variable tick_total should eq 1381353
-      The variable duration_total should eq 6.6802
+      When call read_profiler callback 84245 1.56 # $3:tick_total $4:time_real
+      The line 1 of output should eq "84245 1.56 0 1736 0.0321"
+      The line 2 of output should eq "84245 1.56 1 2270 0.0420"
+      The line 3 of output should eq "84245 1.56 2 2319 0.0429"
+      The line 4 of output should eq "84245 1.56 3 2007 0.0371"
+      The line 5 of output should eq "84245 1.56 4 1787 0.0330"
+      The variable profiler_count should eq 5
+      The variable profiler_tick0 should eq 1736
+      The variable profiler_time0 should eq 0.0321
+      The variable profiler_tick1 should eq 2270
+      The variable profiler_time1 should eq 0.0420
+      The variable profiler_tick2 should eq 2319
+      The variable profiler_time2 should eq 0.0429
+      The variable profiler_tick3 should eq 2007
+      The variable profiler_time3 should eq 0.0371
+      The variable profiler_tick4 should eq 1787
+      The variable profiler_time4 should eq 0.0330
     End
   End
 

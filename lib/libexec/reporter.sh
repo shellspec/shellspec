@@ -100,18 +100,18 @@ inc() {
 }
 
 read_profiler() {
-  tick_total=0 time_real_nano=0
-  read -r tick_total < "$2.total"
-
+  time_real_nano=0
   shellspec_shift10 time_real_nano "$3" 4
 
-  i=0
+  profiler_count=0
   while IFS=" " read -r tick; do
-    duration=$(($time_real_nano * $tick / $tick_total))
+    duration=$(($time_real_nano * $tick / $2))
     shellspec_shift10 duration "$duration" -4
-    $1 "$i" "$tick" "$duration"
-    i=$(($i + 1))
-  done < "$2" &&:
+    set -- "$1" "$2" "$3" "$profiler_count" "$tick" "$duration"
+    eval "profiler_tick$4=\$5 profiler_time$4=\$6"
+    "$@"
+    profiler_count=$(($profiler_count + 1))
+  done &&:
 }
 
 init_quick_data() {

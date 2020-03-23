@@ -1,7 +1,8 @@
 #shellcheck shell=sh
 
 : "${warned_count:-} ${skipped_count:-} ${suppressed_skipped_count:-}"
-: "${todo_count:-} ${fixed_count:-} ${suppressed_skipped_count:-}"
+: "${todo_count:-} ${suppressed_todo_count:-}"
+: "${fixed_count:-} ${suppressed_fixed_count:-}"
 : "${interrupt:-} ${aborted:-} ${no_examples:-} ${not_enough_examples:-}"
 
 create_buffers summary

@@ -29,8 +29,7 @@ field_temporary='' field_skipid='' field_pending='' field_message=''
 # shellcheck disable=SC2034
 specfile_count=0 expected_example_count=0 example_count=0 \
 succeeded_count='' failed_count='' warned_count='' \
-todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count='' \
-profiler_count=0 profiler_line=''
+todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
 
 [ -e "$SHELLSPEC_QUICK_FILE" ] && init_quick_data
 
@@ -161,12 +160,10 @@ read_time_log "time" "$SHELLSPEC_TIME_LOG"
 if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_PROFILER_LOG" ]; then
   mkdir -p "$SHELLSPEC_REPORTDIR"
   sleep_wait [ ! -e "$SHELLSPEC_TMPBASE/profiler.done" ] ||:
-  callback() {
-    eval "profiler_tick$1=\$2 profiler_time$1=\$3" \
-      "profiler_line=\$profiler_line$1 profiler_count=$(($1 + 1))"
-    putsn "$3 $profiler_line"
-  }
-  read_profiler callback "$SHELLSPEC_PROFILER_LOG" "$time_real" \
+  callback() { eval "putsn \"\$5\" \"\$profiler_line$3\""; }
+  read -r profiler_tick_total < "${SHELLSPEC_PROFILER_LOG}.total"
+  read_profiler callback "$profiler_tick_total" "$time_real" \
+    < "$SHELLSPEC_PROFILER_LOG" \
     > "$SHELLSPEC_REPORTDIR/$SHELLSPEC_PROFILER_REPORT"
 fi
 
