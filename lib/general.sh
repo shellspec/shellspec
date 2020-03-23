@@ -560,3 +560,13 @@ shellspec_union_values() {
 shellspec_is_empty_file() {
   [ "${1:-}" ] && [ -f "${1:-}" ] && [ ! -s "${1:-}" ]
 }
+
+shellspec_pluralize() {
+  [ $# -eq 2 ] && set -- "$1" "" "$2"
+  [ "${3%% *}" ] || return 0
+  [ "${3%% *}" -eq 1 ] && eval "$1=\${$1}\${2}\${3}\${4:-}" && return 0
+  case $3 in
+    *x) eval "$1=\${$1}\${2}\${3}es\${4:-}" ;;
+    *) eval "$1=\${$1}\${2}\${3}s\${4:-}" ;;
+  esac
+}

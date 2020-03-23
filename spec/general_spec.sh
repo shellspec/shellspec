@@ -643,4 +643,26 @@ Describe "general.sh"
       The status should be failure
     End
   End
+
+  Describe "shellspec_pluralize()"
+    Before str=''
+
+    It "encloses with prefix and suffix"
+      When call shellspec_pluralize str "prefix " "1 example" " suffix"
+      The variable str should eq "prefix 1 example suffix"
+    End
+
+    Parameters
+      " example" ""
+      "0 example" "0 examples"
+      "1 example" "1 example"
+      "2 example" "2 examples"
+      "3 fix"     "3 fixes"
+    End
+
+    It "pluralizes"
+      When call shellspec_pluralize str "$1"
+      The variable str should eq "$2"
+    End
+  End
 End
