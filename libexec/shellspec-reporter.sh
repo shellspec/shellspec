@@ -20,7 +20,7 @@ import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
 
 exit_status=0 found_focus='' no_examples='' aborted=1 coverage_failed=''
-fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-} reason=''
+fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-999999} reason=''
 current_example_index=0 example_index=''
 last_example_no='' last_skip_id='' not_enough_examples=''
 field_id='' field_type='' field_tag='' field_example_no='' field_focused=''
@@ -107,7 +107,9 @@ each_line() {
         esac
 
         # shellcheck disable=SC2034
-        case $field_tag in (pending | skip) reason=$field_message; esac
+        case $field_tag in (pending | skip)
+          reason=$field_message
+        esac
 
         if [ ! "$example_index" ]; then
           inc current_example_index
@@ -120,9 +122,8 @@ each_line() {
       inc example_count example_count_per_file
       inc "${field_tag}_count" "${field_tag}_count_per_file"
       [ "${field_fail:-}" ] && exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
-      if [ "${failed_count:-0}" -ge "${fail_fast_count:-999999}" ]; then
-        aborted='' fail_fast=1
-      fi
+      [ "${failed_count:-0}" -ge "$fail_fast_count" ] && aborted='' fail_fast=1
+
       if [ "$field_tag" = "skipped" ] && [ -z "$example_index" ]; then
         inc suppressed_skipped_count
       fi
@@ -199,7 +200,7 @@ else
   fi
 fi
 
-if [ -e "$SHELLSPEC_QUICK_FILE" ] && [ ! "${interrupt}" ]; then
+if [ -e "$SHELLSPEC_QUICK_FILE" ] && [ ! "$interrupt" ]; then
   quick_file="$SHELLSPEC_QUICK_FILE" done=1
   [ "${aborted}${not_enough_examples}${fail_fast}" ] && done=''
   [ -e "$quick_file" ] && in_quick_file=$quick_file || in_quick_file=/dev/null
