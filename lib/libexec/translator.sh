@@ -195,6 +195,16 @@ control() {
   eval trans control ${1+'"$@"'}
 }
 
+pending() {
+  case ${1:-} in (\#*)
+    temporary_pending=${1#"#"}
+    escape_quote temporary_pending
+    trim temporary_pending "$temporary_pending"
+    set -- "'# $temporary_pending'"
+  esac
+  eval trans pending ${1+'"$@"'}
+}
+
 skip() {
   skip_id=$(($skip_id + 1))
   case ${1:-} in (\#*)

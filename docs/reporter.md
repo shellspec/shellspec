@@ -28,14 +28,14 @@
 
 ### statement type
 
-| tag        | fields                                     |
-| ---------- | ------------------------------------------ |
-| evaluation | note, fail:,  evaluation                   |
-| good       | note, fail:,  message                      |
-| bad        | note, fail:y, message, failure_message     |
-| warn       | note, fail:?, message, failure_message     |
-| skip       | note, fail:,  message, skipid, temporary:? |
-| pending    | note, fail:,  message, pending             |
+| tag        | fields                                      |
+| ---------- | ------------------------------------------- |
+| evaluation | note, fail:,  evaluation                    |
+| good       | note, fail:,  message                       |
+| bad        | note, fail:y, message, failure_message      |
+| warn       | note, fail:?, message, failure_message      |
+| skip       | note, fail:,  message, skipid, temporary:?  |
+| pending    | note, fail:,  message, pending, temporary:? |
 
 ### result type
 

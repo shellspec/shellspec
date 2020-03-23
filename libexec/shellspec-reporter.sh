@@ -29,7 +29,8 @@ field_temporary='' field_skipid='' field_pending='' field_message=''
 # shellcheck disable=SC2034
 specfile_count=0 expected_example_count=0 example_count=0 \
 succeeded_count='' failed_count='' warned_count='' \
-todo_count='' fixed_count='' skipped_count='' suppressed_skipped_count=''
+todo_count='' fixed_count='' skipped_count='' \
+suppressed_todo_count='' suppressed_fixed_count='' suppressed_skipped_count=''
 
 [ -e "$SHELLSPEC_QUICK_FILE" ] && init_quick_data
 
@@ -68,7 +69,8 @@ parse_fields() {
 each_line() {
   case $field_type in
     begin)
-      field_example_count='' last_example_no=0 last_skip_id=''
+      field_example_count='' last_example_no=0
+      last_skip_id='' suppress_pending=''
       inc specfile_count
       # shellcheck disable=SC2034
       example_count_per_file=0 succeeded_count_per_file=0 \
@@ -93,7 +95,18 @@ each_line() {
         # Do not add references if example_index is blank
         case $field_tag in
           evaluation) break ;;
-          good) [ "$field_pending" ] || break ;;
+          good)
+            [ "$field_pending" ] || break
+            [ "$suppress_pending" ] && break
+            ;;
+          bad) [ "$suppress_pending" ] && break ;;
+          pending)
+            suppress_pending=1
+            case $SHELLSPEC_PENDING_MESSAGE in (quiet)
+              [ "$field_temporary" ] || break
+            esac
+            suppress_pending=''
+            ;;
           skip)
             case $SHELLSPEC_SKIP_MESSAGE in (quiet)
               [ "$field_temporary" ] || break
@@ -123,9 +136,10 @@ each_line() {
       [ "${field_fail:-}" ] && exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
       [ "${failed_count:-0}" -ge "$fail_fast_count" ] && aborted='' fail_fast=1
 
-      if [ "$field_tag" = "skipped" ] && [ -z "$example_index" ]; then
-        inc suppressed_skipped_count
-      fi
+      case $field_tag in (skipped | fixed | todo)
+        [ "$example_index" ] || inc "suppressed_${field_tag}_count"
+      esac
+
       if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
         if [ "$field_fail" ] || [ "$field_tag" = "todo" ]; then
           pass_quick_data "$field_specfile" "$field_id" no

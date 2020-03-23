@@ -44,13 +44,22 @@ shellspec_output_TEMPORARY_SKIP() {
 }
 
 shellspec_output_PENDING() {
-  shellspec_output_statement "tag:pending" "note:PENDING" "fail:" \
-    "pending:y" "message:${SHELLSPEC_PENDING_REASON:-No reason given}"
+  case $SHELLSPEC_PENDING_REASON in ("" | \# | \#\ *)
+    shellspec_output_TEMPORARY_PENDING
+    return 0
+  esac
+  shellspec_output_statement "tag:pending" "note:PENDING" "fail:" "pending:y" \
+    "temporary:" "message:$SHELLSPEC_PENDING_REASON"
+}
+
+shellspec_output_TEMPORARY_PENDING() {
+  shellspec_output_statement "tag:pending" "note:PENDING" "fail:" "pending:y" \
+    "temporary:y" "message:${SHELLSPEC_PENDING_REASON:-"# Temporarily pended"}"
 }
 
 shellspec_output_NOT_IMPLEMENTED() {
-  shellspec_output_statement "tag:pending" "note:PENDING" "fail:" \
-    "pending:y" "message:Not yet implemented" "reason:Not yet implemented"
+  shellspec_output_statement "tag:pending" "note:PENDING" "fail:" "pending:y" \
+    "temporary:y" "message:# Not yet implemented"
 }
 
 shellspec_output_EXPECTATION() {

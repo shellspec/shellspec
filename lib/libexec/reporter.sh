@@ -5,7 +5,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use import reset_params constants sequence replace each padding trim
-use difference_values union_values match_pattern is_empty_file
+use difference_values union_values match_pattern is_empty_file pluralize
 
 count() {
   count_specfiles=0 count_examples=0

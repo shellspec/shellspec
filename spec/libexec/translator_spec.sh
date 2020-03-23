@@ -140,6 +140,25 @@ Describe "libexec/translator.sh"
     End
   End
 
+  Describe "pending()"
+    trans() { echo "$@"; }
+
+    It "translates pending"
+      When run pending
+      The stdout should eq "pending"
+    End
+
+    It "translates pending with message"
+      When run pending "message"
+      The stdout should eq "pending message"
+    End
+
+    It "translates pending with comment"
+      When run pending "#comment"
+      The stdout should eq "pending '# comment'"
+    End
+  End
+
   Describe "skip()"
     BeforeRun skip_id=12345
     trans() { echo "$@"; }

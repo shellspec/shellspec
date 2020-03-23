@@ -69,6 +69,11 @@ trans_control() {
   putsn "shellspec_$1 $2"
 }
 
+trans_pending() {
+  putsn "SHELLSPEC_LINENO=$lineno"
+  putsn "shellspec_pending ${1:-}"
+}
+
 trans_skip() {
   putsn "SHELLSPEC_LINENO=$lineno"
   putsn "shellspec_skip $skip_id ${1:-}"

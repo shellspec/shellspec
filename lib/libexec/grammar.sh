@@ -58,7 +58,7 @@ mapping() {
     AfterCall         )   control after_call  "$2" ;;
     BeforeRun         )   control before_run  "$2" ;;
     AfterRun          )   control after_run   "$2" ;;
-    Pending           )   control pending     "$2" ;;
+    Pending           )   pending             "$2" ;;
     Set               )   control set         "$2" ;;
     Skip              )   skip                "$2" ;;
     Intercept         )   control intercept   "$2" ;;

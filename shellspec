@@ -28,6 +28,7 @@ export SHELLSPEC_SPEC_FAILURE_CODE=101
 export SHELLSPEC_STDERR_OUTPUT_CODE=102
 export SHELLSPEC_SYNTAX_ERROR_CODE=103
 export SHELLSPEC_SKIP_MESSAGE=verbose
+export SHELLSPEC_PENDING_MESSAGE=verbose
 export SHELLSPEC_WARNING_AS_FAILURE=1
 export SHELLSPEC_FAIL_FAST_COUNT=''
 export SHELLSPEC_FAIL_NO_EXAMPLES=''
@@ -193,7 +194,10 @@ Usage: shellspec [options] [files or directories]
       --skip-message VERBOSITY    Mute skip message
                                     [verbose]  do not mute any messages [default]
                                     [moderate] mute repeated messages
-                                    [quiet]    mute repeated messages and non-temporary messages
+                                    [quiet]    mute repeated or non-temporary messages
+      --pending-message VERBOSITY Mute pending message
+                                    [verbose]  do not mute any messages [default]
+                                    [quiet]    mute non-temporary messages
   -p, --[no-]profile              Enable profiling of examples and list the slowest examples
       --profile-limit N           List the top N slowest examples [default: 10]
       --show-deprecations         Display deprecations details [default]
@@ -334,6 +338,12 @@ parse_options() {
           *) invalid 'Invalid VERBOSE.'
         esac
         SHELLSPEC_SKIP_MESSAGE="$2"
+        shift ;;
+      --pending-message) [ "${2:-}" ] || invalid 'Require VERBOSE.'
+        case $2 in (verbose|quiet) ;;
+          *) invalid 'Invalid VERBOSE.'
+        esac
+        SHELLSPEC_PENDING_MESSAGE="$2"
         shift ;;
       --fail-fast | --fail-fast=*)
         SHELLSPEC_FAIL_FAST_COUNT=${1#*=}
