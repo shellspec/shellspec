@@ -748,6 +748,43 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_is_temporary_skip()"
+    Parameters
+      ""            success
+      "# comment"   success
+      "reason"      failure
+    End
+
+    temporary_skip() {
+      SHELLSPEC_SKIP_REASON=$1
+      shellspec_is_temporary_skip
+    }
+
+    It "detects temporary skip"
+      When run temporary_skip "$1"
+      The status should be "$2"
+    End
+  End
+
+  Describe "shellspec_is_temporary_pending()"
+    Parameters
+      ""            success
+      "# comment"   success
+      "reason"      failure
+    End
+
+    temporary_pending() {
+      # shellcheck disable=SC2034
+      SHELLSPEC_PENDING_REASON=$1
+      shellspec_is_temporary_pending
+    }
+
+    It "detects temporary pending"
+      When run temporary_pending "$1"
+      The status should be "$2"
+    End
+  End
+
   Describe "Set"
     Context 'when set errexit on'
       Set errexit:on

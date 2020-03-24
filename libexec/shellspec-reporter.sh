@@ -25,6 +25,7 @@ current_example_index=0 example_index=''
 last_example_no='' last_skip_id='' not_enough_examples=''
 field_id='' field_type='' field_tag='' field_example_no='' field_focused=''
 field_temporary='' field_skipid='' field_pending='' field_message=''
+field_retry=''
 
 # shellcheck disable=SC2034
 specfile_count=0 expected_example_count=0 example_count=0 \
@@ -141,11 +142,7 @@ each_line() {
       esac
 
       if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
-        if [ "$field_fail" ] || [ "$field_tag" = "todo" ]; then
-          pass_quick_data "$field_specfile" "$field_id" no
-        else
-          pass_quick_data "$field_specfile" "$field_id" yes
-        fi
+        pass_quick_data "$field_specfile" "$field_id" "$field_retry"
       fi
       ;;
     end)

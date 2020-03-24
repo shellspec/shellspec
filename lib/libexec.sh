@@ -145,10 +145,10 @@ match_files_pattern() {
   SHELLSPEC_EVAL="
     shift; \
     while [ \$# -lt $(($#*2-2)) ]; do \
-      $1=\$1; \
+      $1=\${1%/}; \
       escape_pattern $1; \
-      set -- \"\$@\" \"\$1\"; \
-      set -- \"\$@\" \"\$1/*\"; \
+      set -- \"\$@\" \"\$$1\"; \
+      set -- \"\$@\" \"\$$1/*\"; \
       shift; \
     done; \
     $1=''; \

@@ -416,7 +416,7 @@ if ! shellspec_ends_with_backslash "\\"; then
   }
 fi
 
-# shellspec_match() deprecated
+# $2: pattern should be escaped
 shellspec_match() {
   [ "${2:-}" ] && eval "case \${1:-} in ($2) true ;; (*) false ;; esac &&:"
 }

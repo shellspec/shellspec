@@ -39,11 +39,11 @@
 
 ### result type
 
-| tag       | fields       |
-| --------- | ------------ |
-| succeeded | note, fail:  |
-| failed    | note, fail:y |
-| warned    | note, fail:? |
-| todo      | note, fail:  |
-| fixed     | note, fail:y |
-| skipped   | note, fail:  |
+| tag       | fields                              |
+| --------- | ----------------------------------- |
+| succeeded | note, fail: , retry:  , temporary:  |
+| failed    | note, fail:y, retry:y , temporary:  |
+| warned    | note, fail:?, retry:? , temporary:  |
+| todo      | note, fail: , retry:y , temporary:? |
+| fixed     | note, fail:y, retry:y , temporary:? |
+| skipped   | note, fail: , retry:  , temporary:? |

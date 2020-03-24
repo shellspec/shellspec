@@ -282,12 +282,12 @@ Describe "libexec/reporter.sh"
     Describe "pass_quick_data()"
       It 'adds quick data'
         process() {
-          pass_quick_data "spec/general_spec.sh" "1-1" no
-          pass_quick_data "spec/general_spec.sh" "1-2" no
-          pass_quick_data "spec/test1_spec.sh" "2-1" no
-          pass_quick_data "spec/test2_spec.sh" "3-1" no
-          pass_quick_data "spec/test1_spec.sh" "2-2" no
-          pass_quick_data "spec/general_spec.sh" "1-3" yes
+          pass_quick_data "spec/general_spec.sh" "1-1" y
+          pass_quick_data "spec/general_spec.sh" "1-2" y
+          pass_quick_data "spec/test1_spec.sh" "2-1" y
+          pass_quick_data "spec/test2_spec.sh" "3-1" y
+          pass_quick_data "spec/test1_spec.sh" "2-2" y
+          pass_quick_data "spec/general_spec.sh" "1-3"
         }
         AfterCall 'list_quick_data callback'
         When call process
@@ -299,7 +299,7 @@ Describe "libexec/reporter.sh"
     End
 
     Describe "find_quick_data()"
-      setup() { pass_quick_data "spec/general_spec.sh" "1-1" no; }
+      setup() { pass_quick_data "spec/general_spec.sh" "1-1" y; }
       BeforeCall setup
       It 'finds quick data'
         When call find_quick_data callback "spec/general_spec.sh"
@@ -310,7 +310,7 @@ Describe "libexec/reporter.sh"
 
     Describe "remove_quick_data()"
       setup() {
-        pass_quick_data "spec/general_spec.sh" "1-1" no
+        pass_quick_data "spec/general_spec.sh" "1-1" y
       }
       BeforeCall setup
       AfterCall 'list_quick_data callback'
@@ -330,8 +330,8 @@ Describe "libexec/reporter.sh"
 
       Context 'ran specfiles without any errors'
         setup() {
-          pass_quick_data "spec/general_spec.sh" "1-1" yes
-          pass_quick_data "spec/general_spec.sh" "1-2" no
+          pass_quick_data "spec/general_spec.sh" "1-1"
+          pass_quick_data "spec/general_spec.sh" "1-2" y
         }
         BeforeCall setup
 
@@ -354,8 +354,8 @@ Describe "libexec/reporter.sh"
 
       Context 'ran specfiles with some errors'
         setup() {
-          pass_quick_data "spec/general_spec.sh" "1-1" yes
-          pass_quick_data "spec/general_spec.sh" "1-2" no
+          pass_quick_data "spec/general_spec.sh" "1-1"
+          pass_quick_data "spec/general_spec.sh" "1-2" y
         }
         BeforeCall setup
 

@@ -297,7 +297,6 @@ shellspec_skip() {
     shift 2
     ( "$@" ) || return 0
   else
-    # shellcheck disable=SC2034
     SHELLSPEC_SKIP_REASON=${1:-}
   fi
 
@@ -308,7 +307,6 @@ shellspec_skip() {
 
 shellspec_pending() {
   shellspec_if SKIP && return 0
-  # shellcheck disable=SC2034
   SHELLSPEC_PENDING_REASON="${1:-}"
   # Output PENDING message if within the example group
   [ "${SHELLSPEC_EXAMPLE_NO:-}" ] && shellspec_output PENDING
@@ -352,4 +350,12 @@ shellspec_abort() {
   shellspec_putsn "${2:-}" >&2
   [ "${3:-}" ] && shellspec_putsn "${3:-}" >&2
   exit "${1:-1}"
+}
+
+shellspec_is_temporary_skip() {
+  case ${SHELLSPEC_SKIP_REASON:-} in ("" | \# | \#\ *) ;; (*) false; esac
+}
+
+shellspec_is_temporary_pending() {
+  case ${SHELLSPEC_PENDING_REASON:-} in ("" | \# | \#\ *) ;; (*) false; esac
 }

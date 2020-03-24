@@ -5,7 +5,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use import reset_params constants sequence replace each padding trim
-use difference_values union_values match_pattern is_empty_file pluralize
+use difference_values union_values match is_empty_file pluralize
 
 count() {
   count_specfiles=0 count_examples=0
@@ -126,15 +126,15 @@ pass_quick_data() {
   done
   if [ "$i" -eq 0 ]; then
     quick_count=$(($quick_count+1)) && i=$quick_count
-    set -- "$1" "$2" "$3" "quick_$i"
+    set -- "$1" "$2" "${3:-}" "quick_$i"
     eval "$4=\"\$1\" $4_fail='' $4_pass=''"
   else
-    set -- "$1" "$2" "$3" "quick_$i"
+    set -- "$1" "$2" "${3:-}" "quick_$i"
   fi
-  if [ "$3" = "yes" ]; then
-    eval "$4_pass=\"\$$4_pass\${$4_pass:+:}@\$2\""
-  else
+  if [ "$3" ]; then
     eval "$4_fail=\"\$$4_fail\${$4_fail:+:}@\$2\""
+  else
+    eval "$4_pass=\"\$$4_pass\${$4_pass:+:}@\$2\""
   fi
 }
 
@@ -177,7 +177,7 @@ filter_quick_file() {
     [ -e "$specfile" ] || continue
     pattern=''
     match_files_pattern pattern "$@"
-    [ "$done" ] && match_pattern "$specfile" "$pattern" && ids=''
+    [ "$done" ] && match "$specfile" "$pattern" && ids=''
     filter_ids() {
       difference_values ids ":" "$2" # Remove succeeded examples
       union_values ids ":" "$3" # Add failed examples

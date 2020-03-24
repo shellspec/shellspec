@@ -136,19 +136,21 @@ Describe 'libexec.sh'
 
   Describe "match_files_pattern()"
     Parameters
-      success "spec"      "spec"
-      success "spec"      "spec/"
-      success "spec"      "spec/file"
-      success "spec/file" "spec/file"
-      failure "spec/file" "spec/file.ext"
-      failure "spec"      "foo"
-      failure "spec"      "spec1"
+      success "spec"        "spec"
+      success "spec"        "spec/"
+      success "spec"        "spec/file"
+      success "spec/"       "spec/file"
+      success "spec/file"   "spec/file"
+      success "spec/[file]" "spec/[file]"
+      failure "spec/file"   "spec/file.ext"
+      failure "spec"        "foo"
+      failure "spec"        "spec1"
     End
 
     check_match_files_pattern() {
       pattern=''
       match_files_pattern pattern "$1"
-      shellspec_match_pattern "$2" "$pattern"
+      shellspec_match "$2" "$pattern"
     }
 
     It "checks if the path matches the pattern (pattern: $2, path: $3)"

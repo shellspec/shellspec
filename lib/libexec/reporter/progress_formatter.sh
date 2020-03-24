@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-: "${field_type:-} ${field_tag:-} ${field_color:-}"
+: "${field_type:-} ${field_tag:-} ${field_color:-} ${field_temporary:-}"
 
 require_formatters methods conclusion finished summary references profiler
 [ "$SHELLSPEC_KCOV" ] && require_formatters kcov
@@ -9,14 +9,16 @@ create_buffers progress
 
 progress_each() {
   case $field_type in (result)
+    _mark=''
     case $field_tag in
-      succeeded) progress '=' "${field_color}.${RESET}" ;;
-      warned   ) progress '=' "${field_color}W${RESET}" ;;
-      skipped  ) progress '=' "${field_color}s${RESET}" ;;
-      failed   ) progress '=' "${field_color}F${RESET}" ;;
-      todo     ) progress '=' "${field_color}P${RESET}" ;;
-      fixed    ) progress '=' "${field_color}p${RESET}" ;;
+      succeeded) _mark="." ;;
+      warned   ) _mark="W" ;;
+      skipped  ) [ "$field_temporary" ] && _mark="S" || _mark="s" ;;
+      failed   ) _mark="F" ;;
+      todo     ) [ "$field_temporary" ] && _mark="P" || _mark="p" ;;
+      fixed    ) [ "$field_temporary" ] && _mark="=" || _mark="-" ;;
     esac
+    progress '=' "${field_color}${_mark}${RESET}"
   esac
 }
 
