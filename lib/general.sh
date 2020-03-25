@@ -169,28 +169,25 @@ case $SHELLSPEC_SHELL_TYPE in
     # shellcheck disable=SC2039
     shellspec_puts() {
       [ $# -eq 0 ] && return 0
-      IFS=" $IFS"; set -- "$*"; IFS=${IFS#?}
-      [ "$1" = -n ] && echo -n - && echo -n n && return 0
-      shellspec_reset_params '$1' "\\\\"
-      eval "$SHELLSPEC_RESET_PARAMS"
-      [ $# -gt 0 ] && echo -n "$1" && shift
-      while [ $# -gt 0 ]; do echo -n "\\\\$1" && shift; done
+      IFS=" $IFS"; set -- "$*\\" "" "\\"; IFS=${IFS#?}
+      [ "$1" = "-n\\" ] && echo -n - && echo -n n && return 0
+      if [ "${3#*\\}" ]; then
+        while [ "$1" ]; do set -- "${1#*\\\\}" "$2${2:+\\\\}${1%%\\\\*}"; done
+      else
+        while [ "$1" ]; do set -- "${1#*\\}" "$2${2:+\\\\}${1%%\\*}"; done
+      fi
+      echo -n "$2"
     }
     ;;
   *)
-    #shellcheck disable=SC2030,SC2123
-    if ( PATH=; printf ) 2>/dev/null; then
-      shellspec_puts() { IFS=" $IFS"; printf '%s' "$*"; IFS=${IFS#?}; }
-    else
-      #shellcheck disable=SC2031
-      shellspec_puts() {
-        # To work even if PATH is empty
-        PATH="${PATH:-}:/usr/bin:/bin" IFS=" $IFS"
-        printf '%s' "$*"
-        PATH=${PATH%:/usr/bin:/bin} IFS=${IFS#?}
-      }
-    fi
+    shellspec_puts() {
+      # Assume built-in 'printf', but even works otherwise.
+      PATH="${PATH:-}:/usr/bin:/bin" IFS=" $IFS"
+      printf '%s' "$*"
+      PATH=${PATH%:/usr/bin:/bin} IFS=${IFS#?}
+    }
 esac
+
 shellspec_putsn() {
   IFS=" $IFS"; shellspec_puts "${*:-}$SHELLSPEC_LF"; IFS="${IFS#?}"
 }
