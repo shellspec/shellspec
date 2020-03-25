@@ -431,6 +431,8 @@ $ shellspec
 ```
 Usage: shellspec [options] [files or directories]
 
+  Using + instead of - for short options causes reverses the meaning
+
   -s, --shell SHELL               Specify a path of shell [default: current shell]
       --[no-]fail-fast[=COUNT]    Abort the run after a certain number of failures [default: 1]
       --[no-]fail-no-examples     Fail if no examples found [default: disabled]
@@ -444,7 +446,8 @@ Usage: shellspec [options] [files or directories]
                                     [specfiles] randomize the order of specfiles
                                     [examples]  randomize the order of examples (slow)
   -j, --jobs JOBS                 Number of parallel jobs to run (0 jobs means disabled)
-      --[no-]quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
+  -q, --[no-]quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
+                                    not-passed examples: failure and non-temporary pending
       --[no-]warning-as-failure   Treat warning as failure [default: enabled]
       --dry-run                   Print the formatter output without running any examples
       --keep-tempdir              Do not cleanup temporary directory [default: disabled]
@@ -468,7 +471,10 @@ Usage: shellspec [options] [files or directories]
       --skip-message VERBOSITY    Mute skip message
                                     [verbose]  do not mute any messages [default]
                                     [moderate] mute repeated messages
-                                    [quiet]    mute repeated messages and non-temporary messages
+                                    [quiet]    mute repeated or non-temporary messages
+      --pending-message VERBOSITY Mute pending message
+                                    [verbose]  do not mute any messages [default]
+                                    [quiet]    mute non-temporary messages
   -p, --[no-]profile              Enable profiling of examples and list the slowest examples
       --profile-limit N           List the top N slowest examples [default: 10]
       --show-deprecations         Display deprecations details [default]

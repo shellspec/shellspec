@@ -41,9 +41,21 @@
 
 | tag       | fields                              |
 | --------- | ----------------------------------- |
-| succeeded | note, fail: , retry:  , temporary:  |
-| failed    | note, fail:y, retry:y , temporary:  |
-| warned    | note, fail:?, retry:? , temporary:  |
-| todo      | note, fail: , retry:y , temporary:? |
-| fixed     | note, fail:y, retry:y , temporary:? |
-| skipped   | note, fail: , retry:  , temporary:? |
+| succeeded | note, fail: , quick:                |
+| failed    | note, fail:y, quick:y               |
+| warned    | note, fail:?, quick:?               |
+| todo      | note, fail: , quick:?, temporary:?, |
+| fixed     | note, fail:y, quick:?, temporary:?, |
+| skipped   | note, fail: , quick: , temporary:?, |
+
+- warned
+  - fail: 'y' if enabled warning-as-failure, otherwise empty
+  - quick: 'y' if enabled warning-as-failure, otherwise empty
+- todo
+  - temporary: 'y' if pending statement is temporary, otherwise empty
+  - quick: 'y' if it is temporary
+- fixed
+  - temporary: 'y' if pending statement is temporary, otherwise empty
+  - quick: 'y' if it is temporary
+- skipped
+  - temporary: 'y' if pending statement is temporary, otherwise empty

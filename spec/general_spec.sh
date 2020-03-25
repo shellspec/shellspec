@@ -591,42 +591,6 @@ Describe "general.sh"
     End
   End
 
-  Describe "shellspec_difference_values()"
-    Context 'when values is empty'
-      Before var=''
-      It "removes specified values"
-        When call shellspec_difference_values var ":" "@5:@1:@2-2:@1"
-        The variable var should eq ""
-      End
-    End
-
-    Context 'when values is not blank'
-      Before var=@1:@2-1:@1:@2-2:@3
-      It "removes specified values"
-        When call shellspec_difference_values var ":" "@5:@1:@2-2:@1"
-        The variable var should eq "@2-1:@3"
-      End
-    End
-  End
-
-  Describe "shellspec_union_values()"
-    Context 'when values is empty'
-      Before var=''
-      It "removes specified values"
-        When call shellspec_union_values var ":" "@1-1:@1-2"
-        The variable var should eq "@1-1:@1-2"
-      End
-    End
-
-    Context 'when values is not empty'
-      Before var=@1:@2-1:@1:@2-2:@3
-      It "removes specified values"
-        When call shellspec_union_values var ":" "@1:@2-1:@2-3:@3:@4:@3"
-        The variable var should eq "@1:@2-1:@2-2:@3:@2-3:@4"
-      End
-    End
-  End
-
   Describe "shellspec_is_empty_file()"
     It "returns success if file is empty"
       When call shellspec_is_empty_file "$EMPTY_FILE"
@@ -663,6 +627,18 @@ Describe "general.sh"
     It "pluralizes"
       When call shellspec_pluralize str "$1"
       The variable str should eq "$2"
+    End
+  End
+
+  Describe "shellspec_exists_file()"
+    It "returns success if exists file"
+      When call shellspec_exists_file "$EMPTY_FILE"
+      The status should be success
+    End
+
+    It "returns failure if file does not exist"
+      When call shellspec_exists_file "$FIXTURE/not-exists"
+      The status should be failure
     End
   End
 End

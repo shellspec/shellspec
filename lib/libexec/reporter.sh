@@ -5,7 +5,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use import reset_params constants sequence replace each padding trim
-use difference_values union_values match is_empty_file pluralize
+use is_empty_file pluralize exists_file
 
 count() {
   count_specfiles=0 count_examples=0
@@ -115,76 +115,36 @@ read_profiler() {
 }
 
 init_quick_data() {
-  quick_count=0
+  # quick_count=0
+  quick_data=''
 }
 
-pass_quick_data() {
-  i=$quick_count
-  while [ "$i" -gt 0 ]; do
-    eval "[ \"\${quick_$i:-}\" = \"\$1\" ] &&:" && break
-    i=$(($i-1))
-  done
-  if [ "$i" -eq 0 ]; then
-    quick_count=$(($quick_count+1)) && i=$quick_count
-    set -- "$1" "$2" "${3:-}" "quick_$i"
-    eval "$4=\"\$1\" $4_fail='' $4_pass=''"
-  else
-    set -- "$1" "$2" "${3:-}" "quick_$i"
-  fi
-  if [ "$3" ]; then
-    eval "$4_fail=\"\$$4_fail\${$4_fail:+:}@\$2\""
-  else
-    eval "$4_pass=\"\$$4_pass\${$4_pass:+:}@\$2\""
-  fi
+add_quick_data() {
+  quick_data="${quick_data}${quick_data:+$LF}$1:$2"
 }
 
-find_quick_data() {
-  i=1
-  while [ "$i" -le "$quick_count" ]; do
-    set -- "$1" "$2" "quick_$i"
-    eval "set -- \"\$@\" \"\${$3:-}\" \"\${$3_pass:-}\" \"\${$3_fail:-}\""
-    [ "$2" != "$4" ] && i=$(($i+1)) && continue
-    "$1" "$4" "$5" "$6"
-    break
-  done
+exists_quick_data() {
+  case "${LF}${quick_data}" in (*${LF}$1:*) ;; (*) false; esac
 }
 
-remove_quick_data() {
-  i=1
-  while [ "$i" -le "$quick_count" ]; do
-    set -- "$1" "quick_$i"
-    eval "set -- \"\$@\" \"\${$2:-}\""
-    [ "$1" != "$3" ] && i=$(($i+1)) && continue
-    unset "$2" "$2_pass" "$2_fail" ||:
-    break
-  done
-}
-
-list_quick_data() {
-  i=1
-  while [ "$i" -le "$quick_count" ]; do
-    set -- "$1" "quick_$i"
-    eval "set -- \"\$@\" \"\${$2:-}\" \"\${$2_pass:-}\" \"\${$2_fail:-}\""
-    [ "$3" ] && "$1" "$3" "$4" "$5"
-    i=$(($i+1))
-  done
-}
-
+# This is very complicated, So do not simplify with shortcut op to see coverage
 filter_quick_file() {
-  line='' specfile='' ids='' done="$1" && shift
-  callback() { if [ "$3" ]; then putsn "$1:$3"; fi; }
-  while read_quickfile line specfile ids; do
-    [ -e "$specfile" ] || continue
-    pattern=''
-    match_files_pattern pattern "$@"
-    [ "$done" ] && match "$specfile" "$pattern" && ids=''
-    filter_ids() {
-      difference_values ids ":" "$2" # Remove succeeded examples
-      union_values ids ":" "$3" # Add failed examples
-    }
-    find_quick_data filter_ids "$specfile"
-    remove_quick_data "$specfile"
-    callback "$specfile" "" "$ids"
+  line='' state='' done="$1" && shift
+  while read_quickfile line state; do
+    if ! exists_file "${line%:*}"; then
+      continue
+    fi
+    if exists_quick_data "$line"; then
+      continue
+    fi
+    if [ ! "$done" ]; then
+      putsn "$line:$state"
+      continue
+    fi
+    if match_quick_data "$line" "$@"; then
+      continue
+    fi
+    putsn "$line:$state"
   done
-  list_quick_data callback
+  putsn "$quick_data"
 }

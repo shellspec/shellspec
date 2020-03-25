@@ -105,8 +105,8 @@ Describe 'libexec.sh'
 
   Describe "read_quickfile()"
     Data
-      #|spec/libexec/general_spec.sh:@1-1
-      #|spec/libexec/reporter_spec.sh:@1-11-4-1
+      #|spec/libexec/general_spec.sh:@1-1:failed
+      #|spec/libexec/reporter_spec.sh:@1-11-4-1:failed
     End
 
     _read_quickfile() {
@@ -116,45 +116,58 @@ Describe 'libexec.sh'
     }
 
     It "reads quickfile"
-      When call _read_quickfile line specfile
-      The word 1 of line 1 of stdout should eq "spec/libexec/general_spec.sh:@1-1"
-      The word 2 of line 1 of stdout should eq "spec/libexec/general_spec.sh"
-      The word 1 of line 2 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
-      The word 2 of line 2 of stdout should eq "spec/libexec/reporter_spec.sh"
+      When call _read_quickfile line
+      The line 1 of stdout should eq "spec/libexec/general_spec.sh:@1-1"
+      The line 2 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
     End
 
     It "reads quickfile with id"
-      When call _read_quickfile line specfile id
+      When call _read_quickfile line state
       The word 1 of line 1 of stdout should eq "spec/libexec/general_spec.sh:@1-1"
-      The word 2 of line 1 of stdout should eq "spec/libexec/general_spec.sh"
-      The word 3 of line 1 of stdout should eq "@1-1"
+      The word 2 of line 1 of stdout should eq "failed"
       The word 1 of line 2 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
-      The word 2 of line 2 of stdout should eq "spec/libexec/reporter_spec.sh"
-      The word 3 of line 2 of stdout should eq "@1-11-4-1"
+      The word 2 of line 2 of stdout should eq "failed"
     End
   End
 
-  Describe "match_files_pattern()"
+  Describe "includes_path()"
     Parameters
-      success "spec"        "spec"
-      success "spec"        "spec/"
-      success "spec"        "spec/file"
-      success "spec/"       "spec/file"
-      success "spec/file"   "spec/file"
-      success "spec/[file]" "spec/[file]"
-      failure "spec/file"   "spec/file.ext"
-      failure "spec"        "foo"
-      failure "spec"        "spec1"
+      success "spec" "spec"
+      success "spec" "spec/"
+      success "spec/" "spec"
+      failure "specify" "spec"
+      success "spec/general_spec.sh" "spec"
+      failure "specify/general_spec.sh" "spec"
+      success "spec/libexec/general_spec.sh" "spec"
+      success "spec/libexec/general_spec.sh" "spec/libexec"
+      success "spec/libexec/general_spec.sh" "spec/libexec/general_spec.sh"
     End
 
-    check_match_files_pattern() {
-      pattern=''
-      match_files_pattern pattern "$1"
-      shellspec_match "$2" "$pattern"
-    }
+    It "checks include path (target: $2, path: $3)"
+      When call includes_path "$2" "$3"
+      The status should be "$1"
+    End
+  End
 
-    It "checks if the path matches the pattern (pattern: $2, path: $3)"
-      When call check_match_files_pattern "$2" "$3"
+  Describe "match_quick_data()"
+    It "accepts multiple arguments"
+      When call match_quick_data "spec/general_spec.sh" "specify" "spec"
+      The status should be success
+    End
+
+    Parameters
+      success "spec/general_spec.sh:@1-1" "spec"
+      success "spec/general_spec.sh:@1-1" "spec/general_spec.sh"
+      success "spec/general_spec.sh:@1-1" "spec/general_spec.sh:@1-1"
+      failure "spec/general_spec.sh:@1-11" "spec/general_spec.sh:@1-1"
+      success "spec/general_spec.sh:@1-1-1" "spec/general_spec.sh:@1-1"
+      success "spec/general_spec.sh:@1-1" "spec/general_spec.sh:@2:@1-1"
+      failure "spec/general_spec.sh:@1-1" "spec/general_spec.sh:3"
+      success "spec/general_spec.sh:@1-1" "spec/general_spec.sh:3:@1"
+    End
+
+    It "checks if it matches the quick data (quick data: $2, path: $3)"
+      When call match_quick_data "$2" "$3"
       The status should be "$1"
     End
   End

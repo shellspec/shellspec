@@ -268,111 +268,107 @@ Describe "libexec/reporter.sh"
 
   Describe "quick feature"
     Before init_quick_data
-    callback() { echo "$1: [$2] [$3]"; }
 
     Describe "init_quick_data()"
+      Before quick_data=dummy
       It 'initializes quick data'
-        AfterCall 'list_quick_data callback'
         When call init_quick_data
-        The output should be blank
-        The lines of output should eq 0
+        The variable quick_data should eq ""
       End
     End
 
-    Describe "pass_quick_data()"
+    Describe "add_quick_data()"
       It 'adds quick data'
-        process() {
-          pass_quick_data "spec/general_spec.sh" "1-1" y
-          pass_quick_data "spec/general_spec.sh" "1-2" y
-          pass_quick_data "spec/test1_spec.sh" "2-1" y
-          pass_quick_data "spec/test2_spec.sh" "3-1" y
-          pass_quick_data "spec/test1_spec.sh" "2-2" y
-          pass_quick_data "spec/general_spec.sh" "1-3"
-        }
-        AfterCall 'list_quick_data callback'
-        When call process
-        The line 1 of output should eq 'spec/general_spec.sh: [@1-3] [@1-1:@1-2]'
-        The line 2 of output should eq 'spec/test1_spec.sh: [] [@2-1:@2-2]'
-        The line 3 of output should eq 'spec/test2_spec.sh: [] [@3-1]'
-        The lines of output should eq 3
+        When call add_quick_data "spec/file1_spec.sh:@1" "failed"
+        The variable quick_data should eq "spec/file1_spec.sh:@1:failed"
+      End
+
+      Context "when already exists quick data"
+        setup() { add_quick_data "spec/file1_spec.sh:@1" "failed"; }
+        Before setup
+
+        It 'adds quick data'
+          When call add_quick_data "spec/file2_spec.sh:@2" "pending"
+          The line 1 of variable quick_data should eq "spec/file1_spec.sh:@1:failed"
+          The line 2 of variable quick_data should eq "spec/file2_spec.sh:@2:pending"
+        End
       End
     End
 
-    Describe "find_quick_data()"
-      setup() { pass_quick_data "spec/general_spec.sh" "1-1" y; }
-      BeforeCall setup
-      It 'finds quick data'
-        When call find_quick_data callback "spec/general_spec.sh"
-        The line 1 of output should eq 'spec/general_spec.sh: [] [@1-1]'
-        The lines of output should eq 1
+    Describe "eixts_quick_data()"
+      It 'returns failure if not exists quick data'
+        When call exists_quick_data "spec/file1_spec.sh:@1"
+        The status should be failure
       End
-    End
 
-    Describe "remove_quick_data()"
-      setup() {
-        pass_quick_data "spec/general_spec.sh" "1-1" y
-      }
-      BeforeCall setup
-      AfterCall 'list_quick_data callback'
+      Context "when already exists quick data"
+        setup() { add_quick_data "spec/file1_spec.sh:@1" "failed"; }
+        Before setup
 
-      It 'removes quick data'
-        When call remove_quick_data "spec/general_spec.sh"
-        The output should be blank
-        The lines of output should eq 0
+        It 'returns success if exists quick data'
+          When call exists_quick_data "spec/file1_spec.sh:@1"
+          The status should be success
+        End
       End
     End
 
     Describe "filter_quick_file()"
+      exists_file() { true; }
+
       Data
-        #|spec/general_spec.sh:@1-1:@1-2:@2-1
-        #|spec/libexec/reporter_spec.sh:@1-11-4-1
+        #|spec/file1_spec.sh:@1:failed
       End
 
-      Context 'ran specfiles without any errors'
-        setup() {
-          pass_quick_data "spec/general_spec.sh" "1-1"
-          pass_quick_data "spec/general_spec.sh" "1-2" y
-        }
-        BeforeCall setup
+      Context "when file not exists"
+        exists_file() { false; }
 
-        Parameters
-          "spec" \
-            eq "spec/general_spec.sh:@1-2" \
-            be undefined
-
-          "spec/libexec/reporter_spec.sh" \
-            eq "spec/general_spec.sh:@1-2:@2-1" \
-            be undefined
-        End
-
-        It 'removes quick data with matching path'
-          When call filter_quick_file "1" "$1"
-          The line 1 of output should "$2" "$3"
-          The line 2 of output should "$4" "$5"
+        It 'removes quick data'
+          When call filter_quick_file 1
+          The output should eq ""
         End
       End
 
-      Context 'ran specfiles with some errors'
+      It 'preserves quick data if it not matches'
+        When call filter_quick_file 1 "spec/file2_spec.sh:@1"
+        The output should eq "spec/file1_spec.sh:@1:failed"
+      End
+
+      Context 'when add new quick data'
+        Before setup
+        setup() { add_quick_data "spec/file1_spec.sh:@1" "warned"; }
+        It 'replaces with new quick data'
+          When call filter_quick_file 1 "spec/file2_spec.sh:@1"
+          The output should eq "spec/file1_spec.sh:@1:warned"
+        End
+      End
+
+      Context 'when add multiple new quick data'
+        Before setup
         setup() {
-          pass_quick_data "spec/general_spec.sh" "1-1"
-          pass_quick_data "spec/general_spec.sh" "1-2" y
+          add_quick_data "spec/file1_spec.sh:@1" "warned"
+          add_quick_data "spec/file1_spec.sh:@1" "failed"
         }
-        BeforeCall setup
+        It 'outputs all quick data'
+          When call filter_quick_file 1 "spec/file2_spec.sh:@1"
+          The line 1 of output should eq "spec/file1_spec.sh:@1:warned"
+          The line 2 of output should eq "spec/file1_spec.sh:@1:failed"
+        End
+      End
 
-        Parameters
-          "spec" \
-            eq "spec/general_spec.sh:@1-2:@2-1" \
-            eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
-
-          "spec/libexec/reporter_spec.sh" \
-            eq "spec/general_spec.sh:@1-2:@2-1" \
-            eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
+      Context 'when no quick data'
+        It 'removes quick data of matched path'
+          When call filter_quick_file 1 "spec"
+          The output should eq ""
         End
 
-        It 'removes quick data with matching path'
-          When call filter_quick_file "" "$1"
-          The line 1 of output should "$2" "$3"
-          The line 2 of output should "$4" "$5"
+        It 'preserves quick data of non-matched path'
+          When call filter_quick_file 1 "spec1"
+          The output should eq "spec/file1_spec.sh:@1:failed"
+        End
+
+        It 'preserves quick data of matched path when not done'
+          When call filter_quick_file "" "spec"
+          The output should eq "spec/file1_spec.sh:@1:failed"
         End
       End
     End

@@ -218,39 +218,39 @@ shellspec_output_ABORTED() {
 }
 
 shellspec_output_SUCCEEDED() {
-  shellspec_output_result tag:succeeded note: fail: retry:
+  shellspec_output_result tag:succeeded note: fail: quick:
 }
 
 shellspec_output_FAILED() {
-  shellspec_output_result tag:failed note:FAILED fail:y retry:y
+  shellspec_output_result tag:failed note:FAILED fail:y quick:y
 }
 
 shellspec_output_WARNED() {
   shellspec_output_result tag:warned note:WARNED \
     fail:${SHELLSPEC_WARNING_AS_FAILURE:+y} \
-    retry:${SHELLSPEC_WARNING_AS_FAILURE:+y}
+    quick:${SHELLSPEC_WARNING_AS_FAILURE:+y}
 }
 
 shellspec_output_TODO() {
   if shellspec_is_temporary_pending; then
-    shellspec_output_result tag:todo note:PENDING fail: retry:y temporary:y
+    shellspec_output_result tag:todo note:PENDING fail: quick:y temporary:y
   else
-    shellspec_output_result tag:todo note:PENDING fail: retry:y temporary:
+    shellspec_output_result tag:todo note:PENDING fail: quick: temporary:
   fi
 }
 
 shellspec_output_FIXED() {
   if shellspec_is_temporary_pending; then
-    shellspec_output_result tag:fixed note:FIXED fail:y retry:y temporary:y
+    shellspec_output_result tag:fixed note:FIXED fail:y quick:y temporary:y
   else
-    shellspec_output_result tag:fixed note:FIXED fail:y retry:y temporary:
+    shellspec_output_result tag:fixed note:FIXED fail:y quick: temporary:
   fi
 }
 
 shellspec_output_SKIPPED() {
   if shellspec_is_temporary_skip; then
-    shellspec_output_result tag:skipped note:SKIPPED fail: retry: temporary:y
+    shellspec_output_result tag:skipped note:SKIPPED fail: quick: temporary:y
   else
-    shellspec_output_result tag:skipped note:SKIPPED fail: retry: temporary:
+    shellspec_output_result tag:skipped note:SKIPPED fail: quick: temporary:
   fi
 }

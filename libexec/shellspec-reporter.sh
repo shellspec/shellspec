@@ -25,7 +25,7 @@ current_example_index=0 example_index=''
 last_example_no='' last_skip_id='' not_enough_examples=''
 field_id='' field_type='' field_tag='' field_example_no='' field_focused=''
 field_temporary='' field_skipid='' field_pending='' field_message=''
-field_retry=''
+field_quick=''
 
 # shellcheck disable=SC2034
 specfile_count=0 expected_example_count=0 example_count=0 \
@@ -33,7 +33,7 @@ succeeded_count='' failed_count='' warned_count='' \
 todo_count='' fixed_count='' skipped_count='' \
 suppressed_todo_count='' suppressed_fixed_count='' suppressed_skipped_count=''
 
-[ -e "$SHELLSPEC_QUICK_FILE" ] && init_quick_data
+init_quick_data
 
 [ "$SHELLSPEC_GENERATORS" ] && mkdir -p "$SHELLSPEC_REPORTDIR"
 
@@ -141,8 +141,8 @@ each_line() {
         [ "$example_index" ] || inc "suppressed_${field_tag}_count"
       esac
 
-      if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
-        pass_quick_data "$field_specfile" "$field_id" "$field_retry"
+      if [ "$field_quick" ]; then
+        add_quick_data "$field_specfile:@$field_id" "$field_tag"
       fi
       ;;
     end)
@@ -216,7 +216,7 @@ if [ -e "$SHELLSPEC_QUICK_FILE" ] && [ ! "$interrupt" ]; then
   if [ -s "$quick_file" ] && [ ! "$quick_file_data" ]; then
     info "All examples have been passed. Rerun to prevent regression.$LF"
   fi
-  puts "$quick_file_data${quick_file_data:+"$LF"}" > "$quick_file"
+  puts "$quick_file_data${quick_file_data:+"$LF"}" | sort > "$quick_file"
 fi
 
 if [ ! "$SHELLSPEC_QUICK" ] && is_empty_file "$SHELLSPEC_QUICK_FILE"; then

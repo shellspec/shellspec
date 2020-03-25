@@ -135,29 +135,45 @@ signal() {
 read_quickfile() {
   eval "{ IFS= read -r $1 || [ \"\$$1\" ]; } &&:" && {
     case $# in
-      2) eval "$2=\${$1%%:*}" ;;
-      *) eval "$2=\${$1%%:*} $3=\${$1#*:}" ;;
+      1) eval "$1=\${$1%:*}" ;;
+      *) eval "$2=\${$1##*:} && $1=\${$1%:*}" ;;
     esac
   }
 }
 
-match_files_pattern() {
-  SHELLSPEC_EVAL="
-    shift; \
-    while [ \$# -lt $(($#*2-2)) ]; do \
-      $1=\${1%/}; \
-      escape_pattern $1; \
-      set -- \"\$@\" \"\$$1\"; \
-      set -- \"\$@\" \"\$$1/*\"; \
-      shift; \
-    done; \
-    $1=''; \
-    while [ \$# -gt 0 ]; do \
-      $1=\"\${$1}\${$1:+|}\$1\"; \
-      shift; \
-    done \
-  "
-  eval "$SHELLSPEC_EVAL"
+includes_path() {
+  set -- "/${1%/}" "/${2%/}"
+  while [ "$1" ]; do
+    [ "$1" = "$2" ] && return 0
+    set -- "${1%/*}" "$2"
+  done
+  return 1
+}
+
+# $1: @ID, $2: [:@IDs...]
+match_quick_data_range() {
+  set -- "${1%:*}" "${1#*:}" "$2:"
+  while [ "$3" ] && set -- "$1" "$2" "${3#*:}" "${3%%:*}"; do
+    case $4 in (@*)
+      case $1 in ($4 | $4-*) return 0; esac
+    esac
+  done
+  return 1
+}
+
+# $1: line of quick data (PATH:@ID), $2-: path[:IDs...]
+match_quick_data() {
+  set -- "$@" "$1"
+  while [ $# -gt 2 ] && shift; do
+    case $1 in (*:*)
+      eval "includes_path \"\${$#%%:*}\" \"\${1%%:*}\" &&:" || continue
+      eval "match_quick_data_range \"\${$##*:}\" \"\${1#*:}\" &&:" || continue
+      return 0
+    esac
+    eval "includes_path \"\${$#%%:*}\" \"\$1\" &&:" || continue
+    return 0
+  done
+  return 1
 }
 
 use puts putsn escape_pattern

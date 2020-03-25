@@ -157,6 +157,8 @@ usage() {
 while IFS= read -r line; do echo "$line"; done <<USAGE
 Usage: shellspec [options] [files or directories]
 
+  Using + instead of - for short options causes reverses the meaning
+
   -s, --shell SHELL               Specify a path of shell [default: current shell]
       --[no-]fail-fast[=COUNT]    Abort the run after a certain number of failures [default: 1]
       --[no-]fail-no-examples     Fail if no examples found [default: disabled]
@@ -171,6 +173,7 @@ Usage: shellspec [options] [files or directories]
                                     [examples]  randomize the order of examples (slow)
   -j, --jobs JOBS                 Number of parallel jobs to run (0 jobs means disabled)
   -q, --[no-]quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
+                                    not-passed examples: failure and non-temporary pending
       --[no-]warning-as-failure   Treat warning as failure [default: enabled]
       --dry-run                   Print the formatter output without running any examples
       --keep-tempdir              Do not cleanup temporary directory [default: disabled]
@@ -482,14 +485,16 @@ esac
 
 if [ "$SHELLSPEC_MODE" = "runner" ] && [ "$SHELLSPEC_QUICK" ]; then
   if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
-    count=$# pattern='' line='' specfile=''
-    match_files_pattern pattern "$@"
-    while read_quickfile line specfile; do
-      ! match "$specfile" "$pattern" || set -- "$@" "$line"
-      SHELLSPEC_PATTERN="$SHELLSPEC_PATTERN|$specfile"
+    count=$# line='' last_line='' # state=''
+    while read_quickfile line state; do
+      if [ "$last_line" != "$line" ] && match_quick_data "$line" "$@"; then
+        set -- "$@" "$line"
+        last_line=$line
+      fi
     done < "$SHELLSPEC_QUICK_FILE"
     if [ "$#" -gt "$count" ] && shift "$count"; then
       info "Run only non-passed examples the last time they ran." >&2
+      SHELLSPEC_PATTERN="*"
     fi
   else
     if ! ( : > "$SHELLSPEC_QUICK_FILE" ) 2>/dev/null; then
