@@ -64,9 +64,9 @@ trap 'docker rmi "$tag" >/dev/null 2>&1' EXIT
 
 # Volume can not be used on VolFs of WSL.
 shellcheck_version=$(cat .shellcheck-version)
-docker build -t "$tag" --build-arg "VERSION=$shellcheck_version" . -f dockerfiles/.shellcheck > /dev/null
-docker run -i --rm "$tag" --version
-docker run -i --rm "$tag" -C $(sources; specs; samples)
+docker build -t "$tag" --pull --build-arg "VERSION=$shellcheck_version" . -f dockerfiles/.shellcheck
+docker run -i --rm "$tag" shellcheck --version
+docker run -i --rm "$tag" shellcheck -C $(sources; specs; samples)
 
 [ "$package_json_status" -ne 0 ] && exit "$package_json_status"
 

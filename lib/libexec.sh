@@ -155,7 +155,7 @@ match_quick_data_range() {
   set -- "${1%:*}" "${1#*:}" "$2:"
   while [ "$3" ] && set -- "$1" "$2" "${3#*:}" "${3%%:*}"; do
     case $4 in (@*)
-      case $1 in ($4 | $4-*) return 0; esac
+      [ "$1" = "$4" ] || starts_with "$1" "$4-" && return 0
     esac
   done
   return 1
@@ -176,4 +176,4 @@ match_quick_data() {
   return 1
 }
 
-use puts putsn escape_pattern
+use puts putsn escape_pattern starts_with
