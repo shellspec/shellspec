@@ -41,7 +41,7 @@ main() {
   done
 
   cd contrib/helpers
-  docker build -t shellspec:helpers . | grayout
+  docker build --pull -t shellspec:helpers . | grayout
   cd "$OLDPWD"
 
   while [ $# -gt 0 ]; do
@@ -98,7 +98,7 @@ run() {
   old_image=$(docker images -q --no-trunc "$image")
 
   # shellcheck disable=SC2086
-  docker build --iidfile "$iidfile" $options - < "$dockerfile" | grayout
+  docker build --pull --iidfile "$iidfile" $options - < "$dockerfile" | grayout
   base_image=$(cat "$iidfile")
 
   info "Create image from base image: $base_image"
