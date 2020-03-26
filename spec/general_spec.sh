@@ -325,39 +325,53 @@ Describe "general.sh"
   End
 
   Describe "shellspec_includes()"
-    It "returns success if includes value"
-      When call shellspec_includes "abc" "b"
-      The status should be success
+    Parameters
+      "abc"     "b"     success
+      "abc"     "d"     failure
+      "a|b|c"   "|b|"   success
+      "abc"      "*"    failure
+      "abc"     "?"     failure
+      "abc[d]"  "c[d]"  success
+      "a\"c"    '"'     success
     End
 
-    It "returns failure if not includes value"
-      When call shellspec_includes "abc" "d"
-      The status should be failure
+    It "checks if it includes a string (target: $1, string: $2)"
+      When call shellspec_includes "$1" "$2"
+      The status should be "$3"
+    End
+  End
+
+  Describe "shellspec_starts_with()"
+    Parameters
+      "abc"     "a"     success
+      "abc"     "d"     failure
+      "a|b|c"   "a|"    success
+      "abc"      "*"    failure
+      "abc"     "?"     failure
+      "[a]bcd"  "[a]b"  success
+      "a\"c"    'a"'    success
     End
 
-    It "treats | as not meta character"
-      When call shellspec_includes "a|b|c" "|b|"
-      The status should be success
+    It "checks if it starts with a string (target: $1, string: $2)"
+      When call shellspec_starts_with "$1" "$2"
+      The status should be "$3"
+    End
+  End
+
+  Describe "shellspec_ends_with()"
+    Parameters
+      "abc"     "c"     success
+      "abc"     "d"     failure
+      "a|b|c"   "|c"    success
+      "abc"      "*"    failure
+      "abc"     "?"     failure
+      "abc[d]"  "c[d]"  success
+      "a\"c"    '"c'    success
     End
 
-    It "treats * as not meta character"
-      When call shellspec_includes "abc" "*"
-      The status should be failure
-    End
-
-    It "treats ? as not meta character"
-      When call shellspec_includes "abc" "?"
-      The status should be failure
-    End
-
-    It "treats [] as not meta character"
-      When call shellspec_includes "abc[d]" "c[d]"
-      The status should be success
-    End
-
-    It "treats \" as not meta character"
-      When call shellspec_includes "a\"c" '"'
-      The status should be success
+    It "checks if it ends with a string (target: $1, string: $2)"
+      When call shellspec_ends_with "$1" "$2"
+      The status should be "$3"
     End
   End
 

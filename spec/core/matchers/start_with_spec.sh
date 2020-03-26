@@ -15,6 +15,12 @@ Describe "core/matchers/start_with.sh"
       The status should be success
     End
 
+    It 'does not matche with glob'
+      subject() { %- "abcdef"; }
+      When run shellspec_matcher_start_with "*"
+      The status should be failure
+    End
+
     It 'does not matches the string with different start'
       subject() { %- "abcdef"; }
       When run shellspec_matcher_start_with "ABC"

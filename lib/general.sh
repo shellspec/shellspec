@@ -333,14 +333,36 @@ if case "a[d]" in (*"a[d]"*) false; esac; then
   shellspec_includes() {
     shellspec_includes_pattern="$2"
     shellspec_escape_meta_posh shellspec_includes_pattern
-    set -- "$1" "$shellspec_includes_pattern"
-    case $1 in (*$2*) eval :; return 0; esac
+    case $1 in (*$shellspec_includes_pattern*) return 0; esac
+    return 1
+  }
+
+  shellspec_starts_with() {
+    shellspec_starts_with="$2"
+    shellspec_escape_meta_posh shellspec_starts_with
+    case $1 in ($shellspec_starts_with*) return 0; esac
+    return 1
+  }
+
+  shellspec_ends_with() {
+    shellspec_ends_with="$2"
+    shellspec_escape_meta_posh shellspec_ends_with
+    case $1 in (*$shellspec_ends_with) return 0; esac
     return 1
   }
 else
   shellspec_includes() {
-    # workaround for pdksh on debian 2.2, Memory fault without eval
-    case $1 in (*"$2"*) eval :; return 0; esac
+    case $1 in (*"$2"*) return 0; esac
+    return 1
+  }
+
+  shellspec_starts_with() {
+    case $1 in ("$2"*) return 0; esac
+    return 1
+  }
+
+  shellspec_ends_with() {
+    case $1 in (*"$2") return 0; esac
     return 1
   }
 fi

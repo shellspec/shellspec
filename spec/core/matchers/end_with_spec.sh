@@ -15,6 +15,12 @@ Describe "core/matchers/end_with.sh"
       The status should be success
     End
 
+    It 'does not matche with glob'
+      subject() { %- "abcdef"; }
+      When run shellspec_matcher_end_with "*"
+      The status should be failure
+    End
+
     It 'does not matches the string with different end'
       subject() { %- "abcdef"; }
       When run shellspec_matcher_end_with "DEF"
