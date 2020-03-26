@@ -94,6 +94,7 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Testing a single file script](#testing-a-single-file-script)
     - [Sourced Return](#sourced-return)
     - [Intercept](#intercept)
+  - [Self-executable specfile](#self-executable-specfile)
 - [For developers](#for-developers)
 - [Version history](#version-history)
 
@@ -820,8 +821,10 @@ The first word of the second line of output should valid as a number
 
 You can skip an example by using the `Skip` keyword. If you want to skip only in
 some cases, use a conditional skip `Skip if`. You can also use `Pending` to
-indicate that the example needs to be implemented. You can temporary skip
-`Describe`, `Context`, `Example`, `Specify`, `It` blocks by prefixing with `x`
+indicate that the example needs to be implemented.
+
+The skip and pending without message is temporary skip and pending.
+You can also temporary skip with blocks by prefixing with `x`
 (`xDescribe`, `xContext`, `xExample`, `xSpecify`, `xIt`).
 
 #### Include - include a shell script
@@ -1098,6 +1101,40 @@ Describe "sample"
     The output should eq "Friday, July 19, 2019"
   End
 End
+```
+
+### Self-executable specfile
+
+Normally, you use shellspec to run the specfile. But you can run it directly
+by adding `eval "$(shellspec -)"` to the top of the specfile.
+
+```sh
+#!/bin/sh
+# 'test.sh' with executable permission
+
+eval "$(shellspec -)"
+
+Describe "bc command"
+  bc() { echo "$@" | command bc; }
+
+  It "performs addition"
+    When call bc "2+3"
+    The output should eq 5
+  End
+End
+```
+
+```sh
+# You can run 'test.sh' directly
+$ ./test.sh
+Running: /bin/sh [sh]
+.
+
+Finished in 0.12 seconds (user 0.00 seconds, sys 0.10 seconds)
+1 example, 0 failures
+
+# Also you can run via shellspec
+$ shellspec test.sh
 ```
 
 ## For developers
