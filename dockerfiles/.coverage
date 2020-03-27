@@ -1,4 +1,4 @@
 FROM shellspec/kcov
-RUN useradd -m user
-USER user
-ENV SH="sh"
+RUN apt-get update && apt-get install -y netcat-openbsd
+WORKDIR /root
+COPY ./ ./

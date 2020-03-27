@@ -28,7 +28,7 @@ demo:
 	gifsicle -i docs/demo.gif -O3 -o docs/demo.gif
 
 coverage:
-	contrib/coverage.sh
+	contrib/coverage.sh --pull
 
 check:
 	contrib/check.sh --pull
