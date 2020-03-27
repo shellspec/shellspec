@@ -31,7 +31,7 @@ coverage:
 	contrib/coverage.sh
 
 check:
-	contrib/check.sh
+	contrib/check.sh --pull
 
 build:
 	contrib/build.sh .dockerhub/Dockerfile         shellspec

@@ -11,6 +11,8 @@
 
 set -eu
 
+[ "${1:-}" = "--pull" ] && PULL=1 || PULL=""
+
 sources() {
   echo shellspec
   find lib libexec -name '*.sh'
@@ -62,9 +64,11 @@ tag="shellspec:shellcheck"
 trap 'exit 1' INT
 trap 'docker rmi "$tag" >/dev/null 2>&1' EXIT
 
-# Volume can not be used on VolFs of WSL.
+# Do not use volume because can not be used on VolFs(lxfs) of WSL.
 shellcheck_version=$(cat .shellcheck-version)
-docker build -t "$tag" --pull --build-arg "VERSION=$shellcheck_version" . -f dockerfiles/.shellcheck
+set -- -t "$tag" --build-arg "VERSION=$shellcheck_version"
+[ "$PULL" ] && set -- "$@" --pull
+docker build "$@" -f dockerfiles/.shellcheck .
 docker run -i --rm "$tag" shellcheck --version
 docker run -i --rm "$tag" shellcheck -C $(sources; specs; samples)
 
