@@ -32,6 +32,7 @@ shellspec_unbuiltin "last"
 shellspec_unbuiltin "sleep"
 shellspec_unbuiltin "date"
 shellspec_unbuiltin "wget"
+shellspec_unbuiltin "mkdir"
 
 shellspec_spec_helper_configure() {
   shellspec_import 'support/custom_matcher'

@@ -241,7 +241,11 @@ Usage: shellspec [options] [files or directories]
 
   **** Utility ****
 
-      --init                      Initialize your project with ShellSpec
+      --init [TEMPLATE...]        Initialize your project with ShellSpec
+                                    Template: Create additional files
+                                      [git]   .gitignore
+                                      [hg]    .hgignore
+                                      [svn]   .svnignore
       --count                     Count the number of specfiles and examples
       --list LIST                 List the specfiles / examples
                                     [specfiles]       list the specfiles

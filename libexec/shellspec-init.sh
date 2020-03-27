@@ -2,24 +2,32 @@
 
 set -eu
 
-log() {
-  printf '%8s   %s\n' "$1" "$2"
-}
+test || __() { :; }
 
 generate() {
   if [ -e "$1" ]; then
-    log exist "$1"
+    set -- exist "$1"
   else
     case "$1" in (*/*)
       mkdir -p "${1%/*}"
     esac
-    : > "$1"
-    while IFS= read -r line; do
-      echo "$line" >> "$1"
-    done
-    log create "$1"
+    cat > "$1"
+    set -- create "$1"
   fi
+  printf '%8s   %s\n' "$@"
 }
+
+ignore_file() {
+  [ "${2:-}" ] && echo "$2"
+  echo "${1:-}.shellspec-local"
+  echo "${1:-}.shellspec-quick.log"
+  echo "${1:-}report/"
+  echo "${1:-}coverage/"
+}
+
+${__SOURCED__:+return}
+
+__ main __
 
 generate ".shellspec" <<DATA
 --require spec_helper
@@ -61,3 +69,11 @@ Describe "Sample specfile"
   End
 End
 DATA
+
+for template; do
+  case $template in
+    git ) ignore_file "/" | generate ".gitignore" ;;
+    hg  ) ignore_file "^" "syntax: regexp" | generate ".hgignore" ;;
+    svn ) ignore_file "/" | generate ".svnignore" ;;
+  esac
+done
