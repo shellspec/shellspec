@@ -2,9 +2,9 @@ PREFIX ?= /usr/local
 BINDIR := $(PREFIX)/bin
 LIBDIR := $(PREFIX)/lib
 
-.PHONY: coverage
+.PHONY: coverage test dist build release
 
-all: shellspec
+all: test check
 
 dist: LICENSE shellspec lib libexec
 	tar -czf shellspec-dist.tar.gz $^ --transform 's,^,shellspec/,'
@@ -40,11 +40,14 @@ build:
 	contrib/build.sh .dockerhub/Dockerfile.debian  shellspec-debian kcov
 	contrib/build.sh .dockerhub/Dockerfile.scratch shellspec-scratch
 
-testall:
-	contrib/test_in_docker.sh dockerfiles/* -- shellspec -j 2
-
 test:
 	./shellspec
+
+test_all:
+	contrib/all.sh shellspec
+
+test_in_docker:
+	contrib/test_in_docker.sh --pull dockerfiles/* -- shellspec -j 2
 
 release:
 	contrib/release.sh

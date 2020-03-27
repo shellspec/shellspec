@@ -32,25 +32,28 @@ LF="
 failures='' count=0 failures_count=0 total_count=0
 
 main() {
-  options=""
+  options="" pull='' shift_count=0
   for arg in "$@"; do
+    shift_count=$((shift_count + 1))
     case $arg in
       --) break ;;
-      -*) options="${options}${arg} " ;;
+      -*)
+        [ "$arg" = "--pull" ] && pull=1
+        options="${options}${arg} "
+        ;;
+      *) total_count=$((total_count + 1))
     esac
   done
 
   cd contrib/helpers
-  docker build --pull -t shellspec:helpers . | grayout
+  docker build ${pull:+--pull} -t shellspec:helpers . | grayout
   cd "$OLDPWD"
 
-  while [ $# -gt 0 ]; do
-    case $1 in
-      --) break ;;
-      -*) ;;
-      *) run "$@" ;;
-    esac
-    shift
+  for arg in "$@"; do
+    shift "$shift_count"
+    shift_count=0
+    case $arg in (-*) continue; esac
+    run "$arg" "$@"
   done
 }
 
@@ -82,11 +85,7 @@ trap 'finished' EXIT
 
 run() {
   dockerfile=$1
-
-  while [ $# -gt 0 ]; do
-    [ "$1" = "--" ] && shift && break
-    shift
-  done
+  shift
 
   info "======================================================================"
   info "$dockerfile:" "$@"
@@ -98,7 +97,7 @@ run() {
   old_image=$(docker images -q --no-trunc "$image")
 
   # shellcheck disable=SC2086
-  docker build --pull --iidfile "$iidfile" $options - < "$dockerfile" | grayout
+  docker build --iidfile "$iidfile" $options - < "$dockerfile" | grayout
   base_image=$(cat "$iidfile")
 
   info "Create image from base image: $base_image"
@@ -126,17 +125,6 @@ run() {
   printf '##############################\n\033[m' >&2
   info
 }
-
-count_total() {
-  total_count=0
-  while [ $# -gt 0 ]; do
-    [ "$1" = "--" ] && break
-    total_count=$((total_count + 1))
-    shift
-  done
-  echo $total_count
-}
-total_count=$(count_total "$@")
 
 start=$(date) start_sec=$(date +%s)
 main "$@"
