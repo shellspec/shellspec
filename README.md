@@ -439,7 +439,7 @@ Usage: shellspec [options] [files or directories]
       --[no-]fail-no-examples     Fail if no examples found [default: disabled]
       --[no-]fail-low-coverage    Fail on low coverage [default: disabled]
                                     The coverage threshold is specified by the coverage option
-  -r, --require MODULE            Require a file
+      --require MODULE            Require a file
   -e, --env NAME=VALUE            Set environment variable
       --env-from ENV-SCRIPT       Set environment variable from script file
       --random TYPE[:SEED]        Run examples by the specified random type
