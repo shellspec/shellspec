@@ -451,6 +451,9 @@ Usage: shellspec [options] [files or directories]
                                     not-passed examples: failure and non-temporary pending
   -w, --[no-]warning-as-failure   Treat warning as failure [default: enabled]
       --dry-run                   Print the formatter output without running any examples
+      --[no-]boost                Increase the CPU frequency forcibly to boost up testing speed
+                                    (Don't worry, this is not overclocking. meaningful joke option.)
+                                    Equivalent of --profile --profile-limit 0 [default: disabled]
       --keep-tempdir              Do not cleanup temporary directory [default: disabled]
 
   **** Output ****
@@ -513,7 +516,11 @@ Usage: shellspec [options] [files or directories]
 
   **** Utility ****
 
-      --init                      Initialize your project with ShellSpec
+      --init [TEMPLATE...]        Initialize your project with ShellSpec
+                                    Template: Create additional files
+                                      [git]   .gitignore
+                                      [hg]    .hgignore
+                                      [svn]   .svnignore
       --count                     Count the number of specfiles and examples
       --list LIST                 List the specfiles / examples
                                     [specfiles]       list the specfiles

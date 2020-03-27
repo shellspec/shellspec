@@ -13,10 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New **failures formatter**.
 - Support **self-executable specfile**. (#40)
 - Add `--pending-message` option.
+- Add `--quiet` option.
 - Add short options for focus and filters.
+- Add `-w` short options for `--warning-as-failure`.
+- Add `--boost` (joke) option.
 - Reporter: Displays comments of 'temporary skip' and 'temporary pending'.
 - Support windows line endings. (#45)
 - Syntax check for missing `End` of parameters.
+- shellspec --init: generate ignore file for cvs.
 
 ### Changed
 
@@ -31,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a bug that `start with` and `end with` match glob pattern.
 - Formatter: Fixed not display correctly of documentation formatter when description is empty.
 - Fixed an issue installer.sh fails in some environments. (#43)
+
+### Deprecated
+
+- Use `--require` long option instead of `-r` short option.
 
 ## [0.22.0] - 2020-02-22
 
