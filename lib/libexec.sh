@@ -77,11 +77,9 @@ edit_in_place() {
 }
 
 display() {
-  (
-    while IFS= read -r line || [ "$line" ]; do
-      putsn "$line"
-    done < "$1"
-  )
+  while IFS= read -r display || [ "$display" ]; do
+    putsn "$display"
+  done
 }
 
 warn() {
@@ -111,6 +109,10 @@ error() {
 abort() {
   error "$@"
   exit 1
+}
+
+set_exit_status() {
+  return "$1"
 }
 
 sleep_wait() {

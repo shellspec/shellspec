@@ -489,26 +489,6 @@ case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
   done
 esac
 
-if [ "$SHELLSPEC_MODE" = "runner" ] && [ "$SHELLSPEC_QUICK" ]; then
-  if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
-    count=$# line='' last_line='' # state=''
-    while read_quickfile line state; do
-      if [ "$last_line" != "$line" ] && match_quick_data "$line" "$@"; then
-        set -- "$@" "$line"
-        last_line=$line
-      fi
-    done < "$SHELLSPEC_QUICK_FILE"
-    if [ "$#" -gt "$count" ] && shift "$count"; then
-      info "Run only non-passed examples the last time they ran." >&2
-      SHELLSPEC_PATTERN="*"
-    fi
-  else
-    if ! ( : > "$SHELLSPEC_QUICK_FILE" ) 2>/dev/null; then
-      warn "Failed to write the quick log for the --quick option."
-    fi
-  fi
-fi
-
 case $SHELLSPEC_MODE in (runner | list)
   if [ "$SHELLSPEC_RANDOM" ] && [ ! "$SHELLSPEC_SEED" ]; then
     random_seed SHELLSPEC_SEED "$SHELLSPEC_UNIXTIME" "$$"

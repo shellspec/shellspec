@@ -51,25 +51,37 @@ reporter() {
 }
 
 error_handler() {
-  error_occurred=''
+  error_count=0
 
   while IFS= read -r line; do
-    error_occurred=1
+    error_count=$(($error_count + 1))
     error "$line"
   done
 
-  if [ "$error_occurred" ]; then
-    exit "$SHELLSPEC_STDERR_OUTPUT_CODE"
-  fi
-}
-
-set_exit_status() {
-  return "$1"
+  [ "$error_count" -eq 0 ] || exit "$SHELLSPEC_STDERR_OUTPUT_CODE"
 }
 
 if (trap - INT) 2>/dev/null; then trap 'interrupt' INT; fi
 if (trap - TERM) 2>/dev/null; then trap ':' TERM; fi
 trap 'cleanup' EXIT
+
+if [ "$SHELLSPEC_QUICK" ]; then
+  if ! ( : >> "$SHELLSPEC_QUICK_FILE" ) 2>/dev/null; then
+    warn "Failed to write the quick log for the --quick option."
+  fi
+
+  if [ -s "$SHELLSPEC_QUICK_FILE" ]; then
+    count=$# line='' last_line='' # state=''
+    while read_quickfile line state; do
+      [ "$last_line" = "$line" ] && continue || last_line=$line
+      match_quick_data "$line" "$@" && set -- "$@" "$line"
+    done < "$SHELLSPEC_QUICK_FILE"
+    if [ "$#" -gt "$count" ] && shift "$count"; then
+      info "Run only non-passed examples the last time they ran." >&2
+      export SHELLSPEC_PATTERN="*"
+    fi
+  fi
+fi
 
 mktempdir "$SHELLSPEC_TMPBASE"
 
@@ -78,13 +90,10 @@ if [ "$SHELLSPEC_KEEP_TEMPDIR" ]; then
   warn "Manually delete: rm -rf \"$SHELLSPEC_TMPBASE\""
 fi
 
-if [ "$SHELLSPEC_BANNER" ] && [ -e "$SHELLSPEC_BANNER" ]; then
-  display "$SHELLSPEC_BANNER"
-fi
+[ -s "$SHELLSPEC_BANNER" ] && display < "$SHELLSPEC_BANNER"
 
 if [ "${SHELLSPEC_RANDOM:-}" ]; then
-  export SHELLSPEC_LIST
-  SHELLSPEC_LIST=$SHELLSPEC_RANDOM
+  export SHELLSPEC_LIST=$SHELLSPEC_RANDOM
   exec="$SHELLSPEC_LIBEXEC/shellspec-list.sh"
   eval "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'} >"$SHELLSPEC_INFILE"
   set -- -
@@ -104,7 +113,7 @@ fi
         xs=$SHELLSPEC_SPEC_FAILURE_CODE
       else
         for xs in "$xs1" "$xs2" "$xs3"; do
-          case $xs in (0 | "") continue; esac
+          [ "${xs#0}" ] || continue
           error "An unexpected error occurred." \
             "[executor: $xs1] [reporter: $xs2] [error handler: $xs3]"
           break
@@ -114,11 +123,6 @@ fi
     )
 ) 3>&1 4>&2 &&:
 exit_status=$?
-
-if [ -e "$SHELLSPEC_TMPBASE/profiler.timeout" ]; then
-  warn "Forced terminate the profiler due to a timed out" \
-    "(Occasionally occurs with zsh)."
-fi
 
 case $exit_status in
   0) ;; # Running specs exit with successfully.
