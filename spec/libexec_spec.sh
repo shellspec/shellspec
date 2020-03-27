@@ -72,21 +72,6 @@ Describe 'libexec.sh'
     End
   End
 
-  Describe "display()"
-    Data
-      #|text1
-      #|text2
-      #|text3
-    End
-
-    It "displays test"
-      When call display
-      The line 1 of output should eq "text1"
-      The line 2 of output should eq "text2"
-      The line 3 of output should eq "text3"
-    End
-  End
-
   Describe "set_exit_status()"
     It "sets exit status"
       sleep() { echo sleep; }

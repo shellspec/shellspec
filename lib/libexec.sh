@@ -76,12 +76,6 @@ edit_in_place() {
   fi
 }
 
-display() {
-  while IFS= read -r display || [ "$display" ]; do
-    putsn "$display"
-  done
-}
-
 warn() {
   if [ "$SHELLSPEC_COLOR" ]; then
     printf '\033[33m%s\033[0m\n' "${*:-}" >&2

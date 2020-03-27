@@ -6,7 +6,7 @@ set -eu
 if [ "$SHELLSPEC_KCOV" -gt 0 ]; then
   # shellcheck source=lib/libexec/kcov-executor.sh
   . "${SHELLSPEC_LIB:-./lib}/libexec/kcov-executor.sh"
-elif [ "$SHELLSPEC_JOBS" -gt 0 ]; then
+elif [ "$SHELLSPEC_WORKERS" -gt 0 ]; then
   # shellcheck source=lib/libexec/parallel-executor.sh
   . "${SHELLSPEC_LIB:-./lib}/libexec/parallel-executor.sh"
 else
@@ -82,11 +82,8 @@ detect_range() {
     line=${line%% *} lineno=$(($lineno + 1))
     [ "$lineno" -lt "$1" ] && continue
     if is_separetor_statement "$line" ; then
-      if [ "$lineno" -eq "$1" ]; then
-        lineno_begin=$lineno
-      else
-        lineno_end=$(($lineno - 1)) && break
-      fi
+      [ "$lineno" -ne "$1" ] && lineno_end=$(($lineno - 1)) && break
+      lineno_begin=$lineno
     fi
   done
   echo "${lineno_begin}-${lineno_end:-$lineno}"

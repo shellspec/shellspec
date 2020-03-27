@@ -33,7 +33,7 @@ export SHELLSPEC_WARNING_AS_FAILURE=1
 export SHELLSPEC_FAIL_FAST_COUNT=''
 export SHELLSPEC_FAIL_NO_EXAMPLES=''
 export SHELLSPEC_FAIL_LOW_COVERAGE=''
-export SHELLSPEC_JOBS=0
+export SHELLSPEC_WORKERS=0
 export SHELLSPEC_DRYRUN=''
 export SHELLSPEC_FOCUS_FILTER=''
 export SHELLSPEC_TAG_FILTER=''
@@ -154,7 +154,7 @@ SHELLSPEC_KCOV_FILENAME="$SHELLSPEC_PROJECT_NAME [specfiles]"
 SHELLSPEC_KCOV_IN_FILE="$SHELLSPEC_TMPBASE/kcov/$SHELLSPEC_KCOV_FILENAME"
 
 usage() {
-while IFS= read -r line; do echo "$line"; done <<USAGE
+  cat<<USAGE
 Usage: shellspec [options] [files or directories]
 
   Using + instead of - for short options causes reverses the meaning
@@ -292,7 +292,7 @@ parse_options() {
         case $2 in (*:*) SHELLSPEC_SEED=${2#*:} ;; (*) SHELLSPEC_SEED=''; esac
         shift ;;
       -j | --jobs) [ "${2:-}" ] || invalid 'Require JOBS.'
-        SHELLSPEC_JOBS=$2
+        SHELLSPEC_WORKERS=$2
         shift ;;
       -q | --quick) SHELLSPEC_QUICK=1 ;;
       +q | --no-quick) SHELLSPEC_QUICK='' ;;
@@ -473,7 +473,7 @@ if [ "$SHELLSPEC_KCOV" ]; then
   fi
 fi
 
-if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_JOBS" -gt 0 ]; then
+if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_WORKERS" -gt 0 ]; then
   abort "Cannot be specified profiler and parallel execution at the same time."
 fi
 
