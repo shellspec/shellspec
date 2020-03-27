@@ -15,3 +15,5 @@ spec/fixture/stat/*
 !LICENSE
 !Makefile
 !package.json
+!*.sh
+

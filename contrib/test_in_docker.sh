@@ -52,7 +52,10 @@ main() {
   for arg in "$@"; do
     shift "$shift_count"
     shift_count=0
-    case $arg in (-*) continue; esac
+    case $arg in
+      --) break ;;
+      -*) continue ;;
+    esac
     run "$arg" "$@"
   done
 }
