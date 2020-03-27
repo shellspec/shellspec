@@ -176,6 +176,9 @@ Usage: shellspec [options] [files or directories]
                                     not-passed examples: failure and non-temporary pending
   -w, --[no-]warning-as-failure   Treat warning as failure [default: enabled]
       --dry-run                   Print the formatter output without running any examples
+      --[no-]boost                Increase the CPU frequency forcibly to boost up testing speed
+                                    (Don't worry, this is not overclocking. meaningful joke option.)
+                                    Equivalent of --profile --profile-limit 0 [default: disabled]
       --keep-tempdir              Do not cleanup temporary directory [default: disabled]
 
   **** Output ****
@@ -381,6 +384,8 @@ parse_options() {
       --profile-limit) [ "${2:-}" ] || invalid 'Require N.'
         SHELLSPEC_PROFILER_LIMIT="$2"
         shift ;;
+      --boost) SHELLSPEC_PROFILER=1 SHELLSPEC_PROFILER_LIMIT=0 ;;
+      --no-boost) SHELLSPEC_PROFILER='' SHELLSPEC_PROFILER_LIMIT=10 ;;
       --show-deprecations) SHELLSPEC_DEPRECATION_LOG=1 ;;
       --hide-deprecations) SHELLSPEC_DEPRECATION_LOG='' ;;
       --init | --task | --translate | --syntax-check) SHELLSPEC_MODE=${1#--} ;;

@@ -168,7 +168,7 @@ sequence callback 1 10
 time_real=''
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
-if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_PROFILER_LOG" ]; then
+if [ -e "$SHELLSPEC_PROFILER_LOG" ]; then
   mkdir -p "$SHELLSPEC_REPORTDIR"
   sleep_wait [ ! -e "$SHELLSPEC_TMPBASE/profiler.done" ] ||:
   callback() { eval "putsn \"\$5\" \"\$profiler_line$3\""; }

@@ -60,7 +60,7 @@ shellspec_call_configure() {
 }
 shellspec_call_configure "$SHELLSPEC_REQUIRES"
 
-if [ "$SHELLSPEC_PROFILER" ]; then
+if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_PROFILER_LIMIT" -gt 0 ]; then
   shellspec_profile_start() { shellspec_profile_wait; }
   shellspec_profile_end() { shellspec_profile_wait; }
 else

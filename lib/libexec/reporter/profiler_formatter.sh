@@ -4,6 +4,7 @@
 
 profiler_output() {
   [ "$SHELLSPEC_PROFILER" ] || return 0
+  [ "$SHELLSPEC_PROFILER_LIMIT" -eq 0 ] && return 0
   case $1 in (end)
     _i=0 _slowest=$SHELLSPEC_PROFILER_LIMIT
     [ "$profiler_count" -le "$_slowest" ] && _slowest=$profiler_count
