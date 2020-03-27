@@ -449,7 +449,7 @@ Usage: shellspec [options] [files or directories]
   -j, --jobs JOBS                 Number of parallel jobs to run (0 jobs means disabled)
   -q, --[no-]quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
                                     not-passed examples: failure and non-temporary pending
-      --[no-]warning-as-failure   Treat warning as failure [default: enabled]
+  -w, --[no-]warning-as-failure   Treat warning as failure [default: enabled]
       --dry-run                   Print the formatter output without running any examples
       --keep-tempdir              Do not cleanup temporary directory [default: disabled]
 
