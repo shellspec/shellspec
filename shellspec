@@ -201,6 +201,7 @@ Usage: shellspec [options] [files or directories]
       --pending-message VERBOSITY Mute pending message
                                     [verbose]  do not mute any messages [default]
                                     [quiet]    mute non-temporary messages
+      --quiet                     Equivalent of --skip-message quiet --pending-message quiet
   -p, --[no-]profile              Enable profiling of examples and list the slowest examples
       --profile-limit N           List the top N slowest examples [default: 10]
       --show-deprecations         Display deprecations details [default]
@@ -348,6 +349,7 @@ parse_options() {
         esac
         SHELLSPEC_PENDING_MESSAGE="$2"
         shift ;;
+      --quiet) SHELLSPEC_SKIP_MESSAGE=quiet SHELLSPEC_PENDING_MESSAGE=quiet ;;
       --fail-fast | --fail-fast=*)
         SHELLSPEC_FAIL_FAST_COUNT=${1#*=}
         case $SHELLSPEC_FAIL_FAST_COUNT in (*[!0-9]*)

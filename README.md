@@ -476,6 +476,7 @@ Usage: shellspec [options] [files or directories]
       --pending-message VERBOSITY Mute pending message
                                     [verbose]  do not mute any messages [default]
                                     [quiet]    mute non-temporary messages
+      --quiet                     Equivalent of --skip-message quiet --pending-message quiet
   -p, --[no-]profile              Enable profiling of examples and list the slowest examples
       --profile-limit N           List the top N slowest examples [default: 10]
       --show-deprecations         Display deprecations details [default]
