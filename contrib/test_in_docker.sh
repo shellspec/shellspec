@@ -121,13 +121,22 @@ run() {
     failures="${failures}- ${os} [$xs]${LF}"
     failures_count=$((failures_count + 1))
   fi
-  [ "$failures_count" -eq 0 ] && printf '\033[32m' || printf '\033[31m'
-  printf '##############################\n' >&2
-  printf '# exit status: %3d           #\n' "$xs" >&2
-  printf '# %3d / %3d (failures: %3d)  #\n' "$count" "$total_count" "$failures_count" >&2
-  printf '##############################\n\033[m' >&2
+  summary
   info
 }
+
+summary() {
+  [ "$xs" -eq 0 ] && color="\033[32m" || color="\033[31m"
+  [ "$failures_count" -eq 0 ] && fcolor="\033[32m" || fcolor="\033[31m"
+  set -- "$count" "$total_count" "$failures_count"
+  printf "${color}##############################\n\033[m"
+  printf "${color}# exit status: %3d           #\n\033[m" "$xs"
+  printf "${color}# ${fcolor}%3d / %3d (failures: %3d)${color}  #\n\033[m" "$@"
+  printf "${color}##############################\n\033[m"
+  if [ "$failures" ]; then
+    echo "$failures"
+  fi
+} >&2
 
 start=$(date) start_sec=$(date +%s)
 main "$@"
