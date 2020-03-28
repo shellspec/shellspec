@@ -154,6 +154,9 @@ case $SHELLSPEC_SHELL_TYPE in
     shellspec_puts() {
       IFS=" $IFS"; builtin print -nr -- "${*:-}"; IFS=${IFS#?}
     }
+    shellspec_putsn() {
+      [ $# -gt 0 ] && shellspec_puts "$@"; builtin print -r
+    }
     ;;
   ksh | mksh | pdksh)
     # 'print' is all built-in.
@@ -163,34 +166,42 @@ case $SHELLSPEC_SHELL_TYPE in
     shellspec_puts() {
       IFS=" $IFS"; command print -nr -- "${*:-}"; IFS=${IFS#?}
     }
+    shellspec_putsn() {
+      [ $# -gt 0 ] && shellspec_puts "$@"; command print -r
+    }
     ;;
   posh)
     # posh does not implement 'printf' or 'print' as built-in.
-    # shellcheck disable=SC2039
     shellspec_puts() {
-      [ $# -eq 0 ] && return 0
-      IFS=" $IFS"; set -- "$*\\" "" "\\"; IFS=${IFS#?}
-      [ "$1" = "-n\\" ] && echo -n - && echo -n n && return 0
-      if [ "${3#*\\}" ]; then
-        while [ "$1" ]; do set -- "${1#*\\\\}" "$2${2:+\\\\}${1%%\\\\*}"; done
+      if [ $# -eq 1 ] && [ "$1" = "-n" ]; then
+        builtin echo -n -; builtin echo -n n
       else
-        while [ "$1" ]; do set -- "${1#*\\}" "$2${2:+\\\\}${1%%\\*}"; done
+        IFS=" $IFS"; set -- "${*:-}\\" "" "\\"; IFS=${IFS#?}
+        if [ "${3#*\\}" ]; then
+          while [ "$1" ]; do set -- "${1#*\\\\}" "$2${2:+\\\\}${1%%\\\\*}"; done
+        else
+          while [ "$1" ]; do set -- "${1#*\\}" "$2${2:+\\\\}${1%%\\*}"; done
+        fi
+        builtin echo -n "$2"
       fi
-      echo -n "$2"
+    }
+    shellspec_putsn() {
+      [ $# -gt 0 ] && shellspec_puts "$@"; builtin echo
     }
     ;;
   *)
+    # Assume built-in 'printf', but even works otherwise.
     shellspec_puts() {
-      # Assume built-in 'printf', but even works otherwise.
-      PATH="${PATH:-}:/usr/bin:/bin" IFS=" $IFS"
-      printf '%s' "$*"
-      PATH=${PATH%:/usr/bin:/bin} IFS=${IFS#?}
+      PATH="${PATH:-}:/usr/bin:/bin"
+      IFS=" $IFS"; printf '%s' "$*"; IFS=${IFS#?}
+      PATH=${PATH%:/usr/bin:/bin}
+    }
+    shellspec_putsn() {
+      PATH="${PATH:-}:/usr/bin:/bin"
+      IFS=" $IFS"; printf '%s\n' "$*"; IFS=${IFS#?}
+      PATH=${PATH%:/usr/bin:/bin}
     }
 esac
-
-shellspec_putsn() {
-  IFS=" $IFS"; shellspec_puts "${*:-}$SHELLSPEC_LF"; IFS="${IFS#?}"
-}
 
 shellspec_error() { shellspec_putsn "$*" >&2; exit 1; }
 
