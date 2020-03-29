@@ -114,27 +114,40 @@ Describe 'libexec.sh'
   Describe "read_quickfile()"
     Data
       #|spec/libexec/general_spec.sh:@1-1:failed
-      #|spec/libexec/reporter_spec.sh:@1-11-4-1:failed
+      #|spec/libexec/general_spec.sh:@1-2:warn
+      #|spec/libexec/reporter_spec.sh:@1-11-4-1:todo
+      #|spec/libexec/reporter_spec.sh:@1-11-4-2:fixed
     End
 
     _read_quickfile() {
       while read_quickfile "$@"; do
-        eval "echo $(printf '$%s ' "$@")"
+        eval "echo \$$1 ${2:+\$$2}"
       done
     }
 
     It "reads quickfile"
       When call _read_quickfile line
       The line 1 of stdout should eq "spec/libexec/general_spec.sh:@1-1"
-      The line 2 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
+      The line 2 of stdout should eq "spec/libexec/general_spec.sh:@1-2"
+      The line 3 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
+      The line 4 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-2"
+      The lines of stdout should eq 4
     End
 
-    It "reads quickfile with id"
+    It "reads quickfile with state"
       When call _read_quickfile line state
-      The word 1 of line 1 of stdout should eq "spec/libexec/general_spec.sh:@1-1"
-      The word 2 of line 1 of stdout should eq "failed"
-      The word 1 of line 2 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-1"
-      The word 2 of line 2 of stdout should eq "failed"
+      The line 1 of stdout should eq "spec/libexec/general_spec.sh:@1-1 failed"
+      The line 2 of stdout should eq "spec/libexec/general_spec.sh:@1-2 warn"
+      The line 3 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-1 todo"
+      The line 4 of stdout should eq "spec/libexec/reporter_spec.sh:@1-11-4-2 fixed"
+      The lines of stdout should eq 4
+    End
+
+    It "reads failed quick data only"
+      When call _read_quickfile line state 1
+      The line 1 of stdout should eq "spec/libexec/general_spec.sh:@1-1 failed"
+      The line 2 of stdout should eq "spec/libexec/general_spec.sh:@1-2 warn"
+      The lines of stdout should eq 2
     End
   End
 

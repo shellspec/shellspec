@@ -65,20 +65,25 @@ if (trap - INT) 2>/dev/null; then trap 'interrupt' INT; fi
 if (trap - TERM) 2>/dev/null; then trap ':' TERM; fi
 trap 'cleanup' EXIT
 
+[ "$SHELLSPEC_REPAIR" ] && SHELLSPEC_QUICK=1
+
 if [ "$SHELLSPEC_QUICK" ]; then
   if ! ( : >> "$SHELLSPEC_QUICK_FILE" ) 2>/dev/null; then
     warn "Failed to write the quick log for the --quick option."
   fi
 
-  if [ -s "$SHELLSPEC_QUICK_FILE" ]; then
-    count=$# line='' last_line='' # state=''
-    while read_quickfile line state; do
+  if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
+    count=$# line='' last_line=''
+    while read_quickfile line state "$SHELLSPEC_REPAIR"; do
       [ "$last_line" = "$line" ] && continue || last_line=$line
       match_quick_data "$line" "$@" && set -- "$@" "$line"
     done < "$SHELLSPEC_QUICK_FILE"
     if [ "$#" -gt "$count" ] && shift "$count"; then
       info "Run only non-passed examples the last time they ran." >&2
       export SHELLSPEC_PATTERN="*"
+    elif [ "$SHELLSPEC_REPAIR" ]; then
+      info "No failed examples were found." >&2
+      exit
     fi
   fi
 fi

@@ -77,6 +77,7 @@ export SHELLSPEC_KILL='kill'
 export SHELLSPEC_SHEBANG_MULTIARG=''
 export SHELLSPEC_QUICK=''
 export SHELLSPEC_QUICK_FILE=".shellspec-quick.log"
+export SHELLSPEC_REPAIR=''
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -303,6 +304,9 @@ parse_options() {
         shift ;;
       -q | --quick) SHELLSPEC_QUICK=1 ;;
       +q | --no-quick) SHELLSPEC_QUICK='' ;;
+           --repair | --only-failure) SHELLSPEC_QUICK=1 SHELLSPEC_REPAIR=1 ;;
+      -n | --next | --next-failure) SHELLSPEC_QUICK=1 SHELLSPEC_REPAIR=1
+          SHELLSPEC_FAIL_FAST_COUNT=1 SHELLSPEC_RANDOM="" ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
       --keep-tempdir) SHELLSPEC_KEEP_TEMPDIR=1 ;;
       -F | --focus) SHELLSPEC_FOCUS_FILTER=1 ;;

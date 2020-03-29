@@ -22,10 +22,9 @@ translator() {
 }
 
 error_handler() {
-  specfile='' lineno='' errors='' error_handler_status=0 error_captured=''
+  specfile='' lineno='' errors='' error_handler_status=0
 
   while IFS= read -r line; do
-    error_captured=1
     case $line in
       ${SYN}shellspec_marker:*)
         if [ "$errors" ]; then
@@ -43,7 +42,7 @@ error_handler() {
     esac
   done
 
-  if [ "$error_captured" ]; then
+  if [ "$error_handler_status" -ne 0 ]; then
     detect_unexpected_error "$specfile" "$lineno" "$errors"
   fi
   return $error_handler_status

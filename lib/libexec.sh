@@ -129,12 +129,15 @@ signal() {
 }
 
 read_quickfile() {
-  eval "{ IFS= read -r $1 || [ \"\$$1\" ]; } &&:" && {
-    case $# in
-      1) eval "$1=\${$1%:*}" ;;
-      *) eval "$2=\${$1##*:} && $1=\${$1%:*}" ;;
-    esac
-  }
+  set -- "$1" "${2:-}" "${3:-}"
+  while eval "{ IFS= read -r $1 || [ \"\$$1\" ]; } &&:"; do
+    eval "set -- \"\$@\" \"\${$1##*:}\" \"\${$1%:*}\""
+    case $4 in (todo | fixed) [ "$3" ] && continue; esac
+    eval "$1=\$5"
+    [ "$2" ] && eval "$2=\$4"
+    return 0
+  done
+  return 1
 }
 
 includes_path() {

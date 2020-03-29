@@ -219,10 +219,6 @@ if [ -e "$SHELLSPEC_QUICK_FILE" ] && [ ! "$interrupt" ]; then
   puts "$quick_file_data${quick_file_data:+"$LF"}" | sort > "$quick_file"
 fi
 
-if [ ! "$SHELLSPEC_QUICK" ] && is_empty_file "$SHELLSPEC_QUICK_FILE"; then
-  rm "$SHELLSPEC_QUICK_FILE"
-fi
-
 if [ -e "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE" ]; then
   deprecated_count=0
   while IFS= read -r deprecated; do
