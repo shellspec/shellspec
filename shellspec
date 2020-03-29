@@ -315,7 +315,7 @@ parse_options() {
         shift ;;
       -q | --quick) SHELLSPEC_QUICK=1 ;;
       +q | --no-quick) SHELLSPEC_QUICK='' ;;
-           --repair | --only-failure) SHELLSPEC_QUICK=1 SHELLSPEC_REPAIR=1 ;;
+           --repair | --only-failures) SHELLSPEC_QUICK=1 SHELLSPEC_REPAIR=1 ;;
       -n | --next | --next-failure) SHELLSPEC_QUICK=1 SHELLSPEC_REPAIR=1
           SHELLSPEC_FAIL_FAST_COUNT=1 SHELLSPEC_RANDOM="" ;;
       --dry-run) SHELLSPEC_DRYRUN=1 ;;
