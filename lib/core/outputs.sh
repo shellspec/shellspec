@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2016
 
 shellspec_output_METADATA() {
-  shellspec_output_meta "shell:$SHELLSPEC_SHELL" \
+  shellspec_output_meta "info:${SHELLSPEC_INFO:-}" "shell:$SHELLSPEC_SHELL" \
     "shell_type:$SHELLSPEC_SHELL_TYPE" "shell_version:$SHELLSPEC_SHELL_VERSION"
 }
 

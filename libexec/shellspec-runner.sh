@@ -88,6 +88,19 @@ if [ "$SHELLSPEC_QUICK" ]; then
   fi
 fi
 
+quick_mode='' info='' info_extra=$SHELLSPEC_INFO
+[ -e "$SHELLSPEC_QUICK_FILE" ] && quick_mode="<Quick Mode> "
+[ "$SHELLSPEC_WORKERS" -gt 0 ] && info="${info}--jobs $SHELLSPEC_WORKERS "
+[ "$SHELLSPEC_QUICK" ] && info="${info}--quick "
+[ "$SHELLSPEC_REPAIR" ] && info="${info}--repair "
+if [ "$SHELLSPEC_FAIL_FAST_COUNT" ]; then
+  info="${info}--fail-fast $SHELLSPEC_FAIL_FAST_COUNT " && info="${info% 1 } "
+fi
+[ "$SHELLSPEC_DRYRUN" ] && info="${info}--dry-run "
+[ "$SHELLSPEC_RANDOM" ] && info="${info}--random $SHELLSPEC_RANDOM "
+[ "$info" ] && info="{${info% }}"
+SHELLSPEC_INFO="${quick_mode}${info}${info_extra:+ }${info_extra}"
+
 mktempdir "$SHELLSPEC_TMPBASE"
 
 if [ "$SHELLSPEC_KEEP_TEMPDIR" ]; then

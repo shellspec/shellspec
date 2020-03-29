@@ -18,7 +18,7 @@
 
 | type      | fields                                                       |
 | --------- | ------------------------------------------------------------ |
-| meta      | shell, shell_type, shell_version                             |
+| meta      | shell, shell_type, shell_version, info                       |
 | begin     | specfile                                                     |
 | example   | id, block_no, example_no, focused, description, lineno_range |
 | statement | tag, lineno                                                  |

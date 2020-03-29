@@ -78,6 +78,7 @@ export SHELLSPEC_SHEBANG_MULTIARG=''
 export SHELLSPEC_QUICK=''
 export SHELLSPEC_QUICK_FILE=".shellspec-quick.log"
 export SHELLSPEC_REPAIR=''
+export SHELLSPEC_INFO=''
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
