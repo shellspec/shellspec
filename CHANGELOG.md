@@ -9,11 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- New **quick execution**.
+- New **quick execution** and related options (`--quick`, `--repair`, `--next`).
 - New **failures formatter**.
 - Support **self-executable specfile**. (#40)
-- Add `--pending-message` option.
-- Add `--quiet` option.
+- Add `--pending-message` and `--quiet` option.
 - Add short options for focus and filters.
 - Add `-w` short options for `--warning-as-failure`.
 - Add `--boost` (joke) option.
