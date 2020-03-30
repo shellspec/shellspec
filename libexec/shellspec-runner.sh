@@ -65,7 +65,14 @@ if (trap - INT) 2>/dev/null; then trap 'interrupt' INT; fi
 if (trap - TERM) 2>/dev/null; then trap ':' TERM; fi
 trap 'cleanup' EXIT
 
-[ "$SHELLSPEC_REPAIR" ] && SHELLSPEC_QUICK=1
+if [ "$SHELLSPEC_REPAIR" ]; then
+  if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
+    SHELLSPEC_QUICK=1
+  else
+    warn "Quick Mode is disabled. Run with --quick option first."
+    exit
+  fi
+fi
 
 if [ "$SHELLSPEC_QUICK" ]; then
   if ! ( : >> "$SHELLSPEC_QUICK_FILE" ) 2>/dev/null; then
@@ -79,10 +86,10 @@ if [ "$SHELLSPEC_QUICK" ]; then
       match_quick_data "$line" "$@" && set -- "$@" "$line"
     done < "$SHELLSPEC_QUICK_FILE"
     if [ "$#" -gt "$count" ] && shift "$count"; then
-      info "Run only non-passed examples the last time they ran." >&2
+      warn "Run only not-passed examples the last time they ran."
       export SHELLSPEC_PATTERN="*"
     elif [ "$SHELLSPEC_REPAIR" ]; then
-      info "No failed examples were found." >&2
+      warn "No failed examples were found."
       exit
     fi
   fi
