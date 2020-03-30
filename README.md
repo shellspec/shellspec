@@ -73,6 +73,7 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [When - evaluation](#when---evaluation)
     - [The - expectation](#the---expectation)
     - [Skip, Pending - skip and pending example](#skip-pending---skip-and-pending-example)
+      - [Temporary skip and pending](#temporary-skip-and-pending)
     - [Include - include a shell script](#include---include-a-shell-script)
     - [Set - set shell option](#set---set-shell-option)
     - [Path, File, Dir - path alias](#path-file-dir---path-alias)
@@ -117,7 +118,7 @@ testing tools. Of course ShellSpec is tested by ShellSpec.
 - Hooks before / after examples
 - Parameterized examples for Data-Driven tests
 - Execution filtering by line number, id, focus, tag and example name
-- Quick execution to run only non-passed examples the last time they ran
+- Quick execution to run only not-passed examples the last time they ran
 - Parallel execution, random ordered execution and dry-run execution
 - Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
 - Coverage ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
@@ -455,7 +456,7 @@ Usage: shellspec [options...] [files or directories...]
   **** Execution ****
 
     -q, --[no-]quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
-                                      not-passed examples: failure and non-temporary pending examples
+                                      not-passed examples: failure and temporary pending examples
                                       Quick mode is automatically enabled. To disable quick mode,
                                       delete .shellspec-quick.log on the project root directory.
         --repair, --only-failures   Run failure examples only (Depends on quick mode)
@@ -563,15 +564,22 @@ They can be overridden with a custom script using the `--env-from` option.
 
 ### Quick execution
 
-Quick execution is to run only non-passed (failed / pending) examples
-the last time they ran. You can enable with `--quick` option.
+Quick execution is a feature for rapid development and failure fixing.
 
-When specified `--quick` option:
+When you run `shellspec` with `--quick` option first, Quick mode is automatically enabled.
+When Quick mode enabled, The file `.shellspec-quick.log` generated on the project root directory.
+If you want to disable Quick mode, delete `.shellspec-quick.log`.
 
-1. Run all specified examples if not exists `.shellspec-quick.log`.
-2. Generate `.shellspec-quick.log` if exists non-passed examples.
-3. Run only non-passed examples if exists `.shellspec-quick.log`.
-4. Remove passed examples from `.shellspec-quick.log`
+When Quick mode enabled, the results of running examples are logged to `.shellspec-quick.log`
+on the project root directory (even if `--quick` option is not specified).
+
+Use `--quick` option is for rapid development. When `--quick` option specified, It runs examples
+that not-passed (failure and temporary pending) the last time they ran.
+If there are no examples that did not pass, It runs all examples.
+It is designed to be added to `$HOME/.shellspec` instead of being specified each runs.
+
+Use `--repair` and `--next` option is for rapid failure fixing.
+It runs failed examples only (not includes temporary pending).
 
 ### Parallel execution
 
@@ -838,9 +846,26 @@ You can skip an example by using the `Skip` keyword. If you want to skip only in
 some cases, use a conditional skip `Skip if`. You can also use `Pending` to
 indicate that the example needs to be implemented.
 
+##### Temporary skip and pending
+
+The (non-temporary) skip and pending is for long term skip and pending.
+It need time to resolve and it may commit to a version control system.
+
+The temporary skip and pending is for short term skip and pending.
+Used during the current work, do not commit to a version control system.
+
 The skip and pending without message is temporary skip and pending.
+
+```sh
+Skip "some reason" # Skip with message is non-temporary skip
+Skip if "reason" condition # Skip with condition is also non-temporary skip
+Skip # temporary skip (this is comment but will be displayed in the report)
+```
+
 You can also temporary skip with blocks by prefixing with `x`
 (`xDescribe`, `xContext`, `xExample`, `xSpecify`, `xIt`).
+
+`Todo` (and empty example) is also treated as temporary pending.
 
 #### Include - include a shell script
 

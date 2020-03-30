@@ -185,7 +185,7 @@ Usage: shellspec [options...] [files or directories...]
   **** Execution ****
 
     -q, --[no-]quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
-                                      not-passed examples: failure and non-temporary pending examples
+                                      not-passed examples: failure and temporary pending examples
                                       Quick mode is automatically enabled. To disable quick mode,
                                       delete .shellspec-quick.log on the project root directory.
         --repair, --only-failures   Run failure examples only (Depends on quick mode)
