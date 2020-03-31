@@ -54,7 +54,7 @@ shellspec_output_PENDING() {
 
 shellspec_output_NOT_IMPLEMENTED() {
   shellspec_output_statement "tag:pending" "note:PENDING" "fail:" "pending:y" \
-    "temporary:y" "message:# Not yet implemented"
+    "temporary:" "message:$SHELLSPEC_PENDING_REASON"
 }
 
 shellspec_output_EXPECTATION() {

@@ -174,6 +174,7 @@ f() {
 
 todo() {
   block_example "$1"
+  pending "$1"
   block_end ""
 }
 

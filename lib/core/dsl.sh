@@ -156,7 +156,13 @@ shellspec_invoke_example() {
     shellspec_output SKIPPED && return 0
   }
 
-  shellspec_output_if NOT_IMPLEMENTED && shellspec_output TODO && return 0
+  shellspec_if NOT_IMPLEMENTED && {
+    SHELLSPEC_PENDING_REASON="Not yet implemented"
+    shellspec_output NOT_IMPLEMENTED
+    shellspec_output TODO
+    return 0
+  }
+
   shellspec_output_unless EXPECTATION && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STATUS && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STDOUT && shellspec_on WARNED
@@ -308,6 +314,7 @@ shellspec_skip() {
 shellspec_pending() {
   shellspec_if SKIP && return 0
   SHELLSPEC_PENDING_REASON="${1:-}"
+  shellspec_off NOT_IMPLEMENTED
   # Output PENDING message if within the example group
   [ "${SHELLSPEC_EXAMPLE_NO:-}" ] && shellspec_output PENDING
   # if already failed, can not pending
