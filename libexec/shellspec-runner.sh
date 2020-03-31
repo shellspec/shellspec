@@ -75,8 +75,14 @@ if [ "$SHELLSPEC_REPAIR" ]; then
 fi
 
 if [ "$SHELLSPEC_QUICK" ]; then
-  if ! ( : >> "$SHELLSPEC_QUICK_FILE" ) 2>/dev/null; then
-    warn "Failed to write the quick log for the --quick option."
+  if ! [ -e "$SHELLSPEC_QUICK_FILE" ]; then
+    if ( : > "$SHELLSPEC_QUICK_FILE" ) 2>/dev/null; then
+      warn "Quick Mode is automatically enabled." \
+        "If you want disable it, delete '$SHELLSPEC_QUICK_FILE'."
+    else
+      warn "Failed to enable Quick Mode " \
+        "due to failed to create '$SHELLSPEC_QUICK_FILE'."
+    fi
   fi
 
   if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
