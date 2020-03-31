@@ -58,12 +58,13 @@ BDD style unit testing framework for POSIX compliant shell script.
 - [Project directory](#project-directory)
   - [.shellspec](#shellspec)
   - [.shellspec-local](#shellspec-local)
+  - [.shellspec-quick.log](#shellspec-quicklog)
   - [report/](#report)
   - [coverage/](#coverage-1)
   - [spec/](#spec)
-  - [banner](#banner)
-  - [spec_helper.sh](#spec_helpersh)
-  - [support/](#support)
+  - [spec/banner](#specbanner)
+  - [spec/spec_helper.sh](#specspec_helpersh)
+  - [spec/support/](#specsupport)
 - [Specfile](#specfile)
   - [Example](#example)
   - [Translation process](#translation-process)
@@ -654,26 +655,35 @@ Typical directory structure.
 
 ```
 Project directory
-├─ .shellspec
-├─ .shellspec-local
-├─ report/
-├─ coverage/
+├─ .shellspec                 [Required]
+├─ .shellspec-local           [Optional, Ignore from VCS]
+├─ .shellspec-quick.log       [Optional, Ignore from VCS]
+├─ report/                    [Optional, Ignore from VCS]
+├─ coverage/                  [Optional, Ignore from VCS]
 │
 ├─ bin/
-│   ├─ executable_shell_script
+│   ├─ your_script1.sh
 │              :
 ├─ lib/
-│   ├─ your_shell_script_library.sh
+│   ├─ your_library1.sh
 │              :
 ├─ libexec/
-│   ├─ executable_utilities
+│   ├─ project-your_script1.sh
 │              :
 ├─ spec/
-│   ├─ banner
-│   ├─ spec_helper.sh
-│   ├─ support/
-│   ├─ your_shell_script_library_spec.sh
-│              :
+│   ├─ banner                 [Optional]
+│   ├─ spec_helper.sh         [Required]
+│   ├─ support/               [Optional]
+│   │
+│   ├─ bin/
+│   │   ├─ your_script1_spec.sh
+│   │             :
+│   ├─ lib/
+│   │   ├─ your_library1_spec.sh
+│   │             :
+│   ├─ libexec/
+│   │   ├─ project-your_script1_spec.sh
+│                  :
 ```
 
 ### .shellspec
@@ -682,7 +692,11 @@ Project default options for `shellspec` command.
 
 ### .shellspec-local
 
-Override project default options (Do not store in VCS such as git).
+Override the project default options to your favorite.
+
+### .shellspec-quick.log
+
+Log file used for Quick execution.
 
 ### report/
 
@@ -696,18 +710,18 @@ Directory where kcov outputs coverage reports.
 
 Directory where you create specfiles.
 
-### banner
+### spec/banner
 
 If `spec/banner` file exists, the banner is shown when the `shellspec` command
 is executed. Disable that behavior with the `--no-banner` option.
 
-### spec_helper.sh
+### spec/spec_helper.sh
 
 The *spec_helper.sh* loaded by the `--require spec_helper` option.
 This file is used to prepare for running examples, to define custom matchers,
 etc.
 
-### support/
+### spec/support/
 
 This directory is used to store files for custom matchers, tasks, etc.
 
