@@ -116,15 +116,21 @@ read_profiler() {
 
 init_quick_data() {
   # quick_count=0
-  quick_data=''
+  quick_data='' executed_ids=''
 }
 
 add_quick_data() {
-  quick_data="${quick_data}${quick_data:+$LF}$1:$2"
+  [ "${3:-}" ] && quick_data="${quick_data}${quick_data:+$LF}$1:$2"
+  exists_executed_ids "$1" && return 0
+  executed_ids="${executed_ids}${executed_ids:+$LF}$1"
 }
 
 exists_quick_data() {
   case "${LF}${quick_data}" in (*${LF}$1:*) ;; (*) false; esac
+}
+
+exists_executed_ids() {
+  case "${LF}${executed_ids}${LF}" in (*${LF}$1${LF}*) ;; (*) false; esac
 }
 
 # This is very complicated, So do not simplify with shortcut op to see coverage
@@ -135,6 +141,9 @@ filter_quick_file() {
       continue
     fi
     if exists_quick_data "$line"; then
+      continue
+    fi
+    if exists_executed_ids "$line"; then
       continue
     fi
     if [ ! "$done" ]; then

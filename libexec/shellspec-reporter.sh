@@ -141,9 +141,7 @@ each_line() {
         [ "$example_index" ] || inc "suppressed_${field_tag}_count"
       esac
 
-      if [ "$field_quick" ]; then
-        add_quick_data "$field_specfile:@$field_id" "$field_tag"
-      fi
+      add_quick_data "$field_specfile:@$field_id" "$field_tag" "$field_quick"
       ;;
     end)
       # field_example_count not provided with range or filter

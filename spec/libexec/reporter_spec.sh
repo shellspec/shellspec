@@ -279,16 +279,21 @@ Describe "libexec/reporter.sh"
 
     Describe "add_quick_data()"
       It 'adds quick data'
-        When call add_quick_data "spec/file1_spec.sh:@1" "failed"
+        When call add_quick_data "spec/file1_spec.sh:@1" "failed" y
         The variable quick_data should eq "spec/file1_spec.sh:@1:failed"
       End
 
+      It 'does not add quick data if it not has quick flag'
+        When call add_quick_data "spec/file1_spec.sh:@1" "failed"
+        The variable quick_data should not eq "spec/file1_spec.sh:@1:failed"
+      End
+
       Context "when already exists quick data"
-        setup() { add_quick_data "spec/file1_spec.sh:@1" "failed"; }
+        setup() { add_quick_data "spec/file1_spec.sh:@1" "failed" y; }
         Before setup
 
         It 'adds quick data'
-          When call add_quick_data "spec/file2_spec.sh:@2" "pending"
+          When call add_quick_data "spec/file2_spec.sh:@2" "pending" y
           The line 1 of variable quick_data should eq "spec/file1_spec.sh:@1:failed"
           The line 2 of variable quick_data should eq "spec/file2_spec.sh:@2:pending"
         End
@@ -302,7 +307,7 @@ Describe "libexec/reporter.sh"
       End
 
       Context "when already exists quick data"
-        setup() { add_quick_data "spec/file1_spec.sh:@1" "failed"; }
+        setup() { add_quick_data "spec/file1_spec.sh:@1" "failed" y; }
         Before setup
 
         It 'returns success if exists quick data'
@@ -335,18 +340,27 @@ Describe "libexec/reporter.sh"
 
       Context 'when add new quick data'
         Before setup
-        setup() { add_quick_data "spec/file1_spec.sh:@1" "warned"; }
+        setup() { add_quick_data "spec/file1_spec.sh:@1" "warned" y; }
         It 'replaces with new quick data'
           When call filter_quick_file 1 "spec/file2_spec.sh:@1"
           The output should eq "spec/file1_spec.sh:@1:warned"
         End
       End
 
+      Context 'when add exists ids'
+        Before setup
+        setup() { add_quick_data "spec/file1_spec.sh:@1" "succeeded"; }
+        It 'does not output anything'
+          When call filter_quick_file 1 "spec/file2_spec.sh:@1"
+          The output should eq ""
+        End
+      End
+
       Context 'when add multiple new quick data'
         Before setup
         setup() {
-          add_quick_data "spec/file1_spec.sh:@1" "warned"
-          add_quick_data "spec/file1_spec.sh:@1" "failed"
+          add_quick_data "spec/file1_spec.sh:@1" "warned" y
+          add_quick_data "spec/file1_spec.sh:@1" "failed" y
         }
         It 'outputs all quick data'
           When call filter_quick_file 1 "spec/file2_spec.sh:@1"
