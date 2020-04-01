@@ -20,9 +20,9 @@ shuffle() {
       case $oct in
         012)
           # xorshift32
-          hash=$(( $hash ^ ((($hash & ${HEX}7FFFF) << 13) & ${HEX}FFFFFFFF) ))
-          hash=$(( $hash ^ (($hash >> 17) & ${HEX}7FFF)))
-          hash=$(( $hash ^ ((($hash & ${HEX}7FFFFFF) << 5) & ${HEX}FFFFFFFF) ))
+          hash=$(( $hash ^ (($hash << 13) & ${HEX}FFFFFFFF) ))
+          hash=$(( $hash ^ (($hash >> 17) & ${HEX}7FFF) ))
+          hash=$(( $hash ^ (($hash << 5) & ${HEX}FFFFFFFF) ))
           decord_hash_and_filename "$hash" "$filename"
           hash=$seed && filename='' && continue ;;
         1??) filename="$filename\\$printf_octal_bug$oct" ;;
@@ -43,14 +43,11 @@ gen_seed() {
 }
 
 decord_hash_and_filename() {
-  case $1 in
-    -*)
-      set -- "$1" "$2" $((42949 + $1 / 100000)) $((67296 + $1 % 100000))
-      if [ "$4" -lt 0 ]; then
-        set -- "$1" "$2" $(($3 - 1)) $(($4 + 100000))
-      fi
-      printf "%05u%05u $2\n" "$3" "$4"
-      ;;
-    *) printf "%010u $2\n" "$1"
-  esac
+  if [ "$1" -lt 0 ]; then
+    set -- "$1" "$2" $((42949 + $1 / 100000)) $((67296 + $1 % 100000))
+    [ "$4" -lt 0 ] && set -- "$1" "$2" $(($3 - 1)) $(($4 + 100000))
+    printf "%05u%05u $2\n" "$3" "$4"
+  else
+    printf "%010u $2\n" "$1"
+  fi
 }
