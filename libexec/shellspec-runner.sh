@@ -102,7 +102,7 @@ if [ "$SHELLSPEC_QUICK" ]; then
 fi
 
 quick_mode='' info='' info_extra=$SHELLSPEC_INFO
-[ -e "$SHELLSPEC_QUICK_FILE" ] && quick_mode="<Quick Mode> "
+[ -e "$SHELLSPEC_QUICK_FILE" ] && quick_mode="<quick mode> "
 [ "$SHELLSPEC_QUICK" ] && info="${info}--quick "
 [ "$SHELLSPEC_REPAIR" ] && info="${info}--repair "
 if [ "$SHELLSPEC_FAIL_FAST_COUNT" ]; then
