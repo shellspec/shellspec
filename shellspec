@@ -5,7 +5,7 @@
 
 set -e -u
 
-export SHELLSPEC_VERSION='0.23.0-dev'
+export SHELLSPEC_VERSION='0.23.0'
 export SHELLSPEC_PATH=''
 export SHELLSPEC_ROOT=''
 export SHELLSPEC_PROJECT_ROOT=''

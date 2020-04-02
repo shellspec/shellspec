@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0] - 2020-04-02
+
 ### Added
 
 - New **quick execution** and related options (`--quick`, `--repair`, `--next`).
@@ -342,7 +344,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.22.0...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.23.0...HEAD
+[0.23.0]: https://github.com/shellspec/shellspec/compare/0.22.0...0.23.0
 [0.22.0]: https://github.com/shellspec/shellspec/compare/0.21.0...0.22.0
 [0.21.0]: https://github.com/shellspec/shellspec/compare/0.20.2...0.21.0
 [0.20.2]: https://github.com/shellspec/shellspec/compare/0.20.1...0.20.2
