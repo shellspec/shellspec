@@ -7,10 +7,19 @@ Describe 'libexec.sh'
   Include "$SHELLSPEC_LIB/libexec.sh"
 
   Describe 'unixtime()'
-    date() { echo "2019 08 18 08 17 44"; }
+    Parameters
+      "2019 08 18 08 17 44" 1566116264
+      "2020 01 01 01 23 45" 1577841825
+    End
+
+    _unixtime() {
+      eval "date() { echo \"$2\"; }"
+      unixtime "$1"
+    }
+
     It 'gets unixtime'
-      When call unixtime ut
-      The variable ut should eq 1566116264
+      When call _unixtime ut "$1"
+      The variable ut should eq "$2"
     End
   End
 
