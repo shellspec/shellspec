@@ -29,6 +29,12 @@ Describe "core/matchers/eq.sh"
       The status should be failure
     End
 
+    It "matches with '!'"
+      subject() { %- "!"; }
+      When run shellspec_matcher_equal "!"
+      The status should be success
+    End
+
     It 'outputs error if parameters is missing'
       subject() { %- "foo bar"; }
       When run shellspec_matcher_equal

@@ -5,7 +5,7 @@ shellspec_syntax 'shellspec_matcher_be_failure'
 
 shellspec_matcher_be_success() {
   shellspec_matcher__match() {
-    [ "${SHELLSPEC_SUBJECT:-}" = 0 ]
+    [ _"${SHELLSPEC_SUBJECT:-}" = _0 ]
   }
 
   shellspec_syntax_failure_message + \

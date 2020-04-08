@@ -39,6 +39,12 @@ Describe "core/matchers/be/status.sh"
       The status should be failure
     End
 
+    It "does not match '!'"
+      subject() { %- "!"; }
+      When run shellspec_matcher_be_success
+      The status should be failure
+    End
+
     It 'outputs error if parameters count is invalid'
       subject() { %- 0; }
       When run shellspec_matcher_be_success foo
@@ -96,6 +102,12 @@ Describe "core/matchers/be/status.sh"
 
     It 'does not match undefined'
       subject() { false; }
+      When run shellspec_matcher_be_failure
+      The status should be failure
+    End
+
+    It "does not match '!'"
+      subject() { %- "!"; }
       When run shellspec_matcher_be_failure
       The status should be failure
     End

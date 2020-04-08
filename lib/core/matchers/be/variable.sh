@@ -39,7 +39,7 @@ shellspec_matcher_be_undefined() {
 
 shellspec_matcher_be_present() {
   shellspec_matcher__match() {
-    [ "${SHELLSPEC_SUBJECT:-}" ]
+    [ _"${SHELLSPEC_SUBJECT:-}" != _"" ]
   }
 
   shellspec_syntax_failure_message + \
@@ -55,7 +55,7 @@ shellspec_matcher_be_present() {
 
 shellspec_matcher_be_blank() {
   shellspec_matcher__match() {
-    ! [ "${SHELLSPEC_SUBJECT:-}" ]
+    [ _"${SHELLSPEC_SUBJECT:-}" = _"" ]
   }
 
   shellspec_syntax_failure_message + \

@@ -7,7 +7,7 @@ shellspec_matcher_equal() {
   shellspec_matcher__match() {
     SHELLSPEC_EXPECT="$1"
     [ "${SHELLSPEC_SUBJECT+x}" ] || return 1
-    [ "$SHELLSPEC_SUBJECT" = "$SHELLSPEC_EXPECT" ] || return 1
+    [ _"$SHELLSPEC_SUBJECT" = _"$SHELLSPEC_EXPECT" ] || return 1
     return 0
   }
 

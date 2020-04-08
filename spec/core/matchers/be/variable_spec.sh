@@ -80,6 +80,12 @@ Describe "core/matchers/be/variable.sh"
       The status should be failure
     End
 
+    It "matches with '!'"
+      subject() { %- "!"; }
+      When run shellspec_matcher_be_present
+      The status should be success
+    End
+
     It 'outputs error if parameters count is invalid'
       subject() { %- "x"; }
       When run shellspec_matcher_be_present foo
@@ -108,6 +114,12 @@ Describe "core/matchers/be/variable.sh"
 
     It 'does not match non zero length string'
       subject() { %- "x"; }
+      When run shellspec_matcher_be_blank
+      The status should be failure
+    End
+
+    It "matches with '!'"
+      subject() { %- "!"; }
       When run shellspec_matcher_be_blank
       The status should be failure
     End
