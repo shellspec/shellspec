@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Removed `match` matcher. Use `match pattern` matcher instead.
+
 ## [0.23.0] - 2020-04-02
 
 ### Added
