@@ -6,11 +6,9 @@ load binary
 
 FNV_OFFSET_BASIS_32=2166136261
 FNV_PRIME_32=16777619
+[ $((010)) -eq 8 ] && OCT="0" || OCT="8#"
 
 shuffle() {
-  OCT='0' HEX='0x'
-  (eval ': $((16#FF))') 2>/dev/null && OCT='8#' HEX='16#'
-
   octal_dump | {
     seed=$(puts "${1:-}" | octal_dump | gen_seed)
     hash=$seed filename='' printf_octal_bug=''
@@ -20,16 +18,15 @@ shuffle() {
       case $oct in
         012)
           # xorshift32
-          hash=$(( $hash ^ (($hash << 13) & ${HEX}FFFFFFFF) ))
-          hash=$(( $hash ^ (($hash >> 17) & ${HEX}7FFF) ))
-          hash=$(( $hash ^ (($hash << 5) & ${HEX}FFFFFFFF) ))
+          hash=$(( $hash ^ (($hash << 13) & 4294967295) ))
+          hash=$(( $hash ^ (($hash >> 17) & 32767) ))
+          hash=$(( $hash ^ (($hash << 5) & 4294967295) ))
           decord_hash_and_filename "$hash" "$filename"
           hash=$seed && filename='' && continue ;;
         1??) filename="$filename\\$printf_octal_bug$oct" ;;
         *  ) filename="$filename\\$oct" ;;
       esac
-      # fnv1a
-      hash=$(( ( ($hash ^ ${OCT}${oct}) * $FNV_PRIME_32) & ${HEX}FFFFFFFF ))
+      fnv1a "$oct"
     done | sort | while IFS= read -r line; do putsn "${line#* }"; done
   }
 }
@@ -37,9 +34,14 @@ shuffle() {
 gen_seed() {
   hash=$FNV_OFFSET_BASIS_32
   while IFS= read -r oct; do
-    hash=$(( ( ($hash ^ ${OCT}${oct}) * $FNV_PRIME_32) & ${HEX}FFFFFFFF ))
+    fnv1a "$oct"
   done
   echo "$hash"
+}
+
+fnv1a() {
+  set -- $(( $hash ^ ${OCT}$1 )) "$FNV_PRIME_32" 65535 4294967295
+  hash=$(( ( (((( $1 >> 16) * $2) & $3) << 16) + (($1 & $3) * $2) ) & $4 ))
 }
 
 decord_hash_and_filename() {

@@ -4,9 +4,6 @@ Describe "libexec/list.sh"
   Include "$SHELLSPEC_LIB/libexec/list.sh"
 
   Describe "shuffle()"
-    Skip if "it has calculation accuracy problem" accuracy_error_bug
-    Skip if "it can not calculate correctly" miscalculate_signed_32bit_int_bug
-
     Data
       #|list1
       #|list2
@@ -30,6 +27,19 @@ Describe "libexec/list.sh"
       The line 7 of output should eq "list3"
       The line 8 of output should eq "list6"
       The line 9 of output should eq "list4"
+    End
+  End
+
+  Describe "gen_seed()"
+    Parameters
+       "abcd" "1402706709"
+    End
+
+    _gen_seed() { echo "$1"| octal_dump | gen_seed; }
+
+    It "generates seed ($1)"
+      When call _gen_seed "$1"
+      The output should eq "$2"
     End
   End
 
