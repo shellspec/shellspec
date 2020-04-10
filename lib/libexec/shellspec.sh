@@ -51,9 +51,13 @@ read_cmdline() {
   }
 }
 
+ps_command() {
+  ps -f
+}
+
 read_ps() {
   #shellcheck disable=SC2015
-  ps -f 2>/dev/null | {
+  ps_command 2>/dev/null | {
     IFS=" " pid=$1 p=0 c=0 _pid=''
     IFS= read -r line
     reset_params '$line'
