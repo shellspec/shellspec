@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+#shellcheck shell=sh disable=SC2016,SC1003
 
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 % EMPTY_FILE: "$SHELLSPEC_SPECDIR/fixture/empty"
@@ -653,6 +653,36 @@ Describe "general.sh"
     It "returns failure if file does not exist"
       When call shellspec_exists_file "$FIXTURE/not-exists"
       The status should be failure
+    End
+  End
+
+  Describe "shellspec_replace_all()"
+    Describe "characters"
+      Parameters:value '!' '"' '#' '$' '%' '&' '(' ')' '-' '=' '^' '~' '\' \
+        '|' '@' '`' '[' '{' ';' '+' ':' '*' ']' '}' '.' '>' '/' '?' '_' "'"
+      It "replaces all characters ($1)"
+        When call shellspec_replace_all replaced "A$1$1$1B$1$1$1C" "$1" "x"
+        The variable replaced should eq "AxxxBxxxC"
+      End
+    End
+
+    Describe "various patterns"
+      lf=$SHELLSPEC_LF
+
+      Parameters
+        "abcdeabcde"          "cd"    "CD"  "abCDeabCDe"
+        "abc[*]abc[*]"        "[*]"   "OK"  "abcOKabcOK"
+        "=   ="               " "     "OK"  "=OKOKOK="
+        "=${lf}${lf}${lf}="   "$lf"   "OK"  "=OKOKOK="
+        '=\='                 '\'     "OK"  "=OK="
+        '\'                   '\'     "OK"  "OK"
+        '!'                   '!'     "!"   "!"
+      End
+
+      It "replaces all strings (string: $2)"
+        When call shellspec_replace_all replaced "$1" "$2" "$3"
+        The variable replaced should eq "$4"
+      End
     End
   End
 End

@@ -560,3 +560,70 @@ shellspec_pluralize() {
 shellspec_exists_file() {
   [ -e "$1" ]
 }
+
+# $1: ret, $2: value, $3: from, $4: to
+shellspec_replace_all_fast() {
+  eval "$1=\${2//\"\$3\"/\"\$4\"}"
+}
+
+# $1: ret, $2: value, $3: from, $4: to
+shellspec_replace_all_posix() {
+  set -- "$1" "$2" "$3" "$4" ""
+  until [ _"$2" = _"${2#*"$3"}" ] && eval "$1=\$5\$2"; do
+    set -- "$1" "${2#*"$3"}" "$3" "$4" "$5${2%%"$3"*}$4"
+  done
+}
+
+# $1: ret, $2: value, $3: from, $4: to
+shellspec_replace_all_pattern() {
+  set -- "$1" "$2" "$3" "$4" ""
+  until eval "[ _\"\$2\" = _\"\${2#*$3}\" ] && $1=\$5\$2"; do
+    eval "set -- \"\$1\" \"\${2#*$3}\" \"\$3\" \"\$4\" \"\$5\${2%%$3*}\$4\""
+  done
+}
+
+shellspec_meta_escape() {
+  # shellcheck disable=SC1003
+  if [ "${1#*\?}" ]; then # posh <= 0.5.4
+    set -- '\\\\:\\\\\\\\' '\\\[:[[]' '\\\?:[?]' '\\\*:[*]' '\\\$:[$]'
+  elif [ "${2%%\\*}" ]; then # bosh = all (>= 20181007), busybox <= 1.22.0
+    set -- '\\\\:\\\\\\\\' '\[:[[]' '\?:[?]' '\*:[*]' '\$:[$]'
+  else # POSIX compliant
+    set -- '\\:\\\\' '\[:[[]' '\?:[?]' '\*:[*]' '\$:[$]'
+  fi
+
+  set "$@" '\(:\\(' '\):\\)' '\|:\\|' '\":\\\"' '\`:\\\`' '\{:\\{' '\}:\\}' \
+    "\\':\\\\'" '\ :\\ ' '\&:\\&' '\=:\\=' '\<:\\<' '\>:\\>' "end"
+
+  echo 'shellspec_meta_escape() { set -- "$1" "$2" ""'
+  until [ "$1" = "end" ] && shift && printf '%s\n' "$@"; do
+    set -- "${1%:*}" "${1#*:}" "$@"
+    set -- "$@" 'until [ _"$2" = _"${2#*'"$1"'}" ] && set -- "$1" "$3$2" ""; do'
+    set -- "$@" '  set -- "$1" "${2#*'"$1"'}" "$3${2%%'"$1"'*}'"$2"'"'
+    set -- "$@" 'done'
+    shift 3
+  done
+  echo 'eval "$1=\"\$3\$2\""; }'
+}
+eval "$(shellspec_meta_escape "a?" "\\")"
+
+shellspec_replace_all() {
+  (eval 'v="*#*/" p="#*/"; [ "${v//"$p"/-}" = "*-" ]') 2>/dev/null && return 0
+  [ "${1#"$2"}" = "a*b" ] && return 1 || return 2
+}
+eval 'shellspec_replace_all "a*b" "a[*]" &&:' &&:
+case $? in
+  0) # Fast version (Not POSIX compliant)
+    # ash(busybox)>=1.30.1, bash>=3.1.17, dash>=none, ksh>=93?, mksh>=54
+    # yash>=?, zsh>=?, pdksh=none, posh=none, bosh=none
+    shellspec_replace_all() { shellspec_replace_all_fast "$@"; }; ;;
+  1) # POSIX version (POSIX compliant)
+    # ash(busybox)>=1.1.3, bash>=2.05b, dash>=0.5.2, ksh>=93q, mksh>=40
+    # yash>=2.30?, zsh>=3.1.9?, pdksh=none, posh=none, bosh=none
+    shellspec_replace_all() { shellspec_replace_all_posix "$@"; }; ;;
+  2) # Pattern version
+    shellspec_replace_all() {
+      shellspec_meta_escape "$1" "$3"
+      eval "shellspec_replace_all_pattern \"\$1\" \"\$2\" \"\${$1}\" \"\$4\""
+    }
+esac
