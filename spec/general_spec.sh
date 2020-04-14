@@ -389,35 +389,6 @@ Describe "general.sh"
     End
   End
 
-  Describe "shellspec_replace()"
-    replace() {
-      chars="$1"
-      while [ "$chars" ]; do
-        ch=${chars%"${chars#?}"} && chars=${chars#?}
-        value="a${ch}${ch}${ch}b${ch}${ch}${ch}c"
-        real_replace value "$ch" "x"
-        [ "$value" = "axxxbxxxc" ] || echo "$ch"
-      done
-    }
-
-    Describe "fast version"
-      real_replace() { shellspec_replace "$@"; }
-      It 'replaces various characters'
-        When call replace '!"#$%&()-=^~\|@`[{;+:*]}.>/?_ '"'"
-        The output should eq ''
-      End
-    End
-
-    Describe "posix version"
-      Skip if 'it is old posh with bugs' posh_pattern_matching_bug
-      real_replace() { shellspec_replace_posix "$@"; }
-      It 'replaces various characters'
-        When call replace '!"#$%&()-=^~\|@`[{;+:*]}.>/?_ '"'"
-        The output should eq ''
-      End
-    End
-  End
-
   Describe "shellspec_ends_with_backslash()"
     It 'returns success if ends with backslash'
       When call shellspec_ends_with_backslash "foo\\"
@@ -783,7 +754,7 @@ Describe "general.sh"
     End
   End
 
-  Describe "shellspec_includes2()"
+  Describe "shellspec_includes()"
     Parameters
       "abc"     "b"     success
       "abc"     "d"     failure
@@ -796,7 +767,7 @@ Describe "general.sh"
     End
 
     It "checks if it includes a string (target: $1, string: $2)"
-      When call shellspec_includes2 "$1" "$2"
+      When call shellspec_includes "$1" "$2"
       The status should be "$3"
     End
   End
