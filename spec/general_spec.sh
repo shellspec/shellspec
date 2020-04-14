@@ -337,8 +337,8 @@ Describe "general.sh"
     End
 
     Describe "characters"
-      Parameters:value '!' '"' '#' '$' '%' '&' '(' ')' '-' '=' '^' '~' '\' \
-        '|' '@' '`' '[' '{' ';' '+' ':' '*' ']' '}' '.' '>' '/' '?' '_' "'"
+      Parameters:value '!' '"' '#' '$' '%' '&' '(' ')' '-' '=' '^' '~' '|' " " \
+        '@' '`' '[' '{' ';' '+' ':' '*' ']' '}' '.' '<' '>' "\\" '?' '_' "'"
       It "replaces all characters ($1)"
         When call shellspec_replace_all replaced "A$1$1$1B$1$1$1C" "$1" "x"
         The variable replaced should eq "AxxxBxxxC"
@@ -353,8 +353,8 @@ Describe "general.sh"
         "abc[*]abc[*]"        "[*]"   "OK"  "abcOKabcOK"
         "=   ="               " "     "OK"  "=OKOKOK="
         "=${lf}${lf}${lf}="   "$lf"   "OK"  "=OKOKOK="
-        '=\='                 '\'     "OK"  "=OK="
-        '\'                   '\'     "OK"  "OK"
+        '=\='                 "\\"    "OK"  "=OK="
+        "\\"                  "\\"    "OK"  "OK"
         '!'                   '!'     "!"   "!"
       End
 
@@ -380,8 +380,8 @@ Describe "general.sh"
     End
 
     Describe "characters"
-      Parameters:value '!' '"' '#' '$' '%' '&' '(' ')' '-' '=' '^' '~' '\' \
-        '|' '@' '`' '[' '{' ';' '+' ':' '*' ']' '}' '.' '>' '/' '?' '_' "'"
+      Parameters:value '!' '"' '#' '$' '%' '&' '(' ')' '-' '=' '^' '~' '|' " " \
+        '@' '`' '[' '{' ';' '+' ':' '*' ']' '}' '.' '<' '>' "\\" '?' '_' "'"
       It "replaces all characters ($1)"
         When call shellspec_replace_all_posix replaced "A$1$1$1B$1$1$1C" "$1" "x"
         The variable replaced should eq "AxxxBxxxC"
@@ -396,8 +396,8 @@ Describe "general.sh"
         "abc[*]abc[*]"        "[*]"   "OK"  "abcOKabcOK"
         "=   ="               " "     "OK"  "=OKOKOK="
         "=${lf}${lf}${lf}="   "$lf"   "OK"  "=OKOKOK="
-        '=\='                 '\'     "OK"  "=OK="
-        '\'                   '\'     "OK"  "OK"
+        '=\='                 "\\"    "OK"  "=OK="
+        "\\"                  "\\"    "OK"  "OK"
         '!'                   '!'     "!"   "!"
       End
 
@@ -421,8 +421,8 @@ Describe "general.sh"
     End
 
     Describe "characters"
-      Parameters:value '!' '"' '#' '$' '%' '&' '(' ')' '-' '=' '^' '~' '\' '|' \
-        '@' '`' '[' '{' ';' '+' ':' '*' ']' '}' '.' '<' '>' '/' '?' '_' "'" " "
+      Parameters:value '!' '"' '#' '$' '%' '&' '(' ')' '-' '=' '^' '~' '|' " " \
+        '@' '`' '[' '{' ';' '+' ':' '*' ']' '}' '.' '<' '>' "\\" '?' '_' "'"
       It "replaces all characters ($1)"
         When call shellspec_replace_all_fallback replaced "A$1$1$1B$1$1$1C" "$1" "x"
         The variable replaced should eq "AxxxBxxxC"
@@ -440,8 +440,8 @@ Describe "general.sh"
         "=${tab}${tab}${tab}="  "$tab"  "OK"  "=OKOKOK="
         "=${vt}${vt}${vt}="     "$vt"   "OK"  "=OKOKOK="
         "=${cr}${cr}${cr}="     "$cr"   "OK"  "=OKOKOK="
-        '=\='                   '\'     "OK"  "=OK="
-        '\'                     '\'     "OK"  "OK"
+        '=\='                   "\\"    "OK"  "=OK="
+        "\\"                    "\\"    "OK"  "OK"
         '!'                     '!'     "!"   "!"
         '^'                     '^'     "^"   "^"
       End
@@ -598,7 +598,7 @@ Describe "general.sh"
   Describe "shellspec_trim()"
     It 'trims white space'
       When call shellspec_trim value " $IFS abc $IFS "
-      The value "$value" should eq 'abc'
+      The variable value should eq 'abc'
     End
   End
 

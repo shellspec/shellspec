@@ -388,15 +388,19 @@ shellspec_ends_with_posix() {
   case $1 in (*"$2") ;; (*) false ;; esac
 }
 
+# shellcheck disable=SC2154
 shellspec_includes_fallback() {
   shellspec_meta_escape shellspec_includes_fallback "$2"
   eval "[ ! \"\${1#*$shellspec_includes_fallback}\" = \"\$1\" ] &&:" &&:
 }
 
+# shellcheck disable=SC2154
 shellspec_starts_with_fallback() {
   shellspec_meta_escape shellspec_starts_with_fallback "$2"
   eval "[ ! \"\${1#$shellspec_starts_with_fallback*}\" = \"\$1\" ] &&:" &&:
 }
+
+# shellcheck disable=SC2154
 shellspec_ends_with_fallback() {
   shellspec_meta_escape shellspec_ends_with_fallback "$2"
   eval "[ ! \"\${1%*$shellspec_ends_with_fallback}\" = \"\$1\" ] &&:" &&:
