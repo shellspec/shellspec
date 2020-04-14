@@ -602,19 +602,7 @@ Describe "general.sh"
     End
   End
 
-  Describe "shellspec_ends_with_backslash()"
-    It 'returns success if ends with backslash'
-      When call shellspec_ends_with_backslash "foo\\"
-      The status should be success
-    End
-
-    It 'returns failure if ends with backslash'
-      When call shellspec_ends_with_backslash 'foo'
-      The status should be failure
-    End
-  End
-
-  Describe "shellspec_match() (deprecated)"
+  Describe "shellspec_match()"
     It 'returns success if value mactches with pattern'
       When call shellspec_match foo "[fF]?*"
       The status should be success

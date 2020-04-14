@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants trim match_pattern ends_with_backslash escape_quote
+use constants trim match_pattern ends_with escape_quote
 load grammar
 
 initialize() {
@@ -283,7 +283,7 @@ parameters_generate_code() {
 parameters_continuation_line() {
   line=$1
   shift
-  while ends_with_backslash "$line"; do
+  while ends_with "$line" '\'; do
     read_specfile line ||:
     "$@" "$line"
   done
@@ -423,7 +423,7 @@ remove_from_ranges() {
 translate() {
   block_id='' inside_of_example='' inside_of_text='' work=''
   while read_specfile line; do
-    while ends_with_backslash "$line"; do
+    while ends_with "$line" '\'; do
       read_specfile work ||:
       line="${line}${LF}${work}"
     done
