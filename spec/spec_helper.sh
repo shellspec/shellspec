@@ -92,4 +92,8 @@ shellspec_spec_helper_configure() {
     (: < /dev/tty) 2>/dev/null
   }
 
+  invalid_posix_parameter_expansion() {
+    set -- "a*b" "a[*]"
+    [ "${1#"$2"}" = "a*b" ] && return 1 || return 0
+  }
 }

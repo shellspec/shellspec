@@ -697,6 +697,92 @@ Describe "general.sh"
     End
   End
 
+  Describe "shellspec_replace_all_posix()"
+    Skip if "parameter expansion is not POSIX compliant" invalid_posix_parameter_expansion
+
+    It "replaces all characters"
+      When call shellspec_replace_all_posix replaced "abcabc" "b" "B"
+      The variable replaced should eq "aBcaBc"
+    End
+
+    It "replaces all characters in variable"
+      BeforeCall replaced=abcabc
+      When call shellspec_replace_all_posix replaced "b" "B"
+      The variable replaced should eq "aBcaBc"
+    End
+
+    Describe "characters"
+      Parameters:value '!' '"' '#' '$' '%' '&' '(' ')' '-' '=' '^' '~' '\' \
+        '|' '@' '`' '[' '{' ';' '+' ':' '*' ']' '}' '.' '>' '/' '?' '_' "'"
+      It "replaces all characters ($1)"
+        When call shellspec_replace_all_posix replaced "A$1$1$1B$1$1$1C" "$1" "x"
+        The variable replaced should eq "AxxxBxxxC"
+      End
+    End
+
+    Describe "various patterns"
+      lf=$SHELLSPEC_LF
+
+      Parameters
+        "abcdeabcde"          "cd"    "CD"  "abCDeabCDe"
+        "abc[*]abc[*]"        "[*]"   "OK"  "abcOKabcOK"
+        "=   ="               " "     "OK"  "=OKOKOK="
+        "=${lf}${lf}${lf}="   "$lf"   "OK"  "=OKOKOK="
+        '=\='                 '\'     "OK"  "=OK="
+        '\'                   '\'     "OK"  "OK"
+        '!'                   '!'     "!"   "!"
+      End
+
+      It "replaces all strings (string: $2)"
+        When call shellspec_replace_all_posix replaced "$1" "$2" "$3"
+        The variable replaced should eq "$4"
+      End
+    End
+  End
+
+  Describe "shellspec_replace_all_fallback()"
+    It "replaces all characters"
+      When call shellspec_replace_all_fallback replaced "abcabc" "b" "B"
+      The variable replaced should eq "aBcaBc"
+    End
+
+    It "replaces all characters in variable"
+      BeforeCall replaced=abcabc
+      When call shellspec_replace_all_fallback replaced "b" "B"
+      The variable replaced should eq "aBcaBc"
+    End
+
+    Describe "characters"
+      Parameters:value '!' '"' '#' '$' '%' '&' '(' ')' '-' '=' '^' '~' '\' '|' \
+        '@' '`' '[' '{' ';' '+' ':' '*' ']' '}' '.' '<' '>' '/' '?' '_' "'" " "
+      It "replaces all characters ($1)"
+        When call shellspec_replace_all_fallback replaced "A$1$1$1B$1$1$1C" "$1" "x"
+        The variable replaced should eq "AxxxBxxxC"
+      End
+    End
+
+    Describe "various patterns"
+      lf=$SHELLSPEC_LF tab=$SHELLSPEC_TAB vt=$SHELLSPEC_VT
+
+      Parameters
+        "abcdeabcde"            "cd"    "CD"  "abCDeabCDe"
+        "abc[*]abc[*]"          "[*]"   "OK"  "abcOKabcOK"
+        "=   ="                 " "     "OK"  "=OKOKOK="
+        "=${lf}${lf}${lf}="     "$lf"   "OK"  "=OKOKOK="
+        "=${tab}${tab}${tab}="  "$tab"  "OK"  "=OKOKOK="
+        "=${vt}${vt}${vt}="     "$vt"   "OK"  "=OKOKOK="
+        '=\='                   '\'     "OK"  "=OK="
+        '\'                     '\'     "OK"  "OK"
+        '!'                     '!'     "!"   "!"
+      End
+
+      It "replaces all strings (string: $2)"
+        When call shellspec_replace_all_fallback replaced "$1" "$2" "$3"
+        The variable replaced should eq "$4"
+      End
+    End
+  End
+
   Describe "shellspec_includes2()"
     Parameters
       "abc"     "b"     success
@@ -706,6 +792,7 @@ Describe "general.sh"
       "abc"     "?"     failure
       "abc[d]"  "c[d]"  success
       "a\"c"    '"'     success
+      "< >"     "< >"   success
     End
 
     It "checks if it includes a string (target: $1, string: $2)"
@@ -714,7 +801,29 @@ Describe "general.sh"
     End
   End
 
-  Describe "shellspec_starts_with2()"
+  Describe "shellspec_includes_posix()"
+    Skip if "parameter expansion is not POSIX compliant" invalid_posix_parameter_expansion
+
+    Parameters
+      "abc"     "b"     success
+      "abc"     "d"     failure
+      "a|b|c"   "|b|"   success
+      "abc"      "*"    failure
+      "abc"     "?"     failure
+      "abc[d]"  "c[d]"  success
+      "a\"c"    '"'     success
+      "< >"     "< >"   success
+    End
+
+    It "checks if it includes a string (target: $1, string: $2)"
+      When call shellspec_includes_posix "$1" "$2"
+      The status should be "$3"
+    End
+  End
+
+  Describe "shellspec_starts_with_posix()"
+    Skip if "parameter expansion is not POSIX compliant" invalid_posix_parameter_expansion
+
     Parameters
       "abc"     "a"     success
       "abc"     "d"     failure
@@ -723,15 +832,18 @@ Describe "general.sh"
       "abc"     "?"     failure
       "[a]bcd"  "[a]b"  success
       "a\"c"    'a"'    success
+      "< >"     "< >"   success
     End
 
     It "checks if it starts with a string (target: $1, string: $2)"
-      When call shellspec_starts_with2 "$1" "$2"
+      When call shellspec_starts_with_posix "$1" "$2"
       The status should be "$3"
     End
   End
 
-  Describe "shellspec_ends_with2()"
+  Describe "shellspec_ends_with_posix()"
+    Skip if "parameter expansion is not POSIX compliant" invalid_posix_parameter_expansion
+
     Parameters
       "abc"     "c"     success
       "abc"     "d"     failure
@@ -740,10 +852,65 @@ Describe "general.sh"
       "abc"     "?"     failure
       "abc[d]"  "c[d]"  success
       "a\"c"    '"c'    success
+      "< >"     "< >"   success
     End
 
     It "checks if it ends with a string (target: $1, string: $2)"
-      When call shellspec_ends_with2 "$1" "$2"
+      When call shellspec_ends_with_posix "$1" "$2"
+      The status should be "$3"
+    End
+  End
+
+  Describe "shellspec_includes_fallback()"
+    Parameters
+      "abc"     "b"     success
+      "abc"     "d"     failure
+      "a|b|c"   "|b|"   success
+      "abc"      "*"    failure
+      "abc"     "?"     failure
+      "abc[d]"  "c[d]"  success
+      "a\"c"    '"'     success
+      "< >"     "< >"   success
+    End
+
+    It "checks if it includes a string (target: $1, string: $2)"
+      When call shellspec_includes_fallback "$1" "$2"
+      The status should be "$3"
+    End
+  End
+
+  Describe "shellspec_starts_with_fallback()"
+    Parameters
+      "abc"     "a"     success
+      "abc"     "d"     failure
+      "a|b|c"   "a|"    success
+      "abc"      "*"    failure
+      "abc"     "?"     failure
+      "[a]bcd"  "[a]b"  success
+      "a\"c"    'a"'    success
+      "< >"     "< >"   success
+    End
+
+    It "checks if it starts with a string (target: $1, string: $2)"
+      When call shellspec_starts_with_fallback "$1" "$2"
+      The status should be "$3"
+    End
+  End
+
+  Describe "shellspec_ends_with_fallback()"
+    Parameters
+      "abc"     "c"     success
+      "abc"     "d"     failure
+      "a|b|c"   "|c"    success
+      "abc"      "*"    failure
+      "abc"     "?"     failure
+      "abc[d]"  "c[d]"  success
+      "a\"c"    '"c'    success
+      "< >"     "< >"   success
+    End
+
+    It "checks if it ends with a string (target: $1, string: $2)"
+      When call shellspec_ends_with_fallback "$1" "$2"
       The status should be "$3"
     End
   End
