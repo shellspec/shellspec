@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016,SC1003
+#shellcheck shell=sh disable=SC2016
 
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 % EMPTY_FILE: "$SHELLSPEC_SPECDIR/fixture/empty"
@@ -683,6 +683,57 @@ Describe "general.sh"
         When call shellspec_replace_all replaced "$1" "$2" "$3"
         The variable replaced should eq "$4"
       End
+    End
+  End
+
+  Describe "shellspec_includes2()"
+    Parameters
+      "abc"     "b"     success
+      "abc"     "d"     failure
+      "a|b|c"   "|b|"   success
+      "abc"      "*"    failure
+      "abc"     "?"     failure
+      "abc[d]"  "c[d]"  success
+      "a\"c"    '"'     success
+    End
+
+    It "checks if it includes a string (target: $1, string: $2)"
+      When call shellspec_includes2 "$1" "$2"
+      The status should be "$3"
+    End
+  End
+
+  Describe "shellspec_starts_with2()"
+    Parameters
+      "abc"     "a"     success
+      "abc"     "d"     failure
+      "a|b|c"   "a|"    success
+      "abc"      "*"    failure
+      "abc"     "?"     failure
+      "[a]bcd"  "[a]b"  success
+      "a\"c"    'a"'    success
+    End
+
+    It "checks if it starts with a string (target: $1, string: $2)"
+      When call shellspec_starts_with2 "$1" "$2"
+      The status should be "$3"
+    End
+  End
+
+  Describe "shellspec_ends_with2()"
+    Parameters
+      "abc"     "c"     success
+      "abc"     "d"     failure
+      "a|b|c"   "|c"    success
+      "abc"      "*"    failure
+      "abc"     "?"     failure
+      "abc[d]"  "c[d]"  success
+      "a\"c"    '"c'    success
+    End
+
+    It "checks if it ends with a string (target: $1, string: $2)"
+      When call shellspec_ends_with2 "$1" "$2"
+      The status should be "$3"
     End
   End
 End

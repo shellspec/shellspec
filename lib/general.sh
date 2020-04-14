@@ -575,11 +575,38 @@ shellspec_replace_all_posix() {
 }
 
 # $1: ret, $2: value, $3: from, $4: to
-shellspec_replace_all_pattern() {
-  set -- "$1" "$2" "$3" "$4" ""
+shellspec_replace_all_fallback() {
+  shellspec_meta_escape "$1" "$3"
+  eval "set -- \"\$1\" \"\$2\" \"\${$1}\" \"\$4\" \"\""
   until eval "[ _\"\$2\" = _\"\${2#*$3}\" ] && $1=\$5\$2"; do
     eval "set -- \"\$1\" \"\${2#*$3}\" \"\$3\" \"\$4\" \"\$5\${2%%$3*}\$4\""
   done
+}
+
+shellspec_includes_posix() {
+  case $1 in (*"$2"*) ;; (*) false ;; esac
+}
+
+shellspec_starts_with_posix() {
+  case $1 in ("$2"*) ;; (*) false ;; esac
+}
+
+shellspec_ends_with_posix() {
+  case $1 in (*"$2") ;; (*) false ;; esac
+}
+
+shellspec_includes_fallback() {
+  shellspec_meta_escape shellspec_includes_fallback "$2"
+  eval "case \$1 in (*$shellspec_includes_fallback*) ;; (*) false ;; esac &&:"
+}
+
+shellspec_starts_with_fallback() {
+  shellspec_meta_escape shellspec_starts_with_fallback "$2"
+  eval "case \$1 in ($shellspec_starts_with_fallback*) ;; (*) false ;; esac &&:"
+}
+shellspec_ends_with_fallback() {
+  shellspec_meta_escape shellspec_ends_with_fallback "$2"
+  eval "case \$1 in (*$shellspec_ends_with_fallback) ;; (*) false ;; esac &&:"
 }
 
 shellspec_meta_escape() {
@@ -616,14 +643,22 @@ case $? in
   0) # Fast version (Not POSIX compliant)
     # ash(busybox)>=1.30.1, bash>=3.1.17, dash>=none, ksh>=93?, mksh>=54
     # yash>=?, zsh>=?, pdksh=none, posh=none, bosh=none
-    shellspec_replace_all() { shellspec_replace_all_fast "$@"; }; ;;
+    shellspec_replace_all() { shellspec_replace_all_fast "$@"; }
+    shellspec_includes2() { shellspec_includes_posix "$@"; }
+    shellspec_starts_with2() { shellspec_starts_with_posix "$@"; }
+    shellspec_ends_with2() { shellspec_ends_with_posix "$@"; }
+    ;;
   1) # POSIX version (POSIX compliant)
     # ash(busybox)>=1.1.3, bash>=2.05b, dash>=0.5.2, ksh>=93q, mksh>=40
     # yash>=2.30?, zsh>=3.1.9?, pdksh=none, posh=none, bosh=none
-    shellspec_replace_all() { shellspec_replace_all_posix "$@"; }; ;;
-  2) # Pattern version
-    shellspec_replace_all() {
-      shellspec_meta_escape "$1" "$3"
-      eval "shellspec_replace_all_pattern \"\$1\" \"\$2\" \"\${$1}\" \"\$4\""
-    }
+    shellspec_replace_all() { shellspec_replace_all_posix "$@"; }
+    shellspec_includes2() { shellspec_includes_posix "$@"; }
+    shellspec_starts_with2() { shellspec_starts_with_posix "$@"; }
+    shellspec_ends_with2() { shellspec_ends_with_posix "$@"; }
+    ;;
+  2) # Fallback version
+    shellspec_replace_all() { shellspec_replace_all_fallback "$@"; }
+    shellspec_includes2() { shellspec_includes_fallback "$@"; }
+    shellspec_starts_with2() { shellspec_starts_with_fallback "$@"; }
+    shellspec_ends_with2() { shellspec_ends_with_fallback "$@"; }
 esac
