@@ -240,9 +240,8 @@ shellspec_splice_params_list() {
 
 # $1: callback, $2-: parameters
 shellspec_each() {
-  if [ $# -gt 1 ]; then
-    eval "shift; shellspec_each_ $1 1 \"\$@\""
-  fi
+  [ $# -gt 1 ] || return 0
+  eval "shift; shellspec_each_ $1 1 \"\$@\""
 }
 shellspec_each_() {
   eval "$1 \"\${$(($2 + 2))}\" $2 $(($# - 2))"
@@ -277,10 +276,9 @@ shellspec_sequence_() {
 }
 
 shellspec_loop() {
-  if [ "$2" -gt 0 ]; then
-    "$1"
-    shellspec_loop "$1" $(($2 - 1))
-  fi
+  [ "$2" -gt 0 ] || return 0
+  "$1"
+  shellspec_loop "$1" $(($2 - 1))
 }
 
 shellspec_lines() {
@@ -307,13 +305,12 @@ shellspec_padding_() {
 }
 
 shellspec_readfile() {
-  eval "$1=''"
-  # shellcheck disable=SC2034
-  while IFS= read -r shellspec_buf; do
-    eval "$1=\"\${$1}\$shellspec_buf$SHELLSPEC_LF\""
-  done < "$2"
-  eval "$1=\"\${$1}\$shellspec_buf\""
-  unset shellspec_buf
+  set -- "$1" "$2" ""
+  eval "$1="
+  while IFS= read -r "$1"; do
+    eval "set -- \"\$1\" \"\$2\" \"\$3\${$1}\$SHELLSPEC_LF\""
+  done < "$2" &&:
+  eval "$1=\"\$3\${$1}\""
 }
 
 shellspec_trim() {
