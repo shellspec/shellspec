@@ -22,7 +22,7 @@ debug_each() {
   debug '+=' "${field_color}${BOLD}${BLACK}<RS>${field_color}"
   while [ $# -gt 0 ]; do
     eval "_value=\$field_$1"
-    replace _value "$VT" "${BOLD}${BLACK}<VT>${field_color}"
+    replace_all _value "$VT" "${BOLD}${BLACK}<VT>${field_color}"
     debug '+=' "${field_color}$1:${_value}"
     shift
     [ $# -eq 0 ] || debug '+=' "${BOLD}${BLACK}<US>${field_color}"

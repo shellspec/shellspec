@@ -4,7 +4,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use import reset_params constants sequence replace each padding trim
+use import reset_params constants sequence replace_all each padding trim
 use is_empty_file pluralize exists_file
 
 count() {
@@ -29,7 +29,7 @@ read_time_log() {
 
 field_description() {
   description=${field_description:-}
-  replace description "$VT" " "
+  replace_all description "$VT" " "
   putsn "$description"
 }
 
@@ -62,10 +62,10 @@ buffer() {
 
 xmlescape() {
   [ $# -gt 1 ] && eval "$1=\$2"
-  replace "$1" '&' '&amp;'
-  replace "$1" '<' '&lt;'
-  replace "$1" '>' '&gt;'
-  replace "$1" '"' '&quot;'
+  replace_all "$1" '&' '&amp;'
+  replace_all "$1" '<' '&lt;'
+  replace_all "$1" '>' '&gt;'
+  replace_all "$1" '"' '&quot;'
 }
 
 xmlattrs() {

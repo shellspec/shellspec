@@ -322,10 +322,6 @@ shellspec_trim() {
   eval "$SHELLSPEC_EVAL"
 }
 
-shellspec_replace() {
-  shellspec_replace_all "$@"
-}
-
 # $1: ret, $2: from, $3: to
 # $1: ret, $2: value, $3: from, $4: to
 shellspec_replace_all_fast() {
@@ -456,33 +452,33 @@ shellspec_escape_quote() {
   shellspec_replace_all "$1" "$2" "'" "'\"'\"'"
 }
 
-shellspec_escape_syntax() {
-  shellspec_replace "$1" \\ \\\\
-  shellspec_replace "$1" \" \\\"
-  shellspec_replace "$1" \# \\\#
-  shellspec_replace "$1" \$ \\\$
-  shellspec_replace "$1" \& \\\&
-  shellspec_replace "$1" \' \\\'
-  shellspec_replace "$1" \( \\\(
-  shellspec_replace "$1" \) \\\)
-  shellspec_replace "$1" \; \\\;
-  shellspec_replace "$1" \< \\\<
-  shellspec_replace "$1" \> \\\>
-  shellspec_replace "$1" \` \\\`
-  shellspec_replace "$1" \~ \\\~
-  shellspec_replace "$1" "=" "\\="
-  shellspec_replace "$1" "^" "\\^"
-  shellspec_replace "$1" " " '" "'
-  shellspec_replace "$1" "$SHELLSPEC_TAB" "\\$SHELLSPEC_TAB"
-  shellspec_replace "$1" "$SHELLSPEC_LF" '"$SHELLSPEC_LF"'
-  shellspec_replace "$1" "$SHELLSPEC_CR" '"$SHELLSPEC_CR"'
-  shellspec_replace "$1" "$SHELLSPEC_VT" '"$SHELLSPEC_VT"'
+shellspec_match_pattern_escape() {
+  shellspec_replace_all "$1" \\ \\\\
+  shellspec_replace_all "$1" \" \\\"
+  shellspec_replace_all "$1" \# \\\#
+  shellspec_replace_all "$1" \$ \\\$
+  shellspec_replace_all "$1" \& \\\&
+  shellspec_replace_all "$1" \' \\\'
+  shellspec_replace_all "$1" \( \\\(
+  shellspec_replace_all "$1" \) \\\)
+  shellspec_replace_all "$1" \; \\\;
+  shellspec_replace_all "$1" \< \\\<
+  shellspec_replace_all "$1" \> \\\>
+  shellspec_replace_all "$1" \` \\\`
+  shellspec_replace_all "$1" \~ \\\~
+  shellspec_replace_all "$1" '=' '\='
+  shellspec_replace_all "$1" '^' '\^'
+  shellspec_replace_all "$1" ' ' '" "'
+  shellspec_replace_all "$1" "$SHELLSPEC_TAB" '${SHELLSPEC_TAB}'
+  shellspec_replace_all "$1" "$SHELLSPEC_LF" '${SHELLSPEC_LF}'
+  shellspec_replace_all "$1" "$SHELLSPEC_CR" '${SHELLSPEC_CR}'
+  shellspec_replace_all "$1" "$SHELLSPEC_VT" '${SHELLSPEC_VT}'
 }
 
 shellspec_match_pattern() {
   [ "${2:-}" ] || return 1
   shellspec_match_pattern=$2
-  shellspec_escape_syntax shellspec_match_pattern
+  shellspec_match_pattern_escape shellspec_match_pattern
   set -- "$1" "$shellspec_match_pattern"
   eval "case \$1 in ($2) true ;; (*) false ;; esac &&:" 2>/dev/null
 }
