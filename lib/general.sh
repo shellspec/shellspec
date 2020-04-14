@@ -342,6 +342,125 @@ shellspec_replace() {
   shellspec_replace_all "$@"
 }
 
+# $1: ret, $2: from, $3: to
+# $1: ret, $2: value, $3: from, $4: to
+shellspec_replace_all_fast() {
+  if [ $# -lt 4 ]; then
+    eval "$1=\${$1//\"\$2\"/\"\$3\"}"
+  else
+    eval "$1=\${2//\"\$3\"/\"\$4\"}"
+  fi
+}
+
+# $1: ret, $2: from, $3: to
+# $1: ret, $2: value, $3: from, $4: to
+shellspec_replace_all_posix() {
+  if [ $# -lt 4 ]; then
+    eval "set -- \"\$1\" \"\${$1}\" \"\$2\" \"\$3\" \"\""
+  else
+    set -- "$1" "$2" "$3" "$4" ""
+  fi
+  until [ _"$2" = _"${2#*"$3"}" ] && eval "$1=\$5\$2"; do
+    set -- "$1" "${2#*"$3"}" "$3" "$4" "$5${2%%"$3"*}$4"
+  done
+}
+
+# $1: ret, $2: from, $3: to
+# $1: ret, $2: value, $3: from, $4: to
+shellspec_replace_all_fallback() {
+  [ $# -lt 4 ] && eval "set -- \"\$1\" \"\${$1}\" \"\$2\" \"\$3\""
+  shellspec_meta_escape "$1" "$3"
+  eval "set -- \"\$1\" \"\$2\" \"\${$1}\" \"\$4\" \"\""
+  until eval "[ _\"\$2\" = _\"\${2#*$3}\" ] && $1=\$5\$2"; do
+    eval "set -- \"\$1\" \"\${2#*$3}\" \"\$3\" \"\$4\" \"\$5\${2%%$3*}\$4\""
+  done
+}
+
+shellspec_includes_posix() {
+  case $1 in (*"$2"*) ;; (*) false ;; esac
+}
+
+shellspec_starts_with_posix() {
+  case $1 in ("$2"*) ;; (*) false ;; esac
+}
+
+shellspec_ends_with_posix() {
+  case $1 in (*"$2") ;; (*) false ;; esac
+}
+
+shellspec_includes_fallback() {
+  shellspec_meta_escape shellspec_includes_fallback "$2"
+  eval "[ ! \"\${1#*$shellspec_includes_fallback}\" = \"\$1\" ] &&:" &&:
+}
+
+shellspec_starts_with_fallback() {
+  shellspec_meta_escape shellspec_starts_with_fallback "$2"
+  eval "[ ! \"\${1#$shellspec_starts_with_fallback*}\" = \"\$1\" ] &&:" &&:
+}
+shellspec_ends_with_fallback() {
+  shellspec_meta_escape shellspec_ends_with_fallback "$2"
+  eval "[ ! \"\${1%*$shellspec_ends_with_fallback}\" = \"\$1\" ] &&:" &&:
+}
+
+shellspec_meta_escape() {
+  # shellcheck disable=SC1003
+  if [ "${1#*\?}" ]; then # posh <= 0.5.4
+    set -- '\\\\:\\\\\\\\' '\\\[:[[]' '\\\?:[?]' '\\\*:[*]' '\\\$:[$]'
+  elif [ "${2%%\\*}" ]; then # bosh = all (>= 20181007), busybox <= 1.22.0
+    set -- '\\\\:\\\\\\\\' '\[:[[]' '\?:[?]' '\*:[*]' '\$:[$]'
+  else # POSIX compliant
+    set -- '\\:\\\\' '\[:[[]' '\?:[?]' '\*:[*]' '\$:[$]'
+  fi
+
+  set "$@" '\(:\\(' '\):\\)' '\|:\\|' '\":\\\"' '\`:\\\`' '\{:\\{' '\}:\\}' \
+    "\\':\\\\'" '\ :\\ ' '\&:\\&' '\=:\\=' '\<:\\<' '\>:\\>' '\;:\\;' \
+    "\${SHELLSPEC_LF}:\\\${SHELLSPEC_LF}" \
+    "\${SHELLSPEC_TAB}:\\\${SHELLSPEC_TAB}" \
+    "\${SHELLSPEC_CR}:\\\${SHELLSPEC_CR}" \
+    "\${SHELLSPEC_VT}:\\\${SHELLSPEC_VT}" \
+    "end"
+
+  echo 'shellspec_meta_escape() { set -- "$1" "$2" ""'
+  until [ "$1" = "end" ] && shift && printf '%s\n' "$@"; do
+    set -- "${1%:*}" "${1#*:}" "$@"
+    set -- "$@" 'until [ _"$2" = _"${2#*'"$1"'}" ] && set -- "$1" "$3$2" ""; do'
+    set -- "$@" '  set -- "$1" "${2#*'"$1"'}" "$3${2%%'"$1"'*}'"$2"'"'
+    set -- "$@" 'done'
+    shift 3
+  done
+  echo 'eval "$1=\"\$3\$2\""; }'
+}
+eval "$(shellspec_meta_escape "a?" "\\")"
+
+shellspec_replace_all() {
+  (eval 'v="*#*/" p="#*/"; [ "${v//"$p"/-}" = "*-" ]') 2>/dev/null && return 0
+  [ "${1#"$2"}" = "a*b" ] && return 1 || return 2
+}
+eval 'shellspec_replace_all "a*b" "a[*]" &&:' &&:
+case $? in
+  0) # Fast version (Not POSIX compliant)
+    # ash(busybox)>=1.30.1, bash>=3.1.17, dash>=none, ksh>=93?, mksh>=54
+    # yash>=?, zsh>=?, pdksh=none, posh=none, bosh=none
+    shellspec_replace_all() { shellspec_replace_all_fast "$@"; }
+    shellspec_includes() { shellspec_includes_posix "$@"; }
+    shellspec_starts_with() { shellspec_starts_with_posix "$@"; }
+    shellspec_ends_with() { shellspec_ends_with_posix "$@"; }
+    ;;
+  1) # POSIX version (POSIX compliant)
+    # ash(busybox)>=1.1.3, bash>=2.05b, dash>=0.5.2, ksh>=93q, mksh>=40
+    # yash>=2.30?, zsh>=3.1.9?, pdksh=none, posh=none, bosh=none
+    shellspec_replace_all() { shellspec_replace_all_posix "$@"; }
+    shellspec_includes() { shellspec_includes_posix "$@"; }
+    shellspec_starts_with() { shellspec_starts_with_posix "$@"; }
+    shellspec_ends_with() { shellspec_ends_with_posix "$@"; }
+    ;;
+  2) # Fallback version
+    shellspec_replace_all() { shellspec_replace_all_fallback "$@"; }
+    shellspec_includes() { shellspec_includes_fallback "$@"; }
+    shellspec_starts_with() { shellspec_starts_with_fallback "$@"; }
+    shellspec_ends_with() { shellspec_ends_with_fallback "$@"; }
+esac
+
 shellspec_ends_with_backslash() {
   case $1 in (*\\) true ;; (*) false ;; esac
 }
@@ -387,15 +506,6 @@ shellspec_match_pattern() {
   shellspec_escape_syntax shellspec_match_pattern
   set -- "$1" "$shellspec_match_pattern"
   eval "case \$1 in ($2) true ;; (*) false ;; esac &&:" 2>/dev/null
-}
-
-shellspec_escape_pattern() {
-  shellspec_escape_syntax "$1"
-  shellspec_replace "$1" "|" "\\|"
-  shellspec_replace "$1" "[" "\\["
-  shellspec_replace "$1" "]" "\\]"
-  shellspec_replace "$1" "*" "\\*"
-  shellspec_replace "$1" "?" "\\?"
 }
 
 shellspec_join() {
@@ -467,117 +577,3 @@ shellspec_pluralize() {
 shellspec_exists_file() {
   [ -e "$1" ]
 }
-
-# $1: ret, $2: from, $3: to
-# $1: ret, $2: value, $3: from, $4: to
-shellspec_replace_all_fast() {
-  if [ $# -lt 4 ]; then
-    eval "$1=\${$1//\"\$2\"/\"\$3\"}"
-  else
-    eval "$1=\${2//\"\$3\"/\"\$4\"}"
-  fi
-}
-
-# $1: ret, $2: from, $3: to
-# $1: ret, $2: value, $3: from, $4: to
-shellspec_replace_all_posix() {
-  if [ $# -lt 4 ]; then
-    eval "set -- \"\$1\" \"\${$1}\" \"\$2\" \"\$3\" \"\""
-  else
-    set -- "$1" "$2" "$3" "$4" ""
-  fi
-  until [ _"$2" = _"${2#*"$3"}" ] && eval "$1=\$5\$2"; do
-    set -- "$1" "${2#*"$3"}" "$3" "$4" "$5${2%%"$3"*}$4"
-  done
-}
-
-# $1: ret, $2: from, $3: to
-# $1: ret, $2: value, $3: from, $4: to
-shellspec_replace_all_fallback() {
-  [ $# -lt 4 ] && eval "set -- \"\$1\" \"\${$1}\" \"\$2\" \"\$3\""
-  shellspec_meta_escape "$1" "$3"
-  eval "set -- \"\$1\" \"\$2\" \"\${$1}\" \"\$4\" \"\""
-  until eval "[ _\"\$2\" = _\"\${2#*$3}\" ] && $1=\$5\$2"; do
-    eval "set -- \"\$1\" \"\${2#*$3}\" \"\$3\" \"\$4\" \"\$5\${2%%$3*}\$4\""
-  done
-}
-
-shellspec_includes_posix() {
-  case $1 in (*"$2"*) ;; (*) false ;; esac
-}
-
-shellspec_starts_with_posix() {
-  case $1 in ("$2"*) ;; (*) false ;; esac
-}
-
-shellspec_ends_with_posix() {
-  case $1 in (*"$2") ;; (*) false ;; esac
-}
-
-shellspec_includes_fallback() {
-  shellspec_meta_escape shellspec_includes_fallback "$2"
-  eval "case \$1 in (*$shellspec_includes_fallback*) ;; (*) false ;; esac &&:"
-}
-
-shellspec_starts_with_fallback() {
-  shellspec_meta_escape shellspec_starts_with_fallback "$2"
-  eval "case \$1 in ($shellspec_starts_with_fallback*) ;; (*) false ;; esac &&:"
-}
-shellspec_ends_with_fallback() {
-  shellspec_meta_escape shellspec_ends_with_fallback "$2"
-  eval "case \$1 in (*$shellspec_ends_with_fallback) ;; (*) false ;; esac &&:"
-}
-
-shellspec_meta_escape() {
-  # shellcheck disable=SC1003
-  if [ "${1#*\?}" ]; then # posh <= 0.5.4
-    set -- '\\\\:\\\\\\\\' '\\\[:[[]' '\\\?:[?]' '\\\*:[*]' '\\\$:[$]'
-  elif [ "${2%%\\*}" ]; then # bosh = all (>= 20181007), busybox <= 1.22.0
-    set -- '\\\\:\\\\\\\\' '\[:[[]' '\?:[?]' '\*:[*]' '\$:[$]'
-  else # POSIX compliant
-    set -- '\\:\\\\' '\[:[[]' '\?:[?]' '\*:[*]' '\$:[$]'
-  fi
-
-  set "$@" '\(:\\(' '\):\\)' '\|:\\|' '\":\\\"' '\`:\\\`' '\{:\\{' '\}:\\}' \
-    "\\':\\\\'" '\ :\\ ' '\&:\\&' '\=:\\=' '\<:\\<' '\>:\\>' "end"
-
-  echo 'shellspec_meta_escape() { set -- "$1" "$2" ""'
-  until [ "$1" = "end" ] && shift && printf '%s\n' "$@"; do
-    set -- "${1%:*}" "${1#*:}" "$@"
-    set -- "$@" 'until [ _"$2" = _"${2#*'"$1"'}" ] && set -- "$1" "$3$2" ""; do'
-    set -- "$@" '  set -- "$1" "${2#*'"$1"'}" "$3${2%%'"$1"'*}'"$2"'"'
-    set -- "$@" 'done'
-    shift 3
-  done
-  echo 'eval "$1=\"\$3\$2\""; }'
-}
-eval "$(shellspec_meta_escape "a?" "\\")"
-
-shellspec_replace_all() {
-  (eval 'v="*#*/" p="#*/"; [ "${v//"$p"/-}" = "*-" ]') 2>/dev/null && return 0
-  [ "${1#"$2"}" = "a*b" ] && return 1 || return 2
-}
-eval 'shellspec_replace_all "a*b" "a[*]" &&:' &&:
-case $? in
-  0) # Fast version (Not POSIX compliant)
-    # ash(busybox)>=1.30.1, bash>=3.1.17, dash>=none, ksh>=93?, mksh>=54
-    # yash>=?, zsh>=?, pdksh=none, posh=none, bosh=none
-    shellspec_replace_all() { shellspec_replace_all_fast "$@"; }
-    shellspec_includes() { shellspec_includes_posix "$@"; }
-    shellspec_starts_with() { shellspec_starts_with_posix "$@"; }
-    shellspec_ends_with() { shellspec_ends_with_posix "$@"; }
-    ;;
-  1) # POSIX version (POSIX compliant)
-    # ash(busybox)>=1.1.3, bash>=2.05b, dash>=0.5.2, ksh>=93q, mksh>=40
-    # yash>=2.30?, zsh>=3.1.9?, pdksh=none, posh=none, bosh=none
-    shellspec_replace_all() { shellspec_replace_all_posix "$@"; }
-    shellspec_includes() { shellspec_includes_posix "$@"; }
-    shellspec_starts_with() { shellspec_starts_with_posix "$@"; }
-    shellspec_ends_with() { shellspec_ends_with_posix "$@"; }
-    ;;
-  2) # Fallback version
-    shellspec_replace_all() { shellspec_replace_all_fallback "$@"; }
-    shellspec_includes() { shellspec_includes_fallback "$@"; }
-    shellspec_starts_with() { shellspec_starts_with_fallback "$@"; }
-    shellspec_ends_with() { shellspec_ends_with_fallback "$@"; }
-esac

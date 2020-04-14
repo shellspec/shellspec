@@ -176,4 +176,4 @@ match_quick_data() {
   return 1
 }
 
-use puts putsn escape_pattern starts_with
+use puts putsn starts_with
