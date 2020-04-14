@@ -561,21 +561,33 @@ shellspec_exists_file() {
   [ -e "$1" ]
 }
 
+# $1: ret, $2: from, $3: to
 # $1: ret, $2: value, $3: from, $4: to
 shellspec_replace_all_fast() {
-  eval "$1=\${2//\"\$3\"/\"\$4\"}"
+  if [ $# -lt 4 ]; then
+    eval "$1=\${$1//\"\$2\"/\"\$3\"}"
+  else
+    eval "$1=\${2//\"\$3\"/\"\$4\"}"
+  fi
 }
 
+# $1: ret, $2: from, $3: to
 # $1: ret, $2: value, $3: from, $4: to
 shellspec_replace_all_posix() {
-  set -- "$1" "$2" "$3" "$4" ""
+  if [ $# -lt 4 ]; then
+    eval "set -- \"\$1\" \"\${$1}\" \"\$2\" \"\$3\" \"\""
+  else
+    set -- "$1" "$2" "$3" "$4" ""
+  fi
   until [ _"$2" = _"${2#*"$3"}" ] && eval "$1=\$5\$2"; do
     set -- "$1" "${2#*"$3"}" "$3" "$4" "$5${2%%"$3"*}$4"
   done
 }
 
+# $1: ret, $2: from, $3: to
 # $1: ret, $2: value, $3: from, $4: to
 shellspec_replace_all_fallback() {
+  [ $# -lt 4 ] && eval "set -- \"\$1\" \"\${$1}\" \"\$2\" \"\$3\""
   shellspec_meta_escape "$1" "$3"
   eval "set -- \"\$1\" \"\$2\" \"\${$1}\" \"\$4\" \"\""
   until eval "[ _\"\$2\" = _\"\${2#*$3}\" ] && $1=\$5\$2"; do

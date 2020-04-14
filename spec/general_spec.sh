@@ -657,6 +657,17 @@ Describe "general.sh"
   End
 
   Describe "shellspec_replace_all()"
+    It "replaces all characters"
+      When call shellspec_replace_all replaced "abcabc" "b" "B"
+      The variable replaced should eq "aBcaBc"
+    End
+
+    It "replaces all characters in variable"
+      BeforeCall replaced=abcabc
+      When call shellspec_replace_all replaced "b" "B"
+      The variable replaced should eq "aBcaBc"
+    End
+
     Describe "characters"
       Parameters:value '!' '"' '#' '$' '%' '&' '(' ')' '-' '=' '^' '~' '\' \
         '|' '@' '`' '[' '{' ';' '+' ':' '*' ']' '}' '.' '>' '/' '?' '_' "'"
