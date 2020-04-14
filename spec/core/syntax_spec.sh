@@ -25,10 +25,10 @@ Describe "core/syntax.sh"
 
   Describe "shellspec_syntax()"
     It "adds new syntax"
-      BeforeRun 'SHELLSPEC_SYNTAXES="|syntax|"'
+      BeforeRun 'SHELLSPEC_SYNTAXES=":syntax:"'
       AfterRun 'echo $SHELLSPEC_SYNTAXES'
       When run shellspec_syntax new_syntax
-      The stdout should eq "|syntax|new_syntax|"
+      The stdout should eq ":syntax:new_syntax:"
     End
   End
 
@@ -39,10 +39,10 @@ Describe "core/syntax.sh"
       shellspec_matcher_foo a b c
     }
     It "adds new chain"
-      BeforeRun 'SHELLSPEC_SYNTAXES="|syntax|"'
+      BeforeRun 'SHELLSPEC_SYNTAXES=":syntax:"'
       AfterRun check
       When run shellspec_syntax_chain shellspec_matcher_foo
-      The line 1 of stdout should eq "|syntax|shellspec_matcher_foo|"
+      The line 1 of stdout should eq ":syntax:shellspec_matcher_foo:"
       The line 2 of stdout should eq "matcher_foo a b c"
     End
   End
@@ -55,12 +55,12 @@ Describe "core/syntax.sh"
       shellspec_matcher_foo a b c
     }
     It "adds new compound"
-      BeforeRun 'SHELLSPEC_SYNTAXES="|syntax|"'
-      BeforeRun 'SHELLSPEC_COMPOUNDS="|compund|"'
+      BeforeRun 'SHELLSPEC_SYNTAXES=":syntax:"'
+      BeforeRun 'SHELLSPEC_COMPOUNDS=":compund:"'
       AfterRun check
       When run shellspec_syntax_compound shellspec_matcher_foo
-      The line 1 of stdout should eq "|syntax|shellspec_matcher_foo|"
-      The line 2 of stdout should eq "|compund|shellspec_matcher_foo|"
+      The line 1 of stdout should eq ":syntax:shellspec_matcher_foo:"
+      The line 2 of stdout should eq ":compund:shellspec_matcher_foo:"
       The line 3 of stdout should eq "matcher_foo a b c"
     End
   End
@@ -72,11 +72,11 @@ Describe "core/syntax.sh"
       syntax_bar a b c
     }
     It "adds new alias"
-      BeforeRun 'SHELLSPEC_SYNTAXES="|syntax|"'
+      BeforeRun 'SHELLSPEC_SYNTAXES=":syntax:"'
       BeforeRun 'shellspec_syntax syntax_foo'
       AfterRun check
       When run shellspec_syntax_alias syntax_bar syntax_foo
-      The line 1 of stdout should eq "|syntax|syntax_foo|syntax_bar|"
+      The line 1 of stdout should eq ":syntax:syntax_foo:syntax_bar:"
       The line 2 of stdout should eq "foo a b c"
     End
   End
@@ -90,33 +90,33 @@ Describe "core/syntax.sh"
     shellspec_type_name() { echo "shellspec_type_name $#"; }
 
     It "dispatches"
-      BeforeRun 'SHELLSPEC_SYNTAXES="|shellspec_type_name|"'
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_type_name:"'
       When run shellspec_syntax_dispatch "type" "name"
       The stdout should eq "shellspec_type_name 0"
     End
 
     It "dispatches with arguments"
-      BeforeRun 'SHELLSPEC_SYNTAXES="|shellspec_type_name|"'
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_type_name:"'
       When run shellspec_syntax_dispatch "type" "name" 1
       The stdout should eq "shellspec_type_name 1"
     End
 
     It "dispatches to shellspec_subject_function with function"
       shellspec_subject_function() { echo shellspec_subject_function; }
-      BeforeRun 'SHELLSPEC_SYNTAXES="|shellspec_subject_function|"'
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_function:"'
       When run shellspec_syntax_dispatch "subject" "func()"
       The stdout should eq "shellspec_subject_function"
     End
 
     It "dispatches to shellspec_subject_function with function and arguments"
       shellspec_subject_function() { echo shellspec_subject_function; }
-      BeforeRun 'SHELLSPEC_SYNTAXES="|shellspec_subject_function|"'
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_function:"'
       When run shellspec_syntax_dispatch "subject" "func()" arg
       The stdout should eq "shellspec_subject_function"
     End
 
     It "outputs error if unknown syntax type"
-      BeforeRun 'SHELLSPEC_SYNTAXES="|shellspec_type_name|"'
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_type_name:"'
       When run shellspec_syntax_dispatch "unknown" "name"
       The line 1 of stdout should eq "SYNTAX_ERROR_DISPATCH_FAILED unknown name"
       The line 2 of stdout should eq "[SYNTAX_ERROR]"

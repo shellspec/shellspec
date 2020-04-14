@@ -1,28 +1,28 @@
 #shellcheck shell=sh
 
-SHELLSPEC_SYNTAXES=${SHELLSPEC_SYNTAXES:-|}
-SHELLSPEC_COMPOUNDS="${SHELLSPEC_COMPOUNDS:-|}"
+SHELLSPEC_SYNTAXES=${SHELLSPEC_SYNTAXES:-:}
+SHELLSPEC_COMPOUNDS="${SHELLSPEC_COMPOUNDS:-:}"
 
 shellspec_syntax() {
-  SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}$1|"
+  SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}$1:"
 }
 
 # allow "language chain" after word
 shellspec_syntax_chain() {
-  SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}$1|"
+  SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}$1:"
   shellspec_proxy "$1" "shellspec_syntax_dispatch ${1#shellspec_}"
 }
 
 # disallow "language chain" after word
 shellspec_syntax_compound() {
-  SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}$1|"
+  SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}$1:"
   shellspec_proxy "$1" "shellspec_syntax_dispatch ${1#shellspec_}"
-  SHELLSPEC_COMPOUNDS="${SHELLSPEC_COMPOUNDS}$1|"
+  SHELLSPEC_COMPOUNDS="${SHELLSPEC_COMPOUNDS}$1:"
 }
 
 # just alias, do not dispatch.
 shellspec_syntax_alias() {
-  SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}$1|"
+  SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}$1:"
   shellspec_proxy "$1" "$2"
 }
 
@@ -37,7 +37,7 @@ shellspec_syntax_dispatch() {
     esac
   fi
 
-  if ! shellspec_includes "$SHELLSPEC_COMPOUNDS" "|shellspec_$1|"; then
+  case $SHELLSPEC_COMPOUNDS in (*:shellspec_$1:*) ;; (*)
     SHELLSPEC_EVAL="
       shift; \
       while [ \$# -gt 0 ]; do \
@@ -49,19 +49,16 @@ shellspec_syntax_dispatch() {
       esac
     "
     eval "$SHELLSPEC_EVAL"
-  fi
+  esac
 
-  shellspec_why_posh_0_12_3_falls_without_this() { :; return 0 ||:; }
-  shellspec_why_posh_0_12_3_falls_without_this # workaround for posh 0.12.3
-
-  if shellspec_includes "$SHELLSPEC_SYNTAXES" "|shellspec_$1_${2:-}|"; then
+  case $SHELLSPEC_SYNTAXES in (*:shellspec_$1_${2:-}:*)
     SHELLSPEC_SYNTAX_NAME="shellspec_$1_$2" && shift 2
     case $# in
       0) "$SHELLSPEC_SYNTAX_NAME" ;;
       *) "$SHELLSPEC_SYNTAX_NAME" "$@" ;;
     esac
     return $?
-  fi
+  esac
   shellspec_output SYNTAX_ERROR_DISPATCH_FAILED "$@"
   shellspec_on SYNTAX_ERROR
 }
