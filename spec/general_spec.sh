@@ -280,18 +280,6 @@ Describe "general.sh"
     End
   End
 
-  Describe 'shellspec_escape_quote()'
-    prepare() { var="te'st"; }
-    decode() { eval "ret='$var'"; }
-
-    It 'returns escaped string that evaluatable by eval'
-      BeforeCall prepare
-      AfterCall decode
-      When call shellspec_escape_quote var
-      The variable ret should equal "te'st"
-    End
-  End
-
   Describe 'shellspec_lines()'
     callback() { printf '%s ' "$2:$1"; }
     callback_with_cancel() { printf '%s ' "$2:$1"; return 1; }
@@ -585,6 +573,18 @@ Describe "general.sh"
     It "checks if it ends with a string (target: $1, string: $2)"
       When call shellspec_ends_with_fallback "$1" "$2"
       The status should be "$3"
+    End
+  End
+
+  Describe 'shellspec_escape_quote()'
+    prepare() { var="te'st"; }
+    decode() { eval "ret='$var'"; }
+
+    It 'returns escaped string that evaluatable by eval'
+      BeforeCall prepare
+      AfterCall decode
+      When call shellspec_escape_quote var
+      The variable ret should equal "te'st"
     End
   End
 

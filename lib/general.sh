@@ -283,19 +283,6 @@ shellspec_loop() {
   fi
 }
 
-shellspec_escape_quote() {
-  SHELLSPEC_EVAL="
-    [ $# -gt 1 ] && $1=\${2:-}; \
-    shellspec_reset_params '\$$1' \"'\"; \
-    eval \"\$SHELLSPEC_RESET_PARAMS\"; $1=''; \
-    while [ \$# -gt 0 ]; do \
-      $1=\"\${$1}\${1}\"; shift; \
-      [ \$# -eq 0 ] || $1=\"\${$1}'\\''\"; \
-    done \
-  "
-  eval "$SHELLSPEC_EVAL"
-}
-
 shellspec_lines() {
   [ "${2:-}" ] || return 0
   shellspec_lines_ "$1" "${2%$SHELLSPEC_LF}" 1
@@ -418,11 +405,8 @@ shellspec_meta_escape() {
 
   set "$@" '\(:\\(' '\):\\)' '\|:\\|' '\":\\\"' '\`:\\\`' '\{:\\{' '\}:\\}' \
     "\\':\\\\'" '\ :\\ ' '\&:\\&' '\=:\\=' '\<:\\<' '\>:\\>' '\;:\\;' \
-    "\${SHELLSPEC_LF}:\\\${SHELLSPEC_LF}" \
-    "\${SHELLSPEC_TAB}:\\\${SHELLSPEC_TAB}" \
-    "\${SHELLSPEC_CR}:\\\${SHELLSPEC_CR}" \
-    "\${SHELLSPEC_VT}:\\\${SHELLSPEC_VT}" \
-    "end"
+    '${SHELLSPEC_LF}:\${SHELLSPEC_LF}' '${SHELLSPEC_TAB}:\${SHELLSPEC_TAB}' \
+    '${SHELLSPEC_CR}:\${SHELLSPEC_CR}' '${SHELLSPEC_VT}:\${SHELLSPEC_VT}' end
 
   echo 'shellspec_meta_escape() { set -- "$1" "$2" ""'
   until [ "$1" = "end" ] && shift && printf '%s\n' "$@"; do
@@ -432,7 +416,7 @@ shellspec_meta_escape() {
     set -- "$@" 'done'
     shift 3
   done
-  echo 'eval "$1=\"\$3\$2\""; }'
+  echo 'eval "$1=\"\$2\""; }'
 }
 eval "$(shellspec_meta_escape "a?" "\\")"
 
@@ -468,6 +452,11 @@ esac
 # $2: pattern should be escaped
 shellspec_match() {
   [ "${2:-}" ] && eval "case \${1:-} in ($2) true ;; (*) false ;; esac &&:"
+}
+
+shellspec_escape_quote() {
+  [ $# -lt 2 ] && eval "set -- \"\$1\" \"\$${1}\""
+  shellspec_replace_all "$1" "$2" "'" "'\"'\"'"
 }
 
 shellspec_escape_syntax() {
