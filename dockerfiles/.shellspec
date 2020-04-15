@@ -7,6 +7,7 @@ COPY --from=helpers /usr/local/bin/* /usr/local/bin/
 WORKDIR /shellspec
 RUN chmod ug+s /usr/local/bin/su-exec \
  && echo "--no-banner" > /home/user/.shellspec \
+ && if [ "$KCOV" ]; then echo "--kcov" >> /home/user/.shellspec; fi \
  && ln -s /shellspec/shellspec /usr/local/bin/shellspec \
  && echo "$SH" > /etc/invokesh.conf \
  && [ "$SH" = "sh" ] || ln -snf /usr/local/bin/invokesh /bin/sh
@@ -15,5 +16,6 @@ ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "shellspec" ]
 
 COPY ./dockerfiles/.shellspec-entrypoint.sh /entrypoint.sh
-COPY ./ /shellspec
+COPY --chown=user:user ./ /shellspec
+RUN chmod 777 /shellspec
 USER user

@@ -1,0 +1,5 @@
+FROM debian:bullseye
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+RUN useradd -m user \
+ && apt-get update && apt-get -y install kcov
+ENV SH="bash" KCOV=1
