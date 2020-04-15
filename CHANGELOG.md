@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add test for [GWSH shell](https://github.com/hvdijk/gwsh)
+
 ### Removed
 
 - Removed `match` matcher. Use `match pattern` matcher instead.

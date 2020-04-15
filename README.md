@@ -131,20 +131,21 @@ Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomat
 
 ### Supported shells
 
-`dash`, `bash`, `ksh`, `mksh`, `oksh`, `pdksh`, `zsh`, `posh`, `yash`, `busybox (ash)`, `bosh`, `pbosh`
+`bash`, `busybox (ash)`, `bosh`, `dash`, `gwsh`, `ksh`, `loksh`, `mksh`, `oksh`, `pdksh`, `posh`, `yash`, `zsh`
 
 Tested Platforms
 
-| Platform                                                  | Test                                                          |
-| --------------------------------------------------------- | ------------------------------------------------------------- |
-| Ubuntu 12.04, 14.04, 16.04, 18.04                         | [Travis CI](https://travis-ci.com/shellspec/shellspec)        |
-| macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 (Homebrew) | [Travis CI](https://travis-ci.com/shellspec/shellspec)        |
-| FreeBSD 10.x, 11.x, 12.x                                  | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
-| Windows Server 2019 (Git bash, msys2, cygwin)             | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
-| Debian 2.2, 3.0, 3.1, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0  | docker                                                        |
-| Alpine, BusyBox, LEDE 17.01, OpenWrt 18.06                | docker                                                        |
-| Windows 10 1903 (Ubuntu 18.04 on WSL)                     | manual                                                        |
-| Solaris 10, 11                                            | manual                                                        |
+| Platform                                                      | Test                                                          |
+| ------------------------------------------------------------- | ------------------------------------------------------------- |
+| Ubuntu 12.04, 14.04, 16.04, 18.04                             | [Travis CI](https://travis-ci.com/shellspec/shellspec)        |
+| macOS 10.10, 10.11, 10.12, 10.13, 10.14, 10.14 (Homebrew)     | [Travis CI](https://travis-ci.com/shellspec/shellspec)        |
+| FreeBSD 10.x, 11.x, 12.x                                      | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
+| Windows Server 2019 (Git bash, msys2, cygwin)                 | [Cirrus CI](https://cirrus-ci.com/github/shellspec/shellspec) |
+| Debian 2.2, 3.0, 3.1, 4.0, 5.0, 6.0, 7.11, 8.11, 9.12, 10.3   | docker                                                        |
+| Alpine 3.11, BusyBox 1.31.1, LEDE 17.01, OpenWrt 18.06, 19.07 | docker                                                        |
+| Windows 10 1909 (Ubuntu 18.04 on WSL)                         | manual                                                        |
+| macOS 10.15                                                   | manual                                                        |
+| Solaris 10, 11                                                | manual                                                        |
 
 [Tested version details](docs/shells.md)
 
