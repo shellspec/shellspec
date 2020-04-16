@@ -74,25 +74,20 @@ shellspec_import() {
 }
 
 shellspec_import_deep() {
-  shellspec_import_ "${1%%:*}" "$2" && return 0
+  if [ -e "${1%%:*}/$2.sh" ]; then
+    # shellcheck disable=SC1090
+    . "${1%%:*}/$2.sh"
+    return 0
+  fi
+  if [ -e "${1%%:*}/$2/$2.sh" ]; then
+    # shellcheck disable=SC1090
+    . "${1%%:*}/$2/$2.sh"
+    return 0
+  fi
   case $1 in
     *:*) shellspec_import_deep "${1#*:}" "$2" ;;
     *) shellspec_error "Import failed, '$2' not found" ;;
   esac
-}
-
-shellspec_import_() {
-  if [ -e "$1/$2.sh" ]; then
-    # shellcheck disable=SC1090
-    . "$1/$2.sh"
-    return 0
-  fi
-  if [ -e "$1/$2/$2.sh" ]; then
-    # shellcheck disable=SC1090
-    . "$1/$2/$2.sh"
-    return 0
-  fi
-  return 1
 }
 
 if [ "$SHELLSPEC_SHELL_TYPE" = "zsh" ]; then

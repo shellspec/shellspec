@@ -34,18 +34,24 @@ shellspec_evaluation_run() {
   shellspec_coverage_stop
 }
 
-if [ "${SHELLSPEC_SHELL_TYPE#p}" = "bosh" ]; then
-  shellspec_evaluation_run_subshell() {
-    ( set "$1"; shift; shellspec_evaluation_run_data "$@" )
-  }
-else
-  # Workaround for #40 in contrib/bugs.sh
-  # ( ... ) not return exit status
-  shellspec_evaluation_run_subshell() {
-    #shellcheck disable=SC2034
-    SHELLSPEC_DUMMY=$( set "$1"; shift; shellspec_evaluation_run_data "$@" )
-  }
-fi
+shellspec_evaluation_run_subshell() {
+  ( set "$1"; shift; shellspec_evaluation_run_data "$@" )
+}
+
+# Workaround for #40 in contrib/bugs.sh
+# ( ... ) not return exit status
+shellspec_evaluation_run_subshell_workaround() {
+  case $1 in (*e*) set +e; esac
+  (set -e; func() { return 2; }; func)
+  if [ $? -eq 1 ]; then
+    shellspec_evaluation_run_subshell() {
+      #shellcheck disable=SC2034
+      SHELLSPEC_DUMMY=$( set "$1"; shift; shellspec_evaluation_run_data "$@" )
+    }
+  fi
+  case $1 in (*e*) set -e; esac
+}
+shellspec_evaluation_run_subshell_workaround "$-"
 
 shellspec_evaluation_run_data() {
   if [ ! "${SHELLSPEC_DATA:-}" ]; then
