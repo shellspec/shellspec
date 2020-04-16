@@ -131,7 +131,7 @@ shellspec_invoke_example() {
   shellspec_off UNHANDLED_STATUS UNHANDLED_STDOUT UNHANDLED_STDERR
 
   # Output SKIP message if skipped in outer group.
-  shellspec_output_if SKIP || {
+  if ! shellspec_output_if SKIP; then
     "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
     if ! shellspec_call_before_hooks EACH; then
       SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
@@ -150,7 +150,7 @@ shellspec_invoke_example() {
       shellspec_output FAILED
       return 0
     fi
-  }
+  fi
 
   shellspec_if SKIP && shellspec_unless FAILED && {
     shellspec_output SKIPPED && return 0
