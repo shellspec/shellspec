@@ -42,24 +42,22 @@ fi
 shellspec_load_requires() {
   shellspec_reset_params '$1' ':'
   eval "$SHELLSPEC_RESET_PARAMS"
-  while [ $# -gt 0 ]; do
+  set -- "$@" ":" "$@"
+
+  until [ "$1" = ":" ] && shift; do
     eval "shellspec_$1_configure() { :; }"
     shellspec_import "$1"
     shift
   done
-}
-shellspec_load_requires "$SHELLSPEC_REQUIRES"
 
-shellspec_import "core"
+  shellspec_import "core"
 
-shellspec_call_configure() {
-  shellspec_reset_params '$1' ':'
-  eval "$SHELLSPEC_RESET_PARAMS"
-  while [ $# -gt 0 ]; do "shellspec_$1_configure"
+  while [ $# -gt 0 ]; do
+    "shellspec_$1_configure"
     shift
   done
 }
-shellspec_call_configure "$SHELLSPEC_REQUIRES"
+shellspec_load_requires "$SHELLSPEC_REQUIRES"
 
 if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_PROFILER_LIMIT" -gt 0 ]; then
   shellspec_profile_start() { shellspec_profile_wait; }
