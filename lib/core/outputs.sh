@@ -32,7 +32,7 @@ shellspec_output_SKIP() {
   if shellspec_is_temporary_skip; then
     shellspec_output_statement "tag:skip" "note:SKIPPED" "fail:" \
       "skipid:$SHELLSPEC_SKIP_ID" "temporary:y" \
-      "message:${SHELLSPEC_SKIP_REASON:-"# Temporarily skipped"}"
+      "message:${SHELLSPEC_SKIP_REASON:-# Temporarily skipped}"
   else
     shellspec_output_statement "tag:skip" "note:SKIPPED" "fail:" \
       "skipid:$SHELLSPEC_SKIP_ID" "temporary:" \
@@ -44,7 +44,7 @@ shellspec_output_PENDING() {
   if shellspec_is_temporary_pending; then
     shellspec_output_statement "tag:pending" "note:PENDING" "fail:" \
       "pending:y" "temporary:y" \
-      "message:${SHELLSPEC_PENDING_REASON:-"# Temporarily pended"}"
+      "message:${SHELLSPEC_PENDING_REASON:-# Temporarily pended}"
   else
     shellspec_output_statement "tag:pending" "note:PENDING" "fail:" \
       "pending:y" "temporary:" \
