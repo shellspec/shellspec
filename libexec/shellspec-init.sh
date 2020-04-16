@@ -5,14 +5,16 @@ set -eu
 test || __() { :; }
 
 generate() {
-  if [ -e "$1" ]; then
-    set -- exist "$1"
+  file="$1" && shift
+  if [ -e "$file" ]; then
+    set -- exist "$file"
   else
-    case "$1" in (*/*)
-      mkdir -p "${1%/*}"
+    case "$file" in (*/*)
+      mkdir -p "${file%/*}"
     esac
-    cat > "$1"
-    set -- create "$1"
+    [ $# -eq 0 ] && set -- "$(cat)"
+    printf '%s\n' "$@" > "$file"
+    set -- create "$file"
   fi
   printf '%8s   %s\n' "$@"
 }
@@ -72,8 +74,8 @@ DATA
 
 for template; do
   case $template in
-    git ) ignore_file "/" | generate ".gitignore" ;;
-    hg  ) ignore_file "^" "syntax: regexp" | generate ".hgignore" ;;
-    svn ) ignore_file "/" | generate ".svnignore" ;;
+    git ) generate ".gitignore" "$(ignore_file "/")" ;;
+    hg  ) generate ".hgignore" "$(ignore_file "^" "syntax: regexp")" ;;
+    svn ) generate ".svnignore" "$(ignore_file "/")" ;;
   esac
 done
