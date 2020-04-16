@@ -23,11 +23,12 @@ else
   shellspec_redefinable() { :; }
 fi
 
-# Workaround for busybox-1.1.3, ksh 93q, ksh 93r
+# Workaround for busybox-1.1.3, ksh 88
 if [ "$SHELLSPEC_DEFECT_REDEFINE" ]; then
   shellspec_unbuiltin() {
-    eval "alias $1='shellspec_unbuiltin_$1'"
-    eval "shellspec_unbuiltin_$1() { \\$1 \"\$@\"; }"
+    set -- "$1" "shellspec_unbuiltin_$1"
+    eval "alias $1='$2'"
+    eval "$2() { if [ \$# -eq 0 ]; then \\$1; else \\$1 \"\$@\"; fi; }"
   }
   shellspec_unbuiltin "test"
 else
