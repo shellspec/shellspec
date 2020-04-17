@@ -27,8 +27,7 @@ fi
 if [ "$SHELLSPEC_DEFECT_REDEFINE" ]; then
   shellspec_unbuiltin() {
     set -- "$1" "shellspec_unbuiltin_$1"
-    eval "alias $1='$2'"
-    eval "$2() { if [ \$# -eq 0 ]; then \\$1; else \\$1 \"\$@\"; fi; }"
+    eval "alias $1='$2'; $2() { \\$1 \${1+\"\$@\"}; }"
   }
   shellspec_unbuiltin "test"
 else
