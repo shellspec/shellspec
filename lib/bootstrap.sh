@@ -5,18 +5,8 @@ shellspec() { :; }
 # shellcheck source=lib/general.sh
 . "$SHELLSPEC_LIB/general.sh"
 
-# Workaround for ksh (Version AJM 93u+ 2012-08-01)
-# ksh can not redefine existing function in some cases inside of sub shell.
-#
-# ```ksh
-# foo() { echo foo1; }
-# ( foo() { echo foo2; }; foo) # => output 'foo1', not 'foo2'
-# ````
-#
-# If you want to redefine function on ksh, use shellspec_redefinable in spec helper
-#
-if [ "$SHELLSPEC_SHELL_TYPE" = ksh ]; then
-  # $1: function name
+# Workaround for ksh #40 in contrib/bugs.sh
+if [ "$SHELLSPEC_DEFECT_REDEFINE" ]; then
   shellspec_redefinable() { eval "alias $1='shellspec_redefinable_ $1'"; }
   shellspec_redefinable_() { "$@"; }
 else
@@ -24,7 +14,7 @@ else
 fi
 
 # Workaround for busybox-1.1.3, ksh 88
-if [ "$SHELLSPEC_DEFECT_REDEFINE" ]; then
+if [ "$SHELLSPEC_DEFECT_BUILTIN" ]; then
   shellspec_unbuiltin() {
     set -- "$1" "shellspec_unbuiltin_$1"
     eval "alias $1='$2'; $2() { \\$1 \${1+\"\$@\"}; }"
