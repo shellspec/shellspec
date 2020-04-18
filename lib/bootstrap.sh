@@ -62,6 +62,6 @@ shellspec_profile_wait() {
 
 #shellcheck disable=SC2034
 case $- in
-  *e*) SHELLSPEC_ERREXIT=1 ;;
-  *) SHELLSPEC_ERREXIT=; set -e ;;
+  *e*) SHELLSPEC_ERREXIT="-e" ;;
+  *) SHELLSPEC_ERREXIT="+e"; set -e ;;
 esac

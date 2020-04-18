@@ -183,6 +183,7 @@ Describe "core/dsl.sh"
     Context 'when example is execution target'
       prepare() { shellspec_invoke_example() { echo 'invoke_example'; }; }
       BeforeRun SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
+      func() { printf foo; false; printf bar; }
 
       Context 'errexit is on'
         Set 'errexit:on'
@@ -195,6 +196,19 @@ Describe "core/dsl.sh"
         It 'invokes example with arguments'
           When run shellspec_example 'description' -- tag
           The stdout should include 'invoke_example'
+        End
+
+        Specify "The func() stops with 'false' with run evaluation"
+          Skip if 'shell flag handling broken' posh_shell_flag_bug
+          When run func
+          The stdout should eq 'foo'
+          The status should be failure
+        End
+
+        Specify "The func() does NOT stop with 'false' with call evaluation"
+          When call func
+          The stdout should eq 'foobar'
+          The status should be success
         End
       End
 
@@ -209,6 +223,34 @@ Describe "core/dsl.sh"
         It 'invokes example with arguments'
           When run shellspec_example 'description' -- tag
           The stdout should include 'invoke_example'
+        End
+
+        Specify "The func() does not stop with 'false' with run evaluation"
+          When run func
+          The stdout should eq 'foobar'
+          The status should be success
+        End
+
+        Specify "The func() does not stop with 'false' with run evaluation"
+          When call func
+          The stdout should eq 'foobar'
+          The status should be success
+        End
+      End
+
+      Context 'errexit is off (by default)'
+        Before "SHELLSPEC_ERREXIT=+e"
+
+        Specify "The func() does not stop with 'false' with run evaluation"
+          When run func
+          The stdout should eq 'foobar'
+          The status should be success
+        End
+
+        Specify "The func() does not stop with 'false' with run evaluation"
+          When call func
+          The stdout should eq 'foobar'
+          The status should be success
         End
       End
     End
@@ -782,24 +824,6 @@ Describe "core/dsl.sh"
     It "detects temporary pending"
       When run temporary_pending "$1"
       The status should be "$2"
-    End
-  End
-
-  Describe "Set"
-    Context 'when set errexit on'
-      Set errexit:on
-      It 'sets shell option'
-        When call echo "$-"
-        The stdout should include "e"
-      End
-    End
-
-    Context 'when set errexit off'
-      Set errexit:off
-      It 'sets shell option'
-        When call echo "$-"
-        The stdout should not include "e"
-      End
     End
   End
 

@@ -82,6 +82,10 @@ shellspec_spec_helper_configure() {
     case "a[d]" in (*"a[d]"*) false; esac # posh <= 0.12.6
   }
 
+  posh_shell_flag_bug() {
+    [ "$SHELLSPEC_DEFECT_SHELL_FLAG" ]
+  }
+
   not_exist_failglob() {
     #shellcheck disable=SC2039
     shopt -s failglob 2>/dev/null && return 1

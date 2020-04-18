@@ -148,7 +148,7 @@ Describe "core/utils.sh"
   End
 
   Describe 'shellspec_set_option()'
-    Before 'SHELLSPEC_SHELL_OPTIONS="set -o foo;set +o bar;"'
+    BeforeRun 'SHELLSPEC_SHELL_OPTIONS="set -o foo;set +o bar;"'
     shellspec_set_long() { %= "$@"; }
 
     It 'sets long options'

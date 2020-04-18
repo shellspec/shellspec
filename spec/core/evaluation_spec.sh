@@ -145,7 +145,7 @@ Describe "core/evaluation.sh"
     End
 
     Describe 'abort test'
-      Skip if 'shell flag handling broken' [ "$SHELLSPEC_DEFECT_SHELL_FLAG" ]
+      Skip if 'shell flag handling broken' posh_shell_flag_bug
       evaluation() { set -e; echo line1; "$BIN/exit.sh" 12; echo line2; }
 
       Context "when errexit is on"

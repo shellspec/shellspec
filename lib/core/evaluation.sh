@@ -3,6 +3,7 @@
 SHELLSPEC_STDIN_FILE="$SHELLSPEC_TMPBASE/$$.stdin"
 SHELLSPEC_STDOUT_FILE="$SHELLSPEC_TMPBASE/$$.stdout"
 SHELLSPEC_STDERR_FILE="$SHELLSPEC_TMPBASE/$$.stderr"
+SHELLSPEC_SHELL_OPTIONS=''
 
 SHELLSPEC_STDIN_DEV=/dev/null
 (: < /dev/tty) 2>/dev/null && SHELLSPEC_STDIN_DEV=/dev/tty
@@ -14,6 +15,8 @@ shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
 shellspec_evaluation_call() {
   shellspec_coverage_start
+  set "$SHELLSPEC_ERREXIT"
+  "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
   if [ ! "${SHELLSPEC_DATA:-}" ]; then
     shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV"
   else
@@ -26,6 +29,8 @@ shellspec_evaluation_call() {
 
 shellspec_evaluation_run() {
   shellspec_coverage_start
+  set "$SHELLSPEC_ERREXIT"
+  "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
   case $- in
     *e*) set +e; shellspec_evaluation_run_subshell -e "$@"; set -e -- $? ;;
     *) shellspec_evaluation_run_subshell +e "$@"; set -- $? ;;
@@ -68,8 +73,12 @@ if [ "${ZSH_VERSION:-}" ] && (exit 1); then
   shellspec_evaluation_run_trap_exit_status() {
     SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_TMPBASE/$$.exit_codes.$SHELLSPEC_SPEC_NO.$SHELLSPEC_EXAMPLE_NO"
     : > "$SHELLSPEC_ZSH_EXIT_CODES"
-    set +e
-    (
+
+    case $- in
+      *e*) set +e; set -- -e "$@" ;;
+      *) set -- +e "$@" ;;
+    esac
+    ( set "$1"; shift
       # "unset status" causes an error and forces exit instead of "exit"
       # status variable is special variable, can not unset in zsh
       SHELLSPEC_EVAL="
