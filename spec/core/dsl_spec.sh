@@ -7,6 +7,44 @@
 Include "$SHELLSPEC_LIB/core/dsl.sh"
 
 Describe "core/dsl.sh"
+  Describe "shellspec_group_id()"
+    setup() {
+      SHELLSPEC_GROUP_ID="" SHELLSPEC_BLOCK_NO=""
+    }
+    check() {
+      echo "$SHELLSPEC_GROUP_ID"
+      echo "$SHELLSPEC_BLOCK_NO"
+    }
+    BeforeRun setup
+    AfterRun check
+
+    It 'sets group id'
+      When run shellspec_group_id 10 20
+      The line 1 of stdout should eq 10
+      The line 2 of stdout should eq 20
+    End
+  End
+
+  Describe "shellspec_example_id()"
+    setup() {
+      SHELLSPEC_EXAMPLE_ID="" SHELLSPEC_EXAMPLE_NO="" SHELLSPEC_BLOCK_NO=""
+    }
+    check() {
+      echo "$SHELLSPEC_EXAMPLE_ID"
+      echo "$SHELLSPEC_EXAMPLE_NO"
+      echo "$SHELLSPEC_BLOCK_NO"
+    }
+    BeforeRun setup
+    AfterRun check
+
+    It 'sets group id'
+      When run shellspec_example_id 10 20 30
+      The line 1 of stdout should eq 10
+      The line 2 of stdout should eq 20
+      The line 3 of stdout should eq 30
+    End
+  End
+
   Describe "shellspec_metadata()"
     mock() { shellspec_output() { echo "$1"; }; }
     BeforeRun mock
@@ -827,6 +865,19 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_cat"
+    Data
+    #|test1
+    #|test2
+    End
+
+    It "outputs data"
+      When call shellspec_cat
+      The line 1 of stdout should eq "test1"
+      The line 2 of stdout should eq "test2"
+    End
+  End
+
   Describe 'BeforeCall / AfterCall'
     before() { echo before; }
     after() { echo after; }
@@ -982,6 +1033,40 @@ Describe "core/dsl.sh"
         The line 2 of stdout should eq 'foo'
         The stderr should be present
       End
+    End
+  End
+
+  Describe "shellspec_filter()"
+    setup() {
+      SHELLSPEC_ENABLED="" SHELLSPEC_FILTER="" SHELLSPEC_FOCUSED=""
+    }
+    check() {
+      echo "$SHELLSPEC_ENABLED"
+      echo "$SHELLSPEC_FOCUSED"
+      echo "$SHELLSPEC_FILTER"
+    }
+    BeforeRun setup
+    AfterRun check
+
+    It 'sets enabled flag'
+      When run shellspec_filter 1
+      The line 1 of stdout should be present
+      The line 2 of stdout should be blank
+      The line 3 of stdout should be blank
+    End
+
+    It 'sets focused flag'
+      When run shellspec_filter "" 1
+      The line 1 of stdout should be blank
+      The line 2 of stdout should be present
+      The line 3 of stdout should be blank
+    End
+
+    It 'sets filter flag'
+      When run shellspec_filter "" "" 1
+      The line 1 of stdout should be blank
+      The line 2 of stdout should be blank
+      The line 3 of stdout should be present
     End
   End
 End

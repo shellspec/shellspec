@@ -17,15 +17,11 @@ trans() {
 trans_block_example_group() {
   putsn "("
   [ "$skipped" ] && trans_skip ""
-  putsn \
-    "SHELLSPEC_BLOCK_NO=$block_no" \
-    "SHELLSPEC_GROUP_ID=$block_id" \
-    "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
+  putsn "shellspec_group_id $block_id $block_no"
+  putsn "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { "
-  [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
-  [ "$filter" ] && putsn "SHELLSPEC_FILTER=$filter"
-  [ "$enabled" ] && putsn "SHELLSPEC_ENABLED=$enabled"
+  putsn "shellspec_filter '$enabled' '$focused' '$filter'"
   putsn "shellspec_example_group $1"
   putsn "}; shellspec_yield${block_no}() { :;"
 }
@@ -33,16 +29,11 @@ trans_block_example_group() {
 trans_block_example() {
   putsn "("
   [ "$skipped" ] && trans_skip ""
-  putsn \
-    "SHELLSPEC_BLOCK_NO=$block_no" \
-    "SHELLSPEC_EXAMPLE_ID=$block_id" \
-    "SHELLSPEC_LINENO_BEGIN=$lineno_begin" \
-    "SHELLSPEC_EXAMPLE_NO=$example_no"
+  putsn "shellspec_example_id $block_id $example_no $block_no"
+  putsn "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { "
-  [ "$focused" ] && putsn "SHELLSPEC_FOCUSED=$focused"
-  [ "$filter" ] && putsn "SHELLSPEC_FILTER=$filter"
-  [ "$enabled" ] && putsn "SHELLSPEC_ENABLED=$enabled"
+  putsn "shellspec_filter '$enabled' '$focused' '$filter'"
   putsn "shellspec_example_block"
   putsn "}; shellspec_example${block_no}() { "
   putsn "if [ \$# -eq 0 ]"
@@ -55,7 +46,7 @@ trans_block_example() {
 trans_block_end() {
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "}; SHELLSPEC_LINENO_END=$lineno_end"
-  [ "$enabled" ] && putsn "SHELLSPEC_ENABLED=$enabled"
+  putsn "shellspec_filter '$enabled'"
   putsn "shellspec_block${block_no}) ${1# }"
 }
 
@@ -94,8 +85,8 @@ trans_data_begin() {
 
 trans_data_here_begin() {
   case $1 in
-    expand) putsn "cat <<$delimiter $2" ;;
-    raw)    putsn "cat <<'$delimiter' $2" ;;
+    expand) putsn "shellspec_cat <<$delimiter $2" ;;
+    raw)    putsn "shellspec_cat <<'$delimiter' $2" ;;
   esac
 }
 
@@ -116,7 +107,7 @@ trans_data_func() {
 }
 
 trans_data_file() {
-  putsn "cat ${1#<}"
+  putsn "shellspec_cat $1"
 }
 
 trans_data_end() {
@@ -126,8 +117,8 @@ trans_data_end() {
 
 trans_text_begin() {
   case $1 in
-    expand) putsn "cat <<$delimiter $2" ;;
-    raw)    putsn "cat <<'$delimiter' $2" ;;
+    expand) putsn "shellspec_cat <<$delimiter $2" ;;
+    raw)    putsn "shellspec_cat <<'$delimiter' $2" ;;
   esac
 }
 

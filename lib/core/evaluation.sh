@@ -48,7 +48,9 @@ shellspec_evaluation_run() {
 }
 
 shellspec_evaluation_run_subshell() {
-  ( set "$1"; shift; shellspec_evaluation_run_data "$@" )
+  ( set "$1"; shift
+    shellspec_evaluation_run_data "$@"
+  )
 }
 
 # Workaround for #40 in contrib/bugs.sh

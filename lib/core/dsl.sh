@@ -4,6 +4,16 @@ SHELLSPEC_DESCRIPTION=''
 SHELLSPEC_PATH_ALIAS=:
 SHELLSPEC_INTERCEPTOR='|'
 
+shellspec_group_id() {
+  # shellcheck disable=SC2034
+  SHELLSPEC_GROUP_ID=$1 SHELLSPEC_BLOCK_NO=$2
+}
+
+shellspec_example_id() {
+  # shellcheck disable=SC2034
+  SHELLSPEC_EXAMPLE_ID=$1 SHELLSPEC_EXAMPLE_NO=$2 SHELLSPEC_BLOCK_NO=$3
+}
+
 shellspec_metadata() {
   if [ "${1:-}" ]; then
     shellspec_output METADATA
@@ -363,4 +373,17 @@ shellspec_is_temporary_skip() {
 
 shellspec_is_temporary_pending() {
   case ${SHELLSPEC_PENDING_REASON:-} in ("" | \# | \#\ *) ;; (*) false; esac
+}
+
+shellspec_cat() {
+  while IFS= read -r line || [ "$line" ]; do
+    shellspec_putsn "$line"
+  done
+}
+
+# shellcheck disable=SC2034
+shellspec_filter() {
+  if [ "${1:-}" ]; then SHELLSPEC_ENABLED=$1; fi
+  if [ "${2:-}" ]; then SHELLSPEC_FOCUSED=$2; fi
+  if [ "${3:-}" ]; then SHELLSPEC_FILTER=$3; fi
 }
