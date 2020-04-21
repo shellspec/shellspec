@@ -178,12 +178,20 @@ todo() {
   block_end ""
 }
 
-statement() {
+evaluation() {
   if [ -z "$inside_of_example" ]; then
-    syntax_error "When/The cannot be defined outside of Example"
+    syntax_error "When cannot be defined outside of Example"
     return 0
   fi
-  eval trans statement ${1+'"$@"'}
+  eval trans evaluation ${1+'"$@"'}
+}
+
+expectation() {
+  if [ -z "$inside_of_example" ]; then
+    syntax_error "The cannot be defined outside of Example"
+    return 0
+  fi
+  eval trans expectation ${1+'"$@"'}
 }
 
 control() {

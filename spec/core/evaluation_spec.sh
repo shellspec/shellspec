@@ -7,6 +7,29 @@ Describe "core/evaluation.sh"
   Include "$SHELLSPEC_LIB/core/evaluation.sh"
   Before 'VAR=123'
 
+  Describe 'shellspec_invoke_data()'
+    shellspec_data() {
+      echo "${1:-test1}"
+      echo "${2:-test2}"
+    }
+
+    BeforeRun SHELLSPEC_DATA=1
+
+    It 'generates data'
+      File in-file="$SHELLSPEC_STDIN_FILE"
+      When run shellspec_invoke_data
+      The line 1 of contents of file in-file should equal 'test1'
+      The line 2 of contents of file in-file should equal 'test2'
+    End
+
+    It 'generates data with parameters'
+      File in-file="$SHELLSPEC_STDIN_FILE"
+      When run shellspec_invoke_data testA testB
+      The line 1 of contents of file in-file should equal 'testA'
+      The line 2 of contents of file in-file should equal 'testB'
+    End
+  End
+
   Describe 'call evaluation'
     It 'outputs to stdout and stderr'
       evaluation() { echo ok; echo err >&2; return 0; }

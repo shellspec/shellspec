@@ -59,7 +59,16 @@ trans_block_end() {
   putsn "shellspec_block${block_no}) ${1# }"
 }
 
-trans_statement() {
+trans_evaluation() {
+  putsn "SHELLSPEC_LINENO=$lineno"
+  putsn "if [ \$# -eq 0 ]"
+  putsn "then shellspec_invoke_data"
+  putsn "else shellspec_invoke_data \"\$@\""
+  putsn "fi"
+  putsn "shellspec_statement $1 $2"
+}
+
+trans_expectation() {
   putsn "SHELLSPEC_LINENO=$lineno"
   putsn "shellspec_statement $1 $2"
 }

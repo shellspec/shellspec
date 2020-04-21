@@ -90,4 +90,20 @@ Describe 'Parameters helper'
       The result of 'desc()' should eq "example $1 $2"
     End
   End
+
+  Describe 'Using with data helper'
+    Parameters
+      a       A      Abc
+      b       B      aBc
+    End
+
+    Data:expand
+    #|abc
+    End
+
+    It "example $1 $2"
+      When call tr "$1" "$2"
+      The output should eq "$3"
+    End
+  End
 End

@@ -47,8 +47,8 @@ mapping() {
     fIt               ) f block_example       "$2" ;;
     End               )   block_end           "$2" ;;
     Todo              )   todo                "$2" ;;
-    When              )   statement when      "$2" ;;
-    The               )   statement the       "$2" ;;
+    When              )   evaluation when     "$2" ;;
+    The               )   expectation the     "$2" ;;
     Path              )   control path        "$2" ;;
     File              )   control path        "$2" ;;
     Dir               )   control path        "$2" ;;

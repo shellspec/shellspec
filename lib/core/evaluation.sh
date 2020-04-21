@@ -13,6 +13,15 @@ shellspec_syntax 'shellspec_evaluation_run'
 
 shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
+shellspec_invoke_data() {
+  if [ "${SHELLSPEC_DATA:-}" ]; then
+    case $# in
+      0) shellspec_data > "$SHELLSPEC_STDIN_FILE" ;;
+      *) shellspec_data "$@" > "$SHELLSPEC_STDIN_FILE" ;;
+    esac
+  fi
+}
+
 shellspec_evaluation_call() {
   shellspec_coverage_start
   set "$SHELLSPEC_ERREXIT"
@@ -20,7 +29,6 @@ shellspec_evaluation_call() {
   if [ ! "${SHELLSPEC_DATA:-}" ]; then
     shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV"
   else
-    shellspec_data > "$SHELLSPEC_STDIN_FILE"
     shellspec_around_call "$@" < "$SHELLSPEC_STDIN_FILE"
   fi >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   shellspec_evaluation_cleanup $?
@@ -63,7 +71,6 @@ shellspec_evaluation_run_data() {
     shellspec_evaluation_run_trap_exit_status "$@" < "$SHELLSPEC_STDIN_DEV" \
       >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE"
   else
-    shellspec_data > "$SHELLSPEC_STDIN_FILE"
     shellspec_evaluation_run_trap_exit_status "$@" < "$SHELLSPEC_STDIN_FILE" \
       >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE"
   fi
