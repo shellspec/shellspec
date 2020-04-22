@@ -176,4 +176,82 @@ Describe "libexec/translator.sh"
       The line 2 of stdout should eq 12346
     End
   End
+
+  Describe "data()"
+    BeforeRun lineno=12345
+    trans() { echo "$@"; }
+
+    _data() {
+      {
+        echo "# comment"
+        echo "#|aaa"
+      } | data "$@"
+    }
+
+    It "reads text data"
+      When run _data "===="
+      The line 1 of stdout should eq "data_begin ===="
+      The line 2 of stdout should eq "data_here_begin ==== "
+      The line 3 of stdout should eq "data_here_line #|aaa"
+      The line 4 of stdout should eq "data_here_end"
+      The line 5 of stdout should eq "data_end ===="
+    End
+
+    It "reads text data (with comment)"
+      When run _data "====" "# comment"
+      The line 1 of stdout should eq "data_begin ==== # comment"
+      The line 2 of stdout should eq "data_here_begin ==== # comment"
+      The line 3 of stdout should eq "data_here_line #|aaa"
+      The line 4 of stdout should eq "data_here_end"
+      The line 5 of stdout should eq "data_end ==== # comment"
+    End
+
+    It "reads text data (with filter)"
+      When run _data "====" "| tr"
+      The line 1 of stdout should eq "data_begin ==== | tr"
+      The line 2 of stdout should eq "data_here_begin ==== | tr"
+      The line 3 of stdout should eq "data_here_line #|aaa"
+      The line 4 of stdout should eq "data_here_end"
+      The line 5 of stdout should eq "data_end ==== | tr"
+    End
+
+    It "outputs error with invalid line"
+      _data() { echo "error" | data "$@"; }
+      syntax_error() { echo "$@"; }
+      When run _data "===="
+      The line 1 of stdout should eq "data_begin ===="
+      The line 2 of stdout should eq "data_here_begin ==== "
+      The line 3 of stdout should eq "data_here_end"
+      The line 4 of stdout should eq "Data text should begin with '#|' or '# '"
+      The line 5 of stdout should eq "data_end ===="
+    End
+
+    It "reads text data from quoted argument"
+      When run data "====" "'string'"
+      The line 1 of stdout should eq "data_begin ==== 'string'"
+      The line 2 of stdout should eq "data_text 'string'"
+      The line 3 of stdout should eq "data_end ==== 'string'"
+    End
+
+    It "reads text data from double quoted argument"
+      When run data "====" "\"string\""
+      The line 1 of stdout should eq "data_begin ==== \"string\""
+      The line 2 of stdout should eq "data_text \"string\""
+      The line 3 of stdout should eq "data_end ==== \"string\""
+    End
+
+    It "reads text data from function"
+      When run data "====" "func"
+      The line 1 of stdout should eq "data_begin ==== func"
+      The line 2 of stdout should eq "data_func func"
+      The line 3 of stdout should eq "data_end ==== func"
+    End
+
+    It "reads text data from file"
+      When run data "====" "< file"
+      The line 1 of stdout should eq "data_begin ==== < file"
+      The line 2 of stdout should eq "data_file < file"
+      The line 3 of stdout should eq "data_end ==== < file"
+    End
+  End
 End

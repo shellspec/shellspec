@@ -178,12 +178,20 @@ todo() {
   block_end ""
 }
 
-statement() {
+evaluation() {
   if [ -z "$inside_of_example" ]; then
-    syntax_error "When/The cannot be defined outside of Example"
+    syntax_error "When cannot be defined outside of Example"
     return 0
   fi
-  eval trans statement ${1+'"$@"'}
+  eval trans evaluation ${1+'"$@"'}
+}
+
+expectation() {
+  if [ -z "$inside_of_example" ]; then
+    syntax_error "The cannot be defined outside of Example"
+    return 0
+  fi
+  eval trans expectation ${1+'"$@"'}
 }
 
 control() {
@@ -222,17 +230,24 @@ data() {
   case ${2:-} in
     '' | \#* | \|*)
       trans data_here_begin "$1" "${2:-}"
-      line=''
+      line='' error=
       while read_specfile line; do
         trim line "$line"
         case $line in
           \#\|*) trans data_here_line "$line" ;;
-          \#*) ;;
+          \# | \#\ * | \#$SHELLSPEC_TAB*) ;;
           End | End\ * ) break ;;
-          *) syntax_error "Data texts should begin with '#|'"; break ;;
+          *)
+            if [ ! "$error" ]; then
+              error=$(syntax_error "Data text should begin with '#|' or '# '")
+            fi
         esac
       done
-      trans data_here_end ;;
+      trans data_here_end
+      if [ "$error" ]; then
+        putsn "$error"
+      fi
+      ;;
     \'* | \"*) trans data_text "$2" ;;
     \<*) trans data_file "$2" ;;
     *) trans data_func "$2" ;;
