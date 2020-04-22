@@ -108,8 +108,8 @@ if [ "${1:-}" = "-" ]; then
   echo "SHELLSPEC_LIB=\"$SHELLSPEC_LIB\""
   echo ". \"\$SHELLSPEC_LIB/libexec/shellspec.sh\""
   echo 'shell=$(current_shell "$0" "$$")'
-  echo 'shellspec=$(command_path shellspec)'
-  echo 'exec $shell $shellspec "$0" "$@"'
+  echo 'command_path bin shellspec'
+  echo 'exec $shell $bin "$0" "$@"'
   return 0
 fi
 
@@ -133,14 +133,13 @@ SHELLSPEC_EXAMPLES_LOG="$SHELLSPEC_TMPBASE/examples.log"
 SHELLSPEC_PROFILER_LOG="$SHELLSPEC_TMPBASE/profiler.log"
 SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner"
 
-SHELLSPEC_TIME=$(command_path time) &&:
-if [ "$SHELLSPEC_TIME" ]; then
+if command_path SHELLSPEC_TIME time; then
   SHELLSPEC_TIME="$SHELLSPEC_TIME -p"
 else
   SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
-  if command_path bash > /dev/null; then
+  if command_path bash; then
     SHELLSPEC_TIME="bash $SHELLSPEC_TIME"
-  elif command_path ksh > /dev/null; then
+  elif command_path ksh; then
     SHELLSPEC_TIME="ksh $SHELLSPEC_TIME"
   fi
 fi
@@ -443,16 +442,20 @@ enum_options_file options_file
 
 if [ ! "$SHELLSPEC_SHELL" ]; then
   [ "$SHELLSPEC_KCOV" ] && shell=bash || shell=$(current_shell "$0" "$$")
+  if [ ! "$shell" ]; then
+    warn "Failed to detect the current shell," \
+         "because the ps command does not exist or not compatible."
+    warn "Use 'sh' instead. You can specify the shell with --shell option."
+    shell="sh"
+  fi
   SHELLSPEC_SHELL=$shell
 fi
-if [ -z "$SHELLSPEC_SHELL" ]; then
-  warn "Failed to detect the current shell," \
-       "because the ps command does not exist or not compatible."
-  warn "Use 'sh' instead. You can specify the shell with --shell option."
+if command_path shell "${SHELLSPEC_SHELL%% *}"; then
+  case $SHELLSPEC_SHELL in (*\ *) shell="$shell ${SHELLSPEC_SHELL#* }"; esac
+  SHELLSPEC_SHELL=$shell
+else
+  abort "Not found specified shell: $SHELLSPEC_SHELL."
 fi
-shell=$(command_path "${SHELLSPEC_SHELL:-sh}") ||:
-[ -x "${shell%% *}" ] || abort "Not found specified shell: $SHELLSPEC_SHELL."
-SHELLSPEC_SHELL=$shell
 
 {
   inspection="$SHELLSPEC_LIBEXEC/shellspec-inspection.sh"
@@ -461,16 +464,8 @@ SHELLSPEC_SHELL=$shell
       "(It is not a POSIX shell or basic functionality is defective)."
   fi
 
-  if [ "$SHELLSPEC_DEFECT_SIGNALS" ];then
-    # posh 0.8.5 implements kill but not support any signals. meaningless.
-    SHELLSPEC_KILL=$(command_path kill) ||:
-    if [ ! "$SHELLSPEC_KILL" ]; then
-      # For example posh 0.13.2 does not implement kill as builtin
-      # and debian 10 docker image does not have kill command installed.
-      warn "kill not found. You may encounter errors with some features."
-      SHELLSPEC_KILL="kill"
-    fi
-  fi
+  # posh 0.8.5 implements kill but not support any signals. meaningless.
+  [ "$SHELLSPEC_DEFECT_SIGNALS" ] && SHELLSPEC_KILL=''
 
   if [ "$SHELLSPEC_DEFECT_BUILTIN" ]; then
     warn "Unsupported shell (builtin commands can not redefine)."
@@ -484,6 +479,14 @@ SHELLSPEC_SHELL=$shell
     warn "Unsupported shell (shell flag handling broken)."
   fi
 }
+
+if [ ! "$SHELLSPEC_KILL" ]; then
+  if ! command_path SHELLSPEC_KILL kill; then
+    # For example posh 0.13.2 does not implement kill as builtin and
+    # debian 10 docker image does not have kill command installed by default.
+    warn "kill not found. You may encounter errors with some features."
+  fi
+fi
 
 if [ "$SHELLSPEC_KCOV" ]; then
   SHELLSPEC_KCOV_VERSION=$(kcov_version) || abort "Kcov not found."

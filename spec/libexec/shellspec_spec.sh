@@ -205,27 +205,36 @@ Describe "libexec/shellspec.sh"
   Describe "command_path()"
     Before PATH="/foo:/bar:/bin"
 
+    It "only checks command exists"
+      When call command_path "/bin/sh"
+      The status should be success
+    End
+
     Context 'when absolute path'
       It "outputs found path"
-        When call command_path "/bin/sh"
-        The stdout should equal "/bin/sh"
+        When call command_path ret "/bin/sh"
+        The variable ret should equal "/bin/sh"
       End
 
       It "return failure when not found command"
-        When call command_path "/bin/-there-is-not-such-a-command-"
+        BeforeCall ret="dummy"
+        When call command_path ret "/bin/-there-is-not-such-a-command-"
         The status should be failure
+        The variable ret should equal "dummy"
       End
     End
 
     Context 'when command only'
       It "outputs absolute path"
-        When call command_path "sh"
-        The stdout should equal "/bin/sh"
+        When call command_path ret "sh"
+        The variable ret should equal "/bin/sh"
       End
 
       It "return failure when not found command"
-        When call command_path "-there-is-not-such-a-command-"
+        BeforeCall ret="dummy"
+        When call command_path ret "-there-is-not-such-a-command-"
         The status should be failure
+        The variable ret should equal "dummy"
       End
     End
   End

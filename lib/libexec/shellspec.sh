@@ -98,17 +98,24 @@ current_shell() {
 }
 
 command_path() {
-  case $1 in
-    */*) [ -x "${1%% *}" ] && echo "$1" && return 0 ;;
-    *)
-      command=$1
-      reset_params '$PATH' ':'
-      eval "$RESET_PARAMS"
-      while [ $# -gt 0 ]; do
-        [ -x "${1%/}/${command%% *}" ] && echo "${1%/}/$command" && return 0
-        shift
-      done
+  if [ $# -lt 2 ]; then
+    set -- "" "$1" "$PATH:"
+  else
+    set -- "$1" "$2" "$PATH:"
+  fi
+
+  case $2 in (*/*)
+    [ -x "$2" ] || return 1
+    [ "$1" ] && eval "$1=\"\$2\""
+    return 0
   esac
+
+  while [ "$3" ]; do
+    set -- "$1" "$2" "${3#*:}" "${3%%:*}"
+    [ -x "${4%/}/$2" ] || continue
+    [ "$1" ] && eval "$1=\"\${4%/}/\$2\""
+    return 0
+  done
   return 1
 }
 
@@ -141,7 +148,7 @@ random_seed() {
 }
 
 kcov_version() {
-  command_path "$SHELLSPEC_KCOV_PATH" >/dev/null || return 1
+  command_path "$SHELLSPEC_KCOV_PATH" || return 1
   version=$("$SHELLSPEC_KCOV_PATH" --version 2>/dev/null) || version=''
   echo "$version"
 }
