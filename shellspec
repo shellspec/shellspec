@@ -5,6 +5,13 @@
 
 set -e -u
 
+if [ "${1:-}" = "-" ]; then
+  echo 'IFS= read -r shebang < "$0"'
+  echo 'case $shebang in \#\!*) shell=${shebang#??};; *) shell="";; esac'
+  echo "exec \$shell \"$0\" \"\$0\" \"\$@\""
+  return 0
+fi
+
 export SHELLSPEC_VERSION='0.24.0-dev'
 export SHELLSPEC_PATH=''
 export SHELLSPEC_ROOT=''
@@ -103,15 +110,6 @@ fi
 SHELLSPEC_ROOT="${SHELLSPEC_PATH%/*}"
 SHELLSPEC_LIB="$SHELLSPEC_ROOT/lib"
 SHELLSPEC_REPORTERLIB="$SHELLSPEC_LIB/libexec/reporter"
-
-if [ "${1:-}" = "-" ]; then
-  echo "SHELLSPEC_LIB=\"$SHELLSPEC_LIB\""
-  echo ". \"\$SHELLSPEC_LIB/libexec/shellspec.sh\""
-  echo 'shell=$(current_shell "$0" "$$")'
-  echo 'command_path bin shellspec'
-  echo 'exec $shell $bin "$0" "$@"'
-  return 0
-fi
 
 [ -t 1 ] && SHELLSPEC_COLOR=1
 
