@@ -108,7 +108,7 @@ kcov_add_extra_info() {
     if includes "$line" "</body>"; then
       putsn "<table width='100%' class='shellspecVersionInfo'>"
       putsn "<tr><td class='versionInfo'>"
-      putsn "Tested by: <a href='https://shellspec.info'>Shellspec</a>" \
+      putsn "Tested by: <a href='https://shellspec.info'>ShellSpec</a>" \
               "$SHELLSPEC_VERSION" \
               "(with $SHELLSPEC_SHELL_TYPE $SHELLSPEC_SHELL_VERSION" \
               "and $SHELLSPEC_KCOV_VERSION)"

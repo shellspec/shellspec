@@ -181,7 +181,7 @@ Describe "libexec/kcov-executor.sh"
       #|<body>
       #|<table width='100%' class='shellspecVersionInfo'>
       #|<tr><td class='versionInfo'>
-      #|Tested by: <a href='https://shellspec.info'>Shellspec</a> 0.0.0 (with shell 0.1.0 and kcov 35)
+      #|Tested by: <a href='https://shellspec.info'>ShellSpec</a> 0.0.0 (with shell 0.1.0 and kcov 35)
       #|</td></tr>
       #|</table>
       #|</body>
