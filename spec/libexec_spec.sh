@@ -103,20 +103,26 @@ Describe 'libexec.sh'
     End
   End
 
-  Describe "signal()"
-    posix_kill() { eval SHELLSPEC_KILL=echo && true; }
-    non_posix_kill() { eval SHELLSPEC_KILL=echo && false; }
-
-    It "calls kill (posix)"
-      BeforeCall SHELLSPEC_KILL=posix_kill
-      When call signal -TERM 0
-      The stdout should eq "-TERM 0"
+  Describe "sigchk()"
+    kill() { echo "$@"; }
+    check_kill_args() {
+      # shellcheck disable=SC2154
+      [ "$check_kill_args" = "-0 $1" ] || [ "$check_kill_args" = "-s 0 $1" ]
+    }
+    It "calls kill"
+      When call sigchk 0
+      The stdout should satisfy check_kill_args 0
     End
+  End
 
-    It "calls kill (non-posix)"
-      BeforeCall SHELLSPEC_KILL=non_posix_kill
-      When call signal -TERM 0
-      The stdout should eq "-s TERM 0"
+  Describe "sigterm()"
+    kill() { echo "kill" "$@"; return 1; }
+    env() { echo "env" "$@"; }
+    It "calls kill"
+      When call sigterm 0
+      The line 1 of stdout should eq "kill -TERM 0"
+      The line 2 of stdout should eq "kill -s TERM 0"
+      The line 3 of stdout should eq "env kill -s TERM 0"
     End
   End
 

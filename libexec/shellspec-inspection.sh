@@ -8,12 +8,6 @@ umask >/dev/null
 # mrsh: https://github.com/emersion/mrsh WIP 657ea07 fails
 ( false ) 2>/dev/null && exit 1
 
-# shellcheck disable=SC2123
-if [ ! "$(PATH=; (kill -l) 2>/dev/null)" ]; then
-  # posh 0.8.5 implements kill but not support any signals. meaningless.
-  echo "SHELLSPEC_DEFECT_KILL=1"
-fi
-
 foo() { echo foo; }
 if [ "$(foo() { echo FOO; }; foo)" = "foo" ]; then
   # ksh

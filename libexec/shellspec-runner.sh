@@ -32,8 +32,8 @@ interrupt() {
   stop_profiler
   reporter_pid=''
   read_pid_file reporter_pid "$SHELLSPEC_TMPBASE/reporter.pid" 0
-  [ "$reporter_pid" ] && sleep_wait signal -0 "$reporter_pid" 2>/dev/null
-  signal -TERM 0
+  [ "$reporter_pid" ] && sleep_wait sigchk "$reporter_pid"
+  sigterm 0 &&:
   cleanup
   exit 130
 }

@@ -159,7 +159,7 @@ and a few basic [POSIX-compliant commands][utilities] to support widely environm
 
 Currently used external (not shell builtins) commands:
 
-- `cat`, `date`, `ls`, `mkdir`, `od` (or not POSIX `hexdump`), `rm`, `sleep`, `sort`, `time`
+- `cat`, `date`, `env`, `ls`, `mkdir`, `od` (or not POSIX `hexdump`), `rm`, `sleep`, `sort`, `time`
 - `ps` (used to autodetect the current shell in environments which do not implement procfs)
 - `ln`, `mv` (used only when generating coverage report)
 - `kill`, `printf` (used but almost shell builtins)

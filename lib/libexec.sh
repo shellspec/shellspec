@@ -116,17 +116,16 @@ sleep_wait() {
   esac
 }
 
-signal() {
-  if $SHELLSPEC_KILL -0 $$ 2>/dev/null; then
-    signal() {
-      "$SHELLSPEC_KILL" "$1" "$2"
-    }
-  else
-    signal() {
-      "$SHELLSPEC_KILL" -s "${1#-}" "$2"
-    }
-  fi
-  signal "$@"
+if kill -0 $$ 2>/dev/null; then
+  sigchk() { kill -0 "$1" 2>/dev/null; }
+else
+  sigchk() { kill -s 0 "$1" 2>/dev/null; }
+fi
+
+sigterm() {
+  {
+    kill -TERM "$1" || kill -s TERM "$1"
+  } 2>/dev/null || env kill -s TERM "$1"
 }
 
 read_quickfile() {

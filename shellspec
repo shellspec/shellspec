@@ -76,12 +76,10 @@ export SHELLSPEC_PROFILER=''
 export SHELLSPEC_PROFILER_LOG=''
 export SHELLSPEC_PROFILER_LIMIT=10
 export SHELLSPEC_PROFILER_REPORT="profiler.log"
-export SHELLSPEC_DEFECT_KILL=''
 export SHELLSPEC_DEFECT_READONLY=''
 export SHELLSPEC_DEFECT_BUILTIN=''
 export SHELLSPEC_DEFECT_REDEFINE=''
 export SHELLSPEC_DEFECT_SHELLFLAG=''
-export SHELLSPEC_KILL='kill'
 export SHELLSPEC_SHEBANG_MULTIARG=''
 export SHELLSPEC_QUICK=''
 export SHELLSPEC_QUICK_FILE=".shellspec-quick.log"
@@ -459,14 +457,6 @@ fi
       "(It is not a POSIX shell or basic functionality is defective)."
   fi
 
-  if [ "$SHELLSPEC_DEFECT_KILL" ]; then
-    if ! command_path SHELLSPEC_KILL "$SHELLSPEC_KILL"; then
-      # For example posh 0.13.2 does not implement kill as builtin and
-      # debian 10 docker image does not have kill command installed by default.
-      warn "kill not found. You may encounter errors with some features."
-    fi
-  fi
-
   if [ "$SHELLSPEC_DEFECT_BUILTIN" ]; then
     warn "Unsupported shell (builtin commands can not redefine)."
   fi
@@ -479,6 +469,12 @@ fi
     warn "Unsupported shell (shell flag handling broken)."
   fi
 }
+
+if ! sigchk $$; then
+  # For example posh 0.13.2 does not implement kill as builtin and
+  # debian 10 docker image does not have kill command installed by default.
+  warn "kill not found. You may encounter errors with some features."
+fi
 
 if [ "$SHELLSPEC_KCOV" ]; then
   kcov_verson=$(kcov_version "$SHELLSPEC_KCOV_PATH") || abort "Kcov not found."
