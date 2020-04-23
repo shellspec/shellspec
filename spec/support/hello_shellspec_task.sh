@@ -5,5 +5,5 @@ set -eu
 task "hello:shellspec" "Sample task"
 
 hello_shellspec_task() {
-  echo "Hello shellspec"
+  echo "Hello ShellSpec"
 }

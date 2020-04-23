@@ -2,7 +2,8 @@
 
 {
   echo 'set -o functrace'
-  trap -p DEBUG
+  trap=$(trap -p DEBUG)
+  printf '%s\n' "${trap//"{BASH_SOURCE}"/"{BASH_SOURCE:-}"}"
 } > "$SHELLSPEC_TMPBASE/kcov-debug-helper.sh" &&:
 
 eval "shellspec_coverage_start() { $(trap -p DEBUG); }"

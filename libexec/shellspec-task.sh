@@ -1,41 +1,13 @@
 #!/bin/sh
-#shellcheck disable=SC2016
 
 set -eu
 
 # shellcheck source=lib/libexec/task.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/task.sh"
-use find_files reset_params
-
-export SHELLSPEC_TASKS
-SHELLSPEC_TASKS='|'
-
-task() {
-  name=$1 desc=$2
-  reset_params '$1' ":"
-  eval "$RESET_PARAMS"
-  IFSORIG=$IFS && IFS=_ && task="$*" && IFS=$IFSORIG
-  SHELLSPEC_TASKS="$SHELLSPEC_TASKS$name|"
-  eval "export SHELLSPEC_TASK_$task=\$task_file"
-  eval "SHELLSPEC_TASK_DESC_$task=\$desc"
-}
-
-list_tasks() {
-  reset_params '$1' '|'
-  eval "$RESET_PARAMS"
-  while [ $# -gt 0 ]; do
-    [ "$1" ] && show_task "$1"
-    shift
-  done
-}
+use find_files
 
 show_task() {
-  name=$1
-  reset_params '$1' ":"
-  eval "$RESET_PARAMS"
-  IFSORIG=$IFS && IFS=_ && task="$*" && IFS=$IFSORIG
-  eval "desc=\$SHELLSPEC_TASK_DESC_$task"
-  printf '%-40s # %s\n' "$name" "$desc"
+  printf '%-40s # %s\n' "$1" "$2"
 }
 
 run_tasks() {
@@ -46,13 +18,16 @@ run_tasks() {
 }
 
 each_file() {
-  # shellcheck disable=SC1090
-  case $1 in (*_task.sh) task_file=$1 && . "$task_file"; esac
+  case $1 in (*_task.sh)
+    eval "SHELLSPEC_TASK_SOURCE=\$1"
+    # shellcheck disable=SC1090
+    . "$1"
+  esac
 }
 find_files each_file "$SHELLSPEC_SPECDIR/support"
 
 if [ $# -eq 0 ]; then
-  list_tasks "$SHELLSPEC_TASKS"
+  enum_tasks show_task
 else
   run_tasks "$@"
 fi

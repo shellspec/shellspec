@@ -2,32 +2,41 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use puts putsn reset_params which
+use replace_all
 
-task() { :; }
+SHELLSPEC_TASKS=''
+
+task() {
+  name=$1 task=''
+  replace_all task "$name" ":" "_"
+  SHELLSPEC_TASKS="$SHELLSPEC_TASKS${SHELLSPEC_TASKS:+ }$name"
+  eval "SHELLSPEC_TASK_$task=\$SHELLSPEC_TASK_SOURCE"
+  eval "SHELLSPEC_TASK_DESC_$task=\$2"
+}
+
+enum_tasks() {
+  set -- "$1" "$SHELLSPEC_TASKS "
+  while [ "$2" ]; do
+    set -- "$1" "${2#* }" "${2%% *}"
+    replace_all task "$3" ":" "_"
+    eval "$1 \"\$3\" \"\$SHELLSPEC_TASK_DESC_$task\""
+  done
+}
 
 invoke() {
-  while :; do
-    case $SHELLSPEC_TASKS in (*\|$1\|*) ;; (*) break; esac
-    reset_params '$1' ":"
-    eval "$RESET_PARAMS"
-    IFSORIG=$IFS && IFS=_ && task="$*" && IFS=$IFSORIG
-
-    task_file=''
-    eval "[ \"\${SHELLSPEC_TASK_$task:+x}\" ] &&:" || break
-    eval "task_file=\$SHELLSPEC_TASK_$task"
-    [ -e "$task_file" ] || break
-    {
-      putsn ". \"$SHELLSPEC_LIB/general.sh\""
-      putsn ". \"$SHELLSPEC_LIB/libexec/task.sh\""
-      while IFS= read -r line || [ "$line" ]; do
-        putsn "$line"
-      done < "$task_file"
-      putsn "${task}_task"
-    } | $SHELLSPEC_SHELL
-    return 0
-  done
-
-  putsn "Not found task '$1'" >&2
-  exit 1
+  case " $SHELLSPEC_TASKS " in (*\ $1\ *) ;; (*)
+    abort "Not found task '$1'"
+  esac
+  task='' task_file=''
+  replace_all task "$1" ":" "_"
+  eval "task_file=\$SHELLSPEC_TASK_$task"
+  {
+    echo ". \"\$SHELLSPEC_LIB/general.sh\""
+    echo ". \"\$SHELLSPEC_LIB/libexec.sh\""
+    echo "use which"
+    echo "task() { :; }"
+    cat "$task_file"
+    echo
+    echo "${task}_task"
+  } | $SHELLSPEC_SHELL
 }
