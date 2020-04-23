@@ -10,8 +10,8 @@ umask >/dev/null
 
 # shellcheck disable=SC2123
 if [ ! "$(PATH=; (kill -l) 2>/dev/null)" ]; then
-  # posh 0.8.5
-  echo "SHELLSPEC_DEFECT_SIGNALS=1"
+  # posh 0.8.5 implements kill but not support any signals. meaningless.
+  echo "SHELLSPEC_DEFECT_KILL=1"
 fi
 
 foo() { echo foo; }
@@ -35,7 +35,7 @@ fi
 # shellcheck disable=SC2154
 if (set -u; unset v ||:; : "$v") 2>/dev/null; then
   # posh 0.10.2
-  echo "SHELLSPEC_DEFECT_SHELL_FLAG=1"
+  echo "SHELLSPEC_DEFECT_SHELLFLAG=1"
 fi
 
 if "${0%/*}/shellspec-shebang" 2>/dev/null; then

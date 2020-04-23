@@ -287,13 +287,11 @@ Describe "libexec/shellspec.sh"
   End
 
   Describe "kcov_version()"
-    BeforeRun SHELLSPEC_KCOV_PATH=fake_kcov
-
     Context 'when kcov not found'
       command_path() { return 1; }
 
       It 'returns failure'
-        When run kcov_version
+        When run kcov_version fake_kcov
         The status should be failure
       End
     End
@@ -303,7 +301,7 @@ Describe "libexec/shellspec.sh"
 
       It 'returns version if --version not implemented'
         fake_kcov() { echo "kcov v35"; }
-        When run kcov_version
+        When run kcov_version fake_kcov
         The stdout should eq "kcov v35"
         The status should be success
       End
@@ -314,7 +312,7 @@ Describe "libexec/shellspec.sh"
           echo "--version not implemented" >&2
           return 1
         }
-        When run kcov_version
+        When run kcov_version fake_kcov
         The stdout should eq ''
         The stderr should eq ''
         The status should be success

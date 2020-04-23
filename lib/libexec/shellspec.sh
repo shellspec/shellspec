@@ -56,12 +56,13 @@ ps_command() {
 }
 
 read_ps() {
-  #shellcheck disable=SC2015
+  # shellcheck disable=SC2015
   ps_command 2>/dev/null | {
+    [ "${ZSH_VERSION:-}" ] && setopt shwordsplit
     IFS=" " pid=$1 p=0 c=0 _pid=''
     IFS= read -r line
-    reset_params '$line'
-    eval "$RESET_PARAMS"
+    # shellcheck disable=SC2086
+    set -- $line
 
     for name in "${@:-}"; do
       p=$(($p + 1))
@@ -74,7 +75,8 @@ read_ps() {
     done
 
     while IFS= read -r line; do
-      eval "$RESET_PARAMS"
+      # shellcheck disable=SC2086
+      set -- $line
       eval "_pid=\${$p:-}"
       [ "$_pid" = "$pid" ] && shift $c && line="$*" && break
     done
@@ -90,9 +92,7 @@ current_shell() {
   self=$1 pid=$2
 
   cmdline=$(read_cmdline "/proc/$2/cmdline")
-  if [ -z "$cmdline" ]; then
-    cmdline=$(read_ps "$2")
-  fi
+  [ "$cmdline" ] || cmdline=$(read_ps "$2")
 
   echo "${cmdline%% $self*}"
 }
@@ -120,14 +120,12 @@ command_path() {
 }
 
 check_range() {
-  reset_params '$1' ':'
-  eval "$RESET_PARAMS"
-  while [ $# -gt 0 ]; do
-    case $1 in
-      @*) case ${1#@} in (*[!0-9-]*) return 1; esac ;;
-      *) case $1 in (*[!0-9]*) return 1; esac ;;
+  set -- "$1:"
+  while [ "$1" ] && set -- "${1#*:}" "${1%%:*}"; do
+    case $2 in
+      @*) case ${2#@} in (*[!0-9-]*) return 1; esac ;;
+      *) case $2 in (*[!0-9]*) return 1; esac ;;
     esac
-    shift
   done
   return 0
 }
@@ -148,8 +146,8 @@ random_seed() {
 }
 
 kcov_version() {
-  command_path "$SHELLSPEC_KCOV_PATH" || return 1
-  version=$("$SHELLSPEC_KCOV_PATH" --version 2>/dev/null) || version=''
+  command_path "$1" || return 1
+  version=$("$1" --version 2>/dev/null) || version=''
   echo "$version"
 }
 

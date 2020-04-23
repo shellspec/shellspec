@@ -83,7 +83,7 @@ shellspec_spec_helper_configure() {
   }
 
   posh_shell_flag_bug() {
-    [ "$SHELLSPEC_DEFECT_SHELL_FLAG" ]
+    [ "$SHELLSPEC_DEFECT_SHELLFLAG" ]
   }
 
   not_exist_failglob() {

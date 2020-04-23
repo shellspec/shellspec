@@ -22,7 +22,7 @@ export SHELLSPEC_LIBEXEC=''
 export SHELLSPEC_SPECDIR=''
 export SHELLSPEC_LOAD_PATH=''
 export SHELLSPEC_SHELL=''
-export SHELLSPEC_TIME=''
+export SHELLSPEC_TIME='time -p'
 export SHELLSPEC_TMPBASE=''
 export SHELLSPEC_TIME_LOG=''
 export SHELLSPEC_EXAMPLES_LOG=''
@@ -76,11 +76,11 @@ export SHELLSPEC_PROFILER=''
 export SHELLSPEC_PROFILER_LOG=''
 export SHELLSPEC_PROFILER_LIMIT=10
 export SHELLSPEC_PROFILER_REPORT="profiler.log"
-export SHELLSPEC_DEFECT_SIGNALS=''
+export SHELLSPEC_DEFECT_KILL=''
 export SHELLSPEC_DEFECT_READONLY=''
 export SHELLSPEC_DEFECT_BUILTIN=''
 export SHELLSPEC_DEFECT_REDEFINE=''
-export SHELLSPEC_DEFECT_SHELL_FLAG=''
+export SHELLSPEC_DEFECT_SHELLFLAG=''
 export SHELLSPEC_KILL='kill'
 export SHELLSPEC_SHEBANG_MULTIARG=''
 export SHELLSPEC_QUICK=''
@@ -131,9 +131,7 @@ SHELLSPEC_EXAMPLES_LOG="$SHELLSPEC_TMPBASE/examples.log"
 SHELLSPEC_PROFILER_LOG="$SHELLSPEC_TMPBASE/profiler.log"
 SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner"
 
-if command_path SHELLSPEC_TIME time; then
-  SHELLSPEC_TIME="$SHELLSPEC_TIME -p"
-else
+if ! command_path "${SHELLSPEC_TIME%% *}"; then
   SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
   if command_path bash; then
     SHELLSPEC_TIME="bash $SHELLSPEC_TIME"
@@ -439,12 +437,11 @@ enum_options_file options_file
 [ $# -gt 0 ] && parse_options "$@" && eval "set -- $params"
 
 if [ ! "$SHELLSPEC_SHELL" ]; then
-  [ "$SHELLSPEC_KCOV" ] && shell=bash || shell=$(current_shell "$0" "$$")
-  if [ ! "$shell" ]; then
+  [ "$SHELLSPEC_KCOV" ] && shell="bash" || shell=$(current_shell "$0" "$$")
+  if [ ! "$shell" ] && shell="sh"; then
     warn "Failed to detect the current shell," \
          "because the ps command does not exist or not compatible."
     warn "Use 'sh' instead. You can specify the shell with --shell option."
-    shell="sh"
   fi
   SHELLSPEC_SHELL=$shell
 fi
@@ -462,8 +459,13 @@ fi
       "(It is not a POSIX shell or basic functionality is defective)."
   fi
 
-  # posh 0.8.5 implements kill but not support any signals. meaningless.
-  [ "$SHELLSPEC_DEFECT_SIGNALS" ] && SHELLSPEC_KILL=''
+  if [ "$SHELLSPEC_DEFECT_KILL" ]; then
+    if ! command_path SHELLSPEC_KILL "$SHELLSPEC_KILL"; then
+      # For example posh 0.13.2 does not implement kill as builtin and
+      # debian 10 docker image does not have kill command installed by default.
+      warn "kill not found. You may encounter errors with some features."
+    fi
+  fi
 
   if [ "$SHELLSPEC_DEFECT_BUILTIN" ]; then
     warn "Unsupported shell (builtin commands can not redefine)."
@@ -473,28 +475,21 @@ fi
     warn "Unsupported shell (readonly malfunction)."
   fi
 
-  if [ "$SHELLSPEC_DEFECT_SHELL_FLAG" ]; then
+  if [ "$SHELLSPEC_DEFECT_SHELLFLAG" ]; then
     warn "Unsupported shell (shell flag handling broken)."
   fi
 }
 
-if [ ! "$SHELLSPEC_KILL" ]; then
-  if ! command_path SHELLSPEC_KILL kill; then
-    # For example posh 0.13.2 does not implement kill as builtin and
-    # debian 10 docker image does not have kill command installed by default.
-    warn "kill not found. You may encounter errors with some features."
-  fi
-fi
-
 if [ "$SHELLSPEC_KCOV" ]; then
-  SHELLSPEC_KCOV_VERSION=$(kcov_version) || abort "Kcov not found."
-  if [ "$(kcov_version_number "$SHELLSPEC_KCOV_VERSION")" -lt 35 ]; then
-    abort "Kcov v35 or later required." \
-      "[current: ${SHELLSPEC_KCOV_VERSION:-unknown (kcov v30 or below)}]"
+  kcov_verson=$(kcov_version "$SHELLSPEC_KCOV_PATH") || abort "Kcov not found."
+  if [ "$(kcov_version_number "$kcov_verson")" -lt 35 ]; then
+    kcov_verson=${kcov_verson:-unknown (kcov v30 or below)}
+    abort "Kcov v35 or later required. [current: $kcov_verson]"
   fi
   if [ ! "$SHELLSPEC_KCOV_COMPATIBLE_SHELL" ]; then
     abort "Require to use bash to run kcov (e.g: --shell bash)."
   fi
+  SHELLSPEC_KCOV_VERSION=$kcov_verson
 fi
 
 if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_WORKERS" -gt 0 ]; then
