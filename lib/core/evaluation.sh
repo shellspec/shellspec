@@ -26,12 +26,14 @@ shellspec_evaluation_call() {
   shellspec_coverage_start
   set "$SHELLSPEC_ERREXIT"
   "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
+  set +e
   if [ ! "${SHELLSPEC_DATA:-}" ]; then
-    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV"
+    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV" &&:
   else
-    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_FILE"
-  fi >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
-  shellspec_evaluation_cleanup $?
+    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_FILE" &&:
+  fi >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE"
+  set -e -- $?
+  shellspec_evaluation_cleanup "$1"
   shellspec_coverage_stop
 }
 
@@ -40,9 +42,10 @@ shellspec_evaluation_run() {
   set "$SHELLSPEC_ERREXIT"
   "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
   case $- in
-    *e*) set +e; shellspec_evaluation_run_subshell -e "$@"; set -e -- $? ;;
-    *) shellspec_evaluation_run_subshell +e "$@"; set -- $? ;;
+    *e*) set +e; shellspec_evaluation_run_subshell -e "$@"; ;;
+    *) shellspec_evaluation_run_subshell +e "$@"; ;;
   esac
+  set -e -- $?
   shellspec_evaluation_cleanup "$1"
   shellspec_coverage_stop
 }

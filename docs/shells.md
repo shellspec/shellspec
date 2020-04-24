@@ -129,14 +129,18 @@ These are tested by Docker (`contrib/test_in_docker.sh`).
 | Debian buster + Schily AN-2019-10-07 | 2019/09/27   | -                 |
 | Debian buster + Schily AN-2019-12-05 | 2019/10/25   | -                 |
 | Debian buster + Schily AN-2020-02-11 | 2020/01/24   | -                 |
+| Debian buster + Schily AN-2020-03-27 | 2020/03/25   | -                 |
+| Debian buster + Schily AN-2020-04-18 | _2020/04/10_ | -                 |
 | Debian buster                        | -            | snapshot-20190627 |
 
-* [Schily Bourne Shell][bosh] (`bosh`, `pbosh`) packages are available on [The NetBSD package collection][pkgsrc].
-* Versions before 2018/10/07 does not work.
-* [GWSH shell](https://github.com/hvdijk/gwsh/releases)
+* [Schily Bourne Shell][bosh] (`bosh`, `pbosh`)
+  * Packages are available on [The NetBSD package collection][pkgsrc].
+  * Versions before 2018/10/07 does not work.
+* [GWSH shell][bosh]
 
 [bosh]: http://schilytools.sourceforge.net/bosh.html
 [pkgsrc]: http://pkgsrc.se/shells/bosh
+[gwsh]: https://github.com/hvdijk/gwsh/releases
 
 ### Manual test
 

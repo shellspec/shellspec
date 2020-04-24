@@ -83,6 +83,7 @@ Describe "core/evaluation.sh"
     End
 
     It 'can not aborts with set -e'
+      Skip if 'errexit handling broken' [ "$SHELLSPEC_DEFECT_ERREXIT" ]
       evaluation() { set -e; echo 1; false; echo 2; }
       When call evaluation
       The line 1 of stdout should equal "1"
@@ -177,7 +178,6 @@ Describe "core/evaluation.sh"
           When run evaluation
           The stdout should equal line1
           The status should equal 12
-          The value "$-" should include "e"
         End
       End
 
@@ -187,7 +187,6 @@ Describe "core/evaluation.sh"
           When run evaluation
           The stdout should equal line1
           The status should equal 12
-          The value "$-" should not include "e"
         End
       End
     End

@@ -51,7 +51,7 @@ buffer() {
         '<|>') $1_opened=1 ;; \
         '>|<') [ \"\$$1_flowed\" ] && $1_buffer='' $1_flowed=''; $1_opened='' ;; \
         '>>>') [ ! \"\$$1_opened\" ] || { $1_flowed=1; puts \"\$$1_buffer\"; } ;; \
-      esac; \
+      esac &&:; \
       set -- \$?; \
       IFS=\${IFS#?}; \
       return \$1; \
