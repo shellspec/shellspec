@@ -41,20 +41,20 @@ buffer() {
   EVAL="
     $1_buffer='' $1_opened='' $1_flowed=''; \
     $1() { \
+      case \${1:-} in \
+        '?'  ) [ \"\$$1_buffer\" ] &&:; return \$? ;; \
+        '!?' ) [ ! \"\$$1_buffer\" ] &&:; return \$? ;; \
+      esac; \
       IFS=\" \$IFS\"; \
       case \${1:-} in \
-        '?'  ) [ \"\$$1_buffer\" ] ;; \
-        '!?' ) [ ! \"\$$1_buffer\" ] ;; \
         '='  ) $1_opened=1; shift; $1_buffer=\${*:-} ;; \
         '|=' ) $1_opened=1; shift; [ \"\$$1_buffer\" ] || $1_buffer=\${*:-} ;; \
         '+=' ) $1_opened=1; shift; $1_buffer=\$$1_buffer\${*:-} ;; \
         '<|>') $1_opened=1 ;; \
         '>|<') [ \"\$$1_flowed\" ] && $1_buffer='' $1_flowed=''; $1_opened='' ;; \
         '>>>') [ ! \"\$$1_opened\" ] || { $1_flowed=1; puts \"\$$1_buffer\"; } ;; \
-      esac &&:; \
-      set -- \$?; \
+      esac; \
       IFS=\${IFS#?}; \
-      return \$1; \
     } \
   "
   eval "$EVAL"
