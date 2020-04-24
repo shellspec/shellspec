@@ -29,21 +29,18 @@ if [ "${SHELLSPEC_DEFECT_READONLY:-}" ]; then
 fi
 
 shellspec_load_requires() {
-  shellspec_reset_params '$1' ':'
-  eval "$SHELLSPEC_RESET_PARAMS"
-  set -- "$@" ":" "$@"
+  set -- "$1${1:+:}" "" "$1${1:+:}"
 
-  until [ "$1" = ":" ] && shift; do
-    eval "shellspec_$1_configure() { :; }"
-    shellspec_import "$1"
-    shift
+  while [ "$1" ] && set -- "${1#*:}" "${1%%:*}" "$3"; do
+    eval "shellspec_$2_configure() { :; }"
+    shellspec_import "$2"
   done
 
   shellspec_import "core"
 
-  while [ $# -gt 0 ]; do
-    "shellspec_$1_configure"
-    shift
+  shift 2
+  while [ "$1" ] && set -- "${1#*:}" "${1%%:*}"; do
+    "shellspec_$2_configure"
   done
 }
 shellspec_load_requires "$SHELLSPEC_REQUIRES"

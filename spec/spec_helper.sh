@@ -3,7 +3,7 @@
 set -eu
 
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
-IFS="$SHELLSPEC_LF$SHELLSPEC_TAB"
+IFS="${SHELLSPEC_LF}${SHELLSPEC_TAB}"
 
 # Workaround for ksh
 shellspec_redefinable shellspec_output
@@ -25,6 +25,7 @@ shellspec_redefinable shellspec_statement_subject
 shellspec_redefinable shellspec_subject
 shellspec_redefinable shellspec_syntax_dispatch
 shellspec_redefinable shellspec_set_long
+shellspec_redefinable shellspec_import
 
 # Workaround for busybox-1.1.3
 shellspec_unbuiltin "ps"

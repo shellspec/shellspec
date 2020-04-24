@@ -4,7 +4,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use import reset_params constants sequence replace_all each padding trim
+use import constants sequence replace_all each padding trim
 use is_empty_file pluralize exists_file
 
 count() {

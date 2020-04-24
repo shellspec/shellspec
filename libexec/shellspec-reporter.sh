@@ -52,17 +52,16 @@ parse_lines() {
       *) buf="$buf${buf:+$LF}${line}" ;;
     esac
   done
-  [ -z "$buf" ] || parse_fields "$buf"
+  [ ! "$buf" ] || parse_fields "$buf"
 }
 
 parse_fields() {
-  reset_params '$1' "$US"
-  eval "$RESET_PARAMS"
+  OLDIFS=$IFS && IFS=$US && eval "set -- \${${ZSH_VERSION:+=}1}" && IFS=$OLDIFS
 
   # Workaround: Do not merge two 'for'. A bug occurs in variable expansion
   # rarely in busybox-1.10.2.
-  for field in "$@"; do eval "field_${field%%:*}=\"\${field#*:}\""; done
-  for field in "$@"; do set -- "$@" "${field%%:*}" && shift; done
+  for field; do eval "field_${field%%:*}=\"\${field#*:}\""; done
+  for field; do set -- "$@" "${field%%:*}" && shift; done
 
   each_line "$@"
 }
