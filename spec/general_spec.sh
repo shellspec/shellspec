@@ -91,64 +91,6 @@ Describe "general.sh"
     End
   End
 
-  Describe 'shellspec_reset_params()'
-    reset_params() {
-      shellspec_reset_params "$1" "$2"
-      eval "$SHELLSPEC_RESET_PARAMS"
-      printf '%s\n' "$@"
-    }
-
-    It "separates by \"'\""
-      When call reset_params '$3' "'" "a'b'c"
-      The first  line of stdout should equal 'a'
-      The second line of stdout should equal 'b'
-      The third  line of stdout should equal 'c'
-    End
-
-    It 'separates by ":" (fourth argument only)'
-      When call reset_params '"$3" $4' : "1:2:3" "a:b:c"
-      The stdout line 1 should equal '1:2:3'
-      The stdout line 2 should end with 'a'
-      The stdout line 3 should equal 'b'
-      The stdout line 4 should equal 'c'
-    End
-  End
-
-  Describe 'shellspec_splice_params()'
-    Before 'a=A b=B c=C'
-
-    splice() {
-      eval "set -- $1; shellspec_splice_params \$# $2"
-      eval "$SHELLSPEC_RESET_PARAMS"
-      eval echo ${1+'"$@"'}
-    }
-
-    It 'removes all parameters when specified offset 0'
-      When call splice "a b c d e f g" 0
-      The stdout should equal ""
-    End
-
-    It 'Leave all parameters when offset is more than the count of parametes'
-      When call splice "a b c d e f g" "7"
-      The stdout should equal 'a b c d e f g'
-    End
-
-    It 'removes all parameters after specified offset'
-      When call splice "a b c d e f g" "2"
-      The stdout should equal 'a b'
-    End
-
-    It 'removes the specified number of parameters from the offset'
-      When call splice "a b c d e f g" "3 2"
-      The stdout should equal 'a b c f g'
-    End
-
-    It 'inserts list where removed position'
-      When call splice "a b c d e f g" "3 2 a b c"
-      The stdout should equal 'a b c A B C f g'
-    End
-  End
-
   Describe 'shellspec_each()'
     callback() { echo "$1:$2:$3"; }
 
@@ -162,21 +104,6 @@ Describe "general.sh"
     It 'calls callback with no params'
       When call shellspec_each callback
       The stdout should equal ""
-    End
-  End
-
-  Describe 'shellspec_find()'
-    callback() { case $1 in (a*) return 0; esac; return 1; }
-
-    _find() {
-      shellspec_find callback "$@"
-      eval "$SHELLSPEC_RESET_PARAMS"
-      echo "$@"
-    }
-
-    It 'calls callback with index and value'
-      When call _find a1 b1 c1 a2 b2 c2 a3 b3 c3
-      The stdout should equal "a1 a2 a3"
     End
   End
 

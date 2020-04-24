@@ -200,39 +200,6 @@ esac
 
 shellspec_error() { shellspec_putsn "$*" >&2; exit 1; }
 
-shellspec_reset_params() {
-  SHELLSPEC_RESET_PARAMS="
-    SHELLSPEC_IFSORIG=\$IFS IFS=\"${2:-$IFS}\"
-    set -- $1
-    IFS=\$SHELLSPEC_IFSORIG
-  "
-  [ "${ZSH_VERSION:-}" ] || return 0
-  eval '[[ -o shwordsplit ]]' && return 0
-  SHELLSPEC_RESET_PARAMS="
-    setopt shwordsplit
-    $SHELLSPEC_RESET_PARAMS
-    unsetopt shwordsplit
-  "
-}
-
-# $1: number of params, $2: offset, $3: length, $4-: list
-shellspec_splice_params() {
-  SHELLSPEC_RESET_PARAMS='set --'
-  shellspec_splice_params_step 1 "${2:-0}"
-  shellspec_splice_params_list "$@"
-  shellspec_splice_params_step $((${2:-0} + ${3:-$1} + 1)) "$1"
-}
-shellspec_splice_params_step() {
-  [ "$1" -le "$2" ] || return 0
-  SHELLSPEC_RESET_PARAMS="$SHELLSPEC_RESET_PARAMS \"\${$1}\""
-  shellspec_splice_params_step $(($1 + 1)) "$2"
-}
-shellspec_splice_params_list() {
-  while [ $# -gt 3 ]; do
-    SHELLSPEC_RESET_PARAMS="$SHELLSPEC_RESET_PARAMS \"\${$4}\"" && shift
-  done
-}
-
 # $1: callback, $2-: parameters
 shellspec_each() {
   [ $# -gt 1 ] || return 0
@@ -242,18 +209,6 @@ shellspec_each_() {
   eval "$1 \"\${$(($2 + 2))}\" $2 $(($# - 2))"
   [ "$2" -lt "$(($# - 2))" ] || return 0
   eval "shift 2; shellspec_each_ $1 $(($2 + 1)) \"\$@\""
-}
-
-shellspec_find() {
-  SHELLSPEC_RESET_PARAMS='set --'
-  eval "shift; shellspec_find_ $1 1 \"\$@\""
-}
-shellspec_find_() {
-  if eval "$1 \"\${$(($2 + 2))}\" $2 $(($#-2)) &&:"; then
-    SHELLSPEC_RESET_PARAMS="$SHELLSPEC_RESET_PARAMS  \"\${$2}\""
-  fi
-  [ "$2" -lt "$(($# - 2))" ] || return 0
-  eval "shift 2; shellspec_find_ $1 $(($2 + 1)) \"\$@\""
 }
 
 # $1: callback, $2: from, $3: to $4: step
