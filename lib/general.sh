@@ -539,7 +539,7 @@ else
     [ "${6#*f}" = "$6" ] && set +f
     # Workaround for posh 0.10.2: glob does not expand when set -u
     [ "${6#*u}" = "$6" ] && set +u
-    eval "$1=\${$(($3 + 6))}"
+    eval "$1=\${$(($3 + 6))} &&:"
   }
 fi
 
