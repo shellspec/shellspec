@@ -73,31 +73,34 @@ shellspec_output_failure_message_when_negated() {
 }
 
 shellspec_output_following_words() {
-  SHELLSPEC_EVAL="
-    set -- \"\${SHELLSPEC_SYNTAXES#\|}\"; \
-    shellspec_reset_params '\${1%\|}' '|'; \
-    eval \"\$SHELLSPEC_RESET_PARAMS\"; \
-    callback() { case \${1#$1_} in (*_*) return 1; esac; }; \
-    shellspec_find callback \"\$@\"; \
-    eval \"\$SHELLSPEC_RESET_PARAMS\"; \
-    callback() { \
-      [ \$(( (\$2 - 1) % 8)) -eq 0 ] && shellspec_puts '  '; \
-      shellspec_puts \"\${1#$1_}\"; \
-      [ \$2 -eq \$3 ] || shellspec_puts ', '; \
-      [ \$(( \$2 % 8)) -ne 0 ] || shellspec_puts \"\$SHELLSPEC_LF\"; \
-    }; \
-    shellspec_putsn; \
-    shellspec_each callback \"\$@\"; \
-    shellspec_putsn; \
-  "
-  eval "$SHELLSPEC_EVAL"
+  set -- "$1" "${SHELLSPEC_SYNTAXES#:}" "" ""
+
+  while [ "$2" ] && set -- "$1" "${2#*:}" "${2%%:*}" "$4"; do
+    eval "set -- \"\$@\" \${3#${1}_}"
+    case $5 in (*_*) continue; esac
+    set -- "$1" "$2" "$3" "$4${4:+ }$5"
+  done
+  eval "set -- $4"
+
+  callback() {
+    [ $(( ($2 - 1) % 8)) -eq 0 ] && shellspec_puts '  '
+    shellspec_puts "$1"
+    [ "$2" -eq "$3" ] || shellspec_puts ', '
+    [ $(( $2 % 8)) -ne 0 ] || shellspec_puts "$SHELLSPEC_LF"
+  }
+  shellspec_putsn
+  shellspec_each callback "$@"
+  shellspec_putsn
 }
 
 shellspec_output_syntax_name() {
   [ "${SHELLSPEC_SYNTAX_NAME:-}" ] || return 0
-  shellspec_reset_params '${SHELLSPEC_SYNTAX_NAME#shellspec_}' '_'
-  eval "$SHELLSPEC_RESET_PARAMS"
-  eval "shift; shellspec_putsn \"\$@\" \"$1\""
+  set -- "${SHELLSPEC_SYNTAX_NAME#shellspec_}"
+  set -- "${1#*_}_${1%%_*}_" "" ""
+  while [ "$1" ] && set -- "${1#*_}" "${1%%_*}" "$3"; do
+    set -- "$1" "$2" "$3${3:+ }$2"
+  done
+  shellspec_putsn "$3"
 }
 
 shellspec_output_subject() {

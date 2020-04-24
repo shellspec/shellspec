@@ -142,7 +142,7 @@ Describe "core/output.sh"
 
   Describe "shellspec_output_following_words()"
     set_syntaxes() {
-      SHELLSPEC_SYNTAXES='|'
+      SHELLSPEC_SYNTAXES=':'
       for i in \
         shellspec_evaluation_call \
         shellspec_matcher_m1 \
@@ -156,7 +156,7 @@ Describe "core/output.sh"
         shellspec_matcher_m9 \
         shellspec_modifier
       do
-        SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}${i}|"
+        SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}${i}:"
       done
     }
     It "outputs following_words"
