@@ -521,6 +521,28 @@ shellspec_chomp() {
   eval "$SHELLSPEC_EVAL"
 }
 
+if [ "${ZSH_VERSION:-}" ]; then
+  shellspec_get_nth() {
+    set -- "$1" "$2" "$3" "${4:-}" "$IFS"
+    IFS=${4:-$SHELLSPEC_IFS}
+    eval "set -- \"\$@\" \${=2}"
+    IFS=$5
+    eval "$1=\${$(($3 + 5))}"
+  }
+else
+  shellspec_get_nth() {
+    set -f -u -- "$1" "$2" "$3" "${4:-}" "$IFS" "$-"
+    IFS=${4:-$SHELLSPEC_IFS}
+    # shellcheck disable=SC2086
+    set -- "$@" $2
+    IFS=$5
+    [ "${6#*f}" = "$6" ] && set +f
+    # Workaround for posh 0.10.2: glob does not expand when set -u
+    [ "${6#*u}" = "$6" ] && set +u
+    eval "$1=\${$(($3 + 6))}"
+  }
+fi
+
 shellspec_which() {
   set -- "$1" "${PATH%:}:"
   while [ "${2%:}" ]; do

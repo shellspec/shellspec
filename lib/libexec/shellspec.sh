@@ -57,7 +57,6 @@ ps_command() {
 read_ps() {
   # shellcheck disable=SC2015
   ps_command 2>/dev/null | {
-    [ "${ZSH_VERSION:-}" ] && setopt shwordsplit
     IFS=" " pid=$1 p=0 c=0 _pid=''
     IFS= read -r line
     # shellcheck disable=SC2086

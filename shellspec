@@ -3,7 +3,7 @@
 
 [ "$PPID" ] || { echo "Unsupported shell. (Bourne shell?)" >&2; exit 1; }
 
-set -e -u
+set -e -u -f
 
 if [ "${1:-}" = "-" ]; then
   echo 'IFS= read -r shebang < "$0"'

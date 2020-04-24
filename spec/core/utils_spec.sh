@@ -3,18 +3,6 @@
 Describe "core/utils.sh"
   Include "$SHELLSPEC_LIB/core/utils.sh"
 
-  Describe 'shellspec_get_nth()'
-    It 'fetch nth value seperate by ,'
-      When call shellspec_get_nth var 3 ',' "a,b,c,d,e"
-      The variable var should equal c
-    End
-
-    It 'fetch nth value seperate by space'
-      When call shellspec_get_nth var 3 " " "a   b c"
-      The variable var should equal c
-    End
-  End
-
   Describe 'shellspec_is()'
     Describe 'number'
       It 'succeeds with a numeric value'

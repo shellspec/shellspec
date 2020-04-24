@@ -1,7 +1,7 @@
 #!/bin/sh
 #shellcheck disable=SC2004,SC2016
 
-set -eu
+set -euf
 
 : "${SHELLSPEC_SPEC_FAILURE_CODE:=101}"
 : "${SHELLSPEC_FORMATTER:=debug}" "${SHELLSPEC_GENERATORS:=}"
@@ -56,7 +56,7 @@ parse_lines() {
 }
 
 parse_fields() {
-  OLDIFS=$IFS && IFS=$US && eval "set -- \${${ZSH_VERSION:+=}1}" && IFS=$OLDIFS
+  OLDIFS=$IFS && IFS=$US && eval "set -- \$1" && IFS=$OLDIFS
 
   # Workaround: Do not merge two 'for'. A bug occurs in variable expansion
   # rarely in busybox-1.10.2.

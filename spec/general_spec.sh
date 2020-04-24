@@ -718,6 +718,25 @@ Describe "general.sh"
     End
   End
 
+  Describe 'shellspec_get_nth()'
+    It 'fetch nth value seperate by IFS'
+      When call shellspec_get_nth var "  a   b c  " 3
+      The variable var should equal c
+    End
+
+    Parameters
+      "a,b,c,d,e"     3 ','   "c"
+      "  a  b  c  "   3 ' '   "c"
+      ",,a,,"         3 ','   "a"
+      "  a   * c  "   2 " "   "*"
+    End
+
+    It "fetches nth word ($1 : $2 : $3)" a b
+      When call shellspec_get_nth var "$1" "$2" "$3"
+      The variable var should equal "$4"
+    End
+  End
+
   Describe "shellspec_which()"
     Context 'when PATH=/foo:/bin:/bar'
       Before PATH=/foo:/bin:/bar

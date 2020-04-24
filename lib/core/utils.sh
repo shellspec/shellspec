@@ -1,11 +1,5 @@
 #shellcheck shell=sh disable=SC2016
 
-shellspec_get_nth() {
-  shellspec_reset_params '"$1" "$2" $4' "$3"
-  eval "$SHELLSPEC_RESET_PARAMS"
-  eval "$1=\${$(($2 + 2)):-}"
-}
-
 shellspec_is() {
   case $1 in
     number) case ${2:-} in ( '' | *[!0-9]* ) return 1; esac ;;
