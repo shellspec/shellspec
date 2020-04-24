@@ -38,5 +38,5 @@ invoke() {
     cat "$task_file"
     echo
     echo "${task}_task"
-  } | $SHELLSPEC_SHELL
+  } | ( IFS=' '; $SHELLSPEC_SHELL )
 }
