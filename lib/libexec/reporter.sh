@@ -43,8 +43,8 @@ buffer() {
     $1() { \
       IFS=\" \$IFS\"; \
       case \${1:-} in \
-        '?'  ) [ \"\$$1_buffer\" ] ;; \
-        '!?' ) [ ! \"\$$1_buffer\" ] ;; \
+        '?'  ) [ \"\$$1_buffer\" ] &&: ;; \
+        '!?' ) [ ! \"\$$1_buffer\" ] &&: ;; \
         '='  ) $1_opened=1; shift; $1_buffer=\${*:-} ;; \
         '|=' ) $1_opened=1; shift; [ \"\$$1_buffer\" ] || $1_buffer=\${*:-} ;; \
         '+=' ) $1_opened=1; shift; $1_buffer=\$$1_buffer\${*:-} ;; \
