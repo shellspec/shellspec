@@ -9,6 +9,8 @@
 * The old shell has been tested, but support may be discontinued.
 * Supported busybox shell is `ash` only. `hush` has many missing features and
   bugs.
+* pdksh 5.2.14 is still supported, but it has many bugs, too old and
+  no more maintained. Not recommended for use.
 * Bourne shell is not supported.
 
 ### Packages
@@ -84,12 +86,14 @@ Default shell: `dash` or `bash` (until debian 5.0)
 
 Default shell: `ash`
 
-| Platform               | ash     | bash   | dash     | ksh             | mksh | oksh     | pdksh  | zsh   |
-| ---------------------- | ------- | ------ | -------- | --------------- | ---- | -------- | ------ | ----- |
-| FreeBSD 10.4           | unknown | 4.4.23 | 0.5.10.2 | 93u+ 2012-08-01 | 56c  | 20181009 | 5.2.14 | 5.6.2 |
-| **FreeBSD 11.3**       | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | 57   | 6.6      | 5.2.14 | 5.8   |
-| **FreeBSD 12.1**       | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | 57   | 6.6      | 5.2.14 | 5.8   |
-| FreeBSD 13.0 (current) | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | 57   | 6.6      | 5.2.14 | 5.8   |
+| Platform               | ash     | bash   | dash     | ksh             | mksh | oksh     | pdksh    | zsh   |
+| ---------------------- | ------- | ------ | -------- | --------------- | ---- | -------- | -------- | ----- |
+| FreeBSD 10.4           | unknown | 4.4.23 | 0.5.10.2 | 93u+ 2012-08-01 | 56c  | 20181009 | _5.2.14_ | 5.6.2 |
+| **FreeBSD 11.3**       | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | 57   | 6.6      | _5.2.14_ | 5.8   |
+| **FreeBSD 12.1**       | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | 57   | 6.6      | _5.2.14_ | 5.8   |
+| FreeBSD 13.0 (current) | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | 57   | 6.6      | _5.2.14_ | 5.8   |
+
+* Dropped ci test for pdksh which unstable on FreeBSD. (Bus Error, mkdir: Bad address, Memory fault, core dumped and etc)
 
 #### macOS
 
