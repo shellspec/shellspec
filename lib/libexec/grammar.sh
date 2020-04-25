@@ -52,8 +52,8 @@ mapping() {
     Path              )   control path        "$2" ;;
     File              )   control path        "$2" ;;
     Dir               )   control path        "$2" ;;
-    Before            )   control before      "$2" ;;
-    After             )   control after       "$2" ;;
+    Before            )   example_hook before "$2" ;;
+    After             )   example_hook after  "$2" ;;
     BeforeCall        )   control before_call "$2" ;;
     AfterCall         )   control after_call  "$2" ;;
     BeforeRun         )   control before_run  "$2" ;;
@@ -95,22 +95,4 @@ mapping() {
       esac
       return 1
   esac
-}
-
-increase_block_id() {
-  [ "$block_id" ] || block_id_increased=1
-  [ "$block_id_increased" ] && block_id=$block_id${block_id:+-}0
-  case $block_id in
-    *-*) block_id=${block_id%-*}-$((${block_id##*-} + 1)) ;;
-    *  ) block_id=$(($block_id + 1)) ;;
-  esac
-  block_id_increased=1
-}
-
-decrease_block_id() {
-  if [ "$block_id_increased" ]; then
-    block_id_increased=''
-  else
-    block_id=${block_id%-*}
-  fi
 }

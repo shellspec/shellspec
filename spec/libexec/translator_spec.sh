@@ -5,6 +5,34 @@
 Describe "libexec/translator.sh"
   Include "$SHELLSPEC_LIB/libexec/translator.sh"
 
+  Describe "initialize()"
+    It 'initializes'
+      When run initialize
+      The status should be success
+    End
+  End
+
+  Describe "finalize()"
+    BeforeRun initialize
+    It 'finalizes'
+      When run finalize
+      The status should be success
+    End
+
+    Context "when inside of example group"
+      BeforeRun "block_example_group desc1" "block_example_group desc2" mock
+      trans() { :; }
+      mock() { trans() { echo trans "$@"; }; }
+      syntax_error() { echo "$@"; }
+      It 'output syntax error'
+        When run finalize
+        The line 1 of stdout should eq "Unexpected end of file (expecting 'End')"
+        The line 2 of stdout should eq "trans block_end "
+        The line 3 of stdout should eq "trans block_end "
+      End
+    End
+  End
+
   Describe "read_specfile()"
     process() {
       lineno=0 line=''
@@ -124,6 +152,324 @@ Describe "libexec/translator.sh"
     End
   End
 
+  Describe "is_constant_name()"
+    Parameters
+      "FOO" success
+      "F1_" success
+      "Foo" failure
+      "1" failure
+    End
+
+    It "checks constant name ($1)"
+      When call is_constant_name "$1"
+      The status should be "$2"
+    End
+  End
+
+  Describe "is_function_name()"
+    Parameters
+      func  success
+      FUNC  success
+      F1_   success
+      Func  success
+      1     failure
+    End
+
+    It "checks function name ($1)"
+      When call is_function_name "$1"
+      The status should be "$2"
+    End
+  End
+
+  Describe "block_example_group()"
+    BeforeRun initialize lineno=10 filter=''
+    trans() { :; }
+    mock() {
+      check_filter() { echo "check_filter" "$@"; }
+      # shellcheck disable=SC2154
+      trans() {
+        echo "trans" "$@"
+        echo "filter: $filter"
+        echo "block_no: $block_no"
+        echo "lineno_begin: $lineno_begin"
+        case $block_no in
+          1) echo "block_lineno_begin1: ${block_lineno_begin1:-}" ;;
+          2) echo "block_lineno_begin2: ${block_lineno_begin2:-}" ;;
+        esac
+      }
+    }
+    syntax_error() { echo "$@"; }
+
+    Context "when outside of example group"
+      BeforeRun mock
+      It "generates block_example_group"
+        When run block_example_group "desc"
+        The line 1 of stdout should eq "check_filter desc"
+        The line 2 of stdout should eq "trans block_example_group desc"
+        The line 3 of stdout should eq "filter: 1"
+        The line 4 of stdout should eq "block_no: 1"
+        The line 5 of stdout should eq "lineno_begin: 10"
+        The line 6 of stdout should eq "block_lineno_begin1: 10"
+      End
+
+      Context 'when filter unmatch'
+        BeforeRun mock_filter
+        mock_filter() {
+          check_filter() { echo "check_filter" "$@"; return 1; }
+        }
+        It "generates block_example_group"
+          When run block_example_group "desc"
+          The line 1 of stdout should eq "check_filter desc"
+          The line 2 of stdout should eq "trans block_example_group desc"
+          The line 3 of stdout should eq "filter: "
+          The line 4 of stdout should eq "block_no: 1"
+          The line 5 of stdout should eq "lineno_begin: 10"
+          The line 6 of stdout should eq "block_lineno_begin1: 10"
+        End
+      End
+    End
+
+    Context "when inside of example group"
+      BeforeRun "block_example_group desc1" mock
+      It "generates block_example_group"
+        When run block_example_group "desc2"
+        The line 1 of stdout should eq "check_filter desc2"
+        The line 2 of stdout should eq "trans block_example_group desc2"
+        The line 3 of stdout should eq "filter: 1"
+        The line 4 of stdout should eq "block_no: 2"
+        The line 5 of stdout should eq "lineno_begin: 10"
+        The line 6 of stdout should eq "block_lineno_begin2: 10"
+      End
+    End
+
+    Context "when inside of example"
+      BeforeRun "block_example desc" mock
+      It "outputs syntax error"
+        When run block_example_group "desc"
+        The stdout should eq 'Describe/Context cannot be defined inside of Example'
+      End
+    End
+
+    Context "when syntax error"
+      one_line_syntax_check() { eval "$1='syntax error'"; return 1; }
+      It "outputs syntax error"
+        When run block_example_group "desc"
+        The stdout should eq 'Describe/Context has occurred an error syntax error'
+      End
+    End
+  End
+
+  Describe "block_example()"
+    BeforeRun initialize "lineno=10"
+    trans() { :; }
+    mock() {
+      check_filter() { echo "check_filter" "$@"; }
+      # shellcheck disable=SC2154
+      trans() {
+        echo "trans" "$@"
+        echo "filter: ${filter:-}"
+        echo "block_no: $block_no"
+        echo "lineno_begin: $lineno_begin"
+        echo "block_lineno_begin1: $block_lineno_begin1"
+      }
+    }
+    syntax_error() { echo "$@"; }
+
+    Context "when outside of example"
+      BeforeRun mock
+      It "generates block_example"
+        When run block_example "desc"
+        The line 1 of stdout should eq "check_filter desc"
+        The line 2 of stdout should eq "trans block_example desc"
+        The line 3 of stdout should eq "filter: 1"
+        The line 4 of stdout should eq "block_no: 1"
+        The line 5 of stdout should eq "lineno_begin: 10"
+        The line 6 of stdout should eq "block_lineno_begin1: 10"
+      End
+
+      Context 'when filter unmatch'
+        BeforeRun mock_filter
+        mock_filter() {
+          check_filter() { echo "check_filter" "$@"; return 1; }
+        }
+        It "generates block_example_group"
+          When run block_example "desc"
+          The line 1 of stdout should eq "check_filter desc"
+          The line 2 of stdout should eq "trans block_example desc"
+          The line 3 of stdout should eq "filter: "
+          The line 4 of stdout should eq "block_no: 1"
+          The line 5 of stdout should eq "lineno_begin: 10"
+          The line 6 of stdout should eq "block_lineno_begin1: 10"
+        End
+      End
+    End
+
+    Context "when inside of example"
+      BeforeRun "block_example desc" mock
+      It "outputs syntax error"
+        When run block_example "desc"
+        The stdout should eq 'It/Example/Specify/Todo cannot be defined inside of Example'
+      End
+    End
+
+    Context "when syntax error"
+      one_line_syntax_check() { eval "$1='syntax error'"; return 1; }
+      It "outputs syntax error"
+        When run block_example "desc"
+        The stdout should eq 'It/Example/Specify/Todo has occurred an error syntax error'
+      End
+    End
+  End
+
+  Describe "block_end()"
+    BeforeRun initialize
+    trans() { :; }
+    mock() { trans() { echo trans "$@"; }; }
+    syntax_error() { echo "$@"; }
+    is_in_ranges() { return 0; }
+    remove_from_ranges() { echo "remove_from_ranges"; }
+
+    Context "when inside of block"
+      BeforeRun "block_example desc" mock
+      It "generate block_end"
+        When run block_end "desc"
+        The line 1 of stdout should eq "remove_from_ranges"
+        The line 2 of stdout should eq "trans block_end desc"
+      End
+    End
+
+    Context "when outside of block"
+      It "outputs syntax error"
+        When run block_end "desc"
+        The stdout should eq "unexpected 'End'"
+      End
+    End
+
+    Context "when parameters defined"
+      BeforeRun "block_example_group desc" "parameters value" mock
+      It "outputs syntax error"
+        When run block_end "desc"
+        The stdout should eq "Not found any examples. (Missing 'End' of Parameters?)"
+      End
+    End
+  End
+
+  Describe "x()"
+    BeforeRun "skip_id=123"
+    AfterRun 'foo after_run'
+    # shellcheck disable=SC2154
+    foo() { echo "$1: skipped: $skipped skipped: $skip_id"; }
+
+    It "skips groups / example"
+      When run x foo block
+      The line 1 of stdout should eq "block: skipped: 1 skipped: 124"
+      The line 2 of stdout should eq "after_run: skipped:  skipped: 124"
+    End
+  End
+
+  Describe "f()"
+    BeforeRun focused='' filter=''
+    AfterRun 'foo after_run'
+    # shellcheck disable=SC2154
+    foo() { echo "$1: focused: $focused filter: $filter"; }
+
+    It "skips groups / example"
+      When run f foo block
+      The line 1 of stdout should eq "block: focused: focus filter: 1"
+      The line 2 of stdout should eq "after_run: focused:  filter: "
+    End
+  End
+
+  Describe "todo()"
+    block_example() { echo block_example "$@"; }
+    pending() { echo pending "$@"; }
+    block_end() { echo block_end "$@"; }
+
+    It "generates empty example block"
+      When run todo desc
+      The line 1 of stdout should eq "block_example desc"
+      The line 2 of stdout should eq "pending desc"
+      The line 3 of stdout should eq "block_end "
+    End
+  End
+
+  Describe "evaluation()"
+    BeforeRun initialize
+    trans() { :; }
+    mock() { trans() { echo trans "$@"; }; }
+    syntax_error() { echo "$@"; }
+
+    Context "when outside of example block"
+      It "outputs syntax error"
+        When run evaluation syntax
+        The stdout should eq "When cannot be defined outside of Example"
+      End
+    End
+
+    Context "when inside of example block"
+      BeforeRun "block_example desc" mock
+      It "generates evaluation"
+        When run evaluation syntax
+        The stdout should eq "trans evaluation syntax"
+      End
+    End
+  End
+
+  Describe "expectation()"
+    BeforeRun initialize
+    trans() { :; }
+    mock() { trans() { echo trans "$@"; }; }
+    syntax_error() { echo "$@"; }
+
+    Context "when outside of example block"
+      It "outputs syntax error"
+        When run expectation syntax
+        The stdout should eq "The cannot be defined outside of Example"
+      End
+    End
+
+    Context "when inside of example block"
+      BeforeRun "block_example desc" mock
+      It "generates expectation"
+        When run expectation syntax
+        The stdout should eq "trans expectation syntax"
+      End
+    End
+  End
+
+  Describe "example_hook()"
+    BeforeRun initialize
+    trans() { :; }
+    mock() { trans() { echo trans "$@"; }; }
+    syntax_error() { echo "$@"; }
+
+    Context "when outside of example block"
+      BeforeRun mock
+      It "generates before/after hook"
+        When run example_hook "before/after"
+        The stdout should eq "trans control before/after"
+      End
+    End
+
+    Context "when inside of example block"
+      BeforeRun "block_example desc" mock
+      It "outputs syntax error"
+        When run example_hook syntax
+        The stdout should eq "Before/After cannot be defined inside of Example"
+      End
+    End
+  End
+
+  Describe "control()"
+    BeforeRun initialize
+    trans() { echo trans "$@"; }
+
+    It "generates control statement"
+      When run control statement
+      The stdout should eq "trans control statement"
+    End
+  End
+
   Describe "pending()"
     trans() { echo "$@"; }
 
@@ -236,6 +582,149 @@ Describe "libexec/translator.sh"
       The line 1 of stdout should eq "data_begin ==== < file"
       The line 2 of stdout should eq "data_file < file"
       The line 3 of stdout should eq "data_end ==== < file"
+    End
+  End
+
+  Describe "constant()"
+    BeforeRun initialize
+    trans() { :; }
+    mock() { trans() { echo trans "$@"; }; }
+    syntax_error() { echo "$@"; }
+
+    Context "when outside of example block"
+      BeforeRun mock
+
+      It "generates constant definition"
+        When run constant "FOO: value"
+        The stdout should eq "trans constant FOO value"
+      End
+
+      It "output error with invalid constant name"
+        When run constant "foo: value"
+        The stdout should eq "Constant name should match pattern [A-Z_][A-Z0-9_]*"
+      End
+    End
+
+    Context "when inside of example block"
+      BeforeRun "block_example desc" mock
+      It "outputs syntax error"
+        When run constant "FOO: value"
+        The stdout should eq "Constant should be defined outside of Example Group/Example"
+      End
+    End
+  End
+
+  Describe "include()"
+    BeforeRun initialize
+    trans() { :; }
+    mock() { trans() { echo trans "$@"; }; }
+    syntax_error() { echo "$@"; }
+
+    Context "when outside of example block"
+      BeforeRun mock
+
+      It "generates constant definition"
+        When run include "./script.sh"
+        The stdout should eq "trans include ./script.sh"
+      End
+
+      Context "when syntax error"
+        one_line_syntax_check() { eval "$1='syntax error'"; return 1; }
+        It "outputs syntax error"
+          When run include "'./script.sh"
+          The stdout should eq 'Include has occurred an error syntax error'
+        End
+      End
+    End
+
+    Context "when inside of example block"
+      BeforeRun "block_example desc" mock
+      It "outputs syntax error"
+        When run include "./script.sh"
+        The stdout should eq "Include cannot be defined inside of Example"
+      End
+    End
+
+  End
+
+  Describe "with_function()"
+    trans() { echo trans "$@"; }
+    foo() { echo "$@"; }
+
+    It "generates function and syntax"
+      When run with_function "syntax" foo putsn bar
+      The line 1 of stdout should eq "trans with_function syntax"
+      The line 2 of stdout should eq "putsn bar"
+    End
+  End
+
+  Describe "is_in_range()"
+    Context "when block id specified"
+      Parameters
+        @12 success
+        @22 failure
+      End
+
+      It "checks if block id is match (currnet block id: 12, block_id: $1)"
+        BeforeRun block_id=12
+        When run is_in_range "$1"
+        The status should be "$2"
+      End
+    End
+
+    Context "when lineno specified"
+      Parameters
+        10 failure
+        11 success
+        15 success
+        16 failure
+      End
+
+      It "checks if line no is in range (lineno range: 11-15, lineno: $1)"
+        BeforeRun lineno_begin=11 lineno_end=15
+        When run is_in_range "$1"
+        The status should be "$2"
+      End
+    End
+  End
+
+  Describe "is_in_ranges()"
+    Context "when ranges not specified"
+      BeforeRun ranges=''
+
+      It "returns failure"
+        When run is_in_ranges
+        The status should be failure
+      End
+    End
+
+    Context "when ranges specified"
+      BeforeRun "ranges='1 2 3'"
+
+      It "returns success if match any ranges"
+        is_in_range() { printf "%s " "$1"; }
+        When run is_in_ranges
+        The stdout should eq "1 "
+        The status should be success
+      End
+
+      It "returns failure if not match any ranges"
+        is_in_range() { printf "%s " "$1"; return 1; }
+        When run is_in_ranges
+        The stdout should eq "1 2 3 "
+        The status should be failure
+      End
+    End
+  End
+
+  Describe "remove_from_ranges()"
+    BeforeRun "ranges='1 2 3 1 2 3'"
+    AfterRun 'echo $ranges'
+
+    It "removes matched range"
+      is_in_range() { [ "$1" = "2" ]; }
+      When run remove_from_ranges
+      The stdout should eq "1 3 1 3 "
     End
   End
 End

@@ -6,6 +6,7 @@ use constants trim match_pattern ends_with escape_quote replace_all
 load grammar
 
 initialize() {
+  block_id='' inside_of_example='' inside_of_text=''
   lineno=0 block_no=0 example_no=1 skip_id=0 error='' focused='' skipped=''
   _block_no=0 _block_no_stack=''
   parameter_count='' parameter_no=0 _parameter_count_stack=''
@@ -14,7 +15,7 @@ initialize() {
 
 finalize() {
   [ "$_block_no_stack" ] || return 0
-  syntax_error "unexpected end of file (expecting 'End')"
+  syntax_error "Unexpected end of file (expecting 'End')"
   lineno=
   while [ "$_block_no_stack" ]; do block_end ""; done
 }
@@ -59,6 +60,24 @@ is_constant_name() {
 is_function_name() {
   case $1 in ([!a-zA-Z_]*) return 1; esac
   case $1 in (*[!a-zA-Z0-9_]*) return 1; esac
+}
+
+increase_block_id() {
+  [ "$block_id" ] || block_id_increased=1
+  [ "$block_id_increased" ] && block_id=$block_id${block_id:+-}0
+  case $block_id in
+    *-*) block_id=${block_id%-*}-$((${block_id##*-} + 1)) ;;
+    *  ) block_id=$(($block_id + 1)) ;;
+  esac
+  block_id_increased=1
+}
+
+decrease_block_id() {
+  if [ "$block_id_increased" ]; then
+    block_id_increased=''
+  else
+    block_id=${block_id%-*}
+  fi
 }
 
 block_example_group() {
@@ -114,7 +133,7 @@ block_example() {
 }
 
 block_end() {
-  if [ -z "$_block_no_stack" ]; then
+  if [ ! "$_block_no_stack" ]; then
     syntax_error "unexpected 'End'"
     return 0
   fi
@@ -165,7 +184,7 @@ todo() {
 }
 
 evaluation() {
-  if [ -z "$inside_of_example" ]; then
+  if [ ! "$inside_of_example" ]; then
     syntax_error "When cannot be defined outside of Example"
     return 0
   fi
@@ -173,20 +192,22 @@ evaluation() {
 }
 
 expectation() {
-  if [ -z "$inside_of_example" ]; then
+  if [ ! "$inside_of_example" ]; then
     syntax_error "The cannot be defined outside of Example"
     return 0
   fi
   eval trans expectation ${1+'"$@"'}
 }
 
+example_hook() {
+  if [ "$inside_of_example" ]; then
+    syntax_error "Before/After cannot be defined inside of Example"
+    return 0
+  fi
+  eval trans control ${1+'"$@"'}
+}
+
 control() {
-  case $1 in (before|after)
-    if [ "$inside_of_example" ]; then
-      syntax_error "Before/After cannot be defined inside of Example"
-      return 0
-    fi
-  esac
   eval trans control ${1+'"$@"'}
 }
 
@@ -422,7 +443,7 @@ remove_from_ranges() {
 }
 
 translate() {
-  block_id='' inside_of_example='' inside_of_text='' work=''
+  work=''
   while read_specfile line; do
     while ends_with "$line" "\\"; do
       read_specfile work ||:
