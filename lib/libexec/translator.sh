@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants trim match_pattern ends_with escape_quote replace_all
+use constants trim match_pattern ends_with escape_quote replace_all match
 load grammar
 
 initialize() {
@@ -53,13 +53,15 @@ check_filter() {
 }
 
 is_constant_name() {
-  case $1 in ([!A-Z_]*) return 1; esac
-  case $1 in (*[!A-Z0-9_]*) return 1; esac
+  match "$1" "[!A-Z_]*" && return 1
+  match "$1" "*[!A-Z0-9_]*" && return 1
+  return 0
 }
 
 is_function_name() {
-  case $1 in ([!a-zA-Z_]*) return 1; esac
-  case $1 in (*[!a-zA-Z0-9_]*) return 1; esac
+  match "$1" "[!a-zA-Z_]*" && return 1
+  match "$1" "*[!a-zA-Z0-9_]*" && return 1
+  return 0
 }
 
 increase_block_id() {
@@ -372,10 +374,12 @@ parameters_matrix() {
 
 parameters_value() {
   code=''
-  parameters_generate_code "for shellspex_matrix in ${*:-}; do"
-  trans parameters "\"\$shellspex_matrix\""
-  code="${code}count=\$((\$count + 1))${LF}"
-  parameters_generate_code "done"
+  if [ $# -gt 0 ]; then
+    parameters_generate_code "for shellspex_matrix in ${*:-}; do"
+    trans parameters "\"\$shellspex_matrix\""
+    code="${code}count=\$((\$count + 1))${LF}"
+    parameters_generate_code "done"
+  fi
   eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
 }
 

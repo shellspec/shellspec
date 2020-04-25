@@ -396,7 +396,7 @@ esac
 
 # $2: pattern should be escaped
 shellspec_match() {
-  [ "${2:-}" ] && eval "case \${1:-} in ($2) true ;; (*) false ;; esac &&:"
+  ( eval "export LC_ALL=C; case \${1:-} in ($2) :;; (*) false;; esac" ) &&:
 }
 
 shellspec_escape_quote() {
@@ -431,8 +431,8 @@ shellspec_match_pattern() {
   [ "${2:-}" ] || return 1
   shellspec_match_pattern=$2
   shellspec_match_pattern_escape shellspec_match_pattern
-  set -- "$1" "$shellspec_match_pattern"
-  eval "case \$1 in ($2) true ;; (*) false ;; esac &&:" 2>/dev/null &&:
+  set -- "$1" "$shellspec_match_pattern" /dev/null
+  ( eval "export LC_ALL=C; case \$1 in ($2) :;; (*) false;; esac" ) 2>"$3" &&:
 }
 
 shellspec_join() {
