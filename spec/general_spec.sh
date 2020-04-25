@@ -51,6 +51,19 @@ Describe "general.sh"
         The variable SHELLSPEC_SHELL_TYPE should eq "$1"
       End
     End
+
+    Context '$SH_VERSION available shell'
+      Parameters
+        pdksh   "@(#)PD KSH v5.2.14 99/07/13.2"
+      End
+
+      It "detects as $1"
+        BeforeCall "SHELLSPEC_SH_VERSION='$2'"
+        BeforeCall 'pretend sh ""'
+        When call shellspec_shell_info
+        The variable SHELLSPEC_SHELL_TYPE should eq "$1"
+      End
+    End
   End
 
   Describe 'shellspec_shell_version()'

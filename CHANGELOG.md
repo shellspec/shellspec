@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add test for [GWSH shell](https://github.com/hvdijk/gwsh)
+- Add support for OpenBSD 6.6 (manual test)
 
 ### Removed
 

@@ -150,10 +150,19 @@ These are tested by Docker (`contrib/test_in_docker.sh`).
 
 This is not continuous test, it may break sometimes...
 
-| Platform       | bash   | ksh88                            | ksh93                     | Bourne Shell          |
-| -------------- | ------ | -------------------------------- | ------------------------- | --------------------- |
-| **Solaris 10** | 3.2.51 | M-11/16/88i (/usr/bin/ksh)       | -                         | ~~/bin/sh~~           |
-| **Solaris 11** | 4.4.19 | M-11/16/88i (/usr/sunos/bin/ksh) | 93u+ 2012-08-01 (/bin/sh) | ~~/usr/sunos/bin/sh~~ |
+| Platform        | /bin/sh               | bash   | dash     | ksh88       | ksh93           | yash | zsh   |
+| --------------- | --------------------- | ------ | -------- | ----------- | --------------- | ---- | ----- |
+| **Solaris 10**  | ~~Bourne Shell~~      | 3.2.51 |          | M-11/16/88i | -               |      |       |
+| **Solaris 11**  | ksh93 93u+ 2012-08-01 | 4.4.19 |          | M-11/16/88i | 93u+ 2012-08-01 |      |       |
+| **OpenBSD 6.6** | pdksh 5.2.14          | 5.0.11 | 0.5.10.2 | -           | 93u+ 2012-08-01 | 2.48 | 5.7.1 |
+
+#### Path
+
+| Platform    | /bin/sh               | /usr/bin/ksh      | /usr/sunos/bin/ksh | /usr/sunos/bin/sh |
+| ----------- | --------------------- | ----------------- | ------------------ | ----------------- |
+| Solaris 10  | Bourne Shell          | ksh88 M-11/16/88i | -                  | -                 |
+| Solaris 11  | ksh93 93u+ 2012-08-01 | -                 | ksh88 M-11/16/88i  | Bourne Shell      |
+| OpenBSD 6.6 | pdksh 5.2.14          | -                 | -                  | -                 |
 
 ## Confirmation for bug
 

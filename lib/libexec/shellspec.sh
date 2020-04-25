@@ -51,7 +51,7 @@ read_cmdline() {
 }
 
 ps_command() {
-  ps -f
+  ps -f || ps
 }
 
 read_ps() {

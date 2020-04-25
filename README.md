@@ -146,6 +146,7 @@ Tested Platforms
 | Windows 10 1909 (Ubuntu 18.04 on WSL)                         | manual                                                        |
 | macOS 10.15                                                   | manual                                                        |
 | Solaris 10, 11                                                | manual                                                        |
+| OpenBSD 6.6                                                   | manual                                                        |
 
 [Tested version details](docs/shells.md)
 
