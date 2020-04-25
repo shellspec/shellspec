@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants trim match_pattern ends_with escape_quote
+use constants trim match_pattern ends_with escape_quote replace_all
 load grammar
 
 initialize() {
@@ -28,11 +28,15 @@ read_specfile() {
 one_line_syntax_check() { :; }
 
 check_filter() {
-  escaped_syntax=''
-  escape_one_line_syntax escaped_syntax "$1"
-  eval "set -- $escaped_syntax"
+  check_filter="$1"
+  replace_all check_filter '$' "$DC1"
+  replace_all check_filter '`' "$DC2"
+  eval "set -- $check_filter"
   if [ $# -gt 0 ]; then
-    match_pattern "$1" "$SHELLSPEC_EXAMPLE_FILTER" && return 0
+    check_filter="$1"
+    replace_all check_filter "$DC1" '$'
+    replace_all check_filter "$DC2" '`'
+    match_pattern "$check_filter" "$SHELLSPEC_EXAMPLE_FILTER" && return 0
     shift
   fi
   [ "$SHELLSPEC_TAG_FILTER" ] || return 1
@@ -45,24 +49,6 @@ check_filter() {
     shift
   done
   return 1
-}
-
-escape_one_line_syntax() {
-  eval="
-    set -- \"\$2\" '' ''; \
-    while [ \"\$1\" ]; do \
-      $1=\${1#?}; \
-      case \$3\$1 in \
-        \\\$* | \\\`*) set -- \"\$1\" \"\$2\\\\\" '' ;; \
-        \'*)  set -- \"\$1\" \"\$2\" q ;; \
-        q\'*) set -- \"\$1\" \"\$2\" '' ;; \
-      esac; \
-      $1=\${1%\"\${$1}\"}; \
-      set -- \"\${1#?}\" \"\$2\${$1}\" \"\$3\"; \
-    done; \
-    $1=\$2
-  "
-  eval "$eval"
 }
 
 is_constant_name() {

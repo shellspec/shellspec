@@ -54,6 +54,12 @@ Describe "libexec/translator.sh"
         The status should be success
       End
 
+      It 'returns success when match pattern'
+        BeforeRun "SHELLSPEC_EXAMPLE_FILTER='\$\`ABC'"
+        When run check_filter '$`ABC'
+        The status should be success
+      End
+
       It 'does not match tag'
         BeforeRun SHELLSPEC_TAG_FILTER=",tag,"
         When run check_filter "desc"
@@ -115,28 +121,6 @@ Describe "libexec/translator.sh"
           The status should be failure
         End
       End
-    End
-  End
-
-  Describe "escape_one_line_syntax()"
-    It 'escapes $ and `'
-      When call escape_one_line_syntax desc '$foo `bar`'
-      The variable desc should eq '\$foo \`bar\`'
-    End
-
-    It 'escapes $ and ` inside of double qoute'
-      When call escape_one_line_syntax desc '"$foo" `bar`'
-      The variable desc should eq '"\$foo" \`bar\`'
-    End
-
-    It 'does not escape $ inside of single quote'
-      When call escape_one_line_syntax desc "'\$foo' bar"
-      The variable desc should eq "'\$foo' bar"
-    End
-
-    It 'does not escape meta character'
-      When call escape_one_line_syntax desc "var[2] * ? \\ end"
-      The variable desc should eq "var[2] * ? \\ end"
     End
   End
 
