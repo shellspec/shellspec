@@ -48,7 +48,7 @@ Describe "libexec/reporter.sh"
   Describe "buffer()"
     It 'creates buffer'
       When call buffer example
-      The result of 'example()' should eq ''
+      The status should be success
     End
   End
 

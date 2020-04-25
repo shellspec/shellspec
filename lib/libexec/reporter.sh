@@ -39,25 +39,62 @@ field_description() {
 #   [>>>] output      [<|>] open                  [>|<] close
 buffer() {
   EVAL="
-    $1_buffer='' $1_opened='' $1_flowed=''; \
+    $1_buffer='' $1_opened='' $1_flowed=''
     $1() { \
       case \${1:-} in \
-        '?'  ) [ \"\$$1_buffer\" ] &&:; return \$? ;; \
-        '!?' ) [ ! \"\$$1_buffer\" ] &&:; return \$? ;; \
+        '<|>') set -- buffer_open $1 ;; \
+        '>|<') set -- buffer_close $1 ;; \
+        '>>>') set -- buffer_output $1 ;; \
+         '?' ) set -- buffer_is_present $1 ;; \
+        '!?' ) set -- buffer_is_empty $1 ;; \
+        '='  ) shift; set -- buffer_set $1 \"\$@\" ;; \
+        '|=' ) shift; set -- buffer_set_if_empty $1 \"\$@\" ;; \
+        '+=' ) shift; set -- buffer_append $1 \"\$@\" ;; \
       esac; \
-      IFS=\" \$IFS\"; \
-      case \${1:-} in \
-        '='  ) $1_opened=1; shift; $1_buffer=\${*:-} ;; \
-        '|=' ) $1_opened=1; shift; [ \"\$$1_buffer\" ] || $1_buffer=\${*:-} ;; \
-        '+=' ) $1_opened=1; shift; $1_buffer=\$$1_buffer\${*:-} ;; \
-        '<|>') $1_opened=1 ;; \
-        '>|<') [ \"\$$1_flowed\" ] && $1_buffer='' $1_flowed=''; $1_opened='' ;; \
-        '>>>') [ ! \"\$$1_opened\" ] || { $1_flowed=1; puts \"\$$1_buffer\"; } ;; \
-      esac; \
-      IFS=\${IFS#?}; \
+      \"\$@\"; \
     } \
   "
   eval "$EVAL"
+}
+
+buffer_open() {
+  eval "$1_opened=1"
+}
+
+buffer_close() {
+  eval "if [ \"\$$1_flowed\" ]; then $1_buffer= $1_flowed=; fi; $1_opened="
+}
+
+buffer_output() {
+  eval "if [ \"\$$1_opened\" ]; then $1_flowed=1; puts \"\$$1_buffer\"; fi"
+}
+
+buffer_is_present() {
+  if eval "[ \"\$$1_buffer\" ] &&:"; then return 0; fi
+  return 1
+}
+
+buffer_is_empty() {
+  if eval "[ \"\$$1_buffer\" ] &&:"; then return 1; fi
+  return 0
+}
+
+buffer_set() {
+  IFS=" $IFS"
+  eval "$1_opened=1; shift; $1_buffer=\${*:-}"
+  IFS=${IFS#?}
+}
+
+buffer_set_if_empty() {
+  if buffer_is_empty "$1"; then
+    buffer_set "$@"
+  fi
+}
+
+buffer_append() {
+  IFS=" $IFS"
+  eval "$1_opened=1; shift; $1_buffer=\$$1_buffer\${*:-}"
+  IFS=${IFS#?}
 }
 
 xmlescape() {
