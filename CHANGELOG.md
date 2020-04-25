@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `match` matcher. Use `match pattern` matcher instead.
 - Dropped ci test for pdksh which unstable on FreeBSD.
   - (Bus Error, mkdir: Bad address, Memory fault, core dumped and etc)
+- Dropped docker test for pdksh which unstable on Debian 2.2r7.
+  - (Memory fault, etc)
 
 ## [0.23.0] - 2020-04-02
 
