@@ -17,8 +17,9 @@ use() {
 
 load() {
   while [ "$#" -gt 0 ]; do
+    SHELLSPEC_SOURCE="${SHELLSPEC_LIB:-./lib}/libexec/$1.sh"
     # shellcheck disable=SC1090
-    . "${SHELLSPEC_LIB:-./lib}/libexec/$1.sh"
+    . "$SHELLSPEC_SOURCE"
     shift
   done
 }

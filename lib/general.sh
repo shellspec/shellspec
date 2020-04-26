@@ -76,14 +76,16 @@ shellspec_import() {
 }
 
 shellspec_import_deep() {
-  if [ -e "${1%%:*}/$2.sh" ]; then
+  SHELLSPEC_SOURCE="${1%%:*}/$2.sh"
+  if [ -e "$SHELLSPEC_SOURCE" ]; then
     # shellcheck disable=SC1090
-    . "${1%%:*}/$2.sh"
+    . "$SHELLSPEC_SOURCE"
     return 0
   fi
-  if [ -e "${1%%:*}/$2/$2.sh" ]; then
+  SHELLSPEC_SOURCE="${1%%:*}/$2/$2.sh"
+  if [ -e "$SHELLSPEC_SOURCE" ]; then
     # shellcheck disable=SC1090
-    . "${1%%:*}/$2/$2.sh"
+    . "$SHELLSPEC_SOURCE"
     return 0
   fi
   case $1 in

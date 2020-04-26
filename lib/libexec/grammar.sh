@@ -1,98 +1,57 @@
-#shellcheck shell=sh disable=SC2004
+#shellcheck shell=sh disable=SC2004,SC2016
 
-normal_block="  Describe |  Context |  Example |  Specify |  It"
-focused_block="fDescribe | fContext | fExample | fSpecify | fIt"
-skipped_block="xDescribe | xContext | xExample | xSpecify | xIt"
-end_block="End"
-normal_example="  Example |  Specify |  It"
-focused_example="fExample | fSpecify | fIt"
-skipped_example="xExample | xSpecify | xIt"
-oneline_example="Todo"
-begin_block="$normal_block | $focused_block | $skipped_block"
-block_example="$normal_example | $focused_example | $skipped_example"
-example="$block_example | $oneline_example"
-
-define() {
+define_block() {
   eval "$1() { case \$1 in ($2) return 0; esac; return 1; }"
 }
 
-define is_normal_block "$normal_block"
-define is_focused_block "$focused_block"
-define is_skipped_block "$skipped_block"
-define is_end_block "$end_block"
-define is_begin_block "$begin_block"
-define is_normal_example "$normal_example"
-define is_focused_example "$focused_example"
-define is_skipped_example "$skipped_example"
-define is_oneline_example "$oneline_example"
-define is_block_example "$block_example"
-define is_example "$example"
+define_blocks() {
+  : "${SHELLSPEC_GRAMMAR_BLOCKS:="${SHELLSPEC_SOURCE%.*}/blocks"}"
+  varname="" dsl=""
+  while IFS= read -r line; do
+    case $line in ("" | \#*) continue; esac
+    shellspec_trim varname "${line%::=*}"
+    shellspec_trim dsl "${line#*::=}"
+    echo "$varname=\"$dsl\""
+    echo "define_block \"is_$varname\" \"\$$varname\""
+  done < "$SHELLSPEC_GRAMMAR_BLOCKS" &&:
+}
+eval "$(define_blocks)"
+
+define_dsls() {
+  : "${SHELLSPEC_GRAMMAR_DSLS:="${SHELLSPEC_SOURCE%.*}/dsls"}"
+  : "${SHELLSPEC_GRAMMAR_DIRECTIVES:="${SHELLSPEC_SOURCE%.*}/directives"}"
+  echo 'dsl() { case $1 in'
+  while IFS= read -r line; do
+    case $line in ("" | \#*) continue; esac
+    echo "${line%\=\>*}) ${line#*\=\>} \"\$2\" ;;"
+  done < "$SHELLSPEC_GRAMMAR_DSLS" &&:
+  while IFS= read -r line; do
+    case $line in ("" | \#*) continue; esac
+    echo "${line%\=\>*}) ${line#*\=\>} \"\$2\" ;;"
+  done < "$SHELLSPEC_GRAMMAR_DIRECTIVES" &&:
+  echo '*) return 1 ;; esac; }'
+}
+eval "$(define_dsls)"
+
+define_directives() {
+  : "${SHELLSPEC_GRAMMAR_DIRECTIVES:="${SHELLSPEC_SOURCE%.*}/directives"}"
+  echo 'directive() { case $2 in'
+  while IFS= read -r line; do
+    case $line in ("" | \#*) continue; esac
+    echo "${line%\=\>*}) with_function \"\$1\" ${line#*\=\>} \"\$3\" ;;"
+  done < "$SHELLSPEC_GRAMMAR_DIRECTIVES" &&:
+  echo '*) return 1 ;; esac; }'
+}
+eval "$(define_directives)"
 
 mapping() {
-  case $1 in
-    Describe          )   block_example_group "$2" ;;
-    xDescribe         ) x block_example_group "$2" ;;
-    fDescribe         ) f block_example_group "$2" ;;
-    Context           )   block_example_group "$2" ;;
-    xContext          ) x block_example_group "$2" ;;
-    fContext          ) f block_example_group "$2" ;;
-    Example           )   block_example       "$2" ;;
-    xExample          ) x block_example       "$2" ;;
-    fExample          ) f block_example       "$2" ;;
-    Specify           )   block_example       "$2" ;;
-    xSpecify          ) x block_example       "$2" ;;
-    fSpecify          ) f block_example       "$2" ;;
-    It                )   block_example       "$2" ;;
-    xIt               ) x block_example       "$2" ;;
-    fIt               ) f block_example       "$2" ;;
-    End               )   block_end           "$2" ;;
-    Todo              )   todo                "$2" ;;
-    When              )   evaluation when     "$2" ;;
-    The               )   expectation the     "$2" ;;
-    Path              )   control path        "$2" ;;
-    File              )   control path        "$2" ;;
-    Dir               )   control path        "$2" ;;
-    Before            )   example_hook before "$2" ;;
-    After             )   example_hook after  "$2" ;;
-    BeforeCall        )   control before_call "$2" ;;
-    AfterCall         )   control after_call  "$2" ;;
-    BeforeRun         )   control before_run  "$2" ;;
-    AfterRun          )   control after_run   "$2" ;;
-    Pending           )   pending             "$2" ;;
-    Set               )   control set         "$2" ;;
-    Skip              )   skip                "$2" ;;
-    Intercept         )   control intercept   "$2" ;;
-    Data              )   data raw            "$2" ;;
-    Data:raw          )   data raw            "$2" ;;
-    Data:expand       )   data expand         "$2" ;;
-    Parameters        )   parameters block    "$2" ;;
-    Parameters:block  )   parameters block    "$2" ;;
-    Parameters:dynamic)   parameters dynamic  "$2" ;;
-    Parameters:matrix )   parameters matrix   "$2" ;;
-    Parameters:value  )   parameters value    "$2" ;;
-    Include           )   include             "$2" ;;
-    %text             )   text_begin raw      "$2" ;;
-    %text:raw         )   text_begin raw      "$2" ;;
-    %text:expand      )   text_begin expand   "$2" ;;
-    % | %const        )   constant            "$2" ;;
-    %= | %putsn       )   out putsn           "$2" ;;
-    %- | %puts        )   out puts            "$2" ;;
-    %logger           )   out logger          "$2" ;;
-    *)
-      case $1 in (*\(\))
-        is_function_name "${1%??}" || return 1
-        case ${2%%\%*} in (*[!\ \{]*) ;; (*)
-          set -- "$1" "${2#"${2%%\%*}"}"
-          set -- "$1" "${2%% *}" "${2#* }"
-          case $2 in
-            %= | %putsn) with_function "$1" out putsn  "$3" ;;
-            %- | %puts ) with_function "$1" out puts   "$3" ;;
-            %logger    ) with_function "$1" out logger "$3" ;;
-            *) return 1
-          esac
-          return 0
-        esac
-      esac
-      return 1
+  dsl "$@" && return 0
+  case $1 in (*\(\))
+    is_function_name "${1%??}" || return 1
+    case ${2%%\%*} in (*[!\ \{]*) return 1; esac
+    set -- "$1" "${2#"${2%%\%*}"}"
+    set -- "$1" "${2%% *}" "${2#* }"
+    directive "$@" && return 0
   esac
+  return 1
 }

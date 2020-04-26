@@ -1,0 +1,11 @@
+normal_block    ::=  Describe |  Context |  Example |  Specify |  It
+focused_block   ::= fDescribe | fContext | fExample | fSpecify | fIt
+skipped_block   ::= xDescribe | xContext | xExample | xSpecify | xIt
+end_block       ::=  End
+normal_example  ::=  Example |  Specify |  It
+focused_example ::= fExample | fSpecify | fIt
+skipped_example ::= xExample | xSpecify | xIt
+oneline_example ::=  Todo
+begin_block     ::= $normal_block | $focused_block | $skipped_block
+block_example   ::= $normal_example | $focused_example | $skipped_example
+example         ::= $block_example | $oneline_example

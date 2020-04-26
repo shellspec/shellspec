@@ -1,0 +1,7 @@
+%text        => text_begin raw
+%text:raw    => text_begin raw
+%text:expand => text_begin expand
+%  | %const  => constant
+%= | %putsn  => out putsn
+%- | %puts   => out puts
+%logger      => out logger
