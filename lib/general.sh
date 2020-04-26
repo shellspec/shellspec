@@ -340,11 +340,14 @@ shellspec_ends_with_fallback() {
 
 shellspec_meta_escape() {
   # shellcheck disable=SC1003
-  if [ "${1#*\?}" ]; then # posh <= 0.5.4
+  if [ "${1#*\?}" ]; then
+    # posh <= 0.5.4
     set -- '\\\\:\\\\\\\\' '\\\[:[[]' '\\\?:[?]' '\\\*:[*]' '\\\$:[$]'
-  elif [ "${2%%\\*}" ]; then # bosh = all (>= 20181007), busybox <= 1.22.0
+  elif [ "${2%%\\*}" ]; then
+    # bosh = all (>= 20181007), busybox <= 1.22.0
     set -- '\\\\:\\\\\\\\' '\[:[[]' '\?:[?]' '\*:[*]' '\$:[$]'
-  else # POSIX compliant
+  else
+    # POSIX compliant
     set -- '\\:\\\\' '\[:[[]' '\?:[?]' '\*:[*]' '\$:[$]'
   fi
 
@@ -371,7 +374,8 @@ shellspec_replace_all() {
 }
 eval 'shellspec_replace_all "a*b" "a[*]" &&:' &&:
 case $? in
-  0) # Fast version (Not POSIX compliant)
+  0)
+    # Fast version (Not POSIX compliant)
     # ash(busybox)>=1.30.1, bash>=3.1.17, dash>=none, ksh>=93?, mksh>=54
     # yash>=?, zsh>=?, pdksh=none, posh=none, bosh=none
     shellspec_replace_all() { shellspec_replace_all_fast "$@"; }
@@ -379,7 +383,8 @@ case $? in
     shellspec_starts_with() { shellspec_starts_with_posix "$@"; }
     shellspec_ends_with() { shellspec_ends_with_posix "$@"; }
     ;;
-  1) # POSIX version (POSIX compliant)
+  1)
+    # POSIX version (POSIX compliant)
     # ash(busybox)>=1.1.3, bash>=2.05b, dash>=0.5.2, ksh>=93q, mksh>=40
     # yash>=2.30?, zsh>=3.1.9?, pdksh=none, posh=none, bosh=none
     shellspec_replace_all() { shellspec_replace_all_posix "$@"; }
@@ -387,7 +392,8 @@ case $? in
     shellspec_starts_with() { shellspec_starts_with_posix "$@"; }
     shellspec_ends_with() { shellspec_ends_with_posix "$@"; }
     ;;
-  2) # Fallback version
+  2)
+    # Fallback version
     shellspec_replace_all() { shellspec_replace_all_fallback "$@"; }
     shellspec_includes() { shellspec_includes_fallback "$@"; }
     shellspec_starts_with() { shellspec_starts_with_fallback "$@"; }

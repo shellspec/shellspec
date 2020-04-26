@@ -28,10 +28,10 @@ shellspec_evaluation_call() {
   "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
   set +e
   if [ ! "${SHELLSPEC_DATA:-}" ]; then
-    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV" &&:
+    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV"
   else
-    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_FILE" &&:
-  fi >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE"
+    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_FILE"
+  fi >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
   set -e -- $?
   shellspec_evaluation_cleanup "$1"
   shellspec_coverage_stop
