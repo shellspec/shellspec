@@ -244,7 +244,7 @@ data() {
         trim line "$line"
         case $line in
           \#\|*) trans data_here_line "$line" ;;
-          \# | \#\ * | \#$SHELLSPEC_TAB*) ;;
+          \# | \#\ * | \#$TAB*) ;;
           End | End\ * ) break ;;
           *)
             if [ ! "$error" ]; then
@@ -279,10 +279,6 @@ text() {
 text_end() {
   eval trans text_end ${1+'"$@"'}
   inside_of_text=''
-}
-
-out() {
-  eval trans out ${1+'"$@"'}
 }
 
 parameters() {
@@ -325,6 +321,45 @@ parameters_block() {
   done
 }
 
+parameters_value() {
+  code=''
+  if [ $# -gt 0 ]; then
+    IFS=" $IFS"
+    parameters_generate_code "for shellspec_matrix in $*; do"
+    IFS=${IFS#?}
+    trans parameters "\"\$shellspec_matrix\""
+    code="${code}count=\$((\$count + 1))${LF}"
+    parameters_generate_code "done"
+  fi
+  eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
+}
+
+parameters_matrix() {
+  code='' nest=0 arguments=''
+
+  while read_specfile line; do
+    trim line "$line"
+    case $line in (End | End\ * ) break; esac
+    case $line in (\#* | '') continue; esac
+
+    nest=$(($nest + 1))
+    parameters_generate_code "for shellspec_matrix${nest} in $line"
+    arguments="$arguments\"\$shellspec_matrix${nest}\" "
+    parameters_continuation_line "$line" parameters_generate_code
+    parameters_generate_code "do"
+  done
+
+  trans parameters "$arguments"
+  code="${code}count=\$((\$count + 1))${LF}"
+
+  while [ $nest -gt 0 ]; do
+    parameters_generate_code "done"
+    nest=$(($nest - 1))
+  done
+
+  eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
+}
+
 parameters_dynamic() {
   code=''
 
@@ -343,44 +378,7 @@ parameters_dynamic() {
     code="${code}${line}${LF}"
   done
 
-  eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
-}
-
-parameters_matrix() {
-  code='' nest=0 arguments=''
-
-  while read_specfile line; do
-    trim line "$line"
-    case $line in (End | End\ * ) break; esac
-    case $line in (\#* | '') continue; esac
-
-    nest=$(($nest + 1))
-    parameters_generate_code "for shellspex_matrix${nest} in $line"
-    arguments="$arguments\"\$shellspex_matrix${nest}\" "
-    parameters_continuation_line "$line" parameters_generate_code
-    parameters_generate_code "do"
-  done
-
-  trans parameters "$arguments"
-  code="${code}count=\$((\$count + 1))${LF}"
-
-  while [ $nest -gt 0 ]; do
-    parameters_generate_code "done"
-    nest=$(($nest - 1))
-  done
-
-  eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
-}
-
-parameters_value() {
-  code=''
-  if [ $# -gt 0 ]; then
-    parameters_generate_code "for shellspex_matrix in ${*:-}; do"
-    trans parameters "\"\$shellspex_matrix\""
-    code="${code}count=\$((\$count + 1))${LF}"
-    parameters_generate_code "done"
-  fi
-  eval "parameter_count=\$(count=0${LF}${code}echo \"\$count\")"
+  eval "parameter_count=\$(count=0${LF}{ $code }>&2;echo \"\$count\")"
 }
 
 constant() {
@@ -418,6 +416,10 @@ with_function() {
   trans with_function "$1"
   shift
   "$@"
+}
+
+out() {
+  eval trans out ${1+'"$@"'}
 }
 
 is_in_range() {

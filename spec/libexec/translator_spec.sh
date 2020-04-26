@@ -585,6 +585,168 @@ Describe "libexec/translator.sh"
     End
   End
 
+  Describe "text_begin()"
+    BeforeRun initialize
+    trans() { echo trans "$@"; }
+
+    It "generates the beginning of text lines"
+      When run text_begin "text"
+      The stdout should eq "trans text_begin text"
+    End
+  End
+
+  Describe "text()"
+    BeforeRun initialize
+    trans() { echo trans "$@"; }
+
+    It "generates text line"
+      When run text "#|text"
+      The stdout should eq "trans text #|text"
+    End
+
+    It "generates the end of text lines"
+      When run text "echo test"
+      The stdout should eq "trans text_end"
+      The status should be failure
+    End
+  End
+
+  Describe "text_end()"
+    BeforeRun initialize
+    trans() { echo trans "$@"; }
+
+    It "generates the the of text lines"
+      When run text_end "text"
+      The stdout should eq "trans text_end text"
+    End
+  End
+
+  Describe "parameters()"
+    BeforeRun initialize
+    trans() { :; }
+    mock() { trans() { echo trans "$@"; }; }
+    parameters_value() { echo parameters_value; }
+    syntax_error() { echo "$@"; }
+
+    Context "when outside of example block"
+      BeforeRun mock
+      It "generates parameters"
+        When run parameters value
+        The line 1 of stdout should eq "trans parameters_begin 1"
+        The line 2 of stdout should eq "parameters_value"
+        The line 3 of stdout should eq "trans parameters_end"
+      End
+    End
+
+    Context "when inside of example block"
+      BeforeRun "block_example desc" mock
+      It "generates parameters"
+        When run parameters value
+        The stdout should eq "Parameters cannot be defined inside of Example"
+      End
+    End
+  End
+
+  Describe "parameters_block()"
+    BeforeRun initialize setup
+    AfterRun check
+    trans() { echo trans "$@"; }
+    setup() { parameter_count=0; }
+    check() { echo "parameter_count: $parameter_count"; }
+
+    Data
+      #|  a \
+      #|    a1
+      #|  # comment
+      #|  b
+      #|
+      #|  c
+      #|End
+    End
+
+    It "generates parameters (block)"
+      When run parameters_block a b c
+      The line 1 of stdout should eq "trans parameters a \\"
+      The line 2 of stdout should eq "trans line     a1"
+      The line 3 of stdout should eq 'trans parameters b'
+      The line 4 of stdout should eq "trans parameters c"
+      The line 5 of stdout should eq "parameter_count: 3"
+    End
+  End
+
+  Describe "parameters_value()"
+    BeforeRun initialize setup
+    AfterRun check
+    trans() { echo trans "$@"; }
+    setup() { parameter_count=0; }
+    check() { echo "parameter_count: $parameter_count"; }
+
+    It "generates parameters (value)"
+      When run parameters_value a b c
+      The line 1 of stdout should eq "trans line for shellspec_matrix in a b c; do"
+      The line 2 of stdout should eq 'trans parameters "$shellspec_matrix"'
+      The line 3 of stdout should eq "trans line done"
+      The line 4 of stdout should eq "parameter_count: 3"
+    End
+  End
+
+  Describe "parameters_matrix()"
+    BeforeRun initialize setup
+    AfterRun check
+    trans() { echo trans "$@"; }
+    setup() { parameter_count=0; }
+    check() { echo "parameter_count: $parameter_count"; }
+
+    Data
+      #|  foo bar baz qux
+      #|  # comment
+      #|  1 2 3
+      #|
+      #|  A B
+      #|End
+    End
+
+    It "generates parameters (matrix)"
+      When run parameters_matrix
+      The line  1 of stdout should eq "trans line for shellspec_matrix1 in foo bar baz qux"
+      The line  2 of stdout should eq "trans line do"
+      The line  3 of stdout should eq 'trans line for shellspec_matrix2 in 1 2 3'
+      The line  4 of stdout should eq "trans line do"
+      The line  5 of stdout should eq "trans line for shellspec_matrix3 in A B"
+      The line  6 of stdout should eq "trans line do"
+      The line  7 of stdout should eq 'trans parameters "$shellspec_matrix1" "$shellspec_matrix2" "$shellspec_matrix3" '
+      The line  8 of stdout should eq "trans line done"
+      The line  9 of stdout should eq "trans line done"
+      The line 10 of stdout should eq "trans line done"
+      The line 11 of stdout should eq "parameter_count: 24" # 4 * 3 * 2
+    End
+  End
+
+  Describe "parameters_dynamic()"
+    BeforeRun initialize setup
+    AfterRun check
+    trans() { echo trans "$@"; }
+    setup() { parameter_count=0; }
+    check() { echo "parameter_count: $parameter_count"; }
+
+    Data
+      #|  for i in 1 2; do
+      #|  %data foo bar baz
+      #|  %data 1 2 3
+      #|  done
+      #|End
+    End
+
+    It "generates parameters (value)"
+      When run parameters_dynamic
+      The line 1 of stdout should eq "trans line for i in 1 2; do"
+      The line 2 of stdout should eq "trans parameters  foo bar baz"
+      The line 3 of stdout should eq "trans parameters  1 2 3"
+      The line 4 of stdout should eq "trans line done"
+      The line 5 of stdout should eq "parameter_count: 4"
+    End
+  End
+
   Describe "constant()"
     BeforeRun initialize
     trans() { :; }
@@ -658,6 +820,15 @@ Describe "libexec/translator.sh"
     End
   End
 
+  Describe "out()"
+    trans() { echo trans "$@"; }
+
+    It "generates as is"
+      When run out "code"
+      The stdout should eq "trans out code"
+    End
+  End
+
   Describe "is_in_range()"
     Context "when block id specified"
       Parameters
@@ -725,6 +896,42 @@ Describe "libexec/translator.sh"
       is_in_range() { [ "$1" = "2" ]; }
       When run remove_from_ranges
       The stdout should eq "1 3 1 3 "
+    End
+  End
+
+  Describe "translate()"
+    BeforeRun initialize
+    trans() { echo trans "$@"; }
+    mapping() {
+      case $1 in
+        DSL) echo "translated $1" ;;
+        %text) text_begin ;;
+        *) return 1 ;;
+      esac
+    }
+
+    Data
+      #|line1 \
+      #|line2
+      #|DSL
+      #|line3
+      #|%text
+      #|#|text1
+      #|#|text2
+      #|line4
+    End
+
+    It "translates specfile"
+      When run translate
+      The line 1 of stdout should eq "trans line line1 \\"
+      The line 2 of stdout should eq "line2"
+      The line 3 of stdout should eq "translated DSL"
+      The line 4 of stdout should eq "trans line line3"
+      The line 5 of stdout should eq "trans text_begin"
+      The line 6 of stdout should eq "trans text #|text1"
+      The line 7 of stdout should eq "trans text #|text2"
+      The line 8 of stdout should eq "trans text_end"
+      The line 9 of stdout should eq "trans line line4"
     End
   End
 End
