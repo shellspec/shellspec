@@ -145,8 +145,8 @@ Tested Platforms
 | Alpine 3.11, BusyBox 1.31.1, LEDE 17.01, OpenWrt 18.06, 19.07 | docker                                                        |
 | Windows 10 1909 (Ubuntu 18.04 on WSL)                         | manual                                                        |
 | macOS 10.15                                                   | manual                                                        |
+| BSD (OpenBSD 6.6, NetBSD 9.0)                                 | manual                                                        |
 | Solaris 10, 11                                                | manual                                                        |
-| OpenBSD 6.6                                                   | manual                                                        |
 
 [Tested version details](docs/shells.md)
 

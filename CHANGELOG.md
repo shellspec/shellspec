@@ -11,14 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add test for [GWSH shell](https://github.com/hvdijk/gwsh)
 - Add support for OpenBSD 6.6 (manual test)
+- Add support for NetBSD 9.0 (manual test)
 
 ### Removed
 
 - Removed `match` matcher. Use `match pattern` matcher instead.
-- Dropped ci test for pdksh which unstable on FreeBSD.
-  - (Bus Error, mkdir: Bad address, Memory fault, core dumped and etc)
-- Dropped docker test for pdksh which unstable on Debian 2.2r7.
-  - (Memory fault, etc)
+- Remove tests for unstable old shells (Bus Error, Bad address, Memory fault, etc).
+  - CI test for pdksh 5.2.14 on FreeBSD.
+  - Docker test for pdksh 5.2.14 on Debian 2.2r7.
+  - Docker test for ksh 93q on Debian 3.1r8.
 
 ## [0.23.0] - 2020-04-02
 
