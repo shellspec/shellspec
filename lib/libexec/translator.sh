@@ -64,6 +64,23 @@ is_function_name() {
   return 0
 }
 
+is_comment() {
+  case $1 in (\# | \#\ * | \#$TAB*) return 0; esac
+  return 1
+}
+
+is_embedded_text() {
+  case $1 in (\#\|*) return 0; esac
+  return 1
+}
+
+if_embedded_text() {
+  is_embedded_text "$1" || return 1
+  set -- "$@" "${1#??}"
+  shift
+  "$@"
+}
+
 increase_block_id() {
   [ "$block_id" ] || block_id_increased=1
   [ "$block_id_increased" ] && block_id=$block_id${block_id:+-}0
@@ -238,24 +255,18 @@ data() {
   eval trans data_begin ${1+'"$@"'}
   case ${2:-} in
     '' | \#* | \|*)
-      trans data_here_begin "$1" "${2:-}"
+      trans embedded_text_begin "$1" "${2:-}"
       line='' error=
       while read_specfile line; do
         trim line "$line"
-        case $line in
-          \#\|*) trans data_here_line "$line" ;;
-          \# | \#\ * | \#$TAB*) ;;
-          End | End\ * ) break ;;
-          *)
-            if [ ! "$error" ]; then
-              error=$(syntax_error "Data text should begin with '#|' or '# '")
-            fi
-        esac
+        is_comment "$line" && continue # ignore comment line
+        if_embedded_text "$line" trans embedded_text_line && continue
+        is_end_block "${line%% *}" && break
+        [ "$error" ] && continue
+        error=$(syntax_error "Data text should begin with '#|' or '# '")
       done
-      trans data_here_end
-      if [ "$error" ]; then
-        putsn "$error"
-      fi
+      trans embedded_text_end
+      [ ! "$error" ] || putsn "$error"
       ;;
     \'* | \"*) trans data_text "$2" ;;
     \<*) trans data_file "$2" ;;
@@ -265,19 +276,18 @@ data() {
 }
 
 text_begin() {
-  eval trans text_begin ${1+'"$@"'}
+  eval trans embedded_text_begin ${1+'"$@"'}
   inside_of_text=1
 }
 
-text() {
-  case $1 in
-    \#\|*) eval trans text ${1+'"$@"'}; return 0 ;;
-    *) text_end; return 1 ;;
-  esac
+text_line() {
+  if_embedded_text "$1" trans embedded_text_line && return 0
+  text_end
+  return 1
 }
 
 text_end() {
-  eval trans text_end ${1+'"$@"'}
+  eval trans embedded_text_end ${1+'"$@"'}
   inside_of_text=''
 }
 
@@ -457,7 +467,7 @@ translate() {
     done
     trim work "$line"
 
-    [ "$inside_of_text" ] && text "$work" && continue
+    [ "$inside_of_text" ] && text_line "$work" && continue
 
     dsl=${work%% *} rest=''
     trim rest "${work#"$dsl"}"

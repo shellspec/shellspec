@@ -83,21 +83,6 @@ trans_data_begin() {
   putsn "shellspec_data() {"
 }
 
-trans_data_here_begin() {
-  case $1 in
-    expand) putsn "shellspec_cat <<$delimiter $2" ;;
-    raw)    putsn "shellspec_cat <<'$delimiter' $2" ;;
-  esac
-}
-
-trans_data_here_line() {
-  putsn "${1#??}"
-}
-
-trans_data_here_end() {
-  putsn "$delimiter"
-}
-
 trans_data_text() {
   putsn "  shellspec_putsn $1"
 }
@@ -115,18 +100,18 @@ trans_data_end() {
   putsn "SHELLSPEC_DATA=1"
 }
 
-trans_text_begin() {
+trans_embedded_text_begin() {
   case $1 in
     expand) putsn "shellspec_cat <<$delimiter $2" ;;
     raw)    putsn "shellspec_cat <<'$delimiter' $2" ;;
   esac
 }
 
-trans_text() {
-  putsn "${1#??}"
+trans_embedded_text_line() {
+  putsn "$1"
 }
 
-trans_text_end() {
+trans_embedded_text_end() {
   putsn "$delimiter"
 }
 

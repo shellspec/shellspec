@@ -521,27 +521,27 @@ Describe "libexec/translator.sh"
     It "reads text data"
       When run _data "===="
       The line 1 of stdout should eq "data_begin ===="
-      The line 2 of stdout should eq "data_here_begin ==== "
-      The line 3 of stdout should eq "data_here_line #|aaa"
-      The line 4 of stdout should eq "data_here_end"
+      The line 2 of stdout should eq "embedded_text_begin ==== "
+      The line 3 of stdout should eq "embedded_text_line aaa"
+      The line 4 of stdout should eq "embedded_text_end"
       The line 5 of stdout should eq "data_end ===="
     End
 
     It "reads text data (with comment)"
       When run _data "====" "# comment"
       The line 1 of stdout should eq "data_begin ==== # comment"
-      The line 2 of stdout should eq "data_here_begin ==== # comment"
-      The line 3 of stdout should eq "data_here_line #|aaa"
-      The line 4 of stdout should eq "data_here_end"
+      The line 2 of stdout should eq "embedded_text_begin ==== # comment"
+      The line 3 of stdout should eq "embedded_text_line aaa"
+      The line 4 of stdout should eq "embedded_text_end"
       The line 5 of stdout should eq "data_end ==== # comment"
     End
 
     It "reads text data (with filter)"
       When run _data "====" "| tr"
       The line 1 of stdout should eq "data_begin ==== | tr"
-      The line 2 of stdout should eq "data_here_begin ==== | tr"
-      The line 3 of stdout should eq "data_here_line #|aaa"
-      The line 4 of stdout should eq "data_here_end"
+      The line 2 of stdout should eq "embedded_text_begin ==== | tr"
+      The line 3 of stdout should eq "embedded_text_line aaa"
+      The line 4 of stdout should eq "embedded_text_end"
       The line 5 of stdout should eq "data_end ==== | tr"
     End
 
@@ -550,8 +550,8 @@ Describe "libexec/translator.sh"
       syntax_error() { echo "$@"; }
       When run _data "===="
       The line 1 of stdout should eq "data_begin ===="
-      The line 2 of stdout should eq "data_here_begin ==== "
-      The line 3 of stdout should eq "data_here_end"
+      The line 2 of stdout should eq "embedded_text_begin ==== "
+      The line 3 of stdout should eq "embedded_text_end"
       The line 4 of stdout should eq "Data text should begin with '#|' or '# '"
       The line 5 of stdout should eq "data_end ===="
     End
@@ -591,22 +591,22 @@ Describe "libexec/translator.sh"
 
     It "generates the beginning of text lines"
       When run text_begin "text"
-      The stdout should eq "trans text_begin text"
+      The stdout should eq "trans embedded_text_begin text"
     End
   End
 
-  Describe "text()"
+  Describe "text_line()"
     BeforeRun initialize
     trans() { echo trans "$@"; }
 
     It "generates text line"
-      When run text "#|text"
-      The stdout should eq "trans text #|text"
+      When run text_line "#|text"
+      The stdout should eq "trans embedded_text_line text"
     End
 
     It "generates the end of text lines"
-      When run text "echo test"
-      The stdout should eq "trans text_end"
+      When run text_line "echo test"
+      The stdout should eq "trans embedded_text_end"
       The status should be failure
     End
   End
@@ -617,7 +617,7 @@ Describe "libexec/translator.sh"
 
     It "generates the the of text lines"
       When run text_end "text"
-      The stdout should eq "trans text_end text"
+      The stdout should eq "trans embedded_text_end text"
     End
   End
 
@@ -927,10 +927,10 @@ Describe "libexec/translator.sh"
       The line 2 of stdout should eq "line2"
       The line 3 of stdout should eq "translated DSL"
       The line 4 of stdout should eq "trans line line3"
-      The line 5 of stdout should eq "trans text_begin"
-      The line 6 of stdout should eq "trans text #|text1"
-      The line 7 of stdout should eq "trans text #|text2"
-      The line 8 of stdout should eq "trans text_end"
+      The line 5 of stdout should eq "trans embedded_text_begin"
+      The line 6 of stdout should eq "trans embedded_text_line text1"
+      The line 7 of stdout should eq "trans embedded_text_line text2"
+      The line 8 of stdout should eq "trans embedded_text_end"
       The line 9 of stdout should eq "trans line line4"
     End
   End
