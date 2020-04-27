@@ -17,7 +17,7 @@ finalize() {
   [ "$_block_no_stack" ] || return 0
   syntax_error "Unexpected end of file (expecting 'End')"
   lineno=
-  while [ "$_block_no_stack" ]; do block_end ""; done
+  while [ "$_block_no_stack" ]; do block_end; done
 }
 
 read_specfile() {
@@ -199,7 +199,7 @@ f() {
 todo() {
   block_example "$1"
   pending "$1"
-  block_end ""
+  block_end
 }
 
 evaluation() {
@@ -322,7 +322,7 @@ parameters_continuation_line() {
 parameters_block() {
   while read_specfile line; do
     trim line "$line"
-    case $line in (End | End\ * ) break; esac
+    is_end_block "${line%% *}" && break
     case $line in (\#* | '') continue; esac
 
     trans parameters "$line"
@@ -349,7 +349,7 @@ parameters_matrix() {
 
   while read_specfile line; do
     trim line "$line"
-    case $line in (End | End\ * ) break; esac
+    is_end_block "${line%% *}" && break
     case $line in (\#* | '') continue; esac
 
     nest=$(($nest + 1))
@@ -375,7 +375,7 @@ parameters_dynamic() {
 
   while read_specfile line; do
     trim line "$line"
-    case $line in (End | End\ * ) break; esac
+    is_end_block "${line%% *}" && break
 
     case $line in
       %data | %data\ *)

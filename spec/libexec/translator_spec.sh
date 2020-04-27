@@ -27,8 +27,8 @@ Describe "libexec/translator.sh"
       It 'output syntax error'
         When run finalize
         The line 1 of stdout should eq "Unexpected end of file (expecting 'End')"
-        The line 2 of stdout should eq "trans block_end "
-        The line 3 of stdout should eq "trans block_end "
+        The line 2 of stdout should eq "trans block_end"
+        The line 3 of stdout should eq "trans block_end"
       End
     End
   End
@@ -383,13 +383,13 @@ Describe "libexec/translator.sh"
   Describe "todo()"
     block_example() { echo block_example "$@"; }
     pending() { echo pending "$@"; }
-    block_end() { echo block_end "$@"; }
+    block_end() { eval echo block_end ${1+'"$@"'}; }
 
     It "generates empty example block"
       When run todo desc
       The line 1 of stdout should eq "block_example desc"
       The line 2 of stdout should eq "pending desc"
-      The line 3 of stdout should eq "block_end "
+      The line 3 of stdout should eq "block_end"
     End
   End
 
