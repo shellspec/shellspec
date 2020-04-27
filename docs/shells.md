@@ -1,21 +1,35 @@
 # Shells
 
+- [Tested shells and versions](#tested-shells-and-versions)
+  - [Packages](#packages)
+    - [Alpine / BusyBox / OpenWrt (LEDE)](#alpine--busybox--openwrt-lede)
+    - [CentOS / Fedora](#centos--fedora)
+    - [Debian / Ubuntu](#debian--ubuntu)
+    - [FreeBSD](#freebsd)
+    - [macOS](#macos)
+    - [Windows](#windows)
+  - [Self build](#self-build)
+    - [Schily Bourne Shell](#schily-bourne-shell)
+    - [GWSH shell](#gwsh-shell)
+  - [Manual test](#manual-test)
+    - [Solaris](#solaris)
+    - [OpenBSD / NetBSD](#openbsd--netbsd)
+- [Confirmation for bug](#confirmation-for-bug)
+- [Built-in commands](#built-in-commands)
+
 ## Tested shells and versions
 
-* **The version with a dash does not work.**
-* **The version in italic may work but it is not supported due to a bug.**
-* The shell included with the supported OS (the platform in bold) is the main
-  supported shell.
-* The old shell has been tested, but support may be discontinued.
-* Supported busybox shell is `ash` only. `hush` has many missing features and
-  bugs.
-* pdksh 5.2.14 is still supported, but it has many bugs, too old and
-  no more maintained. Not recommended for use.
-* Bourne shell is not supported.
+- **The version with a dash does not work.**
+- **The version in italic may work but it is not supported due to a bug.**
+- The shell included with the supported OS (the platform in bold) is the main supported shell.
+- The old shell has been tested, but support may be discontinued.
+- Supported busybox shell is `ash` only. `hush` has many missing features and bugs.
+- pdksh 5.2.14 is still supported, but it has many bugs, too old and no more maintained. Not recommended for use.
+- Bourne shell is not supported.
 
 ### Packages
 
-* These are tested by [Travis CI][travis], [Cirrus CI][cirrus] and Docker (`contrib/test_in_docker.sh`).
+- These are tested by [Travis CI][travis], [Cirrus CI][cirrus] and Docker (`contrib/test_in_docker.sh`).
 
 [travis]: https://travis-ci.org/shellspec/shellspec
 [cirrus]: https://cirrus-ci.com/github/shellspec/shellspec
@@ -54,7 +68,7 @@ Default shell: `bash`
 | **fedora 29**       | 4.4.23 |         |      |     |      |      |     |
 | **fedora 31**       | 5.0.7  |         |      |     |      |      |     |
 
-* Testing bash 4.1.2- in POSIX mode only.
+- Testing bash 4.1.2- in POSIX mode only.
 
 #### Debian / Ubuntu
 
@@ -79,8 +93,8 @@ Default shell: `dash` or `bash` (until debian 5.0)
 | **Ubuntu 18.04** | 4.4.20 | 1.27.2     | 0.5.8         | 93u+ 2012-08-01 | 56c  | -          | 0.13.1   | 2.46 | 5.4.2  |
 | **Ubuntu 19.04** |        |            |               |                 |      | -          |          |      | 5.5.1  |
 
-* Using [lpenz/docker-debian-releases](https://github.com/lpenz/docker-debian-releases/) for older (7.11 and before) Debian docker images.
-* Testing bash 2.03-3.2.39 in both POSIX and non-POSIX mode. bash 4.1.5- is non-POSIX mode only.
+- Using [lpenz/docker-debian-releases](https://github.com/lpenz/docker-debian-releases/) for older (7.11 and before) Debian docker images.
+- Testing bash 2.03-3.2.39 in both POSIX and non-POSIX mode. bash 4.1.5- is non-POSIX mode only.
 
 #### FreeBSD
 
@@ -93,7 +107,7 @@ Default shell: `ash`
 | **FreeBSD 12.1**       | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | 57   | 6.6      | _5.2.14_ | 5.8   |
 | FreeBSD 13.0 (current) | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | 57   | 6.6      | _5.2.14_ | 5.8   |
 
-* Dropped ci test for pdksh which unstable on FreeBSD. (Bus Error, mkdir: Bad address, Memory fault, core dumped and etc)
+- pdksh is unstable on CI environment (Bus Error, Bad address, Memory fault, core dumped and etc).
 
 #### macOS
 
@@ -108,8 +122,8 @@ Default shell: `bash`
 | **macOS 10.14**        | bash 3.2.57 | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.3   |
 | **macOS 10.14 (brew)** | -           | 5.0.11 | 0.5.10.2 | 93u+ 2012-08-01 | 57   | ~~0.13.2~~ | 2.49 | 5.7.1 |
 
-* Supports the latest three versions.
-* `posh` on macOS 10.14 (brew) is broken?
+- Supports the latest three versions.
+- posh on macOS 10.14 (brew) is broken?
 
 #### Windows
 
@@ -125,37 +139,53 @@ Default shell: `bash`
 
 These are tested by Docker (`contrib/test_in_docker.sh`).
 
-| Platform                             | bosh / pbosh | gwsh              |
-| ------------------------------------ | ------------ | ----------------- |
-| Debian buster + Schily AN-2018-10-30 | 2018/10/07   | -                 |
-| Debian buster + Schily AN-2019-03-11 | 2019/02/05   | -                 |
-| Debian buster + Schily AN-2019-09-22 | 2019/08/25   | -                 |
-| Debian buster + Schily AN-2019-10-07 | 2019/09/27   | -                 |
-| Debian buster + Schily AN-2019-12-05 | 2019/10/25   | -                 |
-| Debian buster + Schily AN-2020-02-11 | 2020/01/24   | -                 |
-| Debian buster + Schily AN-2020-03-27 | 2020/03/25   | -                 |
-| Debian buster + Schily AN-2020-04-18 | _2020/04/10_ | -                 |
+#### Schily Bourne Shell
+
+| Platform                             | bosh / pbosh |
+| ------------------------------------ | ------------ |
+| Debian buster + Schily AN-2018-10-30 | 2018/10/07   |
+| Debian buster + Schily AN-2019-03-11 | 2019/02/05   |
+| Debian buster + Schily AN-2019-09-22 | 2019/08/25   |
+| Debian buster + Schily AN-2019-10-07 | 2019/09/27   |
+| Debian buster + Schily AN-2019-12-05 | 2019/10/25   |
+| Debian buster + Schily AN-2020-02-11 | 2020/01/24   |
+| Debian buster + Schily AN-2020-03-27 | 2020/03/25   |
+| Debian buster + Schily AN-2020-04-18 | _2020/04/10_ |
 | Debian buster                        | -            | snapshot-20190627 |
 
-* [Schily Bourne Shell][bosh] (`bosh`, `pbosh`)
-  * Packages are available on [The NetBSD package collection][pkgsrc].
-  * Versions before 2018/10/07 does not work.
-* [GWSH shell][bosh]
+- [Schily Bourne Shell][bosh] (`bosh`, `pbosh`)
+- Packages are available on [The NetBSD package collection][pkgsrc].
+- Versions before 2018/10/07 does not work.
 
 [bosh]: http://schilytools.sourceforge.net/bosh.html
 [pkgsrc]: http://pkgsrc.se/shells/bosh
-[gwsh]: https://github.com/hvdijk/gwsh/releases
+
+#### GWSH shell
+
+| Platform      | gwsh              |
+| ------------- | ----------------- |
+| Debian buster | snapshot-20190627 |
+
+- [GWSH shell](https://github.com/hvdijk/gwsh/releases)
 
 ### Manual test
 
 This is not continuous test, it may break sometimes...
 
-| Platform        | /bin/sh               | /usr/bin/ksh      | /usr/sunos/bin/ksh | /usr/sunos/bin/sh |
-| --------------- | --------------------- | ----------------- | ------------------ | ----------------- |
-| **Solaris 10**  | ~~Bourne Shell~~      | ksh88 M-11/16/88i | -                  | -                 |
-| **Solaris 11**  | ksh93 93u+ 2012-08-01 | -                 | ksh88 M-11/16/88i  | ~~Bourne Shell~~  |
-| **OpenBSD 6.6** | OpenBSD ksh (pdksh)   |                   | -                  | -                 |
-| **NetBSD 9.0**  | NetBSD sh (ash)       | pdksh 5.2.14      | -                  | -                 |
+#### Solaris
+
+| Platform       | /bin/sh               | /usr/bin/ksh      | /usr/sunos/bin/ksh | /usr/sunos/bin/sh |
+| -------------- | --------------------- | ----------------- | ------------------ | ----------------- |
+| **Solaris 10** | ~~Bourne Shell~~      | ksh88 M-11/16/88i | -                  | -                 |
+| **Solaris 11** | ksh93 93u+ 2012-08-01 | -                 | ksh88 M-11/16/88i  | ~~Bourne Shell~~  |
+
+#### OpenBSD / NetBSD
+
+| Platform           | /bin/sh                                        | /usr/bin/ksh |
+| ------------------ | ---------------------------------------------- | ------------ |
+| FreeBSD 13 current | FreeBSD sh (ash)                               | -            |
+| **OpenBSD 6.6**    | OpenBSD ksh (POSIX mode pdksh) 5.2.14          | pdksh 5.2.14 |
+| **NetBSD 9.0**     | NetBSD sh (ash) 20181212 BUILD:20200214000628Z | pdksh 5.2.14 |
 
 ## Confirmation for bug
 
