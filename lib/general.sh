@@ -2,7 +2,8 @@
 
 : "${SHELLSPEC_SHELL_TYPE:=}" "${SHELLSPEC_SHELL_VERSION:=}"
 SHELLSPEC_SH_VERSION=$(eval 'echo "${.sh.version}"' 2>/dev/null) ||:
-[ "$SHELLSPEC_SH_VERSION" ] || SHELLSPEC_SH_VERSION=${SH_VERSION:-}
+: "${SHELLSPEC_SH_VERSION:=${SH_VERSION:-}}"
+: "${SHELLSPEC_SH_VERSION:=${NETBSD_SHELL:-}}"
 
 shellspec_shell_info() {
   SHELLSPEC_SHELL_TYPE='sh'
@@ -18,10 +19,11 @@ shellspec_shell_info() {
   else
     SHELLSPEC_SHELL_VERSION=$SHELLSPEC_SH_VERSION
     case $SHELLSPEC_SHELL_VERSION in
-      *PD\ KSH*) SHELLSPEC_SHELL_TYPE=pdksh ;;
-      *pbosh*  ) SHELLSPEC_SHELL_TYPE=pbosh ;;
-      *bosh*   ) SHELLSPEC_SHELL_TYPE=bosh ;;
-      ?*       ) SHELLSPEC_SHELL_TYPE=ksh ;;
+      *BUILD*  ) SHELLSPEC_SHELL_TYPE="sh" ;;
+      *PD\ KSH*) SHELLSPEC_SHELL_TYPE="pdksh" ;;
+      *pbosh*  ) SHELLSPEC_SHELL_TYPE="pbosh" ;;
+      *bosh*   ) SHELLSPEC_SHELL_TYPE="bosh" ;;
+      ?*       ) SHELLSPEC_SHELL_TYPE="ksh" ;;
     esac
   fi
 }

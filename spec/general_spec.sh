@@ -26,8 +26,8 @@ Describe "general.sh"
         posh  posh "0.13.1"
         mksh  ksh  "@(#)MIRBSD KSH R56 2018/01/14"
         pdksh ksh  "@(#)PD KSH v5.2.14 99/07/13.2"
-        ksh   ksh "ksh Version AJM 93u+ 2012-08-01"
-        sh    ""    ""
+        ksh   ksh  "ksh Version AJM 93u+ 2012-08-01"
+        sh    ""   ""
       End
 
       It "detects as $1"
@@ -62,6 +62,15 @@ Describe "general.sh"
         BeforeCall 'pretend sh ""'
         When call shellspec_shell_info
         The variable SHELLSPEC_SHELL_TYPE should eq "$1"
+      End
+    End
+
+    Context 'NetBSD shell'
+      It "detects as sh"
+        BeforeCall "SHELLSPEC_SH_VERSION='20181212 BUILD:20200214000628Z'"
+        BeforeCall 'pretend sh ""'
+        When call shellspec_shell_info
+        The variable SHELLSPEC_SHELL_TYPE should eq "sh"
       End
     End
   End
