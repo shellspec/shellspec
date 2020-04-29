@@ -523,6 +523,30 @@ shellspec_is_empty_file() {
   [ "${1:-}" ] && [ -f "${1:-}" ] && [ ! -s "${1:-}" ]
 }
 
+shellspec_is_empty_directory() {
+  [ -d "$1" ] || return 1
+
+  # This subshell is used to revert changes directory, variables and shell flags
+  ( CDPATH=
+    # set -- "$DIR"/* not working properly in posh 0.10.2
+    cd "$1" || return 1
+
+    set +o noglob
+    case $SHELLSPEC_SHELL_TYPE in
+      zsh) setopt NO_NOMATCH ;;
+      bash) { eval shopt -u failglob ||:; } 2>/dev/null ;;
+      posh) set +u ;; # glob does not expand when set -u in posh 0.10.2
+    esac
+    set -- * .*
+
+    while [ $# -gt 0 ]; do
+      case $1 in (.|..) false; esac && [ -e "$1" ] && break
+      shift
+    done
+    [ $# -eq 0 ] &&:
+  )
+}
+
 shellspec_pluralize() {
   [ $# -eq 2 ] && set -- "$1" "" "$2"
   [ "${3%% *}" ] || return 0

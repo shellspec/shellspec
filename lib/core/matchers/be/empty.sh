@@ -23,27 +23,7 @@ shellspec_matcher_be_empty_file() {
 
 shellspec_matcher_be_empty_directory() {
   shellspec_matcher__match() {
-    [ -d "${SHELLSPEC_SUBJECT:-}" ] || return 1
-
-    # This subshell is used to revert changes directory, variables and shell flags
-    ( CDPATH=
-      # set -- "$DIR"/* not working properly in posh 0.10.2
-      cd "$SHELLSPEC_SUBJECT" || return 1
-
-      set +o noglob
-      case $SHELLSPEC_SHELL_TYPE in
-        zsh) setopt NO_NOMATCH ;;
-        bash) { eval shopt -u failglob ||:; } 2>/dev/null ;;
-        posh) set +u ;; # glob does not expand when set -u in posh 0.10.2
-      esac
-      set -- * .*
-
-      while [ $# -gt 0 ]; do
-        case $1 in (.|..) false; esac && [ -e "$1" ] && break
-        shift
-      done
-      [ $# -eq 0 ] &&:
-    )
+    shellspec_is_empty_directory "${SHELLSPEC_SUBJECT:-}"
   }
 
   shellspec_syntax_failure_message + \
