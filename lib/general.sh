@@ -531,19 +531,15 @@ shellspec_is_empty_directory() {
     # set -- "$DIR"/* not working properly in posh 0.10.2
     cd "$1" || return 1
 
-    set +o noglob
-    case $SHELLSPEC_SHELL_TYPE in
-      zsh) setopt NO_NOMATCH ;;
-      bash) { eval shopt -u failglob ||:; } 2>/dev/null ;;
-      posh) set +u ;; # glob does not expand when set -u in posh 0.10.2
-    esac
-    set -- * .*
+    # workaround for posh 0.10.2: glob does not expand when set -u
+    set +o noglob +u
+    [ "${BASH_VERSION:-}" ] && { eval shopt -u failglob ||:; } 2>/dev/null
+    [ "${ZSH_VERSION:-}" ] && setopt NO_NOMATCH
 
-    while [ $# -gt 0 ]; do
-      case $1 in (.|..) false; esac && [ -e "$1" ] && break
-      shift
-    done
-    [ $# -eq 0 ] &&:
+    for found in * .*; do
+      case $found in (.|..) continue; esac
+      [ -e "$found" ] && return 1
+    done ||:
   )
 }
 
