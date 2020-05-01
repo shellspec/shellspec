@@ -33,6 +33,9 @@ coverage:
 check:
 	contrib/check.sh --pull
 
+metrics:
+	contrib/metrics.sh
+
 build:
 	contrib/build.sh .dockerhub/Dockerfile         shellspec
 	contrib/build.sh .dockerhub/Dockerfile         shellspec kcov
