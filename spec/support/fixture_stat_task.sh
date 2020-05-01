@@ -16,12 +16,15 @@ task "fixture:stat:prepare" "Prepare file stat tests"
 task "fixture:stat:cleanup" "Cleanup file stat tests"
 
 fixture="$SHELLSPEC_SPECDIR/fixture"
-owner=${SUDO_UID:-$(id -u)}:${SUDO_GID:-$(id -g)}
+
+owner() {
+  echo "${SUDO_UID:-$(id -u)}:${SUDO_GID:-$(id -g)}"
+}
 
 symlink() {
   ln -s ../file "$1" 2>/dev/null
   if [ -L "$1" ]; then
-    chown -h "$owner" "$1"
+    chown -h "$(owner)" "$1"
     return 0
   fi
   rm "$1"
@@ -31,7 +34,7 @@ symlink() {
 pipe() {
   mkfifo "$1" 2>/dev/null
   if [ -p "$1" ]; then
-    chown "$owner" "$1"
+    chown "$(owner)" "$1"
     return 0
   fi
   rm "$1"
@@ -62,7 +65,7 @@ create_socket_file() {
 
 socket() {
   if create_socket_file "$1" 2>/dev/null; then
-    chown "$owner" "$1"
+    chown "$(owner)" "$1"
     return 0
   fi
   return 1
@@ -70,7 +73,7 @@ socket() {
 
 file() {
   echo "${4:-}" > "$1"
-  chown "$owner" "$1"
+  chown "$(owner)" "$1"
   chmod "$2" "$1"
   #shellcheck disable=SC2034
   perm=$(ls -dl "$1")
@@ -80,7 +83,7 @@ file() {
 device() {
   mknod "$@" 2>/dev/null
   if [ -e "$1" ]; then
-    chown "$owner" "$1" 2>/dev/null && return 0
+    chown "$(owner)" "$1" 2>/dev/null && return 0
     rm -f "$1"
   fi
   return 1

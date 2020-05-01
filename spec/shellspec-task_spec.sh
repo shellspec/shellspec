@@ -11,7 +11,7 @@ Describe "shellspec-task.sh"
     The line 3 of stdout should include "Sample task"
   End
 
-  It "listss task"
+  It "lists task"
     When run script ./libexec/shellspec-task.sh "hello:shellspec"
     The stdout should eq "Hello ShellSpec"
   End
