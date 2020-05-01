@@ -147,50 +147,62 @@ fi
 # `echo` not has portability, and external 'printf' command is slow.
 # Use shellspec_puts or shellspec_putsn replacement of 'echo'.
 # Those commands output arguments as it. (not interpret -n and escape sequence)
-case $SHELLSPEC_SHELL_TYPE in
-  zsh)
-    # zsh 3.1.9, 4.0.4 not implemented 'printf'
-    shellspec_puts() {
-      IFS=" $IFS"; builtin print -nr -- "${*:-}"; IFS=${IFS#?}
-    }
-    shellspec_putsn() {
-      [ $# -gt 0 ] && shellspec_puts "$@"; builtin print -r
-    }
+shellspec_puts() {
+  printf '' && return 0
+  if print -nr -- ''; then
+    [ "${ZSH_VERSION:-}" ] && return 1 || return 2
+  fi
+  if [ "${POSH_VERSION:-}" ]; then
+    [ "${1#*\\}" ] && return 3 || return 4
+  fi
+  return 9
+}
+# shellcheck disable=SC2030,SC2123
+( PATH=""; shellspec_puts "\\" ) 2>/dev/null &&:
+case $? in
+  0)
+    # Use built-in 'printf'.
+    shellspec_puts() { IFS=" $IFS"; printf '%s' "${*:-}"; IFS=${IFS#?}; }
+    shellspec_putsn() { IFS=" $IFS"; printf '%s\n' "${*:-}"; IFS=${IFS#?}; }
     ;;
-  ksh | mksh | pdksh)
-    # 'print' is all built-in.
-    # ksh: 'printf' is all built-in.
-    # mksh: 'printf' is not built-in some versions.
-    # loksh, pdksh: 'printf' is not built-in.
-    shellspec_puts() {
-      IFS=" $IFS"; command print -nr -- "${*:-}"; IFS=${IFS#?}
-    }
-    shellspec_putsn() {
-      [ $# -gt 0 ] && shellspec_puts "$@"; command print -r
-    }
+  1)
+    # zsh 3.1.9, 4.0.4
+    shellspec_puts() { builtin print -nr -- "${@:-}"; }
+    shellspec_putsn() { builtin print -r -- "${@:-}"; }
     ;;
-  posh)
-    # posh does not implement 'printf' or 'print' as built-in.
+  2)
+    # ksh88, mksh (depends on compile option), OpenBSD ksh (loksh, oksh), pdksh
+    shellspec_puts() { command print -nr -- "${@:-}"; }
+    shellspec_putsn() { command print -r -- "${@:-}"; }
+    ;;
+  3)
+    # posh 0.3.14, 0.5.4 + workaround for parameter expansion bug
     shellspec_puts() {
       if [ $# -eq 1 ] && [ "$1" = "-n" ]; then
-        builtin echo -n -; builtin echo -n n
-      else
-        IFS=" $IFS"; set -- "${*:-}\\" "" "\\"; IFS=${IFS#?}
-        if [ "${3#*\\}" ]; then
-          while [ "$1" ]; do set -- "${1#*\\\\}" "$2${2:+\\\\}${1%%\\\\*}"; done
-        else
-          while [ "$1" ]; do set -- "${1#*\\}" "$2${2:+\\\\}${1%%\\*}"; done
-        fi
-        builtin echo -n "$2"
+        builtin echo -n -; builtin echo -n n; return 0
       fi
+      IFS=" $IFS"; set -- "${*:-}\\" ""; IFS=${IFS#?}
+      while [ "$1" ]; do set -- "${1#*\\\\}" "$2${2:+\\\\}${1%%\\\\*}"; done
+      builtin echo -n "$2"
     }
-    shellspec_putsn() {
-      [ $# -gt 0 ] && shellspec_puts "$@"; builtin echo
-    }
+    shellspec_putsn() { [ $# -gt 0 ] && shellspec_puts "$@"; builtin echo; }
     ;;
-  *)
-    # Assume built-in 'printf', but even works otherwise.
+  4)
+    # posh
     shellspec_puts() {
+      if [ $# -eq 1 ] && [ "$1" = "-n" ]; then
+        builtin echo -n -; builtin echo -n n; return 0
+      fi
+      IFS=" $IFS"; set -- "${*:-}\\" ""; IFS=${IFS#?}
+      while [ "$1" ]; do set -- "${1#*\\}" "$2${2:+\\\\}${1%%\\*}"; done
+      builtin echo -n "$2"
+    }
+    shellspec_putsn() { [ $# -gt 0 ] && shellspec_puts "$@"; builtin echo; }
+    ;;
+  9)
+    # Fallback using external 'printf'. It works even PAHT is empty.
+    shellspec_puts() {
+      # shellcheck disable=SC2031
       PATH="${PATH:-}:/usr/bin:/bin"
       IFS=" $IFS"; printf '%s' "$*"; IFS=${IFS#?}
       PATH=${PATH%:/usr/bin:/bin}
@@ -200,6 +212,7 @@ case $SHELLSPEC_SHELL_TYPE in
       IFS=" $IFS"; printf '%s\n' "$*"; IFS=${IFS#?}
       PATH=${PATH%:/usr/bin:/bin}
     }
+    ;;
 esac
 
 shellspec_error() { shellspec_putsn "$*" >&2; exit 1; }
