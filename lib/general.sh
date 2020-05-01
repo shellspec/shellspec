@@ -96,7 +96,7 @@ shellspec_import_deep() {
   esac
 }
 
-if [ "$SHELLSPEC_SHELL_TYPE" = "zsh" ]; then
+if [ "${ZSH_VERSION:-}" ]; then
   shellspec_find_files() {
     if eval '[[ -o nonomatch ]]'; then
       shellspec_find_files_ "$@"
@@ -132,19 +132,17 @@ shellspec_find_files__() {
   eval "$SHELLSPEC_EVAL"
 }
 # Workaround for posh 0.10.2. do not glob with set -u.
-case $SHELLSPEC_SHELL_TYPE in (posh)
-  if [ "$(set -u; echo /*)" = '/*' ]; then
-    shellspec_find_files__() {
-      SHELLSPEC_EVAL="
-        SHELLSPEC_IFSORIG=\$IFS; IFS=''; \
-        case \$- in (*u*) set +u ;; esac; \
-        set -- \$2/*; set -u; IFS=\$SHELLSPEC_IFSORIG; \
-        if [ \$# -gt 0 ]; then shellspec_find_files_ \"$1\" \"\$@\"; fi \
-      "
-      eval "$SHELLSPEC_EVAL"
-    }
-  fi
-esac
+if [ "${POSH_VERSION:-}" ] && [ "$(set -u; echo /*)" = '/*' ]; then
+  shellspec_find_files__() {
+    SHELLSPEC_EVAL="
+      SHELLSPEC_IFSORIG=\$IFS; IFS=''; \
+      case \$- in (*u*) set +u ;; esac; \
+      set -- \$2/*; set -u; IFS=\$SHELLSPEC_IFSORIG; \
+      if [ \$# -gt 0 ]; then shellspec_find_files_ \"$1\" \"\$@\"; fi \
+    "
+    eval "$SHELLSPEC_EVAL"
+  }
+fi
 
 # `echo` not has portability, and external 'printf' command is slow.
 # Use shellspec_puts or shellspec_putsn replacement of 'echo'.
