@@ -15,6 +15,7 @@ set -eu
 
 sources() {
   echo shellspec
+  echo install.sh
   find lib libexec -name '*.sh'
 }
 

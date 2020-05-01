@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2034
 
 test || __() { :; }
 
@@ -62,7 +63,7 @@ which() {
 prompt() {
   printf "%s " "$1"
   if ! eval "[ \"\$$2\" ] && :"; then
-    IFS= read -r "$2" < ${3:-/dev/tty} || return 1
+    IFS= read -r "$2" < "${3:-/dev/tty}" || return 1
   fi
   eval "printf \"%s\n\" \"\$$2\""
 }
@@ -97,7 +98,7 @@ unarchive() {
   mkdir -p "${3%/*}"
   gunzip -c "$1" | (cd "${3%/*}"; "$(which tar)" xf -)
   set -- "$1" "${2##*/}" "$3"
-  mv "$(components_path ${3%/*}/$project-${2%.tar.gz}*)" "$3"
+  mv "$(components_path "${3%/*}/$project-${2%.tar.gz}"*)" "$3"
 }
 
 components_path() {
