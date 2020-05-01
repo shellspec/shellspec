@@ -14,6 +14,7 @@ shellspec_shell_info() {
   if shellspec_shell_version ksh KSH_VERSION; then
     case $SHELLSPEC_SHELL_VERSION in
       *MIRBSD* ) SHELLSPEC_SHELL_TYPE=mksh ;;
+      *LEGACY* ) SHELLSPEC_SHELL_TYPE=lksh ;;
       *PD\ KSH*) SHELLSPEC_SHELL_TYPE=pdksh ;;
     esac
   else

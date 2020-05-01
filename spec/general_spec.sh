@@ -16,7 +16,7 @@ Describe "general.sh"
       "
     }
 
-    Context '${.sh.version} not available shell'
+    Context '*_VERSION available shell'
       Before SHELLSPEC_SH_VERSION=''
 
       Parameters
@@ -24,6 +24,7 @@ Describe "general.sh"
         zsh   zsh  "5.4.2"
         yash  yash "2.46"
         posh  posh "0.13.1"
+        lksh  ksh  "@(#)LEGACY KSH R40 2012/07/20 Debian-7"
         mksh  ksh  "@(#)MIRBSD KSH R56 2018/01/14"
         pdksh ksh  "@(#)PD KSH v5.2.14 99/07/13.2"
         ksh   ksh  "ksh Version AJM 93u+ 2012-08-01"
