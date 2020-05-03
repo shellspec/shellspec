@@ -460,6 +460,38 @@ Describe "libexec/translator.sh"
     End
   End
 
+  Describe "example_all_hook()"
+    BeforeRun initialize
+    trans() { :; }
+    mock() { trans() { echo trans "$@"; }; }
+    syntax_error() { echo "$@"; }
+
+    Context "when outside of example block"
+      BeforeRun mock
+      It "generates before/after all hook"
+        When run example_all_hook "before/after all"
+        The stdout should eq "trans control before/after all"
+      End
+    End
+
+    Context "when inside of example block"
+      BeforeRun "block_example desc" mock
+      It "outputs syntax error"
+        When run example_all_hook syntax
+        The stdout should eq "BeforeAll/AfterAll cannot be defined inside of Example"
+      End
+    End
+
+    Context "when after example block"
+      BeforeRun "block_example desc"
+      BeforeRun "block_end"
+      It "outputs syntax error"
+        When run example_all_hook before_all
+        The stdout should eq "BeforeAll cannot be defined after of Example Group/Example"
+      End
+    End
+  End
+
   Describe "control()"
     BeforeRun initialize
     trans() { echo trans "$@"; }

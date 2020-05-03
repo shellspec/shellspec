@@ -27,6 +27,17 @@ shellspec_call_hook() {
   eval "set -- \"\$1\" \"\${SHELLSPEC_$1_$2#*:}\" \"\${SHELLSPEC_$1_$2%%:*}\""
   # shellcheck disable=SC2034
   SHELLSPEC_HOOK_GROUP_ID=${3%#*} SHELLSPEC_HOOK_LINENO=${3#*#}
+
+  case $1 in
+    BEFORE_ALL)
+      shellspec_is_marked_group "$SHELLSPEC_HOOK_GROUP_ID" && return 0
+      ;;
+    AFTER_ALL)
+      [ "$SHELLSPEC_HOOK_GROUP_ID" = "$SHELLSPEC_GROUP_ID" ] || return 0
+      shellspec_is_marked_group "$SHELLSPEC_HOOK_GROUP_ID" || return 0
+      ;;
+  esac
+
   eval "SHELLSPEC_HOOK=\$2 && $2 &&:" &&:
   SHELLSPEC_HOOK_STATUS=$?
   return $SHELLSPEC_HOOK_STATUS
@@ -53,6 +64,21 @@ shellspec_call_after_hooks() {
   fi
 }
 
+shellspec_mark_group() {
+  until shellspec_is_marked_group "$1"; do
+    : > "$SHELLSPEC_WORKDIR/@$1"
+    case $1 in
+      *-*) set -- "${1%-*}" ;;
+      *) set -- "" ;;
+    esac
+  done
+}
+
+shellspec_is_marked_group() {
+  [ -e "$SHELLSPEC_WORKDIR/@$1" ]
+}
+
 shellspec_create_hook EACH
 shellspec_create_hook CALL
 shellspec_create_hook RUN
+shellspec_create_hook ALL
