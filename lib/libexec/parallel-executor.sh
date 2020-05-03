@@ -40,6 +40,7 @@ executor() {
     putsn "$1" > "$SHELLSPEC_JOBDIR/$jobs.job"
   }
   eval find_specfiles specfile ${1+'"$@"'}
+  create_workdirs "$jobs"
 
   translator --no-finished | $SHELLSPEC_SHELL # output only metadata
   callback() { worker "$1" "$jobs" & }

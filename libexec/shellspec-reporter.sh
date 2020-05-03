@@ -10,7 +10,7 @@ interrupt=''
 if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
 if (trap - TERM) 2>/dev/null; then trap '' TERM; fi
 
-[ "${SHELLSPEC_TMPBASE:-}" ] && echo $$ > "$SHELLSPEC_TMPBASE/reporter.pid"
+echo $$ > "$SHELLSPEC_TMPBASE/$SHELLSPEC_REPORTER_PID"
 
 # shellcheck source=lib/libexec/reporter.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/reporter.sh"

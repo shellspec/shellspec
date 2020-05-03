@@ -54,6 +54,7 @@
     "lib/general.sh",
     "lib/libexec.sh",
     "lib/libexec/binary.sh",
+    "lib/libexec/executor.sh",
     "lib/libexec/grammar.sh",
     "lib/libexec/grammar/blocks",
     "lib/libexec/grammar/directives",

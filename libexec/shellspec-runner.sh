@@ -22,16 +22,17 @@ stop_profiler() {
 
 cleanup() {
   if (trap - INT) 2>/dev/null; then trap '' INT; fi
-  [ "$SHELLSPEC_TMPBASE" ] || return 0
-  tmpbase="$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
-  [ "$SHELLSPEC_KEEP_TEMPDIR" ] || rmtempdir "$tmpbase"
+  set -- "$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
+  [ "$SHELLSPEC_KEEP_TEMPDIR" ] && return 0
+  [ "$1" ] || return 0
+  rmtempdir "$1" &
 }
 
 interrupt() {
   trap '' TERM # Workaround for posh: Prevent display 'Terminated'.
   stop_profiler
   reporter_pid=''
-  read_pid_file reporter_pid "$SHELLSPEC_TMPBASE/reporter.pid" 0
+  read_pid_file reporter_pid "$SHELLSPEC_TMPBASE/$SHELLSPEC_REPORTER_PID" 0
   [ "$reporter_pid" ] && sleep_wait sigchk "$reporter_pid"
   sigterm 0 &&:
   cleanup

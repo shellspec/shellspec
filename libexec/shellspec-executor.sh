@@ -3,6 +3,9 @@
 
 set -eu
 
+# shellcheck source=lib/libexec/executor.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec/executor.sh"
+
 if [ "$SHELLSPEC_KCOV" -gt 0 ]; then
   # shellcheck source=lib/libexec/kcov-executor.sh
   . "${SHELLSPEC_LIB:-./lib}/libexec/kcov-executor.sh"

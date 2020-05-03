@@ -2,11 +2,12 @@
 
 shellspec_syntax 'shellspec_matcher_satisfy'
 
-SHELLSPEC_SATISFY_STDOUT_FILE="$SHELLSPEC_TMPBASE/$$.satisfy.stdout"
-SHELLSPEC_SATISFY_STDERR_FILE="$SHELLSPEC_TMPBASE/$$.satisfy.stderr"
 
 shellspec_matcher_satisfy() {
   shellspec_matcher__match() {
+    SHELLSPEC_SATISFY_STDOUT_FILE="$SHELLSPEC_WORKDIR/satisfy.stdout"
+    SHELLSPEC_SATISFY_STDERR_FILE="$SHELLSPEC_WORKDIR/satisfy.stderr"
+
     if ! shellspec_is_function "${1:-}"; then
       shellspec_output SYNTAX_ERROR "'$1' is not function name"
       return 0

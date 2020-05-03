@@ -5,16 +5,13 @@
 
 use includes replace_all
 
-kcov_preprocess() {
-  [ -d "$SHELLSPEC_COVERAGE_DIR" ] || return 0
-
-  # Cleanup previous coverage data
-  rm -rf "${SHELLSPEC_COVERAGE_DIR:?}/${SHELLSPEC_KCOV_FILENAME:?}"*
-}
-
 executor() {
   #shellcheck disable=SC2039
   [ "$(ulimit -n)" -lt 1024 ] && ulimit -n 1024
+
+  count=0
+  eval count_specfiles count ${1+'"$@"'}
+  create_workdirs "$count"
 
   #shellcheck disable=SC2034
   SHELLSPEC_COVERAGE_SETUP="$SHELLSPEC_LIB/cov/kcov-setup.sh"
@@ -39,6 +36,13 @@ executor() {
     "$SHELLSPEC_COVERAGE_DIR" "$SHELLSPEC_KCOV_IN_FILE" 537>&1
 
   eval "kcov_postprocess; return $?"
+}
+
+kcov_preprocess() {
+  [ -d "$SHELLSPEC_COVERAGE_DIR" ] || return 0
+
+  # Cleanup previous coverage data
+  rm -rf "${SHELLSPEC_COVERAGE_DIR:?}/${SHELLSPEC_KCOV_FILENAME:?}"*
 }
 
 kcov_postprocess() {
