@@ -39,7 +39,7 @@ shellspec_yield() {
 
 shellspec_begin() {
   # shellcheck disable=SC2034
-  SHELLSPEC_SPECFILE=$1 SHELLSPEC_SPEC_NO=$2
+  SHELLSPEC_SPECFILE=$1 SHELLSPEC_SPEC_NO=$2 SHELLSPEC_GROUP_ID=''
   SHELLSPEC_WORKDIR="$SHELLSPEC_TMPBASE/$SHELLSPEC_SPEC_NO"
   shellspec_output BEGIN
 }
