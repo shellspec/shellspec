@@ -68,6 +68,7 @@ shellspec_example_group() {
 }
 
 shellspec_example_block() {
+  SHELLSPEC_STDIO_FILE_BASE="$SHELLSPEC_WORKDIR/$SHELLSPEC_EXAMPLE_ID"
   if [ "${SHELLSPEC_PARAMETER_NO:-}" ]; then
     shellspec_parameters 1
   else
@@ -82,6 +83,13 @@ shellspec_parameters() {
 }
 
 shellspec_parameterized_example() {
+  case $SHELLSPEC_STDIO_FILE_BASE in
+    *@*) eval "set -- ${SHELLSPEC_STDIO_FILE_BASE##*@} ${1+\"\$@\"}" ;;
+    *) eval "set -- 0 ${1+\"\$@\"}" ;;
+  esac
+  SHELLSPEC_STDIO_FILE_BASE="${SHELLSPEC_STDIO_FILE_BASE%@*}@$(($1 + 1))"
+  shift
+
   ( case $# in
       0) "shellspec_example$SHELLSPEC_BLOCK_NO" ;;
       *) "shellspec_example$SHELLSPEC_BLOCK_NO" "$@" ;;
@@ -138,9 +146,9 @@ shellspec_invoke_example() {
 
   # shellcheck disable=SC2034
   {
-    SHELLSPEC_STDIN_FILE="$SHELLSPEC_WORKDIR/$SHELLSPEC_EXAMPLE_NO.stdin"
-    SHELLSPEC_STDOUT_FILE="$SHELLSPEC_WORKDIR/$SHELLSPEC_EXAMPLE_NO.stdout"
-    SHELLSPEC_STDERR_FILE="$SHELLSPEC_WORKDIR/$SHELLSPEC_EXAMPLE_NO.stderr"
+    SHELLSPEC_STDIN_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdin"
+    SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
+    SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
   }
 
   shellspec_on NOT_IMPLEMENTED
