@@ -37,11 +37,12 @@ error_handler() {
         line=${line#${SYN}shellspec_marker:}
         specfile=${line% *} lineno=${line##* }
         ;;
+      Syntax\ error:*) putsn "${LF}${line}"; error_handler_status=1 ;;
       # Workaround for posh 0.6.13 when executed as a background process
       *internal\ error:\ j_async:\ bad\ nzombie*) ;;
       # Workaround for loksh 6.5 when executed as a background process
       *internal\ error:\ j_set_async:\ bad\ nzombie*) ;;
-      *) errors="$errors$line${LF}" error_handler_status=1
+      *) errors="${errors}${line}${LF}" error_handler_status=1
     esac
   done
 
