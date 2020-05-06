@@ -194,19 +194,38 @@ Describe "core/dsl.sh"
 
   Describe "shellspec_parameterized_example()"
     shellspec_example0() { IFS=' '; echo "shellspec_example ${*:-}"; }
-    BeforeRun SHELLSPEC_BLOCK_NO=0 SHELLSPEC_EXAMPLE_NO=123
-    AfterRun 'echo $SHELLSPEC_EXAMPLE_NO'
+    setup() {
+      SHELLSPEC_BLOCK_NO=0
+      SHELLSPEC_EXAMPLE_NO=123
+      SHELLSPEC_STDIO_FILE_BASE=1-2-3
+    }
+    check() {
+      echo $SHELLSPEC_EXAMPLE_NO
+      echo $SHELLSPEC_STDIO_FILE_BASE
+    }
+    BeforeRun setup
+    AfterRun check
 
     It 'calls shellspec_example0'
       When run shellspec_parameterized_example
       The line 1 of stdout should eq 'shellspec_example '
       The line 2 of stdout should eq 124
+      The line 3 of stdout should eq "1-2-3#1"
     End
 
     It 'calls shellspec_example0 with arguments'
       When run shellspec_parameterized_example arg
       The line 1 of stdout should eq 'shellspec_example arg'
       The line 2 of stdout should eq 124
+      The line 3 of stdout should eq "1-2-3#1"
+    End
+
+    It 'increments SHELLSPEC_STDIO_FILE_BASE number'
+      BeforeRun "SHELLSPEC_STDIO_FILE_BASE=1-2-3#1"
+      When run shellspec_parameterized_example arg
+      The line 1 of stdout should eq 'shellspec_example arg'
+      The line 2 of stdout should eq 124
+      The line 3 of stdout should eq "1-2-3#2"
     End
   End
 

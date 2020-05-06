@@ -84,10 +84,10 @@ shellspec_parameters() {
 
 shellspec_parameterized_example() {
   case $SHELLSPEC_STDIO_FILE_BASE in
-    *@*) eval "set -- ${SHELLSPEC_STDIO_FILE_BASE##*@} ${1+\"\$@\"}" ;;
+    *\#*) eval "set -- ${SHELLSPEC_STDIO_FILE_BASE##*#} ${1+\"\$@\"}" ;;
     *) eval "set -- 0 ${1+\"\$@\"}" ;;
   esac
-  SHELLSPEC_STDIO_FILE_BASE="${SHELLSPEC_STDIO_FILE_BASE%@*}@$(($1 + 1))"
+  SHELLSPEC_STDIO_FILE_BASE="${SHELLSPEC_STDIO_FILE_BASE%#*}#$(($1 + 1))"
   shift
 
   ( case $# in
