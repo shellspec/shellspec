@@ -6,7 +6,7 @@ use constants trim match_pattern ends_with escape_quote replace_all match
 load grammar
 
 initialize() {
-  block_id='' inside_of_example='' inside_of_text=''
+  block_id='' block_id_increased=1 inside_of_example='' inside_of_text=''
   lineno=0 block_no=0 example_no=1 skip_id=0 error='' focused='' skipped=''
   _block_no=0 _block_no_stack=''
   parameter_count='' parameter_no=0 _parameter_count_stack=''
@@ -82,7 +82,6 @@ if_embedded_text() {
 }
 
 increase_block_id() {
-  [ "$block_id" ] || block_id_increased=1
   [ "$block_id_increased" ] && block_id=$block_id${block_id:+-}0
   case $block_id in
     *-*) block_id=${block_id%-*}-$((${block_id##*-} + 1)) ;;
@@ -223,6 +222,20 @@ example_hook() {
     syntax_error "Before/After cannot be defined inside of Example"
     return 0
   fi
+  eval trans control ${1+'"$@"'}
+}
+
+example_all_hook() {
+  if [ "$inside_of_example" ]; then
+    syntax_error "BeforeAll/AfterAll cannot be defined inside of Example"
+    return 0
+  fi
+
+  if [ "$1" = "before_all" ] && [ ! "$block_id_increased" ]; then
+    syntax_error "BeforeAll cannot be defined after of Example Group/Example"
+    return 0
+  fi
+
   eval trans control ${1+'"$@"'}
 }
 
