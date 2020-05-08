@@ -1,41 +1,102 @@
 # References
 
-- [Example Group](#example-group)
-- [Example](#example)
-- [Evaluation](#evaluation)
-- [Expectation](#expectation)
-  - [Subject](#subject)
-  - [Modifier](#modifier)
-  - [Matcher](#matcher)
-    - [status](#status)
-    - [stat](#stat)
-    - [valid](#valid)
-    - [variable](#variable)
-    - [string](#string)
-    - [other](#other)
+- [Basic structure](#basic-structure)
+  - [Example group](#example-group)
+    - [`Describe` / `Context`](#describe--context)
+  - [Example](#example)
+    - [`It` / `Example` / `Specify`](#it--example--specify)
+  - [Evaluation](#evaluation)
+    - [`When call`](#when-call)
+    - [`When run`](#when-run)
+    - [`When run command`](#when-run-command)
+    - [`When run script`](#when-run-script)
+    - [`When run source`](#when-run-source)
+    - [Comparison](#comparison)
+  - [Expectation](#expectation)
+    - [`The`](#the)
+    - [`should` / `should not`](#should--should-not)
+    - [Subjects](#subjects)
+      - [`stdout` (`output`)](#stdout-output)
+      - [`stderr` (`error`)](#stderr-error)
+      - [`status`](#status)
+      - [`path` / `file` / `directory` (`dir`)](#path--file--directory-dir)
+      - [`function`](#function)
+      - [`value`](#value)
+      - [`variable`](#variable)
+    - [Modifiers](#modifiers)
+      - [`line`](#line)
+      - [`lines`](#lines)
+      - [`word`](#word)
+      - [`length`](#length)
+      - [`contents`](#contents)
+      - [`result`](#result)
+    - [Matchers](#matchers)
+      - [satisfy matcher](#satisfy-matcher)
+      - [stat matchers](#stat-matchers)
+      - [status matchers](#status-matchers)
+      - [string matchers](#string-matchers)
+      - [valid matchers](#valid-matchers)
+      - [variable matchers](#variable-matchers)
 - [Helper](#helper)
+  - [Hook](#hook)
+    - [`Before` / `After`](#before--after)
+    - [`BeforeAll` / `AfterAll`](#beforeall--afterall)
+    - [`BeforeCall` / `AfterCall`](#beforecall--aftercall)
+    - [`BeforeRun` / `AfterRun`](#beforerun--afterrun)
+  - [Skip / Pending](#skip--pending)
+    - [`Skip`](#skip)
+    - [`Skip if`](#skip-if)
+    - [`Pending`](#pending)
+    - [`Todo`](#todo)
+  - [Data](#data)
+    - [`Data[:raw]`](#dataraw)
+    - [`Data:expand`](#dataexpand)
+    - [`Data <FUNCTION>`](#data-function)
+    - [`Data "<STRING>"`](#data-string)
+    - [`Data < "<FILE>"`](#data--file)
+  - [Parameters](#parameters)
+    - [`Parameters[:block]`](#parametersblock)
+    - [`Parameters:value`](#parametersvalue)
+    - [`Parameters:matrix`](#parametersmatrix)
+    - [`Parameters:dynamic`](#parametersdynamic)
+  - [Others](#others)
+    - [`Include`](#include)
+    - [`Path` / `File` / `Dir`](#path--file--dir)
+    - [`Intercept`](#intercept)
+    - [`Set`](#set)
 - [Directive](#directive)
+  - [`%const` (`%`)](#const-)
+  - [`%text`](#text)
+  - [`%puts` (`%-`) / `%putsn` (`%=`)](#puts----putsn-)
+  - [`%logger`](#logger)
 - [Environment Variables](#environment-variables)
 
-## Example Group
+## Basic structure
+
+### Example group
 
 You can write a structured *Example* by using the DSL shown below:
 
-| DSL              | Description                                                         |
-| :--------------- | :------------------------------------------------------------------ |
-| Describe ... End | Define a block for examples grouping. Examples groups are nestable. |
-| Context ... End  | Synonym for `Describe`.                                             |
+| DSL              | Description                |
+| :--------------- | :------------------------- |
+| Describe ... End | Define a example grouping. |
+| Context ... End  | Synonym for `Describe`.    |
 
-## Example
+#### `Describe` / `Context`
 
-| DSL             | Description                                                                                    |
-| :-------------- | :--------------------------------------------------------------------------------------------- |
-| Example ... End | Define a block for Example. Write your example.                                                |
-| Specify ... End | Synonym for `Example`.                                                                         |
-| It ... End      | Synonym for `Example`.                                                                         |
-| Todo            | Same as empty example, but not a block. One-liner syntax meaning it needs to be implementated. |
+Examples groups are nestable.
 
-## Evaluation
+### Example
+
+| DSL             | Description            |
+| :-------------- | :--------------------- |
+| Example ... End | Define a example.      |
+| It ... End      | Synonym for `Example`. |
+| Specify ... End | Synonym for `Example`. |
+
+#### `It` / `Example` / `Specify`
+
+### Evaluation
 
 The line beginning with `When` is the evaluation.
 
@@ -47,7 +108,17 @@ The line beginning with `When` is the evaluation.
 | When run script <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run shell script by new process of the current shell.                |
 | When run source <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run shell script in the current shell by `.` command (aka `source`). |
 
-Comparison
+#### `When call`
+
+#### `When run`
+
+#### `When run command`
+
+#### `When run script`
+
+#### `When run source`
+
+#### Comparison
 
 |                    | `call`                 | `run`                | `run command`        | `run script`         | `run source`         |
 | ------------------ | ---------------------- | -------------------- | -------------------- | -------------------- | -------------------- |
@@ -59,33 +130,68 @@ Comparison
 | Intercept          | No                     | No                   | -                    | No                   | Yes                  |
 | Coverage           | Yes                    | Yes (function only)  | No                   | Yes                  | Yes                  |
 
-## Expectation
+### Expectation
+
+#### `The`
 
 The line beginning with `The` is the evaluation. The *subject* or the *modifier* follows after `The`. And last is the *matcher*.
 
-### Subject
+#### `should` / `should not`
 
-| Subject                                                                                           | Description                                   |
-| :------------------------------------------------------------------------------------------------ | :-------------------------------------------- |
-| output<br>stdout                                                                                  | Use the stdout of *Evaluation* as subject.    |
-| error<br>stderr                                                                                   | Use the stderr of *Evaluation* as subject.    |
-| status                                                                                            | Use the status of *Evaluation* as subject.    |
-| path <code>&lt;PATH&gt;</code><br>file <code>&lt;PATH&gt;</code><br>dir <code>&lt;PATH&gt;</code> | Use the alias resolved path as the subject.   |
-| value <code>&lt;VALUE&gt;</code><br>function <code>&lt;VALUE&gt;</code>                           | Use the value as the subject.                 |
-| variable <code>&lt;NAME&gt;</code>                                                                | Use the value of the variable as the subject. |
+#### Subjects
 
-### Modifier
+| Subject                                | Description                                   |
+| :------------------------------------- | :-------------------------------------------- |
+| output<br>stdout                       | Use the stdout of *Evaluation* as subject.    |
+| error<br>stderr                        | Use the stderr of *Evaluation* as subject.    |
+| status                                 | Use the status of *Evaluation* as subject.    |
+| path <code>&lt;PATH&gt;</code>         | Use the alias resolved path as the subject.   |
+| file <code>&lt;PATH&gt;</code>         | Synonym for `path`.                           |
+| directory <code>&lt;PATH&gt;</code>    | Synonym for `path`.                           |
+| value <code>&lt;VALUE&gt;</code>       | Use the value as the subject.                 |
+| function <code>&lt;FUNCTION&gt;</code> | Use the function name as the subject.         |
+| <code>&lt;FUNCTION&gt;()</code>        | Shorthand for `function`                      |
+| variable <code>&lt;NAME&gt;</code>     | Use the value of the variable as the subject. |
 
-| Modifier                         | Description                           |
-| :------------------------------- | :------------------------------------ |
-| line <code>&lt;NUMBER&gt;</code> | The specified line of the subject.    |
-| lines                            | The number of lines of the subject.   |
-| word <code>&lt;NUMBER&gt;</code> | The specified word of the subject.    |
-| length                           | The length of the subject.            |
-| contents                         | The contents of the file (subject).   |
-| result                           | The result of the function (subject). |
+##### `stdout` (`output`)
 
-result examples
+##### `stderr` (`error`)
+
+##### `status`
+
+##### `path` / `file` / `directory` (`dir`)
+
+##### `function`
+
+##### `value`
+
+I do not recommend using this subject as it will may generate not clear
+failure messages. Use the `variable` subject instead.
+
+##### `variable`
+
+#### Modifiers
+
+| Modifier                         | Description                            |
+| :------------------------------- | :------------------------------------- |
+| line <code>&lt;NUMBER&gt;</code> | The specified line of the subject.     |
+| lines                            | The number of lines of the subject.    |
+| word <code>&lt;NUMBER&gt;</code> | The specified word of the subject.     |
+| length                           | The length of the subject.             |
+| contents                         | The contents of the file as subject.   |
+| result                           | The result of the function as subject. |
+
+##### `line`
+
+##### `lines`
+
+##### `word`
+
+##### `length`
+
+##### `contents`
+
+##### `result`
 
 ```sh
 get_version() {
@@ -99,80 +205,9 @@ The result of function get_version should equal "4.4.20"
 The result of "get_version()" should equal "4.4.20" # shorthand
 ```
 
-### Matcher
+#### Matchers
 
-#### status
-
-the subject expected status
-
-| Matcher    | Description                   |
-| :--------- | :---------------------------- |
-| be success | The status should be success. |
-| be failure | The status should be failure. |
-
-#### stat
-
-the subject expected file path
-
-| Matcher                            | Description                                 |
-| :--------------------------------- | :------------------------------------------ |
-| be exist                           | The file should exist.                      |
-| be file                            | The file should be a file.                  |
-| be directory                       | The file should be a directory.             |
-| be empty file                      | The file should be an empty file.           |
-| be empty directory<br>be empty dir | The directory should be an empty directory. |
-| be symlink                         | The file should be a symlink.               |
-| be pipe                            | The file should be a pipe.                  |
-| be socket                          | The file should be a socket.                |
-| be readable                        | The file should be readable.                |
-| be writable                        | The file should be writable.                |
-| be executable                      | The file should be executable.              |
-| be block_device                    | The file should be a block device.          |
-| be character_device                | The file should be a character device.      |
-| has setgid                         | The file should have the `setgid` flag set. |
-| has setuid                         | The file should have the `setuid` flag set. |
-
-#### valid
-
-**Plan to deprecate in the future.**
-
-| Matcher           | Description                             |
-| :---------------- | :-------------------------------------- |
-| be valid number   | The subject should be a valid number.   |
-| be valid funcname | The subject should be a valid funcname. |
-
-#### variable
-
-the subject expect variable
-
-| Matcher      | Description                                                 |
-| :----------- | :---------------------------------------------------------- |
-| be defined   | The variable should be defined (set).                       |
-| be undefined | The variable should be undefined (unset).                   |
-| be present   | The variable should be present (non-zero length string).    |
-| be blank     | The variable should be blank (unset or zero length string). |
-
-#### string
-
-| Matcher                                                             | Description                                                          |
-| :------------------------------------------------------------------ | :------------------------------------------------------------------- |
-| equal <code>&lt;STRING&gt;</code><br>eq <code>&lt;STRING&gt;</code> | The subject should equal <code>&lt;STRING&gt;</code>                 |
-| start with <code>&lt;STRING&gt;</code>                              | The subject should start with <code>&lt;STRING&gt;</code>            |
-| end with <code>&lt;STRING&gt;</code>                                | The subject should end with <code>&lt;STRING&gt;</code>              |
-| include <code>&lt;STRING&gt;</code>                                 | The subject should include <code>&lt;STRING&gt;</code>               |
-| ~~match <code>&lt;PATTERN&gt;</code>~~                              | Deprecated ~~The subject should match <code>&lt;PATTERN&gt;</code>~~ |
-| match pattern <code>&lt;PATTERN&gt;</code>                          | The subject should match pattern <code>&lt;PATTERN&gt;</code>        |
-
-PATTERN examples
-
-- `foo*`
-- `foo?`
-- `[fF]oo`
-- `[!F]oo`
-- `[a-z]`
-- `foo|bar`
-
-#### other
+##### satisfy matcher
 
 | Matcher                                              | Description                                              |
 | :--------------------------------------------------- | :------------------------------------------------------- |
@@ -196,28 +231,170 @@ The output should satisfy value -gt 10
 The output should satisfy formula "10 <= value && value <= 100"
 ```
 
+##### stat matchers
+
+the subject expected file path
+
+| Matcher                            | Description                                 |
+| :--------------------------------- | :------------------------------------------ |
+| be exist                           | The file should exist.                      |
+| be file                            | The file should be a file.                  |
+| be directory                       | The file should be a directory.             |
+| be empty file                      | The file should be an empty file.           |
+| be empty directory<br>be empty dir | The directory should be an empty directory. |
+| be symlink                         | The file should be a symlink.               |
+| be pipe                            | The file should be a pipe.                  |
+| be socket                          | The file should be a socket.                |
+| be readable                        | The file should be readable.                |
+| be writable                        | The file should be writable.                |
+| be executable                      | The file should be executable.              |
+| be block_device                    | The file should be a block device.          |
+| be character_device                | The file should be a character device.      |
+| has setgid                         | The file should have the setgid flag set.   |
+| has setuid                         | The file should have the setuid flag set.   |
+
+##### status matchers
+
+the subject expected status
+
+| Matcher    | Description                                 |
+| :--------- | :------------------------------------------ |
+| be success | The status should be success (`0`).         |
+| be failure | The status should be failure (`1` - `255`). |
+
+##### string matchers
+
+| Matcher                                                             | Description                                                          |
+| :------------------------------------------------------------------ | :------------------------------------------------------------------- |
+| equal <code>&lt;STRING&gt;</code><br>eq <code>&lt;STRING&gt;</code> | The subject should equal <code>&lt;STRING&gt;</code>                 |
+| start with <code>&lt;STRING&gt;</code>                              | The subject should start with <code>&lt;STRING&gt;</code>            |
+| end with <code>&lt;STRING&gt;</code>                                | The subject should end with <code>&lt;STRING&gt;</code>              |
+| include <code>&lt;STRING&gt;</code>                                 | The subject should include <code>&lt;STRING&gt;</code>               |
+| match pattern <code>&lt;PATTERN&gt;</code>                          | The subject should match pattern <code>&lt;PATTERN&gt;</code>        |
+
+PATTERN examples
+
+- `foo*`
+- `foo?`
+- `[fF]oo`
+- `[!F]oo`
+- `[a-z]`
+- `foo|bar`
+
+##### valid matchers
+
+**Plan to deprecate in the future.**
+
+| Matcher           | Description                             |
+| :---------------- | :-------------------------------------- |
+| be valid number   | The subject should be a valid number.   |
+| be valid funcname | The subject should be a valid funcname. |
+
+##### variable matchers
+
+the subject expect variable
+
+| Matcher      | Description                                                 |
+| :----------- | :---------------------------------------------------------- |
+| be defined   | The variable should be defined (set).                       |
+| be undefined | The variable should be undefined (unset).                   |
+| be present   | The variable should be present (non-zero length string).    |
+| be blank     | The variable should be blank (unset or zero length string). |
+
 ## Helper
 
-| DSL                                                                              | Description                                       |
-| :------------------------------------------------------------------------------- | :------------------------------------------------ |
-| Include <code>&lt;NAME&gt;</code>                                                | Include other files.                              |
-| Before                                                                           | Define a hook called before running each example. |
-| After                                                                            | Define a hook called after running each example.  |
-| Path<br>File<br>Dir                                                              | Define a path alias.                              |
-| Data <code>[ \| FILTER ]</code><br>#\|...<br>End                                 | Define stdin data for evaluation.                 |
-| Data <code>&lt;FUNCTION&gt; [ARGUMENTS...] [ \| FILTER ]</code>                  | Use function for stdin data for evaluation.       |
-| Data <code>"&lt;STRING&gt;"</code><br>Data <code>'&lt;STRING&gt;'</code>         | Use string for stdin data for evaluation.         |
-| Data <code>&lt; &lt;FILE&gt; [ \| FILTER ]</code>                                | Use file for stdin data for evaluation.           |
-| Skip <code>&lt;REASON&gt;</code>                                                 | Skip current block.                               |
-| Skip if <code>&lt;REASON&gt;</code> <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code> | Skip current block with conditional.              |
-| Pending <code>&lt;REASON&gt;</code>                                              | Pending current block.                            |
-| Intercept <code>[NAMES...]</code>                                                | Define an interceptor.                            |
-| Set <code>[OPTION:&lt;on \| off&gt;...]</code>                                   | Set shell option before running each example.     |
-| Parameters ... End                                                               | Define parameters (block style)                   |
-| Parameters:block ... End                                                         | Same as Parameters                                |
-| Parameters:value <code>[VALUES...]</code>                                        | Define parameters (value style)                   |
-| Parameters:matrix ... End                                                        | Define parameters (matrix style)                  |
-| Parameters:dynamic ... End                                                       | Define parameters (dynamic style)                 |
+### Hook
+
+| DSL        | Description                                       |
+| :--------- | :------------------------------------------------ |
+| Before     | Define a hook called before running each example. |
+| After      | Define a hook called after running each example.  |
+| BeforeAll  |                                                   |
+| AfterAll   |                                                   |
+| BeforeCall |                                                   |
+| AfterCall  |                                                   |
+| BeforeRun  |                                                   |
+| AfterRun   |                                                   |
+
+#### `Before` / `After`
+
+#### `BeforeAll` / `AfterAll`
+
+#### `BeforeCall` / `AfterCall`
+
+#### `BeforeRun` / `AfterRun`
+
+### Skip / Pending
+
+| DSL                                                                              | Description                          |
+| :------------------------------------------------------------------------------- | :----------------------------------- |
+| Skip <code>&lt;REASON&gt;</code>                                                 | Skip current block.                  |
+| Skip if <code>&lt;REASON&gt;</code> <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code> | Skip current block with conditional. |
+| Pending <code>&lt;REASON&gt;</code>                                              | Pending current block.               |
+| Todo                                                                             | Define pending example               |
+
+#### `Skip`
+
+#### `Skip if`
+
+#### `Pending`
+
+#### `Todo`
+
+### Data
+
+| DSL                                                                      | Description                                                  |
+| :----------------------------------------------------------------------- | :----------------------------------------------------------- |
+| Data[:raw] <code>[ \| FILTER ]</code><br>#\|...<br>End                   | Define stdin data for evaluation (without expand variables). |
+| Data:expand <code>[ \| FILTER ]</code><br>#\|...<br>End                  | Define stdin data for evaluation (with expand variables).    |
+| Data <code>&lt;FUNCTION&gt; [ARGUMENTS...] [ \| FILTER ]</code>          | Use function for stdin data for evaluation.                  |
+| Data <code>"&lt;STRING&gt;"</code><br>Data <code>'&lt;STRING&gt;'</code> | Use string for stdin data for evaluation.                    |
+| Data <code>&lt; &lt;FILE&gt; [ \| FILTER ]</code>                        | Use file for stdin data for evaluation.                      |
+
+#### `Data[:raw]`
+
+#### `Data:expand`
+
+#### `Data <FUNCTION>`
+
+#### `Data "<STRING>"`
+
+#### `Data < "<FILE>"`
+
+### Parameters
+
+| DSL                                       | Description                       |
+| :---------------------------------------- | :-------------------------------- |
+| Parameters ... End                        | Define parameters (block style)   |
+| Parameters:block ... End                  | Same as Parameters                |
+| Parameters:value <code>[VALUES...]</code> | Define parameters (value style)   |
+| Parameters:matrix ... End                 | Define parameters (matrix style)  |
+| Parameters:dynamic ... End                | Define parameters (dynamic style) |
+
+#### `Parameters[:block]`
+
+#### `Parameters:value`
+
+#### `Parameters:matrix`
+
+#### `Parameters:dynamic`
+
+### Others
+
+| DSL                                            | Description                                   |
+| :--------------------------------------------- | :-------------------------------------------- |
+| Include <code>&lt;NAME&gt;</code>              | Include other files.                          |
+| Path<br>File<br>Dir                            | Define a path alias.                          |
+| Intercept <code>[NAMES...]</code>              | Define an interceptor.                        |
+| Set <code>[OPTION:&lt;on \| off&gt;...]</code> | Set shell option before running each example. |
+
+#### `Include`
+
+#### `Path` / `File` / `Dir`
+
+#### `Intercept`
+
+#### `Set`
 
 ## Directive
 
@@ -229,14 +406,36 @@ The output should satisfy formula "10 <= value && value <= 100"
 | %puts, %-  | Output arguments.                             |
 | %logger    | Output log message.                           |
 
+### `%const` (`%`)
+
+### `%text`
+
+### `%puts` (`%-`) / `%putsn` (`%=`)
+
+### `%logger`
+
 ## Environment Variables
 
-| Name                | Description                                   | Value                                                         |
-| :------------------ | :-------------------------------------------- | ------------------------------------------------------------- |
-| SHELLSPEC_ROOT      | shellspec root directory                      | If not specified, it is automatically detected.               |
-| SHELLSPEC_LIB       | shellspec lib directory                       | `$SHELLSPEC_ROOT/lib` if not specified.                       |
-| SHELLSPEC_LIBEXEC   | shellspec libexec directory                   | `$SHELLSPEC_ROOT/libexec` if not specified.                   |
-| SHELLSPEC_TMPDIR    | Temporary directory used by shellspec         | `$TMPDIR` or `/tmp` if not specified.                         |
-| SHELLSPEC_TMPBASE   | Current temporary directory used by shellspec | Provided by shellspec.                                        |
-| SHELLSPEC_SPECDIR   | Specfiles directory                           | `spec` directory under the current directory.                 |
-| SHELLSPEC_LOAD_PATH | Load path of library                          | `$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_LIB/formatters` |
+ShellSpec provides environment variables with prefix `SHELLSPEC_`.
+They are useful for writing tests and extensions.
+I will not change it as much as possible for compatibility, but currently not guaranteed.
+There are many undocumented variables. You can use them at your own risk.
+
+These variables can be overridden by `--env-from` option except for some variables.
+This is an assumed usage, but has not been fully tested.
+
+| Name                 | Description                              | Value                                                               |
+| :------------------- | :--------------------------------------- | ------------------------------------------------------------------- |
+| SHELLSPEC_ROOT       | ShellSpec root directory                 |                                                                     |
+| SHELLSPEC_LIB        | ShellSpec lib directory                  | `${SHELLSPEC_ROOT}/lib`                                             |
+| SHELLSPEC_LIBEXEC    | ShellSpec libexec directory              | `${SHELLSPEC_ROOT}/libexec`                                         |
+| SHELLSPEC_TMPDIR     | Temporary directory                      | `${TMPDIR}` or `/tmp` if not specified.                             |
+| SHELLSPEC_TMPBASE    | Temporary directory used by ShellSpec    | `${SHELLSPEC_TMPDIR}/shellspec.${SHELLSPEC_UNIXTIME}.$$`.           |
+| SHELLSPEC_WORKDIR    | Temporary directory for each spec number | `${SHELLSPEC_TMPBASE}/${SHELLSPEC_SPEC_NO}`.                        |
+| SHELLSPEC_SPECDIR    | Specfiles directory                      | `${PWD}/spec`                                                       |
+| SHELLSPEC_LOAD_PATH  | Load path of library                     | `${SHELLSPEC_SPECDIR}:${SHELLSPEC_LIB}:${SHELLSPEC_LIB}/formatters` |
+| SHELLSPEC_UNIXTIME   | Unix Time when ShellSpec starts          |                                                                     |
+| SHELLSPEC_SPEC_NO    | Current specfile number                  |                                                                     |
+| SHELLSPEC_GROUP_ID   | Current group ID                         | e.g. `1-2`                                                          |
+| SHELLSPEC_EXAMPLE_ID | Current example ID (including group ID)  | e.g. `1-2-3`                                                        |
+| SHELLSPEC_EXAMPLE_NO | Current serial number of example         |                                                                     |

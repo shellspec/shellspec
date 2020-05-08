@@ -84,6 +84,7 @@ BDD style unit testing framework for POSIX compliant shell script.
       - [Custom matcher](#custom-matcher)
   - [Hooks](#hooks)
     - [Before, After - example hook](#before-after---example-hook)
+    - [BeforeAll, AfterAll - example group hook](#beforeall-afterall---example-group-hook)
     - [BeforeCall, AfterCall - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
     - [BeforeRun, AfterRun - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
   - [Directive](#directive)
@@ -976,7 +977,7 @@ End
 #### subject, modifier, matcher
 
 There are more *subjects*, *modifiers*, *matchers*. please refer to the
-[References](/docs/references.md)
+[References](docs/references.md)
 
 ##### Custom matcher
 
@@ -991,6 +992,14 @@ See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.s
 
 You can define before / after hooks by using `Before`, `After`.
 The hooks are called for each example.
+
+TIPS: `After` hook is a place to clean up, not an assertion.
+What you are looking for is probably `result` modifier.
+
+#### BeforeAll, AfterAll - example group hook
+
+You can define before all / after all hooks by using `BeforeAll`, `AfterAll`.
+The hooks are called before or after all examples.
 
 #### BeforeCall, AfterCall - call evaluation hook
 

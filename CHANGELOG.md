@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add test for [GWSH shell](https://github.com/hvdijk/gwsh)
-- Add support for OpenBSD 6.6 (manual test)
-- Add support for NetBSD 9.0 (manual test)
+- Add `BeforeAll` and `AfterAll`. (#7)
+- Expand parameter within Data helper. (#57)
+- Add test for [GWSH shell](https://github.com/hvdijk/gwsh).
+- Add manual test for OpenBSD ksh on OpenBSD 6.6.
+- Add manual test for NetBSD sh on NetBSD 9.0.
 
 ### Removed
 
@@ -20,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - CI test for pdksh 5.2.14 on FreeBSD.
   - Docker test for pdksh 5.2.14 on Debian 2.2r7.
   - Docker test for ksh 93q on Debian 3.1r8.
+- Remove tests for FreeBSD 13.0-current (Unstable due to work in progress).
 
 ## [0.23.0] - 2020-04-02
 
