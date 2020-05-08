@@ -80,8 +80,8 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [Path, File, Dir - path alias](#path-file-dir---path-alias)
     - [Data - input data for evaluation](#data---input-data-for-evaluation)
     - [Parameters - parameterized example](#parameters---parameterized-example)
-    - [subject, modifier, matcher](#subject-modifier-matcher)
-      - [Custom matcher](#custom-matcher)
+    - [Subjects, Modifiers and Matchers](#subjects-modifiers-and-matchers)
+    - [Custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
   - [Hooks](#hooks)
     - [Before, After - example hook](#before-after---example-hook)
     - [BeforeAll, AfterAll - example group hook](#beforeall-afterall---example-group-hook)
@@ -600,7 +600,9 @@ execution order. If `SEED` is specified, the execution order is deterministic.
 
 You can specify one reporter (output to stdout) and multiple generators
 (output to a file). Currently builtin formatters are `progress`,
-`documentation`, `tap`, `junit`, `null`, `debug`.
+`documentation`, `tap`, `junit`, `failures`, `null`, `debug`.
+
+NOTE: Custom formatter is supported (but not documented yet, sorry).
 
 ### Ranges / Filters / Focus
 
@@ -974,17 +976,18 @@ Parameters:dynamic
 End
 ```
 
-#### subject, modifier, matcher
+#### Subjects, Modifiers and Matchers
 
-There are more *subjects*, *modifiers*, *matchers*. please refer to the
+There are many *subjects*, *modifiers*, *matchers*. please refer to the
 [References](docs/references.md)
 
-##### Custom matcher
+#### Custom subject, modifier and matcher
 
-ShellSpec has an extensible architecture. So you can create custom matchers,
-custom modifiers, custom formatters, etc.
-
+You can create custom subject, custom modifier and custom matcher.
 See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
+
+NOTE: If you want to assert using shell function, Use [result](docs/references.md#result) modifier or
+[result](docs/references.md#satisfy) matcher. Do not need create custom matcher.
 
 ### Hooks
 
@@ -993,8 +996,8 @@ See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.s
 You can define before / after hooks by using `Before`, `After`.
 The hooks are called for each example.
 
-TIPS: `After` hook is a place to clean up, not an assertion.
-What you are looking for is probably `result` modifier.
+NOTE: `After` hook is a place to clean up, not an assertion. If you want to assert in the `After` hook,
+What you are looking for is probably [result](docs/references.md#result) modifier.
 
 #### BeforeAll, AfterAll - example group hook
 
