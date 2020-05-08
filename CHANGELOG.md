@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.0] - 2020-05-21
+
 ### Added
 
 - Add `BeforeAll` and `AfterAll`. (#7)
@@ -361,7 +363,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.23.0...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.24.0...HEAD
+[0.24.0]: https://github.com/shellspec/shellspec/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/shellspec/shellspec/compare/0.22.0...0.23.0
 [0.22.0]: https://github.com/shellspec/shellspec/compare/0.21.0...0.22.0
 [0.21.0]: https://github.com/shellspec/shellspec/compare/0.20.2...0.21.0
