@@ -25,7 +25,7 @@ cleanup() {
   set -- "$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
   [ "$SHELLSPEC_KEEP_TEMPDIR" ] && return 0
   [ "$1" ] || return 0
-  rmtempdir "$1" &
+  { rmtempdir "$1" & } 2>/dev/null
 }
 
 interrupt() {
