@@ -20,10 +20,11 @@ count() {
 read_time_log() {
   [ -r "$2" ] || return 0
   # shellcheck disable=SC2034
-  while IFS=" " read -r time_log_name time_log_value; do
-    case $time_log_name in (real|user|sys) ;; (*) continue; esac
-    case $time_log_value in (*[!0-9.]*) continue; esac
-    eval "$1_${time_log_name}=\"\$time_log_value\""
+  while IFS= read -r line; do
+    case $line in (real\ *|user\ *|sys\ *)
+      case ${line#* } in (*[!0-9.]*) continue; esac
+      eval "$1_${line% *}=\"\${line#* }\""
+    esac
   done < "$2" &&:
 }
 

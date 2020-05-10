@@ -275,7 +275,7 @@ shellspec_padding_() {
 shellspec_readfile() {
   set -- "$1" "$2" ""
   eval "$1="
-  while IFS= read -r "$1"; do
+  while shellspec_readline "$1"; do
     eval "set -- \"\$1\" \"\$2\" \"\$3\${$1}\$SHELLSPEC_LF\""
   done < "$2" &&:
   eval "$1=\"\$3\${$1}\""
@@ -567,4 +567,12 @@ shellspec_pluralize() {
 
 shellspec_exists_file() {
   [ -e "$1" ]
+}
+
+shellspec_readline() {
+  # Includes workaround for ksh with coverage (Do not use `IFS= read -r`)
+  set -- "$IFS" "$@" && IFS=''
+  read -r "$2" &&:
+  set -- "$?" "$1" && IFS="$2"
+  return "$1"
 }

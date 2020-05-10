@@ -145,9 +145,11 @@ random_seed() {
 
 kcov_version() {
   command_path "$1" || return 1
-  version=$("$1" --version 2>/dev/null) || version=''
-  echo "$version"
+  error=$( { "$1" --version >/dev/null; } 2>&1) || error="error"
+  [ "$error" ] && return 0
+  "$1" --version
 }
+
 
 kcov_version_number() {
   ver=${1:-0} && ver=${ver#"${ver%%[0-9]*}"} && ver=${ver%%[!0-9]*}
