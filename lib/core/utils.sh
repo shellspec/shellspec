@@ -21,13 +21,6 @@ shellspec_is_identifier() {
   return 0
 }
 
-shellspec_capture() {
-  SHELLSPEC_EVAL="
-    if $1=\"\$($2 && echo _)\"; then $1=\${$1%_}; else unset $1 ||:; fi
-  "
-  eval "$SHELLSPEC_EVAL"
-}
-
 SHELLSPEC_SHELL_OPTION=""
 shellspec_proxy shellspec_append_shell_option shellspec_append_set
 if [ "${BASH_VERSION:-}" ]; then

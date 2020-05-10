@@ -42,19 +42,39 @@ shellspec_spec_helper_configure() {
   shellspec_import 'support/custom_matcher'
 
   set_subject() {
-    shellspec_capture SHELLSPEC_SUBJECT subject
+    if subject > /dev/null; then
+      SHELLSPEC_SUBJECT=$(subject; echo _)
+      SHELLSPEC_SUBJECT=${SHELLSPEC_SUBJECT%_}
+    else
+      unset SHELLSPEC_SUBJECT ||:
+    fi
   }
 
   set_status() {
-    shellspec_capture SHELLSPEC_STATUS status
+    if status > /dev/null; then
+      SHELLSPEC_STATUS=$(status; echo _)
+      SHELLSPEC_STATUS=${SHELLSPEC_STATUS%_}
+    else
+      unset SHELLSPEC_STATUS ||:
+    fi
   }
 
   set_stdout() {
-    shellspec_capture SHELLSPEC_STDOUT stdout
+    if stdout > /dev/null; then
+      SHELLSPEC_STDOUT=$(stdout; echo _)
+      SHELLSPEC_STDOUT=${SHELLSPEC_STDOUT%_}
+    else
+      unset SHELLSPEC_STDOUT ||:
+    fi
   }
 
   set_stderr() {
-    shellspec_capture SHELLSPEC_STDERR stderr
+    if stderr > /dev/null; then
+      SHELLSPEC_STDERR=$(stderr; echo _)
+      SHELLSPEC_STDERR=${SHELLSPEC_STDERR%_}
+    else
+      unset SHELLSPEC_STDERR ||:
+    fi
   }
 
   # modifier for test

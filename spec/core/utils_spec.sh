@@ -65,32 +65,6 @@ Describe "core/utils.sh"
     End
   End
 
-  Describe 'shellspec_capture()'
-    Context 'when function outputs "ok"'
-      func() { %- "ok"; }
-      It 'captures "ok"'
-        When call shellspec_capture var func
-        The variable var should equal ok
-      End
-    End
-
-    Context 'when function outputs "ok<LF>"'
-      func() { %= "ok"; }
-      It 'captures "ok<LF>"'
-        When call shellspec_capture var func
-        The variable var should equal "ok${IFS%?}"
-      End
-    End
-
-    Context 'when function return false'
-      func() { false; }
-      It 'can not capture'
-        When call shellspec_capture var func
-        The variable var should be undefined
-      End
-    End
-  End
-
   Describe 'shellspec_append_set()'
     Before op=''
 
