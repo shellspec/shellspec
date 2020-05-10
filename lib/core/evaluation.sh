@@ -20,22 +20,25 @@ shellspec_invoke_data() {
 }
 
 shellspec_evaluation_call() {
-  shellspec_coverage_start
   set "$SHELLSPEC_ERREXIT"
   "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
   set +e
-  if [ ! "${SHELLSPEC_DATA:-}" ]; then
-    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV"
-  else
-    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_FILE"
-  fi >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
+  shellspec_evaluation_call_data shellspec_evaluation_call_function "$@"
   set -e -- $?
   shellspec_evaluation_cleanup "$1"
-  shellspec_coverage_stop
+}
+
+shellspec_evaluation_call_data() {
+  if [ ! "${SHELLSPEC_DATA:-}" ]; then
+    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV" \
+      >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
+  else
+    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_FILE" \
+      >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
+  fi
 }
 
 shellspec_evaluation_run() {
-  shellspec_coverage_start
   set "$SHELLSPEC_ERREXIT"
   "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
   case $- in
@@ -44,7 +47,6 @@ shellspec_evaluation_run() {
   esac
   set -e -- $?
   shellspec_evaluation_cleanup "$1"
-  shellspec_coverage_stop
 }
 
 shellspec_evaluation_run_subshell() {
@@ -119,7 +121,7 @@ shellspec_evaluation_run_instruction() {
     script) shift; shellspec_evaluation_run_script "$@" ;;
     command) shift; shellspec_evaluation_run_command "$@" ;;
     source) shift; shellspec_evaluation_run_source "$@" ;;
-    *) "$@" ;;
+    *) shellspec_evaluation_call_function "$@" ;;
   esac
 }
 
@@ -136,6 +138,14 @@ shellspec_shebang_arguments() {
       shellspec_putsn "$line"
     esac
   esac
+}
+
+shellspec_evaluation_call_function() {
+  shellspec_coverage_start
+  "$@"
+  set -- "$?"
+  shellspec_coverage_stop
+  return "$1"
 }
 
 shellspec_evaluation_run_script() {
@@ -181,7 +191,11 @@ shellspec_evaluation_run_source() {
     esac
   }
   __() { shellspec_interceptor "$@"; }
+  shellspec_coverage_start
   eval "shift; . \"$1\""
+  set -- "$?"
+  shellspec_coverage_stop
+  return "$1"
 }
 
 shellspec_interceptor() {

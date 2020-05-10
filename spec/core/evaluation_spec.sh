@@ -31,6 +31,9 @@ Describe "core/evaluation.sh"
   End
 
   Describe 'call evaluation'
+    Before shellspec_coverage_start
+    shellspec_coverage_stop() { :; } # Do not stop coverage
+
     It 'outputs to stdout and stderr'
       evaluation() { echo ok; echo err >&2; return 0; }
       When call evaluation
@@ -105,6 +108,9 @@ Describe "core/evaluation.sh"
   End
 
   Describe 'run evaluation'
+    Before shellspec_coverage_start
+    shellspec_coverage_stop() { :; } # Do not stop coverage
+
     It 'called then retrives stdout and stderr'
       evaluation() { echo ok; echo err >&2; return 0; }
       When run evaluation

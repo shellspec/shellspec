@@ -505,6 +505,136 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_around_call()"
+    _around_call() {
+      eval 'shellspec_call_before_hooks() { echo "before" "$@"; }'
+      eval 'shellspec_call_after_hooks() { echo "after" "$@"; }'
+      shellspec_around_call "$@" &&:
+      set -- $?
+      eval 'shellspec_call_before_hooks() { :; }'
+      eval 'shellspec_call_after_hooks() { :; }'
+      return "$1"
+    }
+
+    It 'calls statement'
+      When run _around_call echo ok
+      The line 1 of stdout should eq "before CALL"
+      The line 2 of stdout should eq "ok"
+      The line 3 of stdout should eq "after CALL"
+    End
+
+    Context "when error occured in before hooks"
+      _around_call() {
+        # shellcheck disable=SC2034
+        SHELLSPEC_HOOK="hook name"
+        eval 'shellspec_call_before_hooks() { echo "before" "$@"; return 12; }'
+        eval 'shellspec_call_after_hooks() { echo "after" "$@"; }'
+        shellspec_around_call "$@" &&:
+        set -- $?
+        eval 'shellspec_call_before_hooks() { :; }'
+        eval 'shellspec_call_after_hooks() { :; }'
+        return "$1"
+      }
+
+      It 'calls statement'
+        When run _around_call echo ok
+        The line 1 of stdout should eq "before CALL"
+        The line 2 of stdout should not eq "ok"
+        The line 3 of stdout should not eq "after CALL"
+        The stderr should include "hook name"
+        The status should eq 12
+      End
+    End
+
+    Context "when error occured in after hooks"
+      _around_call() {
+        # shellcheck disable=SC2034
+        SHELLSPEC_HOOK="hook name"
+        eval 'shellspec_call_before_hooks() { echo "before" "$@"; }'
+        eval 'shellspec_call_after_hooks() { echo "after" "$@"; return 12; }'
+        shellspec_around_call "$@" &&:
+        set -- $?
+        eval 'shellspec_call_before_hooks() { :; }'
+        eval 'shellspec_call_after_hooks() { :; }'
+        return "$1"
+      }
+
+      It 'calls statement'
+        When run _around_call echo ok
+        The line 1 of stdout should eq "before CALL"
+        The line 2 of stdout should eq "ok"
+        The line 3 of stdout should eq "after CALL"
+        The stderr should include "hook name"
+        The status should eq 12
+      End
+    End
+  End
+
+  Describe "shellspec_around_run()"
+    _around_run() {
+      eval 'shellspec_call_before_hooks() { echo "before" "$@"; }'
+      eval 'shellspec_call_after_hooks() { echo "after" "$@"; }'
+      shellspec_around_run "$@" &&:
+      set -- $?
+      eval 'shellspec_call_before_hooks() { :; }'
+      eval 'shellspec_call_after_hooks() { :; }'
+      return "$1"
+    }
+
+    It 'runs statement'
+      When run _around_run echo ok
+      The line 1 of stdout should eq "before RUN"
+      The line 2 of stdout should eq "ok"
+      The line 3 of stdout should eq "after RUN"
+    End
+
+    Context "when error occured in before hooks"
+      _around_run() {
+        # shellcheck disable=SC2034
+        SHELLSPEC_HOOK="hook name"
+        eval 'shellspec_call_before_hooks() { echo "before" "$@"; return 12; }'
+        eval 'shellspec_call_after_hooks() { echo "after" "$@"; }'
+        shellspec_around_run "$@" &&:
+        set -- $?
+        eval 'shellspec_call_before_hooks() { :; }'
+        eval 'shellspec_call_after_hooks() { :; }'
+        return "$1"
+      }
+
+      It 'runs statement'
+        When run _around_run echo ok
+        The line 1 of stdout should eq "before RUN"
+        The line 2 of stdout should not eq "ok"
+        The line 3 of stdout should not eq "after RUN"
+        The stderr should include "hook name"
+        The status should eq 12
+      End
+    End
+
+    Context "when error occured in after hooks"
+      _around_run() {
+        # shellcheck disable=SC2034
+        SHELLSPEC_HOOK="hook name"
+        eval 'shellspec_call_before_hooks() { echo "before" "$@"; }'
+        eval 'shellspec_call_after_hooks() { echo "after" "$@"; return 12; }'
+        shellspec_around_run "$@" &&:
+        set -- $?
+        eval 'shellspec_call_before_hooks() { :; }'
+        eval 'shellspec_call_after_hooks() { :; }'
+        return "$1"
+      }
+
+      It 'runs statement'
+        When run _around_run echo ok
+        The line 1 of stdout should eq "before RUN"
+        The line 2 of stdout should eq "ok"
+        The line 3 of stdout should eq "after RUN"
+        The stderr should include "hook name"
+        The status should eq 12
+      End
+    End
+  End
+
   Describe "shellspec_when()"
     init() {
       shellspec_off EVALUATION EXPECTATION
@@ -514,8 +644,8 @@ Describe "core/dsl.sh"
     mock() {
       shellspec_output() { echo "output:$1"; }
       shellspec_statement_evaluation() { :; }
-      shellspec_on() { echo "on:$*"; }
-      shellspec_off() { echo "off:$*"; }
+      eval 'shellspec_on() { echo "on:$*"; }'
+      eval 'shellspec_off() { echo "off:$*"; }'
     }
 
     It 'calls evaluation'
@@ -601,8 +731,8 @@ Describe "core/dsl.sh"
     mock() {
       shellspec_statement_preposition() { echo expectation; }
       shellspec_output() { echo "output:$1"; }
-      shellspec_on() { echo "on:$*"; }
-      shellspec_off() { echo "off:$*"; }
+      eval 'shellspec_on() { echo "on:$*"; }'
+      eval 'shellspec_off() { echo "off:$*"; }'
     }
 
     It 'calls expectation'
