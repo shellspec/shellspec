@@ -6,6 +6,8 @@ set -eu
 IFS="${SHELLSPEC_LF}${SHELLSPEC_TAB}"
 
 # Workaround for ksh
+shellspec_redefinable shellspec_puts
+shellspec_redefinable shellspec_putsn
 shellspec_redefinable shellspec_output
 shellspec_redefinable shellspec_output_failure_message
 shellspec_redefinable shellspec_output_failure_message_when_negated
