@@ -198,8 +198,6 @@ Describe "core/evaluation.sh"
     End
 
     Describe 'run script evaluation'
-      Before SHELLSPEC_COVERAGE_ENV=''
-
       Describe 'shellspec_shebang_arguments()'
         Parameters
           "#!/bin/sh -u"            "-u"
@@ -241,7 +239,7 @@ Describe "core/evaluation.sh"
           Before SHELLSPEC_SHEBANG_MULTIARG=''
           It 'treats as one argument'
             When run script "$BIN/echo"
-            The lines of stdout should equal 2
+            The stdout should include "-u -u -u -u"
           End
         End
 
@@ -249,16 +247,8 @@ Describe "core/evaluation.sh"
           Before SHELLSPEC_SHEBANG_MULTIARG=1
           It 'treats as multiple arguments'
             When run script "$BIN/echo"
-            The lines of stdout should equal 5
+            The stdout should not include "-u -u -u -u"
           End
-        End
-      End
-
-      Describe 'loading SHELLSPEC_COVERAGE_ENV'
-        Before SHELLSPEC_COVERAGE_ENV="$FIXTURE/env-script.sh"
-        It 'loads SHELLSPEC_COVERAGE_ENV script'
-          When run script "$BIN/null.sh"
-          The stdout should equal "env-script"
         End
       End
     End

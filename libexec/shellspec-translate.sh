@@ -184,12 +184,11 @@ filter=1
 [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
 
 putsn "#!/bin/sh"
+putsn "shellspec_coverage_env() { :; }"
 putsn "shellspec_coverage_start() { :; }"
 putsn "shellspec_coverage_stop() { :; }"
 if [ "$coverage" ]; then
-  putsn "set -o functrace"
   putsn "[ \"\$SHELLSPEC_COVERAGE_SETUP\" ] && . \"\$SHELLSPEC_COVERAGE_SETUP\""
-  putsn "shellspec_coverage_stop"
 fi
 [ "$fd" ] && putsn "exec 1>&$fd"
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
