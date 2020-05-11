@@ -402,7 +402,7 @@ case $? in
   1)
     # POSIX version (POSIX compliant)
     # ash(busybox)>=1.1.3, bash>=2.05b, dash>=0.5.2, ksh>=93q, mksh>=40
-    # yash>=2.30?, zsh>=3.1.9?, pdksh=none, posh=none, bosh=none
+    # yash>=2.30?, zsh>=3.1.9?, pdksh=none, posh=none, bosh>=2020/04/27
     shellspec_replace_all() { shellspec_replace_all_posix "$@"; }
     shellspec_includes() { shellspec_includes_posix "$@"; }
     shellspec_starts_with() { shellspec_starts_with_posix "$@"; }

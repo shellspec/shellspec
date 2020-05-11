@@ -152,7 +152,7 @@ These are tested by Docker (`contrib/test_in_docker.sh`).
 | Debian buster + Schily AN-2020-02-11 | 2020/01/24   |
 | Debian buster + Schily AN-2020-03-27 | 2020/03/25   |
 | Debian buster + Schily AN-2020-04-18 | _2020/04/10_ |
-| Debian buster                        | -            | snapshot-20190627 |
+| Debian buster + Schily AN-2020-05-11 | 2020/04/27   |
 
 - [Schily Bourne Shell][bosh] (`bosh`, `pbosh`)
 - Packages are available on [The NetBSD package collection][pkgsrc].

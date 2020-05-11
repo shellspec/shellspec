@@ -1,0 +1,3 @@
+FROM shellspec/schilytools:2020-05-11
+RUN useradd -m user
+ENV SH="pbosh"
