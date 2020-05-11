@@ -570,9 +570,6 @@ shellspec_exists_file() {
 }
 
 shellspec_readline() {
-  # Includes workaround for ksh with coverage (Do not use `IFS= read -r`)
-  set -- "$IFS" "$@" && IFS=''
-  read -r "$2" &&:
-  set -- "$?" "$1" && IFS="$2"
-  return "$1"
+  # Includes workaround for ksh with coverage (Do not use `while IFS= read -r`)
+  IFS= read -r "$1"
 }
