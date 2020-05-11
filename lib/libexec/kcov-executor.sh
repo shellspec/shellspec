@@ -14,26 +14,26 @@ executor() {
   create_workdirs "$count"
 
   #shellcheck disable=SC2034
-  SHELLSPEC_COVERAGE_SETUP="$SHELLSPEC_LIB/cov/kcov-setup.sh"
-  #shellcheck disable=SC2034
-  SHELLSPEC_COVERAGE_ENV="$SHELLSPEC_LIB/cov/kcov-env.sh"
+  SHELLSPEC_COVERAGE_SETUP="$SHELLSPEC_LIB/cov/kcov.sh"
 
   # The directory of $SHELLSPEC_KCOV_IN_FILE should be empty
   # kcov try to parse files around $SHELLSPEC_KCOV_IN_FILE
   mkdir -p "${SHELLSPEC_KCOV_IN_FILE%/*}"
-  translator --coverage --fd=537 --progress "$@" > "$SHELLSPEC_KCOV_IN_FILE"
+  translator --coverage --fd=9 --progress "$@" > "$SHELLSPEC_KCOV_IN_FILE"
 
   kcov_preprocess
 
   #shellcheck disable=SC2039,SC2086
-  "$SHELLSPEC_KCOV_PATH" \
+  (
+    "$SHELLSPEC_KCOV_PATH" \
     $SHELLSPEC_KCOV_COMMON_OPTS \
     $SHELLSPEC_KCOV_OPTS \
     --bash-method=DEBUG \
     --bash-parser="$SHELLSPEC_SHELL" \
     --bash-parse-files-in-dir=. \
     --configure=command-name="shellspec $*" \
-    "$SHELLSPEC_COVERAGE_DIR" "$SHELLSPEC_KCOV_IN_FILE" 537>&1
+    "$SHELLSPEC_COVERAGE_DIR" "$SHELLSPEC_KCOV_IN_FILE"
+  ) 9>&1
 
   eval "kcov_postprocess; return $?"
 }

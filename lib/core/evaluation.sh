@@ -165,9 +165,9 @@ shellspec_evaluation_run_script() {
       set -- "$(shellspec_shebang_arguments < "$1")" "$@"
       [ "$1" ] || shift
     fi
-    # shellcheck disable=SC1090
-    [ "$SHELLSPEC_COVERAGE_ENV" ] && . "$SHELLSPEC_COVERAGE_ENV"
-    eval "$SHELLSPEC_SHELL \"\$@\""
+    ( shellspec_coverage_env
+      eval "$SHELLSPEC_SHELL $SHELLSPEC_COVERAGE_SHELL_OPTIONS \"\$@\""
+    )
   fi
 }
 

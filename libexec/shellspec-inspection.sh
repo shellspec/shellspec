@@ -41,7 +41,8 @@ if "${0%/*}/shellspec-shebang" 2>/dev/null; then
   echo "SHELLSPEC_SHEBANG_MULTIARG=1"
 fi
 
-if [ "${BASH_VERSION:-}" ]; then
+# shellcheck disable=SC2039
+if (trap '' DEBUG) 2>/dev/null; then
   echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
 fi
 

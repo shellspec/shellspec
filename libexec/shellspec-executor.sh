@@ -42,6 +42,8 @@ error_handler() {
       *internal\ error:\ j_async:\ bad\ nzombie*) ;;
       # Workaround for loksh 6.5 when executed as a background process
       *internal\ error:\ j_set_async:\ bad\ nzombie*) ;;
+      # Workaround for ksh with coverage
+      *version*sh*AT\&T\ Research*) ;;
       *) errors="${errors}${line}${LF}" error_handler_status=1
     esac
   done
