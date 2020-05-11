@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Coverage support for zsh and ksh. (#62)
 
-## [0.24.0] - 2020-05-21
+## [0.24.0] - 2020-05-11
 
 ### Added
 
