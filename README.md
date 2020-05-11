@@ -621,7 +621,7 @@ ShellSpec has integrated coverage feature. To use this feature [Kcov][] (v35 or 
 [Kcov]: https://github.com/SimonKagstrom/kcov
 
 - How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
-- Be aware that `bash` is the only shell which can be used for coverage.
+- Shells that support coverage are **bash**, **zsh**, and **ksh**.
 - Coverage measures only Evaluation and `Include`
 
 By default only files whose names contain `.sh` are coverage targeted.
