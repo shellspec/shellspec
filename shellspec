@@ -248,7 +248,7 @@ Usage: shellspec [options...] [files or directories...]
                                         --path-strip-level=1
                                       To include files without extension, specify --include-pattern
                                       without '.sh' and filter with --include-*/--exclude-* options
-        --cov-ksh-workaround WA     Specify the workaround to use [default: "default"]
+        --cov-ksh-workaround W/A    Specify the workaround to use [default: "default"]
                                       [default]   Use default workaround (fast)
                                       [strict]    Use strict workaround (slow)
 
@@ -500,7 +500,7 @@ if [ "$SHELLSPEC_KCOV" ]; then
     abort "Kcov v35 or later required. [current: $kcov_verson]"
   fi
   if [ ! "$SHELLSPEC_KCOV_COMPATIBLE_SHELL" ]; then
-    abort "Require to use bash to run kcov (e.g: --shell bash)."
+    abort "Require to use bash/zsh/ksh to run kcov (e.g: --shell bash)."
   fi
   SHELLSPEC_KCOV_VERSION=$kcov_verson
 fi
