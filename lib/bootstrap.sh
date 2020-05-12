@@ -62,3 +62,9 @@ case $- in
   *e*) SHELLSPEC_ERREXIT="-e" ;;
   *) SHELLSPEC_ERREXIT="+e"; set -e ;;
 esac
+
+shellspec_coverage_disabled() {
+  shellspec_coverage_env() { :; }
+  shellspec_coverage_start() { :; }
+  shellspec_coverage_stop() { :; }
+}

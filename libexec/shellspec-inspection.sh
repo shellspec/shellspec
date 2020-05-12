@@ -43,6 +43,7 @@ fi
 
 # shellcheck disable=SC2039
 if (trap '' DEBUG) 2>/dev/null; then
+  echo "SHELLSPEC_DEBUG_TRAP=1"
   echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
 fi
 

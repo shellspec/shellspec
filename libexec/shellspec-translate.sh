@@ -184,14 +184,12 @@ filter=1
 [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
 
 putsn "#!/bin/sh"
-putsn "shellspec_coverage_env() { :; }"
-putsn "shellspec_coverage_start() { :; }"
-putsn "shellspec_coverage_stop() { :; }"
-if [ "$coverage" ]; then
-  putsn "[ \"\$SHELLSPEC_COVERAGE_SETUP\" ] && . \"\$SHELLSPEC_COVERAGE_SETUP\""
-fi
+putsn "[ \"\$SHELLSPEC_DEBUG_TRAP\" ] && trap - DEBUG"
+putsn "shellspec_coverage_setup() { shellspec_coverage_disabled; }"
+[ "$coverage" ] && putsn ". \"\${SHELLSPEC_COVERAGE_SETUP:-/dev/null}\""
 [ "$fd" ] && putsn "exec 1>&$fd"
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
+putsn "shellspec_coverage_setup \"\$SHELLSPEC_SHELL_TYPE\""
 putsn "shellspec_metadata $metadata"
 
 log() { if [ -e /dev/tty ]; then puts "$@" >/dev/tty; fi; }
