@@ -5,5 +5,5 @@
 if [ "$SHELLSPEC_COVERAGE_KSH_WORKAROUND" ]; then
   trap '(ulimit -t unlimited; echo "kcov@${.sh.file}@${LINENO}@" >/dev/fd/$KCOV_BASH_XTRACEFD)' DEBUG
 else
-  trap '(echo "kcov@${.sh.file}@${LINENO}@" >/dev/fd/$KCOV_BASH_XTRACEFD; unset IFS); IFS=$IFS' DEBUG
+  trap '(echo "kcov@${.sh.file}@${LINENO}@" >/dev/fd/$KCOV_BASH_XTRACEFD); IFS=$IFS' DEBUG
 fi
