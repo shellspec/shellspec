@@ -1,0 +1,5 @@
+#!/bin/bash
+#ENV export BASH_ENV="$SHELLSPEC_ENV"
+
+set -o functrace
+trap 'echo "kcov@${BASH_SOURCE:-}@${LINENO}@" >&$KCOV_BASH_XTRACEFD' DEBUG
