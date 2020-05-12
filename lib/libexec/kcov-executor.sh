@@ -3,7 +3,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 
-use includes replace_all readline
+use includes replace_all
 
 executor() {
   #shellcheck disable=SC2039
@@ -79,28 +79,28 @@ kcov_postprocess() {
 }
 
 kcov_fix_index() {
-  while readline line; do
+  while IFS= read -r line; do
     includes "$line" "\"link\":\"$1/" && replace_all line "$1" "$2"
     putsn "$line"
   done
 }
 
 kcov_fix_coverage() {
-  while readline line; do
+  while IFS= read -r line; do
     includes "$line" "\"file\": \"$1/" && replace_all line "$1" "$2"
     putsn "$line"
   done
 }
 
 kcov_fix_sonarqube() {
-  while readline line; do
+  while IFS= read -r line; do
     includes "$line" "<file path=\"$1/" && replace_all line "$1" "$2"
     putsn "$line"
   done
 }
 
 kcov_fix_cobertura() {
-  while readline line; do
+  while IFS= read -r line; do
     includes "$line" "<source>$1" && replace_all line "$1" "$2"
     includes "$line" "$2/</source>" && replace_all line "/</source>" "</source>"
     putsn "$line"
@@ -108,7 +108,7 @@ kcov_fix_cobertura() {
 }
 
 kcov_add_extra_info() {
-  while readline line; do
+  while IFS= read -r line; do
     if includes "$line" "</body>"; then
       putsn "<table width='100%' class='shellspecVersionInfo'>"
       putsn "<tr><td class='versionInfo'>"

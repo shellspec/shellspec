@@ -67,7 +67,7 @@ export SHELLSPEC_SEED=''
 export SHELLSPEC_COVERAGE_SETUP=''
 export SHELLSPEC_COVERAGE_SHELL_OPTIONS=''
 export SHELLSPEC_COVERAGE_DIR=''
-export SHELLSPEC_COVERAGE_KSH_WORKAROUND='default'
+export SHELLSPEC_COVERAGE_KSH_WORKAROUND=''
 export SHELLSPEC_KCOV=''
 export SHELLSPEC_KCOV_COMPATIBLE_SHELL=''
 export SHELLSPEC_KCOV_VERSION=''
@@ -249,9 +249,6 @@ Usage: shellspec [options...] [files or directories...]
                                         --path-strip-level=1
                                       To include files without extension, specify --include-pattern
                                       without '.sh' and filter with --include-*/--exclude-* options
-        --cov-ksh-workaround W/A    Specify the workaround to use [default: "default"]
-                                      [default]   Use default workaround (fast)
-                                      [strict]    Use strict workaround (slow)
 
   **** Utility ****
 
@@ -402,12 +399,7 @@ parse_options() {
       --kcov-options) [ "${2:-}" ] || invalid 'Require OPTIONS.'
         SHELLSPEC_KCOV_OPTS="${SHELLSPEC_KCOV_OPTS}${SHELLSPEC_KCOV_OPTS:+ }$2"
         shift ;;
-      --cov-ksh-workaround) [ "${2:-}" ] || invalid 'Require WORKAROUND.'
-        case $2 in (default|strict) ;;
-          *) invalid 'Invalid WORKAROUND.'
-        esac
-        SHELLSPEC_COVERAGE_KSH_WORKAROUND=$2
-        shift ;;
+      --coverage-ksh-workaround) SHELLSPEC_COVERAGE_KSH_WORKAROUND=1 ;;
       -p | --profile) SHELLSPEC_PROFILER=1 ;;
       +p | --no-profile) SHELLSPEC_PROFILER='' ;;
       --profile-limit) [ "${2:-}" ] || invalid 'Require N.'

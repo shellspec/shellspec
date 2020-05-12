@@ -405,8 +405,8 @@ shellspec_is_temporary_pending() {
 
 shellspec_cat() {
   # shellcheck disable=SC2154
-  while shellspec_readline shellspec_cat_line || [ "$shellspec_cat_line" ]; do
-    shellspec_putsn "$shellspec_cat_line"
+  while IFS= read -r shellspec_cat || [ "$shellspec_cat" ]; do
+    shellspec_putsn "$shellspec_cat"
   done
 }
 
