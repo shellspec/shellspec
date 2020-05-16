@@ -168,7 +168,7 @@ Usage: shellspec [options...] [files or directories...]
 
   Using + instead of - for short options causes reverses the meaning
 
-    -s, --shell SHELL               Specify a path of shell [default: current shell]
+    -s, --shell SHELL               Specify a path of shell [default: "auto" (current shell)]
         --require MODULE            Require a MODULE (shell script file)
     -e, --env NAME=VALUE            Set environment variable
         --env-from ENV-SCRIPT       Set environment variable from shell script file
@@ -304,7 +304,7 @@ parse_options() {
       --color | --colour) SHELLSPEC_COLOR=1 ;;
       --no-color | --no-colour) SHELLSPEC_COLOR='' ;;
       -s | --shell) [ "${2:-}" ] || invalid 'Require SHELL.'
-        SHELLSPEC_SHELL=$2
+        [ "$2" = "auto" ] && SHELLSPEC_SHELL="" || SHELLSPEC_SHELL=$2
         shift ;;
       --random) [ "${2:-}" ] || invalid 'Require TYPE[:SEED].'
         case ${2%%:*} in
