@@ -34,7 +34,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 - [Introduction](#introduction)
   - [Features](#features)
-  - [Supported shells](#supported-shells)
+  - [Supported platforms and shells](#supported-platforms-and-shells)
   - [Requirements](#requirements)
 - [Tutorial](#tutorial)
   - [Installation](#installation)
@@ -130,7 +130,7 @@ testing tools. Of course ShellSpec is tested by ShellSpec.
 
 Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer
 
-### Supported shells
+### Supported platforms and shells
 
 `bash`, `busybox (ash)`, `bosh`, `dash`, `gwsh`, `ksh`, `loksh`, `mksh`, `oksh`, `pdksh`, `posh`, `yash`, `zsh`
 
@@ -147,7 +147,7 @@ Tested Platforms
 | Windows 10 1909 (Ubuntu 18.04 on WSL)                         | manual                                                        |
 | macOS 10.15                                                   | manual                                                        |
 | BSD (OpenBSD 6.6, NetBSD 9.0)                                 | manual                                                        |
-| Solaris 10, 11                                                | manual                                                        |
+| Solaris 10, 11, AIX                                           | manual                                                        |
 
 [Tested version details](docs/shells.md)
 

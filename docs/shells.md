@@ -14,6 +14,7 @@
   - [Manual test](#manual-test)
     - [Solaris](#solaris)
     - [OpenBSD / NetBSD](#openbsd--netbsd)
+    - [AIX](#aix)
 - [Confirmation for bug](#confirmation-for-bug)
 - [Built-in commands](#built-in-commands)
 
@@ -173,6 +174,8 @@ These are tested by Docker (`contrib/test_in_docker.sh`).
 
 This is not continuous test, it may break sometimes...
 
+- \* Reported by user
+
 #### Solaris
 
 | Platform       | /bin/sh               | /usr/bin/ksh      | /usr/sunos/bin/ksh | /usr/sunos/bin/sh |
@@ -187,6 +190,12 @@ This is not continuous test, it may break sometimes...
 | FreeBSD 13 current | FreeBSD sh (ash)                               | -            |
 | **OpenBSD 6.6**    | OpenBSD ksh (POSIX mode pdksh) 5.2.14          | pdksh 5.2.14 |
 | **NetBSD 9.0**     | NetBSD sh (ash) 20181212 BUILD:20200214000628Z | pdksh 5.2.14 |
+
+#### AIX
+
+| Platform      | Shells      |
+| ------------- | ----------- |
+| AIX 7.2.1.4 * | bash 4.3.30 |
 
 ## Confirmation for bug
 
