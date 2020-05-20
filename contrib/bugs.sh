@@ -152,12 +152,12 @@ HERE
 )
 (
   title="16: 'command' can not prevent error (bash = 2.03)"
-  func() {
+  foo() {
     set -e
     command false &&:
     echo ok
   }
-  ret=$(func)
+  ret=$(foo)
   [ "$ret" = "ok" ] && no_problem || affect
 )
 
@@ -200,15 +200,15 @@ HERE
 
 (
   title='21: cat not ignore set -e with eval (pdksh = around 5.2.14 on debian 3.0)'
-  func() {
+  foo() {
     set -e
-    foo() {
+    bar() {
       eval "false"
       echo ok
     }
-    foo ||:
+    bar ||:
   }
-  ret=$(func)
+  ret=$(foo)
   [ "$ret" = "ok" ] && no_problem || affect
 )
 
@@ -294,8 +294,8 @@ HERE
 
 (
   title='29: case will be aborted when exit status is error (mksh <= 35.2, pdksh 5.2.14 on debian 2.2)'
-  func() { set -e; case 1 in (*) false &&: ;; esac; echo ok; }
-  ret=$(func)
+  foo() { set -e; case 1 in (*) false &&: ;; esac; echo ok; }
+  ret=$(foo)
   [ "$ret" = "ok" ] && no_problem || affect
 )
 
@@ -400,9 +400,9 @@ HERE
 (
   title='40: can not return exit status from subshell (bash 4.1.5, 4.2)'
   ret() { return $1; }
-  func() { set -e; ret 123; }
+  foo() { set -e; ret 123; }
   set +e
-  (func)
+  (foo)
   [ $? = 123 ] && no_problem || affect
 )
 

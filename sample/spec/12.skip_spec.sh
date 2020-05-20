@@ -84,15 +84,15 @@ Describe 'skip sample'
 
   Describe 'conditional skip'
     Example 'skip1'
-      func() { return 0; }
-      Skip if "function returns success" func
+      conditions() { return 0; }
+      Skip if "function returns success" conditions
       When call echo ok
       The stdout should eq ok
     End
 
     Example 'skip2'
-      func() { echo "skip"; }
-      Skip if 'function returns "skip"' [ "$(func)" = "skip" ]
+      conditions() { echo "skip"; }
+      Skip if 'function returns "skip"' [ "$(conditions)" = "skip" ]
       When call echo ok
       The stdout should eq ok
     End

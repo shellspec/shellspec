@@ -2,7 +2,7 @@
 
 Describe '%text'
   It 'outputs to stdout'
-    func() {
+    foo() {
       %text
       #|aaa
       #|bbb
@@ -10,7 +10,7 @@ Describe '%text'
       #|
     }
 
-    When call func
+    When call foo
     The line 1 of entire output should eq 'aaa'
     The line 2 of entire output should eq 'bbb'
     The line 3 of entire output should eq "ccc"
@@ -19,7 +19,7 @@ Describe '%text'
   End
 
   It 'outputs to variable'
-    func() {
+    foo() {
       value=$(
         %text
         #|aaa
@@ -29,7 +29,7 @@ Describe '%text'
       )
     }
 
-    When call func
+    When call foo
     The line 1 of value "$value" should eq 'aaa'
     The line 2 of value "$value" should eq 'bbb'
     The line 3 of value "$value" should eq "ccc"

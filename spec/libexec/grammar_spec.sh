@@ -24,7 +24,7 @@ Describe "libexec/grammar.sh"
     It 'translate to directive when it matches directive'
       is_function_name() { true; }
       directive() { echo directive; return 0; }
-      When call mapping "func()" "{ %directive; }"
+      When call mapping "foo()" "{ %directive; }"
       The stdout should eq directive
     End
   End

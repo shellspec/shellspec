@@ -240,7 +240,7 @@ Describe "core/dsl.sh"
     Context 'when example is execution target'
       prepare() { shellspec_invoke_example() { echo 'invoke_example'; }; }
       BeforeRun SHELLSPEC_ENABLED=1 SHELLSPEC_FILTER=1 SHELLSPEC_DRYRUN=''
-      func() { printf foo; false; printf bar; }
+      foo() { printf 1; false; printf 2; }
 
       Context 'errexit is on'
         Set 'errexit:on'
@@ -255,16 +255,16 @@ Describe "core/dsl.sh"
           The stdout should include 'invoke_example'
         End
 
-        Specify "The func() stops with 'false' with run evaluation"
+        Specify "The foo() stops with 'false' with run evaluation"
           Skip if 'shell flag handling broken' posh_shell_flag_bug
-          When run func
-          The stdout should eq 'foo'
+          When run foo
+          The stdout should eq '1'
           The status should be failure
         End
 
-        Specify "The func() does NOT stop with 'false' with call evaluation"
-          When call func
-          The stdout should eq 'foobar'
+        Specify "The foo() does NOT stop with 'false' with call evaluation"
+          When call foo
+          The stdout should eq '12'
           The status should be success
         End
       End
@@ -282,15 +282,15 @@ Describe "core/dsl.sh"
           The stdout should include 'invoke_example'
         End
 
-        Specify "The func() does not stop with 'false' with run evaluation"
-          When run func
-          The stdout should eq 'foobar'
+        Specify "The foo() does not stop with 'false' with run evaluation"
+          When run foo
+          The stdout should eq '12'
           The status should be success
         End
 
-        Specify "The func() does not stop with 'false' with run evaluation"
-          When call func
-          The stdout should eq 'foobar'
+        Specify "The foo() does not stop with 'false' with run evaluation"
+          When call foo
+          The stdout should eq '12'
           The status should be success
         End
       End
@@ -298,15 +298,15 @@ Describe "core/dsl.sh"
       Context 'errexit is off (by default)'
         Before "SHELLSPEC_ERREXIT=+e"
 
-        Specify "The func() does not stop with 'false' with run evaluation"
-          When run func
-          The stdout should eq 'foobar'
+        Specify "The foo() does not stop with 'false' with run evaluation"
+          When run foo
+          The stdout should eq '12'
           The status should be success
         End
 
-        Specify "The func() does not stop with 'false' with run evaluation"
-          When call func
-          The stdout should eq 'foobar'
+        Specify "The foo() does not stop with 'false' with run evaluation"
+          When call foo
+          The stdout should eq '12'
           The status should be success
         End
       End

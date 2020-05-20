@@ -5,8 +5,8 @@ Describe "core/subjects/stdout.sh"
 
   Describe "stdout subject"
     Example 'example'
-      func() { echo "foo"; }
-      When call func
+      foo() { echo "foo"; }
+      When call foo
       The stdout should equal "foo"
       The output should equal "foo" # alias for stdout
     End
@@ -32,8 +32,8 @@ Describe "core/subjects/stdout.sh"
 
   Describe "entire stdout subject"
     Example 'example'
-      func() { echo "foo"; }
-      When call func
+      foo() { echo "foo"; }
+      When call foo
       The entire stdout should equal "foo${IFS%?}"
       The entire output should equal "foo${IFS%?}"
     End

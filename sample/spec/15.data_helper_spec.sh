@@ -45,8 +45,8 @@ Describe 'Data helper'
     End
 
     Example 'from function'
-      func() { printf '%s\n' "$@"; }
-      Data func a b c | tr 'abc' 'ABC' # comment
+      foo() { printf '%s\n' "$@"; }
+      Data foo a b c | tr 'abc' 'ABC' # comment
       When call cat -
       The first line of output should eq 'A'
       The second line of output should eq 'B'

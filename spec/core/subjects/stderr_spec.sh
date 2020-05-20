@@ -5,8 +5,8 @@ Describe "core/subjects/stderr.sh"
 
   Describe "stderr subject"
     Example 'example'
-      func() { echo "foo" >&2; }
-      When call func
+      foo() { echo "foo" >&2; }
+      When call foo
       The stderr should equal "foo"
       The error should equal "foo" # alias for stderr
     End
@@ -32,8 +32,8 @@ Describe "core/subjects/stderr.sh"
 
   Describe "entire stderr subject"
     Example 'example'
-      func() { echo "foo" >&2; }
-      When call func
+      foo() { echo "foo" >&2; }
+      When call foo
       The entire stderr should equal "foo${IFS%?}"
       The entire error should equal "foo${IFS%?}"
     End

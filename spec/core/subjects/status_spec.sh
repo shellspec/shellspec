@@ -5,8 +5,8 @@ Describe "core/subjects/status.sh"
 
   Describe "status subject"
     Example 'example'
-      func() { return 12; }
-      When call func
+      foo() { return 12; }
+      When call foo
       The status should equal 12
     End
 

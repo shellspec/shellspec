@@ -104,14 +104,14 @@ Describe "core/syntax.sh"
     It "dispatches to shellspec_subject_function with function"
       shellspec_subject_function() { echo shellspec_subject_function; }
       BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_function:"'
-      When run shellspec_syntax_dispatch "subject" "func()"
+      When run shellspec_syntax_dispatch "subject" "foo()"
       The stdout should eq "shellspec_subject_function"
     End
 
     It "dispatches to shellspec_subject_function with function and arguments"
       shellspec_subject_function() { echo shellspec_subject_function; }
       BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_function:"'
-      When run shellspec_syntax_dispatch "subject" "func()" arg
+      When run shellspec_syntax_dispatch "subject" "foo()" arg
       The stdout should eq "shellspec_subject_function"
     End
 

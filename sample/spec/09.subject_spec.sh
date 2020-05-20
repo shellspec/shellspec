@@ -2,21 +2,21 @@
 
 Describe 'subject sample'
   Describe 'stdout'
-    func() { echo "ok"; }
+    foo() { echo "ok"; }
 
     It 'uses the stdout as the subject'
-      When call func
+      When call foo
       The stdout should eq "ok"
     End
 
     It 'has an alias "output"'
-      When call func
+      When call foo
       The output should eq "ok"
     End
 
     Describe 'with entire'
       It 'does not remove last LF'
-        When call func
+        When call foo
         The entire output should eq "ok${SHELLSPEC_LF}"
       End
 
@@ -32,63 +32,63 @@ Describe 'subject sample'
   End
 
   Describe 'stderr'
-    func() { echo "err" >&2; }
+    foo() { echo "err" >&2; }
 
     It 'uses the stderr as the subject'
-      When call func
+      When call foo
       The stderr should eq "err"
     End
 
     It 'has an alias "error"'
-      When call func
+      When call foo
       The error should eq "err"
     End
 
     Describe 'with entire'
       It 'does not remove last LF'
-        When call func
+        When call foo
         The entire error should eq "err${SHELLSPEC_LF}"
       End
     End
   End
 
   Describe 'status'
-    func() { return 123; }
+    foo() { return 123; }
 
     It 'uses the status as the subject'
-      When call func
+      When call foo
       The status should eq 123
     End
   End
 
   Describe 'variable'
-    func() { var=456; }
+    foo() { var=456; }
 
     It 'uses the variable as the subject'
-      When call func
+      When call foo
       The variable var should eq 456
     End
   End
 
   Describe 'value'
-    func() { var=789; }
+    foo() { var=789; }
 
     It 'uses the value as the subject'
-      When call func
+      When call foo
       The value "$var" should eq 789
     End
   End
 
   Describe 'function'
-    func() { echo "ok"; }
+    foo() { echo "ok"; }
 
     It 'is alias for value'
-      The function "func" should eq "func"
-      The "func()" should eq "func" # shorthand for function
+      The function "foo" should eq "foo"
+      The "foo()" should eq "foo" # shorthand for function
     End
 
     It 'uses with result modifier'
-      The result of "func()" should eq "ok"
+      The result of "foo()" should eq "ok"
     End
   End
 

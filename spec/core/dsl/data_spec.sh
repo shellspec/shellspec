@@ -73,10 +73,10 @@ Describe 'Data helper'
   End
 
   Describe 'function style'
-    func() { printf '%s\n' "$@"; }
+    foo() { printf '%s\n' "$@"; }
 
     It 'reads data as stdin from function'
-      Data func a b c
+      Data foo a b c
       When call output
       The first line of output should eq 'a'
       The second line of output should eq 'b'
@@ -85,7 +85,7 @@ Describe 'Data helper'
     End
 
     It 'reads data as stdin from function with filter'
-      Data func a b c | tr 'abc' 'ABC' # comment
+      Data foo a b c | tr 'abc' 'ABC' # comment
       When call output
       The first line of output should eq 'A'
       The second line of output should eq 'B'
