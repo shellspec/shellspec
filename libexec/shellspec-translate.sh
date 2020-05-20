@@ -195,7 +195,7 @@ fi
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_metadata $metadata"
 
-log() { if [ -e /dev/tty ]; then puts "$@" >/dev/tty; fi; }
+log() { if [ -t 1 ]; then puts "$@" >/dev/tty; fi; }
 
 specfile_count=0
 count_specfile() {
