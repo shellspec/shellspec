@@ -26,7 +26,7 @@ shellspec_hook_index() {
 shellspec_call_hook() {
   eval "set -- \"\$1\" \"\${SHELLSPEC_$1_$2#*:}\" \"\${SHELLSPEC_$1_$2%%:*}\""
   # shellcheck disable=SC2034
-  SHELLSPEC_HOOK_GROUP_ID=${3%#*} SHELLSPEC_HOOK_LINENO=${3#*#}
+  SHELLSPEC_HOOK_GROUP_ID=${3%\#*} SHELLSPEC_HOOK_LINENO=${3#*\#}
 
   case $1 in
     BEFORE_ALL)

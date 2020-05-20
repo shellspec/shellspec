@@ -2,6 +2,21 @@
 
 set -eu
 
+log() { echo "$@" > /dev/tty; }
+
+if [ "${PIPEFAIL:-}" ]; then
+  # shellcheck disable=SC2039
+  set -o pipefail 2>/dev/null && log "pipefail enabled"
+  PIPEFAIL=''
+fi
+
+if [ "${EXTGLOB:-}" ]; then
+  # shellcheck disable=SC2039
+  [ "${BASH_VERSION:-}" ] && shopt -s extglob && log "extglob enabled"
+  [ "${ZSH_VERSION:-}" ] && setopt extendedglob && log "extendedglob enabled"
+  EXTGLOB=''
+fi
+
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
 IFS="${SHELLSPEC_LF}${SHELLSPEC_TAB}"
 
