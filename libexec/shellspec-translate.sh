@@ -192,7 +192,7 @@ putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_coverage_setup \"\$SHELLSPEC_SHELL_TYPE\""
 putsn "shellspec_metadata $metadata"
 
-log() { if [ -e /dev/tty ]; then puts "$@" >/dev/tty; fi; }
+log() { if (: > /dev/tty) 2>/dev/null; then puts "$@" >/dev/tty; fi; }
 
 specfile_count=0
 count_specfile() {
