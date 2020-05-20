@@ -28,11 +28,6 @@ shellspec_redefinable shellspec_subject
 shellspec_redefinable shellspec_syntax_dispatch
 shellspec_redefinable shellspec_set_long
 shellspec_redefinable shellspec_import
-shellspec_redefinable shellspec_coverage_setup
-shellspec_redefinable   shellspec_coverage_env
-shellspec_redefinable   shellspec_coverage_start
-shellspec_redefinable   shellspec_coverage_stop
-
 
 # Workaround for busybox-1.1.3
 shellspec_unbuiltin "ps"
