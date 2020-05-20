@@ -59,7 +59,7 @@ shellspec_evaluation_run_subshell() {
 # ( ... ) not return exit status
 shellspec_evaluation_run_subshell_workaround() {
   case $1 in (*e*) set +e; esac
-  (set -e; foo() { return 2; }; foo)
+  (set -e; foo() { return 2; }; foo) 2>/dev/null
   if [ $? -eq 1 ]; then
     shellspec_evaluation_run_subshell() {
       #shellcheck disable=SC2034

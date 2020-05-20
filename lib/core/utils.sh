@@ -28,7 +28,7 @@ if [ "${BASH_VERSION:-}" ]; then
 fi
 
 # Workaround for mksh, pdksh, posh. it can not be set within eval.
-if ( set +e; eval "set -e"; case $- in (*e*) false; esac ); then
+if ( set +e; eval "set -e"; case $- in (*e*) false; esac ) 2>/dev/null; then
   #shellcheck disable=SC2034
   SHELLSPEC_SHELL_OPTION="shellspec_set_option"
 fi

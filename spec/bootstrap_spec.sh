@@ -34,7 +34,7 @@ Describe 'bootstrap.sh'
         while [ ! -s "$SIGNAL" ]; do :; done
         : > "$SIGNAL"
       ) &
-    }
+    } 2>/dev/null
     Before fake_profiler
     BeforeCall "SHELLSPEC_PROFILER_SIGNAL='$SIGNAL'"
 

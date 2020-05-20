@@ -36,7 +36,7 @@ trans_block_end() {
 }
 
 yield() {
-  case $ENABLED in (*1*) case $FILTER in (*1*) proc "$1"; esac; esac
+  case $ENABLED in (*1*) case $FILTER in (*1*) disp "$1"; esac; esac
 }
 
 syntax_error() {
@@ -72,10 +72,10 @@ case ${SHELLSPEC_LIST%:*} in
     example() { examples=$(($examples + $1)); }
     # shellcheck disable=SC2153
     case ${SHELLSPEC_LIST#examples:} in
-      id      ) proc() { example "$1"; putsn "$SPECFILE:@$EXAMPLE_ID"; }; ;;
-      examples) proc() { example "$1"; putsn "$SPECFILE:@$EXAMPLE_ID"; }; ;;
-      lineno)   proc() { example "$1"; putsn "$SPECFILE:$LINENO_BEGIN"; }; ;;
-      '')       proc() { example "$1"; }; ;;
+      id      ) disp() { example "$1"; putsn "$SPECFILE:@$EXAMPLE_ID"; }; ;;
+      examples) disp() { example "$1"; putsn "$SPECFILE:@$EXAMPLE_ID"; }; ;;
+      lineno)   disp() { example "$1"; putsn "$SPECFILE:$LINENO_BEGIN"; }; ;;
+      '')       disp() { example "$1"; }; ;;
     esac
 esac
 
