@@ -44,6 +44,7 @@ trans_block_example() {
 }
 
 trans_block_end() {
+  set -- "${1:-}"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "}; SHELLSPEC_LINENO_END=$lineno_end"
   putsn "shellspec_filter '$enabled'"
