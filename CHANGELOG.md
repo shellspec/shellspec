@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Coverage support for zsh and ksh. (#62)
 
+## [0.24.1] - 2020-05-22
+
+### Fixed
+
+- Fixed broken `Todo`.
+- Fixed a bug that caused an error when "--kcov" was specified and /dev/tty no be writable. (#67)
+- Fixed a bug when enabled extendedglob for zsh.
+
 ## [0.24.0] - 2020-05-11
 
 ### Added
