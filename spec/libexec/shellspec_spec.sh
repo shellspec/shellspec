@@ -164,7 +164,7 @@ Describe "libexec/shellspec.sh"
     End
 
     Context "when ps command not found"
-      Before PATH=''
+      ps() { exit 127; }
       It "returns nothing"
         When call read_ps 111
         The status should be success
