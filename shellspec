@@ -105,7 +105,11 @@ readlinkf() {
   done 2>/dev/null; cd "$2" && OLDPWD=$3 && [ ${5+x} ] && printf '%s\n' "$5"
 }
 
-if ! SHELLSPEC_PATH=$(readlinkf "$0"); then
+self=$0
+[ "${BASH_SOURCE:-}" ] && eval "self=\${BASH_SOURCE[0]}"
+( eval "[ \"\${.sh.file:-}\" ]" ) 2>/dev/null && eval "self=\${.sh.file}"
+
+if ! SHELLSPEC_PATH=$(readlinkf "$self"); then
  echo "Failed to detect shellspec real path." >&2
  exit 1
 fi
