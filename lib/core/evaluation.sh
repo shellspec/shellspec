@@ -1,7 +1,5 @@
 #shellcheck shell=sh
 
-SHELLSPEC_SHELL_OPTIONS=''
-
 SHELLSPEC_STDIN_DEV=/dev/null
 (: < /dev/tty) 2>/dev/null && SHELLSPEC_STDIN_DEV=/dev/tty
 

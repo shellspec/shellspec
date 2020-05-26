@@ -801,8 +801,8 @@ Describe "core/dsl.sh"
       When run shellspec_skip 123 "skip reason"
       The stdout should not include 'output:SKIP'
       The stdout should include 'SKIP:on'
-      The stdout should include 'skip_id:[unset]'
-      The stdout should include 'skip_reason:[unset]'
+      The stdout should include 'skip_id:'
+      The stdout should include 'skip_reason:'
       The stdout should include 'example_no:1'
     End
 

@@ -141,4 +141,9 @@ shellspec_spec_helper_configure() {
     set -- "a*b" "a[*]"
     [ "${1#"$2"}" = "a*b" ] && return 1 || return 0
   }
+
+  shellspec_before :
+  shellspec_after :
+  shellspec_before_all :
+  shellspec_after_all :
 }
