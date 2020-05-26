@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2016
 
 shellspec_output_METADATA() {
-  shellspec_output_meta "info:${SHELLSPEC_INFO:-}" "shell:$SHELLSPEC_SHELL" \
+  shellspec_output_meta "info:$SHELLSPEC_INFO" "shell:$SHELLSPEC_SHELL" \
     "shell_type:$SHELLSPEC_SHELL_TYPE" "shell_version:$SHELLSPEC_SHELL_VERSION"
 }
 
@@ -18,9 +18,9 @@ shellspec_output_END() {
 }
 
 shellspec_output_EXAMPLE() {
-  shellspec_output_example "id:${SHELLSPEC_EXAMPLE_ID:-}" \
-    "block_no:${SHELLSPEC_BLOCK_NO:-}" "example_no:${SHELLSPEC_EXAMPLE_NO:-}" \
-    "focused:${SHELLSPEC_FOCUSED:-}" "description:$SHELLSPEC_DESCRIPTION"
+  shellspec_output_example "id:$SHELLSPEC_EXAMPLE_ID" \
+    "block_no:$SHELLSPEC_BLOCK_NO" "example_no:$SHELLSPEC_EXAMPLE_NO" \
+    "focused:$SHELLSPEC_FOCUSED" "description:$SHELLSPEC_DESCRIPTION"
 }
 
 shellspec_output_EVALUATION() {
@@ -116,25 +116,25 @@ shellspec_output_UNMATCHED() {
 
 shellspec_output_SYNTAX_ERROR() {
   shellspec_output_statement "tag:bad" "note:SYNTAX ERROR" "fail:y" \
-    "message:${SHELLSPEC_EXPECTATION:-}"
+    "message:$SHELLSPEC_EXPECTATION"
   shellspec_output_raw_append "failure_message:${1:-unknown syntax error}"
 }
 
 shellspec_output_SYNTAX_ERROR_EVALUATION() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:${SHELLSPEC_EVALUATION:-}"
+    "message:$SHELLSPEC_EVALUATION"
   shellspec_output_raw_append "failure_message:${1:-unknown syntax error}"
 }
 
 shellspec_output_SYNTAX_ERROR_EXPECTATION() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:${SHELLSPEC_EXPECTATION:-}"
+    "message:$SHELLSPEC_EXPECTATION"
   shellspec_output_raw_append "failure_message:${1:-unknown syntax error}"
 }
 
 shellspec_output_SYNTAX_ERROR_MATCHER_REQUIRED() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:${SHELLSPEC_EXPECTATION:-}"
+    "message:$SHELLSPEC_EXPECTATION"
   shellspec_output_raw_append "failure_message:A word is required after" \
     "$(shellspec_output_syntax_name)." \
     "The correct word is one of the following."
@@ -143,7 +143,7 @@ shellspec_output_SYNTAX_ERROR_MATCHER_REQUIRED() {
 
 shellspec_output_SYNTAX_ERROR_DISPATCH_FAILED() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:${SHELLSPEC_EXPECTATION:-}"
+    "message:$SHELLSPEC_EXPECTATION"
   [ "$1" = modifier ] && set -- "$1/verb" "${2:-}"
   if [ "${2:-}" ]; then
     shellspec_output_raw_append "failure_message:Unknown word '$2' after" \
@@ -159,7 +159,7 @@ shellspec_output_SYNTAX_ERROR_DISPATCH_FAILED() {
 
 shellspec_output_SYNTAX_ERROR_COMPOUND_WORD() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:${SHELLSPEC_EXPECTATION:-}"
+    "message:$SHELLSPEC_EXPECTATION"
   shellspec_output_raw_append "failure_message:The next word of" \
     "'${1##*_}' should be one of the following."
   shellspec_output_following_words "$1"
@@ -167,14 +167,14 @@ shellspec_output_SYNTAX_ERROR_COMPOUND_WORD() {
 
 shellspec_output_SYNTAX_ERROR_WRONG_PARAMETER_COUNT() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:${SHELLSPEC_EXPECTATION:-}"
+    "message:$SHELLSPEC_EXPECTATION"
   shellspec_output_raw_append "failure_message:Wrong parameter $1 of" \
     "$(shellspec_output_syntax_name)"
 }
 
 shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
   shellspec_output_raw statement "tag:bad" "note:" "fail:y" \
-    "message:${SHELLSPEC_EXPECTATION:-}"
+    "message:$SHELLSPEC_EXPECTATION"
   shellspec_output_raw_append "failure_message:The parameter #$1 of" \
     "$(shellspec_output_syntax_name) is not a $2"
 }
@@ -184,7 +184,7 @@ shellspec_output_RESULT_ERROR() {
   set -- "result modifier error (exit status: $1)${SHELLSPEC_LF}" \
     "$SHELLSPEC_RESULT_ERROR${SHELLSPEC_LF}"
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:${SHELLSPEC_EXPECTATION:-}" "failure_message:$1$2"
+    "message:$SHELLSPEC_EXPECTATION" "failure_message:$1$2"
 }
 
 shellspec_output_SATISFY_WARN() {
@@ -193,7 +193,7 @@ shellspec_output_SATISFY_WARN() {
     "$SHELLSPEC_SATISFY_WARN${SHELLSPEC_LF}"
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
-    "message:${SHELLSPEC_EXPECTATION:-}" "failure_message:$1$2"
+    "message:$SHELLSPEC_EXPECTATION" "failure_message:$1$2"
 }
 
 shellspec_output_SATISFY_ERROR() {
@@ -201,7 +201,7 @@ shellspec_output_SATISFY_ERROR() {
   set -- "satisfy matcher error (exit status: $1)${SHELLSPEC_LF}" \
     "$SHELLSPEC_SATISFY_ERROR${SHELLSPEC_LF}"
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:${SHELLSPEC_EXPECTATION:-}" "failure_message:$1$2"
+    "message:$SHELLSPEC_EXPECTATION" "failure_message:$1$2"
 }
 
 shellspec_output_ABORTED() {
