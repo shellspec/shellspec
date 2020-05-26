@@ -28,26 +28,24 @@ gitbash_task:
   script:
     - bash -c "contrib/all.sh contrib/various_test.sh"
 
-# Disable temporarily due to a Chocolatey issue
-# see https://chocolatey.org/packages/msys2
-# msys_task:
-#   windows_container:
-#     image: cirrusci/windowsservercore:2019
-#     os_version: 2019
-#   env:
-#     PATH: C:\tools\msys64\usr\bin;$PATH
-#   install_script:
-#     - choco install -y --no-progress msys2
-#     - pacman.exe -Syu --noprogressbar --noconfirm
-#     - pacman.exe -S --noprogressbar --noconfirm dash bash busybox mksh zsh
-#     - pacman.exe -Q
-#   prepare_script:
-#     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
-#     - bash -c "mount"
-#     - bash -c "echo --force-color > ./.shellspec-local"
-#     - bash -c "./shellspec --task fixture:stat:prepare"
-#   script:
-#     - bash -c "contrib/all.sh shellspec"
+msys_task:
+  windows_container:
+    image: cirrusci/windowsservercore:2019
+    os_version: 2019
+  env:
+    PATH: C:\tools\msys64\usr\bin;$PATH
+  install_script:
+    - choco install -y --no-progress msys2
+    - pacman.exe -Syu --noprogressbar --noconfirm
+    - pacman.exe -S --noprogressbar --noconfirm dash bash busybox mksh
+    - pacman.exe -Q
+  prepare_script:
+    - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
+    - bash -c "mount"
+    - bash -c "echo --force-color > ./.shellspec-local"
+    - bash -c "./shellspec --task fixture:stat:prepare"
+  script:
+    - bash -c "contrib/all.sh shellspec"
 
 cygwin_task:
   windows_container:
