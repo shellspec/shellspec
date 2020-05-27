@@ -21,7 +21,7 @@ shellspec_evaluation_call() {
   set "$SHELLSPEC_ERREXIT"
   "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
   set +e
-  shellspec_evaluation_call_data shellspec_evaluation_call_function "$@"
+  shellspec_evaluation_call_data shellspec_evaluation_call_function "$@" &&:
   set -e -- $?
   shellspec_evaluation_cleanup "$1"
 }

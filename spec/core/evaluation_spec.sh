@@ -73,6 +73,12 @@ Describe "core/evaluation.sh"
       The status should equal 0
     End
 
+    It 'catches error when even enable errexit within function'
+      evaluation() { set -e; return 123; }
+      When call evaluation
+      The status should eq 123
+    End
+
     It 'reads data from stdin'
       Data "data"
       When call cat
@@ -154,6 +160,12 @@ Describe "core/evaluation.sh"
       relay_errno() { return ${?}; }
       When run relay_errno
       The status should equal 0
+    End
+
+    It 'catches error when even enable errexit within function'
+      evaluation() { set -e; return 123; }
+      When run evaluation
+      The status should eq 123
     End
 
     It 'reads data from stdin'
