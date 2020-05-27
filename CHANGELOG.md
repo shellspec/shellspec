@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.2] - 2020-05-27
+
+### Fixed
+
+- Fixed a bug "SHELLSPEC_GROUP_ID: unbound variable"
+- Fixes when ran by "bash shellcpec" and "ksh shellspec"
+
 ## [0.24.1] - 2020-05-22
 
 ### Fixed
@@ -371,7 +378,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.24.0...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.24.2...HEAD
+[0.24.2]: https://github.com/shellspec/shellspec/compare/0.24.1...0.24.2
+[0.24.1]: https://github.com/shellspec/shellspec/compare/0.24.0...0.24.1
 [0.24.0]: https://github.com/shellspec/shellspec/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/shellspec/shellspec/compare/0.22.0...0.23.0
 [0.22.0]: https://github.com/shellspec/shellspec/compare/0.21.0...0.22.0
