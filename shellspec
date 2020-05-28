@@ -446,11 +446,20 @@ enum_options_file options_file
 [ $# -gt 0 ] && parse_options "$@" && eval "set -- $params"
 
 if [ ! "$SHELLSPEC_SHELL" ]; then
-  [ "$SHELLSPEC_KCOV" ] && shell="bash" || shell=$(current_shell "$0" "$$")
+  # shellcheck disable=SC2039
+  if [ "$SHELLSPEC_KCOV" ] && ! (trap '' DEBUG) 2>/dev/null; then
+    for shell in sh bash ksh zsh :; do
+      "$shell" -c "trap '' DEBUG" 2>/dev/null && break
+    done
+    [ "$shell" = : ] && abort "The current shell not compatible with Kcov."
+    warn "The current shell not compatible with Kcov. Using '$shell' instead."
+  else
+    shell=$(current_shell "$0" "$$")
+  fi
   if [ ! "$shell" ] && shell="sh"; then
     warn "Failed to detect the current shell," \
          "because the ps command does not exist or not compatible."
-    warn "Use 'sh' instead. You can specify the shell with --shell option."
+    warn "Using 'sh' instead. You can specify the shell with --shell option."
   fi
   SHELLSPEC_SHELL=$shell
 fi
