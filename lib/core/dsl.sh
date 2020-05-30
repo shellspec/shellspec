@@ -134,43 +134,39 @@ shellspec_example() {
     done
   fi
 
-  if [ "$SHELLSPEC_ENABLED" ] && [ "$SHELLSPEC_FILTER" ]; then
-    if [ "$SHELLSPEC_DRYRUN" ]; then
-      shellspec_output EXAMPLE
-      shellspec_output SUCCEEDED
-    else
-      if ! shellspec_if SKIP; then
-        shellspec_call_before_hooks ALL
-        shellspec_mark_group "$SHELLSPEC_GROUP_ID"
-      fi
-      shellspec_profile_start
-      case $- in
-        *e*)
-          set +e
-          ( set -e
-            case $# in
-              0) shellspec_invoke_example ;;
-              *) shellspec_invoke_example "$@" ;;
-            esac
-          )
-          set -e -- $?
-          ;;
-        *)
-          ( set -e
-            case $# in
-              0) shellspec_invoke_example ;;
-              *) shellspec_invoke_example "$@" ;;
-            esac
-          )
-          set -- $?
-      esac
-      if [ "$1" -ne 0 ]; then
-        shellspec_output ABORTED "$1"
-        shellspec_output FAILED
-      fi
-      shellspec_profile_end
-    fi
+  [ "$SHELLSPEC_ENABLED" ] || return 0
+  [ "$SHELLSPEC_FILTER" ] || return 0
+
+  if [ "$SHELLSPEC_DRYRUN" ]; then
+    shellspec_output EXAMPLE
+    shellspec_output SUCCEEDED
+    return 0
   fi
+
+  if ! shellspec_if SKIP; then
+    shellspec_call_before_hooks ALL
+    shellspec_mark_group "$SHELLSPEC_GROUP_ID"
+  fi
+
+  shellspec_profile_start
+  case $- in
+    *e*) eval "set -- -e ${1+\"\$@\"}" ;;
+    *) eval "set -- +e ${1+\"\$@\"}" ;;
+  esac
+  set +e
+  ( set -e
+    shift
+    case $# in
+      0) shellspec_invoke_example ;;
+      *) shellspec_invoke_example "$@" ;;
+    esac
+  )
+  set "$1" -- $? "$@"
+  if [ "$1" -ne 0 ]; then
+    shellspec_output ABORTED "$1"
+    shellspec_output FAILED
+  fi
+  shellspec_profile_end
 }
 
 shellspec_invoke_example() {
