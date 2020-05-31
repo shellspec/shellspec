@@ -120,7 +120,7 @@ SHELLSPEC_ROOT="${SHELLSPEC_PATH%/*}"
 SHELLSPEC_LIB="$SHELLSPEC_ROOT/lib"
 SHELLSPEC_REPORTERLIB="$SHELLSPEC_LIB/libexec/reporter"
 
-[ -t 1 ] && SHELLSPEC_COLOR=1
+[ -t 1 ] && [ ! "${NO_COLOR:-}" ] && SHELLSPEC_COLOR=1
 
 # shellcheck source=lib/libexec/shellspec.sh
 . "$SHELLSPEC_LIB/libexec/shellspec.sh"
@@ -217,6 +217,7 @@ Usage: shellspec [options...] [files or directories...]
     -o, --output GENERATOR          Choose a generator(s) to generate a report file(s) [default: none]
                                       You can use the same name as FORMATTER. (multiple options allowed)
         --[no-]color                Enable or disable color [default: enabled if the output is a TTY]
+                                      Disable if NO_COLOR environment variable set
         --skip-message VERBOSITY    Mute skip message | <[verbose]> [moderate] [quiet]
                                       [verbose]       do not mute any messages [default]
                                       [moderate]      mute repeated messages

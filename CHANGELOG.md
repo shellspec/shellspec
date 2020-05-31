@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Coverage support for zsh and ksh. (#62)
+- Support NO_COLOR environment variable.
 
 ## [0.24.2] - 2020-05-27
 
