@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed broken `Todo`.
-- Fixed a bug that caused an error when "--kcov" was specified and /dev/tty no be writable. (#67)
+- Fixed a bug that caused an error when "--kcov" was specified and /dev/tty no be writable. (#67 Alexander Reitzel)
 - Fixed a bug when enabled extendedglob for zsh.
 
 ## [0.24.0] - 2020-05-11
@@ -85,7 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Improve kcov version detection.
-- Colored TAP formatter. (Kylie McClain)
+- Colored TAP formatter. (#34 Kylie McClain)
 - Added `--show-deprecations` and  `--hide-deprecations` options.
 
 ### Changed
@@ -116,10 +116,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Provide **docker images**.
 - Provide **distribution archive**.
+- Available ArchLinux package. (#15 Damien Flament)
 
 ### Changed
 
-- docs: Improve English quality (Damien Flament)
+- docs: Improve English quality. (#16 Damien Flament)
 
 ## [0.20.2] - 2019-08-24
 
@@ -229,7 +230,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed bug that `be empty` (renamed to `be empty file`) matcher matches not exists file, etc.
-- Ensure call & invoke start with errno zero (Rowan Thorpe)
+- Ensure call & invoke start with errno zero (#2 Rowan Thorpe)
 
 ## [0.14.0] - 2019-05-15
 
