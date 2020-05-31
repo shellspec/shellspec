@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Coverage support for zsh and ksh. (#62)
 - Support NO_COLOR environment variable.
 
+### Changed
+
+- Upgrade alpine version to 3.12 for docker image
+
 ## [0.24.2] - 2020-05-27
 
 ### Fixed

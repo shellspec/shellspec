@@ -12,7 +12,6 @@ There are official images on the [Docker Hub](https://hub.docker.com/r/shellspec
 | shellspec/shellspec-debian:kcov | Debian | dash, bash, kcov          |    ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/shellspec/shellspec-debian/kcov?label=) |
 | shellspec/shellspec-scratch     | None   | none (shellspec only)     | ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/shellspec/shellspec-scratch/latest?label=) |
 
-- shellspec/shellspec:kcov is **beta** (currently using alpine:edge not stable)
 - Version specified images are also available (VERSION: 0.21.0 and above)
   - `shellspec/shellspec[-VARIANT]:<VERSION | master>[-kcov]`
 

@@ -10,9 +10,9 @@ COPY lib /opt/shellspec/lib
 COPY libexec /opt/shellspec/libexec
 
 # ======================================================================
-# Kcov builder (requires alpine:edge not alpine:3.11)
+# Kcov builder
 # ======================================================================
-FROM alpine:edge as builder
+FROM alpine:3.12 as builder
 ENV KCOV=v38 CXXFLAGS=-D__ptrace_request=int
 WORKDIR /usr/local/src
 RUN apk add --no-cache build-base cmake ninja python3 \
@@ -26,7 +26,7 @@ RUN mkdir build && cd build \
 # Kcov image
 #   TAG: shellspec:kcov, shellspec:[VERSION]-kcov
 # ======================================================================
-FROM alpine:edge as kcov
+FROM alpine:3.12 as kcov
 RUN apk add --no-cache bash binutils-dev curl-dev elfutils-libelf
 COPY --from=builder /usr/local/bin/kcov* /usr/local/bin/
 COPY --from=builder /usr/local/share/doc/kcov /usr/local/share/doc/kcov
@@ -57,7 +57,7 @@ LABEL org.opencontainers.image.created=$CREATED \
 # Standard image (default)
 #   TAG: shellspec:latest, shellspec:[VERSION]
 # ======================================================================
-FROM alpine:3.11 as standard
+FROM alpine:3.12 as standard
 COPY --from=source /opt/shellspec /opt/shellspec
 COPY .dockerhub/shellspec-docker-entrypoint.sh /shellspec-docker
 ENV PATH /opt/shellspec/:$PATH
