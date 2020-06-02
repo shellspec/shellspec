@@ -73,27 +73,18 @@ edit_in_place() {
 }
 
 warn() {
-  if [ "$SHELLSPEC_COLOR" ]; then
-    printf '\033[33m%s\033[0m\n' "${*:-}" >&2
-  else
-    printf '%s\n' "${*:-}" >&2
-  fi
+  [ "$SHELLSPEC_COLOR" ] && set -- "$(printf '\033[33m%s\033[m' "${*:-}")"
+  printf '%s\n' "${*:-}" >&2
 }
 
 info() {
-  if [ "$SHELLSPEC_COLOR" ]; then
-    printf '\033[33m%s\033[0m\n' "$*"
-  else
-    printf '%s\n' "$*"
-  fi
+  [ "$SHELLSPEC_COLOR" ] && set -- "$(printf '\033[33m%s\033[m' "${*:-}")"
+  printf '%s\n' "${*:-}"
 }
 
 error() {
-  if [ "$SHELLSPEC_COLOR" ]; then
-    printf '\033[2;31m%s\033[0m\n' "${*:-}" >&2
-  else
-    printf '%s\n' "${*:-}" >&2
-  fi
+  [ "$SHELLSPEC_COLOR" ] && set -- "$(printf '\033[2;31m%s\033[m' "${*:-}")"
+  printf '%s\n' "${*:-}" >&2
 }
 
 abort() {

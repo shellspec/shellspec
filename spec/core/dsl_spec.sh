@@ -762,7 +762,7 @@ Describe "core/dsl.sh"
 
     It 'sets path alias'
       When run shellspec_path path1 path2 path3
-      The stdout should eq ":path1:path2:path3:"
+      The stdout should eq "|path1|path2|path3|"
     End
   End
 

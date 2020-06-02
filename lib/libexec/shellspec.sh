@@ -81,7 +81,6 @@ read_ps() {
 
     # workaround for old busybox ps format
     case $line in (\{*) line=${line#*\} }; esac
-
     echo "$line"
   } &&: ||:
 }

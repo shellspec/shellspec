@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2004
 
 # shellcheck disable=SC2034
-SHELLSPEC_PATH_ALIAS=:
+SHELLSPEC_PATH_ALIAS='|'
 SHELLSPEC_INTERCEPTOR='|'
 SHELLSPEC_STDIN_FILE=''
 SHELLSPEC_STDOUT_FILE=''
@@ -340,7 +340,7 @@ shellspec_proxy shellspec_after_run "shellspec_register_after_hook RUN"
 
 shellspec_path() {
   while [ $# -gt 0 ]; do
-    SHELLSPEC_PATH_ALIAS="${SHELLSPEC_PATH_ALIAS}$1:"
+    SHELLSPEC_PATH_ALIAS="${SHELLSPEC_PATH_ALIAS}$1|"
     shift
   done
 }

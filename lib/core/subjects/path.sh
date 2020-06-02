@@ -10,9 +10,9 @@ shellspec_subject_path() {
 
   SHELLSPEC_SUBJECT="$1"
 
-  if shellspec_includes "$SHELLSPEC_PATH_ALIAS" ":$1="; then
-    SHELLSPEC_SUBJECT=${SHELLSPEC_PATH_ALIAS#*":$1="}
-    SHELLSPEC_SUBJECT=${SHELLSPEC_SUBJECT%%:*}
+  if shellspec_includes "$SHELLSPEC_PATH_ALIAS" "|$1="; then
+    SHELLSPEC_SUBJECT=${SHELLSPEC_PATH_ALIAS#*"|$1="}
+    SHELLSPEC_SUBJECT=${SHELLSPEC_SUBJECT%%\|*}
   fi
 
   shift

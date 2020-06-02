@@ -55,7 +55,7 @@ export SHELLSPEC_ENV_FROM=''
 export SHELLSPEC_PATTERN="*_spec.sh"
 export SHELLSPEC_UNIXTIME=''
 export SHELLSPEC_DEBUG_TRAP=''
-export SHELLSPEC_TMPDIR=${TMPDIR:-/tmp}
+export SHELLSPEC_TMPDIR=${TMPDIR:-${TMP:-/tmp}}
 export SHELLSPEC_LOGFILE=/dev/tty
 export SHELLSPEC_DEPRECATION_LOG=1
 export SHELLSPEC_DEPRECATION_LOGFILE=".shellspec-deprecation.log"
@@ -464,10 +464,11 @@ if [ ! "$SHELLSPEC_SHELL" ]; then
   fi
   SHELLSPEC_SHELL=$shell
 fi
+
 if command_path shell "${SHELLSPEC_SHELL%% *}"; then
   case $SHELLSPEC_SHELL in (*\ *) shell="$shell ${SHELLSPEC_SHELL#* }"; esac
   SHELLSPEC_SHELL=$shell
-else
+elif ! $SHELLSPEC_SHELL -c ''; then
   abort "Not found specified shell: $SHELLSPEC_SHELL."
 fi
 
