@@ -9,12 +9,11 @@ shellspec_syntax 'shellspec_evaluation_run'
 shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
 shellspec_invoke_data() {
-  if [ "${SHELLSPEC_DATA:-}" ]; then
-    case $# in
-      0) shellspec_data > "$SHELLSPEC_STDIN_FILE" ;;
-      *) shellspec_data "$@" > "$SHELLSPEC_STDIN_FILE" ;;
-    esac
-  fi
+  [ "${SHELLSPEC_DATA:-}" ] || return 0
+  case $# in
+    0) shellspec_data > "$SHELLSPEC_STDIN_FILE" ;;
+    *) shellspec_data "$@" > "$SHELLSPEC_STDIN_FILE" ;;
+  esac
 }
 
 shellspec_evaluation_call() {
@@ -48,9 +47,7 @@ shellspec_evaluation_run() {
 }
 
 shellspec_evaluation_run_subshell() {
-  ( set "$1"; shift
-    shellspec_evaluation_run_data "$@"
-  )
+  ( set "$1"; shift; shellspec_evaluation_run_data "$@" )
 }
 
 # Workaround for #40 in contrib/bugs.sh
