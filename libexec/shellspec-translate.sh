@@ -51,6 +51,14 @@ trans_block_end() {
   putsn "shellspec_block${block_no}) ${1# }"
 }
 
+trans_before_first_block() {
+  putsn "shellspec_before_first_block"
+}
+
+trans_after_last_block() {
+  putsn "shellspec_after_last_block"
+}
+
 trans_evaluation() {
   putsn "SHELLSPEC_LINENO=$lineno"
   putsn "if [ \$# -eq 0 ]"

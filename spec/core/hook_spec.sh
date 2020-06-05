@@ -2,8 +2,6 @@
 
 Describe "core/hook.sh"
   Before 'shellspec_create_hook EXAMPLE'
-  BeforeAll :
-  AfterAll :
 
   Describe 'shellspec_call_before_hooks()'
     Describe "before each"
@@ -102,31 +100,14 @@ Describe "core/hook.sh"
           The stdout should eq foo
         End
 
-        Context 'when SHELLSPEC_GROUP_ID is not matched'
-          BeforeRun 'SHELLSPEC_GROUP_ID=99999'
+        Context 'when SHELLSPEC_BLOCK_NO is not matched'
+          BeforeRun 'SHELLSPEC_BLOCK_NO=99999'
           It 'does not call after all hooks'
             When run shellspec_call_after_hooks ALL
             The stdout should be blank
           End
         End
       End
-    End
-  End
-
-  Describe 'shellspec_mark_group()'
-    setup() { mkdir "$SHELLSPEC_TMPBASE/workdir"; }
-    cleanup() { rm -rf "$SHELLSPEC_TMPBASE/workdir"; }
-    Before setup
-    After cleanup
-
-    BeforeRun 'SHELLSPEC_WORKDIR=$SHELLSPEC_TMPBASE/workdir'
-
-    It 'creates mark group files'
-      When run shellspec_mark_group 1-2-3
-      The file "$SHELLSPEC_TMPBASE/workdir/@" should be exist
-      The file "$SHELLSPEC_TMPBASE/workdir/@1" should be exist
-      The file "$SHELLSPEC_TMPBASE/workdir/@1-2" should be exist
-      The file "$SHELLSPEC_TMPBASE/workdir/@1-2-3" should be exist
     End
   End
 End
