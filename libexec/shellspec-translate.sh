@@ -185,6 +185,8 @@ filter=1
 [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
 
 putsn "#!/bin/sh"
+putsn "SHELLSPEC_WORKDIR=\"\$SHELLSPEC_TMPBASE\""
+putsn "SHELLSPEC_STDIO_FILE_BASE=\"\$SHELLSPEC_WORKDIR\""
 putsn "shellspec_coverage_start() { :; }"
 putsn "shellspec_coverage_stop() { :; }"
 if [ "$coverage" ]; then
