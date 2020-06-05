@@ -110,4 +110,28 @@ Describe "core/hook.sh"
       End
     End
   End
+
+  Describe 'shellspec_mark_group()'
+    Before "shellspec_mark_group 12345"
+
+    It 'marks to group'
+      When call shellspec_mark_group 12345 1
+      The variable SHELLSPEC_MARK_12345 should eq 1
+    End
+  End
+
+  Describe 'shellspec_is_marked_group()'
+    Before "shellspec_mark_group 12345 1"
+    Before "shellspec_mark_group 12346"
+
+    Parameters
+      12345 success
+      12346 failure
+    End
+
+    It "checks mark of group ($1)"
+      When call shellspec_is_marked_group "$1"
+      The status should be "$2"
+    End
+  End
 End
