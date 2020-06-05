@@ -142,6 +142,10 @@ shellspec_spec_helper_configure() {
     [ "${1#"$2"}" = "a*b" ] && return 1 || return 0
   }
 
+  busybox_w32() {
+    [ "$SHELLSPEC_BUSYBOX_W32" ]
+  }
+
   shellspec_before :
   shellspec_after :
   shellspec_before_all :
