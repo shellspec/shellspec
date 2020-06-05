@@ -14,7 +14,6 @@ SHELLSPEC_ENABLED=''
 SHELLSPEC_FOCUSED=''
 SHELLSPEC_SPECFILE=''
 SHELLSPEC_SPEC_NO=''
-SHELLSPEC_WORKDIR="$SHELLSPEC_TMPBASE"
 SHELLSPEC_GROUP_ID=''
 SHELLSPEC_BLOCK_NO=''
 SHELLSPEC_EXAMPLE_ID=''
@@ -28,7 +27,6 @@ SHELLSPEC_SKIP_ID=''
 SHELLSPEC_SKIP_REASON=''
 SHELLSPEC_PENDING_REASON=''
 SHELLSPEC_SHELL_OPTIONS=''
-SHELLSPEC_STDIO_FILE_BASE="$SHELLSPEC_WORKDIR"
 
 shellspec_group_id() {
   # shellcheck disable=SC2034
@@ -148,6 +146,13 @@ shellspec_example() {
     shellspec_mark_group "$SHELLSPEC_GROUP_ID"
   fi
 
+  # shellcheck disable=SC2034
+  {
+    SHELLSPEC_STDIN_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdin"
+    SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
+    SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
+  }
+
   shellspec_profile_start
   case $- in
     *e*) eval "set -- -e ${1+\"\$@\"}" ;;
@@ -171,13 +176,6 @@ shellspec_example() {
 
 shellspec_invoke_example() {
   shellspec_output EXAMPLE
-
-  # shellcheck disable=SC2034
-  {
-    SHELLSPEC_STDIN_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdin"
-    SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
-    SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
-  }
 
   shellspec_on NOT_IMPLEMENTED
   shellspec_off FAILED WARNED EXPECTATION
