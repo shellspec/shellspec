@@ -88,6 +88,7 @@ export SHELLSPEC_DEFECT_SHELLFLAG=''
 export SHELLSPEC_DEFECT_ERREXIT=''
 export SHELLSPEC_SHEBANG_MULTIARG=''
 export SHELLSPEC_BUSYBOX_W32=''
+export SHELLSPEC_PATH_SEPARATOR=":"
 export SHELLSPEC_QUICK=''
 export SHELLSPEC_QUICK_FILE=".shellspec-quick.log"
 export SHELLSPEC_REPAIR=''
@@ -494,6 +495,10 @@ fi
 
   if [ "$SHELLSPEC_DEFECT_ERREXIT" ]; then
     warn "Unsupported shell (errexit handling broken)."
+  fi
+
+  if [ "$SHELLSPEC_BUSYBOX_W32" ]; then
+    SHELLSPEC_PATH_SEPARATOR=";"
   fi
 }
 

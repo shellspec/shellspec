@@ -1,5 +1,6 @@
 #shellcheck shell=sh disable=SC2016
 
+% BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture/install"
 % TMPBASE: "$SHELLSPEC_TMPBASE/install"
 
@@ -33,8 +34,10 @@ Describe "./install.sh"
   Include ./install.sh
 
   Describe "exists()"
+    Before 'PATH="/foo:$BIN:/bar"'
+
     It 'returns success when found executable file'
-      When call exists sh
+      When call exists cat
       The status should be success
     End
 
@@ -45,18 +48,18 @@ Describe "./install.sh"
   End
 
   Describe "which()"
-    Context 'when PATH=/foo:/bin:/bar'
-      Before PATH=/foo:/bin:/bar
+    Context 'when PATH=/foo:$BIN:/bar'
+      Before 'PATH="/foo:$BIN:/bar"'
       It "retrieves found path"
-        When call which sh
-        The output should eq "/bin/sh"
+        When call which cat
+        The output should eq "$BIN/cat"
       End
     End
 
     Context 'when PATH=/foo:/bar'
       Before PATH=/foo:/bar
       It "retrieves nothing"
-        When call which sh
+        When call which cat
         The status should eq 1
       End
     End
@@ -64,7 +67,7 @@ Describe "./install.sh"
     Context 'when PATH='
       Before PATH=
       It "retrieves nothing"
-        When call which sh
+        When call which cat
         The status should eq 1
       End
     End

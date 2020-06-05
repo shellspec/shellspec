@@ -42,20 +42,29 @@ USAGE
 CDPATH=''
 [ "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
+PATH="${PATH:-}:/" PATH_SEP=":"
+case $PATH in (*\;\/) PATH_SEP=";"; esac
+PATH=${PATH%??}
+
 finish() { done=1; exit "${1:-0}"; }
 error() { printf '\033[31m%s\033[0m\n' "$1"; }
 abort() { [ "${1:-}" ] && error "$1" >&2; finish 1; }
 finished() { [ "$done" ] || error "Failed to install"; }
 
 exists() {
-  ( IFS=:; for p in $PATH; do [ -x "${p%/}/$1" ] && return 0; done; return 1 )
+  ( IFS=$PATH_SEP
+    for p in $PATH; do
+      [ -x "${p%/}/$1" ] && return 0
+    done
+    return 1
+  )
 }
 
 which() {
-  set -- "$1" "${PATH%:}:"
-  while [ "${2%:}" ]; do
-    [ -x "${2%%:*}/$1" ] && echo "${2%%:*}/$1" && return 0
-    set -- "$1" "${2#*:}"
+  set -- "$1" "${PATH%$PATH_SEP}${PATH_SEP}"
+  while [ "${2%$PATH_SEP}" ]; do
+    [ -x "${2%%$PATH_SEP*}/$1" ] && echo "${2%%$PATH_SEP*}/$1" && return 0
+    set -- "$1" "${2#*$PATH_SEP}"
   done
   return 1
 }
@@ -79,7 +88,7 @@ confirm() {
 }
 
 fetch() {
-  tmpfile="${TMPDIR:-/tmp}/${1##*/}.$$"
+  tmpfile="${TMPDIR:-${TMP:-/tmp}}/${1##*/}.$$"
   case $FETCH in
     curl) curl --head -sSfL -o /dev/null "$1" && curl -SfL "$1" ;;
     wget) wget --spider -q "$1" && wget -O- "$1" ;;

@@ -523,10 +523,13 @@ else
 fi
 
 shellspec_which() {
-  set -- "$1" "${PATH%:}:"
-  while [ "${2%:}" ]; do
-    [ -x "${2%%:*}/$1" ] && echo "${2%%:*}/$1" && return 0
-    set -- "$1" "${2#*:}"
+  set -- "$1" "${PATH%$SHELLSPEC_PATH_SEPARATOR}${SHELLSPEC_PATH_SEPARATOR}"
+  while [ "${2%$SHELLSPEC_PATH_SEPARATOR}" ]; do
+    if [ -x "${2%%$SHELLSPEC_PATH_SEPARATOR*}/$1" ]; then
+      shellspec_putsn "${2%%$SHELLSPEC_PATH_SEPARATOR*}/$1"
+      return 0
+    fi
+    set -- "$1" "${2#*$SHELLSPEC_PATH_SEPARATOR}"
   done
   return 1
 }
