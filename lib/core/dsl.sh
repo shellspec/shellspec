@@ -76,6 +76,17 @@ shellspec_end() {
   # shellcheck disable=SC2034
   SHELLSPEC_EXAMPLE_COUNT=${1:-}
   shellspec_output END
+}
+
+shellspec_before_first_block() {
+  shellspec_mark_group "$SHELLSPEC_BLOCK_NO" ""
+  [ "$SHELLSPEC_DRYRUN" ] && return 0
+  shellspec_if SKIP && return 0
+  shellspec_call_before_hooks ALL
+  shellspec_mark_group "$SHELLSPEC_BLOCK_NO" 1
+}
+
+shellspec_after_last_block() {
   shellspec_call_after_hooks ALL
 }
 
@@ -90,7 +101,6 @@ shellspec_description() {
 shellspec_example_group() {
   shellspec_description "example_group" "${1:-}"
   shellspec_yield
-  shellspec_call_after_hooks ALL
 }
 
 shellspec_example_block() {
@@ -139,11 +149,6 @@ shellspec_example() {
     shellspec_output EXAMPLE
     shellspec_output SUCCEEDED
     return 0
-  fi
-
-  if ! shellspec_if SKIP; then
-    shellspec_call_before_hooks ALL
-    shellspec_mark_group "$SHELLSPEC_GROUP_ID"
   fi
 
   # shellcheck disable=SC2034

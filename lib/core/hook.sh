@@ -20,21 +20,21 @@ shellspec_proxy shellspec_register_before_hook "shellspec_register_hook BEFORE"
 shellspec_proxy shellspec_register_after_hook "shellspec_register_hook AFTER"
 
 shellspec_hook_index() {
-  eval "SHELLSPEC_$1_$2_$3=\$SHELLSPEC_GROUP_ID#\$SHELLSPEC_AUX_LINENO:\$4"
+  eval "SHELLSPEC_$1_$2_$3=\$SHELLSPEC_BLOCK_NO#\$SHELLSPEC_AUX_LINENO:\$4"
 }
 
 shellspec_call_hook() {
   eval "set -- \"\$1\" \"\${SHELLSPEC_$1_$2#*:}\" \"\${SHELLSPEC_$1_$2%%:*}\""
   # shellcheck disable=SC2034
-  SHELLSPEC_HOOK_GROUP_ID=${3%\#*} SHELLSPEC_HOOK_LINENO=${3#*\#}
+  SHELLSPEC_HOOK_BLOCK_NO=${3%\#*} SHELLSPEC_HOOK_LINENO=${3#*\#}
 
   case $1 in
     BEFORE_ALL)
-      shellspec_is_marked_group "$SHELLSPEC_HOOK_GROUP_ID" && return 0
+      shellspec_is_marked_group "$SHELLSPEC_HOOK_BLOCK_NO" && return 0
       ;;
     AFTER_ALL)
-      [ "$SHELLSPEC_HOOK_GROUP_ID" = "$SHELLSPEC_GROUP_ID" ] || return 0
-      shellspec_is_marked_group "$SHELLSPEC_HOOK_GROUP_ID" || return 0
+      [ "$SHELLSPEC_HOOK_BLOCK_NO" = "$SHELLSPEC_BLOCK_NO" ] || return 0
+      shellspec_is_marked_group "$SHELLSPEC_HOOK_BLOCK_NO" || return 0
       ;;
   esac
 
@@ -65,17 +65,11 @@ shellspec_call_after_hooks() {
 }
 
 shellspec_mark_group() {
-  until shellspec_is_marked_group "$1"; do
-    : > "$SHELLSPEC_WORKDIR/@$1"
-    case $1 in
-      *-*) set -- "${1%-*}" ;;
-      *) set -- "" ;;
-    esac
-  done
+  eval "SHELLSPEC_MARK_${1:-0}=\${2:-}"
 }
 
 shellspec_is_marked_group() {
-  [ -e "$SHELLSPEC_WORKDIR/@$1" ]
+  eval "[ \"\$SHELLSPEC_MARK_${1:-0}\" ] &&:" &&:
 }
 
 shellspec_create_hook EACH
