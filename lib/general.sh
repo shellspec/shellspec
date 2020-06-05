@@ -55,8 +55,8 @@ shellspec_constants() {
 
   # Workaround: Variable CR is empty on MSYS
   if eval "[ \${#${1}CR} -eq 0 ] &&:"; then
-    set -- "$1" "$(printf '\015')"
-    eval "${1}CR=\$2"
+    set -- "$1" "$(printf '\015_')"
+    eval "${1}CR=\${2%_}"
   fi
 }
 
