@@ -424,9 +424,10 @@ shellspec_is_temporary_pending() {
 
 shellspec_cat() {
   # shellcheck disable=SC2154
-  while IFS= read -r shellspec_cat || [ "$shellspec_cat" ]; do
-    shellspec_putsn "$shellspec_cat"
-  done
+  ( while IFS= read -r shellspec_cat || [ "$shellspec_cat" ]; do
+      shellspec_putsn "$shellspec_cat"
+    done
+  )
 }
 
 # shellcheck disable=SC2034
