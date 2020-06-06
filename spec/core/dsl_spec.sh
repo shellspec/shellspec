@@ -117,6 +117,50 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_before_first_block()"
+    BeforeRun SHELLSPEC_BLOCK_NO=12345
+    before_first_block() {
+      shellspec_call_before_hooks() { echo "$@"; }
+      shellspec_before_first_block
+      shellspec_call_before_hooks() { :; }
+    }
+
+    It 'calls before all hooks'
+      When run before_first_block
+      The stdout should eq "ALL"
+    End
+
+    Context 'when dry-run mode'
+      BeforeRun SHELLSPEC_DRYRUN=1
+      It 'does not call before all hooks'
+        When run before_first_block
+        The stdout should eq ""
+      End
+    End
+
+    Context 'when skipeed'
+      BeforeRun "shellspec_on SKIP"
+      It 'does not call before all hooks'
+        When run before_first_block
+        The stdout should eq ""
+      End
+    End
+  End
+
+  Describe "shellspec_after_last_block()"
+    BeforeRun SHELLSPEC_BLOCK_NO=12345
+    after_last_block() {
+      shellspec_call_after_hooks() { echo "$@"; }
+      shellspec_after_last_block
+      shellspec_call_after_hooks() { :; }
+    }
+
+    It 'calls after all hooks'
+      When run after_last_block
+      The stdout should eq "ALL"
+    End
+  End
+
   Describe "shellspec_end()"
     mock() { shellspec_output() { echo "$1"; }; }
     echo_example_count() { echo "$SHELLSPEC_EXAMPLE_COUNT"; }

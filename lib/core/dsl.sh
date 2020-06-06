@@ -14,7 +14,6 @@ SHELLSPEC_ENABLED=''
 SHELLSPEC_FOCUSED=''
 SHELLSPEC_SPECFILE=''
 SHELLSPEC_SPEC_NO=''
-SHELLSPEC_WORKDIR="$SHELLSPEC_TMPBASE"
 SHELLSPEC_GROUP_ID=''
 SHELLSPEC_BLOCK_NO=''
 SHELLSPEC_EXAMPLE_ID=''
@@ -28,7 +27,6 @@ SHELLSPEC_SKIP_ID=''
 SHELLSPEC_SKIP_REASON=''
 SHELLSPEC_PENDING_REASON=''
 SHELLSPEC_SHELL_OPTIONS=''
-SHELLSPEC_STDIO_FILE_BASE="$SHELLSPEC_WORKDIR"
 
 shellspec_group_id() {
   # shellcheck disable=SC2034
@@ -78,6 +76,17 @@ shellspec_end() {
   # shellcheck disable=SC2034
   SHELLSPEC_EXAMPLE_COUNT=${1:-}
   shellspec_output END
+}
+
+shellspec_before_first_block() {
+  shellspec_mark_group "$SHELLSPEC_BLOCK_NO" ""
+  [ "$SHELLSPEC_DRYRUN" ] && return 0
+  shellspec_if SKIP && return 0
+  shellspec_call_before_hooks ALL
+  shellspec_mark_group "$SHELLSPEC_BLOCK_NO" 1
+}
+
+shellspec_after_last_block() {
   shellspec_call_after_hooks ALL
 }
 
@@ -92,7 +101,6 @@ shellspec_description() {
 shellspec_example_group() {
   shellspec_description "example_group" "${1:-}"
   shellspec_yield
-  shellspec_call_after_hooks ALL
 }
 
 shellspec_example_block() {
@@ -143,10 +151,12 @@ shellspec_example() {
     return 0
   fi
 
-  if ! shellspec_if SKIP; then
-    shellspec_call_before_hooks ALL
-    shellspec_mark_group "$SHELLSPEC_GROUP_ID"
-  fi
+  # shellcheck disable=SC2034
+  {
+    SHELLSPEC_STDIN_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdin"
+    SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
+    SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
+  }
 
   shellspec_profile_start
   case $- in
@@ -171,13 +181,6 @@ shellspec_example() {
 
 shellspec_invoke_example() {
   shellspec_output EXAMPLE
-
-  # shellcheck disable=SC2034
-  {
-    SHELLSPEC_STDIN_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdin"
-    SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
-    SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
-  }
 
   shellspec_on NOT_IMPLEMENTED
   shellspec_off FAILED WARNED EXPECTATION

@@ -2,8 +2,6 @@
 
 Describe "core/hook.sh"
   Before 'shellspec_create_hook EXAMPLE'
-  BeforeAll :
-  AfterAll :
 
   Describe 'shellspec_call_before_hooks()'
     Describe "before each"
@@ -102,8 +100,8 @@ Describe "core/hook.sh"
           The stdout should eq foo
         End
 
-        Context 'when SHELLSPEC_GROUP_ID is not matched'
-          BeforeRun 'SHELLSPEC_GROUP_ID=99999'
+        Context 'when SHELLSPEC_BLOCK_NO is not matched'
+          BeforeRun 'SHELLSPEC_BLOCK_NO=99999'
           It 'does not call after all hooks'
             When run shellspec_call_after_hooks ALL
             The stdout should be blank
@@ -114,19 +112,26 @@ Describe "core/hook.sh"
   End
 
   Describe 'shellspec_mark_group()'
-    setup() { mkdir "$SHELLSPEC_TMPBASE/workdir"; }
-    cleanup() { rm -rf "$SHELLSPEC_TMPBASE/workdir"; }
-    Before setup
-    After cleanup
+    Before "shellspec_mark_group 12345"
 
-    BeforeRun 'SHELLSPEC_WORKDIR=$SHELLSPEC_TMPBASE/workdir'
+    It 'marks to group'
+      When call shellspec_mark_group 12345 1
+      The variable SHELLSPEC_MARK_12345 should eq 1
+    End
+  End
 
-    It 'creates mark group files'
-      When run shellspec_mark_group 1-2-3
-      The file "$SHELLSPEC_TMPBASE/workdir/@" should be exist
-      The file "$SHELLSPEC_TMPBASE/workdir/@1" should be exist
-      The file "$SHELLSPEC_TMPBASE/workdir/@1-2" should be exist
-      The file "$SHELLSPEC_TMPBASE/workdir/@1-2-3" should be exist
+  Describe 'shellspec_is_marked_group()'
+    Before "shellspec_mark_group 12345 1"
+    Before "shellspec_mark_group 12346"
+
+    Parameters
+      12345 success
+      12346 failure
+    End
+
+    It "checks mark of group ($1)"
+      When call shellspec_is_marked_group "$1"
+      The status should be "$2"
     End
   End
 End

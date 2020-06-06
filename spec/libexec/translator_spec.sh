@@ -28,7 +28,9 @@ Describe "libexec/translator.sh"
         When run finalize
         The line 1 of stdout should eq "Unexpected end of file (expecting 'End')"
         The line 2 of stdout should eq "trans block_end"
-        The line 3 of stdout should eq "trans block_end"
+        The line 3 of stdout should eq "trans after_last_block 1"
+        The line 4 of stdout should eq "trans block_end"
+        The line 5 of stdout should eq "trans after_last_block "
       End
     End
   End
@@ -182,12 +184,17 @@ Describe "libexec/translator.sh"
   End
 
   Describe "block_example_group()"
-    BeforeRun initialize lineno=10 filter=''
+    BeforeRun initialize
     trans() { :; }
     mock() {
+      block_no='' lineno_begin='' lineno=10 filter=''
       check_filter() { echo "check_filter" "$@"; }
       # shellcheck disable=SC2154
-      trans() {
+      trans() { "trans_$1" "$@"; }
+      trans_before_first_block() {
+        echo "before_first_block"
+      }
+      trans_block_example_group() {
         echo "trans" "$@"
         echo "filter: $filter"
         echo "block_no: $block_no"
@@ -205,11 +212,12 @@ Describe "libexec/translator.sh"
       It "generates block_example_group"
         When run block_example_group "desc"
         The line 1 of stdout should eq "check_filter desc"
-        The line 2 of stdout should eq "trans block_example_group desc"
-        The line 3 of stdout should eq "filter: 1"
-        The line 4 of stdout should eq "block_no: 1"
-        The line 5 of stdout should eq "lineno_begin: 10"
-        The line 6 of stdout should eq "block_lineno_begin1: 10"
+        The line 2 of stdout should eq "before_first_block"
+        The line 3 of stdout should eq "trans block_example_group desc"
+        The line 4 of stdout should eq "filter: 1"
+        The line 5 of stdout should eq "block_no: 1"
+        The line 6 of stdout should eq "lineno_begin: 10"
+        The line 7 of stdout should eq "block_lineno_begin1: 10"
       End
 
       Context 'when filter unmatch'
@@ -220,11 +228,12 @@ Describe "libexec/translator.sh"
         It "generates block_example_group"
           When run block_example_group "desc"
           The line 1 of stdout should eq "check_filter desc"
-          The line 2 of stdout should eq "trans block_example_group desc"
-          The line 3 of stdout should eq "filter: "
-          The line 4 of stdout should eq "block_no: 1"
-          The line 5 of stdout should eq "lineno_begin: 10"
-          The line 6 of stdout should eq "block_lineno_begin1: 10"
+          The line 2 of stdout should eq "before_first_block"
+          The line 3 of stdout should eq "trans block_example_group desc"
+          The line 4 of stdout should eq "filter: "
+          The line 5 of stdout should eq "block_no: 1"
+          The line 6 of stdout should eq "lineno_begin: 10"
+          The line 7 of stdout should eq "block_lineno_begin1: 10"
         End
       End
     End
@@ -234,11 +243,12 @@ Describe "libexec/translator.sh"
       It "generates block_example_group"
         When run block_example_group "desc2"
         The line 1 of stdout should eq "check_filter desc2"
-        The line 2 of stdout should eq "trans block_example_group desc2"
-        The line 3 of stdout should eq "filter: 1"
-        The line 4 of stdout should eq "block_no: 2"
-        The line 5 of stdout should eq "lineno_begin: 10"
-        The line 6 of stdout should eq "block_lineno_begin2: 10"
+        The line 2 of stdout should eq "before_first_block"
+        The line 3 of stdout should eq "trans block_example_group desc2"
+        The line 4 of stdout should eq "filter: 1"
+        The line 5 of stdout should eq "block_no: 2"
+        The line 6 of stdout should eq "lineno_begin: 10"
+        The line 7 of stdout should eq "block_lineno_begin2: 10"
       End
     End
 
@@ -260,14 +270,19 @@ Describe "libexec/translator.sh"
   End
 
   Describe "block_example()"
-    BeforeRun initialize "lineno=10"
+    BeforeRun initialize
     trans() { :; }
     mock() {
+      block_no='' lineno_begin='' lineno=10 filter=''
       check_filter() { echo "check_filter" "$@"; }
       # shellcheck disable=SC2154
-      trans() {
+      trans() { "trans_$1" "$@"; }
+      trans_before_first_block() {
+        echo "before_first_block"
+      }
+      trans_block_example() {
         echo "trans" "$@"
-        echo "filter: ${filter:-}"
+        echo "filter: $filter"
         echo "block_no: $block_no"
         echo "lineno_begin: $lineno_begin"
         echo "block_lineno_begin1: $block_lineno_begin1"
@@ -280,11 +295,12 @@ Describe "libexec/translator.sh"
       It "generates block_example"
         When run block_example "desc"
         The line 1 of stdout should eq "check_filter desc"
-        The line 2 of stdout should eq "trans block_example desc"
-        The line 3 of stdout should eq "filter: 1"
-        The line 4 of stdout should eq "block_no: 1"
-        The line 5 of stdout should eq "lineno_begin: 10"
-        The line 6 of stdout should eq "block_lineno_begin1: 10"
+        The line 2 of stdout should eq "before_first_block"
+        The line 3 of stdout should eq "trans block_example desc"
+        The line 4 of stdout should eq "filter: 1"
+        The line 5 of stdout should eq "block_no: 1"
+        The line 6 of stdout should eq "lineno_begin: 10"
+        The line 7 of stdout should eq "block_lineno_begin1: 10"
       End
 
       Context 'when filter unmatch'
@@ -295,11 +311,12 @@ Describe "libexec/translator.sh"
         It "generates block_example_group"
           When run block_example "desc"
           The line 1 of stdout should eq "check_filter desc"
-          The line 2 of stdout should eq "trans block_example desc"
-          The line 3 of stdout should eq "filter: "
-          The line 4 of stdout should eq "block_no: 1"
-          The line 5 of stdout should eq "lineno_begin: 10"
-          The line 6 of stdout should eq "block_lineno_begin1: 10"
+          The line 2 of stdout should eq "before_first_block"
+          The line 3 of stdout should eq "trans block_example desc"
+          The line 4 of stdout should eq "filter: "
+          The line 5 of stdout should eq "block_no: 1"
+          The line 6 of stdout should eq "lineno_begin: 10"
+          The line 7 of stdout should eq "block_lineno_begin1: 10"
         End
       End
     End

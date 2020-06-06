@@ -51,6 +51,14 @@ trans_block_end() {
   putsn "shellspec_block${block_no}) ${1# }"
 }
 
+trans_before_first_block() {
+  putsn "shellspec_before_first_block"
+}
+
+trans_after_last_block() {
+  putsn "shellspec_after_last_block"
+}
+
 trans_evaluation() {
   putsn "SHELLSPEC_LINENO=$lineno"
   putsn "if [ \$# -eq 0 ]"
@@ -185,6 +193,8 @@ filter=1
 [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
 
 putsn "#!/bin/sh"
+putsn "SHELLSPEC_WORKDIR=\"\$SHELLSPEC_TMPBASE\""
+putsn "SHELLSPEC_STDIO_FILE_BASE=\"\$SHELLSPEC_WORKDIR\""
 putsn "[ \"\$SHELLSPEC_DEBUG_TRAP\" ] && trap - DEBUG"
 putsn "shellspec_coverage_setup() { shellspec_coverage_disabled; }"
 [ "$coverage" ] && putsn ". \"\${SHELLSPEC_COVERAGE_SETUP:-/dev/null}\""
