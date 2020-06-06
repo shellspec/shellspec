@@ -26,7 +26,7 @@ gitbash_task:
     - bash -c "echo --force-color > ./.shellspec-local"
     - bash -c "./shellspec --task fixture:stat:prepare"
   script:
-    - bash -c "contrib/all.sh contrib/various_test.sh"
+    - bash -c "contrib/all.sh shellspec"
 
 msys_task:
   windows_container:
@@ -66,3 +66,14 @@ cygwin_task:
     - bash -c "rm -f ./spec/fixture/stat/{readable,writable}"
   script:
     - bash -c 'contrib/all.sh shellspec'
+
+busybox_task:
+  windows_container:
+    image: cirrusci/windowsservercore:2019
+    os_version: 2019
+  install_script:
+    - choco install -y --no-progress busybox
+  prepare_script:
+    - busybox ash -c "echo --force-color > ./.shellspec-local"
+  script:
+    - busybox ash -c "contrib/all.sh shellspec"
