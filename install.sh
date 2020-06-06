@@ -42,31 +42,20 @@ USAGE
 CDPATH=''
 [ "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
-PATH="${PATH:-}:/" PATH_SEP=":"
-case $PATH in (*\;\/) PATH_SEP=";"; esac
-PATH=${PATH%??}
-
 finish() { done=1; exit "${1:-0}"; }
 error() { printf '\033[31m%s\033[0m\n' "$1"; }
 abort() { [ "${1:-}" ] && error "$1" >&2; finish 1; }
 finished() { [ "$done" ] || error "Failed to install"; }
 
 exists() {
-  ( IFS=$PATH_SEP
+  ( PATH="${PATH:-}:/" IFS=":"
+    case $PATH in (*\;\/) IFS=";"; esac
+    PATH=${PATH%??}
     for p in $PATH; do
       [ -x "${p%/}/$1" ] && return 0
     done
     return 1
   )
-}
-
-which() {
-  set -- "$1" "${PATH%$PATH_SEP}${PATH_SEP}"
-  while [ "${2%$PATH_SEP}" ]; do
-    [ -x "${2%%$PATH_SEP*}/$1" ] && echo "${2%%$PATH_SEP*}/$1" && return 0
-    set -- "$1" "${2#*$PATH_SEP}"
-  done
-  return 1
 }
 
 prompt() {
@@ -105,7 +94,7 @@ fetch() {
 
 unarchive() {
   mkdir -p "${3%/*}"
-  gunzip -c "$1" | (cd "${3%/*}"; "$(which tar)" xf -)
+  gunzip -c "$1" | (cd "${3%/*}"; env tar xf -)
   set -- "$1" "${2##*/}" "$3"
   mv "$(components_path "${3%/*}/$project-${2%.tar.gz}"*)" "$3"
 }

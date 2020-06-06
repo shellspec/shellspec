@@ -47,32 +47,6 @@ Describe "./install.sh"
     End
   End
 
-  Describe "which()"
-    Context 'when PATH=/foo:$BIN:/bar'
-      Before 'PATH="/foo:$BIN:/bar"'
-      It "retrieves found path"
-        When call which cat
-        The output should eq "$BIN/cat"
-      End
-    End
-
-    Context 'when PATH=/foo:/bar'
-      Before PATH=/foo:/bar
-      It "retrieves nothing"
-        When call which cat
-        The status should eq 1
-      End
-    End
-
-    Context 'when PATH='
-      Before PATH=
-      It "retrieves nothing"
-        When call which cat
-        The status should eq 1
-      End
-    End
-  End
-
   Describe "prompt()"
     Context "when not pre answered"
       Before ans=""
