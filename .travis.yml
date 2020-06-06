@@ -57,7 +57,7 @@ before_script:
   - ./shellspec --shell sh --task fixture:stat:prepare
 script:
   - if [ ! "$COVERAGE" ]; then contrib/all.sh contrib/various_test.sh; fi
-  - if [   "$COVERAGE" ]; then ./shellspec --kcov --kcov-options "--coveralls-id=${TRAVIS_JOB_ID}"; fi
+  - if [   "$COVERAGE" ]; then ./shellspec --shell bash --kcov --kcov-options "--coveralls-id=${TRAVIS_JOB_ID}"; fi
 after_success:
   - if [ "$CODECOV" ]; then bash <(curl -s https://codecov.io/bash) -s coverage; fi
   - if [ "$CC" ]; then ./cc-test-reporter format-coverage coverage/cobertura.xml -t cobertura; fi
