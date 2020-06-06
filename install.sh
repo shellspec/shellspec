@@ -49,7 +49,7 @@ finished() { [ "$done" ] || error "Failed to install"; }
 
 exists() {
   ( PATH="${PATH:-}:/" IFS=":"
-    case $PATH in (*\;\/) IFS=";"; esac
+    case $PATH in (*\;/) IFS=";"; esac
     PATH=${PATH%??}
     for p in $PATH; do
       [ -x "${p%/}/$1" ] && return 0

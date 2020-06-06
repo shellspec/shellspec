@@ -48,7 +48,7 @@ if (trap '' DEBUG) 2>/dev/null; then
 fi
 
 PATH="${PATH:-}:/"
-case $PATH in (*\;\/)
+case $PATH in (*\;/)
   echo "SHELLSPEC_BUSYBOX_W32=1"
 esac
 PATH=${PATH%??}

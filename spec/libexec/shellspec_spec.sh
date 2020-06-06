@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 % DOT_SHELLSPEC: "fixture/dot-shellspec"

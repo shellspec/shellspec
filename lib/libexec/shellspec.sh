@@ -96,7 +96,7 @@ current_shell() {
 
 command_path() {
   PATH="${PATH:-}:/" sep=":"
-  case $PATH in (*\;\/) sep=";"; esac
+  case $PATH in (*\;/) sep=";"; esac
   PATH=${PATH%??}
 
   if [ $# -lt 2 ]; then

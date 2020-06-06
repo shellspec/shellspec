@@ -53,6 +53,7 @@ Describe "./install.sh"
       Data "answer"
 
       It 'returns the answer'
+        Skip if "/dev/stdin not exists" [ ! -e /dev/stdin ]
         When call prompt "Message:" ans /dev/stdin
         The output should eq "Message: answer"
         The variable ans should eq "answer"
@@ -83,6 +84,7 @@ Describe "./install.sh"
       Data "y"
 
       It 'returns the answer'
+        Skip if "/dev/stdin not exists" [ ! -e /dev/stdin ]
         When call confirm "Question? [y/N]" ans /dev/stdin
         The stdout should eq "Question? [y/N] y"
         The variable ans should eq "y"
