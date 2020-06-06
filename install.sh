@@ -48,16 +48,14 @@ abort() { [ "${1:-}" ] && error "$1" >&2; finish 1; }
 finished() { [ "$done" ] || error "Failed to install"; }
 
 exists() {
-  ( IFS=:; for p in $PATH; do [ -x "${p%/}/$1" ] && return 0; done; return 1 )
-}
-
-which() {
-  set -- "$1" "${PATH%:}:"
-  while [ "${2%:}" ]; do
-    [ -x "${2%%:*}/$1" ] && echo "${2%%:*}/$1" && return 0
-    set -- "$1" "${2#*:}"
-  done
-  return 1
+  ( PATH="${PATH:-}:/" IFS=":"
+    case $PATH in (*\;/) IFS=";"; esac
+    PATH=${PATH%??}
+    for p in $PATH; do
+      [ -x "${p%/}/$1" ] && return 0
+    done
+    return 1
+  )
 }
 
 prompt() {
@@ -79,7 +77,7 @@ confirm() {
 }
 
 fetch() {
-  tmpfile="${TMPDIR:-/tmp}/${1##*/}.$$"
+  tmpfile="${TMPDIR:-${TMP:-/tmp}}/${1##*/}.$$"
   case $FETCH in
     curl) curl --head -sSfL -o /dev/null "$1" && curl -SfL "$1" ;;
     wget) wget --spider -q "$1" && wget -O- "$1" ;;
@@ -96,7 +94,7 @@ fetch() {
 
 unarchive() {
   mkdir -p "${3%/*}"
-  gunzip -c "$1" | (cd "${3%/*}"; "$(which tar)" xf -)
+  gunzip -c "$1" | (cd "${3%/*}"; env tar xf -)
   set -- "$1" "${2##*/}" "$3"
   mv "$(components_path "${3%/*}/$project-${2%.tar.gz}"*)" "$3"
 }

@@ -1,6 +1,7 @@
 #shellcheck shell=sh disable=SC2016
 
 % TMPBASE: "$SHELLSPEC_TMPBASE"
+% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 
 Describe "shellspec-init.sh"
   Include ./libexec/shellspec-init.sh
@@ -12,8 +13,8 @@ Describe "shellspec-init.sh"
     Data "dummy"
 
     It "generates file"
-      When call generate "/dev/null"
-      The output should eq "   exist   /dev/null"
+      When call generate "$FIXTURE/exist"
+      The output should eq "   exist   $FIXTURE/exist"
     End
 
     It "generates file"

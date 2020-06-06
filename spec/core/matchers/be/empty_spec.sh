@@ -82,6 +82,7 @@ Describe "core/matchers/be/empty.sh"
     End
 
     Context 'when directory contains "*" file'
+      Skip if "busybox-w32 can not create '*' file" busybox_w32
       Before 'touch "$EMPTYDIR/*"'
       After 'rm "$EMPTYDIR/*"'
 

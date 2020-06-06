@@ -86,6 +86,7 @@ Describe "core/evaluation.sh"
     End
 
     It 'calls external command'
+      BeforeRun 'PATH="$BIN:$PATH"'
       cat() { echo "fake cat"; return 1; }
       When run command cat /dev/null
       The status should equal 0
@@ -169,6 +170,7 @@ Describe "core/evaluation.sh"
     End
 
     It 'reads data from stdin'
+      BeforeRun 'PATH="$BIN:$PATH"'
       Data "data"
       When run command cat
       The stdout should equal 'data'
@@ -267,6 +269,7 @@ Describe "core/evaluation.sh"
 
     Describe 'run command evaluation'
       It 'runs external command'
+        BeforeRun 'PATH="$BIN:$PATH"'
         cat() { echo "fake cat"; return 1; }
         When run command cat /dev/null
         The status should equal 0

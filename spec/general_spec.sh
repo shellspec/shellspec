@@ -1,5 +1,6 @@
 #shellcheck shell=sh disable=SC2016
 
+% BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 % EMPTY_FILE: "$SHELLSPEC_SPECDIR/fixture/empty"
 % NON_EMPTY_FILE: "$SHELLSPEC_SPECDIR/fixture/file"
@@ -688,18 +689,18 @@ Describe "general.sh"
   End
 
   Describe "shellspec_which()"
-    Context 'when PATH=/foo:/bin:/bar'
-      Before PATH=/foo:/bin:/bar
+    Context 'when PATH=/foo:$BIN:/bar'
+      Before PATH='/foo:$BIN:/bar'
       It "retrieves found path"
-        When call shellspec_which sh
-        The output should eq "/bin/sh"
+        When call shellspec_which cat
+        The output should eq "$BIN/cat"
       End
     End
 
     Context 'when PATH=/foo:/bar'
       Before PATH=/foo:/bar
       It "retrieves nothing"
-        When call shellspec_which sh
+        When call shellspec_which cat
         The status should eq 1
       End
     End
@@ -707,7 +708,7 @@ Describe "general.sh"
     Context 'when PATH='
       Before PATH=
       It "retrieves nothing"
-        When call shellspec_which sh
+        When call shellspec_which cat
         The status should eq 1
       End
     End

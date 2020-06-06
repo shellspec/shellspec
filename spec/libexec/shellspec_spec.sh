@@ -1,5 +1,6 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2016
 
+% BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 % DOT_SHELLSPEC: "fixture/dot-shellspec"
 % CMDLINE: "$SHELLSPEC_SPECDIR/fixture/proc/cmdline"
 
@@ -203,22 +204,22 @@ Describe "libexec/shellspec.sh"
   End
 
   Describe "command_path()"
-    Before PATH="/foo:/bar:/bin"
+    Before PATH='/foo:$BIN:/bar'
 
     It "only checks command exists"
-      When call command_path "/bin/sh"
+      When call command_path "$BIN/cat"
       The status should be success
     End
 
     Context 'when absolute path'
       It "outputs found path"
-        When call command_path ret "/bin/sh"
-        The variable ret should equal "/bin/sh"
+        When call command_path ret "$BIN/cat"
+        The variable ret should equal "$BIN/cat"
       End
 
       It "return failure when not found command"
         BeforeCall ret="dummy"
-        When call command_path ret "/bin/-there-is-not-such-a-command-"
+        When call command_path ret "$BIN/-no-such-command-"
         The status should be failure
         The variable ret should equal "dummy"
       End
@@ -226,13 +227,13 @@ Describe "libexec/shellspec.sh"
 
     Context 'when command only'
       It "outputs absolute path"
-        When call command_path ret "sh"
-        The variable ret should equal "/bin/sh"
+        When call command_path ret "cat"
+        The variable ret should equal "$BIN/cat"
       End
 
       It "return failure when not found command"
         BeforeCall ret="dummy"
-        When call command_path ret "-there-is-not-such-a-command-"
+        When call command_path ret "-no-such-command-"
         The status should be failure
         The variable ret should equal "dummy"
       End

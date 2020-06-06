@@ -25,7 +25,7 @@ export SHELLSPEC_GRAMMAR_BLOCKS=''
 export SHELLSPEC_SPECDIR=''
 export SHELLSPEC_LOAD_PATH=''
 export SHELLSPEC_SHELL=''
-export SHELLSPEC_TIME='time -p'
+export SHELLSPEC_TIME=''
 export SHELLSPEC_TMPBASE=''
 export SHELLSPEC_TIME_LOG=''
 export SHELLSPEC_FORMATTER='progress'
@@ -87,6 +87,8 @@ export SHELLSPEC_DEFECT_REDEFINE=''
 export SHELLSPEC_DEFECT_SHELLFLAG=''
 export SHELLSPEC_DEFECT_ERREXIT=''
 export SHELLSPEC_SHEBANG_MULTIARG=''
+export SHELLSPEC_BUSYBOX_W32=''
+export SHELLSPEC_PATH_SEPARATOR=":"
 export SHELLSPEC_QUICK=''
 export SHELLSPEC_QUICK_FILE=".shellspec-quick.log"
 export SHELLSPEC_REPAIR=''
@@ -138,15 +140,6 @@ SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$SHELLSPEC_UNIXTIME.$$"
 SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/.shellspec-time.log"
 SHELLSPEC_PROFILER_LOG="$SHELLSPEC_TMPBASE/.shellspec-profiler.log"
 SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner"
-
-if ! command_path "${SHELLSPEC_TIME%% *}"; then
-  SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
-  if command_path bash; then
-    SHELLSPEC_TIME="bash $SHELLSPEC_TIME"
-  elif command_path ksh; then
-    SHELLSPEC_TIME="ksh $SHELLSPEC_TIME"
-  fi
-fi
 
 while IFS= read -r option; do
   SHELLSPEC_KCOV_COMMON_OPTS="$SHELLSPEC_KCOV_COMMON_OPTS$option "
@@ -494,7 +487,22 @@ fi
   if [ "$SHELLSPEC_DEFECT_ERREXIT" ]; then
     warn "Unsupported shell (errexit handling broken)."
   fi
+
+  if [ "$SHELLSPEC_BUSYBOX_W32" ]; then
+    SHELLSPEC_PATH_SEPARATOR=";"
+  fi
 }
+
+if command_path "time" || [ "$SHELLSPEC_BUSYBOX_W32" ]; then
+  SHELLSPEC_TIME="time -p"
+else
+  SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
+  if command_path bash; then
+    SHELLSPEC_TIME="bash $SHELLSPEC_TIME"
+  elif command_path ksh; then
+    SHELLSPEC_TIME="ksh $SHELLSPEC_TIME"
+  fi
+fi
 
 if ! sigchk $$; then
   # For example posh 0.13.2 does not implement kill as builtin and

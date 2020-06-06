@@ -47,5 +47,11 @@ if (trap '' DEBUG) 2>/dev/null; then
   echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
 fi
 
+PATH="${PATH:-}:/"
+case $PATH in (*\;/)
+  echo "SHELLSPEC_BUSYBOX_W32=1"
+esac
+PATH=${PATH%??}
+
 # arithmetic expansion is also required
 exit $((0))

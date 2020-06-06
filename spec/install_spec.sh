@@ -1,5 +1,6 @@
 #shellcheck shell=sh disable=SC2016
 
+% BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture/install"
 % TMPBASE: "$SHELLSPEC_TMPBASE/install"
 
@@ -33,8 +34,10 @@ Describe "./install.sh"
   Include ./install.sh
 
   Describe "exists()"
+    Before 'PATH="/foo:$BIN:/bar"'
+
     It 'returns success when found executable file'
-      When call exists sh
+      When call exists cat
       The status should be success
     End
 
@@ -44,38 +47,13 @@ Describe "./install.sh"
     End
   End
 
-  Describe "which()"
-    Context 'when PATH=/foo:/bin:/bar'
-      Before PATH=/foo:/bin:/bar
-      It "retrieves found path"
-        When call which sh
-        The output should eq "/bin/sh"
-      End
-    End
-
-    Context 'when PATH=/foo:/bar'
-      Before PATH=/foo:/bar
-      It "retrieves nothing"
-        When call which sh
-        The status should eq 1
-      End
-    End
-
-    Context 'when PATH='
-      Before PATH=
-      It "retrieves nothing"
-        When call which sh
-        The status should eq 1
-      End
-    End
-  End
-
   Describe "prompt()"
     Context "when not pre answered"
       Before ans=""
       Data "answer"
 
       It 'returns the answer'
+        Skip if "/dev/stdin not exists" [ ! -e /dev/stdin ]
         When call prompt "Message:" ans /dev/stdin
         The output should eq "Message: answer"
         The variable ans should eq "answer"
@@ -106,6 +84,7 @@ Describe "./install.sh"
       Data "y"
 
       It 'returns the answer'
+        Skip if "/dev/stdin not exists" [ ! -e /dev/stdin ]
         When call confirm "Question? [y/N]" ans /dev/stdin
         The stdout should eq "Question? [y/N] y"
         The variable ans should eq "y"
