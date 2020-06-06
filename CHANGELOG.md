@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade alpine version to 3.12 for docker image
 
+## [0.24.3] - 2020-06-06
+
+### Fixed
+
+- Fixes BeforeAll / AfterAll to share states
+
 ## [0.24.2] - 2020-05-27
 
 ### Fixed
@@ -388,7 +394,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.24.2...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.24.3...HEAD
+[0.24.3]: https://github.com/shellspec/shellspec/compare/0.24.2...0.24.3
 [0.24.2]: https://github.com/shellspec/shellspec/compare/0.24.1...0.24.2
 [0.24.1]: https://github.com/shellspec/shellspec/compare/0.24.0...0.24.1
 [0.24.0]: https://github.com/shellspec/shellspec/compare/0.23.0...0.24.0
