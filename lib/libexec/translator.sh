@@ -14,10 +14,14 @@ initialize() {
 }
 
 finalize() {
-  [ "$_block_no_stack" ] || return 0
-  syntax_error "Unexpected end of file (expecting 'End')"
-  lineno=
-  while [ "$_block_no_stack" ]; do block_end; done
+  if [ "$_block_no_stack" ]; then
+    syntax_error "Unexpected end of file (expecting 'End')"
+    lineno=
+    while [ "$_block_no_stack" ]; do block_end; done
+  fi
+  if [ ! "$block_id_increased" ]; then
+    trans after_last_block ""
+  fi
 }
 
 read_specfile() {
@@ -111,6 +115,9 @@ block_example_group() {
 
   check_filter "$1" && filter=1
 
+  if [ "$block_id_increased" ]; then
+    trans before_first_block "$block_id"
+  fi
   increase_block_id
   _block_no=$(($_block_no + 1))
   block_no=$_block_no lineno_begin=$lineno
@@ -137,6 +144,9 @@ block_example() {
 
   check_filter "$1" && filter=1
 
+  if [ "$block_id_increased" ]; then
+    trans before_first_block "$block_id"
+  fi
   increase_block_id
   _block_no=$(($_block_no + 1))
   block_no=$_block_no lineno_begin=$lineno
@@ -162,6 +172,9 @@ block_end() {
     return 0
   fi
 
+  if [ ! "$block_id_increased" ]; then
+    trans after_last_block "${block_id%-*}"
+  fi
   decrease_block_id
   block_no=${_block_no_stack##* } lineno_end=$lineno
   eval "block_lineno_end${block_no}=$lineno"
