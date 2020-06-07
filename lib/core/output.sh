@@ -8,7 +8,7 @@ shellspec_output() {
 shellspec_output_raw() {
   [ $# -gt 0 ] || return 0
 
-  shellspec_output_buf="${shellspec_output_buf:-}$SHELLSPEC_RS"
+  shellspec_output_buf="${shellspec_output_buf:-}${SHELLSPEC_RS}"
   while [ $# -gt 1 ]; do
     shellspec_output_buf="${shellspec_output_buf}$1${SHELLSPEC_US}"
     shift
@@ -39,11 +39,13 @@ shellspec_output_end() {
 }
 
 shellspec_output_example() {
-  eval shellspec_output_raw type:example ${1:+'"$@"'} "lineno_range:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END"
+  eval shellspec_output_raw type:example ${1:+'"$@"'} \
+    "lineno_range:${SHELLSPEC_LINENO_BEGIN}-${SHELLSPEC_LINENO_END}"
 }
 
 shellspec_output_statement() {
-  eval shellspec_output_raw type:statement ${1:+'"$@"'} "lineno:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}"
+  eval shellspec_output_raw type:statement ${1:+'"$@"'} \
+    "lineno:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}"
 }
 
 shellspec_output_result() {
