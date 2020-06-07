@@ -10,8 +10,9 @@ worker() {
     (mkdir "$SHELLSPEC_JOBDIR/$1.lock") 2>/dev/null || return 0
     IFS= read -r specfile < "$SHELLSPEC_JOBDIR/$1.job"
     translator --no-metadata --no-finished --spec-no="$1" "$specfile" \
-      | $SHELLSPEC_SHELL \
-      > "$SHELLSPEC_JOBDIR/$1.stdout" 2> "$SHELLSPEC_JOBDIR/$1.stderr" &&:
+      | eval "\$SHELLSPEC_SHELL" \
+        "$SHELLSPEC_OUTPUT_FD> \"\$SHELLSPEC_JOBDIR/\$1.stdout\"" \
+        "2> \"\$SHELLSPEC_JOBDIR/\$1.stderr\" &&:" &&:
     echo "$?" > "$SHELLSPEC_JOBDIR/$1.status"
     : > "$SHELLSPEC_JOBDIR/$1.done"
   }
@@ -22,7 +23,8 @@ reduce() {
   i=0
   while [ $i -lt "$1" ] && i=$(($i + 1)); do
     until [ -e "$SHELLSPEC_JOBDIR/$i.done" ]; do sleep 0; done
-    cat "$SHELLSPEC_JOBDIR/$i.stdout"
+    # shellcheck disable=SC2039
+    cat "$SHELLSPEC_JOBDIR/$i.stdout" >&"$SHELLSPEC_OUTPUT_FD"
     cat "$SHELLSPEC_JOBDIR/$i.stderr" >&2
     read -r exit_status < "$SHELLSPEC_JOBDIR/$i.status"
     [ "$exit_status" -eq 0 ] || exit "$exit_status"

@@ -48,7 +48,7 @@ shellspec_finished() {
   if [ "${1:-}" ]; then
     shellspec_output FINISHED
   else
-    shellspec_putsn
+    shellspec_output_to_fd shellspec_putsn
   fi
 }
 
