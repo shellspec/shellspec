@@ -3,7 +3,6 @@
 Describe "core/output.sh"
   Include "$SHELLSPEC_LIB/core/output.sh"
   BeforeRun shellspec_output_buf=''
-  BeforeRun SHELLSPEC_OUTPUT_FD=1
 
   Describe "shellspec_output()"
     shellspec_output_ABC() { echo abc "$@"; }

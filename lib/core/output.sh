@@ -5,11 +5,6 @@ shellspec_output() {
   "shellspec_output_$@"
 }
 
-shellspec_output_to_fd() {
-  # shellcheck disable=SC2039
-  "$@" >&"$SHELLSPEC_OUTPUT_FD"
-}
-
 shellspec_output_raw() {
   [ $# -gt 0 ] || return 0
 
@@ -18,13 +13,13 @@ shellspec_output_raw() {
     shellspec_output_buf="${shellspec_output_buf}$1${SHELLSPEC_US}"
     shift
   done
-  shellspec_output_to_fd shellspec_puts "${shellspec_output_buf}$1"
+  shellspec_puts "${shellspec_output_buf}$1"
   shellspec_output_buf=$SHELLSPEC_LF
 }
 
 shellspec_output_raw_append() {
-  shellspec_output_to_fd shellspec_puts "$SHELLSPEC_US"
-  shellspec_output_to_fd shellspec_putsn "$@"
+  shellspec_puts "$SHELLSPEC_US"
+  shellspec_putsn "$@"
 }
 
 shellspec_output_meta() {
@@ -68,15 +63,15 @@ shellspec_output_unless() {
 }
 
 shellspec_output_failure_message() {
-  shellspec_output_to_fd shellspec_puts "${SHELLSPEC_US}failure_message:"
+  shellspec_puts "${SHELLSPEC_US}failure_message:"
   set -- "$(shellspec_output_subject)" "$(shellspec_output_expect)"
-  shellspec_output_to_fd shellspec_matcher__failure_message "$@"
+  shellspec_matcher__failure_message "$@"
 }
 
 shellspec_output_failure_message_when_negated() {
-  shellspec_output_to_fd shellspec_puts "${SHELLSPEC_US}failure_message:"
+  shellspec_puts "${SHELLSPEC_US}failure_message:"
   set -- "$(shellspec_output_subject)" "$(shellspec_output_expect)"
-  shellspec_output_to_fd shellspec_matcher__failure_message_when_negated "$@"
+  shellspec_matcher__failure_message_when_negated "$@"
 }
 
 shellspec_output_following_words() {
@@ -95,9 +90,9 @@ shellspec_output_following_words() {
     [ "$2" -eq "$3" ] || shellspec_puts ', '
     [ $(( $2 % 8)) -ne 0 ] || shellspec_puts "$SHELLSPEC_LF"
   }
-  shellspec_output_to_fd shellspec_putsn
-  shellspec_output_to_fd shellspec_each callback "$@"
-  shellspec_output_to_fd shellspec_putsn
+  shellspec_putsn
+  shellspec_each callback "$@"
+  shellspec_putsn
 }
 
 shellspec_output_syntax_name() {

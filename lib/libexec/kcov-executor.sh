@@ -19,7 +19,7 @@ executor() {
   # The directory of $SHELLSPEC_KCOV_IN_FILE should be empty
   # kcov try to parse files around $SHELLSPEC_KCOV_IN_FILE
   mkdir -p "${SHELLSPEC_KCOV_IN_FILE%/*}"
-  translator --coverage --fd=8 --progress "$@" > "$SHELLSPEC_KCOV_IN_FILE"
+  translator --coverage --fd=9 --progress "$@" > "$SHELLSPEC_KCOV_IN_FILE"
 
   kcov_preprocess
 
@@ -33,7 +33,7 @@ executor() {
     --bash-parse-files-in-dir=. \
     --configure=command-name="shellspec $*" \
     "$SHELLSPEC_COVERAGE_DIR" "$SHELLSPEC_KCOV_IN_FILE"
-  )
+  ) 9>&1
 
   eval "kcov_postprocess; return $?"
 }
