@@ -88,8 +88,15 @@ shellspec_output_ASSERT_WARN() {
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:$SHELLSPEC_EXPECTATION"
-  set -- "Unexpected error output to stderr (exit status: $SHELLSPEC_STATUS)"
+  set -- "Unexpected error output to stderr (exit status: $1)"
   shellspec_output_raw_append "failure_message:$1"
+}
+
+shellspec_output_ASSERT_ERR() {
+  shellspec_output_statement "tag:bad" "note:" "fail:y" \
+    "message:$SHELLSPEC_EXPECTATION"
+  shellspec_output_raw_append "failure_message:assertion failure" \
+    "(exit status: $1)"
 }
 
 shellspec_output_FAILED_BEFORE_EACH_HOOK() {

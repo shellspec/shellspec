@@ -6,6 +6,6 @@ Describe 'Assert'
   }
 
   Specify "Assert execute custom assertion"
-    Assert custom_assertion [ 123 = 123 ]
+    Assert custom_assertion [ "123" = "123" ]
   End
 End

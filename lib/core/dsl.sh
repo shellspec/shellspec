@@ -340,32 +340,33 @@ shellspec_assert() {
     return 0
   fi
 
+  SHELLSPEC_ASSERT_STDERR_FILE="$SHELLSPEC_WORKDIR/assert.stderr"
+
   case $- in
     *e*) eval "set -- -e ${1+\"\$@\"}" ;;
     *) eval "set -- +e ${1+\"\$@\"}" ;;
   esac
   set +e
-  { SHELLSPEC_ASSERT_STDERR=$( shellspec_assert_ "$@" 2>&1 1>&3 ); } 3>&1
+  ( set -e; shift; "$@" 2>"$SHELLSPEC_ASSERT_STDERR_FILE" )
   set "$1" -- $?
+
+  shellspec_readfile SHELLSPEC_ASSERT_STDERR "$SHELLSPEC_ASSERT_STDERR_FILE"
 
   if [ "$1" -eq 0 ]; then
     if [ "$SHELLSPEC_ASSERT_STDERR" ]; then
-      shellspec_output ASSERT_WARN
+      shellspec_output ASSERT_WARN "$1"
       shellspec_output_assert_message "$SHELLSPEC_ASSERT_STDERR"
       shellspec_on WARNED
-    else
-      shellspec_output MATCHED
+      return 0
     fi
+    shellspec_output MATCHED
     return 0
   fi
 
-  shellspec_output UNMATCHED
+  shellspec_output ASSERT_ERR "$1"
   shellspec_output_assert_message "$SHELLSPEC_ASSERT_STDERR"
   shellspec_on FAILED
 }
-
-# Workaround for bosh/pbosh <= 2020-04-18
-shellspec_assert_() { set -e; shift; "$@"; }
 
 shellspec_proxy shellspec_before_all "shellspec_register_before_hook ALL"
 shellspec_proxy shellspec_after_all "shellspec_register_after_hook ALL"

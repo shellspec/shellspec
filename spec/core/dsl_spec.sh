@@ -839,7 +839,7 @@ Describe "core/dsl.sh"
       The stdout should include 'off:NOT_IMPLEMENTED'
       The stdout should include 'on:EXPECTATION'
       The stdout should include 'on:FAILED'
-      The stdout should include 'output:UNMATCHED'
+      The stdout should include 'output:ASSERT_ERR'
     End
 
     It 'output warning when assertion succeeds but output to stderr'
