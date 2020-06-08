@@ -5,7 +5,6 @@ shellspec_syntax 'shellspec_matcher_satisfy'
 
 shellspec_matcher_satisfy() {
   shellspec_matcher__match() {
-    SHELLSPEC_SATISFY_STDOUT_FILE="$SHELLSPEC_WORKDIR/satisfy.stdout"
     SHELLSPEC_SATISFY_STDERR_FILE="$SHELLSPEC_WORKDIR/satisfy.stderr"
 
     if ! shellspec_is_function "${1:-}"; then
@@ -23,14 +22,11 @@ shellspec_matcher_satisfy() {
         fi
       fi
       "$@"
-    ) >"$SHELLSPEC_SATISFY_STDOUT_FILE" 2>"$SHELLSPEC_SATISFY_STDERR_FILE" &&:
+    ) 2>"$SHELLSPEC_SATISFY_STDERR_FILE" &&:
 
     set -- "$?"
-    if [ -s "$SHELLSPEC_SATISFY_STDOUT_FILE" ]; then
-      shellspec_output SATISFY_WARN "$1" "$SHELLSPEC_SATISFY_STDOUT_FILE"
-    fi
     if [ -s "$SHELLSPEC_SATISFY_STDERR_FILE" ]; then
-      shellspec_output SATISFY_ERROR "$1" "$SHELLSPEC_SATISFY_STDERR_FILE"
+      shellspec_output SATISFY_WARN "$1" "$SHELLSPEC_SATISFY_STDERR_FILE"
     fi
     return "$1"
   }

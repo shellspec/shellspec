@@ -31,17 +31,10 @@ Describe "core/matchers/satisfy.sh"
     End
 
     It 'outputs SATISFY_WARN if satisfy function echo to stdout'
-      echo_stdout() { echo stdout; }
-      subject() { %- 10; }
-      When run shellspec_matcher_satisfy echo_stdout
-      The stderr should equal SATISFY_WARN
-    End
-
-    It 'outputs SATISFY_ERROR if satisfy function echo to stdout'
       echo_stderr() { echo stderr >&2; }
       subject() { %- 10; }
       When run shellspec_matcher_satisfy echo_stderr
-      The stderr should equal SATISFY_ERROR
+      The stderr should equal SATISFY_WARN
     End
 
     It 'outputs error if invalid function name specified'
