@@ -84,6 +84,14 @@ shellspec_output_UNHANDLED_STDERR() {
   shellspec_output_raw_append "failure_message:stderr:" "$SHELLSPEC_STDERR"
 }
 
+shellspec_output_ASSERT_WARN() {
+  shellspec_output_statement "tag:warn" "note:WARNING" \
+    "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
+    "message:$SHELLSPEC_EXPECTATION"
+  set -- "Unexpected error output to stderr (exit status: $SHELLSPEC_STATUS)"
+  shellspec_output_raw_append "failure_message:$1"
+}
+
 shellspec_output_FAILED_BEFORE_EACH_HOOK() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
     "message:Before hook '$SHELLSPEC_HOOK' failed"

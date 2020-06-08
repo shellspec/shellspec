@@ -800,6 +800,69 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_assert()"
+    prepare() { shellspec_on NOT_IMPLEMENTED; }
+
+    mock() {
+      shellspec_output() { echo "output:$1"; }
+      eval 'shellspec_on() { echo "on:$*"; }'
+      eval 'shellspec_off() { echo "off:$*"; }'
+    }
+
+    Context "when errexit on"
+      Set errexit:on
+      It 'output unmatch when assertion succeeds'
+        BeforeRun prepare mock
+        When run shellspec_assert echo ok
+        The stdout should include 'off:NOT_IMPLEMENTED'
+        The stdout should include 'on:EXPECTATION'
+        The stdout should include 'output:MATCHED'
+        The stdout should include 'ok'
+      End
+    End
+
+    Context "when errexit off"
+      Set errexit:off
+      It 'output unmatch when assertion succeeds'
+        BeforeRun prepare mock
+        When run shellspec_assert echo ok
+        The stdout should include 'off:NOT_IMPLEMENTED'
+        The stdout should include 'on:EXPECTATION'
+        The stdout should include 'output:MATCHED'
+        The stdout should include 'ok'
+      End
+    End
+
+    It 'output unmatch when assertion fails'
+      BeforeRun prepare mock
+      When run shellspec_assert false
+      The stdout should include 'off:NOT_IMPLEMENTED'
+      The stdout should include 'on:EXPECTATION'
+      The stdout should include 'on:FAILED'
+      The stdout should include 'output:UNMATCHED'
+    End
+
+    It 'output warning when assertion succeeds but output to stderr'
+      warn() { echo warn >&2; return 0; }
+      BeforeRun prepare mock
+      When run shellspec_assert warn
+      The stdout should include 'off:NOT_IMPLEMENTED'
+      The stdout should include 'on:EXPECTATION'
+      The stdout should include 'on:WARNED'
+      The stdout should include 'output:ASSERT_WARN'
+    End
+
+    It 'raises error without assertion'
+      BeforeRun prepare mock
+      When run shellspec_assert
+      The stdout should include 'output:SYNTAX_ERROR_EXPECTATION'
+      The stdout should include 'off:NOT_IMPLEMENTED'
+      The stdout should include 'on:EXPECTATION'
+      The stdout should include 'on:FAILED'
+      The stdout should not include 'ok'
+    End
+  End
+
   Describe "shellspec_path()"
     echo_path_alias() { echo "$SHELLSPEC_PATH_ALIAS"; }
     AfterRun echo_path_alias

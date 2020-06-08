@@ -329,6 +329,44 @@ shellspec_the() {
   shellspec_statement_preposition "$@"
 }
 
+shellspec_assert() {
+  eval shellspec_join SHELLSPEC_EXPECTATION '" "' Assert ${1+'"$@"'}
+  shellspec_off NOT_IMPLEMENTED
+  shellspec_on EXPECTATION
+
+  if [ $# -eq 0 ]; then
+    shellspec_output SYNTAX_ERROR_EXPECTATION "Missing assertion"
+    shellspec_on FAILED
+    return 0
+  fi
+
+  case $- in
+    *e*) eval "set -- -e ${1+\"\$@\"}" ;;
+    *) eval "set -- +e ${1+\"\$@\"}" ;;
+  esac
+  set +e
+  { SHELLSPEC_ASSERT_STDERR=$( shellspec_assert_ "$@" 2>&1 1>&3 ); } 3>&1
+  set "$1" -- $?
+
+  if [ "$1" -eq 0 ]; then
+    if [ "$SHELLSPEC_ASSERT_STDERR" ]; then
+      shellspec_output ASSERT_WARN
+      shellspec_output_assert_message "$SHELLSPEC_ASSERT_STDERR"
+      shellspec_on WARNED
+    else
+      shellspec_output MATCHED
+    fi
+    return 0
+  fi
+
+  shellspec_output UNMATCHED
+  shellspec_output_assert_message "$SHELLSPEC_ASSERT_STDERR"
+  shellspec_on FAILED
+}
+
+# Workaround for bosh/pbosh <= 2020-04-18
+shellspec_assert_() { set -e; shift; "$@"; }
+
 shellspec_proxy shellspec_before_all "shellspec_register_before_hook ALL"
 shellspec_proxy shellspec_after_all "shellspec_register_after_hook ALL"
 
