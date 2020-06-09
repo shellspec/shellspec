@@ -5,9 +5,12 @@ Describe "core/modifiers/result.sh"
 
   Describe "result modifier"
     foo() { echo ok; true; }
+    bar() { false; }
 
     Example 'example'
       The result of 'foo()' should equal ok
+      The result of 'foo()' should be successful
+      The result of 'bar()' should not be successful
     End
 
     Describe 'example with stdout, stderr and status'
