@@ -17,6 +17,7 @@
     "lib/core/matchers/be/empty.sh",
     "lib/core/matchers/be/stat.sh",
     "lib/core/matchers/be/status.sh",
+    "lib/core/matchers/be/successful.sh",
     "lib/core/matchers/be/valid.sh",
     "lib/core/matchers/be/variable.sh",
     "lib/core/matchers/end_with.sh",
