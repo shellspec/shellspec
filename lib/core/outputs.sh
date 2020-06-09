@@ -84,6 +84,21 @@ shellspec_output_UNHANDLED_STDERR() {
   shellspec_output_raw_append "failure_message:stderr:" "$SHELLSPEC_STDERR"
 }
 
+shellspec_output_ASSERT_WARN() {
+  shellspec_output_statement "tag:warn" "note:WARNING" \
+    "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
+    "message:$SHELLSPEC_EXPECTATION"
+  set -- "Unexpected error output to stderr (exit status: $1)"
+  shellspec_output_raw_append "failure_message:$1"
+}
+
+shellspec_output_ASSERT_ERR() {
+  shellspec_output_statement "tag:bad" "note:" "fail:y" \
+    "message:$SHELLSPEC_EXPECTATION"
+  shellspec_output_raw_append "failure_message:assertion failure" \
+    "(exit status: $1)"
+}
+
 shellspec_output_FAILED_BEFORE_EACH_HOOK() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
     "message:Before hook '$SHELLSPEC_HOOK' failed"
@@ -179,28 +194,21 @@ shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
     "$(shellspec_output_syntax_name) is not a $2"
 }
 
-shellspec_output_RESULT_ERROR() {
+shellspec_output_RESULT_WARN() {
   shellspec_readfile SHELLSPEC_RESULT_ERROR "$2"
-  set -- "result modifier error (exit status: $1)${SHELLSPEC_LF}" \
+  set -- "Unexpected error output to stderr (exit status: $1)${SHELLSPEC_LF}" \
     "$SHELLSPEC_RESULT_ERROR${SHELLSPEC_LF}"
-  shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:$SHELLSPEC_EXPECTATION" "failure_message:$1$2"
-}
-
-shellspec_output_SATISFY_WARN() {
-  shellspec_readfile SHELLSPEC_SATISFY_WARN "$2"
-  set -- "satisfy matcher unexpected output (exit status: $1)${SHELLSPEC_LF}" \
-    "$SHELLSPEC_SATISFY_WARN${SHELLSPEC_LF}"
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:$SHELLSPEC_EXPECTATION" "failure_message:$1$2"
 }
 
-shellspec_output_SATISFY_ERROR() {
-  shellspec_readfile SHELLSPEC_SATISFY_ERROR "$2"
-  set -- "satisfy matcher error (exit status: $1)${SHELLSPEC_LF}" \
-    "$SHELLSPEC_SATISFY_ERROR${SHELLSPEC_LF}"
-  shellspec_output_statement "tag:bad" "note:" "fail:y" \
+shellspec_output_SATISFY_WARN() {
+  shellspec_readfile SHELLSPEC_SATISFY_WARN "$2"
+  set -- "Unexpected error output to stderr (exit status: $1)${SHELLSPEC_LF}" \
+    "$SHELLSPEC_SATISFY_WARN${SHELLSPEC_LF}"
+  shellspec_output_statement "tag:warn" "note:WARNING" \
+    "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:$SHELLSPEC_EXPECTATION" "failure_message:$1$2"
 }
 

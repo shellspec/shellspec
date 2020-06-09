@@ -17,6 +17,7 @@ End                =>   block_end
 Todo               =>   todo
 When               =>   evaluation when
 The                =>   expectation the
+Assert             =>   expectation assert
 Path               =>   control path
 File               =>   control path
 Dir                =>   control path

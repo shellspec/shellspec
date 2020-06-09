@@ -329,6 +329,45 @@ shellspec_the() {
   shellspec_statement_preposition "$@"
 }
 
+shellspec_assert() {
+  eval shellspec_join SHELLSPEC_EXPECTATION '" "' Assert ${1+'"$@"'}
+  shellspec_off NOT_IMPLEMENTED
+  shellspec_on EXPECTATION
+
+  if [ $# -eq 0 ]; then
+    shellspec_output SYNTAX_ERROR_EXPECTATION "Missing assertion"
+    shellspec_on FAILED
+    return 0
+  fi
+
+  SHELLSPEC_ASSERT_STDERR_FILE="$SHELLSPEC_WORKDIR/assert.stderr"
+
+  case $- in
+    *e*) eval "set -- -e ${1+\"\$@\"}" ;;
+    *) eval "set -- +e ${1+\"\$@\"}" ;;
+  esac
+  set +e
+  ( set -e; shift; "$@" 2>"$SHELLSPEC_ASSERT_STDERR_FILE" )
+  set "$1" -- $?
+
+  shellspec_readfile SHELLSPEC_ASSERT_STDERR "$SHELLSPEC_ASSERT_STDERR_FILE"
+
+  if [ "$1" -eq 0 ]; then
+    if [ "$SHELLSPEC_ASSERT_STDERR" ]; then
+      shellspec_output ASSERT_WARN "$1"
+      shellspec_output_assert_message "$SHELLSPEC_ASSERT_STDERR"
+      shellspec_on WARNED
+      return 0
+    fi
+    shellspec_output MATCHED
+    return 0
+  fi
+
+  shellspec_output ASSERT_ERR "$1"
+  shellspec_output_assert_message "$SHELLSPEC_ASSERT_STDERR"
+  shellspec_on FAILED
+}
+
 shellspec_proxy shellspec_before_all "shellspec_register_before_hook ALL"
 shellspec_proxy shellspec_after_all "shellspec_register_after_hook ALL"
 

@@ -79,6 +79,10 @@ shellspec_output_failure_message_when_negated() {
   shellspec_output_to_fd shellspec_matcher__failure_message_when_negated "$@"
 }
 
+shellspec_output_assert_message() {
+  shellspec_output_to_fd shellspec_putsn "$1"
+}
+
 shellspec_output_following_words() {
   set -- "$1" "${SHELLSPEC_SYNTAXES#:}" "" ""
 

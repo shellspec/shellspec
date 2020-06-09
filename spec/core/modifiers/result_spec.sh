@@ -45,11 +45,11 @@ Describe "core/modifiers/result.sh"
       The status should be failure
     End
 
-    It 'outputs RESULT_ERROR if outputted something to stderr'
+    It 'outputs RESULT_WARN if outputted something to stderr'
       subject() { %- "success_with_output"; }
       success_with_output() { echo stderr>&2; true; }
       When run shellspec_modifier_result _modifier_
-      The stderr should equal RESULT_ERROR
+      The stderr should equal RESULT_WARN
       The status should be failure
     End
 

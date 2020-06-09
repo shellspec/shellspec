@@ -19,9 +19,6 @@ shellspec_modifier_result() {
     else
       unset SHELLSPEC_SUBJECT ||:
     fi
-    if [ -s "$SHELLSPEC_RESULT_STDERR_FILE" ]; then
-      return 1
-    fi
   else
     unset SHELLSPEC_SUBJECT ||:
   fi
@@ -34,8 +31,7 @@ shellspec_modifier_result_invoke() {
   "$@" "${SHELLSPEC_STDOUT:-}" "${SHELLSPEC_STDERR:-}" "${SHELLSPEC_STATUS:-}" \
     >"$SHELLSPEC_RESULT_STDOUT_FILE" 2>"$SHELLSPEC_RESULT_STDERR_FILE"
   set -- "$?"
-  if [ -s "$SHELLSPEC_RESULT_STDERR_FILE" ]; then
-    shellspec_output RESULT_ERROR "$1" "$SHELLSPEC_RESULT_STDERR_FILE"
-  fi
-  return "$1"
+  [ -s "$SHELLSPEC_RESULT_STDERR_FILE" ] || return "$1"
+  shellspec_output RESULT_WARN "$1" "$SHELLSPEC_RESULT_STDERR_FILE"
+  return 1
 }
