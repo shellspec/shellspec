@@ -33,5 +33,6 @@ shellspec_modifier_result_invoke() {
   set -- "$?"
   [ -s "$SHELLSPEC_RESULT_STDERR_FILE" ] || return "$1"
   shellspec_output RESULT_WARN "$1" "$SHELLSPEC_RESULT_STDERR_FILE"
+  shellspec_on WARNED
   return 1
 }

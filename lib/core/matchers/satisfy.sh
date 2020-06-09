@@ -27,6 +27,7 @@ shellspec_matcher_satisfy() {
     set -- "$?"
     if [ -s "$SHELLSPEC_SATISFY_STDERR_FILE" ]; then
       shellspec_output SATISFY_WARN "$1" "$SHELLSPEC_SATISFY_STDERR_FILE"
+      shellspec_on WARNED
     fi
     return "$1"
   }
