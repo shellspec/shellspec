@@ -436,7 +436,7 @@ Usage: shellspec [options...] [files or directories...]
 
   Using + instead of - for short options causes reverses the meaning
 
-    -s, --shell SHELL               Specify a path of shell [default: current shell]
+    -s, --shell SHELL               Specify a path of shell [default: "auto" (current shell)]
         --require MODULE            Require a MODULE (shell script file)
     -e, --env NAME=VALUE            Set environment variable
         --env-from ENV-SCRIPT       Set environment variable from shell script file
@@ -452,6 +452,7 @@ Usage: shellspec [options...] [files or directories...]
         --[no-]boost                Increase the CPU frequency to boost up testing speed [default: disabled]
                                       Equivalent of --profile --profile-limit 0
                                       (Don't worry, this is not overclocking. This is joke option but works.)
+        --log-file LOGFILE          Logfile for %logger directive [default: /dev/tty]
         --keep-tempdir              Do not cleanup temporary directory [default: disabled]
 
   **** Execution ****
@@ -485,6 +486,7 @@ Usage: shellspec [options...] [files or directories...]
     -o, --output GENERATOR          Choose a generator(s) to generate a report file(s) [default: none]
                                       You can use the same name as FORMATTER. (multiple options allowed)
         --[no-]color                Enable or disable color [default: enabled if the output is a TTY]
+                                      Disable if NO_COLOR environment variable set
         --skip-message VERBOSITY    Mute skip message
                                       [verbose]       do not mute any messages [default]
                                       [moderate]      mute repeated messages
@@ -512,7 +514,7 @@ Usage: shellspec [options...] [files or directories...]
   **** Coverage ****
 
         --[no-]kcov                 Enable coverage using kcov [default: disabled]
-                                      Note: Requires kcov and bash, parallel execution is ignored.
+                                      Requires kcov (v35 or later) and bash/zsh/ksh, parallel execution is ignored.
         --kcov-path PATH            Specify kcov path [default: kcov]
         --kcov-options OPTIONS      Additional Kcov options (coverage limits, coveralls id, etc)
                                       Default specified options: (can be overwritten)
