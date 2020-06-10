@@ -502,7 +502,7 @@ shellspec_chomp() {
 
 if [ "${ZSH_VERSION:-}" ]; then
   shellspec_get_nth() {
-    set -- "$1" "$2" "$3" "${4:-}" "$IFS"
+    set -- "$1" "$2" "${3#"${3%%[1-9]*}"}" "${4:-}" "$IFS"
     IFS=${4:-$SHELLSPEC_IFS}
     eval "set -- \"\$@\" \${=2}"
     IFS=$5
@@ -510,7 +510,7 @@ if [ "${ZSH_VERSION:-}" ]; then
   }
 else
   shellspec_get_nth() {
-    set -f -u -- "$1" "$2" "$3" "${4:-}" "$IFS" "$-"
+    set -f -u -- "$1" "$2" "${3#"${3%%[1-9]*}"}" "${4:-}" "$IFS" "$-"
     IFS=${4:-$SHELLSPEC_IFS}
     # shellcheck disable=SC2086
     set -- "$@" $2

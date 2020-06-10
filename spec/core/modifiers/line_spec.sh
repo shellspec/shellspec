@@ -15,8 +15,8 @@ Describe "core/modifiers/line.sh"
     End
 
     It 'gets the specified line'
-      subject() { printf 'foo\nbar\nbaz'; }
-      When run shellspec_modifier_line 2 _modifier_
+      subject() { printf '\n\n\n\n\n\nfoo\nbar\nbaz'; }
+      When run shellspec_modifier_line 08 _modifier_
       The entire stdout should equal bar
     End
 

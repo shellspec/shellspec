@@ -6,6 +6,12 @@ shellspec_modifier_line() {
   shellspec_syntax_param count [ $# -ge 1 ] || return 0
   shellspec_syntax_param 1 is number "$1" || return 0
 
+  if [ $# -gt 1 ]; then
+    eval "shift; set -- ${1#"${1%%[1-9]*}"} \"\$@\""
+  else
+    set -- "${1#"${1%%[1-9]*}"}"
+  fi
+
   if [ "${SHELLSPEC_SUBJECT+x}" ] && [ "${SHELLSPEC_SUBJECT:-}" ]; then
     SHELLSPEC_EVAL="
       shellspec_callback() { \

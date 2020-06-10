@@ -9,8 +9,8 @@ Describe "core/modifiers/word.sh"
     End
 
     It 'gets the specified word'
-      subject() { printf 'foo  bar \t baz \n qux'; }
-      When run shellspec_modifier_word 4 _modifier_
+      subject() { printf '@ @ @ @ foo  bar \t baz \n qux'; }
+      When run shellspec_modifier_word 08 _modifier_
       The stdout should equal qux
     End
 
