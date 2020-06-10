@@ -1325,4 +1325,35 @@ Describe "core/dsl.sh"
       The line 3 of stdout should be present
     End
   End
+
+  Describe "shellspec_dump()"
+    BeforeRun SHELLSPEC_STDOUT=stdout
+    BeforeRun SHELLSPEC_STDERR=stderr
+    BeforeRun SHELLSPEC_STATUS=123
+
+    It 'dumps stdout/stderr/status'
+      When run shellspec_dump
+      The line 2 of stdout should eq "[stdout]"
+      The line 3 of stdout should eq "stdout"
+      The line 4 of stdout should eq "[stderr]"
+      The line 5 of stdout should eq "stderr"
+      The line 6 of stdout should eq "[status] 123"
+    End
+
+    Context "when unset"
+      setup() {
+        unset SHELLSPEC_STDOUT ||:
+        unset SHELLSPEC_STDERR ||:
+        unset SHELLSPEC_STATUS ||:
+      }
+      BeforeRun setup
+
+      It 'dumps stdout/stderr/status'
+        When run shellspec_dump
+        The line 2 of stdout should eq "[stdout] <unset>"
+        The line 3 of stdout should eq "[stderr] <unset>"
+        The line 4 of stdout should eq "[status] <unset>"
+      End
+    End
+  End
 End

@@ -478,3 +478,21 @@ shellspec_filter() {
   if [ "${2:-}" ]; then SHELLSPEC_FOCUSED=$2; fi
   if [ "${3:-}" ]; then SHELLSPEC_FILTER=$3; fi
 }
+
+shellspec_dump() {
+  set -- ""
+  if [ "${SHELLSPEC_STDOUT+x}" ]; then
+    set -- "$@" "[stdout]${SHELLSPEC_LF}${SHELLSPEC_STDOUT}"
+  else
+    set -- "$@" "[stdout] <unset>"
+  fi
+  if [ "${SHELLSPEC_STDERR+x}" ]; then
+    set -- "$@" "[stderr]${SHELLSPEC_LF}${SHELLSPEC_STDERR}"
+  else
+    set -- "$@" "[stderr] <unset>"
+  fi
+  set -- "$@" "[status] ${SHELLSPEC_STATUS-<unset>}" ""
+  IFS="${SHELLSPEC_LF}${IFS}"
+  shellspec_putsn "$*"
+  IFS=${IFS#?}
+}
