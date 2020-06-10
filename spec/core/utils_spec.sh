@@ -144,35 +144,35 @@ Describe "core/utils.sh"
       AfterRun 'echo $-'
 
       It 'sets option'
-        When run shellspec_shopt -o allexport
-        The output should include "a"
+        When run shellspec_shopt -o nounset
+        The output should include "u"
       End
 
       It 'unsets option'
-        When run shellspec_shopt +o allexport
-        The output should not include "a"
+        When run shellspec_shopt +o nounset
+        The output should not include "u"
       End
     End
   End
 
   Describe 'shellspec_set_long()'
-    set_allexport() { set -a; }
+    set_nounset() { set -u; }
     cannot_preserve_set_in_function() {
-      set +a
-      set_allexport
-      case $- in (*a*) false ;; (*) true ;; esac
+      set +u
+      set_nounset
+      case $- in (*u*) false ;; (*) true ;; esac
     }
     # ksh88
     Skip if "Cannot preserve 'set' in function" cannot_preserve_set_in_function
 
     It 'sets long options'
-      When call shellspec_set_long -allexport
-      The value $- should include "a"
+      When call shellspec_set_long -nounset
+      The value $- should include "u"
     End
 
     It 'unsets long options'
-      When call shellspec_set_long +allexport
-      The value $- should not include "a"
+      When call shellspec_set_long +nounset
+      The value $- should not include "u"
     End
   End
 End
