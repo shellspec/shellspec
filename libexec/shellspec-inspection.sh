@@ -51,7 +51,21 @@ PATH="${PATH:-}:/"
 case $PATH in (*\;/)
   echo "SHELLSPEC_BUSYBOX_W32=1"
 esac
-PATH=${PATH%??}
+
+# shellcheck disable=SC2123
+PATH=""
+
+if type shopt >/dev/null 2>&1; then
+  echo "SHELLSPEC_SHOPT_AVAILABLE=1"
+  # shellcheck disable=SC2039
+  if shopt -s failglob 2>/dev/null; then
+    echo "SHELLSPEC_FAILGLOB_AVAILABLE=1"
+  fi
+fi
+
+if setopt NO_NOMATCH >/dev/null 2>&1; then
+  echo "SHELLSPEC_NOMATCH_AVAILABLE=1"
+fi
 
 # arithmetic expansion is also required
 exit $((0))

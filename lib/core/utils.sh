@@ -23,7 +23,7 @@ shellspec_is_identifier() {
 
 SHELLSPEC_SHELL_OPTION=""
 shellspec_proxy shellspec_append_shell_option shellspec_append_set
-if [ "${BASH_VERSION:-}" ]; then
+if [ "${SHELLSPEC_SHOPT_AVAILABLE:-}" ]; then
   shellspec_proxy shellspec_append_shell_option shellspec_append_shopt
 fi
 

@@ -4,17 +4,20 @@ set -eu
 
 log() { echo "$@" > /dev/tty; }
 
-if [ "${PIPEFAIL:-}" ]; then
+if [ "${PIPEFAIL:-}" ] && PIPEFAIL=''; then
   # shellcheck disable=SC2039
-  set -o pipefail 2>/dev/null && log "pipefail enabled"
-  PIPEFAIL=''
+  if set -o pipefail 2>/dev/null; then
+    log "pipefail enabled"
+  fi
 fi
 
-if [ "${EXTGLOB:-}" ]; then
+if [ "${EXTGLOB:-}" ] && EXTGLOB=''; then
   # shellcheck disable=SC2039
-  [ "${BASH_VERSION:-}" ] && shopt -s extglob && log "extglob enabled"
-  [ "${ZSH_VERSION:-}" ] && setopt extendedglob && log "extendedglob enabled"
-  EXTGLOB=''
+  if shopt -s extglob 2>/dev/null; then
+    log "extglob enabled"
+  elif setopt extendedglob 2>/dev/null; then
+    log "extendedglob enabled"
+  fi
 fi
 
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
@@ -123,27 +126,17 @@ shellspec_spec_helper_configure() {
     case "a[d]" in (*"a[d]"*) false; esac # posh <= 0.12.6
   }
 
-  posh_shell_flag_bug() {
-    [ "$SHELLSPEC_DEFECT_SHELLFLAG" ]
-  }
-
-  not_exist_failglob() {
-    #shellcheck disable=SC2039
-    shopt -s failglob 2>/dev/null && return 1
-    return 0
-  }
-
-  exists_tty() {
-    (: < /dev/tty) 2>/dev/null
-  }
-
   invalid_posix_parameter_expansion() {
     set -- "a*b" "a[*]"
     [ "${1#"$2"}" = "a*b" ] && return 1 || return 0
   }
 
-  busybox_w32() {
-    [ "$SHELLSPEC_BUSYBOX_W32" ]
+  posh_shell_flag_bug() { [ "$SHELLSPEC_DEFECT_SHELLFLAG" ]; }
+  not_exist_failglob() { [ ! "$SHELLSPEC_FAILGLOB_AVAILABLE" ]; }
+  busybox_w32() { [ "$SHELLSPEC_BUSYBOX_W32" ]; }
+
+  exists_tty() {
+    (: < /dev/tty) 2>/dev/null
   }
 
   shellspec_before :

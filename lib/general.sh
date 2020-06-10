@@ -548,8 +548,9 @@ shellspec_is_empty_directory() {
 
     # workaround for posh 0.10.2: glob does not expand when set -u
     set +o noglob +u
-    [ "${BASH_VERSION:-}" ] && { eval shopt -u failglob ||:; } 2>/dev/null
-    [ "${ZSH_VERSION:-}" ] && setopt NO_NOMATCH
+    # shellcheck disable=SC2039
+    [ "${SHELLSPEC_FAILGLOB_AVAILABLE:-}" ] && shopt -u failglob
+    [ "${SHELLSPEC_NOMATCH_AVAILABLE:-}" ] && setopt NO_NOMATCH
 
     for found in * .*; do
       case $found in (.|..) continue; esac
