@@ -45,7 +45,8 @@ executor() {
   create_workdirs "$jobs"
 
   translator --no-finished | $SHELLSPEC_SHELL # output only metadata
-  callback() { worker "$1" "$jobs" & }
+  # Workaround for osh: Use FD3 to avoid display "Started PID"
+  callback() { { worker "$1" "$jobs" 2>&3 & } 3>&2 2>/dev/null; }
   sequence callback 1 "$SHELLSPEC_WORKERS"
   (reduce "$jobs") &&:
   eval "[ $? -ne 0 ] && return $?"
