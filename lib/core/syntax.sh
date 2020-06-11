@@ -29,12 +29,18 @@ shellspec_syntax_alias() {
 # $1:<syntax-type> $2:<name> $3-:<parameters>
 shellspec_syntax_dispatch() {
   if [ "$1" = "subject" ]; then
-    case $2 in (*"()")
-      case $# in
-        2) eval "shift 2; set -- subject function \"${2%??}\"" ;;
-        *) eval "shift 2; set -- subject function \"${2%??}\" \"\$@\"" ;;
-      esac
-    esac
+    if shellspec_syntax_is_function_shorthand "${2:-}"; then
+      eval "shift 2; set -- $1 function \"${2%??}\" ${3+\"\$@\"}"
+    fi
+    if shellspec_syntax_is_number_shorthand "${2:-}"; then
+      eval "shift 2; set -- $1 stdout \"${2%%\#*}\" \"${2#*\#}\" ${3+\"\$@\"}"
+    fi
+  fi
+
+  if [ "$1" = "modifier" ]; then
+    if shellspec_syntax_is_number_shorthand "${2:-}"; then
+      eval "shift 2; set -- $1 \"${2%%\#*}\" \"${2#*\#}\" ${3+\"\$@\"}"
+    fi
   fi
 
   case $SHELLSPEC_COMPOUNDS in (*:shellspec_$1:*) ;; (*)
@@ -52,7 +58,8 @@ shellspec_syntax_dispatch() {
   esac
 
   case $SHELLSPEC_SYNTAXES in (*:shellspec_$1_${2:-}:*)
-    SHELLSPEC_SYNTAX_NAME="shellspec_$1_$2" && shift 2
+    SHELLSPEC_SYNTAX_NAME="shellspec_$1_$2"
+    shift 2
     case $# in
       0) "$SHELLSPEC_SYNTAX_NAME" ;;
       *) "$SHELLSPEC_SYNTAX_NAME" "$@" ;;
@@ -63,6 +70,16 @@ shellspec_syntax_dispatch() {
   shellspec_on SYNTAX_ERROR
 }
 
+shellspec_syntax_is_number_shorthand() {
+  case ${1:-} in (*"#"*) ;; (*) return 1; esac
+  shellspec_is_identifier "${1%%\#*}" || return 1
+  shellspec_is_number "${1#*\#}"
+}
+
+shellspec_syntax_is_function_shorthand() {
+  case ${1:-} in (*"()") ;; (*) return 1; esac
+  shellspec_is_function "${1%"()"}"
+}
 
 # $1:count $2-:<condition>
 # $1:<param posision> $2:(is) $3:<type> $4:<value>

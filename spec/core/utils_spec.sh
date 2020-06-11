@@ -65,6 +65,50 @@ Describe "core/utils.sh"
     End
   End
 
+  Describe 'shellspec_is_number()'
+    Parameters
+      123       success
+      "-123"    failure
+      123.0     failure
+      @         failure
+    End
+
+    It 'checks if number'
+      When call shellspec_is_number "$1"
+      The status should be "$2"
+    End
+  End
+
+  Describe 'shellspec_is_function()'
+    Parameters
+      foo       success
+      foo123    success
+      foo_123   success
+      _foo_123  success
+      @         failure
+    End
+
+    It 'checks if function'
+      When call shellspec_is_function "$1"
+      The status should be "$2"
+    End
+  End
+
+  Describe 'shellspec_is_identifier()'
+    Parameters
+      foo       success
+      foo123    success
+      foo_123   success
+      _foo_123  success
+      @         failure
+    End
+
+    It 'checks if identifier'
+      When call shellspec_is_identifier "$1"
+      The status should be "$2"
+    End
+  End
+
   Describe 'shellspec_append_set()'
     Before op=''
 

@@ -21,6 +21,12 @@ Describe "core/syntax.sh"
     The 2nd word of line 2 of stdout should equal "BAR"
     The 2nd word of the line 2 of the stdout should equal "BAR"
     The 2nd word of the line 4 of the stdout should equal "the"
+    The 4nd word of stdout should equal "BAR"
+    The "func()" should equal "func"
+    The line#2 should equal "2 BAR"
+    The line#2 of stdout should equal "2 BAR"
+    The word#2 of line#2 should equal "BAR"
+    The word#4 should equal "BAR"
   End
 
   Describe "shellspec_syntax()"
@@ -87,32 +93,65 @@ Describe "core/syntax.sh"
       shellspec_on() { echo "[$1]"; }
     }
     BeforeRun mock
-    shellspec_type_name() { echo "shellspec_type_name $#"; }
 
-    It "dispatches"
-      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_type_name:"'
-      When run shellspec_syntax_dispatch "type" "name"
-      The stdout should eq "shellspec_type_name 0"
+    Context "general"
+      setup() { shellspec_type_name() { eval echo type_name ${1+'"$@"'}; }; }
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_type_name:"' setup
+
+      It "dispatches"
+        When run shellspec_syntax_dispatch "type" "name"
+        The stdout should eq "type_name"
+      End
+
+      It "dispatches with arguments"
+        When run shellspec_syntax_dispatch "type" "name" arg
+        The stdout should eq "type_name arg"
+      End
     End
 
-    It "dispatches with arguments"
-      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_type_name:"'
-      When run shellspec_syntax_dispatch "type" "name" 1
-      The stdout should eq "shellspec_type_name 1"
+    Context "function subject shorthand"
+      setup() { shellspec_subject_function() { echo "$@"; }; }
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_function:"' setup
+
+      It "dispatches"
+        When run shellspec_syntax_dispatch "subject" "foo()"
+        The stdout should eq "foo"
+      End
+
+      It "dispatches with arguments"
+        When run shellspec_syntax_dispatch "subject" "foo()" arg
+        The stdout should eq "foo arg"
+      End
     End
 
-    It "dispatches to shellspec_subject_function with function"
-      shellspec_subject_function() { echo shellspec_subject_function; }
-      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_function:"'
-      When run shellspec_syntax_dispatch "subject" "foo()"
-      The stdout should eq "shellspec_subject_function"
+    Context "line# subject shorthand"
+      setup() { shellspec_subject_stdout() { echo "$@"; }; }
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_stdout:"' setup
+
+      It "dispatches"
+        When run shellspec_syntax_dispatch "subject" "line#1"
+        The stdout should eq "line 1"
+      End
+
+      It "dispatches with arguments"
+        When run shellspec_syntax_dispatch "subject" "line#1" arg
+        The stdout should eq "line 1 arg"
+      End
     End
 
-    It "dispatches to shellspec_subject_function with function and arguments"
-      shellspec_subject_function() { echo shellspec_subject_function; }
-      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_function:"'
-      When run shellspec_syntax_dispatch "subject" "foo()" arg
-      The stdout should eq "shellspec_subject_function"
+    Context "line# modifier shorthand"
+      setup() { shellspec_modifier_line() { eval echo line ${1+'"$@"'}; }; }
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_modifier_line:"' setup
+
+      It "dispatches"
+        When run shellspec_syntax_dispatch "modifier" "line#1"
+        The stdout should eq "line 1"
+      End
+
+      It "dispatches with arguments"
+        When run shellspec_syntax_dispatch "modifier" "line#1" arg
+        The stdout should eq "line 1 arg"
+      End
     End
 
     It "outputs error if unknown syntax type"
@@ -120,6 +159,36 @@ Describe "core/syntax.sh"
       When run shellspec_syntax_dispatch "unknown" "name"
       The line 1 of stdout should eq "SYNTAX_ERROR_DISPATCH_FAILED unknown name"
       The line 2 of stdout should eq "[SYNTAX_ERROR]"
+    End
+  End
+
+  Describe 'shellspec_syntax_is_number_shorthand()'
+    Parameters
+      "foo#123"     success
+      "foo#"        failure
+      "#123"        failure
+      "foo#123#123" failure
+    End
+
+    It 'checks if number shorthand'
+      When call shellspec_syntax_is_number_shorthand "$1"
+      The status should be "$2"
+    End
+  End
+
+  Describe 'shellspec_syntax_is_function_shorthand()'
+    Parameters
+      "foo()"       success
+      "foo123()"    success
+      "foo_123()"   success
+      "_foo_123()"  success
+      "_foo_123"    failure
+      "@()"         failure
+    End
+
+    It 'checks if function shorthand'
+      When call shellspec_syntax_is_function_shorthand "$1"
+      The status should be "$2"
     End
   End
 
