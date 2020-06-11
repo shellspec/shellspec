@@ -6,7 +6,7 @@ shellspec_syntax_chain 'shellspec_matcher_be_valid'
 
 shellspec_matcher_be_valid_number() {
   shellspec_matcher__match() {
-    shellspec_is number "${SHELLSPEC_SUBJECT:-}"
+    shellspec_is_number "${SHELLSPEC_SUBJECT:-}"
   }
 
   shellspec_syntax_failure_message + 'expected $1 is valid as a number'
@@ -18,7 +18,7 @@ shellspec_matcher_be_valid_number() {
 
 shellspec_matcher_be_valid_funcname() {
   shellspec_matcher__match() {
-    shellspec_is funcname "${SHELLSPEC_SUBJECT:-}"
+    shellspec_is_function "${SHELLSPEC_SUBJECT:-}"
   }
 
   shellspec_syntax_failure_message + 'expected $1 is valid as a funcname'

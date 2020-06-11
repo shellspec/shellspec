@@ -3,65 +3,50 @@
 Describe "core/utils.sh"
   Include "$SHELLSPEC_LIB/core/utils.sh"
 
-  Describe 'shellspec_is()'
-    Describe 'number'
-      It 'succeeds with a numeric value'
-        When call shellspec_is number 123
-        The status should be success
-      End
-
-      It 'fails with a not numeric value'
-        When call shellspec_is number abc
-        The status should be failure
-      End
-
-      It 'fails with a zero length string'
-        When call shellspec_is number ''
-        The status should be failure
-      End
-
-      It 'fails with a empty'
-        When call shellspec_is number
-        The status should be failure
-      End
+  Describe 'shellspec_is_number()'
+    Parameters
+      123       success
+      "-123"    failure
+      123.0     failure
+      @         failure
+      ''        failure
     End
 
-    Describe 'funcname'
-      It 'succeeds with valid function name foo_bar'
-        When call shellspec_is funcname foo_bar
-        The status should be success
-      End
+    It 'checks if number'
+      When call shellspec_is_number "$1"
+      The status should be "$2"
+    End
+  End
 
-      It 'succeeds with valid function name foo123'
-        When call shellspec_is funcname foo123
-        The status should be success
-      End
-
-      It 'fails with invalid function name'
-        When call shellspec_is funcname foo+bar
-        The status should be failure
-      End
-
-      It 'fails with start with number'
-        When call shellspec_is funcname 0foo_bar
-        The status should be failure
-      End
-
-      It 'fails with a zero length string'
-        When call shellspec_is funcname ''
-        The status should be failure
-      End
-
-      It 'fails with a empty'
-        When call shellspec_is funcname
-        The status should be failure
-      End
+  Describe 'shellspec_is_function()'
+    Parameters
+      foo       success
+      foo123    success
+      foo_123   success
+      _foo_123  success
+      @         failure
+      ''        failure
     End
 
-    It 'raise error with invalid type'
-      When run shellspec_is invalid-type
-      The error should be present
-      The status should be failure
+    It 'checks if function'
+      When call shellspec_is_function "$1"
+      The status should be "$2"
+    End
+  End
+
+  Describe 'shellspec_is_identifier()'
+    Parameters
+      foo       success
+      foo123    success
+      foo_123   success
+      _foo_123  success
+      @         failure
+      ''        failure
+    End
+
+    It 'checks if identifier'
+      When call shellspec_is_identifier "$1"
+      The status should be "$2"
     End
   End
 

@@ -21,6 +21,8 @@ Describe "core/syntax.sh"
     The 2nd word of line 2 of stdout should equal "BAR"
     The 2nd word of the line 2 of the stdout should equal "BAR"
     The 2nd word of the line 4 of the stdout should equal "the"
+    The 4nd word of stdout should equal "BAR"
+    The "func()" should equal "func"
   End
 
   Describe "shellspec_syntax()"
@@ -87,32 +89,35 @@ Describe "core/syntax.sh"
       shellspec_on() { echo "[$1]"; }
     }
     BeforeRun mock
-    shellspec_type_name() { echo "shellspec_type_name $#"; }
 
-    It "dispatches"
-      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_type_name:"'
-      When run shellspec_syntax_dispatch "type" "name"
-      The stdout should eq "shellspec_type_name 0"
+    Context "general"
+      setup() { shellspec_type_name() { eval echo type_name ${1+'"$@"'}; }; }
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_type_name:"' setup
+
+      It "dispatches"
+        When run shellspec_syntax_dispatch "type" "name"
+        The stdout should eq "type_name"
+      End
+
+      It "dispatches with arguments"
+        When run shellspec_syntax_dispatch "type" "name" arg
+        The stdout should eq "type_name arg"
+      End
     End
 
-    It "dispatches with arguments"
-      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_type_name:"'
-      When run shellspec_syntax_dispatch "type" "name" 1
-      The stdout should eq "shellspec_type_name 1"
-    End
+    Context "function subject shorthand"
+      setup() { shellspec_subject_function() { echo "$@"; }; }
+      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_function:"' setup
 
-    It "dispatches to shellspec_subject_function with function"
-      shellspec_subject_function() { echo shellspec_subject_function; }
-      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_function:"'
-      When run shellspec_syntax_dispatch "subject" "foo()"
-      The stdout should eq "shellspec_subject_function"
-    End
+      It "dispatches"
+        When run shellspec_syntax_dispatch "subject" "foo()"
+        The stdout should eq "foo"
+      End
 
-    It "dispatches to shellspec_subject_function with function and arguments"
-      shellspec_subject_function() { echo shellspec_subject_function; }
-      BeforeRun 'SHELLSPEC_SYNTAXES=":shellspec_subject_function:"'
-      When run shellspec_syntax_dispatch "subject" "foo()" arg
-      The stdout should eq "shellspec_subject_function"
+      It "dispatches with arguments"
+        When run shellspec_syntax_dispatch "subject" "foo()" arg
+        The stdout should eq "foo arg"
+      End
     End
 
     It "outputs error if unknown syntax type"

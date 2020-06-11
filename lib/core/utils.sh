@@ -1,11 +1,7 @@
 #shellcheck shell=sh disable=SC2016
 
-shellspec_is() {
-  case $1 in
-    number) case ${2:-} in ( '' | *[!0-9]* ) return 1; esac ;;
-    funcname) shellspec_is_function "${2:-}" || return 1 ;;
-    *) shellspec_error "shellspec_is: invalid type name '$1'"
-  esac
+shellspec_is_number() {
+  case ${1:-} in ( '' | *[!0-9]* ) return 1; esac
   return 0
 }
 

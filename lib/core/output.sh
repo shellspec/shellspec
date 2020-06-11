@@ -116,7 +116,7 @@ shellspec_output_syntax_name() {
 
 shellspec_output_subject() {
   if [ ${SHELLSPEC_SUBJECT+x} ]; then
-    if  shellspec_is number "${SHELLSPEC_SUBJECT}"; then
+    if  shellspec_is_number "${SHELLSPEC_SUBJECT}"; then
       shellspec_puts "${SHELLSPEC_SUBJECT}"
     else
       shellspec_puts "\"${SHELLSPEC_SUBJECT}\""
@@ -128,7 +128,7 @@ shellspec_output_subject() {
 
 shellspec_output_expect() {
   if [ ${SHELLSPEC_EXPECT+x} ]; then
-    if  shellspec_is number "${SHELLSPEC_EXPECT}"; then
+    if  shellspec_is_number "${SHELLSPEC_EXPECT}"; then
       shellspec_puts "${SHELLSPEC_EXPECT}"
     else
       shellspec_puts "\"${SHELLSPEC_EXPECT}\""

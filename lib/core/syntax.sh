@@ -30,10 +30,7 @@ shellspec_syntax_alias() {
 shellspec_syntax_dispatch() {
   if [ "$1" = "subject" ]; then
     case $2 in (*"()")
-      case $# in
-        2) eval "shift 2; set -- subject function \"${2%??}\"" ;;
-        *) eval "shift 2; set -- subject function \"${2%??}\" \"\$@\"" ;;
-      esac
+      eval "shift 2; set -- $1 function \"${2%??}\" ${3+\"\$@\"}"
     esac
   fi
 
@@ -52,7 +49,8 @@ shellspec_syntax_dispatch() {
   esac
 
   case $SHELLSPEC_SYNTAXES in (*:shellspec_$1_${2:-}:*)
-    SHELLSPEC_SYNTAX_NAME="shellspec_$1_$2" && shift 2
+    SHELLSPEC_SYNTAX_NAME="shellspec_$1_$2"
+    shift 2
     case $# in
       0) "$SHELLSPEC_SYNTAX_NAME" ;;
       *) "$SHELLSPEC_SYNTAX_NAME" "$@" ;;
@@ -63,15 +61,14 @@ shellspec_syntax_dispatch() {
   shellspec_on SYNTAX_ERROR
 }
 
-
 # $1:count $2-:<condition>
 # $1:<param posision> $2:(is) $3:<type> $4:<value>
 shellspec_syntax_param() {
   if [ "$1" = count ]; then
     shellspec_syntax_param_check "$@" && return 0
     shellspec_output SYNTAX_ERROR_WRONG_PARAMETER_COUNT "$1"
-  elif shellspec_is number "$1"; then
-    shellspec_syntax_param_check "$1" "shellspec_$2" "$3" "$4" && return 0
+  elif shellspec_is_number "$1"; then
+    shellspec_syntax_param_check "$1" "shellspec_$2_$3" "$4" && return 0
     shellspec_output SYNTAX_ERROR_PARAM_TYPE "$1" "$3"
   else
     shellspec_error "shellspec_syntax_param: wrong parameter '$1'"
