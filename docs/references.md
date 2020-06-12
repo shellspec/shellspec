@@ -17,6 +17,7 @@
     - [`should` / `should not`](#should--should-not)
     - [Subjects](#subjects)
       - [`stdout` (`output`)](#stdout-output)
+        - [`line` / `word`](#line--word)
       - [`stderr` (`error`)](#stderr-error)
       - [`status`](#status)
       - [`path` / `file` / `directory` (`dir`)](#path--file--directory-dir)
@@ -35,6 +36,7 @@
       - [stat matchers](#stat-matchers)
       - [status matchers](#status-matchers)
       - [string matchers](#string-matchers)
+      - [successful matchers](#successful-matchers)
       - [valid matchers](#valid-matchers)
       - [variable matchers](#variable-matchers)
 - [Helper](#helper)
@@ -69,7 +71,7 @@
   - [`%text`](#text)
   - [`%puts` (`%-`) / `%putsn` (`%=`)](#puts----putsn-)
   - [`%logger`](#logger)
-- [Environment Variables](#environment-variables)
+- [Special environment Variables](#special-environment-variables)
 
 ## Basic structure
 
@@ -142,8 +144,10 @@ The line beginning with `The` is the evaluation. The *subject* or the *modifier*
 
 | Subject                                | Description                                   |
 | :------------------------------------- | :-------------------------------------------- |
-| output<br>stdout                       | Use the stdout of *Evaluation* as subject.    |
-| error<br>stderr                        | Use the stderr of *Evaluation* as subject.    |
+| stdout<br>output                       | Use the stdout of *Evaluation* as subject.    |
+| line NUMBER                            | Same as `line NUMBER of stdout`.              |
+| word NUMBER                            | Same as `word NUMBER of stdout`.              |
+| stderr<br>error                        | Use the stderr of *Evaluation* as subject.    |
 | status                                 | Use the status of *Evaluation* as subject.    |
 | path <code>&lt;PATH&gt;</code>         | Use the alias resolved path as the subject.   |
 | file <code>&lt;PATH&gt;</code>         | Synonym for `path`.                           |
@@ -155,20 +159,62 @@ The line beginning with `The` is the evaluation. The *subject* or the *modifier*
 
 ##### `stdout` (`output`)
 
+```sh
+The stdout should equal "foo"
+```
+
+###### `line` / `word`
+
+When combined with line/word, `stdout` can be omitted.
+
+```sh
+The line 1 of stdout should equal foo
+The line 1 should equal foo # stdout omitted
+
+The word 2 of stdout should equal bar
+The word 2 should equal bar # stdout omitted
+```
+
 ##### `stderr` (`error`)
+
+```sh
+The stderr should equal "foo"
+```
 
 ##### `status`
 
+```sh
+The status should be success
+```
+
 ##### `path` / `file` / `directory` (`dir`)
+
+```sh
+Path data-file /tmp/data.txt
+The path data-file should be exist
+```
 
 ##### `function`
 
+```sh
+The result of function foo should be successful
+The result of "foo()" should be successful # shorthand
+```
+
 ##### `value`
+
+```sh
+The value "foo" should equal "foo"
+```
 
 I do not recommend using this subject as it will may generate not clear
 failure messages. Use the `variable` subject instead.
 
 ##### `variable`
+
+```sh
+The variable var should equal "foo"
+```
 
 #### Modifiers
 
@@ -183,13 +229,33 @@ failure messages. Use the `variable` subject instead.
 
 ##### `line`
 
+```sh
+The line 1 of stdout should equal "line1"
+```
+
 ##### `lines`
+
+```sh
+The lines of stdout should equal 5
+```
 
 ##### `word`
 
+```sh
+The word 2 of stdout should equal "word2"
+```
+
 ##### `length`
 
+```sh
+The length of value "abcd" should equal 5
+```
+
 ##### `contents`
+
+```sh
+The contents of file "/tmp/file.txt" should equal "temp data"
+```
 
 ##### `result`
 
@@ -203,6 +269,18 @@ get_version() {
 When call echo "GNU bash, version 4.4.20(1)-release (x86_64-pc-linux-gnu)"
 The result of function get_version should equal "4.4.20"
 The result of "get_version()" should equal "4.4.20" # shorthand
+```
+
+```sh
+check_version() {
+  # The result of the evaluation is passed as arguments
+  # $1: stdout, $2: stderr, $3: status
+  [ "$("$1" | grep -o '[0-9.]*' | head -1)" = "4.4.20" ]
+}
+
+When call echo "GNU bash, version 4.4.20(1)-release (x86_64-pc-linux-gnu)"
+The result of function check_version should be successful
+The result of "check_version()" should be successful # shorthand
 ```
 
 #### Matchers
@@ -264,13 +342,13 @@ the subject expected status
 
 ##### string matchers
 
-| Matcher                                                             | Description                                                          |
-| :------------------------------------------------------------------ | :------------------------------------------------------------------- |
-| equal <code>&lt;STRING&gt;</code><br>eq <code>&lt;STRING&gt;</code> | The subject should equal <code>&lt;STRING&gt;</code>                 |
-| start with <code>&lt;STRING&gt;</code>                              | The subject should start with <code>&lt;STRING&gt;</code>            |
-| end with <code>&lt;STRING&gt;</code>                                | The subject should end with <code>&lt;STRING&gt;</code>              |
-| include <code>&lt;STRING&gt;</code>                                 | The subject should include <code>&lt;STRING&gt;</code>               |
-| match pattern <code>&lt;PATTERN&gt;</code>                          | The subject should match pattern <code>&lt;PATTERN&gt;</code>        |
+| Matcher                                                             | Description                                                   |
+| :------------------------------------------------------------------ | :------------------------------------------------------------ |
+| equal <code>&lt;STRING&gt;</code><br>eq <code>&lt;STRING&gt;</code> | The subject should equal <code>&lt;STRING&gt;</code>          |
+| start with <code>&lt;STRING&gt;</code>                              | The subject should start with <code>&lt;STRING&gt;</code>     |
+| end with <code>&lt;STRING&gt;</code>                                | The subject should end with <code>&lt;STRING&gt;</code>       |
+| include <code>&lt;STRING&gt;</code>                                 | The subject should include <code>&lt;STRING&gt;</code>        |
+| match pattern <code>&lt;PATTERN&gt;</code>                          | The subject should match pattern <code>&lt;PATTERN&gt;</code> |
 
 PATTERN examples
 
@@ -280,6 +358,10 @@ PATTERN examples
 - `[!F]oo`
 - `[a-z]`
 - `foo|bar`
+
+##### successful matchers
+
+Use with [result](#result) modifier.
 
 ##### valid matchers
 
@@ -345,13 +427,37 @@ the subject expect variable
 
 | DSL                                                                      | Description                                                  |
 | :----------------------------------------------------------------------- | :----------------------------------------------------------- |
-| Data[:raw] <code>[ \| FILTER ]</code><br>#\|...<br>End                   | Define stdin data for evaluation (without expand variables). |
-| Data:expand <code>[ \| FILTER ]</code><br>#\|...<br>End                  | Define stdin data for evaluation (with expand variables).    |
-| Data <code>&lt;FUNCTION&gt; [ARGUMENTS...] [ \| FILTER ]</code>          | Use function for stdin data for evaluation.                  |
+| Data[:raw]<br>#\|...<br>End                                              | Define stdin data for evaluation (without expand variables). |
+| Data:expand<br>#\|...<br>End                                             | Define stdin data for evaluation (with expand variables).    |
+| Data <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code>                        | Use function for stdin data for evaluation.                  |
 | Data <code>"&lt;STRING&gt;"</code><br>Data <code>'&lt;STRING&gt;'</code> | Use string for stdin data for evaluation.                    |
-| Data <code>&lt; &lt;FILE&gt; [ \| FILTER ]</code>                        | Use file for stdin data for evaluation.                      |
+| Data <code>&lt; &lt;FILE&gt;</code>                                      | Use file for stdin data for evaluation.                      |
+
+NOTE: The `Data` helper can also be used with filters.
+
+```sh
+Data | tr 'abc' 'ABC' # comment
+#|aaa
+#|bbb
+#|ccc
+End
+```
 
 #### `Data[:raw]`
+
+```sh
+Describe 'Data helper'
+  Example 'provide with Data helper block style'
+    Data
+      #|item1 123
+      #|item2 456
+      #|item3 789
+    End
+    When call awk '{total+=$2} END{print total}'
+    The output should eq 1368
+  End
+End
+```
 
 #### `Data:expand`
 
@@ -371,13 +477,58 @@ the subject expect variable
 | Parameters:matrix ... End                 | Define parameters (matrix style)  |
 | Parameters:dynamic ... End                | Define parameters (dynamic style) |
 
+NOTE: Multiple `Parameters` definitions are merged.
+
 #### `Parameters[:block]`
+
+```sh
+Describe 'example'
+  Parameters
+    "#1" 1 2 3
+    "#2" 1 2 3
+  End
+
+  Example "example $1"
+    When call echo "$(($2 + $3))"
+    The output should eq "$4"
+  End
+End
+```
 
 #### `Parameters:value`
 
+```sh
+Parameters:value foo bar baz
+```
+
 #### `Parameters:matrix`
 
+```sh
+Parameters:matrix
+  foo bar
+  1 2
+
+  # expanded as follows
+  #   foo 1
+  #   foo 2
+  #   bar 1
+  #   bar 2
+End
+```
+
 #### `Parameters:dynamic`
+
+```sh
+Parameters:dynamic
+  for i in 1 2 3; do
+    %data "#$i" 1 2 3
+  done
+End
+```
+
+Only %data directive can be used within Parameters:dynamic block.
+You can not call function or accessing variable defined within specfile.
+You can refer to variables defined with %const.
 
 ### Others
 
@@ -414,9 +565,9 @@ the subject expect variable
 
 ### `%logger`
 
-## Environment Variables
+## Special environment Variables
 
-ShellSpec provides environment variables with prefix `SHELLSPEC_`.
+ShellSpec provides special environment variables with prefix `SHELLSPEC_`.
 They are useful for writing tests and extensions.
 I will not change it as much as possible for compatibility, but currently not guaranteed.
 There are many undocumented variables. You can use them at your own risk.

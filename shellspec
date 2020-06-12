@@ -165,7 +165,8 @@ Usage: shellspec [options...] [files or directories...]
 
   Using + instead of - for short options causes reverses the meaning
 
-    -s, --shell SHELL               Specify a path of shell [default: "auto" (current shell)]
+    -s, --shell SHELL               Specify a path of shell [default: "auto" (running shell)]
+                                      ShellSpec ignores shebang and runs in the specified shell.
         --require MODULE            Require a MODULE (shell script file)
     -e, --env NAME=VALUE            Set environment variable
         --env-from ENV-SCRIPT       Set environment variable from shell script file

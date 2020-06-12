@@ -43,13 +43,13 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [Others (archive / make / manual)](#others-archive--make--manual)
   - [Use with Docker](#use-with-docker)
   - [Getting started](#getting-started)
-- [ShellSpec features](#shellspec-features)
+- [shellspec command](#shellspec-command)
   - [Usage](#usage)
   - [Configure default options](#configure-default-options)
-  - [Special environment variables](#special-environment-variables)
   - [Quick execution](#quick-execution)
   - [Parallel execution](#parallel-execution)
   - [Random execution](#random-execution)
+  - [Fail fast](#fail-fast)
   - [Reporter / Generator](#reporter--generator)
   - [Ranges / Filters / Focus](#ranges--filters--focus)
   - [Coverage](#coverage)
@@ -67,37 +67,41 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [spec/support/](#specsupport)
 - [Specfile](#specfile)
   - [Example](#example)
-  - [Translation process](#translation-process)
-  - [DSL](#dsl)
-    - [Describe, Context - example group](#describe-context---example-group)
-    - [It, Example, Specify, Todo - example](#it-example-specify-todo---example)
-    - [When - evaluation](#when---evaluation)
-    - [The - expectation](#the---expectation)
-    - [Skip, Pending - skip and pending example](#skip-pending---skip-and-pending-example)
-      - [Temporary skip and pending](#temporary-skip-and-pending)
-    - [Include - include a shell script](#include---include-a-shell-script)
-    - [Set - set shell option](#set---set-shell-option)
-    - [Path, File, Dir - path alias](#path-file-dir---path-alias)
-    - [Data - input data for evaluation](#data---input-data-for-evaluation)
-    - [Parameters - parameterized example](#parameters---parameterized-example)
+  - [Basic structure](#basic-structure)
+    - [`Describe`, `Context`, `ExampleGroup` - example group](#describe-context-examplegroup---example-group)
+    - [`It`, `Specify`, `Example` - example](#it-specify-example---example)
+      - [`Todo` - one liner pending example](#todo---one-liner-pending-example)
+    - [`When` - evaluation](#when---evaluation)
+      - [`Dump` - dump stdout, stderr and status for debugging](#dump---dump-stdout-stderr-and-status-for-debugging)
+    - [`The`, `Assert` - expectation](#the-assert---expectation)
+      - [Custom assertion](#custom-assertion)
     - [Subjects, Modifiers and Matchers](#subjects-modifiers-and-matchers)
-    - [Custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
+      - [Custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
+  - [Helpers](#helpers)
+    - [`Skip`, `Pending` - skip and pending example](#skip-pending---skip-and-pending-example)
+      - [Temporary skip and pending](#temporary-skip-and-pending)
+    - [`Include` - include a script file](#include---include-a-script-file)
+    - [`Set` - set shell option](#set---set-shell-option)
+    - [`Path`, `File`, `Dir` - path alias](#path-file-dir---path-alias)
+    - [`Data` - input data for evaluation](#data---input-data-for-evaluation)
+    - [`Parameters` - parameterized example](#parameters---parameterized-example)
   - [Hooks](#hooks)
-    - [Before, After - example hook](#before-after---example-hook)
-    - [BeforeAll, AfterAll - example group hook](#beforeall-afterall---example-group-hook)
-    - [BeforeCall, AfterCall - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
-    - [BeforeRun, AfterRun - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
+    - [`Before`, `After` - example hook](#before-after---example-hook)
+    - [`BeforeAll`, `AfterAll` - example group hook](#beforeall-afterall---example-group-hook)
+    - [`BeforeCall`, `AfterCall` - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
+    - [`BeforeRun`, `AfterRun` - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
   - [Directive](#directive)
-    - [%const (%) - constant definition](#const----constant-definition)
-    - [%text - embedded text](#text---embedded-text)
-    - [%puts (%-),  %putsn (%=) - put string](#puts---putsn----put-string)
-    - [%logger](#logger)
-    - [%data](#data)
+    - [`%const` (`%`) - constant definition](#const----constant-definition)
+    - [`%text` - embedded text](#text---embedded-text)
+    - [`%puts` (`%-`), `%putsn` (`%=`) - put string](#puts---putsn----put-string)
+    - [`%logger` - debug output](#logger---debug-output)
+    - [`%data` - parameter](#data---parameter)
   - [Mock and Stub](#mock-and-stub)
   - [Testing a single file script](#testing-a-single-file-script)
     - [Sourced Return](#sourced-return)
-    - [Intercept](#intercept)
+    - [`Intercept`](#intercept)
   - [Self-executable specfile](#self-executable-specfile)
+  - [Translation process](#translation-process)
 - [For developers](#for-developers)
 - [Version history](#version-history)
 
@@ -427,7 +431,7 @@ HERE
 $ shellspec
 ```
 
-## ShellSpec features
+## shellspec command
 
 ### Usage
 
@@ -436,7 +440,8 @@ Usage: shellspec [options...] [files or directories...]
 
   Using + instead of - for short options causes reverses the meaning
 
-    -s, --shell SHELL               Specify a path of shell [default: "auto" (current shell)]
+    -s, --shell SHELL               Specify a path of shell [default: "auto" (running shell)]
+                                      ShellSpec ignores shebang and runs in the specified shell.
         --require MODULE            Require a MODULE (shell script file)
     -e, --env NAME=VALUE            Set environment variable
         --env-from ENV-SCRIPT       Set environment variable from shell script file
@@ -461,7 +466,7 @@ Usage: shellspec [options...] [files or directories...]
                                       not-passed examples: failure and temporary pending examples
                                       Quick mode is automatically enabled. To disable quick mode,
                                       delete .shellspec-quick.log on the project root directory.
-        --repair, --only-failures   Run failure examples only (Depends on quick mode)
+    -r, --repair, --only-failures   Run failure examples only (Depends on quick mode)
     -n, --next,   --next-failure    Run failure examples and abort on first failure (Depends on quick mode)
                                       Equivalent of --repair --fail-fast --random none
     -j, --jobs JOBS                 Number of parallel jobs to run [default: 0 (disabled)]
@@ -558,13 +563,6 @@ precedence.
 3. `./.shellspec`
 4. `./.shellspec-local` (Do not store in VCS such as git)
 
-### Special environment variables
-
-Special environment variables understood by ShellSpec begin with `SHELLSPEC_`.
-They can be overridden with a custom script using the `--env-from` option.
-
-*Todo: descriptions of many special environment variables.*
-
 ### Quick execution
 
 Quick execution is a feature for rapid development and failure fixing.
@@ -595,6 +593,13 @@ for effective parallel execution.
 You can randomize the execution order to detect troubles due to the test
 execution order. If `SEED` is specified, the execution order is deterministic.
 
+### Fail fast
+
+You can stop on the first (N times) failures with `--fail-fast` option.
+
+NOTE: The reporter that count the number of failures and specfile execution are processed in parallel.
+Therefore, the specfile execution may precede the location where it stopped due to a failure.
+
 ### Reporter / Generator
 
 You can specify one reporter (output to stdout) and multiple generators
@@ -621,7 +626,7 @@ ShellSpec has integrated coverage feature. To use this feature [Kcov][] (v35 or 
 
 - How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
 - Shells that support coverage are **bash**, **zsh**, and **ksh**.
-- Coverage measures only Evaluation and `Include`
+- Coverage measures only `The` evaluation and `Include`.
 
 By default only files whose names contain `.sh` are coverage targeted.
 If you want to include other files, you need to adjust options with `--kcov-options`.
@@ -722,8 +727,8 @@ is executed. Disable that behavior with the `--no-banner` option.
 ### spec/spec_helper.sh
 
 The *spec_helper.sh* loaded by the `--require spec_helper` option.
-This file is used to prepare for running examples, to define custom matchers,
-etc.
+This file is used to define global functions, prepare for running examples,
+to define custom matchers, etc.
 
 ### spec/support/
 
@@ -759,31 +764,31 @@ Describe 'sample' # example group
 End
 ```
 
-### Translation process
+### Basic structure
 
-The specfile is a valid shell script, but a translation process is performed
-to implement the scope, line number etc. Each example group block and
-example block is translated to commands in a subshell. Therefore changes inside
-those blocks do not affect the outside of the block. In other words it realizes
-local variables and local functions in the specfile. This is very useful for
-describing a structured spec. If you are interested in how to translate,
-use the `--translate` option.
+#### `Describe`, `Context`, `ExampleGroup` - example group
 
-### DSL
+You can write a structured *example* by using the `Describe`, `Context`, `ExampleGroup` block.
+`Describe` and `Context` are alias for `ExampleGroup`.
 
-#### Describe, Context - example group
-
-You can write a structured *example* by using the `Describe`, `Context` block.
 Example groups can be nested. They can contain example groups or examples.
-Each example group runs in a subshell.
 
-#### It, Example, Specify, Todo - example
+NOTE: Each example group runs in a subshell.
 
-You can describe how code behaves by using the `It`, `Example`, `Specify` block.
+#### `It`, `Specify`, `Example` - example
+
+You can describe how code behaves by using the `It`, `Specify`, `Example` block.
+`It` and `Specify` are alias for `Example`.
+
 It is composed by a maximum of one evaluation and multiple expectations.
-`Todo` is a one liner empty example.
 
-#### When - evaluation
+NOTE: Each example runs in a subshell.
+
+##### `Todo` - one liner pending example
+
+`Todo` is same as empty example.
+
+#### `When` - evaluation
 
 Defines the action for verification. The evaluation begins with `When`.
 Only one evaluation can be defined for each example.
@@ -800,7 +805,14 @@ There are two types of evaluation, `When call` and `When run`. and `When run` ha
 
 See more details of [Evaluation](/docs/references.md#evaluation)
 
-#### The - expectation
+##### `Dump` - dump stdout, stderr and status for debugging
+
+```sh
+When call echo hello world
+Dump # stdout, stderr, status
+```
+
+#### `The`, `Assert` - expectation
 
 Defines the verification. The expectation begins with `The`.
 
@@ -841,12 +853,7 @@ The second line of output should equal 4
 ```
 
 ShellSpec supports *language chains* like [chai.js](https://www.chaijs.com/).
-It only improves readability, does not affect the expectation:
-
-- a
-- an
-- as
-- the
+It only improves readability, does not affect the expectation: `a`, `an`, `as`, `the`.
 
 The following two sentences have the same meaning:
 
@@ -858,7 +865,42 @@ The first word of second line of output should valid number
 The first word of the second line of output should valid as a number
 ```
 
-#### Skip, Pending - skip and pending example
+##### Custom assertion
+
+Use `Assert` for using custom assertion.
+It is designed for verification of side effects, not result of evaluation.
+
+```sh
+still_alive() {
+  ping -c1 "$1" >/dev/null
+}
+
+Describe "example.com"
+  It "responses"
+    Assert still_alive "example.com"
+  End
+End
+```
+
+NOTE: To verify the evaluation result with a custom function,
+use the [result](docs/references.md#result) modifier or the [satisfy](docs/references.md#satisfy) matcher.
+
+#### Subjects, Modifiers and Matchers
+
+There are many *subjects*, *modifiers*, *matchers*. please refer to the
+[References](docs/references.md)
+
+##### Custom subject, modifier and matcher
+
+You can create custom subject, custom modifier and custom matcher.
+See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
+
+NOTE: If you want to verify using shell function, You can use [result](docs/references.md#result) modifier or
+[satisfy](docs/references.md#satisfy) matcher. You don't necessarily have to create a custom matcher, etc.
+
+### Helpers
+
+#### `Skip`, `Pending` - skip and pending example
 
 You can skip an example by using the `Skip` keyword. If you want to skip only in
 some cases, use a conditional skip `Skip if`. You can also use `Pending` to
@@ -885,11 +927,11 @@ You can also temporary skip with blocks by prefixing with `x`
 
 `Todo` (and empty example) is also treated as temporary pending.
 
-#### Include - include a shell script
+#### `Include` - include a script file
 
 Include the shell script file to test.
 
-#### Set - set shell option
+#### `Set` - set shell option
 
 Set shell option before executing each example.
 The shell option name is the long name of `set` or the name of `shopt`:
@@ -898,19 +940,19 @@ The shell option name is the long name of `set` or the name of `shopt`:
 Set 'errexit:off' 'noglob:on'
 ```
 
-#### Path, File, Dir - path alias
+#### `Path`, `File`, `Dir` - path alias
 
-*TODO*
+You can define path aliases for readability. `File` and `Dir` are alias for `Path`.
 
-#### Data - input data for evaluation
+#### `Data` - input data for evaluation
 
 You can use the Data Helper which inputs data from stdin for evaluation.
-The input data is specified after `#|` in the `Data` block.
+The input data is specified after `#|` in the `Data` or `Data:expand` block.
 
 ```sh
 Describe 'Data helper'
   Example 'provide with Data helper block style'
-    Data
+    Data # Use Data:expand instead if you want expand variables.
       #|item1 123
       #|item2 456
       #|item3 789
@@ -921,11 +963,13 @@ Describe 'Data helper'
 End
 ```
 
-#### Parameters - parameterized example
+You can also use a file, function, or string as data sources.
 
-You can Data Driven Test (aka Parameterized Test) with `Parameters`.
+See more details of [Data](/docs/references.md##data)
 
-Note: Multiple `Parameters` definitions are merged.
+#### `Parameters` - parameterized example
+
+You can Data Driven Test (aka Parameterized Test) with `Parameters[:style]`.
 
 ```sh
 Describe 'example'
@@ -943,54 +987,18 @@ End
 
 The following four styles are supported.
 
-```sh
-# block style (default: same as Parameters)
-Parameters:block
-  "#1" 1 2 3
-  "#2" 1 2 3
-End
+- block style (default: same as Parameters)
+- value style
+- matrix style
+- dynamic style
 
-# value style
-Parameters:value foo bar baz
+See more details of [Parameters](/docs/references.md##parameters)
 
-# matrix style
-Parameters:matrix
-  foo bar
-  1 2
-  # expanded as follows
-  #   foo 1
-  #   foo 2
-  #   bar 1
-  #   bar 2
-End
-
-# dynamic style
-#   Only %data directive can be used within Parameters:dynamic block.
-#   You can not call function or accessing variable defined within specfile.
-#   You can refer to variables defined with %const.
-Parameters:dynamic
-  for i in 1 2 3; do
-    %data "#$i" 1 2 3
-  done
-End
-```
-
-#### Subjects, Modifiers and Matchers
-
-There are many *subjects*, *modifiers*, *matchers*. please refer to the
-[References](docs/references.md)
-
-#### Custom subject, modifier and matcher
-
-You can create custom subject, custom modifier and custom matcher.
-See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
-
-NOTE: If you want to assert using shell function, Use [result](docs/references.md#result) modifier or
-[result](docs/references.md#satisfy) matcher. Do not need create custom matcher.
+NOTE: You can also be used with the `Data:expand` helper.
 
 ### Hooks
 
-#### Before, After - example hook
+#### `Before`, `After` - example hook
 
 You can define before / after hooks by using `Before`, `After`.
 The hooks are called for each example.
@@ -998,17 +1006,17 @@ The hooks are called for each example.
 NOTE: `After` hook is a place to clean up, not an assertion. If you want to assert in the `After` hook,
 What you are looking for is probably [result](docs/references.md#result) modifier.
 
-#### BeforeAll, AfterAll - example group hook
+#### `BeforeAll`, `AfterAll` - example group hook
 
 You can define before all / after all hooks by using `BeforeAll`, `AfterAll`.
 The hooks are called before or after all examples.
 
-#### BeforeCall, AfterCall - call evaluation hook
+#### `BeforeCall`, `AfterCall` - call evaluation hook
 
 You can define before / after call hooks by using `BeforeCall`, `AfterCall`.
 The hooks are called before or after a "call evaluation".
 
-#### BeforeRun, AfterRun - run evaluation hook
+#### `BeforeRun`, `AfterRun` - run evaluation hook
 
 You can define before / after run hooks by using `BeforeRun`, `AfterRun`.
 The hooks are called before or after a "run evaluation".
@@ -1019,7 +1027,7 @@ evaluation after run.
 
 ### Directive
 
-#### %const (%) - constant definition
+#### `%const` (`%`) - constant definition
 
 `%const` (`%` is short hand) directive defines a constant value. The characters
 which can be used for variable names are uppercase letters `[A-Z]`, digits
@@ -1034,7 +1042,7 @@ This feature assumed use with conditional skip. The conditional skip may runs
 outside of the examples. As a result, sometime you may need variables defined
 outside of the examples.
 
-#### %text - embedded text
+#### `%text` - embedded text
 
 You can use the `%text` directive instead of an hard-to-use heredoc with
 indented code. The input data is specified after `#|`.
@@ -1052,27 +1060,23 @@ Describe '%text directive'
     }
 
     When call output
-    The line 1 of output should eq 'start'
-    The line 2 of output should eq 'aaa'
     The line 3 of output should eq 'bbb'
-    The line 4 of output should eq "ccc"
-    The line 5 of output should eq 'end'
   End
 End
 ```
 
-#### %puts (%-),  %putsn (%=) - put string
+#### `%puts` (`%-`), `%putsn` (`%=`) - put string
 
 `%puts` (put string) and `%putsn` (put string with newline) can be used instead
 of (not portable) echo. Unlike echo, it does not interpret escape sequences
 regardless of the shell. `%-` is an alias of `%puts`, `%=` is an alias of
 `%putsn`.
 
-#### %logger
+#### `%logger` - debug output
 
-Output log to `$SHELLSPEC_LOGFILE` (default: `/dev/tty`) for debugging.
+Output log messages to the log file (default: `/dev/tty`) for debugging.
 
-#### %data
+#### `%data` - parameter
 
 See `Parameters`.
 
@@ -1137,7 +1141,7 @@ Describe "sample"
 End
 ```
 
-#### Intercept
+#### `Intercept`
 
 This is a method to mock/stub functions and commands when executing shell
 scripts. By placing intercept points in your script, you can call the hooks
@@ -1203,6 +1207,16 @@ Finished in 0.12 seconds (user 0.00 seconds, sys 0.10 seconds)
 # Also you can run via shellspec
 $ shellspec test.sh
 ```
+
+### Translation process
+
+The specfile is a valid shell script, but a translation process is performed
+to implement the scope, line number etc. Each example group block and
+example block is translated to commands in a subshell. Therefore changes inside
+those blocks do not affect the outside of the block. In other words it realizes
+local variables and local functions in the specfile. This is very useful for
+describing a structured spec. If you are interested in how to translate,
+use the `--translate` option.
 
 ## For developers
 
