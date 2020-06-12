@@ -1,3 +1,6 @@
+ExampleGroup       =>   block_example_group
+xExampleGroup      => x block_example_group
+fExampleGroup      => f block_example_group
 Describe           =>   block_example_group
 xDescribe          => x block_example_group
 fDescribe          => f block_example_group
