@@ -13,12 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support `NO_COLOR` environment variable.
 - Support [busybox-w32](https://frippery.org/busybox/) ash for windows.
 - Added `Assert` expectation to assert side effects of system environment.
+- Added `Dump` helper.
+- Added `line` and `word` subject.
+- Added `--log-file` option.
 
 ### Changed
 
 - Upgrade to alpine 3.12 for docker image and officially release shellspec/kcov docker image.
 - Separate file descriptor for report from stdout to able to use `echo` in specfile.
 - Minor specification change of `result` modifier and `satisfy` matcher.
+- `-r` option is now a short option for `--repair`, not `--require`.
 
 ## [0.24.3] - 2020-06-06
 
