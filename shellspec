@@ -190,7 +190,7 @@ Usage: shellspec [options...] [files or directories...]
                                       not-passed examples: failure and temporary pending examples
                                       Quick mode is automatically enabled. To disable quick mode,
                                       delete .shellspec-quick.log on the project root directory.
-        --repair, --only-failures   Run failure examples only (Depends on quick mode)
+    -r, --repair, --only-failures   Run failure examples only (Depends on quick mode)
     -n, --next,   --next-failure    Run failure examples and abort on first failure (Depends on quick mode)
                                       Equivalent of --repair --fail-fast --random none
     -j, --jobs JOBS                 Number of parallel jobs to run [default: 0 (disabled)]
@@ -318,7 +318,7 @@ parse_options() {
         shift ;;
       -q | --quick) SHELLSPEC_QUICK=1 ;;
       +q | --no-quick) SHELLSPEC_QUICK='' ;;
-      --repair | --only | --only-failures)
+      -r | --repair | --only | --only-failures)
         SHELLSPEC_QUICK=1 SHELLSPEC_REPAIR=1 ;;
       -n | --next | --next-failure)
         SHELLSPEC_QUICK=1 SHELLSPEC_REPAIR=1
@@ -361,10 +361,6 @@ parse_options() {
           /* | ./* | ../*) SHELLSPEC_ENV_FROM=$2 ;;
           *) SHELLSPEC_ENV_FROM="./$2" ;;
         esac
-        shift ;;
-      -r) [ "${2:-}" ] || invalid 'Require PATH.'
-        warn "-r option is deprecated, use --require instead"
-        SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
         shift ;;
       --require) [ "${2:-}" ] || invalid 'Require PATH.'
         SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
