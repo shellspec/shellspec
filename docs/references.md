@@ -2,9 +2,9 @@
 
 - [Basic structure](#basic-structure)
   - [Example group](#example-group)
-    - [`Describe` / `Context`](#describe--context)
+    - [`ExampleGroup` / `Describe` / `Context`](#examplegroup--describe--context)
   - [Example](#example)
-    - [`It` / `Example` / `Specify`](#it--example--specify)
+    - [`Example` / `It` / `Specify`](#example--it--specify)
   - [Evaluation](#evaluation)
     - [`When call`](#when-call)
     - [`When run`](#when-run)
@@ -13,38 +13,60 @@
     - [`When run source`](#when-run-source)
     - [Comparison](#comparison)
   - [Expectation](#expectation)
-    - [`The`](#the)
-    - [`should` / `should not`](#should--should-not)
-    - [Subjects](#subjects)
-      - [`stdout` (`output`)](#stdout-output)
-        - [`line` / `word`](#line--word)
-      - [`stderr` (`error`)](#stderr-error)
-      - [`status`](#status)
-      - [`path` / `file` / `directory` (`dir`)](#path--file--directory-dir)
-      - [`function`](#function)
-      - [`value`](#value)
-      - [`variable`](#variable)
-    - [Modifiers](#modifiers)
-      - [`line`](#line)
-      - [`lines`](#lines)
-      - [`word`](#word)
-      - [`length`](#length)
-      - [`contents`](#contents)
-      - [`result`](#result)
-    - [Matchers](#matchers)
-      - [satisfy matcher](#satisfy-matcher)
-      - [stat matchers](#stat-matchers)
-      - [status matchers](#status-matchers)
-      - [string matchers](#string-matchers)
-      - [successful matchers](#successful-matchers)
-      - [valid matchers](#valid-matchers)
-      - [variable matchers](#variable-matchers)
+    - [`The` ... `should (not)`](#the--should-not)
+    - [`Assert`](#assert)
+  - [Subjects](#subjects)
+    - [`stdout` (`output`) subject](#stdout-output-subject)
+    - [`stderr` (`error`) subject](#stderr-error-subject)
+    - [`status` subject](#status-subject)
+    - [`line` subject](#line-subject)
+    - [`word` subject](#word-subject)
+    - [`path` / `file` / `directory` subject](#path--file--directory-subject)
+    - [`function` subject](#function-subject)
+    - [`value` subject](#value-subject)
+    - [`variable` subject](#variable-subject)
+  - [Modifiers](#modifiers)
+    - [`line` modifier](#line-modifier)
+    - [`lines` modifier](#lines-modifier)
+    - [`word` modifier](#word-modifier)
+    - [`length` modifier](#length-modifier)
+    - [`contents` modifier](#contents-modifier)
+    - [`result` modifier](#result-modifier)
+  - [Matchers](#matchers)
+    - [`satisfy` matcher](#satisfy-matcher)
+    - [stat matchers](#stat-matchers)
+      - [`be exist` matcher](#be-exist-matcher)
+      - [`be file` matcher](#be-file-matcher)
+      - [`be directory` matcher](#be-directory-matcher)
+      - [`be empty file` matcher](#be-empty-file-matcher)
+      - [`be empty directory` matcher](#be-empty-directory-matcher)
+      - [`be symlink` matcher](#be-symlink-matcher)
+      - [`be pipe` matcher](#be-pipe-matcher)
+      - [`be socket` matcher](#be-socket-matcher)
+      - [`be readable` matcher](#be-readable-matcher)
+      - [`be writable` matcher](#be-writable-matcher)
+      - [`be executable` matcher](#be-executable-matcher)
+      - [`be block_device` matcher](#be-block_device-matcher)
+      - [`be character_device` matcher](#be-character_device-matcher)
+      - [`has setgid` matcher](#has-setgid-matcher)
+      - [`has setuid` matcher](#has-setuid-matcher)
+    - [status matchers](#status-matchers)
+      - [`be success` matcher](#be-success-matcher)
+      - [`be failure` matcher](#be-failure-matcher)
+    - [string matchers](#string-matchers)
+      - [`equal` matcher](#equal-matcher)
+      - [`start with` matcher](#start-with-matcher)
+      - [`end with` matcher](#end-with-matcher)
+      - [`include` matcher](#include-matcher)
+      - [`match pattern` matcher](#match-pattern-matcher)
+    - [`successful` matcher](#successful-matcher)
+    - [valid matchers](#valid-matchers)
+    - [variable matchers](#variable-matchers)
+      - [`be defined` matcher](#be-defined-matcher)
+      - [`be undefined` matcher](#be-undefined-matcher)
+      - [`be present` matcher](#be-present-matcher)
+      - [`be blank` matcher](#be-blank-matcher)
 - [Helper](#helper)
-  - [Hook](#hook)
-    - [`Before` / `After`](#before--after)
-    - [`BeforeAll` / `AfterAll`](#beforeall--afterall)
-    - [`BeforeCall` / `AfterCall`](#beforecall--aftercall)
-    - [`BeforeRun` / `AfterRun`](#beforerun--afterrun)
   - [Skip / Pending](#skip--pending)
     - [`Skip`](#skip)
     - [`Skip if`](#skip-if)
@@ -66,6 +88,12 @@
     - [`Path` / `File` / `Dir`](#path--file--dir)
     - [`Intercept`](#intercept)
     - [`Set`](#set)
+    - [`Dump`](#dump)
+- [Hooks](#hooks)
+  - [`Before` / `After`](#before--after)
+  - [`BeforeAll` / `AfterAll`](#beforeall--afterall)
+  - [`BeforeCall` / `AfterCall`](#beforecall--aftercall)
+  - [`BeforeRun` / `AfterRun`](#beforerun--afterrun)
 - [Directive](#directive)
   - [`%const` (`%`)](#const-)
   - [`%text`](#text)
@@ -75,16 +103,17 @@
 
 ## Basic structure
 
-### Example group
-
 You can write a structured *Example* by using the DSL shown below:
 
-| DSL              | Description                |
-| :--------------- | :------------------------- |
-| Describe ... End | Define a example grouping. |
-| Context ... End  | Synonym for `Describe`.    |
+### Example group
 
-#### `Describe` / `Context`
+| DSL                  | Description                 |
+| :------------------- | :-------------------------- |
+| ExampleGroup ... End | Define a example group.     |
+| Describe ... End     | Synonym for `ExampleGroup`. |
+| Context ... End      | Synonym for `ExampleGroup`. |
+
+#### `ExampleGroup` / `Describe` / `Context`
 
 Examples groups are nestable.
 
@@ -96,29 +125,49 @@ Examples groups are nestable.
 | It ... End      | Synonym for `Example`. |
 | Specify ... End | Synonym for `Example`. |
 
-#### `It` / `Example` / `Specify`
+#### `Example` / `It` / `Specify`
 
 ### Evaluation
 
 The line beginning with `When` is the evaluation.
 
-| Evaluation                                                       | Description                                                          |
-| :--------------------------------------------------------------- | :------------------------------------------------------------------- |
-| When call <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code>           | Call shell function without subshell.                                |
-| When run <code>&lt;FUNCTION \| COMMAND&gt; [ARGUMENTS...]</code> | Run shell function (within subshell) or external command.            |
-| When run command <code>&lt;COMMAND&gt; [ARGUMENTS...]</code>     | Run external command (including non-shell scripts).                  |
-| When run script <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run shell script by new process of the current shell.                |
-| When run source <code>&lt;SCRIPT&gt; [ARGUMENTS...]</code>       | Run shell script in the current shell by `.` command (aka `source`). |
+| Evaluation       | Description                                                          |
+| :--------------- | :------------------------------------------------------------------- |
+| When call        | Call shell function without subshell.                                |
+| When run         | Run shell function (within subshell) or external command.            |
+| When run command | Run external command (including non-shell scripts).                  |
+| When run script  | Run shell script by new process of the current shell.                |
+| When run source  | Run shell script in the current shell by `.` command (aka `source`). |
 
 #### `When call`
 
+```sh
+When call <FUNCTION> [ARGUMENTS...]
+```
+
 #### `When run`
+
+```sh
+When run <FUNCTION | COMMAND> [ARGUMENTS...]
+```
 
 #### `When run command`
 
+```sh
+When run command <COMMAND> [ARGUMENTS...]
+```
+
 #### `When run script`
 
+```sh
+When run script <SCRIPT> [ARGUMENTS...]
+```
+
 #### `When run source`
+
+```sh
+When run source <SCRIPT> [ARGUMENTS...]
+```
 
 #### Comparison
 
@@ -134,74 +183,88 @@ The line beginning with `When` is the evaluation.
 
 ### Expectation
 
-#### `The`
+#### `The` ... `should (not)`
 
 The line beginning with `The` is the evaluation. The *subject* or the *modifier* follows after `The`. And last is the *matcher*.
 
-#### `should` / `should not`
+```sh
+The [MODIFIER of...] <SUBJECT> should <MATCHER>
+The [MODIFIER of...] <SUBJECT> should not <MATCHER>
+```
 
-#### Subjects
+#### `Assert`
 
-| Subject                                | Description                                   |
-| :------------------------------------- | :-------------------------------------------- |
-| stdout<br>output                       | Use the stdout of *Evaluation* as subject.    |
-| line NUMBER                            | Same as `line NUMBER of stdout`.              |
-| word NUMBER                            | Same as `word NUMBER of stdout`.              |
-| stderr<br>error                        | Use the stderr of *Evaluation* as subject.    |
-| status                                 | Use the status of *Evaluation* as subject.    |
-| path <code>&lt;PATH&gt;</code>         | Use the alias resolved path as the subject.   |
-| file <code>&lt;PATH&gt;</code>         | Synonym for `path`.                           |
-| directory <code>&lt;PATH&gt;</code>    | Synonym for `path`.                           |
-| value <code>&lt;VALUE&gt;</code>       | Use the value as the subject.                 |
-| function <code>&lt;FUNCTION&gt;</code> | Use the function name as the subject.         |
-| <code>&lt;FUNCTION&gt;()</code>        | Shorthand for `function`                      |
-| variable <code>&lt;NAME&gt;</code>     | Use the value of the variable as the subject. |
+```sh
+Assert <FUNCTION> [ARGUMENTS...]
+```
 
-##### `stdout` (`output`)
+### Subjects
+
+| Subject                 | Description                                   |
+| :---------------------- | :-------------------------------------------- |
+| stdout / output         | Use the stdout of *Evaluation* as subject.    |
+| line                    | Same as `line NUMBER of stdout`.              |
+| word                    | Same as `word NUMBER of stdout`.              |
+| stderr / error          | Use the stderr of *Evaluation* as subject.    |
+| status                  | Use the status of *Evaluation* as subject.    |
+| path / file / directory | Use the alias resolved path as the subject.   |
+| value                   | Use the value as the subject.                 |
+| function                | Use the function name as the subject.         |
+| variable                | Use the value of the variable as the subject. |
+
+#### `stdout` (`output`) subject
 
 ```sh
 The stdout should equal "foo"
+The output should equal "foo"
 ```
 
-###### `line` / `word`
-
-When combined with line/word, `stdout` can be omitted.
-
-```sh
-The line 1 of stdout should equal foo
-The line 1 should equal foo # stdout omitted
-
-The word 2 of stdout should equal bar
-The word 2 should equal bar # stdout omitted
-```
-
-##### `stderr` (`error`)
+#### `stderr` (`error`) subject
 
 ```sh
 The stderr should equal "foo"
+The error should equal "foo"
 ```
 
-##### `status`
+#### `status` subject
 
 ```sh
 The status should be success
 ```
 
-##### `path` / `file` / `directory` (`dir`)
+#### `line` subject
+
+When combined with line, `stdout` can be omitted.
+
+```sh
+The line 1 of stdout should equal foo
+The line 1 should equal foo # stdout omitted
+```
+
+#### `word` subject
+
+When combined with word, `stdout` can be omitted.
+
+```sh
+The line 1 of stdout should equal foo
+The line 1 should equal foo # stdout omitted
+```
+
+#### `path` / `file` / `directory` subject
 
 ```sh
 Path data-file /tmp/data.txt
 The path data-file should be exist
 ```
 
-##### `function`
+#### `function` subject
 
 ```sh
 The result of function foo should be successful
 The result of "foo()" should be successful # shorthand
 ```
 
-##### `value`
+#### `value` subject
 
 ```sh
 The value "foo" should equal "foo"
@@ -210,54 +273,54 @@ The value "foo" should equal "foo"
 I do not recommend using this subject as it will may generate not clear
 failure messages. Use the `variable` subject instead.
 
-##### `variable`
+#### `variable` subject
 
 ```sh
 The variable var should equal "foo"
 ```
 
-#### Modifiers
+### Modifiers
 
-| Modifier                         | Description                            |
-| :------------------------------- | :------------------------------------- |
-| line <code>&lt;NUMBER&gt;</code> | The specified line of the subject.     |
-| lines                            | The number of lines of the subject.    |
-| word <code>&lt;NUMBER&gt;</code> | The specified word of the subject.     |
-| length                           | The length of the subject.             |
-| contents                         | The contents of the file as subject.   |
-| result                           | The result of the function as subject. |
+| Modifier | Description                            |
+| :------- | :------------------------------------- |
+| line     | The specified line of the subject.     |
+| lines    | The number of lines of the subject.    |
+| word     | The specified word of the subject.     |
+| length   | The length of the subject.             |
+| contents | The contents of the file as subject.   |
+| result   | The result of the function as subject. |
 
-##### `line`
+#### `line` modifier
 
 ```sh
 The line 1 of stdout should equal "line1"
 ```
 
-##### `lines`
+#### `lines` modifier
 
 ```sh
 The lines of stdout should equal 5
 ```
 
-##### `word`
+#### `word` modifier
 
 ```sh
 The word 2 of stdout should equal "word2"
 ```
 
-##### `length`
+#### `length` modifier
 
 ```sh
 The length of value "abcd" should equal 5
 ```
 
-##### `contents`
+#### `contents` modifier
 
 ```sh
 The contents of file "/tmp/file.txt" should equal "temp data"
 ```
 
-##### `result`
+#### `result` modifier
 
 ```sh
 get_version() {
@@ -283,13 +346,17 @@ The result of function check_version should be successful
 The result of "check_version()" should be successful # shorthand
 ```
 
-#### Matchers
+### Matchers
 
-##### satisfy matcher
+#### `satisfy` matcher
 
-| Matcher                                              | Description                                              |
-| :--------------------------------------------------- | :------------------------------------------------------- |
-| satisfy <code>&lt;FUNCTION&gt; [ARGUMENTS...]</code> | The subject should satisfy <code>&lt;FUNCTION&gt;</code> |
+| Matcher | Description                                              |
+| :------ | :------------------------------------------------------- |
+| satisfy | The subject should satisfy <code>&lt;FUNCTION&gt;</code> |
+
+```sh
+satisfy <FUNCTION> [ARGUMENTS...]
+```
 
 satisfy examples
 
@@ -309,29 +376,121 @@ The output should satisfy value -gt 10
 The output should satisfy formula "10 <= value && value <= 100"
 ```
 
-##### stat matchers
+#### stat matchers
 
 the subject expected file path
 
-| Matcher                            | Description                                 |
-| :--------------------------------- | :------------------------------------------ |
-| be exist                           | The file should exist.                      |
-| be file                            | The file should be a file.                  |
-| be directory                       | The file should be a directory.             |
-| be empty file                      | The file should be an empty file.           |
-| be empty directory<br>be empty dir | The directory should be an empty directory. |
-| be symlink                         | The file should be a symlink.               |
-| be pipe                            | The file should be a pipe.                  |
-| be socket                          | The file should be a socket.                |
-| be readable                        | The file should be readable.                |
-| be writable                        | The file should be writable.                |
-| be executable                      | The file should be executable.              |
-| be block_device                    | The file should be a block device.          |
-| be character_device                | The file should be a character device.      |
-| has setgid                         | The file should have the setgid flag set.   |
-| has setuid                         | The file should have the setuid flag set.   |
+| Matcher             | Description                                 |
+| :------------------ | :------------------------------------------ |
+| be exist            | The file should exist.                      |
+| be file             | The file should be a file.                  |
+| be directory        | The file should be a directory.             |
+| be empty file       | The file should be an empty file.           |
+| be empty directory  | The directory should be an empty directory. |
+| be symlink          | The file should be a symlink.               |
+| be pipe             | The file should be a pipe.                  |
+| be socket           | The file should be a socket.                |
+| be readable         | The file should be readable.                |
+| be writable         | The file should be writable.                |
+| be executable       | The file should be executable.              |
+| be block_device     | The file should be a block device.          |
+| be character_device | The file should be a character device.      |
+| has setgid          | The file should have the setgid flag set.   |
+| has setuid          | The file should have the setuid flag set.   |
 
-##### status matchers
+##### `be exist` matcher
+
+```sh
+The path /target/path should be exist
+```
+
+##### `be file` matcher
+
+```sh
+The path /target/path should be file
+```
+
+##### `be directory` matcher
+
+```sh
+The path /target/path should be directory
+The path /target/path should be dir
+```
+
+##### `be empty file` matcher
+
+```sh
+The path /target/path should be empty file
+```
+
+##### `be empty directory` matcher
+
+```sh
+The path /target/path should be empty directory
+The path /target/path should be empty dir
+```
+
+##### `be symlink` matcher
+
+```sh
+The path /target/path should be symlink
+```
+
+##### `be pipe` matcher
+
+```sh
+The path /target/path should be pipe
+```
+
+##### `be socket` matcher
+
+```sh
+The path /target/path should be socket
+```
+
+##### `be readable` matcher
+
+```sh
+The path /target/path should be readable
+```
+
+##### `be writable` matcher
+
+```sh
+The path /target/path should be writable
+```
+
+##### `be executable` matcher
+
+```sh
+The path /target/path should be executable
+```
+
+##### `be block_device` matcher
+
+```sh
+The path /target/path should be block_device
+```
+
+##### `be character_device` matcher
+
+```sh
+The path /target/path should be character_device
+```
+
+##### `has setgid` matcher
+
+```sh
+The path /target/path should has setgid
+```
+
+##### `has setuid` matcher
+
+```sh
+The path /target/path should has setuid
+```
+
+#### status matchers
 
 the subject expected status
 
@@ -340,7 +499,19 @@ the subject expected status
 | be success | The status should be success (`0`).         |
 | be failure | The status should be failure (`1` - `255`). |
 
-##### string matchers
+##### `be success` matcher
+
+```sh
+The status should be success
+```
+
+##### `be failure` matcher
+
+```sh
+The status should be failure
+```
+
+#### string matchers
 
 | Matcher                                                             | Description                                                   |
 | :------------------------------------------------------------------ | :------------------------------------------------------------ |
@@ -349,6 +520,37 @@ the subject expected status
 | end with <code>&lt;STRING&gt;</code>                                | The subject should end with <code>&lt;STRING&gt;</code>       |
 | include <code>&lt;STRING&gt;</code>                                 | The subject should include <code>&lt;STRING&gt;</code>        |
 | match pattern <code>&lt;PATTERN&gt;</code>                          | The subject should match pattern <code>&lt;PATTERN&gt;</code> |
+
+##### `equal` matcher
+
+```sh
+The outout should equal <STRING>
+The outout should eq <STRING>
+```
+
+##### `start with` matcher
+
+```sh
+The outout should start with <STRING>
+```
+
+##### `end with` matcher
+
+```sh
+The outout should end with <STRING>
+```
+
+##### `include` matcher
+
+```sh
+The outout should include <STRING>
+```
+
+##### `match pattern` matcher
+
+```sh
+The outout should match pattern <PATTERN>
+```
 
 PATTERN examples
 
@@ -359,11 +561,11 @@ PATTERN examples
 - `[a-z]`
 - `foo|bar`
 
-##### successful matchers
+#### `successful` matcher
 
 Use with [result](#result) modifier.
 
-##### valid matchers
+#### valid matchers
 
 **Plan to deprecate in the future.**
 
@@ -372,7 +574,7 @@ Use with [result](#result) modifier.
 | be valid number   | The subject should be a valid number.   |
 | be valid funcname | The subject should be a valid funcname. |
 
-##### variable matchers
+#### variable matchers
 
 the subject expect variable
 
@@ -383,28 +585,31 @@ the subject expect variable
 | be present   | The variable should be present (non-zero length string).    |
 | be blank     | The variable should be blank (unset or zero length string). |
 
+##### `be defined` matcher
+
+```sh
+The variable VAR should be defined
+```
+
+##### `be undefined` matcher
+
+```sh
+The variable VAR should be undefined
+```
+
+##### `be present` matcher
+
+```sh
+The variable VAR should be present
+```
+
+##### `be blank` matcher
+
+```sh
+The variable VAR should be blank
+```
+
 ## Helper
-
-### Hook
-
-| DSL        | Description                                       |
-| :--------- | :------------------------------------------------ |
-| Before     | Define a hook called before running each example. |
-| After      | Define a hook called after running each example.  |
-| BeforeAll  |                                                   |
-| AfterAll   |                                                   |
-| BeforeCall |                                                   |
-| AfterCall  |                                                   |
-| BeforeRun  |                                                   |
-| AfterRun   |                                                   |
-
-#### `Before` / `After`
-
-#### `BeforeAll` / `AfterAll`
-
-#### `BeforeCall` / `AfterCall`
-
-#### `BeforeRun` / `AfterRun`
 
 ### Skip / Pending
 
@@ -538,6 +743,7 @@ You can refer to variables defined with %const.
 | Path<br>File<br>Dir                            | Define a path alias.                          |
 | Intercept <code>[NAMES...]</code>              | Define an interceptor.                        |
 | Set <code>[OPTION:&lt;on \| off&gt;...]</code> | Set shell option before running each example. |
+| Dump                                           | Dump stdout, stderr and status for debugging. |
 
 #### `Include`
 
@@ -546,6 +752,29 @@ You can refer to variables defined with %const.
 #### `Intercept`
 
 #### `Set`
+
+#### `Dump`
+
+## Hooks
+
+| DSL        | Description                                       |
+| :--------- | :------------------------------------------------ |
+| Before     | Define a hook called before running each example. |
+| After      | Define a hook called after running each example.  |
+| BeforeAll  |                                                   |
+| AfterAll   |                                                   |
+| BeforeCall |                                                   |
+| AfterCall  |                                                   |
+| BeforeRun  |                                                   |
+| AfterRun   |                                                   |
+
+### `Before` / `After`
+
+### `BeforeAll` / `AfterAll`
+
+### `BeforeCall` / `AfterCall`
+
+### `BeforeRun` / `AfterRun`
 
 ## Directive
 
