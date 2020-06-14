@@ -97,9 +97,9 @@ each_line() {
           evaluation) break ;;
           good)
             [ "$field_pending" ] || break
-            [ "$suppress_pending" ] && break
+            [ ! "$suppress_pending" ] || break
             ;;
-          bad) [ "$suppress_pending" ] && break ;;
+          bad) [ ! "$suppress_pending" ] || break ;;
           pending)
             suppress_pending=1
             case $SHELLSPEC_PENDING_MESSAGE in (quiet)
@@ -112,7 +112,7 @@ each_line() {
               [ "$field_temporary" ] || break
             esac
             case $SHELLSPEC_SKIP_MESSAGE in (moderate|quiet)
-              [ "$field_skipid" = "$last_skip_id" ] && break
+              [ ! "$field_skipid" = "$last_skip_id" ] || break
               last_skip_id=$field_skipid
             esac
             inc temporary_skip
