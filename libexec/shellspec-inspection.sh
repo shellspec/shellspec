@@ -71,5 +71,14 @@ if setopt NO_NOMATCH >/dev/null 2>&1; then
   echo "SHELLSPEC_NOMATCH_AVAILABLE=1"
 fi
 
+#shellcheck disable=SC2034
+{
+  if [ "$({ BASH_XTRACEFD=3; set -x; :; } 2>/dev/null 3>&1)" ]; then
+    echo "SHELLSPEC_XTRACEFD_VAR=BASH_XTRACEFD"
+  elif [ "$({ ZSH_XTRACEFD=3; set -x; :; } 2>/dev/null 3>&1)" ]; then
+    echo "SHELLSPEC_XTRACEFD_VAR=ZSH_XTRACEFD"
+  fi
+} 2>/dev/null
+
 # arithmetic expansion is also required
 exit $((0))

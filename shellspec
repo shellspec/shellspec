@@ -99,6 +99,8 @@ export SHELLSPEC_REPAIR=''
 export SHELLSPEC_INFO=''
 export SHELLSPEC_TTY=''
 export SHELLSPEC_DEV_TTY="/dev/null"
+export SHELLSPEC_XTRACEFD=3
+export SHELLSPEC_XTRACEFD_VAR=''
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
