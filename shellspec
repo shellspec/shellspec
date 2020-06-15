@@ -97,6 +97,8 @@ export SHELLSPEC_QUICK=''
 export SHELLSPEC_QUICK_FILE=".shellspec-quick.log"
 export SHELLSPEC_REPAIR=''
 export SHELLSPEC_INFO=''
+export SHELLSPEC_TTY=''
+export SHELLSPEC_DEV_TTY="/dev/null"
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -493,9 +495,8 @@ fi
     warn "Unsupported shell (errexit handling broken)."
   fi
 
-  if [ "$SHELLSPEC_BUSYBOX_W32" ]; then
-    SHELLSPEC_PATH_SEPARATOR=";"
-  fi
+  [ "$SHELLSPEC_BUSYBOX_W32" ] && SHELLSPEC_PATH_SEPARATOR=";"
+  [ "$SHELLSPEC_TTY" ] && SHELLSPEC_DEV_TTY=/dev/tty
 }
 
 if command_path "time" || [ "$SHELLSPEC_BUSYBOX_W32" ]; then

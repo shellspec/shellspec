@@ -203,17 +203,17 @@ putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_coverage_setup \"\$SHELLSPEC_SHELL_TYPE\""
 putsn "shellspec_metadata $metadata"
 
-log() { if (: > /dev/tty) 2>/dev/null; then puts "$@" >/dev/tty; fi; }
-
 specfile_count=0
-count_specfile() {
-  specfile_count=$(($specfile_count + 1))
-}
-[ "$progress" ] && eval find_specfiles count_specfile ${1+'"$@"'}
+progress() { :; }
+if [ "$progress" ]; then
+  count_specfile() { specfile_count=$(($specfile_count + 1)); }
+  eval find_specfiles count_specfile ${1+'"$@"'}
+  progress() { puts "$@" > "$SHELLSPEC_DEV_TTY"; }
+fi
 
 specfile() {
   [ -e "$2" ] || return 0
-  [ "$progress" ] && log "${CR}Translate[$spec_no/$specfile_count]: $2${ESC}[K"
+  progress "${CR}Translate[$spec_no/$specfile_count]: $2${ESC}[K"
   (
     specfile=$2 ranges=${3:-} run_all=''
     escape_quote specfile
@@ -233,6 +233,6 @@ specfile() {
   spec_no=$(($spec_no + 1))
 }
 eval find_specfiles specfile ${1+'"$@"'}
-[ "$progress" ] && log "${CR}${ESC}[2K"
+progress "${CR}${ESC}[2K"
 
 putsn "shellspec_finished $finished"

@@ -32,9 +32,13 @@ if (set -u; unset v ||:; : "$v") 2>/dev/null; then
   echo "SHELLSPEC_DEFECT_SHELLFLAG=1"
 fi
 
-if  [ ! "$(foo() { set -e; false; :; }; foo && echo OK)" ]; then
+if [ ! "$(foo() { set -e; false; :; }; foo && echo OK)" ]; then
   # bosh 2020/04/10
   echo "SHELLSPEC_DEFECT_ERREXIT=1"
+fi
+
+if (: >/dev/tty && : </dev/tty) 2>/dev/null; then
+  echo "SHELLSPEC_TTY=1"
 fi
 
 if "${0%/*}/shellspec-shebang" 2>/dev/null; then

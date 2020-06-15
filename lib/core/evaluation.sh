@@ -1,7 +1,6 @@
 #shellcheck shell=sh
 
-SHELLSPEC_STDIN_DEV=/dev/null
-(: < /dev/tty) 2>/dev/null && SHELLSPEC_STDIN_DEV=/dev/tty
+SHELLSPEC_STDIN_DEV=$SHELLSPEC_DEV_TTY
 
 shellspec_syntax 'shellspec_evaluation_call'
 shellspec_syntax 'shellspec_evaluation_run'

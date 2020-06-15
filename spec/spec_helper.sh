@@ -2,7 +2,7 @@
 
 set -eu
 
-log() { echo "$@" > /dev/tty; }
+log() { echo "$@" > "$SHELLSPEC_DEV_TTY"; }
 
 if [ "${PIPEFAIL:-}" ] && PIPEFAIL=''; then
   # shellcheck disable=SC2039
@@ -134,10 +134,7 @@ shellspec_spec_helper_configure() {
   posh_shell_flag_bug() { [ "$SHELLSPEC_DEFECT_SHELLFLAG" ]; }
   not_exist_failglob() { [ ! "$SHELLSPEC_FAILGLOB_AVAILABLE" ]; }
   busybox_w32() { [ "$SHELLSPEC_BUSYBOX_W32" ]; }
-
-  exists_tty() {
-    (: < /dev/tty) 2>/dev/null
-  }
+  exists_tty() { [ "$SHELLSPEC_TTY" ]; }
 
   shellspec_before :
   shellspec_after :
