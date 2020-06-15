@@ -305,6 +305,7 @@ shellspec_replace_all_fast() {
 shellspec_replace_all_posix() {
   if [ $# -lt 4 ]; then
     eval "set -- \"\$1\" \"\${$1}\" \"\$2\" \"\$3\" \"\""
+    set -- "$@" # Workaround for busybox 1.10.2
   else
     set -- "$1" "$2" "$3" "$4" ""
   fi
