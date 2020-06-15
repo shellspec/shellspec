@@ -8,7 +8,7 @@ Describe "source ./install.sh"
   Intercept parse_option main
 
   __parse_option__() {
-    :
+    trap - EXIT
   }
 
   __main__() {
