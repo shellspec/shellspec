@@ -8,8 +8,8 @@ umask >/dev/null
 # mrsh: https://github.com/emersion/mrsh WIP 657ea07 fails
 ( false ) 2>/dev/null && exit 1
 
-foo() { echo foo; }
-if [ "$(foo() { echo FOO; }; foo)" = "foo" ]; then
+redefine() { echo redefine; }
+if [ "$(redefine() { :; }; redefine)" = "redefine" ]; then
   # ksh
   echo "SHELLSPEC_DEFECT_REDEFINE=1"
 fi
@@ -32,19 +32,19 @@ if (set -u; unset v ||:; : "$v") 2>/dev/null; then
   echo "SHELLSPEC_DEFECT_SHELLFLAG=1"
 fi
 
-if [ ! "$(foo() { set -e; false; :; }; foo && echo OK)" ]; then
+if [ ! "$(errexit() { set -e; false; :; }; errexit && echo OK)" ]; then
   # bosh 2020/04/10
   echo "SHELLSPEC_DEFECT_ERREXIT=1"
 fi
 
 # Workaround for zsh 4.2.5
-_exit() { ( exit 1 ); }
-if [ "${ZSH_VERSION:-}" ] && _exit; then
+zshexit() { ( exit 1 ); }
+if [ "${ZSH_VERSION:-}" ] && zshexit; then
   echo "SHELLSPEC_DEFECT_ZSHEXIT=1"
 fi
 
 set +e
-(set -e; foo() { return 2; }; foo)
+(set -e; subshell() { return 2; }; subshell)
 if [ $? -eq 1 ]; then
   echo "SHELLSPEC_DEFECT_SUBSHELL=1"
 fi
@@ -52,7 +52,8 @@ set -e
 
 set +e
 eval "set -e"
-if [ "$-" = "${-%e*}" ]; then
+sete=$-
+if [ "$sete" = "${sete%e*}" ]; then
   echo "SHELLSPEC_DEFECT_SETE=1"
 fi
 set -e
