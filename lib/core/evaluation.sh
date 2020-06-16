@@ -78,24 +78,17 @@ shellspec_evaluation_run_trap_exit_status() {
     *e*) set +e -- -e "$@" ;;
     *) set -- +e "$@" ;;
   esac
-  ( set "$1"; shift
-    # "unset status" causes an error and forces exit instead of "exit"
-    # status variable is special variable, can not unset in zsh
-    SHELLSPEC_EVAL="
-      exit() { \
-        echo -n \"\$1 \" >> \"\$SHELLSPEC_ZSH_EXIT_CODES\"; \
-        { unset status; } 2>/dev/null \
-      }
-    "
-    eval "$SHELLSPEC_EVAL"
+  ( set "$1" -- SHELLSPEC_ZSH_EXIT_CODES "$@"
+    # `unset status` causes an error and forces exit instead of `exit`
+    # The `status` is special variable, it can not unset in zsh
+    eval "exit() { echo -n \"\$1\">>\"\$$1\"; { unset status; } 2>/dev/null; }"
+    shift 2
     "$@"
   )
-  (
-    error=$?
-    if [ -s "$SHELLSPEC_ZSH_EXIT_CODES" ]; then
-      read -r ecs < "$SHELLSPEC_ZSH_EXIT_CODES" ||:
-      ecs=${ecs% } && ecs=${ecs% *} && error=${ecs##* }
-    fi
+  ( error=$?
+    [ -s "$SHELLSPEC_ZSH_EXIT_CODES" ] || return "$error"
+    read -r ecs < "$SHELLSPEC_ZSH_EXIT_CODES" ||:
+    ecs=${ecs% } && ecs=${ecs% *} && error=${ecs##* }
     return "$error"
   )
 }
