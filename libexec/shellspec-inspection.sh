@@ -43,12 +43,23 @@ if [ "${ZSH_VERSION:-}" ] && _exit; then
   echo "SHELLSPEC_DEFECT_ZSHEXIT=1"
 fi
 
-set +e
-(set -e; foo() { return 2; }; foo)
-if [ $? -eq 1 ]; then
-  echo "SHELLSPEC_DEFECT_SUBSHELL=1"
-fi
-set -e
+{
+  set +e
+  (set -e; foo() { return 2; }; foo)
+  if [ $? -eq 1 ]; then
+    echo "SHELLSPEC_DEFECT_SUBSHELL=1"
+  fi
+  set -e
+}
+
+{
+  set +e
+  eval "set -e"
+  if [ "$-" = "${-%e*}" ]; then
+    echo "SHELLSPEC_DEFECT_SETE=1"
+  fi
+  set -e
+}
 
 if (: >/dev/tty && : </dev/tty) 2>/dev/null; then
   echo "SHELLSPEC_TTY=1"

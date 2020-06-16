@@ -17,17 +17,14 @@ shellspec_is_identifier() {
   return 0
 }
 
-SHELLSPEC_SHELL_OPTION=""
 shellspec_proxy shellspec_append_shell_option shellspec_append_set
 if [ "${SHELLSPEC_SHOPT_AVAILABLE:-}" ]; then
   shellspec_proxy shellspec_append_shell_option shellspec_append_shopt
 fi
 
-# Workaround for mksh, pdksh, posh. it can not be set within eval.
-if ( set +e; eval "set -e"; case $- in (*e*) false; esac ) 2>/dev/null; then
-  #shellcheck disable=SC2034
-  SHELLSPEC_SHELL_OPTION="shellspec_set_option"
-fi
+# Workaround for mksh, pdksh, posh. it can not be set -e within eval.
+# shellcheck disable=SC2034
+SHELLSPEC_SET_OPTION=${SHELLSPEC_DEFECT_SETE:+shellspec_set_option}
 
 shellspec_append_set() {
   case $2 in

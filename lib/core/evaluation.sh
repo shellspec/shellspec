@@ -33,7 +33,7 @@ shellspec_invoke_data() {
 
 shellspec_evaluation_call() {
   set "$SHELLSPEC_ERREXIT"
-  "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
+  "${SHELLSPEC_SET_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
   set +e -- shellspec_evaluation_call_function "$@"
   shellspec_evaluation_execute shellspec_around_call "$@" &&:
   set -e -- $?
@@ -42,7 +42,7 @@ shellspec_evaluation_call() {
 
 shellspec_evaluation_run() {
   set "$SHELLSPEC_ERREXIT"
-  "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
+  "${SHELLSPEC_SET_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
   case $- in
     *e*) set +e; shellspec_evaluation_run_subshell -e "$@"; ;;
     *) shellspec_evaluation_run_subshell +e "$@"; ;;
