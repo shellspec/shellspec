@@ -37,6 +37,19 @@ if [ ! "$(foo() { set -e; false; :; }; foo && echo OK)" ]; then
   echo "SHELLSPEC_DEFECT_ERREXIT=1"
 fi
 
+# Workaround for zsh 4.2.5
+_exit() { ( exit 1 ); }
+if [ "${ZSH_VERSION:-}" ] && _exit; then
+  echo "SHELLSPEC_DEFECT_ZSHEXIT=1"
+fi
+
+set +e
+(set -e; foo() { return 2; }; foo)
+if [ $? -eq 1 ]; then
+  echo "SHELLSPEC_DEFECT_SUBSHELL=1"
+fi
+set -e
+
 if (: >/dev/tty && : </dev/tty) 2>/dev/null; then
   echo "SHELLSPEC_TTY=1"
 fi

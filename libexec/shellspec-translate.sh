@@ -194,6 +194,7 @@ filter=1
 
 putsn "#!/bin/sh"
 putsn "SHELLSPEC_SPECFILE=''"
+putsn "SHELLSPEC_DATA=''"
 putsn "SHELLSPEC_WORKDIR=\"\$SHELLSPEC_TMPBASE\""
 putsn "SHELLSPEC_STDIO_FILE_BASE=\"\$SHELLSPEC_WORKDIR\""
 putsn "[ \"\$SHELLSPEC_DEBUG_TRAP\" ] && trap - DEBUG"

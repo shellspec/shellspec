@@ -7,8 +7,24 @@ shellspec_syntax 'shellspec_evaluation_run'
 
 shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
+shellspec_evaluation_fom_tty() { "$@" < "$SHELLSPEC_STDIN_DEV"; }
+shellspec_evaluation_fom_stdin() { "$@" < "$SHELLSPEC_STDIN_FILE"; }
+shellspec_evaluation_to_stdout() { "$@" > "$SHELLSPEC_STDOUT_FILE"; }
+shellspec_evaluation_to_stderr() { "$@" 2> "$SHELLSPEC_STDERR_FILE"; }
+
+shellspec_evaluation_execute() {
+  set -- shellspec_evaluation_to_stdout "$@"
+  set -- shellspec_evaluation_to_stderr "$@"
+  if [ "$SHELLSPEC_DATA" ]; then
+    set -- shellspec_evaluation_fom_stdin "$@"
+  else
+    set -- shellspec_evaluation_fom_tty "$@"
+  fi
+  "$@"
+}
+
 shellspec_invoke_data() {
-  [ "${SHELLSPEC_DATA:-}" ] || return 0
+  [ "$SHELLSPEC_DATA" ] || return 0
   case $# in
     0) shellspec_data > "$SHELLSPEC_STDIN_FILE" ;;
     *) shellspec_data "$@" > "$SHELLSPEC_STDIN_FILE" ;;
@@ -18,20 +34,10 @@ shellspec_invoke_data() {
 shellspec_evaluation_call() {
   set "$SHELLSPEC_ERREXIT"
   "${SHELLSPEC_SHELL_OPTION:-eval}" "${SHELLSPEC_SHELL_OPTIONS:-:}"
-  set +e
-  shellspec_evaluation_call_data shellspec_evaluation_call_function "$@" &&:
+  set +e -- shellspec_evaluation_call_function "$@"
+  shellspec_evaluation_execute shellspec_around_call "$@" &&:
   set -e -- $?
   shellspec_evaluation_cleanup "$1"
-}
-
-shellspec_evaluation_call_data() {
-  if [ ! "${SHELLSPEC_DATA:-}" ]; then
-    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_DEV" \
-      >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
-  else
-    shellspec_around_call "$@" < "$SHELLSPEC_STDIN_FILE" \
-      >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE" &&:
-  fi
 }
 
 shellspec_evaluation_run() {
@@ -46,69 +52,53 @@ shellspec_evaluation_run() {
 }
 
 shellspec_evaluation_run_subshell() {
-  ( set "$1"; shift; shellspec_evaluation_run_data "$@" )
-}
-
-# Workaround for #40 in contrib/bugs.sh
-# ( ... ) not return exit status
-shellspec_evaluation_run_subshell_workaround() {
-  case $1 in (*e*) set +e; esac
-  (set -e; foo() { return 2; }; foo) 2>/dev/null
-  if [ $? -eq 1 ]; then
-    shellspec_evaluation_run_subshell() {
-      #shellcheck disable=SC2034
-      SHELLSPEC_DUMMY=$( set "$1"; shift; shellspec_evaluation_run_data "$@" )
-    }
-  fi
-  case $1 in (*e*) set -e; esac
-}
-shellspec_evaluation_run_subshell_workaround "$-"
-
-shellspec_evaluation_run_data() {
-  if [ ! "${SHELLSPEC_DATA:-}" ]; then
-    shellspec_evaluation_run_trap_exit_status "$@" < "$SHELLSPEC_STDIN_DEV" \
-      >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE"
+  if [ "$SHELLSPEC_DEFECT_SUBSHELL" ]; then
+    #shellcheck disable=SC2034
+    SHELLSPEC_DUMMY=$( shellspec_evaluation_run_subshell_ "$@" )
   else
-    shellspec_evaluation_run_trap_exit_status "$@" < "$SHELLSPEC_STDIN_FILE" \
-      >"$SHELLSPEC_STDOUT_FILE" 2>"$SHELLSPEC_STDERR_FILE"
+    ( shellspec_evaluation_run_subshell_ "$@" )
   fi
 }
 
-if [ "${ZSH_VERSION:-}" ] && (exit 1); then
-  shellspec_evaluation_run_trap_exit_status() {
-    SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_TMPBASE/$$.exit_codes.$SHELLSPEC_SPEC_NO.$SHELLSPEC_EXAMPLE_NO"
-    : > "$SHELLSPEC_ZSH_EXIT_CODES"
+shellspec_evaluation_run_subshell_() {
+  set "$1"
+  shift
+  set -- shellspec_around_run shellspec_evaluation_run_instruction "$@"
+  if [ "$SHELLSPEC_DEFECT_ZSHEXIT" ]; then
+    set -- shellspec_evaluation_run_trap_exit_status "$@"
+  fi
+  shellspec_evaluation_execute "$@"
+}
 
-    case $- in
-      *e*) set +e; set -- -e "$@" ;;
-      *) set -- +e "$@" ;;
-    esac
-    ( set "$1"; shift
-      # "unset status" causes an error and forces exit instead of "exit"
-      # status variable is special variable, can not unset in zsh
-      SHELLSPEC_EVAL="
-        exit() { \
-          echo -n \"\$1 \" >> \"\$SHELLSPEC_ZSH_EXIT_CODES\"; \
-          { unset status; } 2>/dev/null \
-        }
-      "
-      eval "$SHELLSPEC_EVAL"
-      shellspec_around_run shellspec_evaluation_run_instruction "$@"
-    )
-    (
-      error=$?
-      if [ -s "$SHELLSPEC_ZSH_EXIT_CODES" ]; then
-        read -r ecs < "$SHELLSPEC_ZSH_EXIT_CODES" ||:
-        ecs=${ecs% } && ecs=${ecs% *} && error=${ecs##* }
-      fi
-      return "$error"
-    )
-  }
-else
-  shellspec_evaluation_run_trap_exit_status() {
-    shellspec_around_run shellspec_evaluation_run_instruction "$@"
-  }
-fi
+shellspec_evaluation_run_trap_exit_status() {
+  SHELLSPEC_ZSH_EXIT_CODES="$SHELLSPEC_STDIO_FILE_BASE.exit_codes"
+  : > "$SHELLSPEC_ZSH_EXIT_CODES"
+
+  case $- in
+    *e*) set +e -- -e "$@" ;;
+    *) set -- +e "$@" ;;
+  esac
+  ( set "$1"; shift
+    # "unset status" causes an error and forces exit instead of "exit"
+    # status variable is special variable, can not unset in zsh
+    SHELLSPEC_EVAL="
+      exit() { \
+        echo -n \"\$1 \" >> \"\$SHELLSPEC_ZSH_EXIT_CODES\"; \
+        { unset status; } 2>/dev/null \
+      }
+    "
+    eval "$SHELLSPEC_EVAL"
+    "$@"
+  )
+  (
+    error=$?
+    if [ -s "$SHELLSPEC_ZSH_EXIT_CODES" ]; then
+      read -r ecs < "$SHELLSPEC_ZSH_EXIT_CODES" ||:
+      ecs=${ecs% } && ecs=${ecs% *} && error=${ecs##* }
+    fi
+    return "$error"
+  )
+}
 
 shellspec_evaluation_run_instruction() {
   case $1 in
