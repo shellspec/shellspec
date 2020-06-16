@@ -188,7 +188,7 @@ Usage: shellspec [options...] [files or directories...]
         --[no-]boost                Increase the CPU frequency to boost up testing speed [default: disabled]
                                       Equivalent of --profile --profile-limit 0
                                       (Don't worry, this is not overclocking. This is joke option but works.)
-        --log-file LOGFILE          Logfile for %logger directive [default: /dev/tty]
+        --log-file LOGFILE          Log file for %logger directive [default: /dev/tty]
         --keep-tempdir              Do not cleanup temporary directory [default: disabled]
 
   **** Execution ****
