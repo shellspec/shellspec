@@ -7,8 +7,8 @@ shellspec_syntax 'shellspec_evaluation_run'
 
 shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
-shellspec_evaluation_fom_tty() { "$@" < "$SHELLSPEC_STDIN_DEV"; }
-shellspec_evaluation_fom_stdin() { "$@" < "$SHELLSPEC_STDIN_FILE"; }
+shellspec_evaluation_from_tty() { "$@" < "$SHELLSPEC_STDIN_DEV"; }
+shellspec_evaluation_from_stdin() { "$@" < "$SHELLSPEC_STDIN_FILE"; }
 shellspec_evaluation_to_stdout() { "$@" > "$SHELLSPEC_STDOUT_FILE"; }
 shellspec_evaluation_to_stderr() { "$@" 2> "$SHELLSPEC_STDERR_FILE"; }
 
@@ -16,9 +16,9 @@ shellspec_evaluation_execute() {
   set -- shellspec_evaluation_to_stdout "$@"
   set -- shellspec_evaluation_to_stderr "$@"
   if [ "$SHELLSPEC_DATA" ]; then
-    set -- shellspec_evaluation_fom_stdin "$@"
+    set -- shellspec_evaluation_from_stdin "$@"
   else
-    set -- shellspec_evaluation_fom_tty "$@"
+    set -- shellspec_evaluation_from_tty "$@"
   fi
   "$@"
 }
