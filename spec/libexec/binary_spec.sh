@@ -1,6 +1,30 @@
 #shellcheck shell=sh
 
 Describe "libexec/binary.sh"
+  Describe 'od_command()'
+    od() { echo "od"; }
+    hexdump() { echo "hexdump"; }
+
+    Context "when od command available"
+      Include "$SHELLSPEC_LIB/libexec/binary.sh"
+
+      It 'calls od command'
+        When call od_command
+        The stdout should eq 'od'
+      End
+    End
+
+    Context "when od command not available"
+      od() { echo "od: command not found" >&2; return 127; }
+      Include "$SHELLSPEC_LIB/libexec/binary.sh"
+
+      It 'calls hexdump command'
+        When call od_command
+        The stdout should eq 'hexdump'
+      End
+    End
+  End
+
   Describe 'octal_dump()'
     Include "$SHELLSPEC_LIB/libexec/binary.sh"
 
