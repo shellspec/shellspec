@@ -556,7 +556,8 @@ shellspec_is_empty_directory() {
     for found in * .*; do
       case $found in (.|..) continue; esac
       [ -e "$found" ] && return 1
-    done ||:
+    done &&:
+    return 0
   )
 }
 

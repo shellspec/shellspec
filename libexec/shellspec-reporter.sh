@@ -25,7 +25,7 @@ current_example_index=0 example_index=''
 last_example_no='' last_skip_id='' not_enough_examples=''
 field_id='' field_type='' field_tag='' field_example_no='' field_focused=''
 field_temporary='' field_skipid='' field_pending='' field_message=''
-field_quick=''
+field_quick='' field_trace='' field_lineno='' field_specfile=''
 
 # shellcheck disable=SC2034
 specfile_count=0 expected_example_count=0 example_count=0 \
@@ -157,6 +157,9 @@ each_line() {
 
   color_schema
   output_formatters each "$@"
+  if [ "$field_type" = "result" ] && [ -e "$field_trace" ]; then
+    output_trace < "$field_trace" >> "$SHELLSPEC_LOGFILE"
+  fi
 }
 parse_lines
 

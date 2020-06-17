@@ -2,10 +2,130 @@
 
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
+% TMPBASE: "$SHELLSPEC_TMPBASE"
 
 Describe "core/evaluation.sh"
   Include "$SHELLSPEC_LIB/core/evaluation.sh"
   Before 'VAR=123'
+
+  Describe 'shellspec_evaluation_from_tty()'
+    prepare() { echo "tty data" > "$SHELLSPEC_STDIN_DEV"; }
+    BeforeRun 'SHELLSPEC_STDIN_DEV="$TMPBASE/tty"' prepare
+    It "reads from tty"
+      When run shellspec_evaluation_from_tty cat
+      The stdout should equal "tty data"
+    End
+  End
+
+  Describe 'shellspec_evaluation_from_stdin()'
+    prepare() { echo "stdin data" > "$SHELLSPEC_STDIN_FILE"; }
+    BeforeRun 'SHELLSPEC_STDIN_FILE="$TMPBASE/stdin"' prepare
+    It "reads from tty"
+      When run shellspec_evaluation_from_stdin cat
+      The stdout should equal 'stdin data'
+    End
+  End
+
+  Describe 'shellspec_evaluation_to_null()'
+    It "writes to /dev/null"
+      When run shellspec_evaluation_to_null echo "null data"
+      The stdout should be blank
+    End
+  End
+
+  Describe 'shellspec_evaluation_to_stdout()'
+    BeforeRun 'SHELLSPEC_STDOUT_FILE="$TMPBASE/stdout"'
+    AfterRun 'cat "$SHELLSPEC_STDOUT_FILE"'
+    It "writes to stdout file"
+      When run shellspec_evaluation_to_stdout echo "stdout data"
+      The stdout should equal 'stdout data'
+    End
+  End
+
+  Describe 'shellspec_evaluation_to_stderr()'
+    BeforeRun 'SHELLSPEC_STDERR_FILE="$TMPBASE/stderr"'
+    AfterRun 'cat "$SHELLSPEC_STDERR_FILE" >&2'
+    stderr_data() { echo "stderr data"; }
+    It "writes to stderr file"
+      When run shellspec_evaluation_to_stderr stderr_data
+      The stdout should equal 'stderr data'
+    End
+  End
+
+  Describe 'shellspec_evaluation_to_xtrace()'
+    BeforeRun 'SHELLSPEC_XTRACEFD=1' 'SHELLSPEC_XTRACE_FILE="$TMPBASE/trace"'
+    AfterRun 'cat "$SHELLSPEC_XTRACE_FILE"'
+    It "writes to trace file"
+      When run shellspec_evaluation_to_xtrace echo "trace data"
+      The stdout should include 'trace data'
+    End
+  End
+
+  Describe 'shellspec_evaluation_execute()'
+    Skip if "The posh cannot redefine running function" [ "${POSH_VERSION:-}" ]
+
+    mock() {
+      shellspec_evaluation_from_tty() { echo "from tty"; "$@"; }
+      shellspec_evaluation_from_stdin() { echo "from stdin"; "$@"; }
+      shellspec_evaluation_to_null() { echo "to null"; "$@"; }
+      shellspec_evaluation_to_stdout() { echo "to stdout"; "$@"; }
+      shellspec_evaluation_to_stderr() { echo "to stderr"; "$@"; }
+      shellspec_evaluation_to_xtrace() { echo "to xtrace"; "$@"; }
+    }
+    BeforeRun mock
+
+    Context "when test mode without data"
+      evaluation_execute() {
+        SHELLSPEC_XTRACE="" SHELLSPEC_XTRACE_ONLY="" SHELLSPEC_DATA=""
+        shellspec_evaluation_execute "$@"
+      }
+      It "writes to trace file"
+        When run evaluation_execute :
+        The stdout should include 'from tty'
+        The stdout should include 'to stdout'
+        The stdout should include 'to stderr'
+      End
+    End
+
+    Context "when test mode with data"
+      evaluation_execute() {
+        SHELLSPEC_XTRACE="" SHELLSPEC_XTRACE_ONLY="" SHELLSPEC_DATA=1
+        shellspec_evaluation_execute "$@"
+      }
+      It "writes to trace file"
+        When run evaluation_execute :
+        The stdout should include 'from stdin'
+        The stdout should include 'to stdout'
+        The stdout should include 'to stderr'
+      End
+    End
+
+    Context "when trace mode without data"
+      evaluation_execute() {
+        SHELLSPEC_XTRACE=1 SHELLSPEC_XTRACE_ONLY="" SHELLSPEC_DATA=""
+        shellspec_evaluation_execute "$@"
+      }
+      It "writes to trace file"
+        When run evaluation_execute :
+        The stdout should include 'from tty'
+        The stdout should include 'to stdout'
+        The stdout should include 'to stderr'
+      End
+    End
+
+    Context "when trace-only mode without data"
+      evaluation_execute() {
+        # shellcheck disable=SC2034
+        SHELLSPEC_XTRACE=1 SHELLSPEC_XTRACE_ONLY=1 SHELLSPEC_DATA=""
+        shellspec_evaluation_execute "$@"
+      }
+      It "writes to trace file"
+        When run evaluation_execute :
+        The stdout should include 'from tty'
+        The stdout should include 'to null'
+      End
+    End
+  End
 
   Describe 'shellspec_invoke_data()'
     shellspec_data() {
@@ -111,6 +231,24 @@ Describe "core/evaluation.sh"
       When call evaluation
       The line 1 of stdout should equal 'no pipe'
       The line 2 of stdout should equal "$(term)"
+    End
+  End
+
+  Describe 'shellspec_evaluation_call_function()'
+    Context "when xtrace is on"
+      call_function() {
+        shellspec_coverage_start() { :; }
+        shellspec_coverage_stop() { :; }
+        SHELLSPEC_XTRACE=1
+        SHELLSPEC_XTRACE_ON="echo xtrace on"
+        SHELLSPEC_XTRACE_OFF="echo xtrace off; set"
+        shellspec_evaluation_call_function "$@"
+      }
+      It "calls function with trace"
+        When run call_function :
+        The line 1 should eq "xtrace on"
+        The line 2 should eq "xtrace off"
+      End
     End
   End
 
@@ -267,6 +405,26 @@ Describe "core/evaluation.sh"
       End
     End
 
+    Describe 'shellspec_evaluation_run_script()'
+      Context "when xtrace is on"
+        # shellcheck disable=SC2034
+        run_script() {
+          SHELLSPEC_XTRACE=1
+          SHELLSPEC_XTRACEFD_VAR="SH_XTRACEFD"
+          SHELLSPEC_XTRACEFD=3
+          PS4="@"
+          shellspec_evaluation_run_script "$@"
+        }
+        It "runs script with trace"
+          When run run_script "$BIN/trace"
+          The line 1 should eq "SHELLSPEC_PS4: @"
+          The line 2 should eq "SH_XTRACEFD: 3"
+          Skip if "set -x broken" posh_shell_flag_bug
+          The stderr should include "$(printf '\n@echo ')"
+        End
+      End
+    End
+
     Describe 'run command evaluation'
       It 'runs external command'
         BeforeRun 'PATH="$BIN:$PATH"'
@@ -328,6 +486,25 @@ Describe "core/evaluation.sh"
       Specify '"test" return to the original behavior'
         When run source "$BIN/script.sh" --command test
         The status should be failure
+      End
+    End
+
+    Describe 'shellspec_evaluation_run_source()'
+      Context "when xtrace is on"
+        # shellcheck disable=SC2034
+        run_source() {
+          shellspec_coverage_start() { :; }
+          shellspec_coverage_stop() { :; }
+          SHELLSPEC_XTRACE=1
+          SHELLSPEC_XTRACE_ON="echo xtrace on"
+          SHELLSPEC_XTRACE_OFF="echo xtrace off; set"
+          shellspec_evaluation_run_source "$@"
+        }
+        It "runs source with trace"
+          When run run_source "$BIN/echo"
+          The line 1 should eq "xtrace on"
+          The line 3 should eq "xtrace off"
+        End
       End
     End
   End

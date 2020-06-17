@@ -141,6 +141,12 @@ shellspec_example() {
     done
   fi
 
+  # shellcheck disable=SC2034
+  SHELLSPEC_STDIN_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdin"
+  SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
+  SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
+  SHELLSPEC_XTRACE_FILE="$SHELLSPEC_STDIO_FILE_BASE.trace"
+
   [ "$SHELLSPEC_ENABLED" ] || return 0
   [ "$SHELLSPEC_FILTER" ] || return 0
 
@@ -149,13 +155,6 @@ shellspec_example() {
     shellspec_output SUCCEEDED
     return 0
   fi
-
-  # shellcheck disable=SC2034
-  {
-    SHELLSPEC_STDIN_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdin"
-    SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
-    SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
-  }
 
   shellspec_profile_start
   case $- in
@@ -318,6 +317,7 @@ shellspec_the() {
   eval shellspec_join SHELLSPEC_EXPECTATION '" "' The ${1+'"$@"'}
   shellspec_off NOT_IMPLEMENTED
   shellspec_on EXPECTATION
+  [ "$SHELLSPEC_XTRACE_ONLY" ] && return 0
 
   if [ $# -eq 0 ]; then
     shellspec_output SYNTAX_ERROR_EXPECTATION "Missing expectation"
@@ -332,6 +332,7 @@ shellspec_assert() {
   eval shellspec_join SHELLSPEC_EXPECTATION '" "' Assert ${1+'"$@"'}
   shellspec_off NOT_IMPLEMENTED
   shellspec_on EXPECTATION
+  [ "$SHELLSPEC_XTRACE_ONLY" ] && return 0
 
   if [ $# -eq 0 ]; then
     shellspec_output SYNTAX_ERROR_EXPECTATION "Missing assertion"

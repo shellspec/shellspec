@@ -99,7 +99,14 @@ fi
   elif [ "$({ ZSH_XTRACEFD=3; set -x; :; } 2>/dev/null 3>&1)" ]; then
     echo "SHELLSPEC_XTRACEFD_VAR=ZSH_XTRACEFD"
   fi
-} 2>/dev/null
+
+  xtrace() { echo XTRACE > /dev/null; }
+  xtrace=$({ set -x; xtrace; } 2>&1)
+  case $xtrace in (*XTRACE*) ;; (*)
+    type typeset >/dev/null 2>&1 && xtrace=2 || xtrace=1
+    echo "SHELLSPEC_DEFECT_XTRACE=$xtrace"
+  esac
+} 2>/dev/null &&:
 
 # arithmetic expansion is also required
 exit $((0))

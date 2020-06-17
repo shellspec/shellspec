@@ -8,7 +8,7 @@
 create_buffers summary
 
 summary_end() {
-  _summary='' _summary_error='' _color=''
+  _summary='' _summary_error='' _summary_warning='' _color=''
 
   pluralize _summary "${example_count:-0} example"
   pluralize _summary ", " "${failed_count:-0} failure"
@@ -31,9 +31,16 @@ summary_end() {
   pluralize _summary_error ", " "$not_enough_examples example" \
     " did not run (unexpected exit?)"
 
-  [ "$warned_count" ] && _color=$YELLOW || _color=$GREEN
+  if [ "$SHELLSPEC_DRYRUN" ]; then
+    _summary_warning="$_summary_warning [dry-run mode]"
+  elif [ "$SHELLSPEC_XTRACE_ONLY" ]; then
+    _summary_warning="$_summary_warning [trace-only mode]"
+  fi
+
+  [ "${warned_count}${_summary_warning}" ] && _color=$YELLOW || _color=$GREEN
   [ "${failed_count}${fixed_count}${_summary_error}" ] && _color=$RED
-  summary '+=' "${_color}${_summary}${_summary_error}${RESET}${LF}${LF}"
+  _summary="${_summary}${_summary_error}${_summary_warning}"
+  summary '+=' "${_color}${_summary}${RESET}${LF}${LF}"
 }
 
 summary_output() {
