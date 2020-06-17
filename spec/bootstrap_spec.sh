@@ -3,6 +3,8 @@
 % SIGNAL: "$SHELLSPEC_TMPBASE/profiler.test"
 
 # This Include do not place inside of Describe. posh fails
+# shellcheck disable=SC2034
+SHELLSPEC_REQUIRES=''
 Include "$SHELLSPEC_LIB/bootstrap.sh"
 
 Describe 'bootstrap.sh'
