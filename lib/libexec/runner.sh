@@ -5,14 +5,15 @@
 use is_empty_directory
 
 mktempdir() {
-  ( umask 0077; mkdir "$1"
+  ( umask 0077
+    mkdir "$1"
     # Workaround for busybox < 1.20.0 mkdir: fix permissions on 64-bit platforms
     # https://bugs.busybox.net/show_bug.cgi?id=4814
     [ -u "$1" ] && chmod 0700 "$1"
-    is_empty_directory "$1" && return 0
-    abort "Somehow any files are exists in the temporary directory" \
-      "just created. Abort to avoid security risk."
-  )
+    is_empty_directory "$1"
+  ) && return 0
+  abort "Somehow any files are exists in the temporary directory" \
+    "just created. Abort to avoid security risk."
 }
 
 rmtempdir() {

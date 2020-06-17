@@ -22,14 +22,23 @@ Describe "libexec/runner.sh"
   Describe "mktempdir()"
     Skip if 'can not change permission' check_change_permission
 
-    Before prepare
     prepare() { dir="$SHELLSPEC_TMPBASE/mktempdir_test"; }
     entry() { ls -dl "$dir"; }
+    cleanup() { rmtempdir "$dir"; }
+    Before prepare
+    After cleanup
 
     It "makes tempdir"
       When call mktempdir "$dir"
       The status should be success
       The result of 'entry()' should start with 'drwx------'
+    End
+
+    It "aborts when the created directory is not empty"
+      is_empty_directory() { false; }
+      When run mktempdir "$dir"
+      The status should be failure
+      The stderr should be present
     End
   End
 
