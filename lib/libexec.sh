@@ -73,18 +73,24 @@ edit_in_place() {
 }
 
 warn() {
+  IFS=" $IFS"
   [ "$SHELLSPEC_COLOR" ] && set -- "$(printf '\033[33m%s\033[m' "${*:-}")"
   printf '%s\n' "${*:-}" >&2
+  IFS=${IFS#?}
 }
 
 info() {
+  IFS=" $IFS"
   [ "$SHELLSPEC_COLOR" ] && set -- "$(printf '\033[33m%s\033[m' "${*:-}")"
   printf '%s\n' "${*:-}"
+  IFS=${IFS#?}
 }
 
 error() {
+  IFS=" $IFS"
   [ "$SHELLSPEC_COLOR" ] && set -- "$(printf '\033[2;31m%s\033[m' "${*:-}")"
   printf '%s\n' "${*:-}" >&2
+  IFS=${IFS#?}
 }
 
 abort() {

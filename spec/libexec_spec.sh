@@ -2,6 +2,7 @@
 
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
 % INFILE: "$SHELLSPEC_SPECDIR/fixture/infile"
+% TMPBASE: "$SHELLSPEC_TMPBASE"
 
 Describe 'libexec.sh'
   Include "$SHELLSPEC_LIB/libexec.sh"
@@ -78,6 +79,45 @@ Describe 'libexec.sh'
       When call find_specfiles _ -
       The line 1 of output should eq "file2"
       The line 2 of output should eq "dir2"
+    End
+  End
+
+  Describe "edit_in_place()"
+    prepare() { echo foo > "$TMPBASE/edit_in_place"; }
+    Before prepare
+
+    It "edits in place"
+      When call edit_in_place "$TMPBASE/edit_in_place" sed 's/f/F/g'
+      The contents of file "$TMPBASE/edit_in_place" should eq "Foo"
+    End
+  End
+
+  Describe "warn()"
+    It "outputs warning"
+      When call warn foo bar
+      The stderr should include "foo bar"
+    End
+  End
+
+  Describe "info()"
+    It "outputs information"
+      When call info foo bar
+      The stdout should include "foo bar"
+    End
+  End
+
+  Describe "error()"
+    It "outputs error"
+      When call error foo bar
+      The stderr should include "foo bar"
+    End
+  End
+
+  Describe "abort()"
+    It "aborts with output error"
+      When run abort foo bar
+      The stderr should include "foo bar"
+      The status should be failure
     End
   End
 
