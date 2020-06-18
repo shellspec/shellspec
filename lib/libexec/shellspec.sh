@@ -35,7 +35,7 @@ enum_options_file() {
 read_cmdline() {
   [ -e "$1" ] || return 0
 
-  octal_dump < "$1" | {
+  octal_dump < "$1" | (
     cmdline='' printf_octal_bug=''
     [ "$(printf '\101' 2>/dev/null ||:)" = "A" ] || printf_octal_bug=0
     while IFS= read -r line; do
@@ -47,7 +47,7 @@ read_cmdline() {
     done
     #shellcheck disable=SC2059
     printf "$cmdline"
-  }
+  )
 }
 
 ps_command() {
@@ -56,7 +56,7 @@ ps_command() {
 
 read_ps() {
   # shellcheck disable=SC2015
-  ps_command 2>/dev/null | {
+  ps_command 2>/dev/null | (
     IFS=" " pid=$1 p=0 c=0 _pid=''
     IFS= read -r line
     # shellcheck disable=SC2086
@@ -82,7 +82,7 @@ read_ps() {
     # workaround for old busybox ps format
     case $line in (\{*) line=${line#*\} }; esac
     echo "$line"
-  } &&: ||:
+  ) &&: ||:
 }
 
 current_shell() {

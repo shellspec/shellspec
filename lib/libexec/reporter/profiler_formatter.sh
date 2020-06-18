@@ -21,7 +21,7 @@ profiler_output() {
     while [ $_i -lt "$profiler_count" ]; do
       eval "putsn \$profiler_tick$_i \$profiler_time$_i \"\$profiler_line$_i\""
       _i=$(($_i + 1))
-    done | sort -k 1 -n -r | {
+    done | sort -k 1 -n -r | (
       _i=0
       #shellcheck disable=SC2034
       while IFS=" " read -r _tick _duration _line; do
@@ -32,7 +32,7 @@ profiler_output() {
         done
         putsn "${BOLD}${BLACK} $_i $_duration $_line${RESET}"
       done
-    }
+    )
     putsn
   esac
 }

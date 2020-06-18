@@ -13,12 +13,12 @@ else
 fi
 
 octal_dump() {
-  od_command | {
+  od_command | (
     while IFS= read -r line; do
       eval "set -- $line"
       [ $# -gt 1 ] || continue
       shift
       while [ $# -gt 0 ]; do echo "$1" && shift; done
     done
-  }
+  )
 }

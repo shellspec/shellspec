@@ -9,7 +9,7 @@ FNV_PRIME_32=16777619
 [ $((010)) -eq 8 ] && OCT="0" || OCT="8#"
 
 shuffle() {
-  octal_dump | {
+  octal_dump | (
     seed=$(puts "${1:-}" | octal_dump | gen_seed)
     hash=$seed filename='' printf_octal_bug=''
     [ "$(printf '\101' 2>/dev/null ||:)" = "A" ] || printf_octal_bug=0
@@ -28,7 +28,7 @@ shuffle() {
       esac
       fnv1a "$oct"
     done | sort | while IFS= read -r line; do putsn "${line#* }"; done
-  }
+  )
 }
 
 gen_seed() {
