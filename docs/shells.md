@@ -48,8 +48,8 @@ Default shell: `busybox ash`
 | OpenWrt 12.09       |        | _1.19.4_ |      | -     |      | -    | -   |
 | OpenWrt 14.07       |        | 1.22.1   |      | -     |      | -    |     |
 | OpenWrt 15.05.1     |        | 1.23.2   | -    | -     |      | -    |     |
-| **OpenWrt 18.06.7** |        | 1.28.4   | -    | -     |      | -    |     |
-| **OpenWrt 19.07.1** |        | 1.30.1   | -    | -     |      | -    |     |
+| **OpenWrt 18.06.8** |        | 1.28.4   | -    | -     |      | -    |     |
+| **OpenWrt 19.07.3** |        | 1.30.1   | -    | -     |      | -    |     |
 
 #### CentOS / Fedora
 
@@ -93,6 +93,7 @@ Default shell: `dash` or `bash` (until debian 5.0)
 | **Ubuntu 16.04** | 4.3.48 | 1.22.0     | 0.5.8         | 93u+ 2012-08-01 | R52c | -          | 0.12.6   | 2.39 | 5.1.1  |
 | **Ubuntu 18.04** | 4.4.20 | 1.27.2     | 0.5.8         | 93u+ 2012-08-01 | R56c | -          | 0.13.1   | 2.46 | 5.4.2  |
 | **Ubuntu 19.04** |        |            |               |                 |      | -          |          |      | 5.5.1  |
+| **Ubuntu 20.04** | 5.0.16 | 1.30.1     | 0.5.10.2      | 2020.0.0        | R58  | -          | 0.13.1   | 2.49 | 5.8    |
 
 - Using [lpenz/docker-debian-releases](https://github.com/lpenz/docker-debian-releases/) for older (7.11 and before) Debian docker images.
 - Testing bash 2.03-3.2.39 in both POSIX and non-POSIX mode. bash 4.1.5- is non-POSIX mode only.
@@ -101,12 +102,11 @@ Default shell: `dash` or `bash` (until debian 5.0)
 
 Default shell: `ash`
 
-| Platform               | ash     | bash   | dash     | ksh             | mksh | oksh     | pdksh    | zsh   |
-| ---------------------- | ------- | ------ | -------- | --------------- | ---- | -------- | -------- | ----- |
-| FreeBSD 10.4           | unknown | 4.4.23 | 0.5.10.2 | 93u+ 2012-08-01 | R56c | 20181009 | _5.2.14_ | 5.6.2 |
-| **FreeBSD 11.3**       | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | R57  | 6.6      | _5.2.14_ | 5.8   |
-| **FreeBSD 12.1**       | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | R57  | 6.6      | _5.2.14_ | 5.8   |
-| FreeBSD 13.0 (current) | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | R57  | 6.6      | _5.2.14_ | 5.8   |
+| Platform         | ash     | bash   | dash     | ksh             | mksh | oksh     | pdksh    | zsh   |
+| ---------------- | ------- | ------ | -------- | --------------- | ---- | -------- | -------- | ----- |
+| FreeBSD 10.4     | unknown | 4.4.23 | 0.5.10.2 | 93u+ 2012-08-01 | R56c | 20181009 | _5.2.14_ | 5.6.2 |
+| **FreeBSD 11.4** | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | R57  | 6.6      | _5.2.14_ | 5.8   |
+| **FreeBSD 12.1** | unknown | 5.0.16 | 0.5.10.2 | 93u+ 2012-08-01 | R57  | 6.6      | _5.2.14_ | 5.8   |
 
 - pdksh is unstable on CI environment (Bus Error, Bad address, Memory fault, core dumped and etc).
 
@@ -121,7 +121,8 @@ Default shell: `bash`
 | macOS 10.12            | bash 3.2.57 | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.2   |
 | **macOS 10.13**        | bash 3.2.57 | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.3   |
 | **macOS 10.14**        | bash 3.2.57 | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.3   |
-| **macOS 10.14 (brew)** | -           | 5.0.11 | 0.5.10.2 | 93u+ 2012-08-01 | R57  | ~~0.13.2~~ | 2.49 | 5.7.1 |
+| **macOS 10.15**        | bash 3.2.57 | 3.2.57 | -        | 93u+ 2012-08-01 | -    | -          | -    | 5.7.1 |
+| **macOS 10.15 (brew)** | -           | 5.0.17 | 0.5.10.2 | 2020.0.0        | R59  | ~~0.13.2~~ | 2.50 | 5.8   |
 
 - Supports the latest three versions.
 - posh on macOS 10.14 (brew) is broken?
@@ -130,12 +131,12 @@ Default shell: `bash`
 
 Default shell: `bash`
 
-| Platform                              | bash   | busybox       | dash     | mksh | posh   | zsh   |
-| ------------------------------------- | ------ | ------------- | -------- | ---- | ------ | ----- |
-| **Windows Server 2019 (Git Bash)**    | 4.4.23 | -             | unknown  | -    | -      | -     |
-| **Windows Server 2019 (msys)**        | 4.4.23 | 1.23.2        | 0.5.10.2 | R57  | -      | 5.7.1 |
-| **Windows Server 2019 (cygwin)**      | 4.4.12 | 1.23.2        | 0.5.9.1  | R56c | 0.13.2 | 5.5.1 |
-| **Windows Server 2019 (busybox-w32)** | -      | 1.32.0 (3466) | -        | -    | -      | -     |
+| Platform                              | bash   | busybox       | dash    | mksh | posh   | zsh   |
+| ------------------------------------- | ------ | ------------- | ------- | ---- | ------ | ----- |
+| **Windows Server 2019 (Git Bash)**    | 4.4.23 | -             | unknown | -    | -      | -     |
+| **Windows Server 2019 (msys)**        | 4.4.23 | 1.31.1        | 0.5.11  | R57  | -      | 5.8   |
+| **Windows Server 2019 (cygwin)**      | 4.4.12 | 1.23.2        | 0.5.9.1 | R56c | 0.13.2 | 5.5.1 |
+| **Windows Server 2019 (busybox-w32)** | -      | 1.32.0 (3466) | -       | -    | -      | -     |
 
 - busybox-w32: https://frippery.org/busybox/
 

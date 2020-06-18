@@ -2,7 +2,7 @@ freebsd_task:
   freebsd_instance:
     matrix:
       - image: freebsd-10-4-release-amd64
-      - image_family: freebsd-11-3-snap
+      - image_family: freebsd-11-4
       - image_family: freebsd-12-1
       # - image_family: freebsd-13-0-snap
   install_script: pkg install -y dash bash zsh ksh93 mksh oksh
@@ -37,7 +37,7 @@ msys_task:
   install_script:
     - choco install -y --no-progress msys2
     - pacman.exe -Syu --noprogressbar --noconfirm
-    - pacman.exe -S --noprogressbar --noconfirm dash bash busybox mksh
+    - pacman.exe -S --noprogressbar --noconfirm dash bash busybox mksh zsh
     - pacman.exe -Q
   prepare_script:
     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
