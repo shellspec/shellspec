@@ -158,3 +158,12 @@ filter_quick_file() {
   done
   putsn "$quick_data"
 }
+
+output_trace() {
+  # shellcheck disable=SC2154
+  putsn "${LF}[${field_specfile}:${field_lineno}] $field_evaluation"
+  while IFS= read -r output_trace; do
+    case $output_trace in (*@SHELLSPEC_XTRACE_OFF@*) break; esac
+    putsn "$output_trace"
+  done
+}

@@ -111,6 +111,7 @@ if [ "$SHELLSPEC_FAIL_FAST_COUNT" ]; then
 fi
 [ "$SHELLSPEC_WORKERS" -gt 0 ] && info="${info}--jobs $SHELLSPEC_WORKERS "
 [ "$SHELLSPEC_DRYRUN" ] && info="${info}--dry-run "
+[ "$SHELLSPEC_XTRACE" ] && info="${info}--trace${SHELLSPEC_XTRACE_ONLY:+-only} "
 [ "$SHELLSPEC_RANDOM" ] && info="${info}--random $SHELLSPEC_RANDOM "
 [ "$info" ] && info="{${info% }}"
 SHELLSPEC_INFO="${quick_mode}${info}${info_extra:+ }${info_extra}"

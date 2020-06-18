@@ -7,14 +7,40 @@ shellspec_syntax 'shellspec_evaluation_run'
 
 shellspec_proxy 'shellspec_evaluation' 'shellspec_syntax_dispatch evaluation'
 
-shellspec_evaluation_from_tty() { "$@" < "$SHELLSPEC_STDIN_DEV"; }
-shellspec_evaluation_from_stdin() { "$@" < "$SHELLSPEC_STDIN_FILE"; }
-shellspec_evaluation_to_stdout() { "$@" > "$SHELLSPEC_STDOUT_FILE"; }
-shellspec_evaluation_to_stderr() { "$@" 2> "$SHELLSPEC_STDERR_FILE"; }
+shellspec_evaluation_from_tty() {
+  "$@" < "$SHELLSPEC_STDIN_DEV"
+}
+shellspec_evaluation_from_stdin() {
+  "$@" < "$SHELLSPEC_STDIN_FILE"
+}
+shellspec_evaluation_to_null() {
+  "$@" > /dev/null
+}
+shellspec_evaluation_to_stdout() {
+  "$@" > "$SHELLSPEC_STDOUT_FILE"
+}
+shellspec_evaluation_to_stderr() {
+  "$@" 2> "$SHELLSPEC_STDERR_FILE"
+}
+shellspec_evaluation_to_xtrace() {
+  # shellcheck disable=SC2153
+  set -- "$SHELLSPEC_XTRACEFD" SHELLSPEC_XTRACE_FILE "$@"
+  eval "shellspec_evaluation_to_xtrace_() { \"\$@\" $1> \"\$$2\"; }"
+  shift 2
+  shellspec_evaluation_to_xtrace_ "$@"
+}
 
 shellspec_evaluation_execute() {
-  set -- shellspec_evaluation_to_stdout "$@"
-  set -- shellspec_evaluation_to_stderr "$@"
+  if [ "$SHELLSPEC_XTRACE" ]; then
+    set -- shellspec_evaluation_to_xtrace "$@"
+    if [ "$SHELLSPEC_XTRACE_ONLY" ]; then
+      set -- shellspec_evaluation_to_null "$@"
+    else
+      set -- shellspec_evaluation_to_stdout shellspec_evaluation_to_stderr "$@"
+    fi
+  else
+    set -- shellspec_evaluation_to_stdout shellspec_evaluation_to_stderr "$@"
+  fi
   if [ "$SHELLSPEC_DATA" ]; then
     set -- shellspec_evaluation_from_stdin "$@"
   else
@@ -119,8 +145,16 @@ shellspec_shebang_arguments() {
 
 shellspec_evaluation_call_function() {
   shellspec_coverage_start
-  "$@"
-  set -- "$?"
+  if [ ! "$SHELLSPEC_XTRACE" ]; then
+    "$@"
+    set -- $?
+  else
+    SHELLSPEC_XTRACE=''
+    eval "$SHELLSPEC_XTRACE_ON"
+    "$@"
+    eval "$SHELLSPEC_XTRACE_OFF" -- $?
+    SHELLSPEC_XTRACE=1
+  fi
   shellspec_coverage_stop
   return "$1"
 }
@@ -143,7 +177,22 @@ shellspec_evaluation_run_script() {
       [ "$1" ] || shift
     fi
     ( shellspec_coverage_env
-      eval "$SHELLSPEC_SHELL $SHELLSPEC_COVERAGE_SHELL_OPTIONS \"\$@\""
+      if [ "$SHELLSPEC_XTRACE" ]; then
+        # shellcheck disable=SC2030
+        SHELLSPEC_XTRACE=''
+        if [ "$SHELLSPEC_XTRACEFD_VAR" ]; then
+          export PS4
+          export SHELLSPEC_PS4="${PS4:-}"
+          export "$SHELLSPEC_XTRACEFD_VAR"="$SHELLSPEC_XTRACEFD"
+        fi
+        eval "$SHELLSPEC_SHELL $SHELLSPEC_COVERAGE_SHELL_OPTIONS -x \"\$@\""
+        set -- $?
+        SHELLSPEC_XTRACE=1
+      else
+        eval "$SHELLSPEC_SHELL $SHELLSPEC_COVERAGE_SHELL_OPTIONS \"\$@\""
+        set -- $?
+      fi
+      exit "$1"
     )
   fi
 }
@@ -169,8 +218,14 @@ shellspec_evaluation_run_source() {
   }
   __() { shellspec_interceptor "$@"; }
   shellspec_coverage_start
-  eval "shift; . \"$1\""
-  set -- "$?"
+  # shellcheck disable=SC2031
+  if [ "$SHELLSPEC_XTRACE" ]; then
+    SHELLSPEC_XTRACE=''
+    eval "shift; $SHELLSPEC_XTRACE_ON; . \"$1\"; $SHELLSPEC_XTRACE_OFF -- \$?"
+    SHELLSPEC_XTRACE=1
+  else
+    eval "shift; . \"$1\"; set -- \$?"
+  fi
   shellspec_coverage_stop
   return "$1"
 }
@@ -191,7 +246,8 @@ shellspec_interceptor() {
 }
 
 shellspec_evaluation_cleanup() {
-  SHELLSPEC_STATUS=$1
+  SHELLSPEC_STATUS=$1 SHELLSPEC_STDOUT='' SHELLSPEC_STDERR=''
+  [ "$SHELLSPEC_XTRACE" ] && [ "$SHELLSPEC_XTRACEFD" -eq 2 ] && return 0
   shellspec_readfile SHELLSPEC_STDOUT "$SHELLSPEC_STDOUT_FILE"
   shellspec_readfile SHELLSPEC_STDERR "$SHELLSPEC_STDERR_FILE"
   shellspec_toggle UNHANDLED_STATUS [ "$SHELLSPEC_STATUS" -ne 0 ]

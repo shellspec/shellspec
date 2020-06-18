@@ -54,7 +54,8 @@ shellspec_output_statement() {
 }
 
 shellspec_output_result() {
-  eval shellspec_output_raw type:result ${1:+'"$@"'}
+  [ "$SHELLSPEC_XTRACE" ] && set -- "$@" "trace:$SHELLSPEC_XTRACE_FILE"
+  shellspec_output_raw type:result "$@"
 }
 
 shellspec_output_if() {
