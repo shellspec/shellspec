@@ -123,6 +123,7 @@ Describe "./install.sh"
   Describe "fetch()"
     curl() { exit 1; }
     wget() { exit 1; }
+    gunzip() { $(shellspec_which gunzip) "$@"; }
 
     Context "with curl"
       Before "FETCH=curl"
@@ -145,7 +146,7 @@ Describe "./install.sh"
       wget() {
         case $* in
           *--spider*) ;;
-          *) cat "$FIXTURE/b3d5591.tar.gz"
+          *) /bin/cat "$FIXTURE/b3d5591.tar.gz"
         esac
       }
 
