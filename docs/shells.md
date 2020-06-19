@@ -92,7 +92,6 @@ Default shell: `dash` or `bash` (until debian 5.0)
 | **Ubuntu 14.04** | 4.3.11 | 1.21.0     | 0.5.7         | 93u+ 2012-08-01 | R46  | -          | 0.12.3   | 2.35 | 5.0.2  |
 | **Ubuntu 16.04** | 4.3.48 | 1.22.0     | 0.5.8         | 93u+ 2012-08-01 | R52c | -          | 0.12.6   | 2.39 | 5.1.1  |
 | **Ubuntu 18.04** | 4.4.20 | 1.27.2     | 0.5.8         | 93u+ 2012-08-01 | R56c | -          | 0.13.1   | 2.46 | 5.4.2  |
-| **Ubuntu 19.04** |        |            |               |                 |      | -          |          |      | 5.5.1  |
 | **Ubuntu 20.04** | 5.0.16 | 1.30.1     | 0.5.10.2      | 2020.0.0        | R58  | -          | 0.13.1   | 2.49 | 5.8    |
 
 - Using [lpenz/docker-debian-releases](https://github.com/lpenz/docker-debian-releases/) for older (7.11 and before) Debian docker images.
