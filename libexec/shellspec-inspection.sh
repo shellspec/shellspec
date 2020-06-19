@@ -44,7 +44,7 @@ if [ "${ZSH_VERSION:-}" ] && zshexit; then
 fi
 
 set +e
-(set -e; subshell() { return 2; }; subshell)
+(set -e; subshell() { return 2; }; subshell) 2>/dev/null
 if [ $? -eq 1 ]; then
   echo "SHELLSPEC_DEFECT_SUBSHELL=1"
 fi

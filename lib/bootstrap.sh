@@ -2,6 +2,10 @@
 
 shellspec() { :; }
 
+# Disable verbose_errexit by default for osh
+# shellcheck disable=SC2039
+shopt -u verbose_errexit 2>/dev/null ||:
+
 # shellcheck source=lib/general.sh
 . "$SHELLSPEC_LIB/general.sh"
 
