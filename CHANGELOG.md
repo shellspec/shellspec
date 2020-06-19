@@ -9,13 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Coverage support for zsh and ksh. (#62)
+- **Coverage support for zsh and ksh.** (#62)
 - Support `NO_COLOR` environment variable.
 - Support [busybox-w32](https://frippery.org/busybox/) ash for windows.
-- Added `Assert` expectation to assert side effects of system environment.
+- **Added `Assert` expectation to assert side effects of system environment.**
 - Added `Dump` helper.
 - Added `line` and `word` subject.
 - Added `--log-file` option.
+- **Implement `--xtrace` (`--xtrace-only`) feature.**
 
 ### Changed
 

@@ -36,6 +36,7 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Features](#features)
   - [Supported shells and platforms](#supported-shells-and-platforms)
   - [Requirements](#requirements)
+  - [Changelog / Version history](#changelog--version-history)
 - [Tutorial](#tutorial)
   - [Installation](#installation)
     - [Web installer](#web-installer)
@@ -44,23 +45,25 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Use with Docker](#use-with-docker)
   - [Getting started](#getting-started)
 - [shellspec command](#shellspec-command)
-  - [Usage](#usage)
-  - [Configure default options](#configure-default-options)
-  - [Quick execution](#quick-execution)
-  - [Parallel execution](#parallel-execution)
-  - [Random execution](#random-execution)
-  - [Fail fast](#fail-fast)
-  - [Reporter / Generator](#reporter--generator)
-  - [Ranges / Filters / Focus](#ranges--filters--focus)
-  - [Coverage](#coverage)
-  - [Profiler](#profiler)
-  - [Task runner](#task-runner)
-- [Project directory](#project-directory)
+  - [Usage (`--help`)](#usage---help)
+  - [Configure default options (`.shellspec`)](#configure-default-options-shellspec)
+  - [Quick execution (`--quick`, `--repair`, `--next`)](#quick-execution---quick---repair---next)
+  - [Parallel execution (`--jobs`)](#parallel-execution---jobs)
+  - [Random execution (`--random`)](#random-execution---random)
+  - [Fail fast (`--fail-fast`)](#fail-fast---fail-fast)
+  - [Trace (`--xtrace`, `--xtrace-only`)](#trace---xtrace---xtrace-only)
+  - [Ranges (`:LINENO`, `:@ID`) / Filters (`--example`) / Focus (`--focus`)](#ranges-lineno-id--filters---example--focus---focus)
+  - [Reporter (`--format`) / Generator (`--output`)](#reporter---format--generator---output)
+  - [Coverage (`--kcov`)](#coverage---kcov)
+  - [Profiler (`--profile`)](#profiler---profile)
+  - [Task runner (`--task`)](#task-runner---task)
+- [Special files/directories in the project directory](#special-filesdirectories-in-the-project-directory)
+  - [Typical project directory structure](#typical-project-directory-structure)
   - [.shellspec](#shellspec)
   - [.shellspec-local](#shellspec-local)
   - [.shellspec-quick.log](#shellspec-quicklog)
   - [report/](#report)
-  - [coverage/](#coverage-1)
+  - [coverage/](#coverage)
   - [spec/](#spec)
   - [spec/banner](#specbanner)
   - [spec/spec_helper.sh](#specspec_helpersh)
@@ -73,10 +76,10 @@ BDD style unit testing framework for POSIX compliant shell script.
       - [`Todo` - one liner pending example](#todo---one-liner-pending-example)
     - [`When` - evaluation](#when---evaluation)
       - [`Dump` - dump stdout, stderr and status for debugging](#dump---dump-stdout-stderr-and-status-for-debugging)
-    - [`The`, `Assert` - expectation](#the-assert---expectation)
-      - [Custom assertion](#custom-assertion)
+    - [`The` - expectation](#the---expectation)
+      - [`Assert` - expectation for custom assertion](#assert---expectation-for-custom-assertion)
     - [Subjects, Modifiers and Matchers](#subjects-modifiers-and-matchers)
-      - [Custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
+      - [custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
   - [Helpers](#helpers)
     - [`Skip`, `Pending` - skip and pending example](#skip-pending---skip-and-pending-example)
       - [Temporary skip and pending](#temporary-skip-and-pending)
@@ -90,7 +93,7 @@ BDD style unit testing framework for POSIX compliant shell script.
     - [`BeforeAll`, `AfterAll` - example group hook](#beforeall-afterall---example-group-hook)
     - [`BeforeCall`, `AfterCall` - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
     - [`BeforeRun`, `AfterRun` - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
-  - [Directive](#directive)
+  - [Directives](#directives)
     - [`%const` (`%`) - constant definition](#const----constant-definition)
     - [`%text` - embedded text](#text---embedded-text)
     - [`%puts` (`%-`), `%putsn` (`%=`) - put string](#puts---putsn----put-string)
@@ -103,7 +106,6 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Self-executable specfile](#self-executable-specfile)
   - [Translation process](#translation-process)
 - [For developers](#for-developers)
-- [Version history](#version-history)
 
 ## Introduction
 
@@ -166,6 +168,10 @@ Currently used external (not shell builtins) commands:
 - `ps` (used to autodetect the current shell in environments which do not implement procfs)
 - `ln`, `mv` (used only when generating coverage report)
 - `kill`, `printf` (used but almost shell builtins)
+
+### Changelog / Version history
+
+Recent update information: See [CHANGELOG.md](CHANGELOG.md)
 
 ## Tutorial
 
@@ -433,9 +439,10 @@ $ shellspec
 
 ## shellspec command
 
-### Usage
+### Usage (`--help`)
 
-```
+```console
+$ shellspec --help
 Usage: shellspec [options...] [files or directories...]
 
   Using + instead of - for short options causes reverses the meaning
@@ -457,7 +464,7 @@ Usage: shellspec [options...] [files or directories...]
         --[no-]boost                Increase the CPU frequency to boost up testing speed [default: disabled]
                                       Equivalent of --profile --profile-limit 0
                                       (Don't worry, this is not overclocking. This is joke option but works.)
-        --log-file LOGFILE          Logfile for %logger directive [default: /dev/tty]
+        --log-file LOGFILE          Log file for %logger directive and trace [default: /dev/tty]
         --keep-tempdir              Do not cleanup temporary directory [default: disabled]
 
   **** Execution ****
@@ -474,6 +481,9 @@ Usage: shellspec [options...] [files or directories...]
                                       [none]          run in the defined order [default]
                                       [specfiles]     randomize the order of specfiles
                                       [examples]      randomize the order of examples (slow)
+    -x, --xtrace                    Run examples with trace mode [default: disabled]
+                                      Fall back to trace-only mode if BASH_XTRACEFD is not supported.
+    -X, --xtrace-only               Run examples with trace-only mode [default: disabled]
         --dry-run                   Print the formatter output without running any examples [default: disabled]
 
   **** Output ****
@@ -552,7 +562,7 @@ Usage: shellspec [options...] [files or directories...]
     -h, --help                      -h: short help, --help: long help
 ```
 
-### Configure default options
+### Configure default options (`.shellspec`)
 
 To change the default options for the `shellspec` command, create an options
 file. Files are read in the order shown below, options defined last take
@@ -563,7 +573,7 @@ precedence.
 3. `./.shellspec`
 4. `./.shellspec-local` (Do not store in VCS such as git)
 
-### Quick execution
+### Quick execution (`--quick`, `--repair`, `--next`)
 
 Quick execution is a feature for rapid development and failure fixing.
 
@@ -582,33 +592,33 @@ It is designed to be added to `$HOME/.shellspec` instead of being specified each
 Use `--repair` and `--next` option is for rapid failure fixing.
 It runs failed examples only (not includes temporary pending).
 
-### Parallel execution
+### Parallel execution (`--jobs`)
 
 You can use parallel execution for fast test with `--jobs` option. Parallel
 jobs are executed per specfile. So it is necessary to separate the specfile
 for effective parallel execution.
 
-### Random execution
+### Random execution (`--random`)
 
 You can randomize the execution order to detect troubles due to the test
 execution order. If `SEED` is specified, the execution order is deterministic.
 
-### Fail fast
+### Fail fast (`--fail-fast`)
 
 You can stop on the first (N times) failures with `--fail-fast` option.
 
 NOTE: The reporter that count the number of failures and specfile execution are processed in parallel.
 Therefore, the specfile execution may precede the location where it stopped due to a failure.
 
-### Reporter / Generator
+### Trace (`--xtrace`, `--xtrace-only`)
 
-You can specify one reporter (output to stdout) and multiple generators
-(output to a file). Currently builtin formatters are `progress`,
-`documentation`, `tap`, `junit`, `failures`, `null`, `debug`.
+You can trace with `--xtrace` or `--xtrace-only` option. Only evaluations can be traced.
 
-NOTE: Custom formatter is supported (but not documented yet, sorry).
+If `BASH_XTRACEFD` is implemented in the shell, you can run tests and traces at the same time. Otherwise, run tracing only. The output format can be set with the variable `PS4`.
 
-### Ranges / Filters / Focus
+NOTE: `BASH_XTRACEFD` only available *bash version >= 4.1* or *busybox (ash) version >= 1.28.0*.
+
+### Ranges (`:LINENO`, `:@ID`) / Filters (`--example`) / Focus (`--focus`)
 
 You can run specific example(s) or example group(s) only.
 
@@ -618,7 +628,15 @@ example name (`--example` option), tag (`--tag` option) and focus (`--focus` opt
 To focus, prepend `f` to groups / examples in specfiles (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`)
 and run with `--focus` option.
 
-### Coverage
+### Reporter (`--format`) / Generator (`--output`)
+
+You can specify one reporter (output to stdout) and multiple generators
+(output to a file). Currently builtin formatters are `progress`,
+`documentation`, `tap`, `junit`, `failures`, `null`, `debug`.
+
+NOTE: Custom formatter is supported (but not documented yet, sorry).
+
+### Coverage (`--kcov`)
 
 ShellSpec has integrated coverage feature. To use this feature [Kcov][] (v35 or later) is required.
 
@@ -650,17 +668,17 @@ You can easily integrate with [Coveralls](https://coveralls.io/), [Code Climate]
 
 [Coverage report]: https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html
 
-### Profiler
+### Profiler (`--profile`)
 
 When the `--profile` option is specified, the profiler is enabled and lists the slow examples.
 
-### Task runner
+### Task runner (`--task`)
 
 You can run the task with `--task` option.
 
-## Project directory
+## Special files/directories in the project directory
 
-Typical directory structure.
+### Typical project directory structure
 
 ```
 Project directory
@@ -801,7 +819,8 @@ When call echo hello world
  +-- The evaluation keyword
 ```
 
-There are two types of evaluation, `When call` and `When run`. and `When run` has sub types of `command`, `script` and `source`.
+There are two types of evaluation, `When call` and `When run`. and
+`When run` has sub types of `command`, `script` and `source`.
 
 See more details of [Evaluation](/docs/references.md#evaluation)
 
@@ -812,7 +831,7 @@ When call echo hello world
 Dump # stdout, stderr, status
 ```
 
-#### `The`, `Assert` - expectation
+#### `The` - expectation
 
 Defines the verification. The expectation begins with `The`.
 
@@ -838,6 +857,8 @@ You can use the *modifier* to modify the *subject*.
 The line 2 of output should equal 4
     |
     +-- The `line` modifier use the specified line 2 of output as subject.
+
+NOTE: `of output` can be omitted.
 ```
 
 The *modifier* is chainable.
@@ -865,7 +886,7 @@ The first word of second line of output should valid number
 The first word of the second line of output should valid as a number
 ```
 
-##### Custom assertion
+##### `Assert` - expectation for custom assertion
 
 Use `Assert` for using custom assertion.
 It is designed for verification of side effects, not result of evaluation.
@@ -890,7 +911,7 @@ use the [result](docs/references.md#result) modifier or the [satisfy](docs/refer
 There are many *subjects*, *modifiers*, *matchers*. please refer to the
 [References](docs/references.md)
 
-##### Custom subject, modifier and matcher
+##### custom subject, modifier and matcher
 
 You can create custom subject, custom modifier and custom matcher.
 See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
@@ -1025,7 +1046,7 @@ These hooks are executed in the same subshell as the "run evaluation". So you
 can mock/stub the function before run. And you can access a variable for
 evaluation after run.
 
-### Directive
+### Directives
 
 #### `%const` (`%`) - constant definition
 
@@ -1221,7 +1242,3 @@ use the `--translate` option.
 ## For developers
 
 If you want to know ShellSpec architecture and self test, see [CONTRIBUTING.md](CONTRIBUTING.md)
-
-## Version history
-
-See [Changelog](CHANGELOG.md)
