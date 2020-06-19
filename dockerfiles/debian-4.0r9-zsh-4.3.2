@@ -1,5 +1,6 @@
-FROM lpenz/debian-etch-i386-minbase
+FROM debian/eol:etch-slim
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
+ && sed '/updates/s/^/# /' -i /etc/apt/sources.list \
  && apt-get update && apt-get -y install zsh && touch /home/user/.zshrc
 ENV SH="zsh"

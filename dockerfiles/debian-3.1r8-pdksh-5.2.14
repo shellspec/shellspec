@@ -1,4 +1,4 @@
-FROM lpenz/debian-sarge-i386
+FROM debian/eol:sarge-slim
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN groupadd user && useradd -m user -g user \
  && apt-get update && apt-get -y install pdksh

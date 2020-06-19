@@ -94,7 +94,7 @@ Default shell: `dash` or `bash` (until debian 5.0)
 | **Ubuntu 18.04** | 4.4.20 | 1.27.2     | 0.5.8         | 93u+ 2012-08-01 | R56c | -          | 0.13.1   | 2.46 | 5.4.2  |
 | **Ubuntu 20.04** | 5.0.16 | 1.30.1     | 0.5.10.2      | 2020.0.0        | R58  | -          | 0.13.1   | 2.49 | 5.8    |
 
-- Using [lpenz/docker-debian-releases](https://github.com/lpenz/docker-debian-releases/) for older (7.11 and before) Debian docker images.
+- Use [debian/eol](https://hub.docker.com/r/debian/eol) docker images for older Debian versions.
 - Testing bash 2.03-3.2.39 in both POSIX and non-POSIX mode. bash 4.1.5- is non-POSIX mode only.
 
 #### FreeBSD
