@@ -38,7 +38,7 @@ shellspec_call_hook() {
       ;;
   esac
 
-  eval "SHELLSPEC_HOOK=\$2 && $2 &&:" &&:
+  { eval "SHELLSPEC_HOOK=\$2 && $2 &&:" &&:; } < /dev/null
   SHELLSPEC_HOOK_STATUS=$?
   return $SHELLSPEC_HOOK_STATUS
 }

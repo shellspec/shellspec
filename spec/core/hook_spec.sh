@@ -111,6 +111,22 @@ Describe "core/hook.sh"
     End
   End
 
+  Describe 'shellspec_call_hook()'
+    example_hooks() {
+      shellspec_register_before_hook EXAMPLE cat
+    }
+
+    Data
+      #|dummy data
+    End
+
+    It 'does not consume stdin data.'
+      BeforeCall example_hooks
+      When call shellspec_call_before_hooks EXAMPLE
+      The stdout should be blank
+    End
+  End
+
   Describe 'shellspec_mark_group()'
     Before "shellspec_mark_group 12345"
 
