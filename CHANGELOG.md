@@ -10,20 +10,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Coverage support for zsh and ksh.** (#62)
-- Support `NO_COLOR` environment variable.
+- Respect `NO_COLOR` environment variable.
 - Support [busybox-w32](https://frippery.org/busybox/) ash for windows.
 - **Added `Assert` expectation to assert side effects of system environment.**
-- Added `Dump` helper.
-- Added `line` and `word` subject.
-- Added `--log-file` option.
+- Added `Dump` helper - dump stdout, stderr and status for debugging.
+- Added `line` and `word` subject. (`of stdout (output)` can be omitted now)
+- Added `--log-file` option to specify log file for `%logger` and trace.
 - **Implement `--xtrace` (`--xtrace-only`) feature.**
 
 ### Changed
 
-- Upgrade to alpine 3.12 for docker image and officially release shellspec/kcov docker image.
-- Separate file descriptor for report from stdout to able to use `echo` in specfile.
+- Upgrade to alpine 3.12 for docker image and officially release `shellspec/kcov` docker image.
+- Separate a file descriptor for reporting and stdout to able to use `echo` in specfile.
 - Minor specification change of `result` modifier and `satisfy` matcher.
 - `-r` option is now a short option for `--repair`, not `--require`.
+- Use [debian/eol(https://hub.docker.com/r/debian/eol/) docker images for old debian tests.
+
+### Fixed
+
+- Before/After hooks should not consume stdin data (#82)
 
 ## [0.24.3] - 2020-06-06
 
