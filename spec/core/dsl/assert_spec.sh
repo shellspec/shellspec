@@ -8,4 +8,8 @@ Describe 'Assert'
   Specify "Assert execute custom assertion"
     Assert custom_assertion [ "123" = "123" ]
   End
+
+  It 'does not consume stdin data.'
+    Assert cat
+  End
 End

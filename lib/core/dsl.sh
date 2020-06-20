@@ -347,7 +347,7 @@ shellspec_assert() {
     *) eval "set -- +e ${1+\"\$@\"}" ;;
   esac
   set +e
-  ( set -e; shift; "$@" 2>"$SHELLSPEC_ASSERT_STDERR_FILE" )
+  ( set -e; shift; "$@" </dev/null 2>"$SHELLSPEC_ASSERT_STDERR_FILE" )
   set "$1" -- $?
 
   shellspec_readfile SHELLSPEC_ASSERT_STDERR "$SHELLSPEC_ASSERT_STDERR_FILE"
