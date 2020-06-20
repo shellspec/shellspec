@@ -2,7 +2,7 @@ version: 2
 jobs:
   lint:
     docker:
-      - image: koalaman/shellcheck-alpine:v0.7.0
+      - image: koalaman/shellcheck-alpine:v0.7.1
     steps:
       - checkout
       - run: shellcheck shellspec $(find lib libexec spec sample -name '*.sh')
@@ -27,7 +27,7 @@ jobs:
   coverage:
     working_directory: ~/shellspec
     docker:
-      - image: shellspec/kcov
+      - image: shellspec/shellspec:kcov
     steps:
       - checkout
       - run: ./shellspec --task fixture:stat:prepare
