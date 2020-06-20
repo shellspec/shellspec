@@ -1,4 +1,4 @@
-FROM lpenz/debian-woody-i386
+FROM debian/eol:woody-slim
 RUN groupadd user && useradd -m user -g user \
  && apt-get update && apt-get -y install ash
 ENV SH="ash"
