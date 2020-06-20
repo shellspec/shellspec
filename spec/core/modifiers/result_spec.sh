@@ -9,8 +9,14 @@ Describe "core/modifiers/result.sh"
 
     Example 'example'
       The result of 'foo()' should equal ok
-      The result of 'foo()' should be successful
-      The result of 'bar()' should not be successful
+      #The result of 'foo()' should be successful
+      #The result of 'bar()' should not be successful
+    End
+
+    It "read stdout data from stdin"
+      read_from_stdin() { cat; }
+      When call echo stdout
+      The result of 'read_from_stdin()' should eq "stdout"
     End
 
     Describe 'example with stdout, stderr and status'
@@ -30,6 +36,7 @@ Describe "core/modifiers/result.sh"
     It 'gets stdout and stderr when subject is function that returns success'
       subject() { %- "success_with_output"; }
       success_with_output() { echo stdout; true; }
+      BeforeRun "SHELLSPEC_STDOUT_FILE=/dev/no-such-a-file"
       When run shellspec_modifier_result _modifier_
       The stdout should include stdout
     End

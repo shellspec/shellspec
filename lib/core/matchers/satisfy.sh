@@ -21,7 +21,7 @@ shellspec_matcher_satisfy() {
           unset "$1" ||:
         fi
       fi
-      "$@"
+      shellspec_puts "${SHELLSPEC_SUBJECT:-}" | "$@" >&4
     ) 2>"$SHELLSPEC_SATISFY_STDERR_FILE" &&:
 
     set -- "$?"

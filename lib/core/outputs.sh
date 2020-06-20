@@ -196,7 +196,7 @@ shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
 
 shellspec_output_RESULT_WARN() {
   shellspec_readfile SHELLSPEC_RESULT_ERROR "$2"
-  set -- "Unexpected error output to stderr (exit status: $1)${SHELLSPEC_LF}" \
+  set -- "Unexpected output to stderr in result modifier (exit status: $1)${SHELLSPEC_LF}" \
     "$SHELLSPEC_RESULT_ERROR${SHELLSPEC_LF}"
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
@@ -205,7 +205,7 @@ shellspec_output_RESULT_WARN() {
 
 shellspec_output_SATISFY_WARN() {
   shellspec_readfile SHELLSPEC_SATISFY_WARN "$2"
-  set -- "Unexpected error output to stderr (exit status: $1)${SHELLSPEC_LF}" \
+  set -- "Unexpected output to stderr in satisfy matcher (exit status: $1)${SHELLSPEC_LF}" \
     "$SHELLSPEC_SATISFY_WARN${SHELLSPEC_LF}"
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
