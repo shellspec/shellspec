@@ -27,7 +27,7 @@ jobs:
   coverage:
     working_directory: ~/shellspec
     docker:
-      - image: shellspec/shellspec:kcov
+      - image: shellspec/kcov
     steps:
       - checkout
       - run: ./shellspec --task fixture:stat:prepare
