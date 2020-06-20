@@ -14,15 +14,16 @@ shellspec_matcher_satisfy() {
 
     # shellcheck disable=SC2034
     IFS=" $IFS" && SHELLSPEC_EXPECT="$*" && IFS=${IFS#?}
-    ( if shellspec_is_identifier "$1"; then
+    shellspec_puts "${SHELLSPEC_SUBJECT:-}" | (
+      if shellspec_is_identifier "$1"; then
         if [ "${SHELLSPEC_SUBJECT+x}" ]; then
           eval "$1=\$SHELLSPEC_SUBJECT"
         else
           unset "$1" ||:
         fi
       fi
-      shellspec_puts "${SHELLSPEC_SUBJECT:-}" | "$@" >&4
-    ) 2>"$SHELLSPEC_SATISFY_STDERR_FILE" &&:
+      "$@"
+    ) 2>"$SHELLSPEC_SATISFY_STDERR_FILE" >&4 &&:
 
     set -- "$?"
     if [ -s "$SHELLSPEC_SATISFY_STDERR_FILE" ]; then
