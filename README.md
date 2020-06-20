@@ -27,7 +27,7 @@ BDD style unit testing framework for POSIX compliant shell script.
 [![ksh](https://img.shields.io/badge/ksh-&ge;93s-lightgrey.svg?style=flat)](http://kornshell.org)
 [![mksh](https://img.shields.io/badge/mksh-&ge;28-lightgrey.svg?style=flat)](http://www.mirbsd.org/mksh.htm)
 [![posh](https://img.shields.io/badge/posh-&ge;0.3.14-lightgrey.svg?style=flat)](https://salsa.debian.org/clint/posh)
-[![yash](https://img.shields.io/badge/yash-&ge;2.30-lightgrey.svg?style=flat)](https://yash.osdn.jp/)
+[![yash](https://img.shields.io/badge/yash-&ge;2.29-lightgrey.svg?style=flat)](https://yash.osdn.jp/)
 [![zsh](https://img.shields.io/badge/zsh-&ge;3.1.9-lightgrey.svg?style=flat)](https://www.zsh.org/)
 
 ## Table of Contents <!-- omit in toc -->
