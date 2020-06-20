@@ -467,8 +467,8 @@ if [ ! "$SHELLSPEC_SHELL" ]; then
     for shell in sh bash ksh zsh :; do
       "$shell" -c "trap '' DEBUG" 2>/dev/null && break
     done
-    [ "$shell" = : ] && abort "The current shell not compatible with Kcov."
-    warn "The current shell not compatible with Kcov. Using '$shell' instead."
+    [ "$shell" = : ] && abort "Current shell is not compatible with Kcov."
+    warn "Current shell is not compatible with Kcov. Using '$shell' instead."
   else
     shell=$(current_shell "$0" "$$")
   fi
