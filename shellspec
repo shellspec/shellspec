@@ -12,7 +12,7 @@ if [ "${1:-}" = "-" ]; then
   return 0
 fi
 
-export SHELLSPEC_VERSION='0.25.0-dev'
+export SHELLSPEC_VERSION='0.25.0'
 export SHELLSPEC_PATH=''
 export SHELLSPEC_ROOT=''
 export SHELLSPEC_PROJECT_ROOT=''
