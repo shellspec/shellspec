@@ -614,7 +614,8 @@ Therefore, the specfile execution may precede the location where it stopped due 
 
 You can trace with `--xtrace` or `--xtrace-only` option. Only evaluations can be traced.
 
-If `BASH_XTRACEFD` is implemented in the shell, you can run tests and traces at the same time. Otherwise, run tracing only. The output format can be set with the variable `PS4`.
+If `BASH_XTRACEFD` is implemented in the shell, you can run tests and traces at the same time.
+Otherwise, run tracing only. The output format can be set with the variable `PS4`.
 
 NOTE: `BASH_XTRACEFD` only available *bash version >= 4.1* or *busybox (ash) version >= 1.28.0*.
 
