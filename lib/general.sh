@@ -149,8 +149,8 @@ fi
 # Use shellspec_puts or shellspec_putsn replacement of 'echo'.
 # Those commands output arguments as it. (not interpret -n and escape sequence)
 shellspec_puts() {
-  printf '' && return 0
-  if print -nr -- ''; then
+  [ "$SHELLSPEC_BUILTIN_PRINTF" ] && return 0
+  if [ "$SHELLSPEC_BUILTIN_PRINT" ]; then
     [ "${ZSH_VERSION:-}" ] && return 1 || return 2
   fi
   if [ "${POSH_VERSION:-}" ]; then
@@ -158,13 +158,16 @@ shellspec_puts() {
   fi
   return 9
 }
-# shellcheck disable=SC2030,SC2123
-( PATH=""; shellspec_puts "\\" ) 2>/dev/null &&:
+shellspec_puts "\\" &&:
 case $? in
-  0)
-    # Use built-in 'printf'.
-    shellspec_puts() { IFS=" $IFS"; printf '%s' "${*:-}"; IFS=${IFS#?}; }
-    shellspec_putsn() { IFS=" $IFS"; printf '%s\n' "${*:-}"; IFS=${IFS#?}; }
+  0 | 9)
+    # Use built-in or external 'printf'.
+    shellspec_puts() {
+      IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s' "${*:-}"; IFS=${IFS#?}
+    }
+    shellspec_putsn() {
+      IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s\n' "${*:-}"; IFS=${IFS#?}
+    }
     ;;
   1)
     # zsh 3.1.9, 4.0.4
@@ -199,20 +202,6 @@ case $? in
       builtin echo -n "$2"
     }
     shellspec_putsn() { [ $# -gt 0 ] && shellspec_puts "$@"; builtin echo; }
-    ;;
-  9)
-    # Fallback using external 'printf'. It works even PAHT is empty.
-    shellspec_puts() {
-      # shellcheck disable=SC2031
-      PATH="${PATH:-}:/usr/bin:/bin"
-      IFS=" $IFS"; printf '%s' "$*"; IFS=${IFS#?}
-      PATH=${PATH%:/usr/bin:/bin}
-    }
-    shellspec_putsn() {
-      PATH="${PATH:-}:/usr/bin:/bin"
-      IFS=" $IFS"; printf '%s\n' "$*"; IFS=${IFS#?}
-      PATH=${PATH%:/usr/bin:/bin}
-    }
     ;;
 esac
 

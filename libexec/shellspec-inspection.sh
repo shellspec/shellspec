@@ -80,6 +80,14 @@ esac
 # shellcheck disable=SC2123
 PATH=""
 
+if printf '' 2>/dev/null; then
+  echo "SHELLSPEC_BUILTIN_PRINTF=1"
+fi
+
+if print -nr -- '' 2>/dev/null; then
+  echo "SHELLSPEC_BUILTIN_PRINT=1"
+fi
+
 if type shopt >/dev/null 2>&1; then
   echo "SHELLSPEC_SHOPT_AVAILABLE=1"
   # shellcheck disable=SC2039
