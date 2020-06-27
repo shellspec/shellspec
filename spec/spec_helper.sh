@@ -46,6 +46,10 @@ shellspec_redefinable shellspec_subject
 shellspec_redefinable shellspec_syntax_dispatch
 shellspec_redefinable shellspec_set_long
 shellspec_redefinable shellspec_import
+shellspec_redefinable shellspec_clone
+shellspec_redefinable shellspec_clone_typeset
+shellspec_redefinable shellspec_clone_set
+shellspec_redefinable shellspec_clone_exists_variable
 
 # Workaround for busybox-1.1.3
 shellspec_unbuiltin "ps"

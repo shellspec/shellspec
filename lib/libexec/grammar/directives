@@ -5,3 +5,4 @@
 %= | %putsn  => out putsn
 %- | %puts   => out puts
 %logger      => out logger
+%preserve    => out preserve

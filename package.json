@@ -8,6 +8,7 @@
   "files": [
     "bin/shellspec",
     "lib/bootstrap.sh",
+    "lib/core/clone.sh",
     "lib/core/core.sh",
     "lib/core/dsl.sh",
     "lib/core/evaluation.sh",

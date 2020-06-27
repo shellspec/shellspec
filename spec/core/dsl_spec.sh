@@ -2,6 +2,7 @@
 
 % LIB: "$SHELLSPEC_SPECDIR/fixture/lib"
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
+% TMPBASE: "$SHELLSPEC_TMPBASE"
 
 # This Include do not place inside of Describe. posh fails.
 Include "$SHELLSPEC_LIB/core/dsl.sh"
@@ -1354,6 +1355,17 @@ Describe "core/dsl.sh"
         The line 3 of stdout should eq "[stderr] <unset>"
         The line 4 of stdout should eq "[status] <unset>"
       End
+    End
+  End
+
+  Describe "shellspec_preserve()"
+    shellspec_clone() { echo shellspec_clone "$@"; }
+    BeforeRun 'SHELLSPEC_VARS_FILE=$TMPBASE/vars'
+
+    It 'calls shellspec_clone'
+      Path vars-file="$TMPBASE/vars"
+      When run shellspec_preserve var:var2
+      The contents of file vars-file should eq "shellspec_clone var:var2"
     End
   End
 End
