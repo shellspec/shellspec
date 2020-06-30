@@ -109,11 +109,11 @@ BDD style unit testing framework for POSIX compliant shell script.
 
 ## Introduction
 
-ShellSpec was developed as a cross-platform testing tool for developing
-POSIX-compliant shell scripts that work in many environments.
-It not only works on PC but also in restricted environments like cloud and
-embedded OS. It provides first-class features equivalent to other language
-testing tools. Of course ShellSpec is tested by ShellSpec.
+ShellSpec is a BDD unit testing framework for dash, bash, ksh, zsh and all POSIX shells that provides
+first-class features such as coverage reporting, parallel execution and parameterized testing and more.
+It was developed as a development / test tool for developing cross-platform shell scripts.
+It has been implemented in POSIX-compliant shell script and has been tested in many environments,
+and works not only on PC but also in restricted environments such as cloud and embedded.
 
 ### Features
 
