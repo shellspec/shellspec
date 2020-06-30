@@ -47,7 +47,6 @@ BDD style unit testing framework for POSIX compliant shells.
 - [shellspec command](#shellspec-command)
   - [Usage (`--help`)](#usage---help)
   - [Initialize your project (`--init`)](#initialize-your-project---init)
-    - [Configure default options (`.shellspec`)](#configure-default-options-shellspec)
   - [Specify the shell to run (`--shell`)](#specify-the-shell-to-run---shell)
   - [Quick execution (`--quick`, `--repair`, `--next`)](#quick-execution---quick---repair---next)
   - [Parallel execution (`--jobs`)](#parallel-execution---jobs)
@@ -61,15 +60,14 @@ BDD style unit testing framework for POSIX compliant shells.
   - [Task runner (`--task`)](#task-runner---task)
 - [Special files/directories in the project directory](#special-filesdirectories-in-the-project-directory)
   - [Typical project directory structure](#typical-project-directory-structure)
-  - [.shellspec](#shellspec)
-  - [.shellspec-local](#shellspec-local)
-  - [.shellspec-quick.log](#shellspec-quicklog)
-  - [report/](#report)
-  - [coverage/](#coverage)
-  - [spec/](#spec)
-  - [spec/banner](#specbanner)
-  - [spec/spec_helper.sh](#specspec_helpersh)
-  - [spec/support/](#specsupport)
+  - [`.shellspec` / `.shellspec-local` - configure default options](#shellspec--shellspec-local---configure-default-options)
+  - [`.shellspec-quick.log` - log file for quick execution](#shellspec-quicklog---log-file-for-quick-execution)
+  - [`report/` - output directory of report file](#report---output-directory-of-report-file)
+  - [`coverage/` - output directory of coverage reports](#coverage---output-directory-of-coverage-reports)
+  - [`spec/` - default specfiles directory](#spec---default-specfiles-directory)
+  - [`spec/banner` - banner file displayed at test execution](#specbanner---banner-file-displayed-at-test-execution)
+  - [`spec/spec_helper.sh` - default helper file for specfile](#specspec_helpersh---default-helper-file-for-specfile)
+  - [`spec/support/` - directory for support files for specfile](#specsupport---directory-for-support-files-for-specfile)
 - [Specfile](#specfile)
   - [Example](#example)
   - [Basic structure](#basic-structure)
@@ -570,17 +568,6 @@ Usage: shellspec [options...] [files or directories...]
 Run `shellspec --init` initializes the current directory for ShellSpec.
 It creates `.shellspec` and `spec/spec_helper.sh`
 
-#### Configure default options (`.shellspec`)
-
-To change the default options for the `shellspec` command, create an options
-file. Files are read in the order shown below, options defined last take
-precedence.
-
-1. `$XDG_CONFIG_HOME/shellspec/options`
-2. `$HOME/.shellspec`
-3. `./.shellspec`
-4. `./.shellspec-local` (Do not store in VCS such as git)
-
 ### Specify the shell to run (`--shell`)
 
 Specify the shell to run with `--shell` option.
@@ -728,42 +715,46 @@ Project directory
 │                  :
 ```
 
-### .shellspec
+### `.shellspec` / `.shellspec-local` - configure default options
 
-Project default options for `shellspec` command.
+To change the default options for the `shellspec` command, create options file(s).
+Files are read in the order shown below, options defined last take precedence.
 
-### .shellspec-local
+1. `$XDG_CONFIG_HOME/shellspec/options`
+2. `$HOME/.shellspec`
+3. `./.shellspec`
+4. `./.shellspec-local` (Do not store in VCS such as git)
 
-Override the project default options to your favorite.
+Specify your default options with `$XDG_CONFIG_HOME/shellspec/options` or `$HOME/.shellspec`.
+Specify default project options with `.shellspec` and overwrite to your favorites with `.shellspec-local`.
 
-### .shellspec-quick.log
+### `.shellspec-quick.log` - log file for quick execution
 
 Log file used for Quick execution.
 
-### report/
+### `report/` - output directory of report file
 
-Directory where the generator outputs reports.
+Directory for report output using the `--output` option.
 
-### coverage/
+### `coverage/` - output directory of coverage reports
 
 Directory where kcov outputs coverage reports.
 
-### spec/
+### `spec/` - default specfiles directory
 
 Directory where you create specfiles.
 
-### spec/banner
+### `spec/banner` - banner file displayed at test execution
 
 If `spec/banner` file exists, the banner is shown when the `shellspec` command
 is executed. Disable that behavior with the `--no-banner` option.
 
-### spec/spec_helper.sh
+### `spec/spec_helper.sh` - default helper file for specfile
 
-The *spec_helper.sh* loaded by the `--require spec_helper` option.
-This file is used to define global functions, prepare for running examples,
-to define custom matchers, etc.
+The `spec_helper.sh` is loaded to specfile by the `--require spec_helper` option.
+This file is used to define global functions, initial setting for examples, custom matchers, etc.
 
-### spec/support/
+### `spec/support/` - directory for support files for specfile
 
 This directory is used to store files for custom matchers, tasks, etc.
 
