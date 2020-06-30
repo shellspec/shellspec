@@ -1,6 +1,6 @@
 # ShellSpec
 
-BDD style unit testing framework for POSIX compliant shell script.
+BDD style unit testing framework for POSIX compliant shells.
 
 **Let’s test your shell script!** (Try the **[Online Demo](https://shellspec.info/demo)** on the browser).
 
@@ -46,7 +46,9 @@ BDD style unit testing framework for POSIX compliant shell script.
   - [Getting started](#getting-started)
 - [shellspec command](#shellspec-command)
   - [Usage (`--help`)](#usage---help)
-  - [Configure default options (`.shellspec`)](#configure-default-options-shellspec)
+  - [Initialize your project (`--init`)](#initialize-your-project---init)
+    - [Configure default options (`.shellspec`)](#configure-default-options-shellspec)
+  - [Specify the shell to run (`--shell`)](#specify-the-shell-to-run---shell)
   - [Quick execution (`--quick`, `--repair`, `--next`)](#quick-execution---quick---repair---next)
   - [Parallel execution (`--jobs`)](#parallel-execution---jobs)
   - [Random execution (`--random`)](#random-execution---random)
@@ -112,29 +114,30 @@ BDD style unit testing framework for POSIX compliant shell script.
 ShellSpec is a BDD unit testing framework for dash, bash, ksh, zsh and all POSIX shells that provides
 first-class features such as coverage reporting, parallel execution and parameterized testing and more.
 It was developed as a development / test tool for developing cross-platform shell scripts.
-It has been implemented in POSIX-compliant shell script and has been tested in many environments,
+It has been implemented in POSIX compliant shell script and has been tested in many environments,
 and works not only on PC but also in restricted environments such as cloud and embedded.
 
 ### Features
 
 - Works with all POSIX compliant shells (dash, bash, zsh, ksh, busybox, etc...)
-- Implemented by shell scripts with minimal dependencies (use only a few basic POSIX-compliant commands)
-- BDD style specfile interpretable as a shell script
-- Supports nestable blocks with scope like lexical scope
+- Minimal dependencies (use only a few basic POSIX-compliant commands)
+- BDD style specfile compatible with shell script syntax (can mix shell scripts)
+- Structured test using nestable blocks with scoped (isolation between tests)
 - Easy to mock and stub in cooperation with scope
 - Skip / pending of the examples, and support of easy-to-skip "x" known as "xit"
-- Hooks before / after examples
+- Before / After and BeforeAll / BeforeAll hooks
 - Parameterized examples for Data-Driven tests
 - Execution filtering by line number, id, focus, tag and example name
-- Quick execution to run only not-passed examples the last time they ran
+- Quick execution to run examples that not-passed (or failed) the last time it ran
+- Execution with trace output for debugging
 - Parallel execution, random ordered execution and dry-run execution
 - Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
 - Coverage ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
-- Friendly with Docker and CI
-- Builtin simple task runner
-- Extensible architecture (custom matcher, custom formatter, etc...)
+- Friendly with CI and provides Docker images with ShellSpec pre-installed
+- Built-in project directory generator and simple task runner
+- Extensible architecture (custom assertion, custom matcher, etc...)
 
-Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer
+Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
 
 ### Supported shells and platforms
 
@@ -562,7 +565,12 @@ Usage: shellspec [options...] [files or directories...]
     -h, --help                      -h: short help, --help: long help
 ```
 
-### Configure default options (`.shellspec`)
+### Initialize your project (`--init`)
+
+Run `shellspec --init` initializes the current directory for ShellSpec.
+It creates `.shellspec` and `spec/spec_helper.sh`
+
+#### Configure default options (`.shellspec`)
 
 To change the default options for the `shellspec` command, create an options
 file. Files are read in the order shown below, options defined last take
@@ -572,6 +580,12 @@ precedence.
 2. `$HOME/.shellspec`
 3. `./.shellspec`
 4. `./.shellspec-local` (Do not store in VCS such as git)
+
+### Specify the shell to run (`--shell`)
+
+Specify the shell to run with `--shell` option.
+ShellSpec ignores shebang and runs the shell script in the specified shell.
+The default is the shell running the `shellspec` (usually `/bin/sh`).
 
 ### Quick execution (`--quick`, `--repair`, `--next`)
 
