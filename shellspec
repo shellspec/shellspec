@@ -214,9 +214,10 @@ Usage: shellspec [options...] [files or directories...]
                                       [none]          run in the defined order [default]
                                       [specfiles]     randomize the order of specfiles
                                       [examples]      randomize the order of examples (slow)
-    -x, --xtrace                    Run examples with trace mode [default: disabled]
-                                      Fall back to trace-only mode if BASH_XTRACEFD is not supported.
-    -X, --xtrace-only               Run examples with trace-only mode [default: disabled]
+    -x, --xtrace                    Run examples with trace output of evaluation enabled [default: disabled]
+                                      Fall back to --xtrace-only if BASH_XTRACEFD not supported.
+    -X, --xtrace-only               Run examples with trace output only enabled [default: disabled]
+                                      The evaluation is executed, but the expectations are skipped.
         --dry-run                   Print the formatter output without running any examples [default: disabled]
 
   **** Output ****

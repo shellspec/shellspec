@@ -482,9 +482,10 @@ Usage: shellspec [options...] [files or directories...]
                                       [none]          run in the defined order [default]
                                       [specfiles]     randomize the order of specfiles
                                       [examples]      randomize the order of examples (slow)
-    -x, --xtrace                    Run examples with trace mode [default: disabled]
-                                      Fall back to trace-only mode if BASH_XTRACEFD is not supported.
-    -X, --xtrace-only               Run examples with trace-only mode [default: disabled]
+    -x, --xtrace                    Run examples with trace output of evaluation enabled [default: disabled]
+                                      Fall back to --xtrace-only if BASH_XTRACEFD not supported.
+    -X, --xtrace-only               Run examples with trace output only enabled [default: disabled]
+                                      The evaluation is executed, but the expectations are skipped.
         --dry-run                   Print the formatter output without running any examples [default: disabled]
 
   **** Output ****
@@ -613,7 +614,7 @@ Therefore, the specfile execution may precede the location where it stopped due 
 
 ### Trace (`--xtrace`, `--xtrace-only`)
 
-You can trace with `--xtrace` or `--xtrace-only` option. Only evaluations can be traced.
+You can trace evaluation with `--xtrace` or `--xtrace-only` option.
 
 If `BASH_XTRACEFD` is implemented in the shell, you can run tests and traces at the same time.
 Otherwise, run tracing only. The output format can be set with the variable `PS4`.
