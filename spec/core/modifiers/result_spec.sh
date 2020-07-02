@@ -9,8 +9,8 @@ Describe "core/modifiers/result.sh"
 
     Example 'example'
       The result of 'foo()' should equal ok
-      #The result of 'foo()' should be successful
-      #The result of 'bar()' should not be successful
+      The result of 'foo()' should be successful
+      The result of 'bar()' should not be successful
     End
 
     It "read stdout data from stdin"

@@ -29,9 +29,9 @@ shellspec_modifier_result() {
 shellspec_modifier_result_invoke() {
   set -- "${SHELLSPEC_STDOUT:-}" "${SHELLSPEC_STDERR:-}" "${SHELLSPEC_STATUS:-}"
   if [ -e "$SHELLSPEC_STDOUT_FILE" ]; then
-    ( "$SHELLSPEC_SUBJECT" "$@" < "$SHELLSPEC_STDOUT_FILE" ) &&:
+    ( "$SHELLSPEC_SUBJECT" "$@" < "$SHELLSPEC_STDOUT_FILE" )
   else
-    ( "$SHELLSPEC_SUBJECT" "$@" < /dev/null ) &&:
+    ( "$SHELLSPEC_SUBJECT" "$@" < /dev/null )
   fi >"$SHELLSPEC_RESULT_STDOUT_FILE" 2>"$SHELLSPEC_RESULT_STDERR_FILE" &&:
   set -- "$?"
   [ -s "$SHELLSPEC_RESULT_STDERR_FILE" ] || return "$1"
