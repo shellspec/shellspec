@@ -8,6 +8,7 @@
   - [Evaluation](#evaluation)
     - [`When call`](#when-call)
     - [`When run`](#when-run)
+      - [about calling shell function with run](#about-calling-shell-function-with-run)
     - [`When run command`](#when-run-command)
     - [`When run script`](#when-run-script)
     - [`When run source`](#when-run-source)
@@ -98,6 +99,7 @@
   - [`%const` (`%`)](#const-)
   - [`%text`](#text)
   - [`%puts` (`%-`) / `%putsn` (`%=`)](#puts----putsn-)
+  - [%preserve](#preserve)
   - [`%logger`](#logger)
 - [Special environment Variables](#special-environment-variables)
 
@@ -145,11 +147,31 @@ The line beginning with `When` is the evaluation.
 When call <FUNCTION> [ARGUMENTS...]
 ```
 
+This is primarily designed for shell function calls. It is the recommended evaluation as a unit test.
+It does not use a subshell, therefore most fast and and you can assert variables.
+
 #### `When run`
 
 ```sh
 When run <FUNCTION | COMMAND> [ARGUMENTS...]
 ```
+
+This is primarily designed for external command calls.
+The external command does not have to be a shell script.
+Even shell scripts are processed as external commands (respect shebang), so it not covered by coverage.
+
+##### about calling shell function with run
+
+If a shell function is specified, it will be executed in a subshell. The slight advantage of
+executing shell functions with `run` is that you can trap errors with `set -e`.
+Unlike `call`, it does not cause an error, so you can use assert the exit status.
+
+Also, Because executed in in the subshell, the variable changed is restored.
+This is often a disadvantage, but ShellSpec's itself tests intentionally use `run`
+because changing internal variables confuse ShellSpec behavior.
+
+If you want to assert variables with `run`, use the `%preserve` directive in function called by `AfterRun` hook.
+It can preserve variables even if it exits the subshell.
 
 #### `When run command`
 
@@ -157,17 +179,30 @@ When run <FUNCTION | COMMAND> [ARGUMENTS...]
 When run command <COMMAND> [ARGUMENTS...]
 ```
 
+Run an external command explicitly.
+The external command does not have to be a shell script.
+Even shell scripts are processed as external commands (respect shebang), so it not covered by coverage.
+
 #### `When run script`
 
 ```sh
 When run script <SCRIPT> [ARGUMENTS...]
 ```
 
+Run the external shell script in the same shell as the currently running shell.
+
 #### `When run source`
 
 ```sh
 When run source <SCRIPT> [ARGUMENTS...]
 ```
+
+This is similar to the `run script`, but simulate the running of shell
+script with `.` command instead of running directly.
+
+The advantage over `run script` is that you can use `Intercept` to intercept
+at any point in the external shell script.
+This is useful for preparation testing and mocking with shell functions.
 
 #### Comparison
 
@@ -788,9 +823,17 @@ You can refer to variables defined with %const.
 
 ### `%const` (`%`)
 
+```sh
+% <VERNAME>: "<VALUE>"
+```
+
 ### `%text`
 
 ### `%puts` (`%-`) / `%putsn` (`%=`)
+
+### %preserve
+
+Use this with the `When run` evaluation.
 
 ### `%logger`
 

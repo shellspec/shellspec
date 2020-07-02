@@ -97,6 +97,7 @@ BDD style unit testing framework for POSIX compliant shells.
     - [`%const` (`%`) - constant definition](#const----constant-definition)
     - [`%text` - embedded text](#text---embedded-text)
     - [`%puts` (`%-`), `%putsn` (`%=`) - put string](#puts---putsn----put-string)
+    - [`%preserve` - preserve variables](#preserve---preserve-variables)
     - [`%logger` - debug output](#logger---debug-output)
     - [`%data` - parameter](#data---parameter)
   - [Mock and Stub](#mock-and-stub)
@@ -764,7 +765,7 @@ This directory is used to store files for custom matchers, tasks, etc.
 ### Example
 
 **The best place to learn how to write a specfile is the
-[sample/spec](/sample/spec) directory. You should take a look at it !**
+[sample/spec](sample/spec) directory. You should take a look at it !**
 *(Those samples include failure examples on purpose.)*
 
 ```sh
@@ -829,7 +830,7 @@ When call echo hello world
 There are two types of evaluation, `When call` and `When run`. and
 `When run` has sub types of `command`, `script` and `source`.
 
-See more details of [Evaluation](/docs/references.md#evaluation)
+See more details of [Evaluation](docs/references.md#evaluation)
 
 ##### `Dump` - dump stdout, stderr and status for debugging
 
@@ -993,7 +994,7 @@ End
 
 You can also use a file, function, or string as data sources.
 
-See more details of [Data](/docs/references.md##data)
+See more details of [Data](docs/references.md##data)
 
 #### `Parameters` - parameterized example
 
@@ -1020,7 +1021,7 @@ The following four styles are supported.
 - matrix style
 - dynamic style
 
-See more details of [Parameters](/docs/references.md##parameters)
+See more details of [Parameters](docs/references.md##parameters)
 
 NOTE: You can also be used with the `Data:expand` helper.
 
@@ -1087,7 +1088,16 @@ Describe '%text directive'
       echo "end" # you can write code here
     }
 
+    result() { %text
+      #|start
+      #|aaa
+      #|bbb
+      #|ccc
+      #|end
+    }
+
     When call output
+    The output should eq "$(result)"
     The line 3 of output should eq 'bbb'
   End
 End
@@ -1099,6 +1109,29 @@ End
 of (not portable) echo. Unlike echo, it does not interpret escape sequences
 regardless of the shell. `%-` is an alias of `%puts`, `%=` is an alias of
 `%putsn`.
+
+#### `%preserve` - preserve variables
+
+Use `%preserve` directive to preserve the variables with `When run`.
+
+`When run` runs in a subshell so variables are not kept by default.
+Therefore, You need to explicitly specify the variables to preserve.
+Not needed with `When call` evaluation.
+
+```sh
+Describe '%preserve directive'
+  It 'preserves variables'
+    func() { foo=1; bar=2; baz=3; }
+    preserve() { %preserve bar baz:BAZ; }
+    AfterRun preserve
+
+    When run func
+    The variable foo should eq 1 # This will be failure
+    The variable bar should eq 2 # This will be success
+    The variable BAZ should eq 3 # Preserved to different variable (baz:BAZ)
+  End
+End
+```
 
 #### `%logger` - debug output
 
