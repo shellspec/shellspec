@@ -66,6 +66,9 @@ trans_evaluation() {
   putsn "else shellspec_invoke_data \"\$@\""
   putsn "fi"
   putsn "shellspec_statement $1 $2"
+  putsn "if [ -e \"\$SHELLSPEC_VARS_FILE\" ]; then"
+  putsn "  . \"\$SHELLSPEC_VARS_FILE\""
+  putsn "fi"
 }
 
 trans_expectation() {
@@ -129,6 +132,7 @@ trans_out() {
     putsn)  putsn "shellspec_putsn $2" ;;
     puts)   putsn "shellspec_puts $2" ;;
     logger) putsn "shellspec_logger $2" ;;
+    preserve) putsn "shellspec_preserve $2" ;;
   esac
 }
 

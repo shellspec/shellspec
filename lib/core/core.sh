@@ -3,6 +3,7 @@
 # shellspec core modules
 #   Core modules uses shell language and built-in command only.
 
+shellspec_import "core/clone"
 shellspec_import "core/utils"
 shellspec_import "core/switch"
 shellspec_import "core/output"

@@ -58,6 +58,26 @@ if [ "$sete" = "${sete%e*}" ]; then
 fi
 set -e
 
+SHELLSPEC_CLONE_TYPE="posix"
+# shellcheck disable=SC2039
+if typeset >/dev/null 2>&1; then
+  # shellcheck disable=SC2034
+  set -- "$(var=data; typeset -p var 2>/dev/null ||:)"
+  if [ ! "${1#*data}" = "$1" ]; then
+    [ "${BASH_VERSION:-}" ] && SHELLSPEC_CLONE_TYPE=bash
+    [ "${ZSH_VERSION:-}" ] && SHELLSPEC_CLONE_TYPE=zsh
+    [ "${YASH_VERSION:-}" ] && SHELLSPEC_CLONE_TYPE=yash
+    [ "${KSH_VERSION:-}" ] && SHELLSPEC_CLONE_TYPE=ksh
+  elif [ "${ZSH_VERSION:-}" ]; then
+    SHELLSPEC_CLONE_TYPE=old_zsh
+  elif typeset -r .sh >/dev/null 2>&1; then
+    SHELLSPEC_CLONE_TYPE=old_ksh
+  else
+    SHELLSPEC_CLONE_TYPE=old_pdksh
+  fi
+fi
+echo "SHELLSPEC_CLONE_TYPE=$SHELLSPEC_CLONE_TYPE"
+
 if (: >/dev/tty && : </dev/tty) 2>/dev/null; then
   echo "SHELLSPEC_TTY=1"
 fi

@@ -146,6 +146,7 @@ shellspec_example() {
   SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
   SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
   SHELLSPEC_XTRACE_FILE="$SHELLSPEC_STDIO_FILE_BASE.trace"
+  SHELLSPEC_VARS_FILE="$SHELLSPEC_STDIO_FILE_BASE.vars"
 
   [ "$SHELLSPEC_ENABLED" ] || return 0
   [ "$SHELLSPEC_FILTER" ] || return 0
@@ -495,4 +496,10 @@ shellspec_dump() {
   IFS="${SHELLSPEC_LF}${IFS}"
   shellspec_putsn "$*"
   IFS=${IFS#?}
+}
+
+shellspec_preserve() {
+  if [ $# -gt 0 ]; then
+    shellspec_clone "$@" >> "$SHELLSPEC_VARS_FILE"
+  fi
 }

@@ -35,51 +35,54 @@ Describe "core/syntax.sh"
   End
 
   Describe "shellspec_syntax_chain()"
+    BeforeRun 'SHELLSPEC_SYNTAXES=":syntax:"'
+
     check() {
       shellspec_syntax_dispatch() { echo "$@"; }
-      echo "$SHELLSPEC_SYNTAXES"
       shellspec_matcher_foo a b c
+      %preserve SHELLSPEC_SYNTAXES:syntaxes
     }
+    AfterRun check
+
     It "adds new chain"
-      BeforeRun 'SHELLSPEC_SYNTAXES=":syntax:"'
-      AfterRun check
       When run shellspec_syntax_chain shellspec_matcher_foo
-      The line 1 of stdout should eq ":syntax:shellspec_matcher_foo:"
-      The line 2 of stdout should eq "matcher_foo a b c"
+      The stdout should eq "matcher_foo a b c"
+      The variable syntaxes should eq ":syntax:shellspec_matcher_foo:"
     End
   End
 
   Describe "shellspec_syntax_compound()"
+    BeforeRun 'SHELLSPEC_SYNTAXES=":syntax:"' 'SHELLSPEC_COMPOUNDS=":compund:"'
+
     check() {
       shellspec_syntax_dispatch() { echo "$@"; }
-      echo "$SHELLSPEC_SYNTAXES"
-      echo "$SHELLSPEC_COMPOUNDS"
       shellspec_matcher_foo a b c
+      %preserve SHELLSPEC_SYNTAXES:syntaxes SHELLSPEC_COMPOUNDS:compounds
     }
+    AfterRun check
+
     It "adds new compound"
-      BeforeRun 'SHELLSPEC_SYNTAXES=":syntax:"'
-      BeforeRun 'SHELLSPEC_COMPOUNDS=":compund:"'
-      AfterRun check
       When run shellspec_syntax_compound shellspec_matcher_foo
-      The line 1 of stdout should eq ":syntax:shellspec_matcher_foo:"
-      The line 2 of stdout should eq ":compund:shellspec_matcher_foo:"
-      The line 3 of stdout should eq "matcher_foo a b c"
+      The stdout should eq "matcher_foo a b c"
+      The variable syntaxes should eq ":syntax:shellspec_matcher_foo:"
+      The variable compounds should eq ":compund:shellspec_matcher_foo:"
     End
   End
 
   Describe "shellspec_syntax_alias()"
+    BeforeRun 'SHELLSPEC_SYNTAXES=":syntax:"' 'shellspec_syntax syntax_foo'
+
     check() {
       syntax_foo() { echo "foo" "$@"; }
-      echo "$SHELLSPEC_SYNTAXES"
       syntax_bar a b c
+      %preserve SHELLSPEC_SYNTAXES:syntaxes
     }
+    AfterRun check
+
     It "adds new alias"
-      BeforeRun 'SHELLSPEC_SYNTAXES=":syntax:"'
-      BeforeRun 'shellspec_syntax syntax_foo'
-      AfterRun check
       When run shellspec_syntax_alias syntax_bar syntax_foo
-      The line 1 of stdout should eq ":syntax:syntax_foo:syntax_bar:"
-      The line 2 of stdout should eq "foo a b c"
+      The variable syntaxes should eq ":syntax:syntax_foo:syntax_bar:"
+      The stdout should eq "foo a b c"
     End
   End
 
