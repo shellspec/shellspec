@@ -2,4 +2,4 @@ FROM shellspec/openwrt:18.06.8
 RUN mkdir /var/lock /home \
  && opkg update && opkg install shadow-useradd \
  && useradd -m user
-ENV SH="sh"
+ENV SH=/bin/sh

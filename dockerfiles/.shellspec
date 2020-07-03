@@ -10,7 +10,7 @@ RUN chmod ug+s /usr/local/bin/su-exec \
  && if [ "$KCOV" ]; then echo "--kcov" >> /home/user/.shellspec; fi \
  && ln -s /shellspec/shellspec /usr/local/bin/shellspec \
  && echo "$SH" > /etc/invokesh.conf \
- && [ "$SH" = "sh" ] || ln -snf /usr/local/bin/invokesh /bin/sh
+ && [ "$SH" = "/bin/sh" ] || ln -snf /usr/local/bin/invokesh /bin/sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "shellspec" ]

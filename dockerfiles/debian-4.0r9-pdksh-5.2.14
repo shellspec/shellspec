@@ -3,4 +3,4 @@ ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
  && sed '/updates/s/^/# /' -i /etc/apt/sources.list \
  && apt-get update && apt-get -y install pdksh
-ENV SH="pdksh"
+ENV SH=/bin/pdksh

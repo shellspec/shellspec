@@ -1,4 +1,4 @@
 FROM debian/eol:sarge-slim
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN groupadd user && useradd -m user -g user
-ENV SH="sh"
+ENV SH=/bin/sh

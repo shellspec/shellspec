@@ -2,4 +2,4 @@ FROM debian:bullseye-slim
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
  && apt-get update && apt-get -y install ksh
-ENV SH="ksh"
+ENV SH=/bin/ksh

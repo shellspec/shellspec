@@ -2,4 +2,4 @@ FROM debian:9.12-slim
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
  && apt-get update && apt-get -y install mksh
-ENV SH="mksh"
+ENV SH=/bin/mksh

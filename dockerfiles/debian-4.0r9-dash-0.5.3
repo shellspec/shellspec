@@ -3,4 +3,4 @@ ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
  && sed '/updates/s/^/# /' -i /etc/apt/sources.list \
  && apt-get update && apt-get -y install dash
-ENV SH="dash"
+ENV SH=/bin/dash

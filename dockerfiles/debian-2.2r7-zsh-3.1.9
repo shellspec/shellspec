@@ -1,4 +1,4 @@
 FROM debian/eol:potato-slim
 RUN groupadd user && useradd -m user -g user \
  && apt-get update && apt-get -y install zsh
-ENV SH="zsh"
+ENV SH=/usr/bin/zsh

@@ -4,4 +4,4 @@ RUN useradd -m user \
  && sed '/updates/s/^/# /' -i /etc/apt/sources.list \
  && apt-get update && apt-get -y install busybox \
  && /bin/busybox --install -s
-ENV SH="ash"
+ENV SH=/bin/ash

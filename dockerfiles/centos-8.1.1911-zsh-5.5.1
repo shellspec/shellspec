@@ -1,4 +1,4 @@
 FROM centos:8.1.1911
 RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
 RUN useradd -m user && yum -y install zsh
-ENV SH="zsh"
+ENV SH=/usr/bin/zsh

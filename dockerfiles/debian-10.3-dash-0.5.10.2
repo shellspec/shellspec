@@ -1,4 +1,4 @@
 FROM debian:10.3-slim
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user
-ENV SH="dash"
+ENV SH=/bin/dash
