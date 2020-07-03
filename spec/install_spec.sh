@@ -4,27 +4,19 @@
 % FIXTURE: "$SHELLSPEC_SPECDIR/fixture/install"
 % TMPBASE: "$SHELLSPEC_TMPBASE/install"
 
-Describe "source ./install.sh"
-  Intercept parse_option main
-
-  __parse_option__() {
-    trap - EXIT
-  }
-
-  __main__() {
-    exit 0
-  }
+Describe "script ./install.sh"
+  Skip if "readonly malfunction" readonly_malfunction
 
   BeforeRun "HOME=$SHELLSPEC_TMPBASE/dummy_home"
 
   It 'outputs usage'
-    When run source ./install.sh --help
+    When run script ./install.sh --help
     The status should be success
     The output should be present
   End
 
   It "exits with an error when specified invalid option"
-    When run source ./install.sh --invalid
+    When run script ./install.sh --invalid
     The status should be failure
     The error should be present
   End

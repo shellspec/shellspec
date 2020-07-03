@@ -9,8 +9,8 @@ readonly archive="https://github.com/shellspec/shellspec/archive"
 readonly project="shellspec"
 readonly exec="shellspec"
 
-{ set -eu; eval "usage() { echo \"$(cat)\"; }"; } << USAGE
-Usage: [sudo] ./${0##*/} [VERSION] [OPTIONS...]
+set -eu && :<<'USAGE'
+Usage: [sudo] ${0##*/} [VERSION] [OPTIONS...]
   or : wget -O- $installer | [sudo] sh
   or : wget -O- $installer | [sudo] sh -s -- [OPTIONS...]
   or : wget -O- $installer | [sudo] sh -s VERSION [OPTIONS...]
@@ -28,7 +28,7 @@ VERSION:
     .               Install from local directory
 
 OPTIONS:
-  -p, --prefix PREFIX   Specify prefix                 [default: \\\$HOME/.local]
+  -p, --prefix PREFIX   Specify prefix                 [default: \$HOME/.local]
   -b, --bin BIN         Specify bin directory          [default: <PREFIX>/bin]
   -d, --dir DIR         Specify installation directory [default: <PREFIX>/lib/$project]
   -s, --switch          Switch version (requires installed via git)
@@ -38,6 +38,12 @@ OPTIONS:
   -y, --yes             Automatic yes to prompts
   -h, --help            You're looking at it
 USAGE
+
+usage() {
+  while IFS= read -r line && [ ! "${line#*:}" = "<<'$1'" ]; do :; done
+  while IFS= read -r line && [ ! "$line" = "$1" ]; do set "$@" "$line"; done
+  shift && [ $# -eq 0 ] || printf '%s\n' "cat<<$line" "$@" "$line"
+}
 
 CDPATH=''
 [ "${ZSH_VERSION:-}" ] && setopt shwordsplit
@@ -181,7 +187,7 @@ while [ $# -gt 0 ]; do
                     case $2 in ( curl | wget ) FETCH=$2 && shift ;;
                       *) abort "FETCH must be 'curl' or 'wget'."
                     esac ;;
-    -h | --help   ) usage && finish ;;
+    -h | --help   ) eval "$(usage "USAGE" < "$0")" && finish ;;
     -*            ) abort "Unknown option $1" ;;
     *             ) VERSION=$1 ;;
   esac

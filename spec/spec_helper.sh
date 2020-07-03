@@ -137,6 +137,7 @@ shellspec_spec_helper_configure() {
     [ "${1#"$2"}" = "a*b" ] && return 1 || return 0
   }
 
+  readonly_malfunction() { [ "$SHELLSPEC_DEFECT_READONLY" ]; }
   posh_shell_flag_bug() { [ "$SHELLSPEC_DEFECT_SHELLFLAG" ]; }
   not_exist_failglob() { [ ! "$SHELLSPEC_FAILGLOB_AVAILABLE" ]; }
   busybox_w32() { [ "$SHELLSPEC_BUSYBOX_W32" ]; }
