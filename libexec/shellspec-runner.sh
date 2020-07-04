@@ -4,6 +4,7 @@
 set -eu
 
 export SHELLSPEC_PROFILER_SIGNAL="$SHELLSPEC_TMPBASE/profiler.signal"
+SHELLSPEC_PATH=${SHELLSPEC_PATH:-$PATH}
 
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
