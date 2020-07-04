@@ -13,7 +13,7 @@ if [ "${1:-}" = "-" ]; then
 fi
 
 export SHELLSPEC_VERSION='0.26.0-dev'
-export SHELLSPEC_PATH=''
+export SHELLSPEC_SELF=''
 export SHELLSPEC_ROOT=''
 export SHELLSPEC_PROJECT_ROOT=''
 export SHELLSPEC_PROJECT_NAME=''
@@ -133,12 +133,12 @@ self=$0
 [ "${BASH_SOURCE:-}" ] && eval "self=\${BASH_SOURCE[0]}"
 ( eval "[ \"\${.sh.file:-}\" ]" ) 2>/dev/null && eval "self=\${.sh.file}"
 
-if ! SHELLSPEC_PATH=$(readlinkf "$self"); then
+if ! SHELLSPEC_SELF=$(readlinkf "$self"); then
  echo "Failed to detect shellspec real path." >&2
  exit 1
 fi
 
-SHELLSPEC_ROOT="${SHELLSPEC_PATH%/*}"
+SHELLSPEC_ROOT="${SHELLSPEC_SELF%/*}"
 SHELLSPEC_LIB="$SHELLSPEC_ROOT/lib"
 SHELLSPEC_REPORTERLIB="$SHELLSPEC_LIB/libexec/reporter"
 
