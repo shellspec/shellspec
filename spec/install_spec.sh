@@ -115,13 +115,11 @@ Describe "./install.sh"
   Describe "fetch()"
     curl() { exit 1; }
     wget() { exit 1; }
-    gunzip() {
-      if shellspec_which gunzip >/dev/null; then
-        $(shellspec_which gunzip) "$@"
-      else
-        command gunzip "$@"
-      fi
-    }
+    gunzip() { @gunzip "$@"; }
+    tar() { @tar "$@"; }
+    rm() { @rm "$@"; }
+    mkdir() { @mkdir "$@"; }
+    mv() { @mv "$@"; }
 
     Context "with curl"
       Before "FETCH=curl"
@@ -158,6 +156,7 @@ Describe "./install.sh"
     Context "when can not fetch file"
       Before "FETCH=curl"
       curl() { return 1; }
+      rm() { @rm "$@"; }
 
       It 'does not create directory'
         When call fetch "http://repo.test/b3d5591.tar.gz" "$TMPBASE/error"
@@ -186,6 +185,8 @@ Describe "./install.sh"
       #|0.6.0
       #|latest
     }
+
+    uniq() { eval @uniq ${1+'"$@"'}; }
 
     It 'retrives tags'
       When call git_remote_tags
@@ -216,6 +217,7 @@ Describe "./install.sh"
       #|0.5.0
       #|0.6.0
     }
+    sort() { @sort "$@"; }
 
     It 'lists versions'
       When call list_versions
@@ -231,6 +233,7 @@ Describe "./install.sh"
       #|0.5.0
       #|0.6.0
     }
+    sort() { @sort "$@"; }
 
     It 'gets latest version'
       When call latest_version
@@ -277,6 +280,8 @@ Describe "./install.sh"
       #|2.1.0
       #|2.1.1
     }
+
+    sort() { @sort "$@"; }
 
     It "sorts by semantic version order"
       When call version_sort

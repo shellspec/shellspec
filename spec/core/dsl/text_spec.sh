@@ -68,7 +68,7 @@ Describe '%text'
 
   It 'outputs to stdout and not expands the variable with filter'
     hello() {
-      %text | tr '[a-z]' '[A-Z]'
+      %text | @tr '[a-z]' '[A-Z]'
       #|Hello $1
     }
 
@@ -78,7 +78,7 @@ Describe '%text'
 
   It ':raw outputs to stdout and not expands the variable with filter'
     hello() {
-      %text:raw | tr '[a-z]' '[A-Z]'
+      %text:raw | @tr '[a-z]' '[A-Z]'
       #|Hello $1
     }
 
@@ -88,7 +88,7 @@ Describe '%text'
 
   It 'outputs to stdout and expands the variable with filter'
     hello() {
-      %text:expand | tr '[a-z]' '[A-Z]'
+      %text:expand | @tr '[a-z]' '[A-Z]'
       #|Hello $1
     }
 

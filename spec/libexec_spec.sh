@@ -87,7 +87,7 @@ Describe 'libexec.sh'
     Before prepare
 
     It "edits in place"
-      When call edit_in_place "$TMPBASE/edit_in_place" sed 's/f/F/g'
+      When call edit_in_place "$TMPBASE/edit_in_place" @sed 's/f/F/g'
       The contents of file "$TMPBASE/edit_in_place" should eq "Foo"
     End
   End

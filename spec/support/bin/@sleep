@@ -1,0 +1,4 @@
+#!/bin/sh -e
+export PATH="${SHELLSPEC_PATH:?}"
+cmd="${0##*/}"
+"${cmd#@}" "$@"

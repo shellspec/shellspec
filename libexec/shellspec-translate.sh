@@ -197,6 +197,7 @@ filter=1
 [ "$SHELLSPEC_EXAMPLE_FILTER" ] && filter=''
 
 putsn "#!/bin/sh"
+putsn "export SHELLSPEC_PATH=\"\${SHELLSPEC_PATH:-\$PATH}\""
 putsn "SHELLSPEC_SPECFILE=''"
 putsn "SHELLSPEC_DATA=''"
 putsn "SHELLSPEC_WORKDIR=\"\$SHELLSPEC_TMPBASE\""

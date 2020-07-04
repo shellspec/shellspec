@@ -6,8 +6,8 @@ Describe "libexec/runner.sh"
   Include "$SHELLSPEC_LIB/libexec/runner.sh"
 
   change_permission() {
-    chmod "$1" "$2"
-    perm=$(ls -dl "$2")
+    @chmod "$1" "$2"
+    perm=$(@ls -dl "$2")
     echo "${perm%"${perm#??????????}"}"
   }
 
@@ -21,9 +21,11 @@ Describe "libexec/runner.sh"
 
   Describe "mktempdir()"
     Skip if 'can not change permission' check_change_permission
+    mkdir() { @mkdir "$@"; }
+    rm() { @rm "$@"; }
 
     prepare() { dir="$SHELLSPEC_TMPBASE/mktempdir_test"; }
-    entry() { ls -dl "$dir"; }
+    entry() { @ls -dl "$dir"; }
     cleanup() { rmtempdir "$dir"; }
     Before prepare
     After cleanup
@@ -49,6 +51,8 @@ Describe "libexec/runner.sh"
       mktempdir "$dir"
       [ -d "$dir" ] && [ -w "$dir" ]
     }
+    mkdir() { @mkdir "$@"; }
+    rm() { @rm "$@"; }
 
     It "deletes tempdir"
       Path tempdir="$dir"

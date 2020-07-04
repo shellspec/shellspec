@@ -70,6 +70,9 @@ Describe "libexec/shellspec.sh"
   End
 
   Describe "read_cmdline()"
+    od() { @od "$@"; }
+    hexdump() { @hexdump "$@"; }
+
     It "parses /proc/<PID>/cmdline"
       When call read_cmdline "$CMDLINE"
       The stdout should equal "/bin/sh /usr/local/bin/shellspec "

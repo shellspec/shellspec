@@ -51,11 +51,11 @@ shellspec_constants() {
     ${1}FS='\\034'  ${1}GS='\\035'  ${1}RS='\\036'  ${1}US='\\037' \
     "
   # shellcheck disable=SC2059
-  eval "$(printf "$SHELLSPEC_EVAL")"
+  eval "$("$SHELLSPEC_PRINTF" "$SHELLSPEC_EVAL")"
 
   # Workaround: Variable CR is empty on MSYS
   if eval "[ \${#${1}CR} -eq 0 ] &&:"; then
-    set -- "$1" "$(printf '\015_')"
+    set -- "$1" "$("$SHELLSPEC_PRINTF" '\015_')"
     eval "${1}CR=\${2%_}"
   fi
 }
@@ -363,7 +363,7 @@ shellspec_meta_escape() {
     '${SHELLSPEC_CR}:\${SHELLSPEC_CR}' '${SHELLSPEC_VT}:\${SHELLSPEC_VT}' end
 
   echo 'shellspec_meta_escape() { set -- "$1" "$2" ""'
-  until [ "$1" = "end" ] && shift && printf '%s\n' "$@"; do
+  until [ "$1" = "end" ] && shift && "$SHELLSPEC_PRINTF" '%s\n' "$@"; do
     set -- "${1%:*}" "${1#*:}" "$@"
     set -- "$@" 'until [ _"$2" = _"${2#*'"$1"'}" ] && set -- "$1" "$3$2" ""; do'
     set -- "$@" '  set -- "$1" "${2#*'"$1"'}" "$3${2%%'"$1"'*}'"$2"'"'

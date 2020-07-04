@@ -6,7 +6,7 @@ Describe "core/matchers/be/stat.sh"
   BeforeRun set_subject matcher_mock
 
   not_exist() { [ ! -e "$FIXTURE/$1" ]; }
-  check_root() { [ "$(id -u)" = 0 ]; }
+  check_root() { [ "$(@id -u)" = 0 ]; }
 
   Describe 'be exist matcher'
     Example 'example'

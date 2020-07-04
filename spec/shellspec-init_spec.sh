@@ -8,7 +8,7 @@ Describe "shellspec-init.sh"
 
   Describe "generate()"
     mkdir() { echo "mkdir:" "$@" >&2; }
-    clean() { rm -f "$TMPBASE/init-file"; }
+    clean() { @rm -f "$TMPBASE/init-file"; }
     Before clean
     Data "dummy"
 

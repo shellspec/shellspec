@@ -994,6 +994,7 @@ Describe "core/dsl.sh"
         shellspec_logger "logger test1"
         shellspec_logger "logger test2"
       }
+      sleep() { :; }
       Path log="$SHELLSPEC_TMPBASE/test-logfile"
       BeforeCall SHELLSPEC_LOGFILE="$SHELLSPEC_TMPBASE/test-logfile"
       When call logger_test

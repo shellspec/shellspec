@@ -2,6 +2,9 @@
 
 Describe "libexec/list.sh"
   Include "$SHELLSPEC_LIB/libexec/list.sh"
+  od() { @od "$@"; }
+  hexdump() { @hexdump "$@"; }
+  sort() { eval @sort ${1+'"$@"'}; }
 
   Describe "shuffle()"
     Data

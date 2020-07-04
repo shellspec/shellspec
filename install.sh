@@ -94,7 +94,7 @@ fetch() {
 
 unarchive() {
   mkdir -p "${3%/*}"
-  gunzip -c "$1" | (cd "${3%/*}"; env tar xf -)
+  gunzip -c "$1" | (cd "${3%/*}"; tar xf -)
   set -- "$1" "${2##*/}" "$3"
   mv "$(components_path "${3%/*}/$project-${2%.tar.gz}"*)" "$3"
 }
@@ -130,7 +130,9 @@ version_sort() {
     esac
     printf '%08d%08d%08d%08d' "${1:-0}" "${2:-0}" "${3:-0}" "${4:-0}"
     printf '%s %s\n' "${pre:-=}" "$version"
-  done | LC_ALL=C sort -k 1 | while read -r kv; do echo "${kv#* }"; done
+  done | ( export LC_ALL=C; sort -k 1 ) | while read -r kv; do
+    echo "${kv#* }"
+  done
 }
 
 join() {

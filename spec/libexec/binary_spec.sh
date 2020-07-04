@@ -35,6 +35,9 @@ Describe "libexec/binary.sh"
   End
 
   Describe 'octal_dump()'
+    od() { @od "$@"; }
+    hexdump() { @hexdump "$@"; }
+
     It 'outputs as octal number'
       Data "abc"
       When call octal_dump

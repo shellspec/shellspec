@@ -102,7 +102,7 @@ Describe 'Parameters helper'
     End
 
     It "example $1 $2"
-      When call tr "$1" "$2"
+      When call @tr "$1" "$2"
       The output should eq "$3"
     End
   End

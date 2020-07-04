@@ -43,8 +43,8 @@ Describe "core/matchers/be/empty.sh"
   End
 
   Describe 'be empty directory matcher'
-    Before 'mkdir "$EMPTYDIR"'
-    After 'rmdir "$EMPTYDIR"'
+    Before '@mkdir "$EMPTYDIR"'
+    After '@rmdir "$EMPTYDIR"'
 
     Example 'example'
       Path empty-dir="$EMPTYDIR"
@@ -71,8 +71,8 @@ Describe "core/matchers/be/empty.sh"
     End
 
     Context 'when directory contains "file" file'
-      Before 'touch "$EMPTYDIR/file"'
-      After 'rm "$EMPTYDIR/file"'
+      Before '@touch "$EMPTYDIR/file"'
+      After '@rm "$EMPTYDIR/file"'
 
       It 'does not matches'
         subject() { %- "$EMPTYDIR"; }
@@ -83,8 +83,8 @@ Describe "core/matchers/be/empty.sh"
 
     Context 'when directory contains "*" file'
       Skip if "busybox-w32 can not create '*' file" busybox_w32
-      Before 'touch "$EMPTYDIR/*"'
-      After 'rm "$EMPTYDIR/*"'
+      Before '@touch "$EMPTYDIR/*"'
+      After '@rm "$EMPTYDIR/*"'
 
       It 'does not matches'
         subject() { %- "$EMPTYDIR"; }
@@ -94,8 +94,8 @@ Describe "core/matchers/be/empty.sh"
     End
 
     Context 'when directory contains ".dot" file'
-      Before 'touch "$EMPTYDIR/.dot"'
-      After 'rm "$EMPTYDIR/.dot"'
+      Before '@touch "$EMPTYDIR/.dot"'
+      After '@rm "$EMPTYDIR/.dot"'
 
       It 'does not matches contains ".dot" file'
         subject() { %- "$EMPTYDIR"; }
@@ -105,8 +105,8 @@ Describe "core/matchers/be/empty.sh"
     End
 
     Context 'when disabled noglob'
-      Before 'touch "$EMPTYDIR/file"'
-      After 'rm "$EMPTYDIR/file"'
+      Before '@touch "$EMPTYDIR/file"'
+      After '@rm "$EMPTYDIR/file"'
       Set noglob:on
 
       It 'does not matches'
