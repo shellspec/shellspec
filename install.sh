@@ -54,12 +54,9 @@ abort() { [ "${1:-}" ] && error "$1" >&2; finish 1; }
 finished() { [ "$done" ] || error "Failed to install"; }
 
 exists() {
-  ( PATH="${PATH:-}:/" IFS=":"
-    case $PATH in (*\;/) IFS=";"; esac
-    PATH=${PATH%??}
-    for p in $PATH; do
-      [ -x "${p%/}/$1" ] && return 0
-    done
+  type "$1" >/dev/null 2>&1 && return 0
+  ( IFS=:
+    for p in $PATH; do [ -x "${p%/}/$1" ] && return 0; done
     return 1
   )
 }
