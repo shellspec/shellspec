@@ -107,8 +107,6 @@ Describe "core/utils.sh"
   End
 
   Describe 'shellspec_shopt()'
-    # shellcheck disable=SC2039,SC2123
-    not_exists_shopt() { (PATH=''; ! shopt -s nullglob 2>/dev/null &&:); }
     Skip if "'shopt' not implemented" not_exists_shopt
 
     Describe "shopt option"

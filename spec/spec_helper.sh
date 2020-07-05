@@ -142,6 +142,7 @@ shellspec_spec_helper_configure() {
   not_exist_failglob() { [ ! "$SHELLSPEC_FAILGLOB_AVAILABLE" ]; }
   busybox_w32() { [ "$SHELLSPEC_BUSYBOX_W32" ]; }
   exists_tty() { [ "$SHELLSPEC_TTY" ]; }
+  not_exists_shopt() { [ ! "$SHELLSPEC_SHOPT_AVAILABLE" ]; }
 
   shellspec_before :
   shellspec_after :
