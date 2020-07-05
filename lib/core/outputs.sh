@@ -221,6 +221,10 @@ shellspec_output_ABORTED() {
     shellspec_readfile SHELLSPEC_STDERR "$SHELLSPEC_STDERR_FILE"
     set -- "$1" "${2:-}stderr:${SHELLSPEC_STDERR}${SHELLSPEC_LF}"
   fi
+  if [ -s "$SHELLSPEC_ERROR_FILE" ]; then
+    shellspec_readfile SHELLSPEC_STDERR "$SHELLSPEC_ERROR_FILE"
+    set -- "$1" "${2:-}error:${SHELLSPEC_STDERR}${SHELLSPEC_LF}"
+  fi
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
     "message:Example aborted (exit status: $1)" "failure_message:${2:-}"
 }

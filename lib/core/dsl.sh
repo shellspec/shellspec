@@ -145,6 +145,7 @@ shellspec_example() {
   SHELLSPEC_STDIN_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdin"
   SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
   SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
+  SHELLSPEC_ERROR_FILE="$SHELLSPEC_STDIO_FILE_BASE.error"
   SHELLSPEC_XTRACE_FILE="$SHELLSPEC_STDIO_FILE_BASE.trace"
   SHELLSPEC_VARS_FILE="$SHELLSPEC_STDIO_FILE_BASE.vars"
 
@@ -169,7 +170,7 @@ shellspec_example() {
       0) shellspec_invoke_example ;;
       *) shellspec_invoke_example "$@" ;;
     esac
-  )
+  ) 2>"$SHELLSPEC_ERROR_FILE"
   set "$1" -- $? "$@"
   if [ "$1" -ne 0 ]; then
     shellspec_output ABORTED "$1"
