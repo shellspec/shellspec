@@ -167,10 +167,10 @@ shellspec_example() {
   ( set -e
     shift
     case $# in
-      0) shellspec_invoke_example ;;
-      *) shellspec_invoke_example "$@" ;;
+      0) shellspec_invoke_example 2>"$SHELLSPEC_ERROR_FILE" ;;
+      *) shellspec_invoke_example "$@" 2>"$SHELLSPEC_ERROR_FILE" ;;
     esac
-  ) 2>"$SHELLSPEC_ERROR_FILE"
+  )
   set "$1" -- $? "$@"
   if [ "$1" -ne 0 ]; then
     shellspec_output ABORTED "$1"

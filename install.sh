@@ -40,9 +40,9 @@ OPTIONS:
 USAGE
 
 usage() {
-  while IFS= read -r line && [ ! "${line#*:}" = "<<'$1'" ]; do :; done
+  while IFS= read -r line && [ ! "${line#*:}" = \<\<"'$1'" ]; do :; done
   while IFS= read -r line && [ ! "$line" = "$1" ]; do set "$@" "$line"; done
-  shift && [ $# -eq 0 ] || printf '%s\n' "cat<<$line" "$@" "$line"
+  shift && [ $# -eq 0 ] || printf '%s\n' cat\<\<"$line" "$@" "$line"
 }
 
 CDPATH=''
@@ -55,10 +55,7 @@ finished() { [ "$done" ] || error "Failed to install"; }
 
 exists() {
   type "$1" >/dev/null 2>&1 && return 0
-  ( IFS=:
-    for p in $PATH; do [ -x "${p%/}/$1" ] && return 0; done
-    return 1
-  )
+  ( IFS=:; for p in $PATH; do [ -x "${p%/}/$1" ] && return 0; done; return 1 )
 }
 
 prompt() {

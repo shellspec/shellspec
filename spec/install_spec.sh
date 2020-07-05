@@ -208,7 +208,7 @@ Describe "./install.sh"
   End
 
   Describe "list_versions()"
-    get_versions() {
+    git_remote_tags() {
       %text
       #|0.17.0
       #|latest
@@ -224,7 +224,7 @@ Describe "./install.sh"
   End
 
   Describe "latest_version()"
-    get_versions() {
+    git_remote_tags() {
       %text
       #|0.17.0
       #|0.18.0
