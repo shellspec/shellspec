@@ -515,13 +515,13 @@ else
 fi
 
 shellspec_which() {
-  set -- "$1" "${PATH%$SHELLSPEC_PATH_SEPARATOR}${SHELLSPEC_PATH_SEPARATOR}"
-  while [ "${2%$SHELLSPEC_PATH_SEPARATOR}" ]; do
-    if [ -x "${2%%$SHELLSPEC_PATH_SEPARATOR*}/$1" ]; then
-      shellspec_putsn "${2%%$SHELLSPEC_PATH_SEPARATOR*}/$1"
+  set -- "$1" "${PATH%$SHELLSPEC_PATHSEP}${SHELLSPEC_PATHSEP}"
+  while [ "${2%$SHELLSPEC_PATHSEP}" ]; do
+    if [ -x "${2%%$SHELLSPEC_PATHSEP*}/$1" ]; then
+      shellspec_putsn "${2%%$SHELLSPEC_PATHSEP*}/$1"
       return 0
     fi
-    set -- "$1" "${2#*$SHELLSPEC_PATH_SEPARATOR}"
+    set -- "$1" "${2#*$SHELLSPEC_PATHSEP}"
   done
   return 1
 }

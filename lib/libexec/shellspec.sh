@@ -95,14 +95,10 @@ current_shell() {
 }
 
 command_path() {
-  PATH="${PATH:-}:/" sep=":"
-  case $PATH in (*\;/) sep=";"; esac
-  PATH=${PATH%??}
-
   if [ $# -lt 2 ]; then
-    set -- "" "$1" "${PATH}${sep}"
+    set -- "" "$1" "${PATH}${SHELLSPEC_PATHSEP}"
   else
-    set -- "$1" "$2" "${PATH}${sep}"
+    set -- "$1" "$2" "${PATH}${SHELLSPEC_PATHSEP}"
   fi
 
   case $2 in (*/*)
@@ -112,7 +108,7 @@ command_path() {
   esac
 
   while [ "$3" ]; do
-    set -- "$1" "$2" "${3#*$sep}" "${3%%$sep*}"
+    set -- "$1" "$2" "${3#*$SHELLSPEC_PATHSEP}" "${3%%$SHELLSPEC_PATHSEP*}"
     [ -x "${4%/}/$2" ] || continue
     [ "$1" ] && eval "$1=\"\${4%/}/\$2\""
     return 0

@@ -100,7 +100,7 @@ export SHELLSPEC_BUSYBOX_W32=''
 export SHELLSPEC_SHOPT_AVAILABLE=''
 export SHELLSPEC_FAILGLOB_AVAILABLE=''
 export SHELLSPEC_NOMATCH_AVAILABLE=''
-export SHELLSPEC_PATH_SEPARATOR=":"
+export SHELLSPEC_PATHSEP=":"
 export SHELLSPEC_QUICK=''
 export SHELLSPEC_QUICK_FILE=".shellspec-quick.log"
 export SHELLSPEC_REPAIR=''
@@ -516,7 +516,7 @@ fi
     warn "Unsupported shell (errexit handling broken)."
   fi
 
-  [ "$SHELLSPEC_BUSYBOX_W32" ] && SHELLSPEC_PATH_SEPARATOR=";"
+  [ "$SHELLSPEC_BUSYBOX_W32" ] && SHELLSPEC_PATHSEP=";"
   [ "$SHELLSPEC_TTY" ] && SHELLSPEC_DEV_TTY=/dev/tty
 }
 
