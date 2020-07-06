@@ -136,5 +136,12 @@ fi
   esac
 } 2>/dev/null &&:
 
+# shellcheck disable=SC2123
+PATH=/
+if [ "$SHELLSPEC_SANDBOX" ] && ! $SHELLSPEC_SHELL -c ":" 2>/dev/null; then
+  # busybox ash on cygwin
+  echo "SHELLSPEC_DEFECT_SANDBOX=1"
+fi
+
 # arithmetic expansion is also required
 exit $((0))
