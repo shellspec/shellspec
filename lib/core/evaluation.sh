@@ -177,6 +177,10 @@ shellspec_evaluation_run_script() {
       [ "$1" ] || shift
     fi
     ( shellspec_coverage_env
+      opts=$SHELLSPEC_COVERAGE_SHELL_OPTIONS
+      if [ "${SHELLSPEC_PATH_IS_READONLY:-}" ]; then
+        opts="\"\$SHELLSPEC_UNREADONLY_PATH\" $opts"
+      fi
       if [ "$SHELLSPEC_XTRACE" ]; then
         # shellcheck disable=SC2030
         SHELLSPEC_XTRACE=''
@@ -185,11 +189,11 @@ shellspec_evaluation_run_script() {
           export SHELLSPEC_PS4="${PS4:-}"
           export "$SHELLSPEC_XTRACEFD_VAR"="$SHELLSPEC_XTRACEFD"
         fi
-        eval "$SHELLSPEC_SHELL $SHELLSPEC_COVERAGE_SHELL_OPTIONS -x \"\$@\""
+        eval "$SHELLSPEC_SHELL $opts -x \"\$@\""
         set -- $?
         SHELLSPEC_XTRACE=1
       else
-        eval "$SHELLSPEC_SHELL $SHELLSPEC_COVERAGE_SHELL_OPTIONS \"\$@\""
+        eval "$SHELLSPEC_SHELL $opts \"\$@\""
         set -- $?
       fi
       exit "$1"

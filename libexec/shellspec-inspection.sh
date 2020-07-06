@@ -143,5 +143,12 @@ if [ "$SHELLSPEC_SANDBOX" ] && ! $SHELLSPEC_SHELL -c ":" 2>/dev/null; then
   echo "SHELLSPEC_DEFECT_SANDBOX=1"
 fi
 
+readonly VAR=readonly
+export VAR
+if ! $SHELLSPEC_SHELL "${0%/*}/shellspec-inspection-readonly.sh"; then
+  # ksh: readonly flag is inherit to child processes
+  echo "SHELLSPEC_PATH_IS_READONLY=1"
+fi
+
 # arithmetic expansion is also required
 exit $((0))

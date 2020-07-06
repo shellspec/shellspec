@@ -93,6 +93,7 @@
     "libexec/shellspec-executor.sh",
     "libexec/shellspec-gen-bin.sh",
     "libexec/shellspec-init.sh",
+    "libexec/shellspec-inspection-readonly.sh",
     "libexec/shellspec-inspection.sh",
     "libexec/shellspec-list.sh",
     "libexec/shellspec-load-env.sh",
@@ -103,7 +104,8 @@
     "libexec/shellspec-syntax-check.sh",
     "libexec/shellspec-task.sh",
     "libexec/shellspec-time.sh",
-    "libexec/shellspec-translate.sh"
+    "libexec/shellspec-translate.sh",
+    "libexec/shellspec-unreadonly-path.sh"
   ],
   "install": "make install"
 }

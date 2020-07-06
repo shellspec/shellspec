@@ -7,6 +7,10 @@ test || __() { :; }
 # shellcheck disable=SC2016
 generate() {
   echo '#!/bin/sh -e'
+  echo 'if [ "${SHELLSPEC_PATH_IS_READONLY:-}" ]; then'
+  echo '  typeset +x PATH'
+  echo '  exec "$SHELLSPEC_ENV" PATH="$PATH" SHELLSPEC_PATH_IS_READONLY="" "$0" "$@"'
+  echo 'fi'
   echo 'export PATH="${SHELLSPEC_PATH:?}"'
   echo 'cmd="${0##*/}"'
   echo '"${cmd#@}" "$@"'
