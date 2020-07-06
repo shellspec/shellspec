@@ -280,15 +280,17 @@ Usage: shellspec [options...] [files or directories...]
                                         --exclude-pattern=/.shellspec,/spec/,/coverage/,/report/
                                         --path-strip-level=1
                                       To include files without extension, specify --include-pattern
-                                      without '.sh' and filter with --include-*/--exclude-* options
+                                      without '.sh' and filter with --include-*/--exclude-* options.
 
   **** Utility ****
 
         --init [TEMPLATE...]        Initialize your project with ShellSpec | [git] [hg] [svn]
-                                      Template: Create additional files
+                                      Template: Create additional files.
                                         [git]   .gitignore
                                         [hg]    .hgignore
                                         [svn]   .svnignore
+        --gen-bin [@COMMAND...]     Generate test support commands in spec/support/bin
+                                      This is useful for run actual commands from mock/stub.
         --count                     Count the number of specfiles and examples
         --list LIST                 List the specfiles/examples | [specfiles] [examples(:id|:lineno)]
                                       [specfiles]       list the specfiles
@@ -296,7 +298,7 @@ Usage: shellspec [options...] [files or directories...]
                                       [examples:id]     alias for examples
                                       [examples:lineno] list the examples with lineno
                                       [debug]           for developer
-                                      The order is randomized with --random but random TYPE is ignored
+                                      The order is randomized with --random but random TYPE is ignored.
         --syntax-check              Syntax check of the specfiles without running any examples
         --translate                 Output translated specfile
         --task [TASK]               Run the TASK or Show the task list if TASK is not specified
@@ -442,7 +444,8 @@ parse_options() {
       --no-boost) SHELLSPEC_PROFILER='' SHELLSPEC_PROFILER_LIMIT=10 ;;
       --show-deprecations) SHELLSPEC_DEPRECATION_LOG=1 ;;
       --hide-deprecations) SHELLSPEC_DEPRECATION_LOG='' ;;
-      --init | --task | --translate | --syntax-check) SHELLSPEC_MODE=${1#--} ;;
+      --init | --gen-bin | --task | --translate | --syntax-check)
+        SHELLSPEC_MODE=${1#--} ;;
       --count) SHELLSPEC_MODE=list SHELLSPEC_LIST='' ;;
       --list) [ "${2:-}" ] || invalid 'Require LIST.'
         case $2 in (specfiles|examples|examples:id|examples:lineno|debug) ;;
