@@ -201,6 +201,11 @@ putsn "SHELLSPEC_SPECFILE=''"
 putsn "SHELLSPEC_DATA=''"
 putsn "SHELLSPEC_WORKDIR=\"\$SHELLSPEC_TMPBASE\""
 putsn "SHELLSPEC_STDIO_FILE_BASE=\"\$SHELLSPEC_WORKDIR\""
+if [ "$SHELLSPEC_SANDBOX" ]; then
+  putsn "readonly PATH=\"\$SHELLSPEC_SUPPORT_BIN\""
+else
+  putsn "PATH=\"\$SHELLSPEC_SUPPORT_BIN:\$PATH\""
+fi
 putsn "[ \"\$SHELLSPEC_DEBUG_TRAP\" ] && trap - DEBUG"
 putsn "shellspec_coverage_setup() { shellspec_coverage_disabled; }"
 [ "$coverage" ] && putsn ". \"\${SHELLSPEC_COVERAGE_SETUP:-/dev/null}\""

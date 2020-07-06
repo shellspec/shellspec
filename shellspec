@@ -26,6 +26,8 @@ export SHELLSPEC_GRAMMAR_BLOCKS=''
 export SHELLSPEC_SPECDIR=''
 export SHELLSPEC_LOAD_PATH=''
 export SHELLSPEC_SHELL=''
+export SHELLSPEC_SANDBOX=''
+export SHELLSPEC_SUPPORT_BIN=''
 export SHELLSPEC_PRINTF="printf"
 export SHELLSPEC_BUILTIN_PRINTF=''
 export SHELLSPEC_BUILTIN_PRINT=''
@@ -158,6 +160,7 @@ SHELLSPEC_REPORTDIR="$SHELLSPEC_PROJECT_ROOT/report"
 SHELLSPEC_COVERAGE_DIR="$SHELLSPEC_PROJECT_ROOT/coverage"
 SHELLSPEC_LOAD_PATH="$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_REPORTERLIB"
 SHELLSPEC_TMPBASE="${SHELLSPEC_TMPDIR%/}/shellspec.$SHELLSPEC_UNIXTIME.$$"
+SHELLSPEC_SUPPORT_BIN="$SHELLSPEC_SPECDIR/support/bin"
 SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/.shellspec-time.log"
 SHELLSPEC_PROFILER_LOG="$SHELLSPEC_TMPBASE/.shellspec-profiler.log"
 SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner"
@@ -184,6 +187,9 @@ Usage: shellspec [options...] [files or directories...]
 
     -s, --shell SHELL               Specify a path of shell [default: "auto" (running shell)]
                                       ShellSpec ignores shebang and runs in the specified shell.
+        --[no-]sandbox              Force the use of the mock instead of the actual command
+                                      Make PATH empty (except "spec/support/bin") and readonly
+                                      This is not a security feature and does not provide complete isolation
         --require MODULE            Require a MODULE (shell script file)
     -e, --env NAME=VALUE            Set environment variable
         --env-from ENV-SCRIPT       Set environment variable from shell script file
@@ -327,6 +333,8 @@ parse_options() {
       -s | --shell) [ "${2:-}" ] || invalid 'Require SHELL.'
         [ "$2" = "auto" ] && SHELLSPEC_SHELL="" || SHELLSPEC_SHELL=$2
         shift ;;
+      --sandbox) SHELLSPEC_SANDBOX=1 ;;
+      --no-sandbox) SHELLSPEC_SANDBOX='' ;;
       --random) [ "${2:-}" ] || invalid 'Require TYPE[:SEED].'
         case ${2%%:*} in
           none) SHELLSPEC_RANDOM='' ;;
