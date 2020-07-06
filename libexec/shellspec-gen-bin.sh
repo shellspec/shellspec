@@ -2,10 +2,7 @@
 
 set -eu
 
-if [ ! -e "$SHELLSPEC_SPECDIR" ]; then
-  echo "Not a shellspec directory"
-  exit 1
-fi
+test || __() { :; }
 
 # shellcheck disable=SC2016
 generate() {
@@ -15,6 +12,13 @@ generate() {
   echo '"${cmd#@}" "$@"'
 }
 
+__ main __
+
+if [ ! -e "$SHELLSPEC_SPECDIR" ]; then
+  echo "Not a shellspec directory"
+  exit 1
+fi
+
 mkdir -p "$SHELLSPEC_SUPPORT_BIN"
 
 for cmd; do
@@ -23,6 +27,7 @@ for cmd; do
     echo "Skip, $cmd already exist (${SHELLSPEC_SUPPORT_BIN#"$PWD/"}/$cmd)"
   else
     generate > "$bin"
+    chmod +x "$bin"
     echo "Generate $cmd (${bin#"$PWD/"})"
   fi
 done
