@@ -11,9 +11,9 @@ generate() {
   echo '  typeset +x PATH'
   echo '  exec "$SHELLSPEC_ENV" PATH="$PATH" SHELLSPEC_PATH_IS_READONLY="" "$0" "$@"'
   echo 'fi'
-  echo 'export PATH="${SHELLSPEC_PATH:?}"'
-  echo 'cmd="${0##*/}"'
-  echo '"${cmd#@}" "$@"'
+  echo 'PATH="${SHELLSPEC_PATH:?}"'
+  echo 'export PATH'
+  echo "$1" '"$@"'
 }
 
 __ main __
@@ -30,7 +30,7 @@ for cmd; do
   if [ -e "$bin" ]; then
     echo "Skip, $cmd already exist (${SHELLSPEC_SUPPORT_BIN#"$PWD/"}/$cmd)"
   else
-    generate > "$bin"
+    generate "${cmd#@}" > "$bin"
     chmod +x "$bin"
     echo "Generate $cmd (${bin#"$PWD/"})"
   fi

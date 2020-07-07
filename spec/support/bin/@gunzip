@@ -8,5 +8,6 @@ cmd=gunzip
 if type "$cmd" >/dev/null 2>&1; then
   cmd=$(PATH="${SHELLSPEC_PATH:?}"; which "$cmd")
 fi
-export PATH="${SHELLSPEC_PATH:?}"
+PATH="${SHELLSPEC_PATH:?}"
+export PATH
 "$cmd" "$@"

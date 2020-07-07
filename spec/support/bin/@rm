@@ -3,6 +3,6 @@ if [ "${SHELLSPEC_PATH_IS_READONLY:-}" ]; then
   typeset +x PATH
   exec "$SHELLSPEC_ENV" PATH="$PATH" SHELLSPEC_PATH_IS_READONLY="" "$0" "$@"
 fi
-export PATH="${SHELLSPEC_PATH:?}"
-cmd="${0##*/}"
-"${cmd#@}" "$@"
+PATH="${SHELLSPEC_PATH:?}"
+export PATH
+rm "$@"
