@@ -1,6 +1,6 @@
 # ShellSpec
 
-Full featured BDD unit testing framework for shell scripts.
+Featureful BDD unit testing framework for shell scripts.
 
 **Let’s test your shell script!** (Try the **[Online Demo](https://shellspec.info/demo)** on the browser).
 
@@ -148,10 +148,10 @@ Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomat
 
 ### Supported shells and platforms
 
-- [bash][bash]<small>_>=2.03_</small>, [bosh/pbosh][bosh]<small>_>=2018/10/07_</small>, [posh][posh]<small>_>=0.3.14_</small>, [yash][yash]<small>_>=2.29_</small>, [zsh][zsh]<small>_>=3.1.9_</small>
-- [dash][dash]<small>_>=0.5.2_</small>, [busybox][busybox] ash<small>_>=1.10.2_</small>, [busybox-w32][busybox-w32], [GWSH][gwsh]<small>_>=20190627_</small>
-- ksh88, [ksh93][ksh93]<small>_>=93s_</small>, [ksh2020][ksh2020], [mksh/lksh][mksh]<small>_>=R28_</small>, [pdksh][pdksh]<small>_>=5.2.14_</small>
-- [FreeBSD sh][freebsdsh], [NetBSD sh][netbsdsh], [OpenBSD ksh][openbsdksh], [loksh][loksh], [oksh][oksh]
+- <code>[bash][bash]</code><small>_>=2.03_</small>, <code>[bosh/pbosh][bosh]</code><small>_>=2018/10/07_</small>, <code>[posh][posh]</code><small>_>=0.3.14_</small>, <code>[yash][yash]</code><small>_>=2.29_</small>, <code>[zsh][zsh]</code><small>_>=3.1.9_</small>
+- <code>[dash][dash]</code><small>_>=0.5.2_</small>, <code>[busybox][busybox] ash</code><small>_>=1.10.2_</small>, <code>[busybox-w32][busybox-w32]</code>, <code>[GWSH][gwsh]</code><small>_>=20190627_</small>
+- <code>ksh88</code>, <code>[ksh93][ksh93]</code><small>_>=93s_</small>, <code>[ksh2020][ksh2020]</code>, <code>[mksh/lksh][mksh]</code><small>_>=R28_</small>, <code>[pdksh][pdksh]</code><small>_>=5.2.14_</small>
+- <code>[FreeBSD sh][freebsdsh]</code>, <code>[NetBSD sh][netbsdsh]</code>, <code>[OpenBSD ksh][openbsdksh]</code>, <code>[loksh][loksh]</code>, <code>[oksh][oksh]</code>
 
 [bash]: https://www.gnu.org/software/bash/
 [bosh]: http://schilytools.sourceforge.net/bosh.html
