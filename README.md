@@ -148,9 +148,9 @@ Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomat
 
 ### Supported shells and platforms
 
-- [bash][bash] (>=2.03), [bosh/pbosh][bosh] (>=2018/10/07), [posh][posh] (>=0.3.14), [yash][yash] (>=2.29), [zsh][zsh] (>=3.1.9)
-- [dash][dash] (>=0.5.2), [busybox][busybox] ash (>=1.10.2), [busybox-w32][busybox-w32], [GWSH][gwsh] (>=20190627)
-- ksh88, [ksh93][ksh93] (>=93s), [ksh2020][ksh2020], [mksh/lksh][mksh] (>=R28), [pdksh][pdksh] (>=5.2.14)
+- [bash][bash]<small>_>=2.03_</small>, [bosh/pbosh][bosh]<small>_>=2018/10/07_</small>, [posh][posh]<small>_>=0.3.14_</small>, [yash][yash]<small>_>=2.29_</small>, [zsh][zsh]<small>_>=3.1.9_</small>
+- [dash][dash]<small>_>=0.5.2_</small>, [busybox][busybox] ash<small>_>=1.10.2_</small>, [busybox-w32][busybox-w32], [GWSH][gwsh]<small>_>=20190627_</small>
+- ksh88, [ksh93][ksh93]<small>_>=93s_</small>, [ksh2020][ksh2020], [mksh/lksh][mksh]<small>_>=R28_</small>, [pdksh][pdksh]<small>_>=5.2.14_</small>
 - [FreeBSD sh][freebsdsh], [NetBSD sh][netbsdsh], [OpenBSD ksh][openbsdksh], [loksh][loksh], [oksh][oksh]
 
 [bash]: https://www.gnu.org/software/bash/
