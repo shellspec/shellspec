@@ -1,8 +1,8 @@
 #shellcheck shell=bash disable=SC2016
 
 shellspec_coverage_setup() {
-  SHELLSPEC_ENV="$SHELLSPEC_LIB/cov/kcov/.$1env"
-  [ -e "$SHELLSPEC_ENV" ] || return 0
+  SHELLSPEC_ENV_FILE="$SHELLSPEC_LIB/cov/kcov/.$1env"
+  [ -e "$SHELLSPEC_ENV_FILE" ] || return 0
 
   shellspec_coverage=0
   shellspec_coverage_start() {
@@ -10,7 +10,7 @@ shellspec_coverage_setup() {
       '[ "$shellspec_coverage" -eq 1 ] || return 0'
     while IFS= read -r line; do
       set -- "$@" "$line"
-    done < "$SHELLSPEC_ENV" &&:
+    done < "$SHELLSPEC_ENV_FILE" &&:
     printf '%s\n' "shellspec_coverage_start() {" "${@:-}" "}"
   }
   eval "$(shellspec_coverage_start)"
@@ -28,7 +28,7 @@ shellspec_coverage_setup() {
       case $line in ("#ENV "*)
         set -- "$@" "${line#* }"
       esac
-    done < "$SHELLSPEC_ENV" &&:
+    done < "$SHELLSPEC_ENV_FILE" &&:
     printf '%s\n' "shellspec_coverage_env() {" "${@:-:}" "}"
   }
   eval "$(shellspec_coverage_env)"
