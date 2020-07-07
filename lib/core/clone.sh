@@ -43,7 +43,7 @@ shellspec_clone_bash() {
   shellspec_clone_typeset -p "$1" | {
     IFS= read -r shellspec_clone || return 1
     set -- "$shellspec_clone" "$1" "$2"
-    printf '%s\n' "${1%%" $2="*} $3=${1#*" $2="}"
+    printf '%s\n' "${1%%\ "$2="*} $3=${1#*\ "$2="}"
     while IFS= read -r shellspec_clone; do
       printf '%s\n' "$shellspec_clone"
     done
@@ -57,13 +57,13 @@ shellspec_clone_zsh() {
 
     case $shellspec_clone in ("typeset "*)
       case ${shellspec_clone%%"="*} in (*" -g "*)
-        shellspec_clone="${shellspec_clone%%" -g "*} ${shellspec_clone#*" -g "}"
+        shellspec_clone="${shellspec_clone%%\ -g\ *} ${shellspec_clone#*\ -g\ }"
       esac
     esac
 
     if [ "${shellspec_clone##*\ }" = "$1" ]; then
       set -- "$shellspec_clone" "$1" "$2"
-      print -r -- "${1%" $2"} $3"
+      print -r -- "${1%\ "$2"} $3"
       IFS= read -r shellspec_clone || return 0
       print -r -- "$3=${shellspec_clone#"$2="}"
       while IFS= read -r shellspec_clone; do
@@ -73,7 +73,7 @@ shellspec_clone_zsh() {
     fi
 
     set -- "$shellspec_clone" "$1" "$2"
-    print -r -- "${1%%" $2="*} $3=${1#*" $2="}"
+    print -r -- "${1%%\ "$2="*} $3=${1#*\ "$2="}"
     while IFS= read -r shellspec_clone; do
       print -r -- "$shellspec_clone"
     done
@@ -85,16 +85,16 @@ shellspec_clone_ksh() {
   shellspec_clone_typeset -p "$1" | {
     IFS= read -r shellspec_clone || return 1
     if [ "${shellspec_clone%%\ *}" = "set" ]; then
-      print -r -- "${shellspec_clone%" $1"} $2"
+      print -r -- "${shellspec_clone%\ "$1"} $2"
       while IFS= read -r shellspec_clone; do
-        print -r -- "${shellspec_clone%%" $1"*} $2${shellspec_clone#*" $1"}"
+        print -r -- "${shellspec_clone%%\ "$1"*} $2${shellspec_clone#*\ "$1"}"
       done
       return 0
     fi
 
     case $shellspec_clone in
       "$1="*) print -r -- "$2=${shellspec_clone#"$1="}" ;;
-      *"$1") print -r -- "${shellspec_clone%" $1"} $2" ;;
+      *"$1") print -r -- "${shellspec_clone%\ "$1"} $2" ;;
       *) print -r -- "${shellspec_clone%%"$1="*}$2=${shellspec_clone#*"$1="}"
     esac
     while IFS= read -r shellspec_clone; do
@@ -126,7 +126,7 @@ shellspec_clone_yash() {
       shift
       set -- "$shellspec_clone" "$@"
     done
-    printf '%s\n' "${1%%" $2"} $3"
+    printf '%s\n' "${1%%\ "$2"} $3"
   }
 }
 
@@ -208,7 +208,7 @@ shellspec_clone_old_zsh() {
 shellspec_clone_old_ksh() {
  shellspec_clone_typeset +p | while IFS= read -r shellspec_clone; do
     [ ! "${shellspec_clone##* }" = "$1" ] && continue
-    print -r -- "${shellspec_clone%" $1"} $2"
+    print -r -- "${shellspec_clone%\ "$1"} $2"
     break
   done
   shellspec_clone_set | while IFS= read -r shellspec_clone; do
@@ -229,7 +229,7 @@ shellspec_clone_exists_variable() {
   eval "[ \${$1+x} ] &&:"
 }
 
-# pdksh, mksh < 40, OpenBSD ksh, loksh
+# pdksh, mksh < 40, OpenBSD ksh, loksh, ksh88
 shellspec_clone_old_pdksh() {
   eval "[ \"\${${1%%:*}+x}\" ] &&:" || return 1
   shellspec_clone_typeset | while IFS= read -r shellspec_clone; do

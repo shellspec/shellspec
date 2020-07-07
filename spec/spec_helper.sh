@@ -51,7 +51,7 @@ shellspec_redefinable shellspec_clone_typeset
 shellspec_redefinable shellspec_clone_set
 shellspec_redefinable shellspec_clone_exists_variable
 
-# Workaround for busybox-1.1.3
+# Workaround for busybox-1.1.3, ksh88
 shellspec_unbuiltin "ps"
 shellspec_unbuiltin "last"
 shellspec_unbuiltin "sleep"

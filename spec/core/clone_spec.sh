@@ -79,7 +79,7 @@ Describe "core/clone.sh"
 
   BeforeCall 'var=$(var)'
   shellspec_clone_typeset() { %= "$var"; }
-  print() { printf '%s\n' "$3"; }
+  [ "$SHELLSPEC_BUILTIN_PRINT" ] || eval 'print() { printf "%s\n" "$3"; }'
 
   Describe "shellspec_clone_posix()"
     Specify 'var="abc"'
