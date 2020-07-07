@@ -1,6 +1,6 @@
 # ShellSpec
 
-BDD style unit testing framework for POSIX compliant shells.
+Full featured BDD unit testing framework for shell scripts.
 
 **Let’s test your shell script!** (Try the **[Online Demo](https://shellspec.info/demo)** on the browser).
 
@@ -25,7 +25,7 @@ BDD style unit testing framework for POSIX compliant shells.
 [![busybox](https://img.shields.io/badge/busybox-&ge;1.10.2-lightgrey.svg?style=flat)](https://www.busybox.net/)
 [![dash](https://img.shields.io/badge/dash-&ge;0.5.2-lightgrey.svg?style=flat)](http://gondor.apana.org.au/~herbert/dash/)
 [![ksh](https://img.shields.io/badge/ksh-&ge;93s-lightgrey.svg?style=flat)](http://kornshell.org)
-[![mksh](https://img.shields.io/badge/mksh-&ge;28-lightgrey.svg?style=flat)](http://www.mirbsd.org/mksh.htm)
+[![mksh](https://img.shields.io/badge/mksh-&ge;R28-lightgrey.svg?style=flat)](http://www.mirbsd.org/mksh.htm)
 [![posh](https://img.shields.io/badge/posh-&ge;0.3.14-lightgrey.svg?style=flat)](https://salsa.debian.org/clint/posh)
 [![yash](https://img.shields.io/badge/yash-&ge;2.29-lightgrey.svg?style=flat)](https://yash.osdn.jp/)
 [![zsh](https://img.shields.io/badge/zsh-&ge;3.1.9-lightgrey.svg?style=flat)](https://www.zsh.org/)
@@ -36,7 +36,7 @@ BDD style unit testing framework for POSIX compliant shells.
   - [Features](#features)
   - [Supported shells and platforms](#supported-shells-and-platforms)
   - [Requirements](#requirements)
-  - [Changelog / Version history](#changelog--version-history)
+  - [Changelog](#changelog)
 - [Tutorial](#tutorial)
   - [Installation](#installation)
     - [Web installer](#web-installer)
@@ -53,6 +53,7 @@ BDD style unit testing framework for POSIX compliant shells.
   - [Random execution (`--random`)](#random-execution---random)
   - [Fail fast (`--fail-fast`)](#fail-fast---fail-fast)
   - [Trace (`--xtrace`, `--xtrace-only`)](#trace---xtrace---xtrace-only)
+  - [Sandbox mode (`--sandbox`)](#sandbox-mode---sandbox)
   - [Ranges (`:LINENO`, `:@ID`) / Filters (`--example`) / Focus (`--focus`)](#ranges-lineno-id--filters---example--focus---focus)
   - [Reporter (`--format`) / Generator (`--output`)](#reporter---format--generator---output)
   - [Coverage (`--kcov`)](#coverage---kcov)
@@ -67,13 +68,16 @@ BDD style unit testing framework for POSIX compliant shells.
   - [`spec/` - default specfiles directory](#spec---default-specfiles-directory)
   - [`spec/banner` - banner file displayed at test execution](#specbanner---banner-file-displayed-at-test-execution)
   - [`spec/spec_helper.sh` - default helper file for specfile](#specspec_helpersh---default-helper-file-for-specfile)
-  - [`spec/support/` - directory for support files for specfile](#specsupport---directory-for-support-files-for-specfile)
+  - [`spec/support/` - directory for support files](#specsupport---directory-for-support-files)
+  - [`spec/support/bin` - directory for support commands](#specsupportbin---directory-for-support-commands)
 - [Specfile](#specfile)
   - [Example](#example)
   - [Basic structure](#basic-structure)
     - [`Describe`, `Context`, `ExampleGroup` - example group](#describe-context-examplegroup---example-group)
     - [`It`, `Specify`, `Example` - example](#it-specify-example---example)
       - [`Todo` - one liner pending example](#todo---one-liner-pending-example)
+      - [`xIt`, `xSpecify`, `xExample` - temporarily skip](#xit-xspecify-xexample---temporarily-skip)
+      - [`fIt`, `fSpecify`, `fExample` - focused example](#fit-fspecify-fexample---focused-example)
     - [`When` - evaluation](#when---evaluation)
       - [`Dump` - dump stdout, stderr and status for debugging](#dump---dump-stdout-stderr-and-status-for-debugging)
     - [`The` - expectation](#the---expectation)
@@ -101,6 +105,10 @@ BDD style unit testing framework for POSIX compliant shells.
     - [`%logger` - debug output](#logger---debug-output)
     - [`%data` - parameter](#data---parameter)
   - [Mock and Stub](#mock-and-stub)
+  - [Support commands](#support-commands)
+    - [Execute the actual command within a mock function](#execute-the-actual-command-within-a-mock-function)
+    - [Make mock not mandatory in sandbox mode](#make-mock-not-mandatory-in-sandbox-mode)
+    - [Resolve command incompatibilities](#resolve-command-incompatibilities)
   - [Testing a single file script](#testing-a-single-file-script)
     - [Sourced Return](#sourced-return)
     - [`Intercept`](#intercept)
@@ -110,29 +118,29 @@ BDD style unit testing framework for POSIX compliant shells.
 
 ## Introduction
 
-ShellSpec is a BDD unit testing framework for dash, bash, ksh, zsh and all POSIX shells that provides
-first-class features such as coverage reporting, parallel execution and parameterized testing and more.
-It was developed as a development / test tool for developing cross-platform shell scripts.
-It has been implemented in POSIX compliant shell script and has been tested in many environments,
-and works not only on PC but also in restricted environments such as cloud and embedded.
+ShellSpec is a BDD unit testing framework for dash, bash, ksh, zsh and **all POSIX shells** that
+**provides first-class features** such as [coverage report][coverage], parallel execution, parameterized testing and more.
+It was developed as a development / test tool for **developing cross-platform shell scripts and shell script libraries**.
+It has been implemented in POSIX compliant shell script and minimal dependencies.
+Therefore, it works not only on PC but also in restricted environments such as a minimal Docker image and embedded system.
 
 ### Features
 
-- Works with all POSIX compliant shells (dash, bash, zsh, ksh, busybox, etc...)
+- Works with **all POSIX compliant shells** (dash, bash, zsh, ksh, busybox, etc...)
 - Minimal dependencies (use only a few basic POSIX-compliant commands)
-- BDD style specfile compatible with shell script syntax (can mix shell scripts)
-- Structured test using nestable blocks with scoped (isolation between tests)
-- Easy to mock and stub in cooperation with scope
-- Skip / pending of the examples, and support of easy-to-skip "x" known as "xit"
+- **BDD style specfile compatible with shell script syntax** (can mix shell scripts)
+- **Structured test using nestable blocks with scoped** (isolation between tests)
+- **Easy to mock and stub** in cooperation with scope
+- Skip / Pending of the examples
 - Before / After and BeforeAll / BeforeAll hooks
-- Parameterized examples for Data-Driven tests
-- Execution filtering by line number, id, focus, tag and example name
-- Quick execution to run examples that not-passed (or failed) the last time it ran
-- Execution with trace output for debugging
-- Parallel execution, random ordered execution and dry-run execution
+- **Parameterized examples** for Data-Driven tests
+- **Execution filtering** by line number, id, focus, tag and example name
+- **Quick execution** to run examples that not-passed (or failed) the last time it ran
+- Execution with **trace output** for debugging
+- **Parallel execution**, random ordered execution and dry-run execution
 - Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
-- Coverage ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
-- Friendly with CI and provides Docker images with ShellSpec pre-installed
+- **Coverage** ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
+- **Friendly with CI and provides Docker images** with ShellSpec pre-installed
 - Built-in project directory generator and simple task runner
 - Extensible architecture (custom assertion, custom matcher, etc...)
 
@@ -140,7 +148,29 @@ Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomat
 
 ### Supported shells and platforms
 
-`bash`, `busybox (ash)`, `bosh`, `dash`, `gwsh`, `ksh`, `loksh`, `mksh`, `oksh`, `pdksh`, `posh`, `yash`, `zsh`
+- [bash][bash] (>=2.03), [bosh/pbosh][bosh] (>=2018/10/07), [posh][posh] (>=0.3.14), [yash][yash] (>=2.29), [zsh][zsh] (>=3.1.9)
+- [dash][dash] (>=0.5.2), [busybox][busybox] ash (>=1.10.2), [busybox-w32][busybox-w32], [GWSH][gwsh] (>=20190627)
+- ksh88, [ksh93][ksh93] (>=93s), [ksh2020][ksh2020], [mksh/lksh][mksh] (>=R28), [pdksh][pdksh] (>=5.2.14)
+- [FreeBSD sh][freebsdsh], [NetBSD sh][netbsdsh], [OpenBSD ksh][openbsdksh], [loksh][loksh], [oksh][oksh]
+
+[bash]: https://www.gnu.org/software/bash/
+[bosh]: http://schilytools.sourceforge.net/bosh.html
+[busybox]: https://www.busybox.net/
+[busybox-w32]: https://frippery.org/busybox/
+[dash]: http://gondor.apana.org.au/~herbert/dash/
+[gwsh]: https://github.com/hvdijk/gwsh
+[ksh93]: http://kornshell.org
+[ksh2020]: https://github.com/ksh-community/ksh
+[mksh]: http://www.mirbsd.org/mksh.htm
+[posh]: https://salsa.debian.org/clint/posh
+[yash]: https://yash.osdn.jp/
+[zsh]: https://www.zsh.org/
+[netbsdsh]: http://cvsweb.netbsd.org/bsdweb.cgi/src/bin/sh/
+[freebsdsh]: https://www.freebsd.org/cgi/man.cgi?sh(1)
+[openbsdksh]: https://man.openbsd.org/ksh.1
+[pdksh]: https://web.archive.org/web/20160918190548/http://www.cs.mun.ca:80/~michael/pdksh/
+[loksh]: https://github.com/dimkr/loksh
+[oksh]: https://github.com/ibara/oksh
 
 | Platform                                                         | Test                                                |
 | ---------------------------------------------------------------- | --------------------------------------------------- |
@@ -167,13 +197,13 @@ and a few basic [POSIX-compliant commands][utilities] to support widely environm
 Currently used external (not shell builtins) commands:
 
 - `cat`, `date`, `env`, `ls`, `mkdir`, `od` (or not POSIX `hexdump`), `rm`, `sleep`, `sort`, `time`, `uniq`
-- `ps` (used to autodetect the current shell in environments which do not implement procfs)
+- `ps` (used to auto-detect shells in environments that don't implement procfs)
 - `ln`, `mv` (used only when generating coverage report)
-- `kill`, `printf` (used but almost shell builtins)
+- `kill`, `printf` (most shells except some are built-in)
 
-### Changelog / Version history
+### Changelog
 
-Recent update information: See [CHANGELOG.md](CHANGELOG.md)
+See [CHANGELOG.md](CHANGELOG.md)
 
 ## Tutorial
 
@@ -622,6 +652,17 @@ Otherwise, run tracing only. The output format can be set with the variable `PS4
 
 NOTE: `BASH_XTRACEFD` only available *bash version >= 4.1* or *busybox (ash) version >= 1.28.0*.
 
+### Sandbox mode (`--sandbox`)
+
+Force the use of the mock instead of the actual command.
+This option makes the `PATH` environment variable empty (except `spec/support/bin`) and `readonly`.
+
+[Support commands](#support-commands) help to call the actual command in sandbox mode.
+
+NOTE: This is not a security feature and does not provide complete isolation.
+For example, if specified with an absolute path, the actual command will be executed.
+If you need strict isolation, use Docker or similar technology.
+
 ### Ranges (`:LINENO`, `:@ID`) / Filters (`--example`) / Focus (`--focus`)
 
 You can run specific example(s) or example group(s) only.
@@ -666,11 +707,11 @@ If you want to include other files, you need to adjust options with `--kcov-opti
 --kcov-options "--include-pattern=myprog,/lib/"
 ```
 
-[Coverage report][] and `cobertura.xml` and `sonarqube.xml` files are generated under the `coverage` directory by Kcov.
+[Coverage report][coverage] and `cobertura.xml` and `sonarqube.xml` files are generated under the `coverage` directory by Kcov.
 You can easily integrate with [Coveralls](https://coveralls.io/), [Code Climate](https://codeclimate.com/),
 [Codecov](https://codecov.io/) and more.
 
-[Coverage report]: https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html
+[coverage]: https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html
 
 ### Profiler (`--profile`)
 
@@ -756,9 +797,13 @@ is executed. Disable that behavior with the `--no-banner` option.
 The `spec_helper.sh` is loaded to specfile by the `--require spec_helper` option.
 This file is used to define global functions, initial setting for examples, custom matchers, etc.
 
-### `spec/support/` - directory for support files for specfile
+### `spec/support/` - directory for support files
 
 This directory is used to store files for custom matchers, tasks, etc.
+
+### `spec/support/bin` - directory for support commands
+
+This directory is used to store [support commands](#support-commands).
 
 ## Specfile
 
@@ -813,6 +858,15 @@ NOTE: Each example runs in a subshell.
 ##### `Todo` - one liner pending example
 
 `Todo` is same as empty example.
+
+##### `xIt`, `xSpecify`, `xExample` - temporarily skip
+
+You can easily skip the example by prefixing it with "x".
+
+##### `fIt`, `fSpecify`, `fExample` - focused example
+
+You can focus the example by prefixing it with "f".
+You can only run the focused example with the `--focus` option.
 
 #### `When` - evaluation
 
@@ -1143,12 +1197,8 @@ See `Parameters`.
 
 ### Mock and Stub
 
-Currently, ShellSpec does not provide any special function for mocking / stubbing.
-But redefining a shell function can override existing shell function or external
-command. It can be used for mocking / stubbing.
-
-Remember that `Describe`, `Context`, `It`, `Example`, `Specify` blocks run in a
-subshell. When going out of the block, redefined functions are restored.
+The way to create a mock/stub is just (re)define the shell function.
+Then the mock/stub is automatically released according to the scope.
 
 ```sh
 Describe 'mock stub sample'
@@ -1161,12 +1211,65 @@ Describe 'mock stub sample'
     The stdout should eq 1546354800
   End
 
-  Example 'use the date command'
+  Example 'use the actual date command'
     # date is not redefined because this is another subshell
     When call unixtime
     The stdout should not eq 1546268400
   End
 End
+```
+
+### Support commands
+
+#### Execute the actual command within a mock function
+
+Support commands are helper commands that can be used in the specfile.
+For example, it can be used in a mock function to execute the actual command.
+
+```sh
+Describe "Support commands sample"
+  touch() {
+    @touch "$@" # @touch executes actual touch command
+    echo "$1 was touched"
+  }
+
+  It "touch a file"
+    When run touch "file"
+    The output should eq "file was touched"
+    The file "file" should be exist
+  End
+End
+```
+
+Support commands are generate to the `spec/support/bin` directory by `--gen-bin` option.
+For example, run `shellspec --gen-bin @touch` to generate the `@touch` command.
+
+This is main purpose but support commands is just shell script, so you can
+also be used for other purposes. You can freely edit the support command.
+
+#### Make mock not mandatory in sandbox mode
+
+The sandbox mode is force the use of the mock. However, you may not want to require mocks in some commands.
+For example, `printf` is a built-in command in many shells and does not require a mock,
+but some shells require a mock in sandbox mode because it is an external command.
+
+To allow `printf` to be called without mocking in such cases,
+create a support command named `printf` (`shellspec --gen-bin printf`).
+
+#### Resolve command incompatibilities
+
+Some commands have different options between BSD and GNU.
+If you handle the difference in the specfile, the test will be hard to read.
+You can solve it with the support command.
+
+```sh
+#!/bin/sh -e
+# Command name: @sed
+export PATH="${SHELLSPEC_PATH:?}"
+case $OSTYPE in
+  *darwin*) gsed "$@" ;;
+  *) sed "$@" ;;
+esac
 ```
 
 ### Testing a single file script
