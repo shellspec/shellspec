@@ -207,38 +207,38 @@ Describe "libexec/shellspec.sh"
   End
 
   Describe "command_path()"
-    Before PATH='/foo:$BIN:/bar'
+    setup() { ret=''; }
+    Before setup
 
-    It "only checks command exists"
-      When call command_path "$BIN/cat"
+    It "checks command exists"
+      When call command_path "cat"
       The status should be success
     End
 
-    Context 'when absolute path'
-      It "outputs found path"
-        When call command_path ret "$BIN/cat"
-        The variable ret should equal "$BIN/cat"
-      End
-
-      It "return failure when not found command"
-        BeforeCall ret="dummy"
-        When call command_path ret "$BIN/-no-such-command-"
-        The status should be failure
-        The variable ret should equal "dummy"
-      End
+    It "outputs absolute path"
+      When call command_path ret "cat"
+      The variable ret should end with "/cat"
+      The path "$ret" should be executable
     End
 
-    Context 'when command only'
+    It "return failure when not found command"
+      BeforeCall ret="dummy"
+      When call command_path no-such-a-command
+      The status should be failure
+      The variable ret should equal "dummy"
+    End
+
+    Context "when specified absolute path"
       It "outputs absolute path"
-        When call command_path ret "cat"
-        The variable ret should equal "$BIN/cat"
+        When call command_path ret "$SHELLSPEC_SUPPORT_BINDIR/cat"
+        The variable ret should end with "/cat"
+        The path "$ret" should be executable
       End
 
       It "return failure when not found command"
-        BeforeCall ret="dummy"
-        When call command_path ret "-no-such-command-"
+        When call command_path ret "$SHELLSPEC_SUPPORT_BINDIR/no-such-a-file"
         The status should be failure
-        The variable ret should equal "dummy"
+        The variable ret should eq ""
       End
     End
   End

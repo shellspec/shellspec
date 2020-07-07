@@ -26,15 +26,13 @@ Describe "./install.sh"
   Include ./install.sh
 
   Describe "exists()"
-    Before 'PATH="/foo:$BIN:/bar"'
-
     It 'returns success when found executable file'
       When call exists cat
       The status should be success
     End
 
     It 'returns success when not found executable file'
-      When call exists no-such-command
+      When call exists no-such-a-command
       The status should be failure
     End
   End

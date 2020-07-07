@@ -206,8 +206,7 @@ Describe "core/evaluation.sh"
     End
 
     It 'calls external command'
-      BeforeRun 'PATH="$BIN:$PATH"'
-      cat() { echo "fake cat"; return 1; }
+      cat() { echo "should not be executed"; return 1; }
       When run command cat /dev/null
       The status should equal 0
     End
@@ -308,7 +307,6 @@ Describe "core/evaluation.sh"
     End
 
     It 'reads data from stdin'
-      BeforeRun 'PATH="$BIN:$PATH"'
       Data "data"
       When run command cat
       The stdout should equal 'data'
@@ -427,8 +425,7 @@ Describe "core/evaluation.sh"
 
     Describe 'run command evaluation'
       It 'runs external command'
-        BeforeRun 'PATH="$BIN:$PATH"'
-        cat() { echo "fake cat"; return 1; }
+        cat() { echo "should not be executed"; return 1; }
         When run command cat /dev/null
         The status should equal 0
       End
@@ -439,15 +436,8 @@ Describe "core/evaluation.sh"
         The stderr should be present
       End
 
-      It 'runs external command in PATH'
-        BeforeRun 'PATH="$BIN:$PATH"'
-        When run command echo 'bad'
-        The output should eq 'fake echo'
-      End
-
       It 'returns 127 when external command not found'
-        BeforeRun PATH=""
-        When run command echo 'bad'
+        When run command no-such-a-command 'bad'
         The status should eq 127
         The stderr should be present
       End

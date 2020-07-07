@@ -1,4 +1,0 @@
-#!/bin/sh
-
-PATH="/usr/sbin:/usr/bin:/sbin:/bin"
-cat "$@"

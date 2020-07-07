@@ -689,26 +689,16 @@ Describe "general.sh"
   End
 
   Describe "shellspec_which()"
-    Context 'when PATH=/foo:$BIN:/bar'
-      Before PATH='/foo:$BIN:/bar'
+    Context 'when command exists'
       It "retrieves found path"
         When call shellspec_which cat
-        The output should eq "$BIN/cat"
+        The output should end with "/cat"
       End
     End
 
-    Context 'when PATH=/foo:/bar'
-      Before PATH=/foo:/bar
+    Context 'when command not exists'
       It "retrieves nothing"
-        When call shellspec_which cat
-        The status should eq 1
-      End
-    End
-
-    Context 'when PATH='
-      Before PATH=
-      It "retrieves nothing"
-        When call shellspec_which cat
+        When call shellspec_which no-such-a-command
         The status should eq 1
       End
     End
