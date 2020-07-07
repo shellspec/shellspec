@@ -5,7 +5,8 @@
 Describe "run shellspec-gen-bin.sh"
   __main__() {
     SHELLSPEC_SPECDIR="$GENBIN/spec"
-    SHELLSPEC_SUPPORT_BIN="$SHELLSPEC_SPECDIR/support/bin"
+    # shellcheck disable=SC2034
+    SHELLSPEC_SUPPORT_BINDIR="$SHELLSPEC_SPECDIR/support/bin"
   }
   Intercept main
   Path dummy-bin="$GENBIN/spec/support/bin/@dummy"

@@ -23,12 +23,12 @@ if [ ! -e "$SHELLSPEC_SPECDIR" ]; then
   exit 1
 fi
 
-mkdir -p "$SHELLSPEC_SUPPORT_BIN"
+mkdir -p "$SHELLSPEC_SUPPORT_BINDIR"
 
 for cmd; do
-  bin="$SHELLSPEC_SUPPORT_BIN/$cmd"
+  bin="$SHELLSPEC_SUPPORT_BINDIR/$cmd"
   if [ -e "$bin" ]; then
-    echo "Skip, $cmd already exist (${SHELLSPEC_SUPPORT_BIN#"$PWD/"}/$cmd)"
+    echo "Skip, $cmd already exist (${SHELLSPEC_SUPPORT_BINDIR#"$PWD/"}/$cmd)"
   else
     generate "${cmd#@}" > "$bin"
     chmod +x "$bin"

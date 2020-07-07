@@ -136,19 +136,19 @@ fi
   esac
 } 2>/dev/null &&:
 
+VAR="readonly"
+readonly VAR
+export VAR
+if ! $SHELLSPEC_SHELL "${0%/*}/shellspec-inspection-readonly.sh" 2>/dev/null; then
+  # ksh: readonly flag is inherit to child processes
+  echo "SHELLSPEC_PATH_IS_READONLY=1"
+fi
+
 # shellcheck disable=SC2123
 PATH=/
 if [ "$SHELLSPEC_SANDBOX" ] && ! $SHELLSPEC_SHELL -c ":" 2>/dev/null; then
   # busybox ash on cygwin
   echo "SHELLSPEC_DEFECT_SANDBOX=1"
-fi
-
-VAR="readonly"
-readonly VAR
-export VAR
-if ! $SHELLSPEC_SHELL "${0%/*}/shellspec-inspection-readonly.sh"; then
-  # ksh: readonly flag is inherit to child processes
-  echo "SHELLSPEC_PATH_IS_READONLY=1"
 fi
 
 # arithmetic expansion is also required

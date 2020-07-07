@@ -90,6 +90,7 @@
     "lib/libexec/shellspec.sh",
     "lib/libexec/task.sh",
     "lib/libexec/translator.sh",
+    "lib/support-bin.sh",
     "libexec/shellspec-executor.sh",
     "libexec/shellspec-gen-bin.sh",
     "libexec/shellspec-init.sh",

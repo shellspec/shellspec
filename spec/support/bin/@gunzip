@@ -1,13 +1,3 @@
 #!/bin/sh -e
-if [ "${SHELLSPEC_PATH_IS_READONLY:-}" ]; then
-  typeset +x PATH
-  exec "$SHELLSPEC_ENV" PATH="$PATH" SHELLSPEC_PATH_IS_READONLY="" "$0" "$@"
-fi
-PATH=
-cmd=gunzip
-if type "$cmd" >/dev/null 2>&1; then
-  cmd=$(PATH="${SHELLSPEC_PATH:?}"; which "$cmd")
-fi
-PATH="${SHELLSPEC_PATH:?}"
-export PATH
-"$cmd" "$@"
+. "$SHELLSPEC_SUPPORT_BIN"
+invoke gunzip "$@"

@@ -381,7 +381,7 @@ Describe "core/evaluation.sh"
       End
 
       Describe 'shebang arguments'
-        set_fake_shell() { export SHELLSPEC_SHELL="printf '%s\n'"; }
+        set_fake_shell() { export SHELLSPEC_SHELL="$SHELLSPEC_PRINTF '%s\n'"; }
         shellspec_shebang_arguments() { %= "-u -u -u -u"; }
         Before set_fake_shell
 

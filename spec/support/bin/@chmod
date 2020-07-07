@@ -1,8 +1,3 @@
 #!/bin/sh -e
-if [ "${SHELLSPEC_PATH_IS_READONLY:-}" ]; then
-  typeset +x PATH
-  exec "$SHELLSPEC_ENV" PATH="$PATH" SHELLSPEC_PATH_IS_READONLY="" "$0" "$@"
-fi
-PATH="${SHELLSPEC_PATH:?}"
-export PATH
-chmod "$@"
+. "$SHELLSPEC_SUPPORT_BIN"
+invoke chmod "$@"
