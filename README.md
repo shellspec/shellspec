@@ -30,20 +30,50 @@ Featureful BDD unit testing framework for shell scripts.
 [![yash](https://img.shields.io/badge/yash-&ge;2.29-lightgrey.svg?style=flat)](https://yash.osdn.jp/)
 [![zsh](https://img.shields.io/badge/zsh-&ge;3.1.9-lightgrey.svg?style=flat)](https://www.zsh.org/)
 
-## Table of Contents <!-- omit in toc -->
+## Introduction <!-- omit in toc -->
 
-- [Introduction](#introduction)
-  - [Features](#features)
+ShellSpec is a most featureful BDD unit testing framework for dash, bash, ksh, zsh and **all POSIX shells** that
+**provides first-class features** such as [coverage report][coverage], parallel execution, parameterized testing and more.
+It was developed as a development / test tool for **developing cross-platform shell scripts and shell script libraries**.
+It has been implemented in POSIX compliant shell script and minimal dependencies.
+Therefore, it works not only on PC but also in restricted environments such as a minimal Docker image and embedded system.
+
+### Impressive features <!-- omit in toc -->
+
+- Works with **all POSIX compliant shells** (dash, bash, zsh, ksh, busybox, etc...)
+- Minimal dependencies (use only a few basic POSIX-compliant commands)
+- **BDD style specfile compatible with shell script syntax** (can mix shell scripts)
+- **Structured test using nestable blocks with scoped** (isolation between tests)
+- **Easy to mock and stub** in cooperation with scope
+- Easy to Skip/Pending of the examples
+- Before/After and BeforeAll/BeforeAll hooks
+- **Parameterized examples** for Data-Driven tests
+- **Execution filtering** by line number, id, focus, tag and example name
+- **Quick execution** to run examples that not-passed (or failed) the last time it ran
+- Execution with **trace output** for debugging
+- **Parallel execution**, random ordered execution and dry-run execution
+- Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
+- **Coverage** ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
+- **Friendly with CI and provides Docker images** with ShellSpec pre-installed
+- Built-in project directory generator and simple task runner
+- Extensible architecture (custom assertion, custom matcher, etc...)
+- Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
+
+### Latest Update
+
+See [CHANGELOG.md](CHANGELOG.md)
+
+### Table of Contents <!-- omit in toc -->
+
+- [Requirements](#requirements)
   - [Supported shells and platforms](#supported-shells-and-platforms)
-  - [Requirements](#requirements)
-  - [Changelog](#changelog)
-- [Tutorial](#tutorial)
-  - [Installation](#installation)
-    - [Web installer](#web-installer)
-    - [Package manager](#package-manager)
-    - [Others (archive / make / manual)](#others-archive--make--manual)
+  - [POSIX-compliant commands](#posix-compliant-commands)
+- [Installation](#installation)
+  - [Web installer](#web-installer)
+  - [Package manager](#package-manager)
+  - [Others (archive / make / manual)](#others-archive--make--manual)
   - [Use with Docker](#use-with-docker)
-  - [Getting started](#getting-started)
+- [Tutorial](#tutorial)
 - [shellspec command](#shellspec-command)
   - [Usage (`--help`)](#usage---help)
   - [Initialize your project (`--init`)](#initialize-your-project---init)
@@ -81,7 +111,7 @@ Featureful BDD unit testing framework for shell scripts.
     - [`When` - evaluation](#when---evaluation)
       - [`Dump` - dump stdout, stderr and status for debugging](#dump---dump-stdout-stderr-and-status-for-debugging)
     - [`The` - expectation](#the---expectation)
-      - [`Assert` - expectation for custom assertion](#assert---expectation-for-custom-assertion)
+    - [`Assert` - expectation for custom assertion](#assert---expectation-for-custom-assertion)
     - [Subjects, Modifiers and Matchers](#subjects-modifiers-and-matchers)
       - [custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
   - [Helpers](#helpers)
@@ -116,41 +146,13 @@ Featureful BDD unit testing framework for shell scripts.
   - [Translation process](#translation-process)
 - [For developers](#for-developers)
 
-## Introduction
-
-ShellSpec is a BDD unit testing framework for dash, bash, ksh, zsh and **all POSIX shells** that
-**provides first-class features** such as [coverage report][coverage], parallel execution, parameterized testing and more.
-It was developed as a development / test tool for **developing cross-platform shell scripts and shell script libraries**.
-It has been implemented in POSIX compliant shell script and minimal dependencies.
-Therefore, it works not only on PC but also in restricted environments such as a minimal Docker image and embedded system.
-
-### Features
-
-- Works with **all POSIX compliant shells** (dash, bash, zsh, ksh, busybox, etc...)
-- Minimal dependencies (use only a few basic POSIX-compliant commands)
-- **BDD style specfile compatible with shell script syntax** (can mix shell scripts)
-- **Structured test using nestable blocks with scoped** (isolation between tests)
-- **Easy to mock and stub** in cooperation with scope
-- Skip / Pending of the examples
-- Before / After and BeforeAll / BeforeAll hooks
-- **Parameterized examples** for Data-Driven tests
-- **Execution filtering** by line number, id, focus, tag and example name
-- **Quick execution** to run examples that not-passed (or failed) the last time it ran
-- Execution with **trace output** for debugging
-- **Parallel execution**, random ordered execution and dry-run execution
-- Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
-- **Coverage** ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
-- **Friendly with CI and provides Docker images** with ShellSpec pre-installed
-- Built-in project directory generator and simple task runner
-- Extensible architecture (custom assertion, custom matcher, etc...)
-
-Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
+## Requirements
 
 ### Supported shells and platforms
 
-- <code>[bash][bash]</code><small>_>=2.03_</small>, <code>[bosh/pbosh][bosh]</code><small>_>=2018/10/07_</small>, <code>[posh][posh]</code><small>_>=0.3.14_</small>, <code>[yash][yash]</code><small>_>=2.29_</small>, <code>[zsh][zsh]</code><small>_>=3.1.9_</small>
-- <code>[dash][dash]</code><small>_>=0.5.2_</small>, <code>[busybox][busybox] ash</code><small>_>=1.10.2_</small>, <code>[busybox-w32][busybox-w32]</code>, <code>[GWSH][gwsh]</code><small>_>=20190627_</small>
-- <code>ksh88</code>, <code>[ksh93][ksh93]</code><small>_>=93s_</small>, <code>[ksh2020][ksh2020]</code>, <code>[mksh/lksh][mksh]</code><small>_>=R28_</small>, <code>[pdksh][pdksh]</code><small>_>=5.2.14_</small>
+- <code>[bash][bash]</code><small>>=2.03</small>, <code>[bosh/pbosh][bosh]</code><small>>=2018/10/07</small>, <code>[posh][posh]</code><small>>=0.3.14</small>, <code>[yash][yash]</code><small>>=2.29</small>, <code>[zsh][zsh]</code><small>>=3.1.9</small>
+- <code>[dash][dash]</code><small>>=0.5.2</small>, <code>[busybox][busybox] ash</code><small>>=1.10.2</small>, <code>[busybox-w32][busybox-w32]</code>, <code>[GWSH][gwsh]</code><small>>=20190627</small>
+- <code>ksh88</code>, <code>[ksh93][ksh93]</code><small>>=93s</small>, <code>[ksh2020][ksh2020]</code>, <code>[mksh/lksh][mksh]</code><small>>=R28</small>, <code>[pdksh][pdksh]</code><small>>=5.2.14</small>
 - <code>[FreeBSD sh][freebsdsh]</code>, <code>[NetBSD sh][netbsdsh]</code>, <code>[OpenBSD ksh][openbsdksh]</code>, <code>[loksh][loksh]</code>, <code>[oksh][oksh]</code>
 
 [bash]: https://www.gnu.org/software/bash/
@@ -186,7 +188,7 @@ Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomat
 
 [Tested version details](docs/shells.md)
 
-### Requirements
+### POSIX-compliant commands
 
 ShellSpec is implemented by a pure shell script and uses only shell builtins
 and a few basic [POSIX-compliant commands][utilities] to support widely environments
@@ -201,15 +203,9 @@ Currently used external (not shell builtins) commands:
 - `ln`, `mv` (used only when generating coverage report)
 - `kill`, `printf` (most shells except some are built-in)
 
-### Changelog
+## Installation
 
-See [CHANGELOG.md](CHANGELOG.md)
-
-## Tutorial
-
-### Installation
-
-#### Web installer
+### Web installer
 
 **Install the latest release version.**
 
@@ -284,7 +280,7 @@ OPTIONS:
 
 </details>
 
-#### Package manager
+### Package manager
 
 <details>
 <summary>Arch Linux</summary>
@@ -343,7 +339,7 @@ $ bpkg install shellspec/shellspec@0.19.1
 
 </details>
 
-#### Others (archive / make / manual)
+### Others (archive / make / manual)
 
 <details>
 <summary>Archive</summary>
@@ -425,7 +421,7 @@ specfiles run in a Docker container.
 
 See [How to use ShellSpec with Docker](docs/docker.md).
 
-### Getting started
+## Tutorial
 
 **Just create your project directory and run `shellspec --init` to setup to your project**
 
@@ -481,6 +477,11 @@ Usage: shellspec [options...] [files or directories...]
 
     -s, --shell SHELL               Specify a path of shell [default: "auto" (running shell)]
                                       ShellSpec ignores shebang and runs in the specified shell.
+        --path PATH                 Set PATH environment variable at startup
+                                      e.g. --path /bin:/usr/bin, --path "$(getconf PATH)"
+        --[no-]sandbox              Force the use of the mock instead of the actual command
+                                      Make PATH empty (except "spec/support/bin") and readonly
+                                      This is not a security feature and does not provide complete isolation
         --require MODULE            Require a MODULE (shell script file)
     -e, --env NAME=VALUE            Set environment variable
         --env-from ENV-SCRIPT       Set environment variable from shell script file
@@ -571,15 +572,17 @@ Usage: shellspec [options...] [files or directories...]
                                         --exclude-pattern=/.shellspec,/spec/,/coverage/,/report/
                                         --path-strip-level=1
                                       To include files without extension, specify --include-pattern
-                                      without '.sh' and filter with --include-*/--exclude-* options
+                                      without '.sh' and filter with --include-*/--exclude-* options.
 
   **** Utility ****
 
         --init [TEMPLATE...]        Initialize your project with ShellSpec
-                                      Template: Create additional files
+                                      Template: Create additional files.
                                         [git]   .gitignore
                                         [hg]    .hgignore
                                         [svn]   .svnignore
+        --gen-bin [@COMMAND...]     Generate test support commands in spec/support/bin
+                                      This is useful for run actual commands from mock/stub.
         --count                     Count the number of specfiles and examples
         --list LIST                 List the specfiles/examples
                                       [specfiles]       list the specfiles
@@ -587,7 +590,7 @@ Usage: shellspec [options...] [files or directories...]
                                       [examples:id]     alias for examples
                                       [examples:lineno] list the examples with lineno
                                       [debug]           for developer
-                                      The order is randomized with --random but random TYPE is ignored
+                                      The order is randomized with --random but random TYPE is ignored.
         --syntax-check              Syntax check of the specfiles without running any examples
         --translate                 Output translated specfile
         --task [TASK]               Run the TASK or Show the task list if TASK is not specified
@@ -948,7 +951,7 @@ The first word of second line of output should valid number
 The first word of the second line of output should valid as a number
 ```
 
-##### `Assert` - expectation for custom assertion
+#### `Assert` - expectation for custom assertion
 
 Use `Assert` for using custom assertion.
 It is designed for verification of side effects, not result of evaluation.
@@ -1225,6 +1228,7 @@ End
 
 Support commands are helper commands that can be used in the specfile.
 For example, it can be used in a mock function to execute the actual command.
+It is recommended that the support command name be the actual command name prefixed with `@`.
 
 ```sh
 Describe "Support commands sample"
@@ -1245,7 +1249,7 @@ Support commands are generate to the `spec/support/bin` directory by `--gen-bin`
 For example, run `shellspec --gen-bin @touch` to generate the `@touch` command.
 
 This is main purpose but support commands is just shell script, so you can
-also be used for other purposes. You can freely edit the support command.
+also be used for other purposes. You can freely edit the support command script.
 
 #### Make mock not mandatory in sandbox mode
 
@@ -1265,10 +1269,10 @@ You can solve it with the support command.
 ```sh
 #!/bin/sh -e
 # Command name: @sed
-export PATH="${SHELLSPEC_PATH:?}"
+. "$SHELLSPEC_SUPPORT_BIN"
 case $OSTYPE in
-  *darwin*) gsed "$@" ;;
-  *) sed "$@" ;;
+  *darwin*) invoke gsed "$@" ;;
+  *) invoke sed "$@" ;;
 esac
 ```
 
