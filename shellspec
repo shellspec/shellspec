@@ -194,6 +194,8 @@ Usage: shellspec [options...] [files or directories...]
 
     -s, --shell SHELL               Specify a path of shell [default: "auto" (running shell)]
                                       ShellSpec ignores shebang and runs in the specified shell.
+        --path PATH                 Set PATH environment variable at startup
+                                      e.g. --path /bin:/usr/bin, --path "\$(getconf PATH)"
         --[no-]sandbox              Force the use of the mock instead of the actual command
                                       Make PATH empty (except "spec/support/bin") and readonly
                                       This is not a security feature and does not provide complete isolation
@@ -341,6 +343,9 @@ parse_options() {
       --no-color | --no-colour) SHELLSPEC_COLOR='' ;;
       -s | --shell) [ "${2:-}" ] || invalid 'Require SHELL.'
         [ "$2" = "auto" ] && SHELLSPEC_SHELL="" || SHELLSPEC_SHELL=$2
+        shift ;;
+      --path) [ "${2:-}" ] || invalid 'Require PATH.'
+        PATH=$2
         shift ;;
       --sandbox) SHELLSPEC_SANDBOX=1 ;;
       --no-sandbox) SHELLSPEC_SANDBOX='' ;;
