@@ -59,11 +59,14 @@ exists() {
 }
 
 prompt() {
+  set -- "$1" "$2" "${3:-/dev/tty}"
   printf "%s " "$1"
-  if ! eval "[ \"\$$2\" ] && :"; then
-    IFS= read -r "$2" < "${3:-/dev/tty}" || return 1
+  if eval "[ \"\$$2\" ] && :"; then
+    eval "printf \"%s\n\" \"\$$2\""
+  else
+    IFS= read -r "$2" < "$3" || return 1
+    [ "$3" = "/dev/tty" ] || eval "printf \"%s\n\" \"\$$2\""
   fi
-  eval "printf \"%s\n\" \"\$$2\""
 }
 
 is_yes() {
