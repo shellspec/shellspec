@@ -63,7 +63,7 @@ Therefore, it works not only on PC but also in restricted environments such as a
 
 See [CHANGELOG.md](CHANGELOG.md)
 
-### Table of Contents <!-- omit in toc -->
+## Table of Contents <!-- omit in toc -->
 
 - [Requirements](#requirements)
   - [Supported shells and platforms](#supported-shells-and-platforms)
