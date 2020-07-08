@@ -120,6 +120,11 @@ get_versions() {
   git_remote_tags "${PRE:+--pre}"
 }
 
+sort_by_first_key() {
+  # Retry if sort is Windows version
+  ( export LC_ALL=C; sort -k 1 2>/dev/null || command -p sort -k 1 )
+}
+
 version_sort() {
   while read -r version; do
     ver=${version%%+*} && num=${ver%%-*} && pre=${ver#$num}
@@ -130,9 +135,7 @@ version_sort() {
     esac
     printf '%08d%08d%08d%08d' "${1:-0}" "${2:-0}" "${3:-0}" "${4:-0}"
     printf '%s %s\n' "${pre:-=}" "$version"
-  done | ( export LC_ALL=C; sort -k 1 ) | while read -r kv; do
-    echo "${kv#* }"
-  done
+  done | sort_by_first_key | while read -r kv; do echo "${kv#* }"; done
 }
 
 join() {
