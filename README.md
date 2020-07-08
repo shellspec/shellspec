@@ -32,7 +32,7 @@ Featureful BDD unit testing framework for shell scripts.
 
 ## Introduction <!-- omit in toc -->
 
-ShellSpec is a most featureful BDD unit testing framework for dash, bash, ksh, zsh and **all POSIX shells** that
+ShellSpec is the most featureful BDD unit testing framework for dash, bash, ksh, zsh and **all POSIX shells** that
 **provides first-class features** such as [coverage report][coverage], parallel execution, parameterized testing and more.
 It was developed as a development / test tool for **developing cross-platform shell scripts and shell script libraries**.
 It has been implemented in POSIX compliant shell script and minimal dependencies.
@@ -143,16 +143,16 @@ See [CHANGELOG.md](CHANGELOG.md)
     - [Sourced Return](#sourced-return)
     - [`Intercept`](#intercept)
   - [Self-executable specfile](#self-executable-specfile)
-  - [Translation process](#translation-process)
 - [For developers](#for-developers)
+  - [About specfile translation process](#about-specfile-translation-process)
 
 ## Requirements
 
 ### Supported shells and platforms
 
-- <code>[bash][bash]</code><small>>=2.03</small>, <code>[bosh/pbosh][bosh]</code><small>>=2018/10/07</small>, <code>[posh][posh]</code><small>>=0.3.14</small>, <code>[yash][yash]</code><small>>=2.29</small>, <code>[zsh][zsh]</code><small>>=3.1.9</small>
-- <code>[dash][dash]</code><small>>=0.5.2</small>, <code>[busybox][busybox] ash</code><small>>=1.10.2</small>, <code>[busybox-w32][busybox-w32]</code>, <code>[GWSH][gwsh]</code><small>>=20190627</small>
-- <code>ksh88</code>, <code>[ksh93][ksh93]</code><small>>=93s</small>, <code>[ksh2020][ksh2020]</code>, <code>[mksh/lksh][mksh]</code><small>>=R28</small>, <code>[pdksh][pdksh]</code><small>>=5.2.14</small>
+- <code>[bash][bash]</code>_>=2.03_, <code>[bosh/pbosh][bosh]</code>_>=2018/10/07_, <code>[posh][posh]</code>_>=0.3.14_, <code>[yash][yash]</code>_>=2.29_, <code>[zsh][zsh]</code>_>=3.1.9_
+- <code>[dash][dash]</code>_>=0.5.2_, <code>[busybox][busybox] ash</code>_>=1.10.2_, <code>[busybox-w32][busybox-w32]</code>, <code>[GWSH][gwsh]</code>_>=20190627_
+- <code>ksh88</code>, <code>[ksh93][ksh93]</code>_>=93s_, <code>[ksh2020][ksh2020]</code>, <code>[mksh/lksh][mksh]</code>_>=R28_, <code>[pdksh][pdksh]</code>_>=5.2.14_
 - <code>[FreeBSD sh][freebsdsh]</code>, <code>[NetBSD sh][netbsdsh]</code>, <code>[OpenBSD ksh][openbsdksh]</code>, <code>[loksh][loksh]</code>, <code>[oksh][oksh]</code>
 
 [bash]: https://www.gnu.org/software/bash/
@@ -1376,16 +1376,14 @@ Finished in 0.12 seconds (user 0.00 seconds, sys 0.10 seconds)
 $ shellspec test.sh
 ```
 
-### Translation process
-
-The specfile is a valid shell script, but a translation process is performed
-to implement the scope, line number etc. Each example group block and
-example block is translated to commands in a subshell. Therefore changes inside
-those blocks do not affect the outside of the block. In other words it realizes
-local variables and local functions in the specfile. This is very useful for
-describing a structured spec. If you are interested in how to translate,
-use the `--translate` option.
-
 ## For developers
 
 If you want to know ShellSpec architecture and self test, see [CONTRIBUTING.md](CONTRIBUTING.md)
+
+### About specfile translation process
+
+The specfile is a valid shell script, but a translation process is performed to implement the scope,
+line number etc. Each example group block and example block is translated to commands in a subshell.
+Therefore changes inside those blocks do not affect the outside of the block. In other words it realizes
+local variables and local functions in the specfile. This is very useful for describing a structured spec.
+If you are interested in how to translate, use the `--translate` option.
