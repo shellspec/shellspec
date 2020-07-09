@@ -21,7 +21,7 @@ profiler_output() {
     while [ $_i -lt "$profiler_count" ]; do
       eval "putsn \$profiler_tick$_i \$profiler_time$_i \"\$profiler_line$_i\""
       _i=$(($_i + 1))
-    done | sort -k 1 -n -r | (
+    done | profiler_reverse_sort | (
       _i=0
       #shellcheck disable=SC2034
       while IFS=" " read -r _tick _duration _line; do
@@ -35,4 +35,9 @@ profiler_output() {
     )
     putsn
   esac
+}
+
+profiler_reverse_sort() {
+  # Retry if sort is Windows version
+  ( export LC_ALL=C; sort -k 1 -n -r 2>/dev/null || command -p sort -k 1 -n -r )
 }
