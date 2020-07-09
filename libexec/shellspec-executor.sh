@@ -71,7 +71,8 @@ detect_unexpected_error() {
       putsn "${LF}Unexpected exit at line $range in '$1'"
     fi
   else
-    putsn "${LF}Unexpected error (syntax error?) occurred in '$1'"
+    [ "$1" ] && set -- " occurred in '$1'"
+    putsn "${LF}Unexpected error (syntax error?)$1"
   fi
   sleep 0
 }
