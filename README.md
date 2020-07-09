@@ -1,6 +1,6 @@
 # ShellSpec
 
-Featureful BDD unit testing framework for shell scripts.
+Full-featured BDD unit testing framework for shell scripts.
 
 **Let’s test your shell script!** (Try the **[Online Demo](https://shellspec.info/demo)** on the browser).
 
@@ -32,17 +32,17 @@ Featureful BDD unit testing framework for shell scripts.
 
 ## Introduction <!-- omit in toc -->
 
-ShellSpec is the most featureful BDD unit testing framework for dash, bash, ksh, zsh and **all POSIX shells** that
-**provides first-class features** such as [coverage report][coverage], parallel execution, parameterized testing and more.
-It was developed as a development / test tool for **developing cross-platform shell scripts and shell script libraries**.
-It has been implemented in POSIX compliant shell script and minimal dependencies.
-Therefore, it works not only on PC but also in restricted environments such as a minimal Docker image and embedded system.
+ShellSpec is a full-featured BDD unit testing framework for dash, bash, ksh, zsh and **all POSIX shells** that
+**provides first-class features** such as [code coverage][coverage], parallel execution, parameterized testing and more.
+It was developed as a dev/test tool for **cross-platform shell scripts and shell script libraries**.
+Most of features are implemented with pure shell script and minimal POSIX-compliant commands,
+so they work also in restricted environments such as tiny Docker images and embedded systems.
 
 ### Impressive features <!-- omit in toc -->
 
 - Works with **all POSIX compliant shells** (dash, bash, zsh, ksh, busybox, etc...)
 - Minimal dependencies (use only a few basic POSIX-compliant commands)
-- **BDD style specfile compatible with shell script syntax** (can mix shell scripts)
+- **BDD style specfile compatible with shell script syntax** (can embed shell script)
 - **Structured test using nestable blocks with scoped** (isolation between tests)
 - **Easy to mock and stub** in cooperation with scope
 - Easy to Skip/Pending of the examples
@@ -53,7 +53,7 @@ Therefore, it works not only on PC but also in restricted environments such as a
 - Execution with **trace output** for debugging
 - **Parallel execution**, random ordered execution and dry-run execution
 - Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
-- **Coverage** ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
+- **Code coverage** ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
 - **Friendly with CI and provides Docker images** with ShellSpec pre-installed
 - Built-in project directory generator and simple task runner
 - Extensible architecture (custom assertion, custom matcher, etc...)
@@ -190,17 +190,16 @@ See [CHANGELOG.md](CHANGELOG.md)
 
 ### POSIX-compliant commands
 
-ShellSpec is implemented by a pure shell script and uses only shell builtins
-and a few basic [POSIX-compliant commands][utilities] to support widely environments
-(except `kcov` for optional coverage).
+ShellSpec uses shell built-in command and only few basic [POSIX-compliant commands][utilities] to
+support widely environments (except `kcov` for optional code coverage).
 
 [utilities]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/contents.html
 
 Currently used external (not shell builtins) commands:
 
-- `cat`, `date`, `env`, `ls`, `mkdir`, `od` (or not POSIX `hexdump`), `rm`, `sleep`, `sort`, `time`, `uniq`
-- `ps` (used to auto-detect shells in environments that don't implement procfs)
-- `ln`, `mv` (used only when generating coverage report)
+- `cat`, `date`, `env`, `ls`, `mkdir`, `od` (or not POSIX `hexdump`), `rm`, `sleep`, `sort`, `time`
+- `ps` (use to auto-detect shells in environments that don't implement procfs)
+- `ln`, `mv` (use only when generating coverage report)
 - `kill`, `printf` (most shells except some are built-in)
 
 ## Installation
