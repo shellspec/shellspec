@@ -504,7 +504,7 @@ Describe "libexec/translator.sh"
       BeforeRun "block_end"
       It "outputs syntax error"
         When run example_all_hook before_all
-        The stdout should eq "BeforeAll cannot be defined after of Example Group/Example"
+        The stdout should eq "BeforeAll cannot be defined after of Example Group/Example in same block"
       End
     End
   End
@@ -796,6 +796,40 @@ Describe "libexec/translator.sh"
     End
   End
 
+  Describe "mock()"
+    BeforeRun initialize
+    trans() { :; }
+    mock_trans() { trans() { echo trans "$@"; }; }
+    syntax_error() { echo "$@"; }
+
+    Context "when outside of example"
+      BeforeRun mock_trans
+
+      It "outputs syntax error"
+        When run mock "desc"
+        The stdout should eq 'trans mock_begin desc'
+      End
+    End
+
+    Context "when inside of example"
+      BeforeRun "block_example desc" mock_trans
+
+      It "outputs syntax error"
+        When run mock "desc"
+        The stdout should eq 'Mock cannot be defined inside of Example'
+      End
+    End
+
+    Context "when after example block"
+      BeforeRun "block_example desc"
+      BeforeRun "block_end"
+      It "outputs syntax error"
+        When run mock "desc"
+        The stdout should eq "Mock cannot be defined after of Example Group/Example in same block"
+      End
+    End
+  End
+
   Describe "constant()"
     BeforeRun initialize
     trans() { :; }
@@ -981,6 +1015,45 @@ Describe "libexec/translator.sh"
       The line 7 of stdout should eq "trans embedded_text_line text2"
       The line 8 of stdout should eq "trans embedded_text_end"
       The line 9 of stdout should eq "trans line line4"
+    End
+  End
+
+  Describe "translate_mock()"
+    Before initialize
+    trans() { echo trans "$@"; }
+    syntax_error() { echo "syntax error" "$@"; }
+
+    Context "when inside mock"
+      Before "inside_of_mock=1"
+
+      It "returns success if DSL is End"
+        When call translate_mock "End"
+        The stdout should eq "trans mock_end End"
+        The status should be success
+      End
+
+      It "returns success with error if specified DSL"
+        When call translate_mock "It"
+        The stdout should be blank
+        The status should be success
+        The variable use_dsl_in_mock should eq 1
+      End
+    End
+
+    Context "when outside mock"
+      Before "inside_of_mock="
+
+      It "returns false"
+        When call translate_mock "foo"
+        The status should be failure
+      End
+
+      It "raises syntax error"
+        BeforeCall "use_dsl_in_mock=1"
+        When call translate_mock "foo"
+        The output should eq "syntax error Only directives can be used in Mock"
+        The status should be failure
+      End
     End
   End
 End

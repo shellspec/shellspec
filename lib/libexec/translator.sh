@@ -8,7 +8,7 @@ load grammar
 initialize() {
   block_id='' block_id_increased=1 inside_of_example='' inside_of_text=''
   lineno=0 block_no=0 example_no=1 skip_id=0 error='' focused='' skipped=''
-  _block_no=0 _block_no_stack=''
+  _block_no=0 _block_no_stack='' mock_no=1 inside_of_mock='' use_dsl_in_mock=''
   parameter_count='' parameter_no=0 _parameter_count_stack=''
   parameters_need_example=''
 }
@@ -245,7 +245,7 @@ example_all_hook() {
   fi
 
   if [ "$1" = "before_all" ] && [ ! "$block_id_increased" ]; then
-    syntax_error "BeforeAll cannot be defined after of Example Group/Example"
+    syntax_error "BeforeAll cannot be defined after of Example Group/Example in same block"
     return 0
   fi
 
@@ -417,6 +417,29 @@ parameters_dynamic() {
   eval "parameter_count=\$(count=0${LF}{ $code }>&2;echo \"\$count\")"
 }
 
+mock() {
+  if [ "$inside_of_example" ]; then
+    syntax_error "Mock cannot be defined inside of Example"
+    return 0
+  fi
+
+  if [ ! "$block_id_increased" ]; then
+    syntax_error "Mock cannot be defined after of Example Group/Example" \
+      "in same block"
+    return 0
+  fi
+
+  inside_of_mock=1
+  eval trans mock_begin ${1+'"$@"'}
+  mock_no=$(($mock_no + 1))
+}
+
+mock_end() {
+  is_end_block "${1%% *}" || return 1
+  inside_of_mock=''
+  eval trans mock_end ${1+'"$@"'}
+}
+
 constant() {
   if [ "$_block_no_stack" ]; then
     syntax_error "Constant should be defined outside of Example Group/Example"
@@ -492,11 +515,22 @@ translate() {
       line="${line}${LF}${work}"
     done
     trim work "$line"
+    dsl=${work%% *} rest=''
 
     [ "$inside_of_text" ] && text_line "$work" && continue
+    translate_mock "$dsl" && continue
 
-    dsl=${work%% *} rest=''
     trim rest "${work#"$dsl"}"
     mapping "$dsl" "$rest" || trans line "$line"
   done
+}
+
+translate_mock() {
+  if [ "$inside_of_mock" ]; then
+    mock_end "$1" && return 0
+    is_dsl "$1" && use_dsl_in_mock=1 && return 0
+  elif [ "$use_dsl_in_mock" ]; then
+    syntax_error "Only directives can be used in Mock"
+  fi
+  return 1
 }

@@ -7,7 +7,7 @@ set -eu
 . "${SHELLSPEC_LIB:-./lib}/libexec/translator.sh"
 use escape_quote
 
-delimiter="DATA-$SHELLSPEC_UNIXTIME-$$"
+delimiter="DELIMITER-$SHELLSPEC_UNIXTIME-$$"
 
 trans() {
   # shellcheck disable=SC2145
@@ -114,8 +114,8 @@ trans_data_end() {
 
 trans_embedded_text_begin() {
   case $1 in
-    expand) putsn "shellspec_cat <<$delimiter $2" ;;
-    raw)    putsn "shellspec_cat <<'$delimiter' $2" ;;
+    expand) putsn "shellspec_cat <<DATA-$delimiter $2" ;;
+    raw)    putsn "shellspec_cat <<'DATA-$delimiter' $2" ;;
   esac
 }
 
@@ -124,7 +124,7 @@ trans_embedded_text_line() {
 }
 
 trans_embedded_text_end() {
-  putsn "$delimiter"
+  putsn "DATA-$delimiter"
 }
 
 trans_out() {
@@ -146,6 +146,22 @@ trans_parameters() {
 }
 
 trans_parameters_end() {
+  putsn "}"
+}
+
+trans_mock_begin() {
+  putsn "shellspec_unsetf ${1%% *}"
+  putsn "shellspec_before_all shellspec_mock_${mock_no}"
+  putsn "shellspec_after_all shellspec_unmock_${mock_no}"
+  putsn "shellspec_unmock_${mock_no}() {"
+  putsn "  shellspec_unmock $1"
+  putsn "}"
+  putsn "shellspec_mock_${mock_no}() {"
+  putsn "<<'MOCK-$delimiter' shellspec_mock $1"
+}
+
+trans_mock_end() {
+  putsn "MOCK-$delimiter"
   putsn "}"
 }
 
@@ -173,7 +189,7 @@ trans_with_function() {
 
 syntax_error() {
   set -- "Syntax error: $1 in $specfile line $lineno" "${2:-}"
-  putsn "shellspec_abort $SHELLSPEC_SYNTAX_ERROR_CODE \"$1\" \"$2\""
+  putsn "shellspec_abort $SHELLSPEC_SYNTAX_ERROR_CODE \"$1\" \"$2\" 2>&3"
 }
 
 metadata=1 finished=1 coverage='' fd='' spec_no=1 progress=''
@@ -201,12 +217,13 @@ putsn "export SHELLSPEC_PATH=\"\${SHELLSPEC_PATH:-\$PATH}\""
 putsn "SHELLSPEC_SPECFILE=''"
 putsn "SHELLSPEC_DATA=''"
 putsn "SHELLSPEC_WORKDIR=\"\$SHELLSPEC_TMPBASE\""
+putsn "SHELLSPEC_MOCK_BINDIR=\"\$SHELLSPEC_WORKDIR/$spec_no\""
 putsn "SHELLSPEC_STDIO_FILE_BASE=\"\$SHELLSPEC_WORKDIR\""
 if [ "$SHELLSPEC_SANDBOX" ]; then
-  putsn "PATH=\"\$SHELLSPEC_SUPPORT_BINDIR\""
+  putsn "PATH=\"\$SHELLSPEC_MOCK_BINDIR:\$SHELLSPEC_SUPPORT_BINDIR\""
   putsn "readonly PATH"
 else
-  putsn "PATH=\"\$SHELLSPEC_SUPPORT_BINDIR:\$PATH\""
+  putsn "PATH=\"\$SHELLSPEC_MOCK_BINDIR:\$SHELLSPEC_SUPPORT_BINDIR:\$PATH\""
 fi
 putsn "[ \"\$SHELLSPEC_DEBUG_TRAP\" ] && trap - DEBUG"
 putsn "shellspec_coverage_setup() { shellspec_coverage_disabled; }"

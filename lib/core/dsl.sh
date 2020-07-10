@@ -147,7 +147,7 @@ shellspec_example() {
   SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
   SHELLSPEC_ERROR_FILE="$SHELLSPEC_STDIO_FILE_BASE.error"
   SHELLSPEC_XTRACE_FILE="$SHELLSPEC_STDIO_FILE_BASE.trace"
-  SHELLSPEC_VARS_FILE="$SHELLSPEC_STDIO_FILE_BASE.vars"
+  export SHELLSPEC_VARS_FILE="$SHELLSPEC_STDIO_FILE_BASE.vars"
 
   [ "$SHELLSPEC_ENABLED" ] || return 0
   [ "$SHELLSPEC_FILTER" ] || return 0
@@ -167,8 +167,8 @@ shellspec_example() {
   ( set -e
     shift
     case $# in
-      0) shellspec_invoke_example 2>"$SHELLSPEC_ERROR_FILE" ;;
-      *) shellspec_invoke_example "$@" 2>"$SHELLSPEC_ERROR_FILE" ;;
+      0) shellspec_invoke_example 3>&2 2>"$SHELLSPEC_ERROR_FILE" ;;
+      *) shellspec_invoke_example "$@" 3>&2 2>"$SHELLSPEC_ERROR_FILE" ;;
     esac
   )
   set "$1" -- $? "$@"
@@ -500,7 +500,47 @@ shellspec_dump() {
 }
 
 shellspec_preserve() {
-  if [ $# -gt 0 ]; then
-    shellspec_clone "$@" >> "$SHELLSPEC_VARS_FILE"
+  [ $# -eq 0 ] && return 0
+  shellspec_clone "$@" >> "$SHELLSPEC_VARS_FILE"
+}
+
+shellspec_mock() {
+  set -- "$SHELLSPEC_MOCK_BINDIR/$1" 1
+  if [ -e "$1" ]; then
+    while [ -e "$1#$2" ]; do
+      set -- "$1" $(($2 + 1))
+    done
+    shellspec_mv "$1" "$1#$2"
+  fi
+  shellspec_create_mock_file "$1"
+  shellspec_chmod +x "$1"
+}
+
+shellspec_create_mock_file() {
+  shellspec_gen_mock_code "$SHELLSPEC_SHELL" > "$1"
+}
+
+shellspec_gen_mock_code() {
+  shellspec_putsn "#!$1"
+  shellspec_putsn ". \"\$SHELLSPEC_LIB/general.sh\""
+  shellspec_putsn ". \"\$SHELLSPEC_LIB/core/clone.sh\""
+  shellspec_putsn "if [ -e \"\$SHELLSPEC_VARS_FILE\" ]; then"
+  shellspec_putsn "  . \"\$SHELLSPEC_VARS_FILE\""
+  shellspec_putsn "fi"
+  shellspec_putsn "shellspec_preserve() {"
+  shellspec_putsn "  [ \$# -eq 0 ] && return 0"
+  shellspec_putsn "  shellspec_clone \"\$@\" >> \"\$SHELLSPEC_VARS_FILE\""
+  shellspec_putsn "}"
+  shellspec_cat
+}
+
+shellspec_unmock() {
+  set -- "$SHELLSPEC_MOCK_BINDIR/$1" 0
+  [ -e "$1" ] && shellspec_rm "$1"
+  while [ -e "$1#$(($2 + 1))" ]; do
+    set -- "$1" $(($2 + 1))
+  done
+  if [ "$2" -gt 0 ]; then
+    shellspec_mv "$1#$2" "$1"
   fi
 }

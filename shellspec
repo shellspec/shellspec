@@ -121,6 +121,9 @@ export SHELLSPEC_XTRACE_OFF=''
 export SHELLSPEC_XTRACEFD=2
 export SHELLSPEC_XTRACEFD_VAR=''
 export SHELLSPEC_CLONE_TYPE=''
+export SHELLSPEC_MV="mv"
+export SHELLSPEC_CHMOD="chmod"
+export SHELLSPEC_RM="rm"
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -577,6 +580,9 @@ if [ ! "$SHELLSPEC_BUILTIN_PRINTF" ]; then
 fi
 
 command_path SHELLSPEC_ENV "env" ||:
+command_path SHELLSPEC_MV "mv" ||:
+command_path SHELLSPEC_CHMOD "chmod" ||:
+command_path SHELLSPEC_RM "rm" ||:
 
 if command_path "time" || [ "$SHELLSPEC_BUSYBOX_W32" ]; then
   SHELLSPEC_TIME="time -p"
