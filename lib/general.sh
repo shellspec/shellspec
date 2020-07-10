@@ -567,13 +567,21 @@ shellspec_exists_file() {
 }
 
 shellspec_unsetf() {
-  if [ "${POSH_VERSION:-}" ]; then
-    shellspec_is_function "$1" || return 0
-    # Workaround for posh
+  if shellspec_is_function "$1"; then
+    # Workaround for posh.
+    # Define function that run external command instead of unset function.
+    # Unset the function cause not be able to run external command with posh.
     eval "$1() { case \$# in (0) command $1;; (*) command $1 \"\$@\"; esac; }"
-  else
-    { if ( unset -f "$1" ); then unset -f "$1"; fi; } 2>/dev/null
+    return 0
   fi
+  if [ "$SHELLSPEC_BUILTIN_TYPESETF" ]; then
+    # shellcheck disable=SC2039
+    typeset -f "$1" >/dev/null 2>&1 || return 0
+  elif [ "${POSH_VERSION:-}" ]; then
+    ( unset -f "$1" 2>/dev/null ) || return 0
+  fi
+  unset -f "$1" 2>/dev/null ||:
+  return 0
 }
 
 shellspec_mv() { "$SHELLSPEC_MV" "$@"; }

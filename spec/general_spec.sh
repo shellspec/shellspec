@@ -754,4 +754,46 @@ Describe "general.sh"
       The status should be failure
     End
   End
+
+  Describe "shellspec_unsetf()"
+    Context 'when POSIX-compliant function name'
+      It "unsets fcuntion (not defined)"
+        When call shellspec_unsetf "no_such_a_function"
+        The status should be success
+      End
+
+      unsetf() {
+        unsetf_test() { :; }
+        shellspec_unsetf unsetf_test
+        unsetf_test
+      }
+
+      It "unsets defined fcuntion"
+        When call unsetf
+        The status should be failure
+        The error should be defined
+      End
+    End
+
+    Context 'when not POSIX-compliant function name'
+      It "unsets fcuntion (not defined)"
+        When call shellspec_unsetf "no-such-a-function"
+        The status should be success
+      End
+
+      shellspec_is_function() { return 1; }
+
+      unsetf() {
+        unsetf_test() { :; }
+        shellspec_unsetf unsetf_test
+        unsetf_test
+      }
+
+      It "unsets defined fcuntion"
+        When call unsetf
+        The status should be failure
+        The error should be defined
+      End
+    End
+  End
 End

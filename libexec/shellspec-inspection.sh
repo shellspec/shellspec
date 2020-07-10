@@ -108,6 +108,12 @@ if print -nr -- '' 2>/dev/null; then
   echo "SHELLSPEC_BUILTIN_PRINT=1"
 fi
 
+typesetf_check() { :; }
+# shellcheck disable=SC2034,SC2039
+if typeset -f typesetf_check >/dev/null 2>&1; then
+  echo "SHELLSPEC_BUILTIN_TYPESETF=1"
+fi
+
 if type shopt >/dev/null 2>&1; then
   echo "SHELLSPEC_SHOPT_AVAILABLE=1"
   # shellcheck disable=SC2039

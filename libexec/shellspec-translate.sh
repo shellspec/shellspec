@@ -154,7 +154,7 @@ trans_parameters_end() {
 }
 
 trans_mock_begin() {
-  putsn "shellspec_unsetf ${1%% *}"
+  putsn "shellspec_unsetf ${1%% *} ||:"
   putsn "shellspec_after_mock shellspec_unmock_${mock_no}"
   putsn "shellspec_unmock_${mock_no}() {"
   putsn "  shellspec_unmock $1"

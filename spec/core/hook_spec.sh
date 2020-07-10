@@ -109,6 +109,27 @@ Describe "core/hook.sh"
         End
       End
     End
+
+    Describe "after mock"
+      BeforeRun setup
+      setup() { shellspec_register_after_hook MOCK 'echo foo'; }
+
+      Context 'when group is already executed'
+
+        It 'calls after mock hooks'
+          When run shellspec_call_after_hooks MOCK
+          The stdout should eq foo
+        End
+
+        Context 'when SHELLSPEC_BLOCK_NO is not matched'
+          BeforeRun 'SHELLSPEC_BLOCK_NO=99999'
+          It 'does not call after mock hooks'
+            When run shellspec_call_after_hooks MOCK
+            The stdout should be blank
+          End
+        End
+      End
+    End
   End
 
   Describe 'shellspec_call_hook()'
