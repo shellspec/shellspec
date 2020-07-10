@@ -36,6 +36,9 @@ shellspec_call_hook() {
       [ "$SHELLSPEC_HOOK_BLOCK_NO" = "$SHELLSPEC_BLOCK_NO" ] || return 0
       shellspec_is_marked_group "$SHELLSPEC_HOOK_BLOCK_NO" || return 0
       ;;
+    AFTER_MOCK)
+      [ "$SHELLSPEC_HOOK_BLOCK_NO" = "$SHELLSPEC_BLOCK_NO" ] || return 0
+    ;;
   esac
 
   { eval "SHELLSPEC_HOOK=\$2 && $2 &&:" &&:; } < /dev/null
@@ -76,3 +79,4 @@ shellspec_create_hook EACH
 shellspec_create_hook CALL
 shellspec_create_hook RUN
 shellspec_create_hook ALL
+shellspec_create_hook MOCK

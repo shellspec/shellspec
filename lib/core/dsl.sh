@@ -89,6 +89,10 @@ shellspec_after_last_block() {
   shellspec_call_after_hooks ALL
 }
 
+shellspec_after_block() {
+  shellspec_call_after_hooks MOCK
+}
+
 shellspec_description() {
   if [ "${2:-}" = "@" ]; then
     set -- "$1" "<$1:$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END>"
@@ -381,6 +385,8 @@ shellspec_proxy shellspec_after_call "shellspec_register_after_hook CALL"
 
 shellspec_proxy shellspec_before_run "shellspec_register_before_hook RUN"
 shellspec_proxy shellspec_after_run "shellspec_register_after_hook RUN"
+
+shellspec_proxy shellspec_after_mock "shellspec_register_after_hook MOCK"
 
 shellspec_path() {
   while [ $# -gt 0 ]; do

@@ -59,6 +59,10 @@ trans_after_last_block() {
   putsn "shellspec_after_last_block"
 }
 
+trans_after_block() {
+  putsn "shellspec_after_block"
+}
+
 trans_evaluation() {
   putsn "SHELLSPEC_LINENO=$lineno"
   putsn "if [ \$# -eq 0 ]"
@@ -151,18 +155,15 @@ trans_parameters_end() {
 
 trans_mock_begin() {
   putsn "shellspec_unsetf ${1%% *}"
-  putsn "shellspec_before_all shellspec_mock_${mock_no}"
-  putsn "shellspec_after_all shellspec_unmock_${mock_no}"
+  putsn "shellspec_after_mock shellspec_unmock_${mock_no}"
   putsn "shellspec_unmock_${mock_no}() {"
   putsn "  shellspec_unmock $1"
   putsn "}"
-  putsn "shellspec_mock_${mock_no}() {"
   putsn "<<'MOCK-$delimiter' shellspec_mock $1"
 }
 
 trans_mock_end() {
   putsn "MOCK-$delimiter"
-  putsn "}"
 }
 
 trans_constant() {

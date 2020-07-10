@@ -15,7 +15,11 @@ Describe "libexec/translator.sh"
   Describe "finalize()"
     BeforeRun initialize
     It 'finalizes'
+      BeforeRun mock
+      trans() { :; }
+      mock() { trans() { echo trans "$@"; }; }
       When run finalize
+      The stdout should eq "trans after_block "
       The status should be success
     End
 
@@ -27,10 +31,13 @@ Describe "libexec/translator.sh"
       It 'output syntax error'
         When run finalize
         The line 1 of stdout should eq "Unexpected end of file (expecting 'End')"
-        The line 2 of stdout should eq "trans block_end"
-        The line 3 of stdout should eq "trans after_last_block 1"
-        The line 4 of stdout should eq "trans block_end"
-        The line 5 of stdout should eq "trans after_last_block "
+        The line 2 of stdout should eq "trans after_block 2"
+        The line 3 of stdout should eq "trans block_end"
+        The line 4 of stdout should eq "trans after_last_block 1"
+        The line 5 of stdout should eq "trans after_block 1"
+        The line 6 of stdout should eq "trans block_end"
+        The line 7 of stdout should eq "trans after_last_block "
+        The line 8 of stdout should eq "trans after_block "
       End
     End
   End
@@ -350,8 +357,9 @@ Describe "libexec/translator.sh"
       BeforeRun "block_example desc" mock
       It "generate block_end"
         When run block_end "desc"
-        The line 1 of stdout should eq "remove_from_ranges"
-        The line 2 of stdout should eq "trans block_end desc"
+        The line 1 of stdout should eq "trans after_block 1"
+        The line 2 of stdout should eq "remove_from_ranges"
+        The line 3 of stdout should eq "trans block_end desc"
       End
     End
 
@@ -802,31 +810,11 @@ Describe "libexec/translator.sh"
     mock_trans() { trans() { echo trans "$@"; }; }
     syntax_error() { echo "$@"; }
 
-    Context "when outside of example"
-      BeforeRun mock_trans
+    BeforeRun mock_trans
 
-      It "outputs syntax error"
-        When run mock "desc"
-        The stdout should eq 'trans mock_begin desc'
-      End
-    End
-
-    Context "when inside of example"
-      BeforeRun "block_example desc" mock_trans
-
-      It "outputs syntax error"
-        When run mock "desc"
-        The stdout should eq 'Mock cannot be defined inside of Example'
-      End
-    End
-
-    Context "when after example block"
-      BeforeRun "block_example desc"
-      BeforeRun "block_end"
-      It "outputs syntax error"
-        When run mock "desc"
-        The stdout should eq "Mock cannot be defined after of Example Group/Example in same block"
-      End
+    It "outputs syntax error"
+      When run mock "desc"
+      The stdout should eq 'trans mock_begin desc'
     End
   End
 

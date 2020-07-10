@@ -22,6 +22,7 @@ finalize() {
   if [ ! "$block_id_increased" ]; then
     trans after_last_block ""
   fi
+  trans after_block ""
 }
 
 read_specfile() {
@@ -177,6 +178,7 @@ block_end() {
   fi
   decrease_block_id
   block_no=${_block_no_stack##* } lineno_end=$lineno
+  trans after_block "$block_no"
   eval "block_lineno_end${block_no}=$lineno"
   eval "lineno_begin=\$block_lineno_begin${block_no}"
 
@@ -418,17 +420,6 @@ parameters_dynamic() {
 }
 
 mock() {
-  if [ "$inside_of_example" ]; then
-    syntax_error "Mock cannot be defined inside of Example"
-    return 0
-  fi
-
-  if [ ! "$block_id_increased" ]; then
-    syntax_error "Mock cannot be defined after of Example Group/Example" \
-      "in same block"
-    return 0
-  fi
-
   inside_of_mock=1
   eval trans mock_begin ${1+'"$@"'}
   mock_no=$(($mock_no + 1))
