@@ -3,6 +3,7 @@
 % LIB: "$SHELLSPEC_SPECDIR/fixture/lib"
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 % TMPBASE: "$SHELLSPEC_TMPBASE"
+% MOCKDIR: "$SHELLSPEC_SPECDIR/fixture/mock"
 
 # This Include do not place inside of Describe. posh fails.
 Include "$SHELLSPEC_LIB/core/dsl.sh"
@@ -1367,6 +1368,82 @@ Describe "core/dsl.sh"
       Path vars-file="$TMPBASE/vars"
       When run shellspec_preserve var:var2
       The contents of file vars-file should eq "shellspec_clone var:var2"
+    End
+  End
+
+  Describe "shellspec_mock()"
+    shellspec_gen_mock_code() { echo "gen_mock_code"; }
+    shellspec_create_mock_file() { echo "create mock file" "$@"; }
+    shellspec_chmod() { echo chmod "$@"; }
+    shellspec_mv() { echo mv "$@"; }
+
+    BeforeRun 'SHELLSPEC_MOCK_BINDIR=$MOCKDIR'
+
+    It 'create first mock'
+      When run shellspec_mock first-mock
+      The line 1 should eq "create mock file $MOCKDIR/first-mock"
+      The line 2 should eq "chmod +x $MOCKDIR/first-mock"
+    End
+
+    It 'create second mock'
+      When run shellspec_mock second-mock
+      The line 1 should eq "mv $MOCKDIR/second-mock $MOCKDIR/second-mock#1"
+      The line 2 should eq "create mock file $MOCKDIR/second-mock"
+      The line 3 should eq "chmod +x $MOCKDIR/second-mock"
+    End
+
+    It 'create second mock'
+      When run shellspec_mock second-mock
+      The line 1 should eq "mv $MOCKDIR/second-mock $MOCKDIR/second-mock#1"
+      The line 2 should eq "create mock file $MOCKDIR/second-mock"
+      The line 3 should eq "chmod +x $MOCKDIR/second-mock"
+    End
+
+    It 'create third mock'
+      When run shellspec_mock third-mock
+      The line 1 should eq "mv $MOCKDIR/third-mock $MOCKDIR/third-mock#2"
+      The line 2 should eq "create mock file $MOCKDIR/third-mock"
+      The line 3 should eq "chmod +x $MOCKDIR/third-mock"
+    End
+  End
+
+  Describe "shellspec_create_mock_file()"
+    Data
+      #|mock code
+    End
+
+    It "creates a mock file"
+      When call shellspec_create_mock_file "$TMPBASE/mock"
+      The file "$TMPBASE/mock" should be exist
+    End
+  End
+
+  Describe "shellspec_unmock()"
+    shellspec_rm() { echo rm "$@"; }
+    shellspec_mv() { echo mv "$@"; }
+
+    BeforeRun 'SHELLSPEC_MOCK_BINDIR=$MOCKDIR'
+
+    It 'delete first mock'
+      When run shellspec_unmock first-mock
+      The output should be blank
+    End
+
+    It 'delete second mock'
+      When run shellspec_unmock second-mock
+      The output should eq "rm $MOCKDIR/second-mock"
+    End
+
+    It 'delete third mock'
+      When run shellspec_unmock third-mock
+      The line 1 should eq "rm $MOCKDIR/third-mock"
+      The line 2 should eq "mv $MOCKDIR/third-mock#1 $MOCKDIR/third-mock"
+    End
+
+    It 'delete fourth mock'
+      When run shellspec_unmock fourth-mock
+      The line 1 should eq "rm $MOCKDIR/fourth-mock"
+      The line 2 should eq "mv $MOCKDIR/fourth-mock#2 $MOCKDIR/fourth-mock"
     End
   End
 End

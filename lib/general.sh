@@ -565,3 +565,17 @@ shellspec_pluralize() {
 shellspec_exists_file() {
   [ -e "$1" ]
 }
+
+shellspec_unsetf() {
+  if [ "${POSH_VERSION:-}" ]; then
+    shellspec_is_function "$1" || return 0
+    # Workaround for posh
+    eval "$1() { case \$# in (0) command $1;; (*) command $1 \"\$@\"; esac; }"
+  else
+    { if ( unset -f "$1" ); then unset -f "$1"; fi; } 2>/dev/null
+  fi
+}
+
+shellspec_mv() { "$SHELLSPEC_MV" "$@"; }
+shellspec_rm() { "$SHELLSPEC_RM" "$@"; }
+shellspec_chmod() { "$SHELLSPEC_CHMOD" "$@"; }

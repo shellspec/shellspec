@@ -50,6 +50,11 @@ shellspec_redefinable shellspec_clone
 shellspec_redefinable shellspec_clone_typeset
 shellspec_redefinable shellspec_clone_set
 shellspec_redefinable shellspec_clone_exists_variable
+shellspec_redefinable shellspec_rm
+shellspec_redefinable shellspec_chmod
+shellspec_redefinable shellspec_mv
+shellspec_redefinable shellspec_create_mock_file
+shellspec_redefinable shellspec_gen_mock_code
 
 # Workaround for busybox-1.1.3, ksh88
 shellspec_unbuiltin "ps"

@@ -15,7 +15,11 @@ Describe "libexec/translator.sh"
   Describe "finalize()"
     BeforeRun initialize
     It 'finalizes'
+      BeforeRun mock
+      trans() { :; }
+      mock() { trans() { echo trans "$@"; }; }
       When run finalize
+      The stdout should eq "trans after_block "
       The status should be success
     End
 
@@ -27,10 +31,13 @@ Describe "libexec/translator.sh"
       It 'output syntax error'
         When run finalize
         The line 1 of stdout should eq "Unexpected end of file (expecting 'End')"
-        The line 2 of stdout should eq "trans block_end"
-        The line 3 of stdout should eq "trans after_last_block 1"
-        The line 4 of stdout should eq "trans block_end"
-        The line 5 of stdout should eq "trans after_last_block "
+        The line 2 of stdout should eq "trans after_block 2"
+        The line 3 of stdout should eq "trans block_end"
+        The line 4 of stdout should eq "trans after_last_block 1"
+        The line 5 of stdout should eq "trans after_block 1"
+        The line 6 of stdout should eq "trans block_end"
+        The line 7 of stdout should eq "trans after_last_block "
+        The line 8 of stdout should eq "trans after_block "
       End
     End
   End
@@ -350,8 +357,9 @@ Describe "libexec/translator.sh"
       BeforeRun "block_example desc" mock
       It "generate block_end"
         When run block_end "desc"
-        The line 1 of stdout should eq "remove_from_ranges"
-        The line 2 of stdout should eq "trans block_end desc"
+        The line 1 of stdout should eq "trans after_block 1"
+        The line 2 of stdout should eq "remove_from_ranges"
+        The line 3 of stdout should eq "trans block_end desc"
       End
     End
 
@@ -504,7 +512,7 @@ Describe "libexec/translator.sh"
       BeforeRun "block_end"
       It "outputs syntax error"
         When run example_all_hook before_all
-        The stdout should eq "BeforeAll cannot be defined after of Example Group/Example"
+        The stdout should eq "BeforeAll cannot be defined after of Example Group/Example in same block"
       End
     End
   End
@@ -796,6 +804,20 @@ Describe "libexec/translator.sh"
     End
   End
 
+  Describe "mock()"
+    BeforeRun initialize
+    trans() { :; }
+    mock_trans() { trans() { echo trans "$@"; }; }
+    syntax_error() { echo "$@"; }
+
+    BeforeRun mock_trans
+
+    It "outputs syntax error"
+      When run mock "desc"
+      The stdout should eq 'trans mock_begin desc'
+    End
+  End
+
   Describe "constant()"
     BeforeRun initialize
     trans() { :; }
@@ -981,6 +1003,45 @@ Describe "libexec/translator.sh"
       The line 7 of stdout should eq "trans embedded_text_line text2"
       The line 8 of stdout should eq "trans embedded_text_end"
       The line 9 of stdout should eq "trans line line4"
+    End
+  End
+
+  Describe "translate_mock()"
+    Before initialize
+    trans() { echo trans "$@"; }
+    syntax_error() { echo "syntax error" "$@"; }
+
+    Context "when inside mock"
+      Before "inside_of_mock=1"
+
+      It "returns success if DSL is End"
+        When call translate_mock "End"
+        The stdout should eq "trans mock_end End"
+        The status should be success
+      End
+
+      It "returns success with error if specified DSL"
+        When call translate_mock "It"
+        The stdout should be blank
+        The status should be success
+        The variable use_dsl_in_mock should eq 1
+      End
+    End
+
+    Context "when outside mock"
+      Before "inside_of_mock="
+
+      It "returns false"
+        When call translate_mock "foo"
+        The status should be failure
+      End
+
+      It "raises syntax error"
+        BeforeCall "use_dsl_in_mock=1"
+        When call translate_mock "foo"
+        The output should eq "syntax error Only directives can be used in Mock"
+        The status should be failure
+      End
     End
   End
 End

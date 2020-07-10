@@ -20,16 +20,23 @@ eval "$(define_blocks)"
 define_dsls() {
   : "${SHELLSPEC_GRAMMAR_DSLS:="${SHELLSPEC_SOURCE%.*}/dsls"}"
   : "${SHELLSPEC_GRAMMAR_DIRECTIVES:="${SHELLSPEC_SOURCE%.*}/directives"}"
+  dsls=''
+
   echo 'dsl() { case $1 in'
+
   while IFS= read -r line; do
     case $line in ("" | \#*) continue; esac
+    dsls="$dsls${dsls:+|}${line%% *}"
     echo "${line%\=\>*}) ${line#*\=\>} \"\$2\" ;;"
   done < "$SHELLSPEC_GRAMMAR_DSLS" &&:
+
   while IFS= read -r line; do
     case $line in ("" | \#*) continue; esac
     echo "${line%\=\>*}) ${line#*\=\>} \"\$2\" ;;"
   done < "$SHELLSPEC_GRAMMAR_DIRECTIVES" &&:
+
   echo '*) return 1 ;; esac; }'
+  echo "is_dsl() { case \$1 in ($dsls) true ;; (*) false ; esac; }"
 }
 eval "$(define_dsls)"
 
