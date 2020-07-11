@@ -1,6 +1,6 @@
 # ShellSpec
 
-Full-featured BDD unit testing framework for shell scripts.
+A full-featured BDD unit testing framework for shell scripts.
 
 **Let’s test your shell script!** (Try the **[Online Demo](https://shellspec.info/demo)** on the browser).
 
@@ -30,21 +30,21 @@ Full-featured BDD unit testing framework for shell scripts.
 [![yash](https://img.shields.io/badge/yash-&ge;2.29-lightgrey.svg?style=flat)](https://yash.osdn.jp/)
 [![zsh](https://img.shields.io/badge/zsh-&ge;3.1.9-lightgrey.svg?style=flat)](https://www.zsh.org/)
 
-## Introduction <!-- omit in toc -->
+----
 
 ShellSpec is a full-featured BDD unit testing framework for dash, bash, ksh, zsh and **all POSIX shells** that
-**provides first-class features** such as [code coverage][coverage], parallel execution, parameterized testing and more.
+**provides first-class features** such as code coverage, mocking, parallel execution, parameterized testing and more.
 It was developed as a dev/test tool for **cross-platform shell scripts and shell script libraries**.
 Most of features are implemented with pure shell script and minimal POSIX-compliant commands,
 so they work also in restricted environments such as tiny Docker images and embedded systems.
 
-### Impressive features <!-- omit in toc -->
+## Impressive features <!-- omit in toc -->
 
 - Works with **all POSIX compliant shells** (dash, bash, zsh, ksh, busybox, etc...)
 - Minimal dependencies (use only a few basic POSIX-compliant commands)
 - **BDD style specfile compatible with shell script syntax** (can embed shell script)
 - **Structured test using nestable blocks with scoped** (isolation between tests)
-- **Easy to mock and stub** in cooperation with scope
+- **Easy and powerfull mocking** in cooperation with block scope
 - Easy to Skip/Pending of the examples
 - Before/After and BeforeAll/BeforeAll hooks
 - **Parameterized examples** for Data-Driven tests
@@ -122,6 +122,7 @@ See [CHANGELOG.md](CHANGELOG.md)
     - [`Path`, `File`, `Dir` - path alias](#path-file-dir---path-alias)
     - [`Data` - input data for evaluation](#data---input-data-for-evaluation)
     - [`Parameters` - parameterized example](#parameters---parameterized-example)
+    - [`Mock` - create a command-based mock](#mock---create-a-command-based-mock)
   - [Hooks](#hooks)
     - [`Before`, `After` - example hook](#before-after---example-hook)
     - [`BeforeAll`, `AfterAll` - example group hook](#beforeall-afterall---example-group-hook)
@@ -135,6 +136,9 @@ See [CHANGELOG.md](CHANGELOG.md)
     - [`%logger` - debug output](#logger---debug-output)
     - [`%data` - parameter](#data---parameter)
   - [Mock and Stub](#mock-and-stub)
+    - [Function-based mock](#function-based-mock)
+    - [Command-based mock](#command-based-mock)
+    - [Mock example](#mock-example)
   - [Support commands](#support-commands)
     - [Execute the actual command within a mock function](#execute-the-actual-command-within-a-mock-function)
     - [Make mock not mandatory in sandbox mode](#make-mock-not-mandatory-in-sandbox-mode)
@@ -1081,6 +1085,10 @@ See more details of [Parameters](docs/references.md##parameters)
 
 NOTE: You can also be used with the `Data:expand` helper.
 
+#### `Mock` - create a command-based mock
+
+See [Command-based mock](#command-based-mock)
+
 ### Hooks
 
 #### `Before`, `After` - example hook
@@ -1168,11 +1176,13 @@ regardless of the shell. `%-` is an alias of `%puts`, `%=` is an alias of
 
 #### `%preserve` - preserve variables
 
-Use `%preserve` directive to preserve the variables with `When run`.
+Use `%preserve` directive to preserve the variables in subshells and external shell script.
 
-`When run` runs in a subshell so variables are not kept by default.
-Therefore, You need to explicitly specify the variables to preserve.
-Not needed with `When call` evaluation.
+In the following cases, `%preserve` is required because variables are not preserved.
+
+- `When run` evaluation - It runs in a subshell.
+- Command-based mock (`Mock`) - It is an external shell script.
+- Function-based Mock called by command substitution
 
 ```sh
 Describe '%preserve directive'
@@ -1199,24 +1209,71 @@ See `Parameters`.
 
 ### Mock and Stub
 
-The way to create a mock/stub is just (re)define the shell function.
-Then the mock/stub is automatically released according to the scope.
+There are two ways to create a mock/stub, function-based mock and command-based mock.
+The function-based mock is usually recommended for performance reasons.
+Both can be overwritten with an internal block and will be restored when the block ends.
+
+#### Function-based mock
+
+The function-based mock is simply (re)defined with shell function.
+
+#### Command-based mock
+
+The command-based mock is create a temporary mock shell script and run as external command.
+To accomplish this, a directory for mock commands is included at the beginning of `PATH`.
+
+This is slow, but there are some advantages over function-based.
+
+- You can use invalid characters as the shell function name.
+  - e.g `docker-compose` (It can be defined with bash etc., but invalid as POSIX.)
+- You can use the mock command from an external shell script.
+
+A command-based mock creates an external shell script with the contents of
+a `Mock` block. Therefore, there are some restrictions.
+
+- You cannot call shell functions outside the `Mock` block.
+  - Only bash can export and call shell functions with `export -f`.
+- To reference a variable outside the `Mock` block, that variable must be exported.
+- `%preserve` directive is required to return a variable from a `Mock` block.
+
+#### Mock example
 
 ```sh
-Describe 'mock stub sample'
-  unixtime() { date +%s; }
-  get_next_day() { echo $(($(unixtime) + 86400)); }
+Describe 'mock example'
+  get_next_day() { echo $(($(date +%s) + 86400)); }
 
-  Example 'redefine date command'
-    date() { echo 1546268400; }
-    When call get_next_day
-    The stdout should eq 1546354800
+  Context 'when not using mock'
+    It 'runs the actual date command'
+      When call get_next_day
+      The stdout should not eq 1546354800
+    End
   End
 
-  Example 'use the actual date command'
-    # date is not redefined because this is another subshell
-    When call unixtime
-    The stdout should not eq 1546268400
+  Context 'when using function-based mock'
+    date() {
+      echo 1546268400
+      %preserve called
+    }
+
+    It 'calls the date function'
+      When call get_next_day
+      The stdout should eq 1546354800
+      The variable called should eq 1
+    End
+  End
+
+  Context 'when using command-based mock'
+    Mock date
+      echo 1546268400
+      called=1
+      %preserve called
+    End
+
+    It 'runs the mocked date command'
+      When call get_next_day
+      The stdout should eq 1546354800
+      The variable called should eq 1
+    End
   End
 End
 ```

@@ -9,13 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `%preserve` directive
-- Added `--sandbox` option
-- Added `--path` option
+- **Added `Mock` helper (command-based mock).**
+- **Added `%preserve` directive.**
+- **Added `--sandbox` option.**
+- Added `--path` option.
 
 ### Fixed
 
-- Workaround when the Windows version of `sort.exe` is executed
+- Workaround when the Windows version of `sort.exe` is executed.
 
 ## [0.25.0] - 2020-06-21
 
