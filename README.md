@@ -194,7 +194,7 @@ See [CHANGELOG.md](CHANGELOG.md)
 
 ### POSIX-compliant commands
 
-ShellSpec uses shell built-in command and only few basic [POSIX-compliant commands][utilities] to
+ShellSpec uses shell built-in commands and only few basic [POSIX-compliant commands][utilities] to
 support widely environments (except `kcov` for optional code coverage).
 
 [utilities]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/contents.html
@@ -1252,6 +1252,7 @@ Describe 'mock example'
   Context 'when using function-based mock'
     date() {
       echo 1546268400
+      called=1
       %preserve called
     }
 
