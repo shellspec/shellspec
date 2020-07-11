@@ -27,6 +27,7 @@ export SHELLSPEC_SPECDIR=''
 export SHELLSPEC_LOAD_PATH=''
 export SHELLSPEC_SHELL=''
 export SHELLSPEC_SANDBOX=''
+export SHELLSPEC_SANDBOX_PATH=''
 export SHELLSPEC_DEFECT_SANDBOX=''
 export SHELLSPEC_PATH_IS_READONLY=''
 export SHELLSPEC_SUPPORT_BIN=''
@@ -201,8 +202,9 @@ Usage: shellspec [options...] [files or directories...]
         --path PATH                 Set PATH environment variable at startup
                                       e.g. --path /bin:/usr/bin, --path "\$(getconf PATH)"
         --[no-]sandbox              Force the use of the mock instead of the actual command
-                                      Make PATH empty (except "spec/support/bin") and readonly
+                                      Make PATH empty (except "spec/support/bin" and mock dir) and readonly
                                       This is not a security feature and does not provide complete isolation
+        --sandbox-path SANDBOX-PATH Make PATH the sandbox path instead of empty (default: empty)
         --require MODULE            Require a MODULE (shell script file)
     -e, --env NAME=VALUE            Set environment variable
         --env-from ENV-SCRIPT       Set environment variable from shell script file
@@ -353,6 +355,9 @@ parse_options() {
         shift ;;
       --sandbox) SHELLSPEC_SANDBOX=1 ;;
       --no-sandbox) SHELLSPEC_SANDBOX='' ;;
+      --sandbox-path) [ "${2+x}" ] || invalid 'Require SANDBOX-PATH.'
+        SHELLSPEC_SANDBOX_PATH=${2:-}
+        shift ;;
       --random) [ "${2:-}" ] || invalid 'Require TYPE[:SEED].'
         case ${2%%:*} in
           none) SHELLSPEC_RANDOM='' ;;

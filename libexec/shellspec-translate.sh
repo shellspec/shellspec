@@ -220,11 +220,12 @@ putsn "SHELLSPEC_DATA=''"
 putsn "SHELLSPEC_WORKDIR=\"\$SHELLSPEC_TMPBASE\""
 putsn "SHELLSPEC_MOCK_BINDIR=\"\$SHELLSPEC_WORKDIR/$spec_no\""
 putsn "SHELLSPEC_STDIO_FILE_BASE=\"\$SHELLSPEC_WORKDIR\""
+puts "PATH=\"\$SHELLSPEC_MOCK_BINDIR:\$SHELLSPEC_SUPPORT_BINDIR"
 if [ "$SHELLSPEC_SANDBOX" ]; then
-  putsn "PATH=\"\$SHELLSPEC_MOCK_BINDIR:\$SHELLSPEC_SUPPORT_BINDIR\""
+  putsn "\${SHELLSPEC_SANDBOX_PATH:+:}\$SHELLSPEC_SANDBOX_PATH\""
   putsn "readonly PATH"
 else
-  putsn "PATH=\"\$SHELLSPEC_MOCK_BINDIR:\$SHELLSPEC_SUPPORT_BINDIR:\$PATH\""
+  putsn "\${PATH:+:}\$PATH\""
 fi
 putsn "[ \"\$SHELLSPEC_DEBUG_TRAP\" ] && trap - DEBUG"
 putsn "shellspec_coverage_setup() { shellspec_coverage_disabled; }"
