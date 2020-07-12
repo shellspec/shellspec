@@ -59,6 +59,10 @@ so they work also in restricted environments such as tiny Docker images and embe
 - Extensible architecture (custom assertion, custom matcher, etc...)
 - Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
 
+### Coverage report <!-- omit in toc -->
+
+[![Coverage report](docs/coverage.png)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html?branch=master)
+
 ### Latest Update
 
 See [CHANGELOG.md](CHANGELOG.md)
@@ -483,8 +487,9 @@ Usage: shellspec [options...] [files or directories...]
         --path PATH                 Set PATH environment variable at startup
                                       e.g. --path /bin:/usr/bin, --path "$(getconf PATH)"
         --[no-]sandbox              Force the use of the mock instead of the actual command
-                                      Make PATH empty (except "spec/support/bin") and readonly
+                                      Make PATH empty (except "spec/support/bin" and mock dir) and readonly
                                       This is not a security feature and does not provide complete isolation
+        --sandbox-path SANDBOX-PATH Make PATH the sandbox path instead of empty (default: empty)
         --require MODULE            Require a MODULE (shell script file)
     -e, --env NAME=VALUE            Set environment variable
         --env-from ENV-SCRIPT       Set environment variable from shell script file

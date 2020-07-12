@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Added `Mock` helper (command-based mock).**
 - **Added `%preserve` directive.**
-- **Added `--sandbox` option.**
+- **Added `--sandbox`, `--sandbox-path` option.**
 - Added `--path` option.
 
 ### Fixed
