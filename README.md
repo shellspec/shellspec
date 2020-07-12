@@ -478,7 +478,7 @@ Usage: shellspec [options...] [files or directories...]
 
   Using + instead of - for short options causes reverses the meaning
 
-    -s, --shell SHELL               Specify a path of shell [default: "auto" (running shell)]
+    -s, --shell SHELL               Specify a path of shell [default: "auto" (the shell running shellspec)]
                                       ShellSpec ignores shebang and runs in the specified shell.
         --path PATH                 Set PATH environment variable at startup
                                       e.g. --path /bin:/usr/bin, --path "$(getconf PATH)"
@@ -610,7 +610,7 @@ It creates `.shellspec` and `spec/spec_helper.sh`
 
 Specify the shell to run with `--shell` option.
 ShellSpec ignores shebang and runs the shell script in the specified shell.
-The default is the shell running the `shellspec` (usually `/bin/sh`).
+The default is the shell running the `shellspec` command (usually `/bin/sh`).
 
 ### Quick execution (`--quick`, `--repair`, `--next`)
 
