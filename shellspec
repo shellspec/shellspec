@@ -314,7 +314,7 @@ Usage: shellspec [options...] [files or directories...]
                                       [examples:lineno] list the examples with lineno
                                       [debug]           for developer
                                       The order is randomized with --random but random TYPE is ignored.
-        --syntax-check              Syntax check of the specfiles without running any examples
+        --syntax, --syntax-check    Syntax check of the specfiles without running any examples
         --translate                 Output translated specfile
         --task [TASK]               Run the TASK or Show the task list if TASK is not specified
     -v, --version                   Display the version
@@ -465,9 +465,11 @@ parse_options() {
       --no-boost) SHELLSPEC_PROFILER='' SHELLSPEC_PROFILER_LIMIT=10 ;;
       --show-deprecations) SHELLSPEC_DEPRECATION_LOG=1 ;;
       --hide-deprecations) SHELLSPEC_DEPRECATION_LOG='' ;;
-      --init | --gen-bin | --task | --translate | --syntax-check)
+      --init | --gen-bin | --task | --translate)
         SHELLSPEC_MODE=${1#--} ;;
       --count) SHELLSPEC_MODE=list SHELLSPEC_LIST='' ;;
+      --syntax | --syntax-check)
+        SHELLSPEC_MODE=syntax-check ;;
       --list) [ "${2:-}" ] || invalid 'Require LIST.'
         case $2 in (specfiles|examples|examples:id|examples:lineno|debug) ;;
           *) invalid 'Invalid LIST.'

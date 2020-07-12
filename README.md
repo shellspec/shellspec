@@ -594,7 +594,7 @@ Usage: shellspec [options...] [files or directories...]
                                       [examples:lineno] list the examples with lineno
                                       [debug]           for developer
                                       The order is randomized with --random but random TYPE is ignored.
-        --syntax-check              Syntax check of the specfiles without running any examples
+        --syntax, --syntax-check    Syntax check of the specfiles without running any examples
         --translate                 Output translated specfile
         --task [TASK]               Run the TASK or Show the task list if TASK is not specified
     -v, --version                   Display the version
