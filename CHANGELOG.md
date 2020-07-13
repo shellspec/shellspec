@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.26.1] - 2020-07-13
 
+### Added
+
 - **Added `--docker` option.** (EXPERIMENTAL)
 
 ## [0.26.0] - 2020-07-12
