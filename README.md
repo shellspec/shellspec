@@ -38,6 +38,8 @@ It was developed as a dev/test tool for **cross-platform shell scripts and shell
 Most of features are implemented with pure shell script and minimal POSIX-compliant commands,
 so they work also in restricted environments such as tiny Docker images and embedded systems.
 
+[Why I created ShellSpec](https://shellspec.info/why)
+
 ## Impressive features <!-- omit in toc -->
 
 - Works with **all POSIX compliant shells** (dash, bash, zsh, ksh, busybox, etc...)
@@ -45,6 +47,7 @@ so they work also in restricted environments such as tiny Docker images and embe
 - **BDD style specfile compatible with shell script syntax** (can embed shell script)
 - **Structured test using nestable blocks with scoped** (isolation between tests)
 - **Easy and powerfull mocking** in cooperation with block scope
+- **Sandbox feature** that prevents actual command execution and facilitates testing by mock
 - Easy to Skip/Pending of the examples
 - Before/After and BeforeAll/BeforeAll hooks
 - **Parameterized examples** for Data-Driven tests
@@ -54,6 +57,7 @@ so they work also in restricted environments such as tiny Docker images and embe
 - **Parallel execution**, random ordered execution and dry-run execution
 - Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
 - **Code coverage** ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
+- **Run tests in Docker container** (EXPERIMENTAL)
 - **Friendly with CI and provides Docker images** with ShellSpec pre-installed
 - Built-in project directory generator and simple task runner
 - Extensible architecture (custom assertion, custom matcher, etc...)
@@ -92,6 +96,7 @@ See [CHANGELOG.md](CHANGELOG.md)
   - [Reporter (`--format`) / Generator (`--output`)](#reporter---format--generator---output)
   - [Coverage (`--kcov`)](#coverage---kcov)
   - [Profiler (`--profile`)](#profiler---profile)
+  - [Run tests in Docker container (`--docker`)](#run-tests-in-docker-container---docker)
   - [Task runner (`--task`)](#task-runner---task)
 - [Special files/directories in the project directory](#special-filesdirectories-in-the-project-directory)
   - [Typical project directory structure](#typical-project-directory-structure)
@@ -601,6 +606,8 @@ Usage: shellspec [options...] [files or directories...]
                                       The order is randomized with --random but random TYPE is ignored.
         --syntax, --syntax-check    Syntax check of the specfiles without running any examples
         --translate                 Output translated specfile
+        --docker DOCKER-IMAGE       Run tests in specified docker image (EXPERIMENTAL)
+                                      This is an experimental feature and may be changed/removed in the future.
         --task [TASK]               Run the TASK or Show the task list if TASK is not specified
     -v, --version                   Display the version
     -h, --help                      -h: short help, --help: long help
@@ -727,6 +734,18 @@ You can easily integrate with [Coveralls](https://coveralls.io/), [Code Climate]
 ### Profiler (`--profile`)
 
 When the `--profile` option is specified, the profiler is enabled and lists the slow examples.
+
+### Run tests in Docker container (`--docker`)
+
+**NOTE: This is an experimental feature and may be changed/removed in the future.**
+
+When the `--docker DOCKER-IMAGE` option is specified, run tests using the specified Docker image.
+
+If you specify only the tag that starts with `:` as DOCKER-IMAGE (e.g. `--docker :debian10`),
+Use ShellSpec official runtime image (`shellspec/runtime`).
+The ShellSpec official runtime image contains supported shells.
+
+See available tags: https://hub.docker.com/r/shellspec/runtime/tags
 
 ### Task runner (`--task`)
 
