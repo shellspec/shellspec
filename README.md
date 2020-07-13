@@ -57,9 +57,7 @@ so they work also in restricted environments such as tiny Docker images and embe
 - **Parallel execution**, random ordered execution and dry-run execution
 - Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
 - **Code coverage** ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
-- **Run tests in Docker container** (EXPERIMENTAL)
 - **Friendly with CI and provides Docker images** with ShellSpec pre-installed
-- Built-in project directory generator and simple task runner
 - Extensible architecture (custom assertion, custom matcher, etc...)
 - Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
 
