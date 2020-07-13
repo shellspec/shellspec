@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.1] - 2020-07-13
+
+- **Added `--docker` option.** (EXPERIMENTAL)
+
 ## [0.26.0] - 2020-07-12
 
 ### Added
@@ -423,7 +427,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.26.0...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.26.1...HEAD
+[0.26.1]: https://github.com/shellspec/shellspec/compare/0.26.0...0.26.1
 [0.26.0]: https://github.com/shellspec/shellspec/compare/0.25.0...0.26.0
 [0.25.0]: https://github.com/shellspec/shellspec/compare/0.24.3...0.25.0
 [0.24.3]: https://github.com/shellspec/shellspec/compare/0.24.2...0.24.3
