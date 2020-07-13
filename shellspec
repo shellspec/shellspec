@@ -126,6 +126,7 @@ export SHELLSPEC_CLONE_TYPE=''
 export SHELLSPEC_MV="mv"
 export SHELLSPEC_CHMOD="chmod"
 export SHELLSPEC_RM="rm"
+export SHELLSPEC_DOCKER_IMAGE=""
 
 #shellcheck disable=SC2039
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -316,6 +317,8 @@ Usage: shellspec [options...] [files or directories...]
                                       The order is randomized with --random but random TYPE is ignored.
         --syntax, --syntax-check    Syntax check of the specfiles without running any examples
         --translate                 Output translated specfile
+        --docker DOCKER-IMAGE       Run tests in specified docker image (EXPERIMENTAL)
+                                      This is an experimental feature and may be changed/removed in the future.
         --task [TASK]               Run the TASK or Show the task list if TASK is not specified
     -v, --version                   Display the version
     -h, --help                      -h: short help, --help: long help
@@ -478,6 +481,9 @@ parse_options() {
         shift ;;
       -x | --xtrace) SHELLSPEC_XTRACE=1 ;;
       -X | --xtrace-only) SHELLSPEC_XTRACE=1 SHELLSPEC_XTRACE_ONLY=1 ;;
+      --docker) [ "${2:-}" ] || invalid 'Require DOCKER-IMAGE.'
+        SHELLSPEC_DOCKER_IMAGE=$2
+        shift ;;
       -h | --help) usage "$1" && exit 0;;
       -v | --version) echo "$SHELLSPEC_VERSION" && exit 0 ;;
       -*) invalid "Unknown option '$1'." ;;
@@ -499,7 +505,21 @@ options_file() {
 }
 
 enum_options_file options_file
-[ $# -gt 0 ] && parse_options "$@" && eval "set -- $params"
+params=''
+[ $# -gt 0 ] && parse_options "$@"
+if [ "${SHELLSPEC_DOCKER_IMAGE#:}" ]; then
+  case $SHELLSPEC_DOCKER_IMAGE in (:*)
+    SHELLSPEC_DOCKER_IMAGE="shellspec/runtime${SHELLSPEC_DOCKER_IMAGE}"
+  esac
+  set -- "$@" --docker :
+  cid=$(docker create --rm -it "$SHELLSPEC_DOCKER_IMAGE" shellspec "$@")
+  set -- --exclude spec --exclude .git
+  tar -C "$SHELLSPEC_ROOT" "$@" -c ./ | docker cp - "$cid:/bin/"
+  tar --exclude .git -c ./ | docker cp - "$cid:./"
+  exec docker start -ai "$cid"
+  exit
+fi
+eval "set -- $params"
 
 if [ ! "$SHELLSPEC_SHELL" ]; then
   # shellcheck disable=SC2039
