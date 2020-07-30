@@ -59,7 +59,11 @@ so they work also in restricted environments such as tiny Docker images and embe
 - **Code coverage** ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
 - **Friendly with CI and provides Docker images** with ShellSpec pre-installed
 - Extensible architecture (custom assertion, custom matcher, etc...)
-- Subproject: [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
+
+### Subproject <!-- omit in toc -->
+
+- [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
+- [ShellBench](https://github.com/shellspec/shellbench) - A benchmark utility for POSIX shell comparison
 
 ### Coverage report <!-- omit in toc -->
 

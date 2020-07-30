@@ -124,7 +124,7 @@ Default shell: `bash`
 | **macOS 10.15 (brew)** | -           | 5.0.17 | 0.5.10.2 | 2020.0.0        | R59  | ~~0.13.2~~ | 2.50 | 5.8   |
 
 - Supports the latest three versions.
-- posh on macOS 10.14 (brew) is broken?
+- posh on macOS (homebrew) is broken?
 
 #### Windows
 
