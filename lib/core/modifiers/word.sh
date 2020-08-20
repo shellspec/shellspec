@@ -7,7 +7,9 @@ shellspec_modifier_word() {
   shellspec_syntax_param 1 is number "$1" || return 0
 
   if [ "${SHELLSPEC_SUBJECT+x}" ]; then
-    shellspec_get_nth SHELLSPEC_SUBJECT "$SHELLSPEC_SUBJECT" "$1"
+    if ! shellspec_get_nth SHELLSPEC_SUBJECT "$SHELLSPEC_SUBJECT" "$1"; then
+      unset SHELLSPEC_SUBJECT ||:
+    fi
   else
     unset SHELLSPEC_SUBJECT ||:
   fi

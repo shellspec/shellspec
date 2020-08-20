@@ -498,7 +498,7 @@ if [ "${ZSH_VERSION:-}" ]; then
     IFS=${4:-$SHELLSPEC_IFS}
     eval "set -- \"\$@\" \${=2}"
     IFS=$5
-    eval "$1=\${$(($3 + 5))}"
+    [ $# -ge $(($3 + 5)) ] && eval "$1=\${$(($3 + 5))}"
   }
 else
   shellspec_get_nth() {
@@ -510,7 +510,7 @@ else
     [ "${6#*f}" = "$6" ] && set +f
     # Workaround for posh 0.10.2: glob does not expand when set -u
     [ "${6#*u}" = "$6" ] && set +u
-    eval "$1=\${$(($3 + 6))} &&:"
+    [ $# -ge $(($3 + 6)) ] && eval "$1=\${$(($3 + 6))} &&:"
   }
 fi
 

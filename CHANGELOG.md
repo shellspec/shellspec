@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed the bug that "Parameter is not set" error in word modifier
+
 ## [0.26.1] - 2020-07-13
 
 ### Added

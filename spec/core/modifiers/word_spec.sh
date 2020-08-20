@@ -6,12 +6,19 @@ Describe "core/modifiers/word.sh"
   Describe "word modifier"
     Example 'example'
       The word 2 of value "foo bar baz" should equal bar
+      The word 4 of value "foo bar baz" should be undefined
     End
 
     It 'gets the specified word'
       subject() { printf '@ @ @ @ foo  bar \t baz \n qux'; }
       When run shellspec_modifier_word 08 _modifier_
       The stdout should equal qux
+    End
+
+    It 'can not the get word when not enough words'
+      subject() { printf 'foo bar'; }
+      When run shellspec_modifier_word 3 _modifier_
+      The status should be failure
     End
 
     It 'can not the get word when subject is undefined'
