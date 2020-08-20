@@ -136,7 +136,7 @@ Default shell: `bash`
 | **Windows Server 2019 (Git Bash)**    | 4.4.23 | -             | unknown | -    | -      | -     |
 | **Windows Server 2019 (msys)**        | 4.4.23 | 1.31.1        | 0.5.11  | R57  | -      | 5.8   |
 | **Windows Server 2019 (cygwin)**      | 4.4.12 | 1.23.2        | 0.5.9.1 | R56c | 0.13.2 | 5.5.1 |
-| **Windows Server 2019 (busybox-w32)** | -      | 1.32.0 (3532) | -       | -    | -      | -     |
+| **Windows Server 2019 (busybox-w32)** | -      | 1.32.0 (3466) | -       | -    | -      | -     |
 
 - busybox-w32: https://frippery.org/busybox/
 
