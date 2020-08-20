@@ -1,0 +1,4 @@
+FROM alpine:edge
+RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN adduser -D user && apk add --no-cache oksh@testing
+ENV SH=/bin/oksh
