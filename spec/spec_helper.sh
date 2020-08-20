@@ -21,6 +21,7 @@ if [ "${EXTGLOB:-}" ] && EXTGLOB=''; then
 fi
 
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
+# shellcheck disable=SC2153
 IFS="${SHELLSPEC_LF}${SHELLSPEC_TAB}"
 
 # Workaround for ksh

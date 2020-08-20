@@ -150,6 +150,7 @@ shellspec_evaluation_call_function() {
     set -- $?
   else
     SHELLSPEC_XTRACE=''
+    # shellcheck disable=SC2153
     eval "$SHELLSPEC_XTRACE_ON"
     "$@"
     eval "$SHELLSPEC_XTRACE_OFF" -- $?
@@ -181,8 +182,8 @@ shellspec_evaluation_run_script() {
       if [ "${SHELLSPEC_PATH_IS_READONLY:-}" ]; then
         opts="\"\$SHELLSPEC_UNREADONLY_PATH\" $opts"
       fi
+      # shellcheck disable=SC2030
       if [ "$SHELLSPEC_XTRACE" ]; then
-        # shellcheck disable=SC2030
         SHELLSPEC_XTRACE=''
         if [ "$SHELLSPEC_XTRACEFD_VAR" ]; then
           export PS4
