@@ -796,4 +796,103 @@ Describe "general.sh"
       End
     End
   End
+
+  Describe 'shellspec_exportp()'
+    It 'lists exported environment variables'
+      When call shellspec_exportp
+      The output should be defined
+      The error should be blank
+    End
+  End
+
+  Describe 'shellspec_list_envkeys()'
+    callback() { echo "$1"; }
+
+    Context "when posix format"
+      shellspec_exportp() { %text
+        #|export VAR1
+        #|export VAR2='10'
+        #|export VAR3='foo
+        #|export NOVAR'
+        #|export -i10 VAR4=2
+      }
+      It 'lists environment variable names'
+        When call shellspec_list_envkeys callback
+        The line 1 should eq "VAR1"
+        The line 2 should eq "VAR2"
+        The line 3 should eq "VAR3"
+        The line 4 should not eq "NOVAR"
+        The line 4 should eq "VAR4" # zsh only
+      End
+    End
+
+    Context "when bash format"
+      shellspec_exportp() { %text
+        #|declare -x VAR1
+        #|declare -ix VAR2='10'
+        #|declare -x VAR3='foo
+        #|declare -x NOVAR'
+        #|declare -i -x -L 10 VAR4
+        #|declare -i -x -L 10 VAR5='10'
+      }
+      It 'lists environment variable names'
+        When call shellspec_list_envkeys callback
+        The line 1 should eq "VAR1"
+        The line 2 should eq "VAR2"
+        The line 3 should eq "VAR3"
+        The line 4 should not eq "NOVAR"
+        The line 4 should eq "VAR4" # Invalid bash format, but supported
+        The line 5 should eq "VAR5" # Invalid bash format, but supported
+      End
+    End
+
+    Context "when posh format"
+      shellspec_exportp() { %text
+        #|VAR1
+      }
+      It 'lists environment variable names'
+        When call shellspec_list_envkeys callback
+        The line 1 should eq "VAR1"
+      End
+    End
+
+    It 'stops when the callback returns non-zero'
+      shellspec_exportp() { %text
+        #|export VAR1
+        #|export VAR2='10'
+      }
+      callback() { echo "$1"; return 2; }
+      When call shellspec_list_envkeys callback
+      The output should eq "VAR1"
+      The status should eq 2
+    End
+
+    Describe 'shellspec_list_envkeys_sanitize()'
+      It 'sanitizes meta characters'
+        When call shellspec_list_envkeys_sanitize line '!#&()*;<>?[]`{|}~'
+        The variable line should eq '_________________'
+      End
+
+      It 'leaves these character as is'
+        When call shellspec_list_envkeys_sanitize line "\"\$%'+,-./:@\\^_="
+        The variable line should eq "\"\$%'+,-./:@\\^_="
+      End
+    End
+  End
+
+  Describe 'shellspec_exists_envkey()'
+    shellspec_exportp() { %text
+      #|export VAR1
+    }
+
+    Parameters
+      VAR1 success
+      VAR2 failure
+    End
+
+    It 'checks environment variable name exists'
+      When call shellspec_exists_envkey "$1"
+      The status should be "$2"
+    End
+  End
 End

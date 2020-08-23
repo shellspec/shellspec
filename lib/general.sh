@@ -583,6 +583,62 @@ shellspec_unsetf() {
   return 0
 }
 
+if [ "$SHELLSPEC_DEFECT_EXPORTP" ]; then
+  shellspec_exportp() { export; }
+else
+  shellspec_exportp() { export -p; }
+fi
+
+shellspec_list_envkeys() {
+  set -- "$1" "shellspec_list_envkeys"
+  eval "$2_callback() { $1 \"\$@\"; }; $(shellspec_exportp | "$2_rework")" &&:
+}
+shellspec_list_envkeys_rework() {
+  set -- printf '%s\n'
+  while IFS= read -r line; do
+    shellspec_list_envkeys_sanitize line "$line"
+    set -- "$@" "shellspec_list_envkeys_parse $line || return \$?"
+  done
+  "$@"
+}
+shellspec_list_envkeys_parse() {
+  while [ $# -gt 2 ] && shift; do
+    case $2 in (*=*) break; esac
+  done
+  [ $# -gt 1 ] && shift
+  shellspec_list_envkeys_callback "${1%%[=]*}"
+}
+
+# Sanitize to reduce security risk when environment variable name
+# contains meta characters
+#
+# e.g.
+# $ env 'FOO; echo bad; # =aaa' ksh -c 'export -p | grep FOO'
+# export FOO; echo bad; # =aaa
+shellspec_list_envkeys_sanitize() {
+  set -- "$1" "$2;" ""
+  while [ "$2" ]; do
+    set -- "$1" "${2#*[;!#~<>[*?&]}" "${3}${2%%[;!#~<>[*?&]*}_"
+  done
+  eval "$1=\${3%_}"
+  shellspec_replace_all "$1" '(' '_'
+  shellspec_replace_all "$1" ')' '_'
+  shellspec_replace_all "$1" '`' '_'
+  shellspec_replace_all "$1" '|' '_'
+  shellspec_replace_all "$1" ']' '_'
+  shellspec_replace_all "$1" '{' '_'
+  shellspec_replace_all "$1" '}' '_'
+}
+
+shellspec_exists_envkey() {
+  (
+    key="$1"
+    callback() { [ ! "$1" = "$key" ] &&:; }
+    shellspec_list_envkeys callback && return 1
+    return 0
+  ) &&:
+}
+
 shellspec_mv() { "$SHELLSPEC_MV" "$@"; }
 shellspec_rm() { "$SHELLSPEC_RM" "$@"; }
 shellspec_chmod() { "$SHELLSPEC_CHMOD" "$@"; }

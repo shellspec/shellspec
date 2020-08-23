@@ -142,6 +142,10 @@ fi
   esac
 } 2>/dev/null &&:
 
+if [ "${POSH_VERSION:-}" ] || ! export -p >/dev/null 2>&1; then
+  echo "SHELLSPEC_DEFECT_EXPORTP=1"
+fi
+
 VAR="readonly"
 readonly VAR
 export VAR
