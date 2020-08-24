@@ -10,8 +10,12 @@ Describe "core/subjects/value.sh"
     End
 
     It "uses parameter as subject"
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_subject value foo _modifier_
       The stdout should equal 'foo'
+      The variable META should eq 'text'
     End
 
     It 'outputs error if value is missing'

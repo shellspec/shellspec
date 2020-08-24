@@ -13,8 +13,12 @@ Describe "core/subjects/stderr.sh"
 
     It 'uses stderr as subject when stderr is defined'
       stderr() { echo "test"; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_subject_stderr _modifier_
       The entire stdout should equal 'test'
+      The variable META should eq 'text'
     End
 
     It 'uses undefined as subject when stderr is undefined'
@@ -40,8 +44,12 @@ Describe "core/subjects/stderr.sh"
 
     It 'uses stderr including last LF as subject when stderr is defined'
       stderr() { echo "test"; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_subject_entire_stderr _modifier_
       The entire stdout should equal "test${IFS%?}"
+      The variable META should eq 'text'
     End
 
     It 'uses undefined as subject when stderr is undefined'

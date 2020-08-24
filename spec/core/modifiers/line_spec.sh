@@ -10,8 +10,12 @@ Describe "core/modifiers/line.sh"
 
     It 'gets the first line'
       subject() { printf 'foo'; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_modifier_line 1 _modifier_
       The entire stdout should equal foo
+      The variable META should eq 'text'
     End
 
     It 'gets the specified line'

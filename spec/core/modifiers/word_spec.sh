@@ -11,8 +11,12 @@ Describe "core/modifiers/word.sh"
 
     It 'gets the specified word'
       subject() { printf '@ @ @ @ foo  bar \t baz \n qux'; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_modifier_word 08 _modifier_
       The stdout should equal qux
+      The variable META should eq 'text'
     End
 
     It 'can not the get word when not enough words'

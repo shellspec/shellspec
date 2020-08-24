@@ -14,8 +14,12 @@ Describe "core/subjects/path.sh"
     End
 
     It "uses parameter as subject When run shellspec_subject_path"
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_subject_path foo _modifier_
       The stdout should equal 'foo'
+      The variable META should eq 'path'
     End
 
     It "converts alias to path and uses as subject when path alias is exists"

@@ -13,8 +13,12 @@ Describe "core/subjects/stdout.sh"
 
     It "uses stdout as subject when stdout is defined"
       stdout() { echo "test"; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_subject_stdout _modifier_
       The entire stdout should equal 'test'
+      The variable META should eq 'text'
     End
 
     It "uses undefined as subject when stdout is undefined"
@@ -40,8 +44,12 @@ Describe "core/subjects/stdout.sh"
 
     It "uses stdout including last LF as subject when stdout is defined"
       stdout() { echo "test"; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_subject_entire_stdout _modifier_
       The entire stdout should equal "test${IFS%?}"
+      The variable META should eq 'text'
     End
 
     It "uses undefined as subject when stdout is undefined"

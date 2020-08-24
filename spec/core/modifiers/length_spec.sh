@@ -10,8 +10,12 @@ Describe "core/modifiers/length.sh"
 
     It 'counts length'
       subject() { %- "abcde"; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_modifier_length _modifier_
       The stdout should equal 5
+      The variable META should eq 'number'
     End
 
     It 'can not counts length undefined'
