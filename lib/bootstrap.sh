@@ -57,7 +57,7 @@ else
   shellspec_profile_end() { :; }
 fi
 shellspec_profile_wait() {
-  echo = > "$SHELLSPEC_PROFILER_SIGNAL"
+  echo '=' > "$SHELLSPEC_PROFILER_SIGNAL"
   while [ -s "$SHELLSPEC_PROFILER_SIGNAL" ]; do :; done
 }
 
