@@ -9,6 +9,7 @@ shellspec_matcher_satisfy() {
 
     if ! shellspec_is_function "${1:-}"; then
       shellspec_output SYNTAX_ERROR "'$1' is not function name"
+      shellspec_on SYNTAX_ERROR
       return 0
     fi
 

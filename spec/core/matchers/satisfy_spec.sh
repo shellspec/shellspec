@@ -33,14 +33,22 @@ Describe "core/matchers/satisfy.sh"
     It 'outputs SATISFY_WARN if satisfy function echo to stdout'
       echo_stderr() { echo stderr >&2; }
       subject() { %- 10; }
+      preserve() { %preserve SHELLSPEC_SW_WARNED:WARNED; }
+      AfterRun preserve
+
       When run shellspec_matcher_satisfy echo_stderr
       The stderr should equal SATISFY_WARN
+      The variable WARNED should eq 1
     End
 
     It 'outputs error if invalid function name specified'
       subject() { %- 10; }
+      preserve() { %preserve SHELLSPEC_SW_SYNTAX_ERROR:SYNTAX_ERROR; }
+      AfterRun preserve
+
       When run shellspec_matcher_satisfy greater-than 20
       The stderr should equal SYNTAX_ERROR
+      The variable SYNTAX_ERROR should eq 1
     End
 
     It 'outputs error if parameters is missing'
