@@ -14,8 +14,12 @@ Describe "core/modifiers/contents.sh"
 
     It 'reads the contents of the file when file exists'
       subject() { %- "$FILE"; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_modifier_contents _modifier_
       The entire stdout should equal "a"
+      The variable META should eq 'text'
     End
 
     It 'can not reads the contents of the file when file not exists'
@@ -46,8 +50,12 @@ Describe "core/modifiers/contents.sh"
 
     It 'reads the entire contents of the file when file exists'
       subject() { %- "$FILE"; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_modifier_entire_contents _modifier_
       The entire stdout should equal "a${IFS%?}${IFS%?}"
+      The variable META should eq 'text'
     End
 
     It 'can not reads the entire contents of the file when file not exists'

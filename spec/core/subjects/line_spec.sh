@@ -12,8 +12,12 @@ Describe "core/subjects/line.sh"
 
     It "gets specified line of stdout when stdout is defined"
       stdout() { echo "line1"; echo "line2"; echo "line3"; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_subject_line 2 _modifier_
       The stdout should equal 'line2'
+      The variable META should eq 'text'
     End
 
     It "gets undefined when stdout is undefined"

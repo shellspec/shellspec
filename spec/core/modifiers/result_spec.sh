@@ -15,6 +15,7 @@ Describe "core/modifiers/result.sh"
 
     It "read stdout data from stdin"
       read_from_stdin() { cat; }
+
       When call echo stdout
       The result of 'read_from_stdin()' should eq "stdout"
     End
@@ -36,9 +37,13 @@ Describe "core/modifiers/result.sh"
     It 'gets stdout and stderr when subject is function that returns success'
       subject() { %- "success_with_output"; }
       success_with_output() { echo stdout; true; }
+      preserve() { %preserve SHELLSPEC_META:META; }
       BeforeRun "SHELLSPEC_STDOUT_FILE=/dev/no-such-a-file"
+      AfterRun preserve
+
       When run shellspec_modifier_result _modifier_
       The stdout should include stdout
+      The variable META should eq 'text'
     End
 
     It 'can not get output when subject is function that returns failure'

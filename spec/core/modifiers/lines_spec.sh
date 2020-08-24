@@ -16,8 +16,12 @@ Describe "core/modifiers/lines.sh"
 
     It 'counts as 2 lines when subject is "foo<LF>bar<LF>" (with last LF)'
       subject() { printf 'foo\nbar\n'; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_modifier_lines _modifier_
       The stdout should equal 2
+      The variable META should eq 'number'
     End
 
     It 'counts as 2 lines when subject is "foo<LF>bar" (without last LF)'

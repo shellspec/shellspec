@@ -14,8 +14,12 @@ Describe "core/subjects/variable.sh"
     Context 'when the variable exists'
       Before "var='test${IFS%?}'"
       It 'uses the value of variable as subject'
+        preserve() { %preserve SHELLSPEC_META:META; }
+        AfterRun preserve
+
         When run shellspec_subject variable var _modifier_
         The entire stdout should equal "test${IFS%?}"
+        The variable META should eq 'variable:var'
       End
     End
 

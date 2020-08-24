@@ -1,11 +1,15 @@
 #shellcheck shell=sh
 
+# to suppress shellcheck SC2034
+: "${SHELLSPEC_META:-}"
+
 shellspec_syntax 'shellspec_modifier_result'
 
 shellspec_modifier_result() {
   SHELLSPEC_RESULT_STDOUT_FILE="$SHELLSPEC_WORKDIR/result.stdout"
   SHELLSPEC_RESULT_STDERR_FILE="$SHELLSPEC_WORKDIR/result.stderr"
 
+  SHELLSPEC_META='text'
   if [ "${SHELLSPEC_SUBJECT+x}" ]; then
     if ! shellspec_is_function "$SHELLSPEC_SUBJECT"; then
       shellspec_output SYNTAX_ERROR "'$SHELLSPEC_SUBJECT' is not function name"

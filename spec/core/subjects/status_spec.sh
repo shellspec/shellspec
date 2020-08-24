@@ -12,8 +12,12 @@ Describe "core/subjects/status.sh"
 
     It 'uses status as subject when status is defined'
       status() { %- 123; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
       When run shellspec_subject_status _modifier_
       The stdout should equal 123
+      The variable META should eq 'status'
     End
 
     It 'uses undefined as subject when status is undefind'
