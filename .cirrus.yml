@@ -72,7 +72,7 @@ busybox_task:
     image: cirrusci/windowsservercore:2019
     os_version: 2019
   install_script:
-    - choco install -y --no-progress busybox --version=3466.0
+    - choco install -y --no-progress busybox
   prepare_script:
     - busybox ash -c "echo --force-color > ./.shellspec-local"
   script:
