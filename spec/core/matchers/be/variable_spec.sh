@@ -169,4 +169,57 @@ Describe "core/matchers/be/variable.sh"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
   End
+
+  Describe 'be readonly matcher'
+    Skip if "readonly malfunction" readonly_malfunction
+
+    Example 'example'
+      # shellcheck disable=SC2034
+      var1=1 var2=2 var3=3
+      # shellcheck disable=SC2034
+      readonly var1
+      unset var3
+      The variable var1 should be readonly
+      The variable var2 should not be readonly
+      The variable var3 should not be readonly
+    End
+
+    It 'matches readonly variable'
+      subject() { %- ""; }
+
+      # shellcheck disable=SC2034
+      matcher_be_readonly() {
+        readonly var
+        shellspec_matcher_be_readonly
+      }
+
+      BeforeRun 'SHELLSPEC_META=variable:var' 'var=123'
+      When run matcher_be_readonly
+      The status should be success
+    End
+
+    It 'does not match not readonly variable'
+      subject() { false; }
+      BeforeRun 'SHELLSPEC_META=variable:var' 'var=123'
+      When run shellspec_matcher_be_readonly
+      The status should be failure
+    End
+
+    It 'outputs error if subject is not variable'
+      subject() { %- ""; }
+      preserve() { %preserve SHELLSPEC_SW_SYNTAX_ERROR:SYNTAX_ERROR; }
+      BeforeRun 'SHELLSPEC_META=text'
+      AfterRun preserve
+
+      When run shellspec_matcher_be_readonly
+      The stderr should equal SYNTAX_ERROR
+      The variable SYNTAX_ERROR should equal 1
+    End
+
+    It 'outputs error if parameters count is invalid'
+      subject() { %- ""; }
+      When run shellspec_matcher_be_readonly foo
+      The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
+    End
+  End
 End
