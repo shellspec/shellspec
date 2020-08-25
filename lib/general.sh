@@ -639,6 +639,13 @@ shellspec_exists_envkey() {
   ) &&:
 }
 
+shellspec_is_readonly() {
+  eval "[ \"\${$1+x}\" ] &&:" || return 1
+  eval "set -- \"\$1\" \"\${$1}\""
+  ( eval "$1=_\$1 && [ ! \"\${$1}\" = \"\$2\" ]" ) 2>/dev/null && return 1
+  return 0
+}
+
 shellspec_mv() { "$SHELLSPEC_MV" "$@"; }
 shellspec_rm() { "$SHELLSPEC_RM" "$@"; }
 shellspec_chmod() { "$SHELLSPEC_CHMOD" "$@"; }

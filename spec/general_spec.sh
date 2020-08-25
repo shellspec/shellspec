@@ -895,4 +895,27 @@ Describe "general.sh"
       The status should be "$2"
     End
   End
+
+  Describe 'shellspec_is_readonly()'
+    Skip if "readonly malfunction" readonly_malfunction
+
+    Parameters
+      A success
+      B failure
+      C failure
+    End
+
+    # shellcheck disable=SC2034
+    _readonly() {
+      A=1 B=1 C=1
+      readonly A
+      unset C
+      shellspec_is_readonly "$@"
+    }
+
+    It 'checks that the variable is read only'
+      When call _readonly "$1"
+      The status should be "$2"
+    End
+  End
 End
