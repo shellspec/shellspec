@@ -4,6 +4,7 @@ shellspec_syntax 'shellspec_matcher_be_defined'
 shellspec_syntax 'shellspec_matcher_be_undefined'
 shellspec_syntax 'shellspec_matcher_be_blank'
 shellspec_syntax 'shellspec_matcher_be_present'
+shellspec_syntax 'shellspec_matcher_be_exported'
 
 shellspec_matcher_be_defined() {
   shellspec_matcher__match() {
@@ -64,6 +65,24 @@ shellspec_matcher_be_blank() {
   shellspec_syntax_failure_message - \
     'expected: present (non-zero length string)' \
     '     got: $1'
+
+  shellspec_syntax_param count [ $# -eq 0 ] || return 0
+  shellspec_matcher_do_match
+}
+
+shellspec_matcher_be_exported() {
+  shellspec_matcher__match() {
+    if [ "${SHELLSPEC_META#variable:}" = "$SHELLSPEC_META" ]; then
+      shellspec_output SYNTAX_ERROR "The subject is not a variable"
+      shellspec_on SYNTAX_ERROR
+      return 0
+    fi
+
+    shellspec_exists_envkey "${SHELLSPEC_META#*:}"
+  }
+
+  shellspec_syntax_failure_message + 'The specified variable is not exported'
+  shellspec_syntax_failure_message - 'The specified variable is exported'
 
   shellspec_syntax_param count [ $# -eq 0 ] || return 0
   shellspec_matcher_do_match
