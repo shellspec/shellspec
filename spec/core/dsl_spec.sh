@@ -983,10 +983,6 @@ Describe "core/dsl.sh"
       The output should be blank
       The result of "get_sourced()" should eq "$LIB/include.sh"
     End
-
-    It 'handles readonly correctly'
-      The variable value should eq 123
-    End
   End
 
   Describe "shellspec_logger()"

@@ -28,10 +28,6 @@ else
   shellspec_unbuiltin() { :; }
 fi
 
-if [ "${SHELLSPEC_DEFECT_READONLY:-}" ]; then
-  alias readonly=''
-fi
-
 shellspec_load_requires() {
   set -- "$1${1:+:}" "" "$1${1:+:}"
 

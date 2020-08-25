@@ -3,11 +3,11 @@
 
 test || __() { :; }
 
-readonly installer="https://git.io/shellspec"
-readonly repo="https://github.com/shellspec/shellspec.git"
-readonly archive="https://github.com/shellspec/shellspec/archive"
-readonly project="shellspec"
-readonly exec="shellspec"
+installer="https://git.io/shellspec"
+repo="https://github.com/shellspec/shellspec.git"
+archive="https://github.com/shellspec/shellspec/archive"
+project="shellspec"
+exec="shellspec"
 
 set -eu && :<<'USAGE'
 Usage: [sudo] ${0##*/} [VERSION] [OPTIONS...]
