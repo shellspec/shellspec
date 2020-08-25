@@ -130,4 +130,43 @@ Describe "core/matchers/be/variable.sh"
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
   End
+
+  Describe 'be exported matcher'
+    Before 'export var1=1' 'unset var2 ||:' 'var2=1'
+    Example 'example'
+      The variable var1 should be exported
+      The variable var2 should not be exported
+    End
+
+    It 'matches exported variable'
+      subject() { %- ""; }
+      BeforeRun 'SHELLSPEC_META=variable:var' 'export var=123'
+      When run shellspec_matcher_be_exported
+      The status should be success
+    End
+
+    It 'does not match not exported variable'
+      subject() { false; }
+      BeforeRun 'SHELLSPEC_META=variable:var' 'var=123'
+      When run shellspec_matcher_be_exported
+      The status should be failure
+    End
+
+    It 'outputs error if subject is not variable'
+      subject() { %- ""; }
+      preserve() { %preserve SHELLSPEC_SW_SYNTAX_ERROR:SYNTAX_ERROR; }
+      BeforeRun 'SHELLSPEC_META=text'
+      AfterRun preserve
+
+      When run shellspec_matcher_be_exported
+      The stderr should equal SYNTAX_ERROR
+      The variable SYNTAX_ERROR should equal 1
+    End
+
+    It 'outputs error if parameters count is invalid'
+      subject() { %- ""; }
+      When run shellspec_matcher_be_exported foo
+      The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
+    End
+  End
 End
