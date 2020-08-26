@@ -261,7 +261,8 @@ specfile() {
     putsn "shellspec_marker '$specfile' EOF"
     finalize
     putsn "shellspec_end ${run_all:+$(($example_no - 1))})"
-  )
+  ) &
+  wait $!
   spec_no=$(($spec_no + 1))
 }
 eval find_specfiles specfile ${1+'"$@"'}
