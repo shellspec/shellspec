@@ -67,6 +67,8 @@
       - [`be undefined` matcher](#be-undefined-matcher)
       - [`be present` matcher](#be-present-matcher)
       - [`be blank` matcher](#be-blank-matcher)
+      - [`be exported` matcher](#be-exported-matcher)
+      - [`be readonly` matcher](#be-readonly-matcher)
 - [Helper](#helper)
   - [Skip / Pending](#skip--pending)
     - [`Skip`](#skip)
@@ -619,6 +621,8 @@ the subject expect variable
 | be undefined | The variable should be undefined (unset).                   |
 | be present   | The variable should be present (non-zero length string).    |
 | be blank     | The variable should be blank (unset or zero length string). |
+| be exported  | The variable should be exported.                            |
+| be readonly  | The variable should be readonly.                            |
 
 ##### `be defined` matcher
 
@@ -642,6 +646,18 @@ The variable VAR should be present
 
 ```sh
 The variable VAR should be blank
+```
+
+##### `be exported` matcher
+
+```sh
+The variable VAR should be exported
+```
+
+##### `be readonly` matcher
+
+```sh
+The variable VAR should be readonly
 ```
 
 ## Helper
