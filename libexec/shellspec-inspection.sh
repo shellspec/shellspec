@@ -92,18 +92,30 @@ if (trap '' DEBUG) 2>/dev/null; then
   echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
 fi
 
-PATH="${PATH:-}:/"
+set_path() {
+  if [ "${KSH_VERSION:-}" ] && (eval ': "${.sh.version}"' 2>/dev/null); then
+    # Workaround for ksh with kcov. Prevent ShellSpec self test fails.
+    hash -r 2>/dev/null &&:
+  fi
+  PATH="$1"
+}
+
+set_path "${PATH:-}:/"
 case $PATH in (*\;/)
   echo "SHELLSPEC_BUSYBOX_W32=1"
 esac
 
 # shellcheck disable=SC2123
-PATH=""
+set_path /
+if [ "$SHELLSPEC_SANDBOX" ] && ! $SHELLSPEC_SHELL -c ":" 2>/dev/null; then
+  # busybox ash on cygwin
+  echo "SHELLSPEC_DEFECT_SANDBOX=1"
+fi
 
+set_path ""
 if printf '' 2>/dev/null; then
   echo "SHELLSPEC_BUILTIN_PRINTF=1"
 fi
-
 if print -nr -- '' 2>/dev/null; then
   echo "SHELLSPEC_BUILTIN_PRINT=1"
 fi
@@ -152,13 +164,6 @@ export VAR
 if ! $SHELLSPEC_SHELL "${0%/*}/shellspec-inspection-readonly.sh" 2>/dev/null; then
   # ksh: readonly flag is inherit to child processes
   echo "SHELLSPEC_PATH_IS_READONLY=1"
-fi
-
-# shellcheck disable=SC2123
-PATH=/
-if [ "$SHELLSPEC_SANDBOX" ] && ! $SHELLSPEC_SHELL -c ":" 2>/dev/null; then
-  # busybox ash on cygwin
-  echo "SHELLSPEC_DEFECT_SANDBOX=1"
 fi
 
 # arithmetic expansion is also required
