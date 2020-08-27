@@ -261,8 +261,8 @@ specfile() {
     putsn "shellspec_marker '$specfile' EOF"
     finalize
     putsn "shellspec_end ${run_all:+$(($example_no - 1))})"
-  ) &
-  wait $!
+  )
+  wait # Workaround for ksh88. Segmentation fault when processing many files.
   spec_no=$(($spec_no + 1))
 }
 eval find_specfiles specfile ${1+'"$@"'}
