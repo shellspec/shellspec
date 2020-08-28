@@ -6,14 +6,15 @@ shellspec_coverage_setup() {
 
   shellspec_coverage=0
   shellspec_coverage_start() {
-    set -- 'shellspec_coverage=$((shellspec_coverage + 1))' \
-      '[ "$shellspec_coverage" -eq 1 ] || return 0'
+    echo 'shellspec_coverage_start() {'
+    echo 'shellspec_coverage=$((shellspec_coverage + 1))'
+    echo '[ "$shellspec_coverage" -eq 1 ] || return 0'
     while IFS= read -r line; do
-      set -- "$@" "$line"
-    done < "$SHELLSPEC_ENV_FILE" &&:
-    printf '%s\n' "shellspec_coverage_start() {" "${@:-}" "}"
+      echo "$line"
+    done
+    echo '}'
   }
-  eval "$(shellspec_coverage_start)"
+  eval "$(shellspec_coverage_start < "$SHELLSPEC_ENV_FILE")"
 
   shellspec_coverage_stop() {
     if [ "$shellspec_coverage" -gt 0 ]; then
@@ -24,12 +25,13 @@ shellspec_coverage_setup() {
   }
 
   shellspec_coverage_env() {
+    echo 'shellspec_coverage_env() {'
     while IFS= read -r line; do
       case $line in ("#ENV "*)
-        set -- "$@" "${line#* }"
+        echo "${line#* }"
       esac
-    done < "$SHELLSPEC_ENV_FILE" &&:
-    printf '%s\n' "shellspec_coverage_env() {" "${@:-:}" "}"
+    done
+    echo '}'
   }
-  eval "$(shellspec_coverage_env)"
+  eval "$(shellspec_coverage_env < "$SHELLSPEC_ENV_FILE")"
 }
