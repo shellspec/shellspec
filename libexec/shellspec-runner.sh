@@ -147,7 +147,7 @@ fi
         *)
           for xs in "$xs1" "$xs2" "$xs3"; do
             [ "${xs#0}" ] || continue
-            error "An unexpected error occurred." \
+            error "Aborted with status code" \
               "[executor: $xs1] [reporter: $xs2] [error handler: $xs3]"
             break
           done

@@ -59,20 +59,20 @@ detect_unexpected_error() {
 
   case $2 in
     ---) set -- "$1" '' ;;
-    BOF) set -- "$1" 1  ;;
+    BOF) set -- "$1" 1  "$3" ;;
     EOF) return 0 ;; # no error
   esac
 
   if [ "$2" ]; then
     range=$(detect_range "$2" < "$1")
     if [ "$3" ]; then
-      putsn "${LF}Unexpected output to the stderr at line $range in '$1'"
+      putsn "${LF}Unexpected output to stderr occurred at line $range in '$1'"
     else
       putsn "${LF}Unexpected exit at line $range in '$1'"
     fi
   else
     [ "$1" ] && set -- " occurred in '$1'"
-    putsn "${LF}Unexpected error (syntax error?)$1"
+    putsn "${LF}Unexpected error occurred (syntax error?)$1"
   fi
   sleep 0
 }

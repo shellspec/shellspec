@@ -1,5 +1,8 @@
 #shellcheck shell=sh disable=SC2016
 
+# to suppress shellcheck SC2034
+: "${SHELLSPEC_LINENO:-}"
+
 shellspec_output_METADATA() {
   shellspec_output_meta "info:$SHELLSPEC_INFO" "shell:$SHELLSPEC_SHELL" \
     "shell_type:$SHELLSPEC_SHELL_TYPE" "shell_version:$SHELLSPEC_SHELL_VERSION"
@@ -88,7 +91,7 @@ shellspec_output_ASSERT_WARN() {
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:$SHELLSPEC_EXPECTATION"
-  set -- "Unexpected error output to stderr (exit status: $1)"
+  set -- "Unexpected output to stderr occurred (exit status: $1)"
   shellspec_output_raw_append "failure_message:$1"
 }
 
@@ -99,18 +102,24 @@ shellspec_output_ASSERT_ERR() {
     "(exit status: $1)"
 }
 
-shellspec_output_FAILED_BEFORE_EACH_HOOK() {
+shellspec_output_FAULT_BEFORE_EACH_HOOK() {
+  shellspec_readfile SHELLSPEC_FAULT_BEFORE_EACH_HOOK "$1"
+  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_FAULT_BEFORE_EACH_HOOK" \
+    "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
+  SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:Before hook '$SHELLSPEC_HOOK' failed"
-  shellspec_output_raw_append "failure_message:The before hook registered" \
-    "at line $SHELLSPEC_HOOK_LINENO returned $SHELLSPEC_HOOK_STATUS"
+    "message:An error occurred in before hook '$1' (line: $3, exit status: $4)"
+  shellspec_output_raw_append "failure_message:${2:-<no error>}"
 }
 
-shellspec_output_FAILED_AFTER_EACH_HOOK() {
+shellspec_output_FAULT_AFTER_EACH_HOOK() {
+  shellspec_readfile SHELLSPEC_FAULT_AFTER_EACH_HOOK "$1"
+  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_FAULT_AFTER_EACH_HOOK" \
+    "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
+  SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:After hook '$SHELLSPEC_HOOK' failed"
-  shellspec_output_raw_append "failure_message:The after hook registered" \
-    "at line $SHELLSPEC_HOOK_LINENO returned $SHELLSPEC_HOOK_STATUS"
+    "message:An error occurred in after hook '$1' (line: $3, exit status: $4)"
+  shellspec_output_raw_append "failure_message:${2:-<no error>}"
 }
 
 shellspec_output_MATCHED() {
@@ -196,8 +205,8 @@ shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
 
 shellspec_output_RESULT_WARN() {
   shellspec_readfile SHELLSPEC_RESULT_ERROR "$2"
-  set -- "Unexpected output to stderr in result modifier (exit status: $1)${SHELLSPEC_LF}" \
-    "$SHELLSPEC_RESULT_ERROR${SHELLSPEC_LF}"
+  set -- "Unexpected output to stderr occurred in result modifier " \
+    "(exit status: $1)${SHELLSPEC_LF}${SHELLSPEC_RESULT_ERROR}${SHELLSPEC_LF}"
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:$SHELLSPEC_EXPECTATION" "failure_message:$1$2"
@@ -205,28 +214,27 @@ shellspec_output_RESULT_WARN() {
 
 shellspec_output_SATISFY_WARN() {
   shellspec_readfile SHELLSPEC_SATISFY_WARN "$2"
-  set -- "Unexpected output to stderr in satisfy matcher (exit status: $1)${SHELLSPEC_LF}" \
-    "$SHELLSPEC_SATISFY_WARN${SHELLSPEC_LF}"
+  set -- "Unexpected output to stderr occurred in satisfy matcher " \
+    "(exit status: $1)${SHELLSPEC_LF}${SHELLSPEC_SATISFY_WARN}${SHELLSPEC_LF}"
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:$SHELLSPEC_EXPECTATION" "failure_message:$1$2"
 }
 
 shellspec_output_ABORTED() {
-  if [ -s "$SHELLSPEC_STDOUT_FILE" ]; then
-    shellspec_readfile SHELLSPEC_STDOUT "$SHELLSPEC_STDOUT_FILE"
-    set -- "$1" "${2:-}stdout:${SHELLSPEC_STDOUT}${SHELLSPEC_LF}"
-  fi
-  if [ -s "$SHELLSPEC_STDERR_FILE" ]; then
-    shellspec_readfile SHELLSPEC_STDERR "$SHELLSPEC_STDERR_FILE"
-    set -- "$1" "${2:-}stderr:${SHELLSPEC_STDERR}${SHELLSPEC_LF}"
-  fi
-  if [ -s "$SHELLSPEC_ERROR_FILE" ]; then
-    shellspec_readfile SHELLSPEC_STDERR "$SHELLSPEC_ERROR_FILE"
-    set -- "$1" "${2:-}error:${SHELLSPEC_STDERR}${SHELLSPEC_LF}"
-  fi
+  shellspec_readfile SHELLSPEC_ABORTED "$2"
+  set -- "$1" "$SHELLSPEC_ABORTED${SHELLSPEC_LF}"
+  SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
     "message:Example aborted (exit status: $1)" "failure_message:${2:-}"
+}
+
+shellspec_output_ERROR() {
+  shellspec_readfile SHELLSPEC_ERROR "$1"
+  SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
+  shellspec_output_statement "tag:bad" "note:" "fail:y" \
+    "message:Unexpected output to stderr occurred" \
+    "failure_message:${SHELLSPEC_ERROR}${SHELLSPEC_LF}"
 }
 
 shellspec_output_SUCCEEDED() {
