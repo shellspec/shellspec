@@ -35,7 +35,7 @@ shellspec_clone() {
 # dash, busybox, bosh, posh
 shellspec_clone_posix() {
   eval "shellspec_clone_escape shellspec_clone \"\${$1}\""
-  printf '%s\n' "$2=$shellspec_clone"
+  shellspec_putsn "$2=$shellspec_clone"
 }
 
 # bash >= 2.03
@@ -43,9 +43,9 @@ shellspec_clone_bash() {
   shellspec_clone_typeset -p "$1" | {
     IFS= read -r shellspec_clone || return 1
     set -- "$shellspec_clone" "$1" "$2"
-    printf '%s\n' "${1%%\ "$2="*} $3=${1#*\ "$2="}"
+    shellspec_putsn "${1%%\ "$2="*} $3=${1#*\ "$2="}"
     while IFS= read -r shellspec_clone; do
-      printf '%s\n' "$shellspec_clone"
+      shellspec_putsn "$shellspec_clone"
     done
   }
 }
@@ -110,23 +110,23 @@ shellspec_clone_yash() {
     if [ "${shellspec_clone%%\ *}" = "typeset" ]; then
       set -- "$shellspec_clone" " $1" "$2"
       case $1 in
-        *"$2") printf '%s\n' "${1%%"$2"} $3" ;;
-        *) printf '%s\n' "${1%%"$2="*} $3=${1#*"$2="}" ;;
+        *"$2") shellspec_putsn "${1%%"$2"} $3" ;;
+        *) shellspec_putsn "${1%%"$2="*} $3=${1#*"$2="}" ;;
       esac
       shift 2
       while IFS= read -r shellspec_clone; do
-        printf '%s\n' "$shellspec_clone"
+        shellspec_putsn "$shellspec_clone"
       done
       return 0
     fi
 
     set -- "$2=${shellspec_clone#"$1="}" "$@"
     while IFS= read -r shellspec_clone; do
-      printf '%s\n' "$1"
+      shellspec_putsn "$1"
       shift
       set -- "$shellspec_clone" "$@"
     done
-    printf '%s\n' "${1%%\ "$2"} $3"
+    shellspec_putsn "${1%%\ "$2"} $3"
   }
 }
 
