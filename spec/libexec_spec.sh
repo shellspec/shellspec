@@ -92,24 +92,57 @@ Describe 'libexec.sh'
     End
   End
 
-  Describe "warn()"
-    It "outputs warning"
-      When call warn foo bar
-      The stderr should include "foo bar"
+  Describe "info()"
+    Context 'when color mode enabled'
+      BeforeRun 'SHELLSPEC_COLOR=1'
+      It "outputs information"
+        When run info foo bar
+        The entire stdout should eq "${SHELLSPEC_ESC}[33mfoo bar${SHELLSPEC_ESC}[m${SHELLSPEC_LF}"
+      End
+    End
+
+    Context 'when color mode disabled'
+      BeforeRun 'SHELLSPEC_COLOR='
+      It "outputs information"
+        When run info foo bar
+        The entire stdout should eq "foo bar${SHELLSPEC_LF}"
+      End
     End
   End
 
-  Describe "info()"
-    It "outputs information"
-      When call info foo bar
-      The stdout should include "foo bar"
+  Describe "warn()"
+    Context 'when color mode enabled'
+      BeforeRun 'SHELLSPEC_COLOR=1'
+      It "outputs warning"
+        When run warn foo bar
+        The entire stderr should eq "${SHELLSPEC_ESC}[33mfoo bar${SHELLSPEC_ESC}[m${SHELLSPEC_LF}"
+      End
+    End
+
+    Context 'when color mode disabled'
+      BeforeRun 'SHELLSPEC_COLOR='
+      It "outputs warning"
+        When run warn foo bar
+        The entire stderr should eq "foo bar${SHELLSPEC_LF}"
+      End
     End
   End
 
   Describe "error()"
-    It "outputs error"
-      When call error foo bar
-      The stderr should include "foo bar"
+    Context 'when color mode enabled'
+      BeforeRun 'SHELLSPEC_COLOR=1'
+      It "outputs error"
+        When run error foo bar
+        The entire stderr should eq "${SHELLSPEC_ESC}[2;31mfoo bar${SHELLSPEC_ESC}[m${SHELLSPEC_LF}"
+      End
+    End
+
+    Context 'when color mode disabled'
+      BeforeRun 'SHELLSPEC_COLOR='
+      It "outputs error"
+        When run error foo bar
+        The entire stderr should eq "foo bar${SHELLSPEC_LF}"
+      End
     End
   End
 

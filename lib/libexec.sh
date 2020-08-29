@@ -72,25 +72,37 @@ edit_in_place() {
   fi
 }
 
-warn() {
-  IFS=" $IFS"
-  [ "$SHELLSPEC_COLOR" ] && set -- "$(printf '\033[33m%s\033[m' "${*:-}")"
-  printf '%s\n' "${*:-}" >&2
-  IFS=${IFS#?}
-}
-
 info() {
   IFS=" $IFS"
-  [ "$SHELLSPEC_COLOR" ] && set -- "$(printf '\033[33m%s\033[m' "${*:-}")"
-  printf '%s\n' "${*:-}"
+  if [ "$SHELLSPEC_COLOR" ]; then
+    set -- '\033[33m%s\033[m\n' "${*:-}"
+  else
+    set -- '%s\n' "${*:-}"
+  fi
   IFS=${IFS#?}
+  "$SHELLSPEC_PRINTF" "$@"
+}
+
+warn() {
+  IFS=" $IFS"
+  if [ "$SHELLSPEC_COLOR" ]; then
+    set -- '\033[33m%s\033[m\n' "${*:-}"
+  else
+    set -- '%s\n' "${*:-}"
+  fi
+  IFS=${IFS#?}
+  "$SHELLSPEC_PRINTF" "$@" >&2
 }
 
 error() {
   IFS=" $IFS"
-  [ "$SHELLSPEC_COLOR" ] && set -- "$(printf '\033[2;31m%s\033[m' "${*:-}")"
-  printf '%s\n' "${*:-}" >&2
+  if [ "$SHELLSPEC_COLOR" ]; then
+    set -- '\033[2;31m%s\033[m\n' "${*:-}"
+  else
+    set -- '%s\n' "${*:-}"
+  fi
   IFS=${IFS#?}
+  "$SHELLSPEC_PRINTF" "$@" >&2
 }
 
 abort() {
