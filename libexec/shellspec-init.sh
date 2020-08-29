@@ -13,10 +13,10 @@ generate() {
       mkdir -p "${file%/*}"
     esac
     [ $# -eq 0 ] && set -- "$(cat)"
-    printf '%s\n' "$@" > "$file"
+    "$SHELLSPEC_PRINTF" '%s\n' "$@" > "$file"
     set -- create "$file"
   fi
-  printf '%8s   %s\n' "$@"
+  "$SHELLSPEC_PRINTF" '%8s   %s\n' "$@"
 }
 
 ignore_file() {

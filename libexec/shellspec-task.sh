@@ -7,7 +7,7 @@ set -eu
 use find_files
 
 show_task() {
-  printf '%-40s # %s\n' "$1" "$2"
+  "$SHELLSPEC_PRINTF" '%-40s # %s\n' "$1" "$2"
 }
 
 run_tasks() {

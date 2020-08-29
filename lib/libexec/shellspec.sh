@@ -36,17 +36,18 @@ read_cmdline() {
   [ -e "$1" ] || return 0
 
   octal_dump < "$1" | (
-    cmdline='' printf_octal_bug=''
-    [ "$(printf '\101' 2>/dev/null ||:)" = "A" ] || printf_octal_bug=0
+    cmdline='' oct_bug=''
+    [ "$("$SHELLSPEC_PRINTF" '\101' 2>/dev/null ||:)" = "A" ] || oct_bug=0
+
     while IFS= read -r line; do
       case $line in
         000) line="040" ;;
-        1??) line="$printf_octal_bug$line" ;;
+        1??) line="${oct_bug}${line}" ;;
       esac
-      cmdline="$cmdline\\$line"
+      cmdline="${cmdline}\\${line}"
     done
-    #shellcheck disable=SC2059
-    printf "$cmdline"
+
+    "$SHELLSPEC_PRINTF" "$cmdline"
   )
 }
 
