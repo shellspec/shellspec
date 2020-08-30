@@ -430,8 +430,12 @@ shellspec_pending() {
 }
 
 shellspec_logger() {
-  sleep 0
-  shellspec_putsn "$@" >>"$SHELLSPEC_LOGFILE"
+  shellspec_sleep 0
+  if [ "$SHELLSPEC_LOGFILE" ]; then
+    shellspec_putsn "$@" >>"$SHELLSPEC_LOGFILE"
+  else
+    shellspec_putsn "$@"
+  fi
 }
 
 shellspec_deprecated() {

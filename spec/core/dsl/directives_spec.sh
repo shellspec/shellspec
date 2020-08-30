@@ -1,6 +1,16 @@
 #shellcheck shell=sh disable=SC2016
 
 Describe 'Directives'
+  Describe '%logger'
+    _logger() { %logger "$@"; }
+    BeforeRun 'SHELLSPEC_LOGFILE=""'
+
+    It 'outputs to logfile'
+      When run _logger "test"
+      The output should eq "test"
+    End
+  End
+
   Describe '%printf'
     _printf() { %printf "$@"; }
     It 'calls printf builtin'

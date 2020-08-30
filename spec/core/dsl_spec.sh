@@ -1010,7 +1010,7 @@ Describe "core/dsl.sh"
     End
 
     It 'sleeps to make the log easy to read'
-      sleep() { echo sleep; }
+      shellspec_sleep() { echo sleep; }
       BeforeCall SHELLSPEC_LOGFILE=/dev/null
       When call shellspec_logger "logger test"
       The stdout should eq "sleep"
