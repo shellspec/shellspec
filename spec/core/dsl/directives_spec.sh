@@ -8,4 +8,12 @@ Describe 'Directives'
       The output should eq "001"
     End
   End
+
+  Describe '%sleep'
+    _sleep() { %sleep "$@"; }
+    It 'calls sleep builtin'
+      When call _sleep 0
+      The status should eq 0
+    End
+  End
 End

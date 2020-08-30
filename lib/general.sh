@@ -655,3 +655,4 @@ shellspec_is_readonly() {
 shellspec_mv() { "$SHELLSPEC_MV" "$@"; }
 shellspec_rm() { "$SHELLSPEC_RM" "$@"; }
 shellspec_chmod() { "$SHELLSPEC_CHMOD" "$@"; }
+shellspec_sleep() { "$SHELLSPEC_SLEEP" "$@"; }

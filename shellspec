@@ -35,6 +35,7 @@ export SHELLSPEC_SUPPORT_BINDIR=''
 export SHELLSPEC_ENV="env"
 export SHELLSPEC_UNREADONLY_PATH=''
 export SHELLSPEC_PRINTF="printf"
+export SHELLSPEC_SLEEP="sleep"
 export SHELLSPEC_BUILTIN_PRINTF=''
 export SHELLSPEC_BUILTIN_PRINT=''
 export SHELLSPEC_BUILTIN_TYPESETF=''
@@ -612,6 +613,7 @@ command_path SHELLSPEC_ENV "env" ||:
 command_path SHELLSPEC_MV "mv" ||:
 command_path SHELLSPEC_CHMOD "chmod" ||:
 command_path SHELLSPEC_RM "rm" ||:
+command_path SHELLSPEC_SLEEP "sleep" ||:
 
 if command_path "time" || [ "$SHELLSPEC_BUSYBOX_W32" ]; then
   SHELLSPEC_TIME="time -p"

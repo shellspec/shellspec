@@ -1,9 +1,10 @@
-%text        => text_begin raw
-%text:raw    => text_begin raw
-%text:expand => text_begin expand
 %  | %const  => constant
 %= | %putsn  => out putsn
 %- | %puts   => out puts
-%printf      => out printf
 %logger      => out logger
 %preserve    => out preserve
+%printf      => out printf
+%sleep       => out sleep
+%text        => text_begin raw
+%text:raw    => text_begin raw
+%text:expand => text_begin expand
