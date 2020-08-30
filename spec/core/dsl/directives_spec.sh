@@ -1,6 +1,40 @@
 #shellcheck shell=sh disable=SC2016
 
 Describe 'Directives'
+  Describe '%puts'
+    _puts() { %- "$@"; }
+    _puts_long() {
+      %puts "$@"
+    }
+
+    It 'puts string (%-)'
+      When run _puts "test"
+      The entire output should eq "test"
+    End
+
+    It 'puts string (%puts)'
+      When run _puts_long "test"
+      The entire output should eq "test"
+    End
+  End
+
+  Describe '%putsn'
+    _putsn() { %= "$@"; }
+    _putsn_long() {
+      %putsn "$@"
+    }
+
+    It 'putsn string (%=)'
+      When run _putsn "test"
+      The entire output should eq "test${SHELLSPEC_LF}"
+    End
+
+    It 'putsn string (%putsn)'
+      When run _putsn_long "test"
+      The entire output should eq "test${SHELLSPEC_LF}"
+    End
+  End
+
   Describe '%logger'
     _logger() { %logger "$@"; }
     BeforeRun 'SHELLSPEC_LOGFILE=""'
