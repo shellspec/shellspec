@@ -4,5 +4,6 @@
 %  | %const  => constant
 %= | %putsn  => out putsn
 %- | %puts   => out puts
+%printf      => out printf
 %logger      => out logger
 %preserve    => out preserve

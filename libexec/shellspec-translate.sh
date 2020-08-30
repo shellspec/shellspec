@@ -135,6 +135,7 @@ trans_out() {
   case $1 in
     putsn)  putsn "shellspec_putsn $2" ;;
     puts)   putsn "shellspec_puts $2" ;;
+    printf) putsn "shellspec_printf $2" ;;
     logger) putsn "shellspec_logger $2" ;;
     preserve) putsn "shellspec_preserve $2" ;;
   esac

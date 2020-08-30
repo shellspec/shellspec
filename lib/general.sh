@@ -145,6 +145,10 @@ if [ "${POSH_VERSION:-}" ] && [ "$(set -u; echo /*)" = '/*' ]; then
   }
 fi
 
+shellspec_printf() {
+  eval '"$SHELLSPEC_PRINTF"' ${1+'"$@"'}
+}
+
 # `echo` not has portability, and external 'printf' command is slow.
 # Use shellspec_puts or shellspec_putsn replacement of 'echo'.
 # Those commands output arguments as it. (not interpret -n and escape sequence)

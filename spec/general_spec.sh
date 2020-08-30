@@ -191,6 +191,13 @@ Describe "general.sh"
     End
   End
 
+  Describe 'shellspec_printf()'
+    It 'call printf builtin'
+      When call shellspec_printf '%03d' 1
+      The stdout should equal '001'
+    End
+  End
+
   Describe 'shellspec_putsn()'
     It 'does not output anything without arguments'
       When call shellspec_putsn
