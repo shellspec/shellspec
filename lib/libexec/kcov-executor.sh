@@ -6,7 +6,7 @@
 use includes replace_all
 
 executor() {
-  #shellcheck disable=SC2039
+  #shellcheck disable=SC2039,SC3045
   [ "$(ulimit -n)" -lt 1024 ] && ulimit -n 1024
 
   count=0

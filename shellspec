@@ -130,7 +130,7 @@ export SHELLSPEC_CHMOD="chmod"
 export SHELLSPEC_RM="rm"
 export SHELLSPEC_DOCKER_IMAGE=""
 
-#shellcheck disable=SC2039
+#shellcheck disable=SC2039,SC3028
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
 
 # Based on https://github.com/ko1nksm/readlinkf
@@ -524,7 +524,7 @@ fi
 eval "set -- $params"
 
 if [ ! "$SHELLSPEC_SHELL" ]; then
-  # shellcheck disable=SC2039
+  # shellcheck disable=SC2039,SC3047
   if [ "$SHELLSPEC_KCOV" ] && ! (trap '' DEBUG) 2>/dev/null; then
     for shell in sh bash ksh zsh :; do
       "$shell" -c "trap '' DEBUG" 2>/dev/null && break

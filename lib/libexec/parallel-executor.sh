@@ -23,7 +23,7 @@ reduce() {
   i=0
   while [ $i -lt "$1" ] && i=$(($i + 1)); do
     until [ -e "$SHELLSPEC_JOBDIR/$i.done" ]; do sleep 0; done
-    # shellcheck disable=SC2039
+    # shellcheck disable=SC2039,SC3021
     cat "$SHELLSPEC_JOBDIR/$i.stdout" >&"$SHELLSPEC_OUTPUT_FD"
     cat "$SHELLSPEC_JOBDIR/$i.stderr" >&2
     read -r exit_status < "$SHELLSPEC_JOBDIR/$i.status"

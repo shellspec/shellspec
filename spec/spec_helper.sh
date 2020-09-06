@@ -5,14 +5,14 @@ set -eu
 log() { echo "$@" > "$SHELLSPEC_DEV_TTY"; }
 
 if [ "${PIPEFAIL:-}" ] && PIPEFAIL=''; then
-  # shellcheck disable=SC2039
+  # shellcheck disable=SC2039,SC3040
   if set -o pipefail 2>/dev/null; then
     log "pipefail enabled"
   fi
 fi
 
 if [ "${EXTGLOB:-}" ] && EXTGLOB=''; then
-  # shellcheck disable=SC2039
+  # shellcheck disable=SC2039,SC3044
   if shopt -s extglob 2>/dev/null; then
     log "extglob enabled"
   elif setopt extendedglob 2>/dev/null; then

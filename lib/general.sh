@@ -545,7 +545,7 @@ shellspec_is_empty_directory() {
 
     # workaround for posh 0.10.2: glob does not expand when set -u
     set +o noglob +u
-    # shellcheck disable=SC2039
+    # shellcheck disable=SC2039,SC3044
     [ "${SHELLSPEC_FAILGLOB_AVAILABLE:-}" ] && shopt -u failglob
     [ "${SHELLSPEC_NOMATCH_AVAILABLE:-}" ] && setopt NO_NOMATCH
 
@@ -580,7 +580,7 @@ shellspec_unsetf() {
     return 0
   fi
   if [ "$SHELLSPEC_BUILTIN_TYPESETF" ]; then
-    # shellcheck disable=SC2039
+    # shellcheck disable=SC2039,SC3044
     typeset -f "$1" >/dev/null 2>&1 || return 0
   elif [ "${POSH_VERSION:-}" ]; then
     ( unset -f "$1" 2>/dev/null ) || return 0

@@ -6,7 +6,7 @@ shellspec_output() {
 }
 
 shellspec_output_to_fd() {
-  # shellcheck disable=SC2039
+  # shellcheck disable=SC2039,SC3021
   "$@" >&"$SHELLSPEC_OUTPUT_FD"
 }
 
