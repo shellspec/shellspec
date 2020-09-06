@@ -28,7 +28,7 @@ ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh,
 
 ----
 
-<big>Thank you for your interest in ShellSpec. Please visit [the official website](https://shellspec.info/) to know the impressive features!</big>
+**Thank you for your interest in ShellSpec. Please visit [the official website](https://shellspec.info/) to know the impressive features!**
 
 Let's have fun testing your shell scripts! (Try [Online Demo](https://shellspec.info/demo) on your browser).
 
@@ -451,18 +451,14 @@ $ shellspec
 ### Usage (`--help`)
 
 ```console
-$ shellspec --help
+$ shellspec -h
 Usage: shellspec [options...] [files or directories...]
 
   Using + instead of - for short options causes reverses the meaning
 
     -s, --shell SHELL               Specify a path of shell [default: "auto" (the shell running shellspec)]
-                                      ShellSpec ignores shebang and runs in the specified shell.
         --path PATH                 Set PATH environment variable at startup
-                                      e.g. --path /bin:/usr/bin, --path "$(getconf PATH)"
         --[no-]sandbox              Force the use of the mock instead of the actual command
-                                      Make PATH empty (except "spec/support/bin" and mock dir) and readonly
-                                      This is not a security feature and does not provide complete isolation
         --sandbox-path SANDBOX-PATH Make PATH the sandbox path instead of empty (default: empty)
         --require MODULE            Require a MODULE (shell script file)
     -e, --env NAME=VALUE            Set environment variable
@@ -471,60 +467,31 @@ Usage: shellspec [options...] [files or directories...]
         --[no-]fail-fast[=COUNT]    Abort the run after first (or COUNT) of failures [default: disabled]
         --[no-]fail-no-examples     Fail if no examples found [default: disabled]
         --[no-]fail-low-coverage    Fail on low coverage [default: disabled]
-                                    The coverage threshold is specified by the coverage option
     -p, --[no-]profile              Enable profiling and list the slowest examples [default: disabled]
-                                      Profiler tries to use 100% ability of 1 CPU (1 core).
-                                      Therefore, not recommended for single(-core) CPU.
         --profile-limit N           List the top N slowest examples [default: 10]
         --[no-]boost                Increase the CPU frequency to boost up testing speed [default: disabled]
-                                      Equivalent of --profile --profile-limit 0
-                                      (Don't worry, this is not overclocking. This is joke option but works.)
         --log-file LOGFILE          Log file for %logger directive and trace [default: /dev/tty]
         --keep-tempdir              Do not cleanup temporary directory [default: disabled]
 
   **** Execution ****
 
     -q, --[no-]quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
-                                      not-passed examples: failure and temporary pending examples
-                                      Quick mode is automatically enabled. To disable quick mode,
-                                      delete .shellspec-quick.log on the project root directory.
     -r, --repair, --only-failures   Run failure examples only (Depends on quick mode)
     -n, --next,   --next-failure    Run failure examples and abort on first failure (Depends on quick mode)
-                                      Equivalent of --repair --fail-fast --random none
     -j, --jobs JOBS                 Number of parallel jobs to run [default: 0 (disabled)]
-        --random TYPE[:SEED]        Run examples by the specified random type
-                                      [none]          run in the defined order [default]
-                                      [specfiles]     randomize the order of specfiles
-                                      [examples]      randomize the order of examples (slow)
+        --random TYPE[:SEED]        Run examples by the specified random type | <[none]> [specfiles] [examples]
     -x, --xtrace                    Run examples with trace output of evaluation enabled [default: disabled]
-                                      Fall back to --xtrace-only if BASH_XTRACEFD not supported.
     -X, --xtrace-only               Run examples with trace output only enabled [default: disabled]
-                                      The evaluation is executed, but the expectations are skipped.
         --dry-run                   Print the formatter output without running any examples [default: disabled]
 
   **** Output ****
 
         --[no-]banner               Show banner if exist 'spec/banner' [default: enabled]
-    -f, --format FORMATTER          Choose a formatter for display
-                                      [p]rogress      dots [default]
-                                      [d]ocumentation group and example names
-                                      [t]ap           TAP format
-                                      [j]unit         JUnit XML (time attributre with --profile)
-                                      [f]ailures      file:line:message (suitable for editors integration)
-                                      [null]          do not display anything
-                                      [debug]         for developers
-                                      custom formatter name
+    -f, --format FORMATTER          Choose a formatter for display | <[p]> [d] [t] [j] [f] [null] [debug]
     -o, --output GENERATOR          Choose a generator(s) to generate a report file(s) [default: none]
-                                      You can use the same name as FORMATTER. (multiple options allowed)
         --[no-]color                Enable or disable color [default: enabled if the output is a TTY]
-                                      Disable if NO_COLOR environment variable set
-        --skip-message VERBOSITY    Mute skip message
-                                      [verbose]       do not mute any messages [default]
-                                      [moderate]      mute repeated messages
-                                      [quiet]         mute repeated or non-temporary messages
-        --pending-message VERBOSITY Mute pending message
-                                      [verbose]       do not mute any messages [default]
-                                      [quiet]         mute non-temporary messages
+        --skip-message VERBOSITY    Mute skip message | <[verbose]> [moderate] [quiet]
+        --pending-message VERBOSITY Mute pending message | <[verbose]> [quiet]
         --quiet                     Equivalent of --skip-message quiet --pending-message quiet
         --(show|hide)-deprecations  Show or hide deprecations details [default: show]
 
@@ -545,38 +512,18 @@ Usage: shellspec [options...] [files or directories...]
   **** Coverage ****
 
         --[no-]kcov                 Enable coverage using kcov [default: disabled]
-                                      Requires kcov (v35 or later) and bash/zsh/ksh, parallel execution is ignored.
         --kcov-path PATH            Specify kcov path [default: kcov]
         --kcov-options OPTIONS      Additional Kcov options (coverage limits, coveralls id, etc)
-                                      Default specified options: (can be overwritten)
-                                        --include-path=.
-                                        --include-pattern=.sh
-                                        --exclude-pattern=/.shellspec,/spec/,/coverage/,/report/
-                                        --path-strip-level=1
-                                      To include files without extension, specify --include-pattern
-                                      without '.sh' and filter with --include-*/--exclude-* options.
 
   **** Utility ****
 
-        --init [TEMPLATE...]        Initialize your project with ShellSpec
-                                      Template: Create additional files.
-                                        [git]   .gitignore
-                                        [hg]    .hgignore
-                                        [svn]   .svnignore
+        --init [TEMPLATE...]        Initialize your project with ShellSpec | [git] [hg] [svn]
         --gen-bin [@COMMAND...]     Generate test support commands in spec/support/bin
-                                      This is useful for run actual commands from mock/stub.
         --count                     Count the number of specfiles and examples
-        --list LIST                 List the specfiles/examples
-                                      [specfiles]       list the specfiles
-                                      [examples]        list the examples with id
-                                      [examples:id]     alias for examples
-                                      [examples:lineno] list the examples with lineno
-                                      [debug]           for developer
-                                      The order is randomized with --random but random TYPE is ignored.
+        --list LIST                 List the specfiles/examples | [specfiles] [examples(:id|:lineno)]
         --syntax, --syntax-check    Syntax check of the specfiles without running any examples
         --translate                 Output translated specfile
         --docker DOCKER-IMAGE       Run tests in specified docker image (EXPERIMENTAL)
-                                      This is an experimental feature and may be changed/removed in the future.
         --task [TASK]               Run the TASK or Show the task list if TASK is not specified
     -v, --version                   Display the version
     -h, --help                      -h: short help, --help: long help
