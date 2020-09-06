@@ -1,10 +1,6 @@
 # ShellSpec
 
-A full-featured BDD unit testing framework for shell scripts.
-
-**Let’s test your shell script!** (Try the **[Online Demo](https://shellspec.info/demo)** on the browser).
-
-[![demo](docs/demo.gif)](https://shellspec.info/demo)
+ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh, zsh and **all POSIX shells** that provides first-class features such as code coverage, mocking, parallel execution, parameterized testing and more. It was developed as a dev/test tool for **cross-platform shell scripts and shell script libraries**. With lots of practical CLI features and simple yet powerful syntax, it provides you with a fun shell script test environment.
 
 [![Travis CI](https://img.shields.io/travis/com/shellspec/shellspec/master.svg?label=TravisCI&style=flat-square)](https://travis-ci.com/shellspec/shellspec)
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI&style=flat-square)](https://cirrus-ci.com/github/shellspec/shellspec)
@@ -32,40 +28,11 @@ A full-featured BDD unit testing framework for shell scripts.
 
 ----
 
-ShellSpec is a full-featured BDD unit testing framework for dash, bash, ksh, zsh and **all POSIX shells** that
-**provides first-class features** such as code coverage, mocking, parallel execution, parameterized testing and more.
-It was developed as a dev/test tool for **cross-platform shell scripts and shell script libraries**.
-Most of features are implemented with pure shell script and minimal POSIX-compliant commands,
-so they work also in restricted environments such as tiny Docker images and embedded systems.
+<big>Thank you for your interest in ShellSpec. Please visit [the official website](https://shellspec.info/) to know the impressive features!</big>
 
-[Why I created ShellSpec](https://shellspec.info/why)
+Let's have fun testing your shell scripts! (Try [Online Demo](https://shellspec.info/demo) on your browser).
 
-## Impressive features <!-- omit in toc -->
-
-- Works with **all POSIX compliant shells** (dash, bash, zsh, ksh, busybox, etc...)
-- Minimal dependencies (use only a few basic POSIX-compliant commands)
-- **BDD style specfile compatible with shell script syntax** (can embed shell script)
-- **Structured test using nestable blocks with scoped** (isolation between tests)
-- **Easy and powerfull mocking** in cooperation with block scope
-- **Sandbox feature** that prevents actual command execution and facilitates testing by mock
-- Easy to Skip/Pending of the examples
-- Before/After and BeforeAll/BeforeAll hooks
-- **Parameterized examples** for Data-Driven tests
-- **Execution filtering** by line number, id, focus, tag and example name
-- **Quick execution** to run examples that not-passed (or failed) the last time it ran
-- Execution with **trace output** for debugging
-- **Parallel execution**, random ordered execution and dry-run execution
-- Modern reporting (colorized, failed line number, progress / documentation / TAP / JUnit formatter)
-- **Code coverage** ([Kcov](http://simonkagstrom.github.io/kcov/index.html) integration) and Profiler
-- **Friendly with CI and provides Docker images** with ShellSpec pre-installed
-- Extensible architecture (custom assertion, custom matcher, etc...)
-
-### Subproject <!-- omit in toc -->
-
-- [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
-- [ShellBench](https://github.com/shellspec/shellbench) - A benchmark utility for POSIX shell comparison
-
-### Coverage report <!-- omit in toc -->
+[![demo](docs/demo.gif)](https://shellspec.info/demo)
 
 [![Coverage report](docs/coverage.png)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html?branch=master)
 
@@ -84,7 +51,7 @@ See [CHANGELOG.md](CHANGELOG.md)
   - [Others (archive / make / manual)](#others-archive--make--manual)
   - [Use with Docker](#use-with-docker)
 - [Tutorial](#tutorial)
-- [shellspec command](#shellspec-command)
+- [ShellSpec CLI](#shellspec-cli)
   - [Usage (`--help`)](#usage---help)
   - [Initialize your project (`--init`)](#initialize-your-project---init)
   - [Specify the shell to run (`--shell`)](#specify-the-shell-to-run---shell)
@@ -479,7 +446,7 @@ HERE
 $ shellspec
 ```
 
-## shellspec command
+## ShellSpec CLI
 
 ### Usage (`--help`)
 
@@ -1470,3 +1437,8 @@ line number etc. Each example group block and example block is translated to com
 Therefore changes inside those blocks do not affect the outside of the block. In other words it realizes
 local variables and local functions in the specfile. This is very useful for describing a structured spec.
 If you are interested in how to translate, use the `--translate` option.
+
+### Subproject <!-- omit in toc -->
+
+- [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
+- [ShellBench](https://github.com/shellspec/shellbench) - A benchmark utility for POSIX shell comparison
