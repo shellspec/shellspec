@@ -1,5 +1,18 @@
 # How to use ShellSpec with Docker
 
+- [Official docker images](#official-docker-images)
+- [Using ShellSpec docker image](#using-shellspec-docker-image)
+  - [1. Run ShellSpec and your specfiles within container](#1-run-shellspec-and-your-specfiles-within-container)
+  - [2. Run simple with helper script and extra hooks](#2-run-simple-with-helper-script-and-extra-hooks)
+    - [Hooks](#hooks)
+      - [.shellspec-docker/initrc](#shellspec-dockerinitrc)
+      - [.shellspec-docker/pre-test](#shellspec-dockerpre-test)
+      - [.shellspec-docker/post-test](#shellspec-dockerpost-test)
+  - [3. Using ShellSpec image as parent image](#3-using-shellspec-image-as-parent-image)
+  - [4. Include ShellSpec into another image](#4-include-shellspec-into-another-image)
+- [Appendix](#appendix)
+  - [How to build official ShellSpec docker image yourself](#how-to-build-official-shellspec-docker-image-yourself)
+
 ## Official docker images
 
 There are official images on the [Docker Hub](https://hub.docker.com/r/shellspec/shellspec).

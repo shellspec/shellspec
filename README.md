@@ -40,45 +40,16 @@ Let's have fun testing your shell scripts! (Try [Online Demo](https://shellspec.
 
 See [CHANGELOG.md](CHANGELOG.md)
 
+---
+
 ## Table of Contents <!-- omit in toc -->
 
 - [Requirements](#requirements)
-  - [Supported shells and platforms](#supported-shells-and-platforms)
-  - [POSIX-compliant commands](#posix-compliant-commands)
 - [Installation](#installation)
-  - [Web installer](#web-installer)
-  - [Package manager](#package-manager)
-  - [Others (archive / make / manual)](#others-archive--make--manual)
-  - [Use with Docker](#use-with-docker)
 - [Tutorial](#tutorial)
 - [ShellSpec CLI](#shellspec-cli)
-  - [Usage (`--help`)](#usage---help)
-  - [Initialize your project (`--init`)](#initialize-your-project---init)
-  - [Specify the shell to run (`--shell`)](#specify-the-shell-to-run---shell)
-  - [Quick execution (`--quick`, `--repair`, `--next`)](#quick-execution---quick---repair---next)
-  - [Parallel execution (`--jobs`)](#parallel-execution---jobs)
-  - [Random execution (`--random`)](#random-execution---random)
-  - [Fail fast (`--fail-fast`)](#fail-fast---fail-fast)
-  - [Trace (`--xtrace`, `--xtrace-only`)](#trace---xtrace---xtrace-only)
-  - [Sandbox mode (`--sandbox`)](#sandbox-mode---sandbox)
-  - [Ranges (`:LINENO`, `:@ID`) / Filters (`--example`) / Focus (`--focus`)](#ranges-lineno-id--filters---example--focus---focus)
-  - [Reporter (`--format`) / Generator (`--output`)](#reporter---format--generator---output)
-  - [Coverage (`--kcov`)](#coverage---kcov)
-  - [Profiler (`--profile`)](#profiler---profile)
-  - [Run tests in Docker container (`--docker`)](#run-tests-in-docker-container---docker)
-  - [Task runner (`--task`)](#task-runner---task)
-- [Special files/directories in the project directory](#special-filesdirectories-in-the-project-directory)
-  - [Typical project directory structure](#typical-project-directory-structure)
-  - [`.shellspec` / `.shellspec-local` - configure default options](#shellspec--shellspec-local---configure-default-options)
-  - [`.shellspec-quick.log` - log file for quick execution](#shellspec-quicklog---log-file-for-quick-execution)
-  - [`report/` - output directory of report file](#report---output-directory-of-report-file)
-  - [`coverage/` - output directory of coverage reports](#coverage---output-directory-of-coverage-reports)
-  - [`spec/` - default specfiles directory](#spec---default-specfiles-directory)
-  - [`spec/banner` - banner file displayed at test execution](#specbanner---banner-file-displayed-at-test-execution)
-  - [`spec/spec_helper.sh` - default helper file for specfile](#specspec_helpersh---default-helper-file-for-specfile)
-  - [`spec/support/` - directory for support files](#specsupport---directory-for-support-files)
-  - [`spec/support/bin` - directory for support commands](#specsupportbin---directory-for-support-commands)
-- [Specfile](#specfile)
+- [Project directory structure](#project-directory-structure)
+- [DSL syntax](#dsl-syntax)
   - [Example](#example)
   - [Basic structure](#basic-structure)
     - [`Describe`, `Context`, `ExampleGroup` - example group](#describe-context-examplegroup---example-group)
@@ -92,6 +63,11 @@ See [CHANGELOG.md](CHANGELOG.md)
     - [`Assert` - expectation for custom assertion](#assert---expectation-for-custom-assertion)
     - [Subjects, Modifiers and Matchers](#subjects-modifiers-and-matchers)
       - [custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
+  - [Hooks](#hooks)
+    - [`Before`, `After` - example hook](#before-after---example-hook)
+    - [`BeforeAll`, `AfterAll` - example group hook](#beforeall-afterall---example-group-hook)
+    - [`BeforeCall`, `AfterCall` - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
+    - [`BeforeRun`, `AfterRun` - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
   - [Helpers](#helpers)
     - [`Skip`, `Pending` - skip and pending example](#skip-pending---skip-and-pending-example)
       - [Temporary skip and pending](#temporary-skip-and-pending)
@@ -101,36 +77,33 @@ See [CHANGELOG.md](CHANGELOG.md)
     - [`Data` - input data for evaluation](#data---input-data-for-evaluation)
     - [`Parameters` - parameterized example](#parameters---parameterized-example)
     - [`Mock` - create a command-based mock](#mock---create-a-command-based-mock)
-  - [Hooks](#hooks)
-    - [`Before`, `After` - example hook](#before-after---example-hook)
-    - [`BeforeAll`, `AfterAll` - example group hook](#beforeall-afterall---example-group-hook)
-    - [`BeforeCall`, `AfterCall` - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
-    - [`BeforeRun`, `AfterRun` - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
-  - [Directives](#directives)
-    - [`%const` (`%`) - constant definition](#const----constant-definition)
-    - [`%text` - embedded text](#text---embedded-text)
-    - [`%puts` (`%-`), `%putsn` (`%=`) - put string](#puts---putsn----put-string)
-    - [`%preserve` - preserve variables](#preserve---preserve-variables)
-    - [`%logger` - debug output](#logger---debug-output)
-    - [`%data` - parameter](#data---parameter)
-  - [Mock and Stub](#mock-and-stub)
-    - [Function-based mock](#function-based-mock)
-    - [Command-based mock](#command-based-mock)
-    - [Mock example](#mock-example)
-  - [Support commands](#support-commands)
-    - [Execute the actual command within a mock function](#execute-the-actual-command-within-a-mock-function)
-    - [Make mock not mandatory in sandbox mode](#make-mock-not-mandatory-in-sandbox-mode)
-    - [Resolve command incompatibilities](#resolve-command-incompatibilities)
-  - [Testing a single file script](#testing-a-single-file-script)
-    - [Sourced Return](#sourced-return)
-    - [`Intercept`](#intercept)
-  - [Self-executable specfile](#self-executable-specfile)
+    - [`Intercept` - create an intercept point](#intercept---create-an-intercept-point)
+- [Directives](#directives)
+  - [`%const` (`%`) - constant definition](#const----constant-definition)
+  - [`%text` - embedded text](#text---embedded-text)
+  - [`%puts` (`%-`), `%putsn` (`%=`) - put string](#puts---putsn----put-string)
+  - [`%preserve` - preserve variables](#preserve---preserve-variables)
+  - [`%logger` - debug output](#logger---debug-output)
+  - [`%data` - parameter](#data---parameter)
+- [Mocking](#mocking)
+  - [Function-based mock](#function-based-mock)
+  - [Command-based mock](#command-based-mock)
+  - [Mock example](#mock-example)
+- [Support commands](#support-commands)
+  - [Execute the actual command within a mock function](#execute-the-actual-command-within-a-mock-function)
+  - [Make mock not mandatory in sandbox mode](#make-mock-not-mandatory-in-sandbox-mode)
+  - [Resolve command incompatibilities](#resolve-command-incompatibilities)
+- [Testing a single file script](#testing-a-single-file-script)
+  - [Sourced Return](#sourced-return)
+  - [Intercept](#intercept)
+- [Self-executable specfile](#self-executable-specfile)
+- [Use with Docker](#use-with-docker)
 - [For developers](#for-developers)
   - [About specfile translation process](#about-specfile-translation-process)
 
 ## Requirements
 
-### Supported shells and platforms
+### Supported shells and platforms <!-- omit in toc -->
 
 - <code>[bash][bash]</code>_>=2.03_, <code>[bosh/pbosh][bosh]</code>_>=2018/10/07_, <code>[posh][posh]</code>_>=0.3.14_, <code>[yash][yash]</code>_>=2.29_, <code>[zsh][zsh]</code>_>=3.1.9_
 - <code>[dash][dash]</code>_>=0.5.2_, <code>[busybox][busybox] ash</code>_>=1.10.2_, <code>[busybox-w32][busybox-w32]</code>, <code>[GWSH][gwsh]</code>_>=20190627_
@@ -170,7 +143,7 @@ See [CHANGELOG.md](CHANGELOG.md)
 
 [Tested version details](docs/shells.md)
 
-### POSIX-compliant commands
+### POSIX-compliant commands <!-- omit in toc -->
 
 ShellSpec uses shell built-in commands and only few basic [POSIX-compliant commands][utilities] to
 support widely environments (except `kcov` for optional code coverage).
@@ -186,9 +159,7 @@ Currently used external (not shell builtins) commands:
 
 ## Installation
 
-### Web installer
-
-**Install the latest release version.**
+### Install the latest release version <!-- omit in toc -->
 
 ```sh
 curl -fsSL https://git.io/shellspec | sh
@@ -203,30 +174,36 @@ wget -O- https://git.io/shellspec | sh
 <details>
 <summary>Advanced installation / upgrade / uninstall</summary>
 
-**Install the specified version.**
+### Automatic installation <!-- omit in toc -->
+
+```sh
+curl -fsSL https://git.io/shellspec | sh -s -- --yes
+```
+
+### Install the specified version <!-- omit in toc -->
 
 ```sh
 curl -fsSL https://git.io/shellspec | sh -s 0.19.1
 ```
 
-**Upgrade to the latest release version.**
+### Upgrade to the latest release version <!-- omit in toc -->
 
 ```sh
 curl -fsSL https://git.io/shellspec | sh -s -- --switch
 ```
 
-**Switch to the specified version.**
+### Switch to the specified version <!-- omit in toc -->
 
 ```sh
 curl -fsSL https://git.io/shellspec | sh -s 0.18.0 --switch
 ```
 
-**How to uninstall.**
+### How to uninstall <!-- omit in toc -->
 
-1. Delete the ShellSpec executable file [default: `$HOME/bin/shellspec`].
-2. Delete the ShellSpec installation directory [default: `$HOME/lib/shellspec`].
+1. Delete the ShellSpec executable file [default: `$HOME/.local/bin/shellspec`].
+2. Delete the ShellSpec installation directory [default: `$HOME/.local/lib/shellspec`].
 
-**Other usage.**
+### Other usage <!-- omit in toc -->
 
 ```console
 $ curl -fsSL https://git.io/shellspec | sh -s -- --help
@@ -261,10 +238,10 @@ OPTIONS:
 
 </details>
 
-### Package manager
-
 <details>
-<summary>Arch Linux</summary>
+<summary>Package manager (Arch Linux / Homebrew / Linuxbrew / basher / bpkg)</summary>
+
+### Arch Linux <!-- omit in toc -->
 
 Installation on Arch Linux from the AUR [ShellSpec package](https://aur.archlinux.org/packages/shellspec/) using `aura`:
 
@@ -273,10 +250,7 @@ Installation on Arch Linux from the AUR [ShellSpec package](https://aur.archlinu
 $ aura -A shellspec
 ```
 
-</details>
-
-<details>
-<summary>Homebrew / Linuxbrew</summary>
+### Homebrew / Linuxbrew <!-- omit in toc -->
 
 ```console
 # Install the latest stable version
@@ -284,10 +258,7 @@ $ brew tap shellspec/shellspec
 $ brew install shellspec
 ```
 
-</details>
-
-<details>
-<summary>basher</summary>
+### basher <!-- omit in toc -->
 
 Installation with [basher](https://github.com/basherpm/basher)
 
@@ -301,10 +272,7 @@ $ basher install shellspec/shellspec
 $ basher install shellspec/shellspec@0.19.1
 ```
 
-</details>
-
-<details>
-<summary>bpkg</summary>
+### bpkg <!-- omit in toc -->
 
 Installation with [bpkg](https://github.com/bpkg/bpkg)
 
@@ -320,17 +288,14 @@ $ bpkg install shellspec/shellspec@0.19.1
 
 </details>
 
-### Others (archive / make / manual)
-
 <details>
-<summary>Archive</summary>
+<summary>Other methods (archive / make / manual)</summary>
+
+### Archive <!-- omit in toc -->
 
 See [Releases](https://github.com/shellspec/shellspec/releases) page if you want to download distribution archive.
 
-</details>
-
-<details>
-<summary>Make</summary>
+### Make <!-- omit in toc -->
 
 **How to install.**
 
@@ -356,10 +321,7 @@ sudo make uninstall
 make uninstall PREFIX=$HOME
 ```
 
-</details>
-
-<details>
-<summary>Manual installation</summary>
+### Manual installation <!-- omit in toc -->
 
 **Just get ShellSpec and create a symlink in your executable PATH!**
 
@@ -394,13 +356,6 @@ $ chmod +x /EXECUTABLE/PATH/shellspec
 ```
 
 </details>
-
-### Use with Docker
-
-You can run ShellSpec without installation by using Docker. ShellSpec and
-specfiles run in a Docker container.
-
-See [How to use ShellSpec with Docker](docs/docker.md).
 
 ## Tutorial
 
@@ -448,7 +403,7 @@ $ shellspec
 
 ## ShellSpec CLI
 
-### Usage (`--help`)
+See more info: [ShellSpec CLI](docs/cli.md)
 
 ```console
 $ shellspec -h
@@ -529,147 +484,11 @@ Usage: shellspec [options...] [files or directories...]
     -h, --help                      -h: short help, --help: long help
 ```
 
-### Initialize your project (`--init`)
+## Project directory structure
 
-Run `shellspec --init` initializes the current directory for ShellSpec.
-It creates `.shellspec` and `spec/spec_helper.sh`
+See more info: [Directory structure](docs/directory_structure.md)
 
-### Specify the shell to run (`--shell`)
-
-Specify the shell to run with `--shell` option.
-ShellSpec ignores shebang and runs the shell script in the specified shell.
-The default is the shell running the `shellspec` command (usually `/bin/sh`).
-
-### Quick execution (`--quick`, `--repair`, `--next`)
-
-Quick execution is a feature for rapid development and failure fixing.
-
-When you run `shellspec` with `--quick` option first, Quick mode is automatically enabled.
-When Quick mode enabled, The file `.shellspec-quick.log` generated on the project root directory.
-If you want to disable Quick mode, delete `.shellspec-quick.log`.
-
-When Quick mode enabled, the results of running examples are logged to `.shellspec-quick.log`
-on the project root directory (even if `--quick` option is not specified).
-
-Use `--quick` option is for rapid development. When `--quick` option specified, It runs examples
-that not-passed (failure and temporary pending) the last time they ran.
-If there are no examples that did not pass, It runs all examples.
-It is designed to be added to `$HOME/.shellspec` instead of being specified each runs.
-
-Use `--repair` and `--next` option is for rapid failure fixing.
-It runs failed examples only (not includes temporary pending).
-
-### Parallel execution (`--jobs`)
-
-You can use parallel execution for fast test with `--jobs` option. Parallel
-jobs are executed per specfile. So it is necessary to separate the specfile
-for effective parallel execution.
-
-### Random execution (`--random`)
-
-You can randomize the execution order to detect troubles due to the test
-execution order. If `SEED` is specified, the execution order is deterministic.
-
-### Fail fast (`--fail-fast`)
-
-You can stop on the first (N times) failures with `--fail-fast` option.
-
-NOTE: The reporter that count the number of failures and specfile execution are processed in parallel.
-Therefore, the specfile execution may precede the location where it stopped due to a failure.
-
-### Trace (`--xtrace`, `--xtrace-only`)
-
-You can trace evaluation with `--xtrace` or `--xtrace-only` option.
-
-If `BASH_XTRACEFD` is implemented in the shell, you can run tests and traces at the same time.
-Otherwise, run tracing only. The output format can be set with the variable `PS4`.
-
-NOTE: `BASH_XTRACEFD` only available *bash version >= 4.1* or *busybox (ash) version >= 1.28.0*.
-
-### Sandbox mode (`--sandbox`)
-
-Force the use of the mock instead of the actual command.
-This option makes the `PATH` environment variable empty (except `spec/support/bin`) and `readonly`.
-
-[Support commands](#support-commands) help to call the actual command in sandbox mode.
-
-NOTE: This is not a security feature and does not provide complete isolation.
-For example, if specified with an absolute path, the actual command will be executed.
-If you need strict isolation, use Docker or similar technology.
-
-### Ranges (`:LINENO`, `:@ID`) / Filters (`--example`) / Focus (`--focus`)
-
-You can run specific example(s) or example group(s) only.
-
-It can be specified by line number (`a_spec.sh:10:20`), example id (`a_spec.sh:@1-5:@1-6`),
-example name (`--example` option), tag (`--tag` option) and focus (`--focus` option).
-
-To focus, prepend `f` to groups / examples in specfiles (e.g. `Describe` -> `fDescribe`, `It` -> `fIt`)
-and run with `--focus` option.
-
-### Reporter (`--format`) / Generator (`--output`)
-
-You can specify one reporter (output to stdout) and multiple generators
-(output to a file). Currently builtin formatters are `progress`,
-`documentation`, `tap`, `junit`, `failures`, `null`, `debug`.
-
-NOTE: Custom formatter is supported (but not documented yet, sorry).
-
-### Coverage (`--kcov`)
-
-ShellSpec has integrated coverage feature. To use this feature [Kcov][] (v35 or later) is required.
-
-[Kcov]: https://github.com/SimonKagstrom/kcov
-
-- How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
-- Shells that support coverage are **bash**, **zsh**, and **ksh**.
-- Coverage measures only `The` evaluation and `Include`.
-
-By default only files whose names contain `.sh` are coverage targeted.
-If you want to include other files, you need to adjust options with `--kcov-options`.
-
-```sh
-# Default kcov (coverage) options
---kcov-options "--include-path=. --path-strip-level=1"
---kcov-options "--include-pattern=.sh"
---kcov-options "--exclude-pattern=/.shellspec,/spec/,/coverage/,/report/"
-
-# Example: Include script "myprog" with no extension
---kcov-options "--include-pattern=.sh,myprog"
-
-# Example: Only specified files/directories
---kcov-options "--include-pattern=myprog,/lib/"
-```
-
-[Coverage report][coverage] and `cobertura.xml` and `sonarqube.xml` files are generated under the `coverage` directory by Kcov.
-You can easily integrate with [Coveralls](https://coveralls.io/), [Code Climate](https://codeclimate.com/),
-[Codecov](https://codecov.io/) and more.
-
-[coverage]: https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html
-
-### Profiler (`--profile`)
-
-When the `--profile` option is specified, the profiler is enabled and lists the slow examples.
-
-### Run tests in Docker container (`--docker`)
-
-**NOTE: This is an experimental feature and may be changed/removed in the future.**
-
-When the `--docker DOCKER-IMAGE` option is specified, run tests using the specified Docker image.
-
-If you specify only the tag that starts with `:` as DOCKER-IMAGE (e.g. `--docker :debian10`),
-Use ShellSpec official runtime image (`shellspec/runtime`).
-The ShellSpec official runtime image contains supported shells.
-
-See available tags: https://hub.docker.com/r/shellspec/runtime/tags
-
-### Task runner (`--task`)
-
-You can run the task with `--task` option.
-
-## Special files/directories in the project directory
-
-### Typical project directory structure
+Typical project directory structure
 
 ```
 Project directory
@@ -704,60 +523,13 @@ Project directory
 │                  :
 ```
 
-### `.shellspec` / `.shellspec-local` - configure default options
-
-To change the default options for the `shellspec` command, create options file(s).
-Files are read in the order shown below, options defined last take precedence.
-
-1. `$XDG_CONFIG_HOME/shellspec/options`
-2. `$HOME/.shellspec`
-3. `./.shellspec`
-4. `./.shellspec-local` (Do not store in VCS such as git)
-
-Specify your default options with `$XDG_CONFIG_HOME/shellspec/options` or `$HOME/.shellspec`.
-Specify default project options with `.shellspec` and overwrite to your favorites with `.shellspec-local`.
-
-### `.shellspec-quick.log` - log file for quick execution
-
-Log file used for Quick execution.
-
-### `report/` - output directory of report file
-
-Directory for report output using the `--output` option.
-
-### `coverage/` - output directory of coverage reports
-
-Directory where kcov outputs coverage reports.
-
-### `spec/` - default specfiles directory
-
-Directory where you create specfiles.
-
-### `spec/banner` - banner file displayed at test execution
-
-If `spec/banner` file exists, the banner is shown when the `shellspec` command
-is executed. Disable that behavior with the `--no-banner` option.
-
-### `spec/spec_helper.sh` - default helper file for specfile
-
-The `spec_helper.sh` is loaded to specfile by the `--require spec_helper` option.
-This file is used to define global functions, initial setting for examples, custom matchers, etc.
-
-### `spec/support/` - directory for support files
-
-This directory is used to store files for custom matchers, tasks, etc.
-
-### `spec/support/bin` - directory for support commands
-
-This directory is used to store [support commands](#support-commands).
-
-## Specfile
-
-### Example
+## DSL syntax
 
 **The best place to learn how to write a specfile is the
 [sample/spec](sample/spec) directory. You should take a look at it !**
 *(Those samples include failure examples on purpose.)*
+
+### Example
 
 ```sh
 Describe 'sample' # example group
@@ -927,6 +699,35 @@ See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.s
 NOTE: If you want to verify using shell function, You can use [result](docs/references.md#result) modifier or
 [satisfy](docs/references.md#satisfy) matcher. You don't necessarily have to create a custom matcher, etc.
 
+### Hooks
+
+#### `Before`, `After` - example hook
+
+You can define before / after hooks by using `Before`, `After`.
+The hooks are called for each example.
+
+NOTE: `After` hook is a place to clean up, not an assertion. If you want to assert in the `After` hook,
+What you are looking for is probably [result](docs/references.md#result) modifier.
+
+#### `BeforeAll`, `AfterAll` - example group hook
+
+You can define before all / after all hooks by using `BeforeAll`, `AfterAll`.
+The hooks are called before or after all examples.
+
+#### `BeforeCall`, `AfterCall` - call evaluation hook
+
+You can define before / after call hooks by using `BeforeCall`, `AfterCall`.
+The hooks are called before or after a "call evaluation".
+
+#### `BeforeRun`, `AfterRun` - run evaluation hook
+
+You can define before / after run hooks by using `BeforeRun`, `AfterRun`.
+The hooks are called before or after a "run evaluation".
+
+These hooks are executed in the same subshell as the "run evaluation". So you
+can mock/stub the function before run. And you can access a variable for
+evaluation after run.
+
 ### Helpers
 
 #### `Skip`, `Pending` - skip and pending example
@@ -1029,38 +830,13 @@ NOTE: You can also be used with the `Data:expand` helper.
 
 See [Command-based mock](#command-based-mock)
 
-### Hooks
+#### `Intercept` - create an intercept point
 
-#### `Before`, `After` - example hook
+See [Intercept](#intercept)
 
-You can define before / after hooks by using `Before`, `After`.
-The hooks are called for each example.
+## Directives
 
-NOTE: `After` hook is a place to clean up, not an assertion. If you want to assert in the `After` hook,
-What you are looking for is probably [result](docs/references.md#result) modifier.
-
-#### `BeforeAll`, `AfterAll` - example group hook
-
-You can define before all / after all hooks by using `BeforeAll`, `AfterAll`.
-The hooks are called before or after all examples.
-
-#### `BeforeCall`, `AfterCall` - call evaluation hook
-
-You can define before / after call hooks by using `BeforeCall`, `AfterCall`.
-The hooks are called before or after a "call evaluation".
-
-#### `BeforeRun`, `AfterRun` - run evaluation hook
-
-You can define before / after run hooks by using `BeforeRun`, `AfterRun`.
-The hooks are called before or after a "run evaluation".
-
-These hooks are executed in the same subshell as the "run evaluation". So you
-can mock/stub the function before run. And you can access a variable for
-evaluation after run.
-
-### Directives
-
-#### `%const` (`%`) - constant definition
+### `%const` (`%`) - constant definition
 
 `%const` (`%` is short hand) directive defines a constant value. The characters
 which can be used for variable names are uppercase letters `[A-Z]`, digits
@@ -1075,7 +851,7 @@ This feature assumed use with conditional skip. The conditional skip may runs
 outside of the examples. As a result, sometime you may need variables defined
 outside of the examples.
 
-#### `%text` - embedded text
+### `%text` - embedded text
 
 You can use the `%text` directive instead of an hard-to-use heredoc with
 indented code. The input data is specified after `#|`.
@@ -1107,14 +883,14 @@ Describe '%text directive'
 End
 ```
 
-#### `%puts` (`%-`), `%putsn` (`%=`) - put string
+### `%puts` (`%-`), `%putsn` (`%=`) - put string
 
 `%puts` (put string) and `%putsn` (put string with newline) can be used instead
 of (not portable) echo. Unlike echo, it does not interpret escape sequences
 regardless of the shell. `%-` is an alias of `%puts`, `%=` is an alias of
 `%putsn`.
 
-#### `%preserve` - preserve variables
+### `%preserve` - preserve variables
 
 Use `%preserve` directive to preserve the variables in subshells and external shell script.
 
@@ -1139,25 +915,25 @@ Describe '%preserve directive'
 End
 ```
 
-#### `%logger` - debug output
+### `%logger` - debug output
 
 Output log messages to the log file (default: `/dev/tty`) for debugging.
 
-#### `%data` - parameter
+### `%data` - parameter
 
 See `Parameters`.
 
-### Mock and Stub
+## Mocking
 
-There are two ways to create a mock/stub, function-based mock and command-based mock.
+There are two ways to create a mock, function-based mock and command-based mock.
 The function-based mock is usually recommended for performance reasons.
 Both can be overwritten with an internal block and will be restored when the block ends.
 
-#### Function-based mock
+### Function-based mock
 
 The function-based mock is simply (re)defined with shell function.
 
-#### Command-based mock
+### Command-based mock
 
 The command-based mock is create a temporary mock shell script and run as external command.
 To accomplish this, a directory for mock commands is included at the beginning of `PATH`.
@@ -1176,7 +952,7 @@ a `Mock` block. Therefore, there are some restrictions.
 - To reference a variable outside the `Mock` block, that variable must be exported.
 - `%preserve` directive is required to return a variable from a `Mock` block.
 
-#### Mock example
+### Mock example
 
 ```sh
 Describe 'mock example'
@@ -1219,9 +995,9 @@ Describe 'mock example'
 End
 ```
 
-### Support commands
+## Support commands
 
-#### Execute the actual command within a mock function
+### Execute the actual command within a mock function
 
 Support commands are helper commands that can be used in the specfile.
 For example, it can be used in a mock function to execute the actual command.
@@ -1248,7 +1024,7 @@ For example, run `shellspec --gen-bin @touch` to generate the `@touch` command.
 This is main purpose but support commands is just shell script, so you can
 also be used for other purposes. You can freely edit the support command script.
 
-#### Make mock not mandatory in sandbox mode
+### Make mock not mandatory in sandbox mode
 
 The sandbox mode is force the use of the mock. However, you may not want to require mocks in some commands.
 For example, `printf` is a built-in command in many shells and does not require a mock,
@@ -1257,7 +1033,7 @@ but some shells require a mock in sandbox mode because it is an external command
 To allow `printf` to be called without mocking in such cases,
 create a support command named `printf` (`shellspec --gen-bin printf`).
 
-#### Resolve command incompatibilities
+### Resolve command incompatibilities
 
 Some commands have different options between BSD and GNU.
 If you handle the difference in the specfile, the test will be hard to read.
@@ -1273,12 +1049,12 @@ case $OSTYPE in
 esac
 ```
 
-### Testing a single file script
+## Testing a single file script
 
 Shell scripts are often made up of a single file. ShellSpec provides two ways
 of testing a single shell script.
 
-#### Sourced Return
+### Sourced Return
 
 This is a method for testing functions defined in shell scripts. Loading a
 script with `Include` defines a `__SOURCED__` variable available in the sourced
@@ -1306,7 +1082,7 @@ Describe "sample"
 End
 ```
 
-#### `Intercept`
+### Intercept
 
 This is a method to mock/stub functions and commands when executing shell
 scripts. By placing intercept points in your script, you can call the hooks
@@ -1339,7 +1115,7 @@ Describe "sample"
 End
 ```
 
-### Self-executable specfile
+## Self-executable specfile
 
 Normally, you use shellspec to run the specfile. But you can run it directly
 by adding `eval "$(shellspec -)"` to the top of the specfile.
@@ -1372,6 +1148,13 @@ Finished in 0.12 seconds (user 0.00 seconds, sys 0.10 seconds)
 # Also you can run via shellspec
 $ shellspec test.sh
 ```
+
+## Use with Docker
+
+You can run ShellSpec without installation by using Docker. ShellSpec and
+specfiles run in a Docker container.
+
+See [How to use ShellSpec with Docker](docs/docker.md).
 
 ## For developers
 
