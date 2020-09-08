@@ -1,6 +1,6 @@
-normal_block    ::=  Describe |  Context |  Example |  Specify |  It
-focused_block   ::= fDescribe | fContext | fExample | fSpecify | fIt
-skipped_block   ::= xDescribe | xContext | xExample | xSpecify | xIt
+normal_block    ::=  ExampleGroup |  Describe |  Context |  Example |  Specify |  It
+focused_block   ::= fExampleGroup | fDescribe | fContext | fExample | fSpecify | fIt
+skipped_block   ::= xExampleGroup | xDescribe | xContext | xExample | xSpecify | xIt
 end_block       ::=  End
 normal_example  ::=  Example |  Specify |  It
 focused_example ::= fExample | fSpecify | fIt
