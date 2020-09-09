@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Added `be exported` matcher.**
-- **Added `be readonly` matcher.**
+- **Added `be exported` and `be readonly` matchers.**
+- Added `%printf` and `%sleep` directives.
 
 ### Fixed
 

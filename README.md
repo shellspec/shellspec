@@ -36,11 +36,13 @@ Let's have fun testing your shell scripts! (Try [Online Demo](https://shellspec.
 
 [![Coverage report](docs/coverage.png)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html?branch=master)
 
-### Latest Update
+**Latest Update.**
 
 See [CHANGELOG.md](CHANGELOG.md)
 
----
+NOTE: This documentation contains unreleased features. Check them in the changelog.
+
+----
 
 ## Table of Contents <!-- omit in toc -->
 
@@ -50,27 +52,35 @@ See [CHANGELOG.md](CHANGELOG.md)
 - [ShellSpec CLI](#shellspec-cli)
 - [Project directory structure](#project-directory-structure)
 - [DSL syntax](#dsl-syntax)
-  - [Example](#example)
   - [Basic structure](#basic-structure)
     - [`Describe`, `Context`, `ExampleGroup` - example group](#describe-context-examplegroup---example-group)
+      - [`xDescribe`, `xContext`, `xExampleGroup` - skipped example group](#xdescribe-xcontext-xexamplegroup---skipped-example-group)
+      - [`fDescribe`, `fContext`, `fExampleGroup` - focused example group](#fdescribe-fcontext-fexamplegroup---focused-example-group)
     - [`It`, `Specify`, `Example` - example](#it-specify-example---example)
-      - [`Todo` - one liner pending example](#todo---one-liner-pending-example)
-      - [`xIt`, `xSpecify`, `xExample` - temporarily skip](#xit-xspecify-xexample---temporarily-skip)
+      - [`xIt`, `xSpecify`, `xExample` - skipped example](#xit-xspecify-xexample---skipped-example)
       - [`fIt`, `fSpecify`, `fExample` - focused example](#fit-fspecify-fexample---focused-example)
+      - [`Todo` - one liner pending example](#todo---one-liner-pending-example)
     - [`When` - evaluation](#when---evaluation)
-      - [`Dump` - dump stdout, stderr and status for debugging](#dump---dump-stdout-stderr-and-status-for-debugging)
+      - [`call` - call a shell function](#call---call-a-shell-function)
+      - [`run` - run a command](#run---run-a-command)
+      - [`run command` - run a external command](#run-command---run-a-external-command)
+      - [`run script` - run a shell script](#run-script---run-a-shell-script)
+      - [`run source` - run a script by `.` (`source`) command](#run-source---run-a-script-by--source-command)
     - [`The` - expectation](#the---expectation)
+      - [Subjects](#subjects)
+      - [Modifiers](#modifiers)
+      - [Matchers](#matchers)
+      - [Language chains](#language-chains)
     - [`Assert` - expectation for custom assertion](#assert---expectation-for-custom-assertion)
-    - [Subjects, Modifiers and Matchers](#subjects-modifiers-and-matchers)
-      - [custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
+    - [`Skip`, `Pending` - skip and pending example](#skip-pending---skip-and-pending-example)
+      - [Temporary skip and pending](#temporary-skip-and-pending)
   - [Hooks](#hooks)
     - [`Before`, `After` - example hook](#before-after---example-hook)
     - [`BeforeAll`, `AfterAll` - example group hook](#beforeall-afterall---example-group-hook)
     - [`BeforeCall`, `AfterCall` - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
     - [`BeforeRun`, `AfterRun` - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
   - [Helpers](#helpers)
-    - [`Skip`, `Pending` - skip and pending example](#skip-pending---skip-and-pending-example)
-      - [Temporary skip and pending](#temporary-skip-and-pending)
+    - [`Dump` - dump stdout, stderr and status](#dump---dump-stdout-stderr-and-status)
     - [`Include` - include a script file](#include---include-a-script-file)
     - [`Set` - set shell option](#set---set-shell-option)
     - [`Path`, `File`, `Dir` - path alias](#path-file-dir---path-alias)
@@ -81,14 +91,15 @@ See [CHANGELOG.md](CHANGELOG.md)
 - [Directives](#directives)
   - [`%const` (`%`) - constant definition](#const----constant-definition)
   - [`%text` - embedded text](#text---embedded-text)
-  - [`%puts` (`%-`), `%putsn` (`%=`) - put string](#puts---putsn----put-string)
+  - [`%puts` (`%-`), `%putsn` (`%=`) - output a string (with newline)](#puts---putsn----output-a-string-with-newline)
+  - [`%printf` - alias for printf](#printf---alias-for-printf)
+  - [`%sleep` - alias for sleep](#sleep---alias-for-sleep)
   - [`%preserve` - preserve variables](#preserve---preserve-variables)
   - [`%logger` - debug output](#logger---debug-output)
-  - [`%data` - parameter](#data---parameter)
+  - [`%data` - define parameter](#data---define-parameter)
 - [Mocking](#mocking)
   - [Function-based mock](#function-based-mock)
   - [Command-based mock](#command-based-mock)
-  - [Mock example](#mock-example)
 - [Support commands](#support-commands)
   - [Execute the actual command within a mock function](#execute-the-actual-command-within-a-mock-function)
   - [Make mock not mandatory in sandbox mode](#make-mock-not-mandatory-in-sandbox-mode)
@@ -98,6 +109,8 @@ See [CHANGELOG.md](CHANGELOG.md)
   - [Intercept](#intercept)
 - [Self-executable specfile](#self-executable-specfile)
 - [Use with Docker](#use-with-docker)
+- [Extension](#extension)
+  - [Custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
 - [For developers](#for-developers)
   - [About specfile translation process](#about-specfile-translation-process)
 
@@ -529,25 +542,14 @@ Project directory
 [sample/spec](sample/spec) directory. You should take a look at it !**
 *(Those samples include failure examples on purpose.)*
 
-### Example
-
 ```sh
-Describe 'sample' # example group
+Describe 'lib.sh' # example group
   Describe 'bc command'
     add() { echo "$1 + $2" | bc; }
 
     It 'performs addition' # example
       When call add 2 3 # evaluation
       The output should eq 5  # expectation
-    End
-  End
-
-  Describe 'implemented by shell function'
-    Include ./mylib.sh # add() function defined
-
-    It 'performs addition'
-      When call add 2 3
-      The output should eq 5
     End
   End
 End
@@ -557,101 +559,226 @@ End
 
 #### `Describe`, `Context`, `ExampleGroup` - example group
 
-You can write a structured *example* by using the `Describe`, `Context`, `ExampleGroup` block.
+`ExampleGroup` is a block for grouping example groups or examples.
 `Describe` and `Context` are alias for `ExampleGroup`.
+It can be nested and they can contain example groups or examples.
 
-Example groups can be nested. They can contain example groups or examples.
+```sh
+Describe 'is example group'
+  Describe 'is nestable'
+    ...
+  End
 
-NOTE: Each example group runs in a subshell.
+  Context 'is used to make easier to understand depending on the context'
+    ...
+  End
+End
+```
+
+##### `xDescribe`, `xContext`, `xExampleGroup` - skipped example group
+
+`xDescribe`, `xContext`, `xExampleGroup` are skipped example group block.
+Execution of example contained in these is skipped.
+
+```sh
+Describe 'is example group'
+  xDescribe 'is skipped example group'
+    ...
+  End
+End
+```
+
+##### `fDescribe`, `fContext`, `fExampleGroup` - focused example group
+
+`fDescribe`, `fContext`, `fExampleGroup` are focused example group block.
+Only the examples included in these will be executed when the `--focus` option is specified.
+
+```sh
+Describe 'is example group'
+  fDescribe 'is focues example group'
+    ...
+  End
+End
+```
 
 #### `It`, `Specify`, `Example` - example
 
-You can describe how code behaves by using the `It`, `Specify`, `Example` block.
+`Example` is a block for writing evaluation and expectations.
 `It` and `Specify` are alias for `Example`.
 
-It is composed by a maximum of one evaluation and multiple expectations.
+An example is composed by up to one evaluation and multiple expectations.
 
-NOTE: Each example runs in a subshell.
+```sh
+add() { echo "$1 + $2" | bc; }
 
-##### `Todo` - one liner pending example
+It 'performs addition'          # example
+  When call add 2 3             # evaluation
+  The output should eq 5        # expectation
+  The status should be success  # another expectation
+End
+```
 
-`Todo` is same as empty example.
+##### `xIt`, `xSpecify`, `xExample` - skipped example
 
-##### `xIt`, `xSpecify`, `xExample` - temporarily skip
+`xIt`, `xSpecify`, `xExample` are skipped example block.
+Execution of example is skipped.
 
-You can easily skip the example by prefixing it with "x".
+```sh
+xIt 'is skipped example'
+  ...
+End
+```
 
 ##### `fIt`, `fSpecify`, `fExample` - focused example
 
-You can focus the example by prefixing it with "f".
-You can only run the focused example with the `--focus` option.
+`fIt`, `fSpecify`, `fExample` are focused example block.
+Only these examples will be executed when the `--focus` option is specified.
+
+```sh
+fIt 'is focused example'
+  ...
+End
+```
+
+##### `Todo` - one liner pending example
+
+`Todo` is a pending one-liner example, the same as the empty example.
+
+```sh
+Todo 'will be used later when write a test'
+
+It 'is empty example, the same as Todo'
+End
+```
 
 #### `When` - evaluation
 
-Defines the action for verification. The evaluation begins with `When`.
-Only one evaluation can be defined for each example.
-
-```
-When call echo hello world
- |    |    |
- |    |    +-- The rest is action for verification
- |    +-- The evaluation type `call` calls a function or external command.
- +-- The evaluation keyword
-```
-
-There are two types of evaluation, `When call` and `When run`. and
-`When run` has sub types of `command`, `script` and `source`.
+Evaluation executes shell function or command for verification.
+Only one evaluation can be defined for each example and also can be omitted.
 
 See more details of [Evaluation](docs/references.md#evaluation)
 
-##### `Dump` - dump stdout, stderr and status for debugging
+##### `call` - call a shell function
+
+It call a function without subshell.
+Practically, it can also run commands.
 
 ```sh
-When call echo hello world
-Dump # stdout, stderr, status
+When call add 1 2 # call `add` shell function with two arguments.
+```
+
+##### `run` - run a command
+
+It runs a command within subshell. Practically, it can also call shell function.
+The command does not have to be a shell script.
+
+NOTE: This is not supporting coverage measurement.
+
+```sh
+When run touch /tmp/foo # run `touch` command.
+```
+
+##### `run command` - run a external command
+
+It runs a command, respecting shebang.
+It can not call shell function. The command does not have to be a shell script.
+
+NOTE: This is not supporting coverage measurement.
+
+```sh
+When run command touch /tmp/foo # run `touch` command.
+```
+
+##### `run script` - run a shell script
+
+It runs a shell script, ignoring shebang. The script have to be a shell script.
+It will be executed in another instance of the same shell as the current shell.
+
+```sh
+When run script my.sh # run `my.sh` script.
+```
+
+##### `run source` - run a script by `.` (`source`) command
+
+It source a shell script, ignoring shebang. The script have to be a shell script.
+It similar to `run script`, but with some differences.
+Unlike `run script`, function-based mock is available.
+
+```sh
+When run source my.sh # source `my.sh` script.
 ```
 
 #### `The` - expectation
 
-Defines the verification. The expectation begins with `The`.
+Expectation begin with `The`, which does the verification.
+The basic syntax is as follows:
 
-Verifies the *subject* with the *matcher*.
-
-```
+```sh
 The output should equal 4
- |    |           |
- |    |           +-- The `equal` matcher verifies the subject value is 4.
- |    +-- The `output` subject uses the stdout as a subject for verification.
- +-- The expectation keyword
 ```
 
-You can reverse the verification with *should not*.
+Use `should not` for the opposite verification.
 
 ```sh
 The output should not equal 4
 ```
 
-You can use the *modifier* to modify the *subject*.
+##### Subjects
 
+The subject is the target of verification.
+
+```sh
+The output should equal 4
+      |
+      +-- subject
 ```
+
+There are `output` (`stdout`), `error` (`stdout`), `status`, `variable`, `path`, etc.
+
+Please refer to the [Subjects](docs/references.md#subjects) for more details.
+
+##### Modifiers
+
+The modifier is modified the verification target.
+
+```sh
 The line 2 of output should equal 4
-    |
-    +-- The `line` modifier use the specified line 2 of output as subject.
-
-NOTE: `of output` can be omitted.
+      |
+      +-- modifier
 ```
 
-The *modifier* is chainable.
+The modifier is chainable.
 
 ```sh
 The word 1 of line 2 of output should equal 4
 ```
 
-You can use ordinal numbers.
+If the modifier argument is a number, you can use ordinal numbers instead of a number.
 
 ```sh
-The second line of output should equal 4
+The first word of second line of output should equal 4
 ```
+
+There are `line`, `word`, `length`, `contents`, `result`, etc.
+The `result` modifier is useful for making the result of a user-defined function the subject.
+
+Please refer to the [Modifiers](docs/references.md#modifiers) for more details.
+
+##### Matchers
+
+The matcher is the verification.
+
+```sh
+The output should equal 4
+                   |
+                   +-- matcher
+```
+
+There are many matchers such as string matcher, status matcher, variable matchers and stat matchers. The `satisfy` matcher is useful for verification with user-defined function.
+
+Please refer to the [Matchers](docs/references.md#matchers) for more details.
+
+##### Language chains
 
 ShellSpec supports *language chains* like [chai.js](https://www.chaijs.com/).
 It only improves readability, does not affect the expectation: `a`, `an`, `as`, `the`.
@@ -660,15 +787,13 @@ The following two sentences have the same meaning:
 
 ```sh
 The first word of second line of output should valid number
-```
 
-```sh
 The first word of the second line of output should valid as a number
 ```
 
 #### `Assert` - expectation for custom assertion
 
-Use `Assert` for using custom assertion.
+The `Assert` is yet another expectation to verify with a user-defined function.
 It is designed for verification of side effects, not result of evaluation.
 
 ```sh
@@ -683,58 +808,49 @@ Describe "example.com"
 End
 ```
 
-NOTE: To verify the evaluation result with a custom function,
-use the [result](docs/references.md#result) modifier or the [satisfy](docs/references.md#satisfy) matcher.
-
-#### Subjects, Modifiers and Matchers
-
-There are many *subjects*, *modifiers*, *matchers*. please refer to the
-[References](docs/references.md)
-
-##### custom subject, modifier and matcher
-
-You can create custom subject, custom modifier and custom matcher.
-See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
-
-NOTE: If you want to verify using shell function, You can use [result](docs/references.md#result) modifier or
-[satisfy](docs/references.md#satisfy) matcher. You don't necessarily have to create a custom matcher, etc.
-
-### Hooks
-
-#### `Before`, `After` - example hook
-
-You can define before / after hooks by using `Before`, `After`.
-The hooks are called for each example.
-
-NOTE: `After` hook is a place to clean up, not an assertion. If you want to assert in the `After` hook,
-What you are looking for is probably [result](docs/references.md#result) modifier.
-
-#### `BeforeAll`, `AfterAll` - example group hook
-
-You can define before all / after all hooks by using `BeforeAll`, `AfterAll`.
-The hooks are called before or after all examples.
-
-#### `BeforeCall`, `AfterCall` - call evaluation hook
-
-You can define before / after call hooks by using `BeforeCall`, `AfterCall`.
-The hooks are called before or after a "call evaluation".
-
-#### `BeforeRun`, `AfterRun` - run evaluation hook
-
-You can define before / after run hooks by using `BeforeRun`, `AfterRun`.
-The hooks are called before or after a "run evaluation".
-
-These hooks are executed in the same subshell as the "run evaluation". So you
-can mock/stub the function before run. And you can access a variable for
-evaluation after run.
-
-### Helpers
-
 #### `Skip`, `Pending` - skip and pending example
 
-You can skip an example by using the `Skip` keyword. If you want to skip only in
-some cases, use a conditional skip `Skip if`. You can also use `Pending` to
-indicate that the example needs to be implemented.
+Use `Skip` to skip executing the example. If you want to skip only in
+some cases, use a conditional skip `Skip if`.
+
+```sh
+Describe 'Skip'
+  Skip "not exists bc"
+
+  It 'is always skip'
+    ...
+  End
+End
+
+Describe 'Conditional skip'
+  not_exists_bc() { ! type bc >/dev/null 2>&1; }
+  Skip if "not exists bc" not_exists_bc
+
+  add() { echo "$1 + $2" | bc; }
+
+  It 'performs addition'
+    When call add 2 3
+    The output should eq 5
+  End
+End
+```
+
+`Pending` is similar to `Skip`, but the test passes if the validation fails,
+and the test fails if the validation succeeds. This is useful if you want to
+specify that you will implement it later.
+
+```sh
+Describe 'Pending'
+  Pending "not implemented"
+
+  hello() { :; }
+
+  It 'will success when test fails'
+    When call hello world
+    The output should "Hello world"
+  End
+End
+```
 
 ##### Temporary skip and pending
 
@@ -752,27 +868,158 @@ Skip if "reason" condition # Skip with condition is also non-temporary skip
 Skip # temporary skip (this is comment but will be displayed in the report)
 ```
 
-You can also temporary skip with blocks by prefixing with `x`
-(`xDescribe`, `xContext`, `xExample`, `xSpecify`, `xIt`).
+### Hooks
 
-`Todo` (and empty example) is also treated as temporary pending.
+#### `Before`, `After` - example hook
+
+You can specify commands to be executed before / after each example by `Before` and `After`
+
+NOTE: Do not assert in `After` hook. it is a place to clean up.
+
+```sh
+Describe 'example hook'
+  setup() { :; }
+  cleanup() { :; }
+  Before 'setup'
+  After 'cleanup'
+
+  It 'is called before and after each example'
+    ...
+  End
+
+  It 'is called before and after each example'
+    ...
+  End
+End
+```
+
+#### `BeforeAll`, `AfterAll` - example group hook
+
+You can specify commands to be executed before / after all examples by `BeforeAll` and `AfterAll`
+
+```sh
+Describe 'example all hook'
+  setup() { :; }
+  cleanup() { :; }
+  BeforeAll 'setup'
+  AfterAll 'cleanup'
+
+  It 'is called before/after all example'
+    ...
+  End
+
+  It 'is called before/after all example'
+    ...
+  End
+End
+```
+
+#### `BeforeCall`, `AfterCall` - call evaluation hook
+
+You can specify commands to be executed before / after call evaluation by `BeforeCall` and `AfterCall`
+
+NOTE: These hooks were originally created to test ShellSpec itself.
+Please use the `Before` / `After` hooks whenever possible.
+
+```sh
+Describe 'call evaluation hook'
+  setup() { :; }
+  cleanup() { :; }
+  BeforeCall 'setup'
+  AfterCall 'cleanup'
+
+  It 'is called before/after call evaluation'
+    When call hello world
+    ...
+  End
+End
+```
+
+#### `BeforeRun`, `AfterRun` - run evaluation hook
+
+You can specify commands to be executed before / after run evaluation
+(`run`, `run command`, `run script` and `run source`) by `BeforeRun` and `AfterRun`
+
+These hooks are executed in the same subshell as the "run evaluation".
+Therefore, you can access the variables after executing the evaluation.
+
+NOTE: These hooks were originally created to test ShellSpec itself.
+Please use the `Before` / `After` hooks whenever possible.
+
+```sh
+Describe 'run evaluation hook'
+  setup() { :; }
+  cleanup() { :; }
+  BeforeRun 'setup'
+  AfterRun 'cleanup'
+
+  It 'is called before/after run evaluation'
+    When run hello world
+    ...
+  End
+End
+```
+
+### Helpers
+
+#### `Dump` - dump stdout, stderr and status
+
+Dump stdout, stderr and status of the evaluation. It is useful for debugging.
+
+```sh
+When call echo hello world
+Dump # stdout, stderr and status
+```
 
 #### `Include` - include a script file
 
-Include the shell script file to test.
+Include the shell script to test.
+
+```sh
+Describe 'lib.sh'
+  Include lib.sh # hello function defined
+
+  Describe 'hello()'
+    It 'says hello'
+      When call hello ShellSpec
+      The output should equal 'Hello ShellSpec!'
+    End
+  End
+End
+```
 
 #### `Set` - set shell option
 
 Set shell option before executing each example.
 The shell option name is the long name of `set` or the name of `shopt`:
 
+NOTE: Use `Set` instead of the `set` command because the `set` command
+may not work as expected in some shells.
+
 ```sh
-Set 'errexit:off' 'noglob:on'
+Describe 'Set helper'
+  Set 'errexit:off' 'noglob:on'
+
+  It 'sets shell options before executiong the example'
+    When call foo
+  End
+End
 ```
 
 #### `Path`, `File`, `Dir` - path alias
 
-You can define path aliases for readability. `File` and `Dir` are alias for `Path`.
+`Path` is used to define a short pathname alias.
+`File` and `Dir` are alias for `Path`.
+
+```sh
+Describe 'Path helper'
+  Path hosts-file="/etc/hosts"
+
+  It 'defines short alias for long path'
+    The path hosts-file should be exists
+  End
+End
+```
 
 #### `Data` - input data for evaluation
 
@@ -781,7 +1028,7 @@ The input data is specified after `#|` in the `Data` or `Data:expand` block.
 
 ```sh
 Describe 'Data helper'
-  Example 'provide with Data helper block style'
+  It 'provides with Data helper block style'
     Data # Use Data:expand instead if you want expand variables.
       #|item1 123
       #|item2 456
@@ -799,7 +1046,8 @@ See more details of [Data](docs/references.md##data)
 
 #### `Parameters` - parameterized example
 
-You can Data Driven Test (aka Parameterized Test) with `Parameters[:style]`.
+Parameterized test (aka Data Driven Test) is used to run the same test with
+different parameters. `Parameters` defines its parameters.
 
 ```sh
 Describe 'example'
@@ -815,16 +1063,12 @@ Describe 'example'
 End
 ```
 
-The following four styles are supported.
-
-- block style (default: same as Parameters)
-- value style
-- matrix style
-- dynamic style
+In addition to the default `Parameters`, three styles are supported:
+`Parameters:value`, `Parameters:matrix` and `Parameters:dynamic`.
 
 See more details of [Parameters](docs/references.md##parameters)
 
-NOTE: You can also be used with the `Data:expand` helper.
+NOTE: You can also cooperate the `Parameters` and `Data:expand` helpers.
 
 #### `Mock` - create a command-based mock
 
@@ -835,6 +1079,25 @@ See [Command-based mock](#command-based-mock)
 See [Intercept](#intercept)
 
 ## Directives
+
+Directives are instructions that can be used in embedded shell scripts.
+It is used to solve small problems of shell scripts in testing.
+
+This is like a shell function, but not a shell function.
+Therefore, the supported grammar is limited and can only be used at the
+beginning of a function definition or at the beginning of a line.
+
+```sh
+foo() { %puts "foo"; } # supported
+
+bar() {
+  %puts "bar" # supported
+}
+
+baz() {
+  any command; %puts "baz" # not supported
+}
+```
 
 ### `%const` (`%`) - constant definition
 
@@ -883,12 +1146,20 @@ Describe '%text directive'
 End
 ```
 
-### `%puts` (`%-`), `%putsn` (`%=`) - put string
+### `%puts` (`%-`), `%putsn` (`%=`) - output a string (with newline)
 
 `%puts` (put string) and `%putsn` (put string with newline) can be used instead
 of (not portable) echo. Unlike echo, it does not interpret escape sequences
 regardless of the shell. `%-` is an alias of `%puts`, `%=` is an alias of
 `%putsn`.
+
+### `%printf` - alias for printf
+
+This is same as `printf`, But it can be used in sandbox mode because the path has been resolved.
+
+### `%sleep` - alias for sleep
+
+This is same as `sleep`, But it can be used in sandbox mode because the path has been resolved.
 
 ### `%preserve` - preserve variables
 
@@ -919,7 +1190,7 @@ End
 
 Output log messages to the log file (default: `/dev/tty`) for debugging.
 
-### `%data` - parameter
+### `%data` - define parameter
 
 See `Parameters`.
 
@@ -932,6 +1203,21 @@ Both can be overwritten with an internal block and will be restored when the blo
 ### Function-based mock
 
 The function-based mock is simply (re)defined with shell function.
+
+```sh
+Describe 'function-based mock'
+  get_next_day() { echo $(($(date +%s) + 86400)); }
+
+  date() {
+    echo 1546268400
+  }
+
+  It 'calls the date function'
+    When call get_next_day
+    The stdout should eq 1546354800
+  End
+End
+```
 
 ### Command-based mock
 
@@ -952,45 +1238,17 @@ a `Mock` block. Therefore, there are some restrictions.
 - To reference a variable outside the `Mock` block, that variable must be exported.
 - `%preserve` directive is required to return a variable from a `Mock` block.
 
-### Mock example
-
 ```sh
-Describe 'mock example'
+Describe 'command-based mock'
   get_next_day() { echo $(($(date +%s) + 86400)); }
 
-  Context 'when not using mock'
-    It 'runs the actual date command'
-      When call get_next_day
-      The stdout should not eq 1546354800
-    End
+  Mock date
+    echo 1546268400
   End
 
-  Context 'when using function-based mock'
-    date() {
-      echo 1546268400
-      called=1
-      %preserve called
-    }
-
-    It 'calls the date function'
-      When call get_next_day
-      The stdout should eq 1546354800
-      The variable called should eq 1
-    End
-  End
-
-  Context 'when using command-based mock'
-    Mock date
-      echo 1546268400
-      called=1
-      %preserve called
-    End
-
-    It 'runs the mocked date command'
-      When call get_next_day
-      The stdout should eq 1546354800
-      The variable called should eq 1
-    End
+  It 'runs the mocked date command'
+    When call get_next_day
+    The stdout should eq 1546354800
   End
 End
 ```
@@ -1084,7 +1342,7 @@ End
 
 ### Intercept
 
-This is a method to mock/stub functions and commands when executing shell
+This is a method to mock functions and commands when executing shell
 scripts. By placing intercept points in your script, you can call the hooks
 defined in specfile.
 
@@ -1117,8 +1375,15 @@ End
 
 ## Self-executable specfile
 
-Normally, you use shellspec to run the specfile. But you can run it directly
-by adding `eval "$(shellspec -)"` to the top of the specfile.
+Normally, you use `shellspec` to run a specfile.
+If you want to run a specfile directly, use shebang below and give execute permission.
+
+```sh
+#!/usr/bin/env shellspec
+```
+
+If you want to use `#!/bin/sh` as shebang, by adding `eval "$(shellspec -)"` to
+the top of the specfile.
 
 ```sh
 #!/bin/sh
@@ -1155,6 +1420,17 @@ You can run ShellSpec without installation by using Docker. ShellSpec and
 specfiles run in a Docker container.
 
 See [How to use ShellSpec with Docker](docs/docker.md).
+
+## Extension
+
+### Custom subject, modifier and matcher
+
+You can create custom subject, custom modifier and custom matcher.
+
+See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
+
+NOTE: If you want to verify using shell function, You can use [result](docs/references.md#result) modifier or
+[satisfy](docs/references.md#satisfy) matcher. You don't necessarily have to create a custom matcher, etc.
 
 ## For developers
 
