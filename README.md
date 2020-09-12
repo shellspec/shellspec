@@ -418,8 +418,8 @@ $ shellspec
 
 See more info: [ShellSpec CLI](docs/cli.md)
 
-NOTE: ShellSpec CLI ignores shebang except in some cases and runs specfiles with Shell running ShellSpec (Normally `/bin/sh`).
-For example, if you want to run specfiles in bash, specify the `-s` (`--shell`) option or add the option to `.shellspec`.
+NOTE: ShellSpec CLI ignores shebang except in some cases and runs specfiles with the shell running `shellspec` (normally `/bin/sh`).
+For example, if you want to run specfiles in bash, specify the `-s` (`--shell`) option or add the option to `.shellspec` file.
 
 ```console
 $ shellspec -h
