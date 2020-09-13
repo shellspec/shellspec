@@ -35,8 +35,7 @@ tap_each() {
 
 tap_end() {
   [ "$aborted" ] || return 0
-  tap '=' "${RED}not ok $(($count_examples + 1))${RESET}" \
-    "- aborted by unexpected error${LF}"
+  tap '=' "${BOLD}${RED}Bail out!${RESET} Aborted by unexpected error.${LF}"
 }
 
 tap_output() {
