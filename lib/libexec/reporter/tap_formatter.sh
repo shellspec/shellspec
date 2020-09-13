@@ -16,13 +16,18 @@ tap_begin() {
 
 tap_each() {
   case $field_type in (result)
-    tap '=' "${field_color}${field_fail:+not }ok $example_count${RESET}" \
-      "- $(field_description)"
-    if [ "${field_note}${reason}" ]; then
-      tap '+=' " ${WHITE}#"
-      tap '+=' "${field_note:+ ${MAGENTA}}$field_note"
-      tap '+=' "${reason:+ ${WHITE}}$reason"
-      tap '+=' "${RESET}"
+    case $field_note in
+      PENDING) _result="not ok" _note="TODO" ;;
+      FIXED  ) _result="ok" _note="TODO" ;;
+      SKIPPED) _result="ok" _note="SKIP" ;;
+      *) _result="${field_fail:+not }ok" _note=$field_note ;;
+    esac
+
+    tap '=' "${field_color}${_result} ${example_count}${RESET}"
+    tap '+=' " - $(field_description)"
+    if [ "${_note}${reason}" ]; then
+      _comment="${_note:+ $MAGENTA}${_note}${reason:+ $WHITE}${reason#\#\ }"
+      tap '+=' " ${WHITE}#${_comment}${RESET}"
     fi
     tap '+=' "${LF}"
   esac
