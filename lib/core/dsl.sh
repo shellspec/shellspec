@@ -252,7 +252,7 @@ shellspec_statement() {
 }
 
 shellspec_when() {
-  eval shellspec_join SHELLSPEC_EVALUATION '" "' ${1+'"$@"'}
+  eval shellspec_join SHELLSPEC_EVALUATION '" "' When ${1+'"$@"'}
   shellspec_off NOT_IMPLEMENTED
 
   shellspec_if EVALUATION && {
