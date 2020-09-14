@@ -77,6 +77,7 @@ shellspec_output_UNHANDLED_STDOUT() {
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:It was output to stdout but not found expectation"
+  shellspec_chomp SHELLSPEC_STDOUT
   shellspec_output_raw_append "failure_message:stdout:" "$SHELLSPEC_STDOUT"
 }
 
@@ -84,6 +85,7 @@ shellspec_output_UNHANDLED_STDERR() {
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:It was output to stderr but not found expectation"
+  shellspec_chomp SHELLSPEC_STDERR
   shellspec_output_raw_append "failure_message:stderr:" "$SHELLSPEC_STDERR"
 }
 
