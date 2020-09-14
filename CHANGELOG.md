@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Added `be exported` and `be readonly` matchers.**
 - Added `%printf` and `%sleep` directives.
 
+### Changed
+
+- **Improved TAP formatter.**
+  - Supports TODO and SKIP directives.
+  - Added error details.
+
 ### Fixed
 
 - Fixed the bug that "Parameter is not set" error in word modifier.
