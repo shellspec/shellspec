@@ -164,8 +164,10 @@ each_line() {
 }
 parse_lines
 
-callback() { [ -e "$SHELLSPEC_TIME_LOG" ] || sleep 0; }
-sequence callback 1 10
+{
+  ( trap - TERM ||:; sleep_wait [ ! -s "$SHELLSPEC_TIME_LOG" ] ) &
+  timeout 1 $!
+} 2>/dev/null &&:
 time_real=''
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 

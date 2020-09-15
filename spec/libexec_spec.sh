@@ -176,6 +176,15 @@ Describe 'libexec.sh'
     End
   End
 
+  Describe "timeout()"
+    sleep() { :; }
+    _timeout() { { ( sleep 1 ) & timeout 0 $!; } 2>/dev/null; }
+    It "stops when timed out"
+      When call _timeout 1
+      The status should be success
+    End
+  End
+
   Describe "sigchk()"
     kill() { echo "$@"; }
     check_kill_args() {

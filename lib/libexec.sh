@@ -120,6 +120,15 @@ sleep_wait() {
   esac
 }
 
+timeout() {
+  {
+    ( trap - TERM ||:; sleep "$1"; sigterm "$2" ) &
+    wait "$2" ||:
+    sigterm $! ||:
+    wait $! ||:
+  } 2>/dev/null &&:
+}
+
 if kill -0 $$ 2>/dev/null; then
   sigchk() { kill -0 "$1" 2>/dev/null; }
 else
