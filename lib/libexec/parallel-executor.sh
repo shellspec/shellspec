@@ -32,11 +32,12 @@ reduce() {
 }
 
 executor() {
-  SHELLSPEC_JOBDIR="$SHELLSPEC_TMPBASE/jobs"
+  jobs=0 workers=''
+  if (trap - INT) 2>/dev/null; then trap 'eval "terminator $workers"' INT; fi
 
+  SHELLSPEC_JOBDIR="$SHELLSPEC_TMPBASE/jobs"
   mkdir "$SHELLSPEC_JOBDIR"
 
-  jobs=0
   specfile() {
     jobs=$(($jobs + 1))
     putsn "$1" > "$SHELLSPEC_JOBDIR/$jobs.job"
@@ -46,9 +47,16 @@ executor() {
 
   translator --no-finished | $SHELLSPEC_SHELL # output only metadata
   # Workaround for osh: Use FD3 to avoid display "Started PID"
-  callback() { { worker "$1" "$jobs" 2>&3 & } 3>&2 2>/dev/null; }
+  callback() {
+    { worker "$1" "$jobs" 2>&3 & } 3>&2 2>/dev/null
+    workers="$workers $!"
+  }
   sequence callback 1 "$SHELLSPEC_WORKERS"
   (reduce "$jobs") &&:
   eval "[ $? -ne 0 ] && return $?"
   translator --no-metadata | $SHELLSPEC_SHELL # output only finished
+}
+
+terminator() {
+  [ $# -eq 0 ] || kill "$@"
 }

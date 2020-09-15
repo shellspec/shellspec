@@ -46,7 +46,8 @@ output_formatters begin
 
 parse_lines() {
   buf=''
-  while { IFS= read -r line || [ "$line" ]; } && [ ! "$fail_fast" ]; do
+  while IFS= read -r line || [ "$line" ]; do
+    [ "${fail_fast}${interrupt}" ] && break
     case $line in
       $RS*) [ "$buf" ] && parse_fields "$buf"; buf=${line#?} ;;
       *) buf="$buf${buf:+$LF}${line}" ;;
