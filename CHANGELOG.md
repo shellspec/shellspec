@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Supports TODO and SKIP directives.
   - Added error details.
 
+### Removed
+
+- Drop support for dash 0.5.3 due to unstable bug.
+
 ### Fixed
 
 - Fixed the bug that "Parameter is not set" error in word modifier.

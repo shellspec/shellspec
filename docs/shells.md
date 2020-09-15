@@ -21,10 +21,10 @@
 ## Tested shells and versions
 
 - The shell included with the supported OS (the platform in bold) is the main supported shell.
-- Support for too old shells may be discontinued without notice.
-- **The version with a dash does not work.**
-- **The version in italic may work, but some features are not working or unstable due to bugs in the shell.**
-- **Bourne shell (pre-POSIX shell) is not supported.**
+- Support for very old shells may be discontinued without notice.
+- The version with a dash does not work.
+- The version in italic may work, but some features are not working or unstable due to bugs in the shell.
+- Bourne shell (pre-POSIX shell) is not supported.
 
 ### Packages
 
@@ -82,7 +82,7 @@ Default shell: `dash` or `bash` (until debian 5.0)
 | Debian 2.2r7     | 2.03   | -          | -             | -               | -        | -    | _5.2.14_ | -        | -    | 3.1.9   |
 | Debian 3.0r6     | 2.05a  | ~~0.60.2~~ | ~~ash 0.3.8~~ | -               | -        | -    | 5.2.14   | -        | -    | 4.0.4   |
 | Debian 3.1r8     | 2.05b  | ~~0.60.5~~ | 0.5.2         | _93q_           | -        | -    | 5.2.14   | 0.3.14   | -    | _4.2.5_ |
-| Debian 4.0r9     | 3.1.17 | _1.1.3_    | 0.5.3         | _93r_           | -        | R28  | 5.2.14   | 0.5.4    | -    | 4.3.2   |
+| Debian 4.0r9     | 3.1.17 | _1.1.3_    | _0.5.3_       | _93r_           | -        | R28  | 5.2.14   | 0.5.4    | -    | 4.3.2   |
 | Debian 5.0.10    | 3.2.39 | 1.10.2     | 0.5.4         | 93s+ 2008-01-31 | -        | R35  | 5.2.14   | 0.6.13   | -    | 4.3.6   |
 | Debian 6.0.10    | 4.1.5  | 1.17.1     | 0.5.5.1       | 93s+ 2008-01-31 | -        | R39  | 5.2.14   | 0.8.5    | -    | 4.3.10  |
 | Debian 7.11      | 4.2.37 | 1.20.0     | 0.5.7         | 93u+ 2012-02-29 | -        | R40  | -        | _0.10.2_ | 2.30 | 4.3.17  |

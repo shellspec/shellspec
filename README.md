@@ -19,7 +19,7 @@ ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh,
 [![bash](https://img.shields.io/badge/bash-&ge;2.03-lightgrey.svg?style=flat)](https://www.gnu.org/software/bash/)
 [![bosh](https://img.shields.io/badge/bosh-&ge;2018%2F10%2F07-lightgrey.svg?style=flat)](http://schilytools.sourceforge.net/bosh.html)
 [![busybox](https://img.shields.io/badge/busybox-&ge;1.10.2-lightgrey.svg?style=flat)](https://www.busybox.net/)
-[![dash](https://img.shields.io/badge/dash-&ge;0.5.2-lightgrey.svg?style=flat)](http://gondor.apana.org.au/~herbert/dash/)
+[![dash](https://img.shields.io/badge/dash-&ge;0.5.4-lightgrey.svg?style=flat)](http://gondor.apana.org.au/~herbert/dash/)
 [![ksh](https://img.shields.io/badge/ksh-&ge;93s-lightgrey.svg?style=flat)](http://kornshell.org)
 [![mksh](https://img.shields.io/badge/mksh-&ge;R28-lightgrey.svg?style=flat)](http://www.mirbsd.org/mksh.htm)
 [![posh](https://img.shields.io/badge/posh-&ge;0.3.14-lightgrey.svg?style=flat)](https://salsa.debian.org/clint/posh)
