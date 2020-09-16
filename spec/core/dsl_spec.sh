@@ -534,7 +534,7 @@ Describe "core/dsl.sh"
       block() { expectation; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'FAULT_BEFORE_EACH_HOOK'
+      The stdout line 2 should equal 'BEFORE_EACH_HOOK_ERROR'
       The stdout line 3 should equal 'FAILED'
       The stdout should not include 'yield'
     End
@@ -545,18 +545,18 @@ Describe "core/dsl.sh"
       block() { expectation; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 3 should equal 'FAULT_AFTER_EACH_HOOK'
+      The stdout line 3 should equal 'AFTER_EACH_HOOK_ERROR'
       The stdout line 4 should equal 'FAILED'
       The stdout should include 'yield'
     End
 
     It 'is error if something outputs to stderr'
       block() { expectation; echo "error message" >&2; }
-      AfterRun ': > "$SHELLSPEC_ERROR_FILE"'
+      AfterRun ': > "$SHELLSPEC_LEAK_FILE"'
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'yield 0'
-      The stdout line 3 should equal 'ERROR'
+      The stdout line 3 should equal 'LEAK'
       The stdout line 4 should equal 'FAILED'
     End
   End

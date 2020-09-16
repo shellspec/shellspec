@@ -149,8 +149,8 @@ shellspec_example() {
   SHELLSPEC_STDIN_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdin"
   SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
   SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
+  SHELLSPEC_LEAK_FILE="$SHELLSPEC_STDIO_FILE_BASE.leak"
   SHELLSPEC_ERROR_FILE="$SHELLSPEC_STDIO_FILE_BASE.error"
-  SHELLSPEC_FAULT_FILE="$SHELLSPEC_STDIO_FILE_BASE.fault"
   SHELLSPEC_XTRACE_FILE="$SHELLSPEC_STDIO_FILE_BASE.trace"
   export SHELLSPEC_VARS_FILE="$SHELLSPEC_STDIO_FILE_BASE.vars"
 
@@ -178,7 +178,7 @@ shellspec_example() {
   )
   set "$1" -- $? "$@"
   if [ "$1" -ne 0 ]; then
-    shellspec_output ABORTED "$1" "$SHELLSPEC_ERROR_FILE"
+    shellspec_output ABORTED "$1" "$SHELLSPEC_LEAK_FILE"
     shellspec_output FAILED
   fi
   shellspec_profile_end
@@ -188,28 +188,28 @@ shellspec_invoke_example() {
   shellspec_output EXAMPLE
 
   shellspec_on NOT_IMPLEMENTED
-  shellspec_off FAILED WARNED EXPECTATION ERROR
+  shellspec_off FAILED WARNED EXPECTATION LEAK
   shellspec_off UNHANDLED_STATUS UNHANDLED_STDOUT UNHANDLED_STDERR
 
   # Output SKIP message if skipped in outer group.
   if ! shellspec_output_if SKIP; then
-    if ! shellspec_call_before_hooks EACH 2>"$SHELLSPEC_FAULT_FILE"; then
-      shellspec_output FAULT_BEFORE_EACH_HOOK "$SHELLSPEC_FAULT_FILE"
+    if ! shellspec_call_before_hooks EACH 2>"$SHELLSPEC_ERROR_FILE"; then
+      shellspec_output BEFORE_EACH_HOOK_ERROR "$SHELLSPEC_ERROR_FILE"
       shellspec_output FAILED
       return 0
     fi
-    shellspec_cat < "$SHELLSPEC_FAULT_FILE" >&2
+    shellspec_cat < "$SHELLSPEC_ERROR_FILE" >&2
     shellspec_output_if PENDING ||:
     case $# in
-      0) shellspec_yield 2>"$SHELLSPEC_ERROR_FILE" ;;
-      *) shellspec_yield "$@" 2>"$SHELLSPEC_ERROR_FILE" ;;
+      0) shellspec_yield 2>"$SHELLSPEC_LEAK_FILE" ;;
+      *) shellspec_yield "$@" 2>"$SHELLSPEC_LEAK_FILE" ;;
     esac
-    if ! shellspec_call_after_hooks EACH 2>"$SHELLSPEC_FAULT_FILE"; then
-      shellspec_output FAULT_AFTER_EACH_HOOK "$SHELLSPEC_FAULT_FILE"
+    if ! shellspec_call_after_hooks EACH 2>"$SHELLSPEC_ERROR_FILE"; then
+      shellspec_output AFTER_EACH_HOOK_ERROR "$SHELLSPEC_ERROR_FILE"
       shellspec_output FAILED
       return 0
     fi
-    shellspec_cat < "$SHELLSPEC_FAULT_FILE" >&2
+    shellspec_cat < "$SHELLSPEC_ERROR_FILE" >&2
   fi
 
   shellspec_if SKIP && shellspec_unless FAILED && {
@@ -236,8 +236,8 @@ shellspec_invoke_example() {
     shellspec_output FIXED && return 0
   }
 
-  [ -s "$SHELLSPEC_ERROR_FILE" ] && shellspec_on ERROR
-  shellspec_output_if ERROR "$SHELLSPEC_ERROR_FILE" && shellspec_on FAILED
+  [ -s "$SHELLSPEC_LEAK_FILE" ] && shellspec_on LEAK
+  shellspec_output_if LEAK "$SHELLSPEC_LEAK_FILE" && shellspec_on FAILED
   shellspec_output_if FAILED && return 0
   shellspec_output_if WARNED || shellspec_output SUCCEEDED
 }
