@@ -35,8 +35,10 @@ tap_each() {
         SKIPPED) _result="ok" _note="SKIP" ;;
         *) _result="${field_fail:+not }ok" _note=$field_note ;;
       esac
-      tap '=' "${_color}${_result} ${example_count}${RESET}"
-      tap '+=' " - $(field_description)"
+      _description=$(field_description)
+      replace_all _description "$LF" ""
+      replace_all _description "$CR" ""
+      tap '=' "${_color}${_result} ${example_count}${RESET} - $_description"
       if [ "${_note}${reason}" ]; then
         _comment="${_note:+ $MAGENTA}${_note}${reason:+ $WHITE}${reason#\#\ }"
         tap '+=' " ${WHITE}#${_comment}${RESET}"
