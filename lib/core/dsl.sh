@@ -194,7 +194,7 @@ shellspec_invoke_example() {
   # Output SKIP message if skipped in outer group.
   if ! shellspec_output_if SKIP; then
     if ! shellspec_call_before_hooks EACH 2>"$SHELLSPEC_ERROR_FILE"; then
-      shellspec_output BEFORE_EACH_HOOK_ERROR "$SHELLSPEC_ERROR_FILE"
+      shellspec_output BEFORE_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
       shellspec_output FAILED
       return 0
     fi
@@ -205,7 +205,7 @@ shellspec_invoke_example() {
       *) shellspec_yield "$@" 2>"$SHELLSPEC_LEAK_FILE" ;;
     esac
     if ! shellspec_call_after_hooks EACH 2>"$SHELLSPEC_ERROR_FILE"; then
-      shellspec_output AFTER_EACH_HOOK_ERROR "$SHELLSPEC_ERROR_FILE"
+      shellspec_output AFTER_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
       shellspec_output FAILED
       return 0
     fi
@@ -372,7 +372,7 @@ shellspec_assert() {
     return 0
   fi
 
-  shellspec_output ASSERT_ERR "$1"
+  shellspec_output ASSERT_ERROR "$1"
   shellspec_output_assert_message "$SHELLSPEC_ASSERT_STDERR"
   shellspec_on FAILED
 }

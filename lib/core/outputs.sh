@@ -97,16 +97,16 @@ shellspec_output_ASSERT_WARN() {
   shellspec_output_raw_append "failure_message:$1"
 }
 
-shellspec_output_ASSERT_ERR() {
+shellspec_output_ASSERT_ERROR() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
     "message:$SHELLSPEC_EXPECTATION"
   shellspec_output_raw_append "failure_message:assertion failure" \
     "(exit status: $1)"
 }
 
-shellspec_output_BEFORE_EACH_HOOK_ERROR() {
-  shellspec_readfile SHELLSPEC_BEFORE_EACH_HOOK_ERROR "$1"
-  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_BEFORE_EACH_HOOK_ERROR" \
+shellspec_output_BEFORE_EACH_ERROR() {
+  shellspec_readfile SHELLSPEC_BEFORE_EACH_ERROR "$1"
+  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_BEFORE_EACH_ERROR" \
     "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
@@ -114,9 +114,9 @@ shellspec_output_BEFORE_EACH_HOOK_ERROR() {
   shellspec_output_raw_append "failure_message:${2:-<no error>}"
 }
 
-shellspec_output_AFTER_EACH_HOOK_ERROR() {
-  shellspec_readfile SHELLSPEC_AFTER_EACH_HOOK_ERROR "$1"
-  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_AFTER_EACH_HOOK_ERROR" \
+shellspec_output_AFTER_EACH_ERROR() {
+  shellspec_readfile SHELLSPEC_AFTER_EACH_ERROR "$1"
+  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_AFTER_EACH_ERROR" \
     "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:bad" "note:" "fail:y" \

@@ -534,7 +534,7 @@ Describe "core/dsl.sh"
       block() { expectation; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 2 should equal 'BEFORE_EACH_HOOK_ERROR'
+      The stdout line 2 should equal 'BEFORE_EACH_ERROR'
       The stdout line 3 should equal 'FAILED'
       The stdout should not include 'yield'
     End
@@ -545,7 +545,8 @@ Describe "core/dsl.sh"
       block() { expectation; }
       When run shellspec_invoke_example
       The stdout line 1 should equal 'EXAMPLE'
-      The stdout line 3 should equal 'AFTER_EACH_HOOK_ERROR'
+      The stdout line 2 should equal 'yield 0'
+      The stdout line 3 should equal 'AFTER_EACH_ERROR'
       The stdout line 4 should equal 'FAILED'
       The stdout should include 'yield'
     End
@@ -851,7 +852,7 @@ Describe "core/dsl.sh"
       The stdout should include 'off:NOT_IMPLEMENTED'
       The stdout should include 'on:EXPECTATION'
       The stdout should include 'on:FAILED'
-      The stdout should include 'output:ASSERT_ERR'
+      The stdout should include 'output:ASSERT_ERROR'
     End
 
     It 'output warning when assertion succeeds but output to stderr'
