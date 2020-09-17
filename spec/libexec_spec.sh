@@ -133,7 +133,7 @@ Describe 'libexec.sh'
       BeforeRun 'SHELLSPEC_COLOR=1'
       It "outputs error"
         When run error foo bar
-        The entire stderr should eq "${SHELLSPEC_ESC}[2;31mfoo bar${SHELLSPEC_ESC}[m${SHELLSPEC_LF}"
+        The entire stderr should eq "${SHELLSPEC_ESC}[1;31mfoo bar${SHELLSPEC_ESC}[m${SHELLSPEC_LF}"
       End
     End
 

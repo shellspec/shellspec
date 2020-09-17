@@ -97,7 +97,7 @@ warn() {
 error() {
   IFS=" $IFS"
   if [ "$SHELLSPEC_COLOR" ]; then
-    set -- '\033[2;31m%s\033[m\n' "${*:-}"
+    set -- '\033[1;31m%s\033[m\n' "${*:-}"
   else
     set -- '%s\n' "${*:-}"
   fi
