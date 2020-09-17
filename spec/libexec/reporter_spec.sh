@@ -404,4 +404,11 @@ Describe "libexec/reporter.sh"
       The lines of stdout should eq 3
     End
   End
+
+  Describe "base26()"
+    It "converts to base 26"
+      When call base26 ret 703
+      The variable ret should eq "aaa"
+    End
+  End
 End

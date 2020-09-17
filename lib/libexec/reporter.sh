@@ -167,3 +167,19 @@ output_trace() {
     putsn "$output_trace"
   done
 }
+
+base() {
+  base_ "$1" "$2" $(($# - 2))
+  eval "eval $1=\${$1}"
+}
+base_() {
+  set -- "$1" "$2" "$3" ""
+  while [ "$2" -ne 0 ]; do
+    set -- "$1" $(($2 / $3)) "$3" "\${$(($2 % $3 + 2))}$4"
+  done
+  eval "$1=\${4}"
+}
+
+base26() {
+  base "$1" "$2" a b c d e f g h i j k l m n o p q r s t u v w x y z
+}
