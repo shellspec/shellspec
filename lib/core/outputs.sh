@@ -67,6 +67,7 @@ shellspec_output_EXPECTATION() {
 }
 
 shellspec_output_UNHANDLED_STATUS() {
+  SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:It was exits with status non-zero but not found expectation"
@@ -74,6 +75,7 @@ shellspec_output_UNHANDLED_STATUS() {
 }
 
 shellspec_output_UNHANDLED_STDOUT() {
+  SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:It was output to stdout but not found expectation"
@@ -82,6 +84,7 @@ shellspec_output_UNHANDLED_STDOUT() {
 }
 
 shellspec_output_UNHANDLED_STDERR() {
+  SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:It was output to stderr but not found expectation"
