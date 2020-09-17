@@ -10,7 +10,7 @@ conclusion_last_example_index='' conclusion_detail_index=''
 create_buffers conclusion
 
 conclusion_each() {
-  _label='' _indent='' _message='' _text=''
+  _label='' _indent='' _message=''
 
   case $field_type in
     example) conclusion_evaluation='' ;;
@@ -44,12 +44,9 @@ conclusion_each() {
       conclusion '+=' "${_label}${field_color}${_message}${RESET}${LF}${LF}"
 
       case $field_tag in (warn|bad)
-        _message=$field_failure_message _text=''
-        while [ "$_text" != "$_message" ]; do
-          _text=${_message%%${LF}*}
-          _message=${_message#*${LF}}
-          conclusion '+=' "  ${_indent}${field_color}${_text}${RESET}${LF}"
-        done
+        _message='' _before="  ${_indent}${field_color}" _after="${RESET}"
+        wrap _message "$field_failure_message" "$_before" "$_after"
+        conclusion '+=' "${_message}${LF}"
       esac
 
       conclusion '+=' "${_indent}${CYAN}#" \
