@@ -270,6 +270,20 @@ Describe "general.sh"
     End
   End
 
+  Describe "shellspec_wrap()"
+    lf="$SHELLSPEC_LF"
+
+    Parameters
+      "line1${lf}line2"       "[[line1]]${lf}[[line2]]"
+      "line1${lf}line2${lf}"  "[[line1]]${lf}[[line2]]${lf}"
+    End
+
+    It "wraps each line"
+      When call shellspec_wrap ret "$1" "[[" "]]"
+      The variable ret should equal "$2"
+    End
+  End
+
   Describe "shellspec_replace_all()"
     It "replaces all characters"
       When call shellspec_replace_all replaced "abcabc" "b" "B"

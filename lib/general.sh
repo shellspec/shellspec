@@ -267,6 +267,19 @@ shellspec_padding_() {
   shellspec_padding_ "$1" "$2" $(($3 - 1))
 }
 
+shellspec_wrap() {
+  case $2 in
+    *"$SHELLSPEC_LF") set -- "$1" "$2" "${3:-}" "${4:-}" "" "" ;;
+    *) set -- "$1" "$2${SHELLSPEC_LF}" "${3:-}" "${4:-}" "" x ;;
+  esac
+  while [ "$2" ]; do
+    set -- "$1" "${2#*$SHELLSPEC_LF}" "$3" "$4" \
+      "$5$3${2%%$SHELLSPEC_LF*}$4${SHELLSPEC_LF}" "$6"
+  done
+  [ "$6" ] && set -- "$1" "$2" "$3" "$4" "${5%$SHELLSPEC_LF}"
+  eval "$1=\$5"
+}
+
 shellspec_readfile() {
   set -- "$1" "$2" ""
   eval "$1="
