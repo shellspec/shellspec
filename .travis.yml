@@ -3,14 +3,11 @@ os: linux
 dist: bionic
 env:
   global:
-    - HOMEBREW_NO_AUTO_UPDATE=1
     - PATH=${PATH}:${HOME}/kcov/bin
     - CC_TEST_REPORTER_URL=https://codeclimate.com/downloads/test-reporter/test-reporter-latest-darwin-amd64
     - CC_TEST_REPORTER_ID=67e0534ee993a6bbd10ae205ef4e807956c01564564ed64738932db123b1b87a
 addons:
   apt:
-    update: true
-  homebrew:
     update: true
 jobs:
   include:
@@ -55,7 +52,7 @@ jobs:
       env: FORMULAS="bash kcov" COVERAGE=1 CODECOV=1 CC=1
 before_install:
   - if [ "$PACKAGES" ]; then sudo apt-get install -y $PACKAGES; fi
-  - if [ "$FORMULAS" ]; then brew install $FORMULAS; fi
+  - if [ "$FORMULAS" ]; then brew upgrade; brew install $FORMULAS; fi
   - if [ "$CC" ]; then curl -sSL $CC_TEST_REPORTER_URL > ./cc-test-reporter; fi
   - if [ "$CC" ]; then chmod +x ./cc-test-reporter; fi
   - if [ "$CC" ]; then ./cc-test-reporter before-build; fi
