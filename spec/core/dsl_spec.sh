@@ -1177,16 +1177,6 @@ Describe "core/dsl.sh"
       The stdout should eq "before foo after"
     End
 
-    Describe 'BeforeCall'
-      It 'failed and evaluation not call'
-        before() { return 123; }
-        When call foo
-        The stdout should not include 'foo'
-        The status should eq 123
-        The stderr should be present
-      End
-    End
-
     Describe 'AfterCall'
       Context 'errexit is on'
         Set errexit:on
@@ -1210,15 +1200,6 @@ Describe "core/dsl.sh"
           The line 3 of stdout should be undefined
           The status should be failure
         End
-      End
-
-      It 'fails cause evaluation to be failure'
-        after() { return 123; }
-        When call foo
-        The status should eq 123
-        The line 1 of stdout should eq 'before'
-        The line 2 of stdout should eq 'foo'
-        The stderr should be present
       End
     End
   End
@@ -1256,16 +1237,6 @@ Describe "core/dsl.sh"
       The stdout should eq "before foo after"
     End
 
-    Describe 'BeforeRun'
-      It 'failed and evaluation not run'
-        before() { return 123; }
-        When run foo
-        The stdout should not include 'foo'
-        The status should eq 123
-        The stderr should be present
-      End
-    End
-
     Describe 'AfterRun'
       Context 'errexit is on'
         Set errexit:on
@@ -1289,15 +1260,6 @@ Describe "core/dsl.sh"
           The line 3 of stdout should be undefined
           The status should be failure
         End
-      End
-
-      It 'fails cause evaluation to be failure'
-        after() { return 123; }
-        When run foo
-        The status should eq 123
-        The line 1 of stdout should eq 'before'
-        The line 2 of stdout should eq 'foo'
-        The stderr should be present
       End
     End
   End
