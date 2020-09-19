@@ -103,9 +103,9 @@ Describe "core/dsl.sh"
     AfterRun echo_specfile_specno
 
     It 'outputs BEGIN'
-      When run shellspec_begin specfile 123
+      When run shellspec_begin specfile "$SHELLSPEC_SPEC_NO"
       The line 1 of stdout should eq "BEGIN"
-      The line 2 of stdout should eq "specfile 123"
+      The line 2 of stdout should eq "specfile $SHELLSPEC_SPEC_NO"
     End
   End
 
@@ -564,12 +564,12 @@ Describe "core/dsl.sh"
 
   Describe "shellspec_around_call()"
     _around_call() {
-      eval 'shellspec_call_before_hooks() { echo "before" "$@"; }'
-      eval 'shellspec_call_after_hooks() { echo "after" "$@"; }'
+      shellspec_call_before_evaluation_hooks() { echo "before" "$@"; }
+      shellspec_call_after_evaluation_hooks() { echo "after" "$@"; }
       shellspec_around_call "$@" &&:
       set -- $?
-      eval 'shellspec_call_before_hooks() { :; }'
-      eval 'shellspec_call_after_hooks() { :; }'
+      shellspec_call_before_evaluation_hooks() { :; }
+      shellspec_call_after_evaluation_hooks() { :; }
       return "$1"
     }
 
@@ -580,16 +580,16 @@ Describe "core/dsl.sh"
       The line 3 of stdout should eq "after CALL"
     End
 
-    Context "when error occured in before hooks"
+    Context "when error occured in before evaluation"
       _around_call() {
         # shellcheck disable=SC2034
         SHELLSPEC_HOOK="hook name"
-        eval 'shellspec_call_before_hooks() { echo "before" "$@"; return 12; }'
-        eval 'shellspec_call_after_hooks() { echo "after" "$@"; }'
+        shellspec_call_before_evaluation_hooks() { echo "before" "$@"; return 12; }
+        shellspec_call_after_evaluation_hooks() { echo "after" "$@"; }
         shellspec_around_call "$@" &&:
         set -- $?
-        eval 'shellspec_call_before_hooks() { :; }'
-        eval 'shellspec_call_after_hooks() { :; }'
+        shellspec_call_before_evaluation_hooks() { :; }
+        shellspec_call_after_evaluation_hooks() { :; }
         return "$1"
       }
 
@@ -598,21 +598,20 @@ Describe "core/dsl.sh"
         The line 1 of stdout should eq "before CALL"
         The line 2 of stdout should not eq "ok"
         The line 3 of stdout should not eq "after CALL"
-        The stderr should include "hook name"
         The status should eq 12
       End
     End
 
-    Context "when error occured in after hooks"
+    Context "when error occured in after evaluation"
       _around_call() {
         # shellcheck disable=SC2034
         SHELLSPEC_HOOK="hook name"
-        eval 'shellspec_call_before_hooks() { echo "before" "$@"; }'
-        eval 'shellspec_call_after_hooks() { echo "after" "$@"; return 12; }'
+        shellspec_call_before_evaluation_hooks() { echo "before" "$@"; }
+        shellspec_call_after_evaluation_hooks() { echo "after" "$@"; return 12; }
         shellspec_around_call "$@" &&:
         set -- $?
-        eval 'shellspec_call_before_hooks() { :; }'
-        eval 'shellspec_call_after_hooks() { :; }'
+        shellspec_call_before_evaluation_hooks() { :; }
+        shellspec_call_after_evaluation_hooks() { :; }
         return "$1"
       }
 
@@ -621,7 +620,6 @@ Describe "core/dsl.sh"
         The line 1 of stdout should eq "before CALL"
         The line 2 of stdout should eq "ok"
         The line 3 of stdout should eq "after CALL"
-        The stderr should include "hook name"
         The status should eq 12
       End
     End
@@ -629,12 +627,12 @@ Describe "core/dsl.sh"
 
   Describe "shellspec_around_run()"
     _around_run() {
-      eval 'shellspec_call_before_hooks() { echo "before" "$@"; }'
-      eval 'shellspec_call_after_hooks() { echo "after" "$@"; }'
+      shellspec_call_before_evaluation_hooks() { echo "before" "$@"; }
+      shellspec_call_after_evaluation_hooks() { echo "after" "$@"; }
       shellspec_around_run "$@" &&:
       set -- $?
-      eval 'shellspec_call_before_hooks() { :; }'
-      eval 'shellspec_call_after_hooks() { :; }'
+      shellspec_call_before_evaluation_hooks() { :; }
+      shellspec_call_after_evaluation_hooks() { :; }
       return "$1"
     }
 
@@ -645,16 +643,16 @@ Describe "core/dsl.sh"
       The line 3 of stdout should eq "after RUN"
     End
 
-    Context "when error occured in before hooks"
+    Context "when error occured in before evaluation"
       _around_run() {
         # shellcheck disable=SC2034
         SHELLSPEC_HOOK="hook name"
-        eval 'shellspec_call_before_hooks() { echo "before" "$@"; return 12; }'
-        eval 'shellspec_call_after_hooks() { echo "after" "$@"; }'
+        shellspec_call_before_evaluation_hooks() { echo "before" "$@"; return 12; }
+        shellspec_call_after_evaluation_hooks() { echo "after" "$@"; }
         shellspec_around_run "$@" &&:
         set -- $?
-        eval 'shellspec_call_before_hooks() { :; }'
-        eval 'shellspec_call_after_hooks() { :; }'
+        shellspec_call_before_evaluation_hooks() { :; }
+        shellspec_call_after_evaluation_hooks() { :; }
         return "$1"
       }
 
@@ -663,21 +661,20 @@ Describe "core/dsl.sh"
         The line 1 of stdout should eq "before RUN"
         The line 2 of stdout should not eq "ok"
         The line 3 of stdout should not eq "after RUN"
-        The stderr should include "hook name"
         The status should eq 12
       End
     End
 
-    Context "when error occured in after hooks"
+    Context "when error occured in after evaluation"
       _around_run() {
         # shellcheck disable=SC2034
         SHELLSPEC_HOOK="hook name"
-        eval 'shellspec_call_before_hooks() { echo "before" "$@"; }'
-        eval 'shellspec_call_after_hooks() { echo "after" "$@"; return 12; }'
+        shellspec_call_before_evaluation_hooks() { echo "before" "$@"; }
+        shellspec_call_after_evaluation_hooks() { echo "after" "$@"; return 12; }
         shellspec_around_run "$@" &&:
         set -- $?
-        eval 'shellspec_call_before_hooks() { :; }'
-        eval 'shellspec_call_after_hooks() { :; }'
+        shellspec_call_before_evaluation_hooks() { :; }
+        shellspec_call_after_evaluation_hooks() { :; }
         return "$1"
       }
 
@@ -686,7 +683,6 @@ Describe "core/dsl.sh"
         The line 1 of stdout should eq "before RUN"
         The line 2 of stdout should eq "ok"
         The line 3 of stdout should eq "after RUN"
-        The stderr should include "hook name"
         The status should eq 12
       End
     End
@@ -1183,7 +1179,6 @@ Describe "core/dsl.sh"
         When call foo
         The stdout should not include 'foo'
         The status should eq 123
-        The stderr should be present
       End
     End
 
@@ -1198,6 +1193,14 @@ Describe "core/dsl.sh"
           The line 3 of stdout should be undefined
           The status should be failure
         End
+      End
+
+      It 'fails cause evaluation to be failure'
+        after() { return 123; }
+        When call foo
+        The status should eq 123
+        The line 1 of stdout should eq 'before'
+        The line 2 of stdout should eq 'foo'
       End
 
       Context 'errexit is off'
@@ -1218,7 +1221,6 @@ Describe "core/dsl.sh"
         The status should eq 123
         The line 1 of stdout should eq 'before'
         The line 2 of stdout should eq 'foo'
-        The stderr should be present
       End
     End
   End
@@ -1262,7 +1264,6 @@ Describe "core/dsl.sh"
         When run foo
         The stdout should not include 'foo'
         The status should eq 123
-        The stderr should be present
       End
     End
 
@@ -1277,6 +1278,14 @@ Describe "core/dsl.sh"
           The line 3 of stdout should be undefined
           The status should be failure
         End
+      End
+
+      It 'fails cause evaluation to be failure'
+        after() { return 123; }
+        When run foo
+        The status should eq 123
+        The line 1 of stdout should eq 'before'
+        The line 2 of stdout should eq 'foo'
       End
 
       Context 'errexit is off'
@@ -1297,7 +1306,6 @@ Describe "core/dsl.sh"
         The status should eq 123
         The line 1 of stdout should eq 'before'
         The line 2 of stdout should eq 'foo'
-        The stderr should be present
       End
     End
   End

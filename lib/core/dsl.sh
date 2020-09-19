@@ -64,6 +64,7 @@ shellspec_begin() {
   # shellcheck disable=SC2034
   SHELLSPEC_SPECFILE=$1 SHELLSPEC_SPEC_NO=$2 SHELLSPEC_GROUP_ID=''
   SHELLSPEC_WORKDIR="$SHELLSPEC_TMPBASE/$SHELLSPEC_SPEC_NO"
+  SHELLSPEC_ERROR_FILE="$SHELLSPEC_WORKDIR/error"
   shellspec_output BEGIN
 }
 
@@ -150,7 +151,6 @@ shellspec_example() {
   SHELLSPEC_STDOUT_FILE="$SHELLSPEC_STDIO_FILE_BASE.stdout"
   SHELLSPEC_STDERR_FILE="$SHELLSPEC_STDIO_FILE_BASE.stderr"
   SHELLSPEC_LEAK_FILE="$SHELLSPEC_STDIO_FILE_BASE.leak"
-  SHELLSPEC_ERROR_FILE="$SHELLSPEC_STDIO_FILE_BASE.error"
   SHELLSPEC_XTRACE_FILE="$SHELLSPEC_STDIO_FILE_BASE.trace"
   export SHELLSPEC_VARS_FILE="$SHELLSPEC_STDIO_FILE_BASE.vars"
 
@@ -193,23 +193,21 @@ shellspec_invoke_example() {
 
   # Output SKIP message if skipped in outer group.
   if ! shellspec_output_if SKIP; then
-    if ! shellspec_call_before_hooks EACH 2>"$SHELLSPEC_ERROR_FILE"; then
-      shellspec_output BEFORE_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
+    if ! shellspec_call_before_hooks EACH; then
+      shellspec_output BEFORE_EACH_ERROR
       shellspec_output FAILED
       return 0
     fi
-    shellspec_cat < "$SHELLSPEC_ERROR_FILE" >&2
     shellspec_output_if PENDING ||:
     case $# in
       0) shellspec_yield 2>"$SHELLSPEC_LEAK_FILE" ;;
       *) shellspec_yield "$@" 2>"$SHELLSPEC_LEAK_FILE" ;;
     esac
-    if ! shellspec_call_after_hooks EACH 2>"$SHELLSPEC_ERROR_FILE"; then
-      shellspec_output AFTER_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
+    if ! shellspec_call_after_hooks EACH; then
+      shellspec_output AFTER_EACH_ERROR
       shellspec_output FAILED
       return 0
     fi
-    shellspec_cat < "$SHELLSPEC_ERROR_FILE" >&2
   fi
 
   shellspec_if SKIP && shellspec_unless FAILED && {
@@ -284,42 +282,24 @@ shellspec_when() {
     return 0
   fi
 
-  shellspec_statement_evaluation "$@"
   shellspec_output EVALUATION
+  shellspec_statement_evaluation "$@"
 }
 
 shellspec_around_call() {
-  shellspec_call_before_hooks CALL || {
-    set -- $?
-    echo "BeforeCall hook '$SHELLSPEC_HOOK' failed" >&2
-    return "$1"
-  }
+  shellspec_call_before_evaluation_hooks CALL || return "$?"
   "$@"
   set -- $?
   [ "$1" -ne 0 ] && return "$1"
-  shellspec_call_after_hooks CALL || {
-    set -- $?
-    echo "AfterCall hook '$SHELLSPEC_HOOK' failed" >&2
-    return "$1"
-  }
-  return "$1"
+  shellspec_call_after_evaluation_hooks CALL || return "$?"
 }
 
 shellspec_around_run() {
-  shellspec_call_before_hooks RUN || {
-    set -- $?
-    echo "BeforeRun hook '$SHELLSPEC_HOOK' failed" >&2
-    return "$1"
-  }
+  shellspec_call_before_evaluation_hooks RUN || return "$?"
   "$@"
   set -- $?
   [ "$1" -ne 0 ] && return "$1"
-  shellspec_call_after_hooks RUN || {
-    set -- $?
-    echo "AfterRun hook '$SHELLSPEC_HOOK' failed" >&2
-    return "$1"
-  }
-  return "$1"
+  shellspec_call_after_evaluation_hooks RUN || return "$?"
 }
 
 shellspec_the() {

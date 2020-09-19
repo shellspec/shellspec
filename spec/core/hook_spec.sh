@@ -27,6 +27,40 @@ Describe "core/hook.sh"
           The line 3 of stdout should equal 3
         End
       End
+
+      Context 'when an error occurs on the hook'
+        foo() { echo 1; return 123; }
+        example_hooks() {
+          shellspec_register_before_hook EXAMPLE 'foo'
+          shellspec_register_before_hook EXAMPLE 'echo 2'
+        }
+
+        It 'stops where an error occurs'
+          BeforeCall example_hooks
+          When call shellspec_call_before_hooks EXAMPLE
+          The line 1 of stdout should equal 1
+          The line 2 of stdout should be undefined
+          The status should eq 1
+          The variable SHELLSPEC_HOOK_STATUS should eq 123
+        End
+      End
+
+      Context 'when output to stdrr on the hook'
+        foo() { echo 1; echo err >&2; }
+        example_hooks() {
+          shellspec_register_before_hook EXAMPLE 'foo'
+          shellspec_register_before_hook EXAMPLE 'echo 2'
+        }
+
+        It 'stops where an error occurs'
+          BeforeCall example_hooks
+          When call shellspec_call_before_hooks EXAMPLE
+          The line 1 of stdout should equal 1
+          The line 2 of stdout should be undefined
+          The status should eq 1
+          The variable SHELLSPEC_HOOK_STATUS should eq 0
+        End
+      End
     End
 
     Describe "before all"
@@ -75,6 +109,40 @@ Describe "core/hook.sh"
           The line 1 of stdout should equal 3
           The line 2 of stdout should equal 2
           The line 3 of stdout should equal 1
+        End
+      End
+
+      Context 'when an error occurs on the hook'
+        foo() { echo 1; return 123; }
+        example_hooks() {
+          shellspec_register_after_hook EXAMPLE 'echo 1'
+          shellspec_register_after_hook EXAMPLE 'foo'
+        }
+
+        It 'stops where an error occurs'
+          BeforeCall example_hooks
+          When call shellspec_call_after_hooks EXAMPLE
+          The line 1 of stdout should equal 1
+          The line 2 of stdout should be undefined
+          The status should eq 1
+          The variable SHELLSPEC_HOOK_STATUS should eq 123
+        End
+      End
+
+      Context 'when output to stdrr on the hook'
+        foo() { echo 1; echo err >&2; }
+        example_hooks() {
+          shellspec_register_after_hook EXAMPLE 'echo 1'
+          shellspec_register_after_hook EXAMPLE 'foo'
+        }
+
+        It 'stops where an error occurs'
+          BeforeCall example_hooks
+          When call shellspec_call_after_hooks EXAMPLE
+          The line 1 of stdout should equal 1
+          The line 2 of stdout should be undefined
+          The status should eq 1
+          The variable SHELLSPEC_HOOK_STATUS should eq 0
         End
       End
     End
