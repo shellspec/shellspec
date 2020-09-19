@@ -1,8 +1,5 @@
 #shellcheck shell=sh disable=SC2016
 
-# to suppress shellcheck SC2034
-: "${SHELLSPEC_LINENO:-}"
-
 shellspec_output_METADATA() {
   shellspec_output_meta "info:$SHELLSPEC_INFO" "shell:$SHELLSPEC_SHELL" \
     "shell_type:$SHELLSPEC_SHELL_TYPE" "shell_version:$SHELLSPEC_SHELL_VERSION"
@@ -236,6 +233,7 @@ shellspec_output_ABORTED() {
 
 shellspec_output_LEAK() {
   shellspec_readfile SHELLSPEC_LEAK "$1"
+  # shellcheck disable=SC2034
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
     "message:Unexpected output to stderr occurred" \

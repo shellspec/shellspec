@@ -1,8 +1,5 @@
 #shellcheck shell=sh
 
-# to suppress shellcheck SC2034
-: "${SHELLSPEC_META:-}"
-
 shellspec_syntax 'shellspec_modifier_line'
 
 shellspec_modifier_line() {
@@ -11,6 +8,7 @@ shellspec_modifier_line() {
 
   eval "shift; set -- ${1#"${1%%[1-9]*}"} ${2+\"\$@\"}"
 
+  # shellcheck disable=SC2034
   SHELLSPEC_META='text'
   if [ "${SHELLSPEC_SUBJECT:-}" ]; then
     SHELLSPEC_EVAL="

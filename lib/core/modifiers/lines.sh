@@ -1,11 +1,9 @@
 #shellcheck shell=sh
 
-# to suppress shellcheck SC2034
-: "${SHELLSPEC_META:-}"
-
 shellspec_syntax 'shellspec_modifier_lines'
 
 shellspec_modifier_lines() {
+  # shellcheck disable=SC2034
   SHELLSPEC_META='number'
   if [ "${SHELLSPEC_SUBJECT+x}" ]; then
     if [ "$SHELLSPEC_SUBJECT" ]; then
