@@ -142,17 +142,15 @@ fi
   | error_handler >&4; echo $? >&5 ) 5>&1 \
   | (
       read -r xs1; read -r xs2; read -r xs3
-      case $SHELLSPEC_SPEC_FAILURE_CODE in
-        "$xs1" | "$xs2") xs=$SHELLSPEC_SPEC_FAILURE_CODE ;;
-        *)
-          for xs in "$xs1" "$xs2" "$xs3"; do
-            [ "${xs#0}" ] || continue
-            error "Aborted with status code" \
-              "[executor: $xs1] [reporter: $xs2] [error handler: $xs3]"
-            break
-          done
-      esac
-      set_exit_status "${xs:-1}"
+      xs=0 msg="Aborted with status code"
+      for i in "$xs1" "$xs2" "$xs3"; do
+        [ "$i" = 0 ] && continue || xs=$i
+        if [ ! "$i" = "$SHELLSPEC_SPEC_FAILURE_CODE" ]; then
+          error "$msg [executor: $xs1] [reporter: $xs2] [error handler: $xs3]"
+          break
+        fi
+      done
+      set_exit_status "$xs"
     )
 ) 3>&1 4>&2 8>&1 &&:
 exit_status=$?
