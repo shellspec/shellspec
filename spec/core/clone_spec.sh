@@ -19,9 +19,9 @@ Describe "core/clone.sh"
 
   Describe "shellspec_clone_escape()"
     Parameters
-      "test"    "'test'"
-      "te'st"    "'te'\''st'"
-      "'test'"    "\''test'\'"
+      "test1"    "'test1'"
+      "te'st2"    "'te'\''st2'"
+      "'test3'"    "\''test3'\'"
     End
 
     It "escapes single quotes ($1)"
