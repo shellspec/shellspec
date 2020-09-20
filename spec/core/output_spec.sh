@@ -85,6 +85,13 @@ Describe "core/output.sh"
     End
   End
 
+  Describe "shellspec_output_error()"
+    It "outputs error type"
+      When run shellspec_output_error foo
+      The stdout should equal "${SHELLSPEC_RS}type:error${SHELLSPEC_US}foo"
+    End
+  End
+
   Describe "shellspec_output_if()"
     shellspec_output_IF() { echo "output if"; }
 

@@ -58,6 +58,10 @@ shellspec_output_result() {
   shellspec_output_raw type:result "$@"
 }
 
+shellspec_output_error() {
+  shellspec_output_raw type:error "$@"
+}
+
 shellspec_output_if() {
   shellspec_if "$1" || return 1
   shellspec_output "$@"

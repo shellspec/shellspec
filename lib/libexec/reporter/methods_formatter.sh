@@ -1,19 +1,13 @@
-#shellcheck shell=sh
-
-: "${field_shell:-} ${field_shell_type:-} ${field_shell_version:-}"
-: "${field_info:-} ${field_type:-}"
+#shellcheck shell=sh disable=SC2154
 
 create_buffers methods
 
 methods_each() {
   case $field_type in (meta)
-    methods '=' "Running: $field_shell "
-    if [ "$field_shell_version" ]; then
-      methods '+=' "[$field_shell_type $field_shell_version]"
-    else
-      methods '+=' "[$field_shell_type]"
-    fi
-    methods '+=' "${field_info:+ }${field_info}${LF}"
+    _shell=$field_shell _type=$field_shell_type \
+    _version="${field_shell_version:+ }${field_shell_version}" \
+    _info="${field_info:+ }${field_info}"
+    methods '=' "Running: $_shell [${_type}${_version}]${_info}${LF}"
   esac
 }
 

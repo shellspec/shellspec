@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2154
 
 create_buffers finished
 

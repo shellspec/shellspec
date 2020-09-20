@@ -104,24 +104,51 @@ shellspec_output_ASSERT_ERROR() {
     "(exit status: $1)"
 }
 
+shellspec_output_BEFORE_ALL_ERROR() {
+  shellspec_readfile SHELLSPEC_BEFORE_ALL_ERROR "$SHELLSPEC_ERROR_FILE"
+  shellspec_chomp SHELLSPEC_BEFORE_ALL_ERROR
+  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_BEFORE_ALL_ERROR" \
+    "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
+  shellspec_output_error "note:ERROR" "lineno:$SHELLSPEC_HOOK_LINENO" \
+    "message:An error occurred in before all hook '$1' (exit status: $4)"
+  shellspec_output_raw_append "failure_message:${2:-<no error>}"
+}
+
+shellspec_output_AFTER_ALL_ERROR() {
+  shellspec_readfile SHELLSPEC_AFTER_ALL_ERROR "$SHELLSPEC_ERROR_FILE"
+  shellspec_chomp SHELLSPEC_AFTER_ALL_ERROR
+  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_AFTER_ALL_ERROR" \
+    "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
+  shellspec_output_error "note:ERROR" "lineno:$SHELLSPEC_HOOK_LINENO" \
+    "message:An error occurred in after hook '$1' (exit status: $4)"
+  shellspec_output_raw_append "failure_message:${2:-<no error>}"
+}
+
 shellspec_output_BEFORE_EACH_ERROR() {
   shellspec_readfile SHELLSPEC_BEFORE_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
+  shellspec_chomp SHELLSPEC_BEFORE_EACH_ERROR
   set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_BEFORE_EACH_ERROR" \
     "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
-  shellspec_output_statement "tag:bad" "note:" "fail:y" \
+  shellspec_output_statement "tag:bad" "note:" "fail:y" "evaluation:" \
     "message:An error occurred in before hook '$1' (line: $3, exit status: $4)"
   shellspec_output_raw_append "failure_message:${2:-<no error>}"
 }
 
 shellspec_output_AFTER_EACH_ERROR() {
   shellspec_readfile SHELLSPEC_AFTER_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
+  shellspec_chomp SHELLSPEC_AFTER_EACH_ERROR
   set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_AFTER_EACH_ERROR" \
     "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
-  shellspec_output_statement "tag:bad" "note:" "fail:y" \
+  shellspec_output_statement "tag:bad" "note:" "fail:y" "evaluation:" \
     "message:An error occurred in after hook '$1' (line: $3, exit status: $4)"
   shellspec_output_raw_append "failure_message:${2:-<no error>}"
+}
+
+shellspec_output_HOOK_ERROR() {
+  shellspec_output_statement "tag:bad" "note:" "fail:y" "failure_message:" \
+    "message:Treat as a failure due to a preceding hook error"
 }
 
 shellspec_output_MATCHED() {

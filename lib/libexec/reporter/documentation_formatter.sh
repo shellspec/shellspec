@@ -1,9 +1,7 @@
-#shellcheck shell=sh
-
-: "${example_index:-} ${field_type:-} ${field_note:-}"
-: "${field_description:-} ${field_color:-} ${field_id:-}"
+#shellcheck shell=sh disable=SC2154
 
 documentation_last_id=''
+
 create_buffers documentation
 
 require_formatters methods conclusion finished summary references profiler

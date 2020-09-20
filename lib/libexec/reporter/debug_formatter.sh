@@ -1,6 +1,4 @@
-#shellcheck shell=sh
-
-: "${field_type:-} ${field_color:-}"
+#shellcheck shell=sh disable=SC2154
 
 create_buffers debug
 
@@ -15,6 +13,7 @@ debug_each() {
     result   ) _mark='=' ;;
     end      ) _mark='$' ;;
     finished ) _mark='&' ;;
+    error    ) _mark='-' ;;
     *        ) _mark='?' ;;
   esac
 

@@ -1,17 +1,13 @@
-#shellcheck shell=sh
-
-: "${warned_count:-} ${skipped_count:-} ${suppressed_skipped_count:-}"
-: "${todo_count:-} ${suppressed_todo_count:-}"
-: "${fixed_count:-} ${suppressed_fixed_count:-}"
-: "${interrupt:-} ${aborted:-} ${no_examples:-} ${not_enough_examples:-}"
+#shellcheck shell=sh disable=SC2154
 
 create_buffers summary
 
 summary_end() {
-  _summary='' _summary_error='' _summary_warning='' _color=''
+  _summary='' _error='' _warning='' _color=''
 
   pluralize _summary "${example_count:-0} example"
   pluralize _summary ", " "${failed_count:-0} failure"
+  pluralize _summary ", " "$error_count error"
   pluralize _summary ", " "$warned_count warning"
   pluralize _summary ", " "$skipped_count skip"
   pluralize _summary " (muted " "$suppressed_skipped_count skip" ")"
@@ -21,26 +17,25 @@ summary_end() {
   pluralize _summary " (muted " "$suppressed_fixed_count fix" ")"
 
   if [ "$interrupt" ]; then
-    _summary_error="$_summary_error, aborted by an interrupt"
+    _error="$_error, aborted by an interrupt"
   elif [ "$aborted" ]; then
-    _summary_error="$_summary_error, aborted by an unexpected error"
+    _error="$_error, aborted by an unexpected error"
   fi
   if [ "$no_examples" ]; then
-    _summary_error="$_summary_error, no examples found"
+    _error="$_error, no examples found"
   fi
-  pluralize _summary_error ", " "$not_enough_examples example" \
+  pluralize _error ", " "$not_enough_examples example" \
     " did not run (unexpected exit?)"
 
   if [ "$SHELLSPEC_DRYRUN" ]; then
-    _summary_warning="$_summary_warning [dry-run mode]"
+    _warning="$_warning [dry-run mode]"
   elif [ "$SHELLSPEC_XTRACE_ONLY" ]; then
-    _summary_warning="$_summary_warning [trace-only mode]"
+    _warning="$_warning [trace-only mode]"
   fi
 
-  [ "${warned_count}${_summary_warning}" ] && _color=$YELLOW || _color=$GREEN
-  [ "${failed_count}${fixed_count}${_summary_error}" ] && _color=$RED
-  _summary="${_summary}${_summary_error}${_summary_warning}"
-  summary '+=' "${_color}${_summary}${RESET}${LF}${LF}"
+  [ "${warned_count}${_warning}" ] && _color=$YELLOW || _color=$GREEN
+  [ "${failed_count}${error_count}${fixed_count}${_error}" ] && _color=$RED
+  summary '+=' "${_color}${_summary}${_error}${_warning}${RESET}${LF}${LF}"
 }
 
 summary_output() {

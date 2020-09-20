@@ -19,18 +19,18 @@ import "formatter"
 import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
 
-exit_status=0 found_focus='' no_examples='' aborted=1 coverage_failed=''
-fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-999999} reason=''
-current_example_index=0 example_index=''
-last_example_no='' last_skip_id='' not_enough_examples=''
-field_id='' field_type='' field_tag='' field_example_no='' field_focused=''
-field_temporary='' field_skipid='' field_pending='' field_message=''
+found_focus='' no_examples='' aborted=1 coverage_failed='' \
+fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-999999} reason='' \
+current_example_index=0 example_index='' \
+last_example_no='' last_skip_id='' not_enough_examples='' \
+field_id='' field_type='' field_tag='' field_example_no='' field_focused='' \
+field_temporary='' field_skipid='' field_pending='' field_message='' \
 field_quick='' field_trace='' field_lineno='' field_specfile=''
 
 # shellcheck disable=SC2034
 specfile_count=0 expected_example_count=0 example_count=0 \
-succeeded_count='' failed_count='' warned_count='' \
-todo_count='' fixed_count='' skipped_count='' \
+succeeded_count='' failed_count='' warned_count='' error_count='' \
+todo_count='' fixed_count='' skipped_count='' error_index='' \
 suppressed_todo_count='' suppressed_fixed_count='' suppressed_skipped_count=''
 
 init_quick_data
@@ -70,13 +70,13 @@ parse_fields() {
 each_line() {
   case $field_type in
     begin)
-      field_example_count='' last_example_no=0
+      field_example_count='' last_example_no=0 \
       last_skip_id='' suppress_pending=''
       inc specfile_count
       # shellcheck disable=SC2034
       example_count_per_file=0 succeeded_count_per_file=0 \
       failed_count_per_file=0 warned_count_per_file=0 todo_count_per_file=0 \
-      fixed_count_per_file=0 skipped_count_per_file=0
+      fixed_count_per_file=0 skipped_count_per_file=0 error_count_per_file=0
       ;;
     example)
       # shellcheck disable=SC2034
@@ -134,7 +134,6 @@ each_line() {
     result)
       inc example_count example_count_per_file
       inc "${field_tag}_count" "${field_tag}_count_per_file"
-      [ "${field_fail:-}" ] && exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
       [ "${failed_count:-0}" -ge "$fail_fast_count" ] && aborted='' fail_fast=1
 
       case $field_tag in (skipped | fixed | todo)
@@ -152,6 +151,10 @@ each_line() {
         not_enough_examples=$(($not_enough_examples + $field_example_count))
         not_enough_examples=$(($not_enough_examples - $example_count_per_file))
       fi
+      ;;
+    error)
+      inc error_count error_count_per_file
+      base26 error_index "$error_count"
       ;;
     finished) aborted=''
   esac
@@ -197,6 +200,10 @@ elif [ "$not_enough_examples" ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 elif [ "$SHELLSPEC_FAIL_LOW_COVERAGE" ] && [ "$coverage_failed" ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+elif [ "${failed_count}${error_count}" ]; then
+  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+else
+  exit_status=0
 fi
 
 if [ "${SHELLSPEC_FOCUS_FILTER:-}" ]; then

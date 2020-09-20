@@ -147,6 +147,21 @@ Describe "core/dsl.sh"
         The stdout should eq ""
       End
     End
+
+    Context 'when shellspec_call_before_hooks failed'
+      before_first_block() {
+        shellspec_call_before_hooks() { echo "$@"; return 123; }
+        shellspec_output() { echo "$@"; }
+        shellspec_before_first_block
+        shellspec_call_before_hooks() { :; }
+      }
+
+      It 'outputs hook error'
+        When run before_first_block
+        The line 1 should eq "ALL"
+        The line 2 should eq "BEFORE_ALL_ERROR"
+      End
+    End
   End
 
   Describe "shellspec_after_last_block()"
@@ -160,6 +175,21 @@ Describe "core/dsl.sh"
     It 'calls after all hooks'
       When run after_last_block
       The stdout should eq "ALL"
+    End
+
+    Context 'when shellspec_call_after_hooks failed'
+      after_last_block() {
+        shellspec_call_after_hooks() { echo "$@"; return 123; }
+        shellspec_output() { echo "$@"; }
+        shellspec_after_last_block
+        shellspec_call_after_hooks() { :; }
+      }
+
+      It 'outputs hook error'
+        When run after_last_block
+        The line 1 should eq "ALL"
+        The line 2 should eq "AFTER_ALL_ERROR"
+      End
     End
   End
 
@@ -416,6 +446,14 @@ Describe "core/dsl.sh"
       The stdout line 1 should equal 'EXAMPLE'
       The stdout line 2 should equal 'SKIP'
       The stdout line 3 should equal 'SKIPPED'
+    End
+
+    It 'fails if hook error occurred'
+      BeforeRun SHELLSPEC_HOOK_ERROR=1
+      When run shellspec_invoke_example
+      The stdout line 1 should equal 'EXAMPLE'
+      The stdout line 2 should equal 'HOOK_ERROR'
+      The stdout line 3 should equal 'FAILED'
     End
 
     It 'skipps the rest if skipped inside of example'

@@ -26,6 +26,7 @@ SHELLSPEC_SKIP_ID=''
 SHELLSPEC_SKIP_REASON=''
 SHELLSPEC_PENDING_REASON=''
 SHELLSPEC_SHELL_OPTIONS=''
+SHELLSPEC_HOOK_ERROR=''
 
 shellspec_group_id() {
   # shellcheck disable=SC2034
@@ -82,12 +83,17 @@ shellspec_before_first_block() {
   shellspec_mark_group "$SHELLSPEC_BLOCK_NO" ""
   [ "$SHELLSPEC_DRYRUN" ] && return 0
   shellspec_if SKIP && return 0
-  shellspec_call_before_hooks ALL
+  if ! shellspec_call_before_hooks ALL; then
+    shellspec_output BEFORE_ALL_ERROR
+    SHELLSPEC_HOOK_ERROR=1
+  fi
   shellspec_mark_group "$SHELLSPEC_BLOCK_NO" 1
 }
 
 shellspec_after_last_block() {
-  shellspec_call_after_hooks ALL
+  if ! shellspec_call_after_hooks ALL; then
+    shellspec_output AFTER_ALL_ERROR
+  fi
 }
 
 shellspec_after_block() {
@@ -193,6 +199,11 @@ shellspec_invoke_example() {
 
   # Output SKIP message if skipped in outer group.
   if ! shellspec_output_if SKIP; then
+    if [ "$SHELLSPEC_HOOK_ERROR" ]; then
+      shellspec_output HOOK_ERROR "$SHELLSPEC_HOOK_ERROR"
+      shellspec_output FAILED
+      return 0
+    fi
     if ! shellspec_call_before_hooks EACH; then
       shellspec_output BEFORE_EACH_ERROR
       shellspec_output FAILED

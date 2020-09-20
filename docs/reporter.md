@@ -2,7 +2,6 @@
 
 ## Reporting protocol
 
-```
 | pair   | type      | number of times                 |
 | ------ | --------- | ------------------------------- |
 |        | meta      | 1                               |
@@ -12,7 +11,8 @@
 | :  +-- | result    | same number of times as example |
 | +----- | end       | same number of times as begin   |
 |        | finished  | 1                               |
-```
+|        |           |                                 |
+|        | error     | 0..N (can occur at any time)    |
 
 ### types
 
@@ -21,10 +21,11 @@
 | meta      | shell, shell_type, shell_version, info                       |
 | begin     | specfile                                                     |
 | example   | id, block_no, example_no, focused, description, lineno_range |
-| statement | tag, lineno                                                  |
-| result    |                                                              |
+| statement | tag, lineno, [statement type fields...]                      |
+| result    | [result type fields...]                                      |
 | end       |                                                              |
 | finished  |                                                              |
+| error     | lineno, note, message, failure_message                       |
 
 ### statement type
 
