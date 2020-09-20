@@ -15,8 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Improved TAP formatter.**
-  - Supports TODO and SKIP directives.
+  - Supports `TODO` and `SKIP` directives.
+  - Use `Bail out!` on error.
   - Added error details.
+- `BeforeAll` / `AfterAll`: Avoid crashes due to hook errors.
+- `Before` / `After`: Improved hook error handling.
+- `BeforeCall` / `AfterCall`, `BeforeRun` / `AfterRun`: Minor changes.
 
 ### Removed
 
@@ -27,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a bug that "Parameter is not set" error in word modifier.
 - Fixed a bug that satisfy matcher succeed even syntax error.
 - Fixed a bug that can not CTRL-C with parallel execution on zsh.
+- shellspec-syntax-check.sh: Some minor bug fixes.
 
 ## [0.26.1] - 2020-07-13
 
