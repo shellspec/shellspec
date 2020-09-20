@@ -13,7 +13,7 @@ Describe 'Parameters helper'
     End
 
     It "example $1 + $2" tag
-      When call echo "$(($1 + $2))"
+      When call echo "$((${1:-0} + ${2:-0}))"
       The output should eq "$3"
       The result of 'desc()' should eq "example $1 + $2"
     End
@@ -27,7 +27,7 @@ Describe 'Parameters helper'
     End
 
     It "example $1 + $2"
-      When call echo "$(($1 + $2))"
+      When call echo "$((${1:-0} + ${2:-0}))"
       The output should eq "$3"
       The result of 'desc()' should eq "example $1 + $2"
     End

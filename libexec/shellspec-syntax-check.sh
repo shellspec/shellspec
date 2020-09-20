@@ -57,11 +57,11 @@ specfile() {
   ( ( ( ( syntax_check "$specfile"; echo $? >&3 ) 2>&1 \
     | error_handler >&2; echo $? >&3) 3>&1) \
     | (
-        read -r xs
-        [ "$xs" -ne 0 ] && exit "$xs"
-        read -r xs
-        [ "$xs" -ne 0 ] && exit "$xs"
-        exit 0
+        xs=0
+        read -r xs1; read -r xs2
+        [ "$xs1" -ne 0 ] && xs="$xs1"
+        [ "$xs2" -ne 0 ] && xs="$xs2"
+        set_exit_status "$xs"
       ) \
   ) || exit_status=1
 }
