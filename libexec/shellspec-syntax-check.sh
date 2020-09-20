@@ -63,7 +63,7 @@ specfile() {
         [ "$xs" -ne 0 ] && exit "$xs"
         exit 0
       ) \
-  ) 4>&1 || exit_status=1
+  ) || exit_status=1
 }
 find_specfiles specfile "$@"
 
