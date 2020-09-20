@@ -1,6 +1,4 @@
-#shellcheck shell=sh
-
-: "${field_type:-} ${field_tag:-} ${field_color:-} ${field_temporary:-}"
+#shellcheck shell=sh disable=SC2154
 
 require_formatters methods conclusion finished summary references profiler
 [ "$SHELLSPEC_KCOV" ] && require_formatters kcov

@@ -1,12 +1,8 @@
-#shellcheck shell=sh
+#shellcheck shell=sh disable=SC2154
 
-: "${example_index:-} ${detail_index:-}"
-: "${field_specfile:-} ${field_lineno:-} ${field_color:-} ${field_type:-}"
-: "${field_tag:-} ${field_note:-} ${field_evaluation:-}"
-: "${field_message:-} ${field_failure_message:-} ${field_pending:-}"
-
-conclusion_evaluation=''
+conclusion_evaluation='' \
 conclusion_last_example_index='' conclusion_detail_index=''
+
 create_buffers conclusion
 
 conclusion_each() {
@@ -40,17 +36,31 @@ conclusion_each() {
       _label="${_indent}${example_index}.${conclusion_detail_index}) "
       padding _indent ' ' ${#_label}
 
-      _message="${field_note:+[}$field_note${field_note:+] }$field_message"
+      _message="${field_note}${field_note:+: }${field_message}"
       conclusion '+=' "${_label}${field_color}${_message}${RESET}${LF}${LF}"
 
       case $field_tag in (warn|bad)
         _message='' _before="  ${_indent}${field_color}" _after="${RESET}"
         wrap _message "$field_failure_message" "$_before" "$_after"
-        conclusion '+=' "${_message}${LF}"
+        [ "$_message" ] && conclusion '+=' "${_message}${LF}"
       esac
 
       conclusion '+=' "${_indent}${CYAN}#" \
         "${field_specfile}:${field_lineno}${RESET}${LF}${LF}"
+      ;;
+    error)
+      padding _indent ' ' ${#error_index}
+      _before="      ${_indent}${field_color}" _after="${RESET}"
+      conclusion '|=' "Examples:${LF}"
+
+      _message="${field_color}${field_note}${field_note:+: }${field_message}"
+      conclusion '+=' "  $error_index) ${_message}${RESET}${LF}${LF}"
+
+      wrap _message "$field_failure_message" "$_before" "$_after"
+      conclusion '+=' "${field_color}${_message}${RESET}${LF}"
+      conclusion '+=' "    ${_indent}${CYAN}#" \
+        "${field_specfile}:${field_lineno}${RESET}${LF}${LF}"
+      ;;
   esac
 }
 

@@ -200,6 +200,90 @@ Describe "core/hook.sh"
     End
   End
 
+  Describe 'shellspec_call_before_evaluation_hooks()'
+    Context 'when hooks are empty'
+      It 'does nothing if not exists before hooks'
+        When call shellspec_call_before_evaluation_hooks EXAMPLE
+        The stdout should be blank
+      End
+    End
+
+    Context 'when hooks are exists'
+      example_hooks() {
+        shellspec_register_before_hook EXAMPLE 'echo 1'
+        shellspec_register_before_hook EXAMPLE 'echo 2'
+        shellspec_register_before_hook EXAMPLE 'echo 3'
+      }
+
+      It 'calls hooks in registration order'
+        BeforeCall example_hooks
+        When call shellspec_call_before_evaluation_hooks EXAMPLE
+        The line 1 of stdout should equal 1
+        The line 2 of stdout should equal 2
+        The line 3 of stdout should equal 3
+      End
+    End
+
+    Context 'when an error occurs on the hook'
+      foo() { echo 1; return 123; }
+      example_hooks() {
+        shellspec_register_before_hook EXAMPLE 'foo'
+        shellspec_register_before_hook EXAMPLE 'echo 2'
+      }
+
+      It 'stops where an error occurs'
+        BeforeCall example_hooks
+        When call shellspec_call_before_evaluation_hooks EXAMPLE
+        The line 1 of stdout should equal 1
+        The line 2 of stdout should be undefined
+        The status should eq 123
+        The variable SHELLSPEC_HOOK_STATUS should eq 123
+      End
+    End
+  End
+
+  Describe 'shellspec_call_after_evaluation_hooks()'
+    Context 'when hooks are empty'
+      It 'does nothing if not exists after hooks'
+        When call shellspec_call_after_evaluation_hooks EXAMPLE
+        The stdout should be blank
+      End
+    End
+
+    Context 'when hooks are exists'
+      example_hooks() {
+        shellspec_register_after_hook EXAMPLE 'echo 1'
+        shellspec_register_after_hook EXAMPLE 'echo 2'
+        shellspec_register_after_hook EXAMPLE 'echo 3'
+      }
+
+      It 'calls hooks in reverse registration order'
+        BeforeCall example_hooks
+        When call shellspec_call_after_evaluation_hooks EXAMPLE
+        The line 1 of stdout should equal 3
+        The line 2 of stdout should equal 2
+        The line 3 of stdout should equal 1
+      End
+    End
+
+    Context 'when an error occurs on the hook'
+      foo() { echo 1; return 123; }
+      example_hooks() {
+        shellspec_register_after_hook EXAMPLE 'echo 1'
+        shellspec_register_after_hook EXAMPLE 'foo'
+      }
+
+      It 'stops where an error occurs'
+        BeforeCall example_hooks
+        When call shellspec_call_after_evaluation_hooks EXAMPLE
+        The line 1 of stdout should equal 1
+        The line 2 of stdout should be undefined
+        The status should eq 123
+        The variable SHELLSPEC_HOOK_STATUS should eq 123
+      End
+    End
+  End
+
   Describe 'shellspec_call_hook()'
     example_hooks() {
       shellspec_register_before_hook EXAMPLE cat

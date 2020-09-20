@@ -1,6 +1,4 @@
-#shellcheck shell=sh
-
-: "${field_type:-} ${field_tag:-} ${field_pending:-} ${field_color:-}"
+#shellcheck shell=sh disable=SC2154
 
 color_constants() {
   if [ "$1" ]; then
@@ -35,8 +33,8 @@ color_schema() {
         good      ) field_color=${GREEN} ;;
         warn      ) field_color=${YELLOW} ;;
         pending   ) field_color=${MAGENTA} ;;
-        bad       ) [ "$field_pending" ] && field_color=${YELLOW} || \
-                       field_color=${RED};;
+        bad       )
+          [ "$field_pending" ] && field_color=${YELLOW} || field_color=${RED} ;;
         *         ) field_color=${WHITE} ;;
       esac ;;
     result)
@@ -47,6 +45,9 @@ color_schema() {
         todo     ) field_color=${BOLD}${YELLOW} ;;
         fixed    ) field_color=${BOLD}${GREEN} ;;
         skipped  ) field_color=${BOLD}${MAGENTA} ;;
-      esac
+      esac ;;
+    error        )
+      # shellcheck disable=SC2034
+      field_color=${BOLD}${RED} ;;
   esac
 }

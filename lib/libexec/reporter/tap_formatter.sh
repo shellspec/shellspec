@@ -1,11 +1,7 @@
-#shellcheck shell=sh disable=SC2004
-
-: "${count_examples:-} ${aborted:-} ${example_count:-} ${reason:-}"
-: "${field_color:-} ${field_type:-} ${field_note:-} ${field_fail:-}"
-: "${field_description:-} ${field_message:-} ${field_tag:-} ${field_lineno:-}"
-: "${field_specfile:-} ${field_evaluation:-} ${field_failure_message:-}"
+#shellcheck shell=sh disable=SC2154
 
 tap_failures=''
+
 create_buffers tap
 
 tap_initialize() {
@@ -17,16 +13,21 @@ tap_begin() {
 }
 
 tap_each() {
-  _color=$field_color
+  _color=$field_color _failure_message=''
   case $field_type in
     statement)
       case $field_tag in (bad | warn)
         _failure_line="in specfile $field_specfile, line $field_lineno"
-        [ "${field_note}" ] && _failure_line="$_failure_line, $field_note"
-        tap_failures="${tap_failures}${_color}($_failure_line)${LF}"
-        tap_failures="${tap_failures}${_color}${field_evaluation}${LF}"
-        tap_failures="${tap_failures}${_color}${field_message}${LF}"
-        tap_failures="${tap_failures}${_color}${field_failure_message}${LF}"
+        [ "$field_note" ] && _failure_line="$_failure_line, $field_note"
+        tap_failures="${tap_failures}($_failure_line)${LF}"
+        if [ "$field_evaluation" ]; then
+          tap_failures="${tap_failures}${field_evaluation}${LF}"
+        fi
+        tap_failures="${tap_failures}${field_message}${LF}${LF}"
+        wrap _failure_message "${field_failure_message}" "  "
+        if [ "$_failure_message" ]; then
+          tap_failures="${tap_failures}${_failure_message}${LF}"
+        fi
       esac ;;
     result)
       case $field_note in
@@ -45,19 +46,27 @@ tap_each() {
       fi
       tap '+=' "${LF}"
       if [ "$tap_failures" ]; then
-        set -- "$tap_failures" ""
-        while [ "$1" ]; do
-          set -- "${1#*"${LF}"}" "$2${_color}# ${1%%"$LF"*}${RESET}${LF}"
-        done
-        tap '+=' "$2"
+        wrap _failures "$tap_failures" "${_color}# " "${RESET}"
+        tap '+=' "$_failures"
         tap_failures=''
-      fi
+      fi ;;
+    error)
+      _failure_line="in specfile $field_specfile, line $field_lineno"
+      [ "$field_note" ] && _failure_line="$_failure_line, $field_note"
+      wrap _failure_message "${field_failure_message}${LF}" "  "
+      _failures="($_failure_line)${LF}${field_message}${LF}${LF}"
+      wrap _failures "${_failures}${_failure_message}" "${_color}# " "${RESET}"
+      tap '=' "${_failures}"
   esac
 }
 
 tap_end() {
-  [ "$aborted" ] || return 0
-  tap '=' "${BOLD}${RED}Bail out!${RESET} Aborted by unexpected error.${LF}"
+  _bailout=''
+  [ "$error_count" ] && _bailout="Some errors occurred."
+  [ "$aborted" ] && _bailout="Aborted by unexpected errors."
+
+  [ "$_bailout" ] || return 0
+  tap '=' "${BOLD}${RED}Bail out!${RESET} ${_bailout}${LF}"
 }
 
 tap_output() {

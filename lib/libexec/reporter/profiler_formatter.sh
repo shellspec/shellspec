@@ -1,6 +1,4 @@
-#shellcheck shell=sh disable=SC2004
-
-: "${profiler_count:-} ${example_count:-}"
+#shellcheck shell=sh disable=SC2154
 
 profiler_output() {
   [ "$SHELLSPEC_PROFILER" ] || return 0
@@ -20,17 +18,15 @@ profiler_output() {
 
     while [ $_i -lt "$profiler_count" ]; do
       eval "putsn \$profiler_tick$_i \$profiler_time$_i \"\$profiler_line$_i\""
-      _i=$(($_i + 1))
+      inc _i
     done | profiler_reverse_sort | (
       _i=0
       #shellcheck disable=SC2034
       while IFS=" " read -r _tick _duration _line; do
         [ "$_i" -ge "$SHELLSPEC_PROFILER_LIMIT" ] && break
-        _i=$(($_i + 1))
-        while [ "${#_i}" -lt "${#SHELLSPEC_PROFILER_LIMIT}" ]; do
-          _i=" $_i"
-        done
-        putsn "${BOLD}${BLACK} $_i $_duration $_line${RESET}"
+        inc _i
+        padding _prefix ' ' $((${#SHELLSPEC_PROFILER_LIMIT} - ${#_i}))
+        putsn "${BOLD}${BLACK} ${_prefix}${_i} $_duration ${_line}${RESET}"
       done
     )
     putsn

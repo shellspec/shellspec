@@ -268,6 +268,7 @@ shellspec_padding_() {
 }
 
 shellspec_wrap() {
+  [ ! "$2" ] && eval "$1=" && return 0
   case $2 in
     *"$SHELLSPEC_LF") set -- "$1" "$2" "${3:-}" "${4:-}" "" "" ;;
     *) set -- "$1" "$2${SHELLSPEC_LF}" "${3:-}" "${4:-}" "" x ;;

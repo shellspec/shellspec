@@ -1,13 +1,11 @@
-#shellcheck shell=sh
-
-: "${aborted:-} ${coverage_failed:-}"
+#shellcheck shell=sh disable=SC2154
 
 create_buffers kcov
 
 kcov_end() {
-  _line='' _key='' _value='' _color=''
-  _percent_covered='' _covered_lines='' _total_lines=''
-  _percent_low='' _percent_high=''
+  _line='' _key='' _value='' _color='' \
+  _percent_covered='' _covered_lines='' _total_lines='' \
+  _percent_low='' _percent_high='' \
   _coverage="$SHELLSPEC_COVERAGE_DIR/$SHELLSPEC_KCOV_FILENAME/coverage.json"
   #shellcheck disable=SC2034
    _command='' _date=''
@@ -30,10 +28,11 @@ kcov_end() {
   _color=$RED
   [ "${_percent_covered%.*}" -ge "${_percent_low%.*}" ] && _color=$YELLOW
   [ "${_percent_covered%.*}" -ge "${_percent_high%.*}" ] && _color=$GREEN
+  # shellcheck disable=SC2034
   [ "$_color" = "$RED" ] && coverage_failed=1
 
   kcov '=' "$_color"
-  kcov '+='  "Code covered: ${_percent_covered}%, "
+  kcov '+=' "Code covered: ${_percent_covered}%, "
   kcov '+=' "Executed lines: ${_covered_lines}, "
   kcov '+=' "Instrumented lines: ${_total_lines}"
   kcov '+=' "${RESET}${LF}${LF}"
