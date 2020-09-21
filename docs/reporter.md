@@ -22,7 +22,7 @@
 | begin     | specfile                                                     |
 | example   | id, block_no, example_no, focused, description, lineno_range |
 | statement | tag, lineno, [statement type fields...]                      |
-| result    | [result type fields...]                                      |
+| result    | [result type fields...], trace                               |
 | end       |                                                              |
 | finished  |                                                              |
 | error     | lineno, note, message, failure_message                       |

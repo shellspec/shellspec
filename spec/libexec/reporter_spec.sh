@@ -395,13 +395,9 @@ Describe "libexec/reporter.sh"
       #|: @SHELLSPEC_XTRACE_OFF@
     End
 
-    Before field_specfile=specfilie field_lineno=1 field_evaluation=evaluation
     It "outputs trace data"
       When call output_trace
-      The line 1 should eq ""
-      The line 2 should eq "[specfilie:1] evaluation"
-      The line 3 should eq "trace1"
-      The lines of stdout should eq 3
+      The output should eq "trace1"
     End
   End
 

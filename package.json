@@ -85,6 +85,7 @@
     "lib/libexec/reporter/references_formatter.sh",
     "lib/libexec/reporter/summary_formatter.sh",
     "lib/libexec/reporter/tap_formatter.sh",
+    "lib/libexec/reporter/trace_formatter.sh",
     "lib/libexec/runner.sh",
     "lib/libexec/serial-executor.sh",
     "lib/libexec/shellspec.sh",
