@@ -1,5 +1,7 @@
 #shellcheck shell=sh disable=SC2154
 
+require_formatters profiler
+
 junit_testsuite=0 junit_tests=0 junit_failures=0 junit_skipped=0 \
 junit_tests_total=0 junit_failures_total=0 junit_system_error='' \
 junit_errors=0 junit_errors_total=0 junit_output="results_junit.xml"

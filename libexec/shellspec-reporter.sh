@@ -84,7 +84,6 @@ each_line() {
       [ "$field_example_no" -le "$last_example_no" ] && repetition=1 && return 0
       [ "$field_focused" = "focus" ] && found_focus=1
       example_index='' last_example_no=$field_example_no
-      eval "profiler_line$example_count=\$field_specfile:\$field_lineno_range"
       ;;
     statement)
       while :; do
@@ -138,8 +137,8 @@ each_line() {
       add_quick_data "$field_specfile:@$field_id" "$field_tag" "$field_quick"
       ;;
     end)
-      # field_example_count not provided with range or filter
-      : "${field_example_count:=$example_count_per_file}"
+      # field_example_count not provided when range or filter option specified
+      field_example_count=${field_example_count:-$example_count_per_file}
       expected_example_count=$(($expected_example_count + $field_example_count))
       if [ "$example_count_per_file" -ne "$field_example_count" ]; then
         not_enough_examples=${not_enough_examples:-0}
@@ -176,17 +175,6 @@ time_real='' time_user='' time_sys=''
   timeout 1 $!
 } 2>/dev/null &&:
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
-
-if [ -e "$SHELLSPEC_PROFILER_LOG" ]; then
-  mkdir -p "$SHELLSPEC_REPORTDIR"
-  sleep_wait [ ! -e "$SHELLSPEC_TMPBASE/profiler.done" ] ||:
-  callback() { eval "putsn \"\$5\" \"\${profiler_line$3:-0}\""; }
-  read -r profiler_tick_total < "${SHELLSPEC_PROFILER_LOG}.total"
-  # shellcheck disable=SC2031
-  read_profiler callback "$profiler_tick_total" "$time_real" \
-    < "$SHELLSPEC_PROFILER_LOG" \
-    > "$SHELLSPEC_REPORTDIR/$SHELLSPEC_PROFILER_REPORT"
-fi
 
 output_formatters end
 

@@ -4,6 +4,8 @@ tap_failures=''
 
 create_buffers tap
 
+require_formatters profiler
+
 tap_initialize() {
   count "$@"
 }
@@ -71,4 +73,5 @@ tap_end() {
 
 tap_output() {
   tap '>>>'
+  output "$1" profiler
 }
