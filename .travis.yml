@@ -52,7 +52,7 @@ jobs:
       env: FORMULAS="bash kcov" COVERAGE=1 CODECOV=1 CC=1
 before_install:
   - if [ "$PACKAGES" ]; then sudo apt-get install -y $PACKAGES; fi
-  - if [ "$FORMULAS" ]; then brew upgrade; brew install $FORMULAS; fi
+  - if [ "$FORMULAS" ]; then brew update; brew install $FORMULAS; fi
   - if [ "$CC" ]; then curl -sSL $CC_TEST_REPORTER_URL > ./cc-test-reporter; fi
   - if [ "$CC" ]; then chmod +x ./cc-test-reporter; fi
   - if [ "$CC" ]; then ./cc-test-reporter before-build; fi
