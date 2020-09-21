@@ -19,7 +19,7 @@ import "formatter"
 import "color_schema"
 color_constants "${SHELLSPEC_COLOR:-}"
 
-found_focus='' no_examples='' aborted=1 coverage_failed='' \
+found_focus='' no_examples='' aborted=1 repetition='' coverage_failed='' \
 fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-999999} reason='' \
 current_example_index=0 example_index='' \
 last_example_no='' last_skip_id='' not_enough_examples='' \
@@ -47,7 +47,7 @@ output_formatters begin
 parse_lines() {
   buf=''
   while IFS= read -r line || [ "$line" ]; do
-    [ "${fail_fast}${interrupt}" ] && break
+    [ "${fail_fast}${interrupt}${repetition}" ] && break
     case $line in
       $RS*) [ "$buf" ] && parse_fields "$buf"; buf=${line#?} ;;
       *) buf="$buf${buf:+$LF}${line}" ;;
@@ -81,12 +81,7 @@ each_line() {
     example)
       # shellcheck disable=SC2034
       field_evaluation='' field_pending='' reason='' temporary_skip=0
-      if [ "$field_example_no" -le "$last_example_no" ]; then
-        abort "${LF}Illegal executed the same example" \
-          "in ${field_specfile:-} line ${field_lineno_range:-}${LF}" \
-          "(Did you execute in a loop?" \
-          "Use 'parameterized example' if you want a loop)${LF}"
-      fi
+      [ "$field_example_no" -le "$last_example_no" ] && repetition=1 && return 0
       [ "$field_focused" = "focus" ] && found_focus=1
       example_index='' last_example_no=$field_example_no
       eval "profiler_line$example_count=\$field_specfile:\$field_lineno_range"
@@ -185,7 +180,7 @@ read_time_log "time" "$SHELLSPEC_TIME_LOG"
 if [ -e "$SHELLSPEC_PROFILER_LOG" ]; then
   mkdir -p "$SHELLSPEC_REPORTDIR"
   sleep_wait [ ! -e "$SHELLSPEC_TMPBASE/profiler.done" ] ||:
-  callback() { eval "putsn \"\$5\" \"\$profiler_line$3\""; }
+  callback() { eval "putsn \"\$5\" \"\${profiler_line$3:-0}\""; }
   read -r profiler_tick_total < "${SHELLSPEC_PROFILER_LOG}.total"
   # shellcheck disable=SC2031
   read_profiler callback "$profiler_tick_total" "$time_real" \
@@ -198,21 +193,28 @@ output_formatters end
 generators cleanup "$@"
 formatters finalize "$@"
 
-if [ "$aborted" ]; then
-  exit_status=1
+if [ "$repetition" ]; then
+  exit_status=$SHELLSPEC_SYNTAX_ERROR_CODE
 elif [ "$interrupt" ]; then
   exit_status=130
+elif [ "$aborted" ]; then
+  exit_status=1
 elif [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ] && [ "$example_count" -eq 0 ]; then
   #shellcheck disable=SC2034
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE no_examples=1
-elif [ "$not_enough_examples" ]; then
-  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 elif [ "$SHELLSPEC_FAIL_LOW_COVERAGE" ] && [ "$coverage_failed" ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
-elif [ "${failed_count}${error_count}" ]; then
+elif [ "${failed_count}${error_count}${not_enough_examples}" ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 else
   exit_status=0
+fi
+
+if [ "$repetition" ]; then
+  error "Illegal executed same example" \
+    "in ${field_specfile:-} line ${field_lineno_range:-}${LF}" \
+    '(Use a "parameterized example" instead of running the example in a loop)' \
+    "${LF}"
 fi
 
 if [ "${SHELLSPEC_FOCUS_FILTER:-}" ]; then

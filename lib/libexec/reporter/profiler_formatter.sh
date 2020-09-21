@@ -17,7 +17,7 @@ profiler_output() {
     puts "${RESET}"
 
     while [ $_i -lt "$profiler_count" ]; do
-      eval "putsn \$profiler_tick$_i \$profiler_time$_i \"\$profiler_line$_i\""
+      eval "putsn \$profiler_tick$_i \$profiler_time$_i \"\${profiler_line$_i:-}\""
       inc _i
     done | profiler_reverse_sort | (
       _i=0
