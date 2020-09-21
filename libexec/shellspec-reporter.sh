@@ -167,11 +167,19 @@ each_line() {
 }
 parse_lines
 
+time_real='' time_user='' time_sys=''
 {
-  ( trap - TERM ||:; sleep_wait [ ! -s "$SHELLSPEC_TIME_LOG" ] ) &
+  (
+    trap - TERM ||:
+    sleep_wait [ ! -s "$SHELLSPEC_TIME_LOG" ]
+    # shellcheck disable=SC2030
+    until [ "$time_real" ] && [ "$time_user" ] && [ "$time_sys" ]; do
+      sleep 0
+      read_time_log "time" "$SHELLSPEC_TIME_LOG"
+    done
+  ) &
   timeout 1 $!
 } 2>/dev/null &&:
-time_real=''
 read_time_log "time" "$SHELLSPEC_TIME_LOG"
 
 if [ -e "$SHELLSPEC_PROFILER_LOG" ]; then
@@ -179,6 +187,7 @@ if [ -e "$SHELLSPEC_PROFILER_LOG" ]; then
   sleep_wait [ ! -e "$SHELLSPEC_TMPBASE/profiler.done" ] ||:
   callback() { eval "putsn \"\$5\" \"\$profiler_line$3\""; }
   read -r profiler_tick_total < "${SHELLSPEC_PROFILER_LOG}.total"
+  # shellcheck disable=SC2031
   read_profiler callback "$profiler_tick_total" "$time_real" \
     < "$SHELLSPEC_PROFILER_LOG" \
     > "$SHELLSPEC_REPORTDIR/$SHELLSPEC_PROFILER_REPORT"
