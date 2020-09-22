@@ -3,9 +3,6 @@
 
 set -euf
 
-: "${SHELLSPEC_SPEC_FAILURE_CODE:=101}"
-: "${SHELLSPEC_FORMATTER:=debug}" "${SHELLSPEC_GENERATORS:=}"
-
 interrupt=''
 if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
 if (trap - TERM) 2>/dev/null; then trap '' TERM; fi
@@ -17,7 +14,7 @@ echo $$ > "$SHELLSPEC_TMPBASE/$SHELLSPEC_REPORTER_PID"
 
 import "formatter"
 import "color_schema"
-color_constants "${SHELLSPEC_COLOR:-}"
+color_constants
 
 found_focus='' no_examples='' aborted=1 repetition='' coverage_failed='' \
 fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-999999} reason='' \
@@ -37,7 +34,8 @@ init_quick_data
 
 [ "$SHELLSPEC_GENERATORS" ] && mkdir -p "$SHELLSPEC_REPORTDIR"
 
-load_formatter "$SHELLSPEC_FORMATTER" $SHELLSPEC_GENERATORS
+# shellcheck disable=SC2086
+load_formatter "${SHELLSPEC_FORMATTER:-debug}" $SHELLSPEC_GENERATORS
 
 formatters initialize "$@"
 generators prepare "$@"
@@ -50,22 +48,23 @@ parse_lines() {
   while IFS= read -r line || [ "$line" ]; do
     [ "${fail_fast}${interrupt}${repetition}" ] && break
     case $line in
-      $RS*) [ "$buf" ] && parse_fields "$buf"; buf=${line#?} ;;
+      $RS*) [ "$buf" ] && parse_fields "$1" "$buf"; buf=${line#?} ;;
       *) buf="$buf${buf:+$LF}${line}" ;;
     esac
   done
-  [ ! "$buf" ] || parse_fields "$buf"
+  [ ! "$buf" ] || parse_fields "$1" "$buf"
 }
 
 parse_fields() {
-  OLDIFS=$IFS && IFS=$US && eval "set -- \$1" && IFS=$OLDIFS
+  parse_callback=$1
+  OLDIFS=$IFS && IFS=$US && eval "set -- \$2" && IFS=$OLDIFS
 
   # Workaround: Do not merge two 'for'. A bug occurs in variable expansion
   # rarely in busybox-1.10.2.
   for field; do eval "field_${field%%:*}=\"\${field#*:}\""; done
   for field; do set -- "$@" "${field%%:*}" && shift; done
 
-  parse_line "$@"
+  parse_line "$parse_callback" "$@"
 }
 
 parse_line() {
@@ -107,7 +106,7 @@ parse_line() {
             case $SHELLSPEC_SKIP_MESSAGE in (quiet)
               [ "$field_temporary" ] || break
             esac
-            case $SHELLSPEC_SKIP_MESSAGE in (moderate|quiet)
+            case $SHELLSPEC_SKIP_MESSAGE in (moderate | quiet)
               [ ! "$field_skipid" = "$last_skip_id" ] || break
               last_skip_id=$field_skipid
             esac
@@ -134,8 +133,6 @@ parse_line() {
       case $field_tag in (skipped | fixed | todo)
         [ "$example_index" ] || inc "suppressed_${field_tag}_count"
       esac
-
-      add_quick_data "$field_specfile:@$field_id" "$field_tag" "$field_quick"
       ;;
     end)
       # field_example_count not provided when range or filter option specified
@@ -151,13 +148,24 @@ parse_line() {
       inc error_count error_count_per_file
       base26 error_index "$error_count"
       ;;
-    finished) aborted=''
+    finished)
+      aborted=''
+      if [ "$SHELLSPEC_FAIL_NO_EXAMPLES" ]; then
+        [ "$example_count" -gt 0 ] || no_examples=1
+      fi
   esac
 
+  "$@"
+}
+
+parse_callback() {
+  case $field_type in (result)
+    add_quick_data "$field_specfile:@$field_id" "$field_tag" "$field_quick"
+  esac
   color_schema
   output_formatters each "$@"
 }
-parse_lines
+parse_lines parse_callback
 
 time_real='' time_user='' time_sys=''
 {
@@ -180,33 +188,15 @@ generators cleanup "$@"
 formatters finalize "$@"
 
 if [ "$repetition" ]; then
-  exit_status=$SHELLSPEC_SYNTAX_ERROR_CODE
-elif [ "$interrupt" ]; then
-  exit_status=130
-elif [ "$aborted" ]; then
-  exit_status=1
-elif [ "${SHELLSPEC_FAIL_NO_EXAMPLES:-}" ] && [ "$example_count" -eq 0 ]; then
-  #shellcheck disable=SC2034
-  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE no_examples=1
-elif [ "$SHELLSPEC_FAIL_LOW_COVERAGE" ] && [ "$coverage_failed" ]; then
-  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
-elif [ "${failed_count}${error_count}${not_enough_examples}" ]; then
-  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
-else
-  exit_status=0
-fi
-
-if [ "$repetition" ]; then
   error "Illegal executed same example" \
     "in ${field_specfile:-} line ${field_lineno_range:-}${LF}" \
-    '(Use a "parameterized example" instead of running the example in a loop)' \
-    "${LF}"
+    "(Use 'parameterized example' instead of running the example in a loop)$LF"
 fi
 
 if [ "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
   if [ ! "$found_focus" ]; then
     info "You specified --focus option, but not found any focused examples."
-    info "To focus, prepend 'f' to groups / examples (e.g. fDescribe, fIt).$LF"
+    info "To focus, prepend 'f' to groups / examples. (e.g. fDescribe, fIt)$LF"
   fi
 else
   if [ "$found_focus" ]; then
@@ -241,6 +231,22 @@ if [ -e "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE" ]; then
   else
     info "Found $deprecated. Show more details with --show-deprecations."
   fi
+fi
+
+if [ "$repetition" ]; then
+  exit_status=$SHELLSPEC_SYNTAX_ERROR_CODE
+elif [ "$interrupt" ]; then
+  exit_status=130
+elif [ "$aborted" ]; then
+  exit_status=1
+elif [ "$SHELLSPEC_FAIL_LOW_COVERAGE" ] && [ "$coverage_failed" ]; then
+  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+elif [ "${failed_count}${error_count}" ]; then
+  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+elif [ "${not_enough_examples}${no_examples}" ]; then
+  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+else
+  exit_status=0
 fi
 
 exit "$exit_status"

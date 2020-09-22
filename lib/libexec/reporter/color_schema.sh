@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2154
 
 color_constants() {
-  if [ "$1" ]; then
+  if [ "$SHELLSPEC_COLOR" ]; then
     callback() { eval "$1"; }
   else
     callback() { eval "${1%%=*}=''"; }
