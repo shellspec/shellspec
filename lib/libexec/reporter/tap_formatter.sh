@@ -1,17 +1,17 @@
 #shellcheck shell=sh disable=SC2154
 
-tap_failures=''
+tap_failures='' tap_plan=0
 
 create_buffers tap
 
 require_formatters profiler
 
 tap_initialize() {
-  count "$@"
+  count_examples tap_plan "$@"
 }
 
 tap_begin() {
-  tap '=' "${WHITE}1..${count_examples}${LF}"
+  tap '=' "${WHITE}1..${tap_plan}${LF}"
 }
 
 tap_each() {

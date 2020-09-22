@@ -1,19 +1,15 @@
 #shellcheck shell=sh disable=SC2004
 
-: "${count_specfiles:-} ${count_examples:-} ${done:-}"
-
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use import constants sequence replace_all each padding trim wrap
 use is_empty_file pluralize exists_file
 
-count() {
-  count_specfiles=0 count_examples=0
-  IFS=" $IFS"
+count_examples() {
+  set -- "$SHELLSPEC_LIBEXEC/shellspec-list.sh" "$@"
   #shellcheck shell=sh disable=SC2046
-  set -- $($SHELLSPEC_SHELL "$SHELLSPEC_LIBEXEC/shellspec-list.sh" "$@")
-  IFS=${IFS#?}
-  count_specfiles=$1 count_examples=$2
+  set -- "$2" "$(script=$1; shift 2; $SHELLSPEC_SHELL "$script" "$@")"
+  eval "$1=\${2#* }"
 }
 
 # $1: prefix, $2: filename

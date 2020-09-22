@@ -6,14 +6,22 @@
 Describe "libexec/reporter.sh"
   Include "$SHELLSPEC_LIB/libexec/reporter.sh"
 
-  Describe "count()"
-    fake_list() { echo '10 100'; }
+  Describe "count_examples()"
+    # shellcheck disable=SC2034
+    fake_list() {
+      script="${1##*/}"
+      shift
+      IFS=:
+      files="$*"
+      echo '10 100'
+      %preserve script files
+    }
     Before SHELLSPEC_SHELL="fake_list"
-
     It 'counts examples'
-      When call count spec
-      The variable count_specfiles should eq 10
-      The variable count_examples should eq 100
+      When call count_examples example_count file1_spec.sh file2_spec.sh
+      The variable example_count should eq 100
+      The variable script should eq "shellspec-list.sh"
+      The variable files should eq "file1_spec.sh:file2_spec.sh"
     End
   End
 
