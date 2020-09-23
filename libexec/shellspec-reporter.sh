@@ -217,19 +217,15 @@ if [ -e "$SHELLSPEC_QUICK_FILE" ] && [ ! "$interrupt" ]; then
 fi
 
 if [ -e "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE" ]; then
-  deprecated_count=0
-  while IFS= read -r deprecated; do
-    [ "$SHELLSPEC_DEPRECATION_LOG" ] && info "$deprecated"
-    inc deprecated_count
+  count=0 found='Found '
+  while IFS= read -r line && inc count; do
+    [ "$SHELLSPEC_DEPRECATION_LOG" ] && info "$line"
   done < "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE"
-  deprecated="$deprecated_count deprecated syntax"
-  [ "$deprecated_count" -ne 1 ] && deprecated="${deprecated}es"
+  pluralize found "$count deprecation"
   if [ "$SHELLSPEC_DEPRECATION_LOG" ]; then
-    info "Found $deprecated. Please replace to the new syntax." \
-      "It will be obsolete in the future."
-    info "This message can be reduced with --hide-deprecations."
+    info "$found. Use --hide-deprecations to hide the details."
   else
-    info "Found $deprecated. Show more details with --show-deprecations."
+    info "$found. Use --show-deprecations to show the details."
   fi
 fi
 
