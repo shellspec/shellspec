@@ -206,7 +206,7 @@ shellspec_clone_old_zsh() {
 
 # ksh < 93u
 shellspec_clone_old_ksh() {
- shellspec_clone_typeset +p | while IFS= read -r shellspec_clone; do
+  shellspec_clone_typeset +p | while IFS= read -r shellspec_clone; do
     [ ! "${shellspec_clone##* }" = "$1" ] && continue
     print -r -- "${shellspec_clone%\ "$1"} $2"
     break

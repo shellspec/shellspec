@@ -9,19 +9,19 @@ Describe "libexec/reporter.sh"
   Describe "count_examples()"
     # shellcheck disable=SC2034
     fake_list() {
-      script="${1##*/}"
+      SCRIPT="${1##*/}"
       shift
       IFS=:
-      files="$*"
+      SPECFILES="$*"
       echo '10 100'
-      %preserve script files
+      %preserve SCRIPT SPECFILES
     }
     Before SHELLSPEC_SHELL="fake_list"
     It 'counts examples'
       When call count_examples example_count file1_spec.sh file2_spec.sh
       The variable example_count should eq 100
-      The variable script should eq "shellspec-list.sh"
-      The variable files should eq "file1_spec.sh:file2_spec.sh"
+      The variable SCRIPT should eq "shellspec-list.sh"
+      The variable SPECFILES should eq "file1_spec.sh:file2_spec.sh"
     End
   End
 
