@@ -167,20 +167,12 @@ parse_callback() {
 }
 parse_lines parse_callback
 
-time_real='' time_user='' time_sys=''
 {
-  (
-    trap - TERM ||:
-    sleep_wait [ ! -s "$SHELLSPEC_TIME_LOG" ]
-    # shellcheck disable=SC2030
-    until [ "$time_real" ] && [ "$time_user" ] && [ "$time_sys" ]; do
-      sleep 0
-      read_time_log "time" "$SHELLSPEC_TIME_LOG"
-    done
-  ) &
-  timeout 1 $!
+  ( trap - TERM ||:
+    until read_time_log "time" "$SHELLSPEC_TIME_LOG"; do sleep 0; done
+  ) & timeout 1 $!
 } 2>/dev/null &&:
-read_time_log "time" "$SHELLSPEC_TIME_LOG"
+read_time_log "time" "$SHELLSPEC_TIME_LOG" ||:
 
 output_formatters end
 

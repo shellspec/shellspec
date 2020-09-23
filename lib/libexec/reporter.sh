@@ -14,7 +14,8 @@ count_examples() {
 
 # $1: prefix, $2: filename
 read_time_log() {
-  [ -r "$2" ] || return 0
+  eval "$1_real='' $1_user='' $1_sys=''"
+  [ -r "$2" ] || return 1
   # shellcheck disable=SC2034
   while IFS= read -r line; do
     case $line in (real[\ $TAB]*|user[\ $TAB]*|sys[\ $TAB]*)
@@ -22,6 +23,7 @@ read_time_log() {
       eval "$1_${line%%[ $TAB]*}=\"\${line##*[ \$TAB]}\""
     esac
   done < "$2" &&:
+  eval "[ \"\$$1_real\" ] && [ \"\$$1_user\" ] && [ \"\$$1_sys\" ]"
 }
 
 field_description() {
