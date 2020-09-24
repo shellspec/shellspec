@@ -166,13 +166,11 @@ shellspec_puts "\\" &&:
 case $? in
   0 | 9)
     # Use built-in or external 'printf'.
-    : && { # Workaround for busybox 1.10.2. somehow it works with this.
-      shellspec_puts() {
-        IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s' "${*:-}"; IFS=${IFS#?}
-      }
-      shellspec_putsn() {
-        IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s\n' "${*:-}"; IFS=${IFS#?}
-      }
+    shellspec_puts() {
+      IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s' "${*:-}"; IFS=${IFS#?}
+    }
+    shellspec_putsn() {
+      IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s\n' "${*:-}"; IFS=${IFS#?}
     }
     ;;
   1)
@@ -412,9 +410,7 @@ case $? in
     # POSIX version (POSIX compliant)
     # ash(busybox)>=1.1.3, bash>=2.05b, dash>=0.5.2, ksh>=93q, mksh>=40
     # yash>=2.30?, zsh>=3.1.9?, pdksh=none, posh=none, bosh>=2020/04/27
-    shellspec_replace_all() { shellspec_replace_all_ "$@"; }
-    # Workaround for busybox <= 1.10.2, dash 0.5.3, ksh 93q (Heisenbug)
-    shellspec_replace_all_() { shellspec_replace_all_posix "$@"; }
+    shellspec_replace_all() { shellspec_replace_all_posix "$@"; }
     shellspec_includes() { shellspec_includes_posix "$@"; }
     shellspec_starts_with() { shellspec_starts_with_posix "$@"; }
     shellspec_ends_with() { shellspec_ends_with_posix "$@"; }
