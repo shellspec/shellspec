@@ -7,9 +7,7 @@ shellspec_modifier_contents() {
   # shellcheck disable=SC2034
   SHELLSPEC_META='text'
   if [ "${SHELLSPEC_SUBJECT+x}" ] && [ -e "${SHELLSPEC_SUBJECT:-}" ]; then
-    shellspec_readfile SHELLSPEC_SUBJECT "$SHELLSPEC_SUBJECT"
-    SHELLSPEC_SUBJECT=$SHELLSPEC_SUBJECT
-    shellspec_chomp SHELLSPEC_SUBJECT
+    shellspec_capturefile SHELLSPEC_SUBJECT "$SHELLSPEC_SUBJECT"
   else
     unset SHELLSPEC_SUBJECT ||:
   fi

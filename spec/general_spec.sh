@@ -567,6 +567,13 @@ Describe "general.sh"
     End
   End
 
+  Describe 'shellspec_capturefile()'
+    It 'reads the file without trailing LF'
+      When call shellspec_capturefile var "$FIXTURE/end-with-multiple-lf.txt"
+      The variable var should equal "a"
+    End
+  End
+
   Describe "shellspec_trim()"
     It 'trims white space'
       When call shellspec_trim value " $IFS abc $IFS "

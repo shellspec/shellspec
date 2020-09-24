@@ -105,8 +105,7 @@ shellspec_output_ASSERT_ERROR() {
 }
 
 shellspec_output_BEFORE_ALL_ERROR() {
-  shellspec_readfile SHELLSPEC_BEFORE_ALL_ERROR "$SHELLSPEC_ERROR_FILE"
-  shellspec_chomp SHELLSPEC_BEFORE_ALL_ERROR
+  shellspec_capturefile SHELLSPEC_BEFORE_ALL_ERROR "$SHELLSPEC_ERROR_FILE"
   set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_BEFORE_ALL_ERROR" \
     "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
   shellspec_output_error "note:ERROR" "lineno:$SHELLSPEC_HOOK_LINENO" \
@@ -115,8 +114,7 @@ shellspec_output_BEFORE_ALL_ERROR() {
 }
 
 shellspec_output_AFTER_ALL_ERROR() {
-  shellspec_readfile SHELLSPEC_AFTER_ALL_ERROR "$SHELLSPEC_ERROR_FILE"
-  shellspec_chomp SHELLSPEC_AFTER_ALL_ERROR
+  shellspec_capturefile SHELLSPEC_AFTER_ALL_ERROR "$SHELLSPEC_ERROR_FILE"
   set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_AFTER_ALL_ERROR" \
     "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
   shellspec_output_error "note:ERROR" "lineno:$SHELLSPEC_HOOK_LINENO" \
@@ -125,8 +123,7 @@ shellspec_output_AFTER_ALL_ERROR() {
 }
 
 shellspec_output_BEFORE_EACH_ERROR() {
-  shellspec_readfile SHELLSPEC_BEFORE_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
-  shellspec_chomp SHELLSPEC_BEFORE_EACH_ERROR
+  shellspec_capturefile SHELLSPEC_BEFORE_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
   set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_BEFORE_EACH_ERROR" \
     "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
@@ -136,8 +133,7 @@ shellspec_output_BEFORE_EACH_ERROR() {
 }
 
 shellspec_output_AFTER_EACH_ERROR() {
-  shellspec_readfile SHELLSPEC_AFTER_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
-  shellspec_chomp SHELLSPEC_AFTER_EACH_ERROR
+  shellspec_capturefile SHELLSPEC_AFTER_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
   set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_AFTER_EACH_ERROR" \
     "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
@@ -233,7 +229,7 @@ shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
 }
 
 shellspec_output_RESULT_WARN() {
-  shellspec_readfile SHELLSPEC_RESULT_ERROR "$2"
+  shellspec_capturefile SHELLSPEC_RESULT_ERROR "$2"
   set -- "Unexpected output to stderr occurred in result modifier " \
     "(exit status: $1)${SHELLSPEC_LF}${SHELLSPEC_RESULT_ERROR}${SHELLSPEC_LF}"
   shellspec_output_statement "tag:warn" "note:WARNING" \
@@ -242,7 +238,7 @@ shellspec_output_RESULT_WARN() {
 }
 
 shellspec_output_SATISFY_WARN() {
-  shellspec_readfile SHELLSPEC_SATISFY_WARN "$2"
+  shellspec_capturefile SHELLSPEC_SATISFY_WARN "$2"
   set -- "Unexpected output to stderr occurred in satisfy matcher " \
     "(exit status: $1)${SHELLSPEC_LF}${SHELLSPEC_SATISFY_WARN}${SHELLSPEC_LF}"
   shellspec_output_statement "tag:warn" "note:WARNING" \
@@ -253,8 +249,7 @@ shellspec_output_SATISFY_WARN() {
 shellspec_output_ABORTED() {
   set -- "$1" "$2" ""
   if [ -e "$2" ]; then
-    shellspec_readfile SHELLSPEC_ABORTED "$2"
-    shellspec_chomp SHELLSPEC_ABORTED
+    shellspec_capturefile SHELLSPEC_ABORTED "$2"
     set -- "$1" "$2" "${SHELLSPEC_ABORTED}${SHELLSPEC_ABORTED:+$SHELLSPEC_LF}"
   fi
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
@@ -263,8 +258,7 @@ shellspec_output_ABORTED() {
 }
 
 shellspec_output_LEAK() {
-  shellspec_readfile SHELLSPEC_LEAK "$1"
-  shellspec_chomp SHELLSPEC_LEAK
+  shellspec_capturefile SHELLSPEC_LEAK "$1"
   # shellcheck disable=SC2034
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:bad" "note:" "fail:y" \

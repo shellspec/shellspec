@@ -16,8 +16,7 @@ shellspec_modifier_result() {
 
     shellspec_off UNHANDLED_STDOUT UNHANDLED_STDERR UNHANDLED_STATUS
     if shellspec_modifier_result_invoke; then
-      shellspec_readfile SHELLSPEC_SUBJECT "$SHELLSPEC_RESULT_STDOUT_FILE"
-      shellspec_chomp SHELLSPEC_SUBJECT
+      shellspec_capturefile SHELLSPEC_SUBJECT "$SHELLSPEC_RESULT_STDOUT_FILE"
     else
       unset SHELLSPEC_SUBJECT ||:
     fi

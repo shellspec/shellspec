@@ -288,6 +288,11 @@ shellspec_readfile() {
   eval "$1=\"\$3\${$1}\""
 }
 
+shellspec_capturefile() {
+  shellspec_readfile "$@"
+  shellspec_chomp "$@"
+}
+
 shellspec_trim() {
   SHELLSPEC_EVAL="
     $1=\${2:-}; [ \"\$$1\" ] || return 0; \
