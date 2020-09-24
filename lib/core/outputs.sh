@@ -251,15 +251,20 @@ shellspec_output_SATISFY_WARN() {
 }
 
 shellspec_output_ABORTED() {
-  shellspec_readfile SHELLSPEC_ABORTED "$2"
-  set -- "$1" "$SHELLSPEC_ABORTED${SHELLSPEC_LF}"
+  set -- "$1" "$2" ""
+  if [ -e "$2" ]; then
+    shellspec_readfile SHELLSPEC_ABORTED "$2"
+    shellspec_chomp SHELLSPEC_ABORTED
+    set -- "$1" "$2" "${SHELLSPEC_ABORTED}${SHELLSPEC_ABORTED:+$SHELLSPEC_LF}"
+  fi
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:Example aborted (exit status: $1)" "failure_message:${2:-}"
+    "message:Example aborted (exit status: $1)" "failure_message:$3"
 }
 
 shellspec_output_LEAK() {
   shellspec_readfile SHELLSPEC_LEAK "$1"
+  shellspec_chomp SHELLSPEC_LEAK
   # shellcheck disable=SC2034
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:bad" "note:" "fail:y" \

@@ -182,9 +182,10 @@ shellspec_example() {
       *) shellspec_invoke_example "$@" 3>&2 ;;
     esac
   )
-  set "$1" -- $? "$@"
+  set "$1" -- $? "$SHELLSPEC_LEAK_FILE"
   if [ "$1" -ne 0 ]; then
-    shellspec_output ABORTED "$1" "$SHELLSPEC_LEAK_FILE"
+    [ -s "$2" ] || set -- "$1" "$SHELLSPEC_STDERR_FILE"
+    shellspec_output ABORTED "$@"
     shellspec_output FAILED
   fi
   shellspec_profile_end
