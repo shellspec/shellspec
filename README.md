@@ -18,7 +18,7 @@ ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh,
 
 [![bash](https://img.shields.io/badge/bash-&ge;2.03-lightgrey.svg?style=flat)](https://www.gnu.org/software/bash/)
 [![bosh](https://img.shields.io/badge/bosh-&ge;2018%2F10%2F07-lightgrey.svg?style=flat)](http://schilytools.sourceforge.net/bosh.html)
-[![busybox](https://img.shields.io/badge/busybox-&ge;1.10.2-lightgrey.svg?style=flat)](https://www.busybox.net/)
+[![busybox](https://img.shields.io/badge/busybox-&ge;1.20.0-lightgrey.svg?style=flat)](https://www.busybox.net/)
 [![dash](https://img.shields.io/badge/dash-&ge;0.5.4-lightgrey.svg?style=flat)](http://gondor.apana.org.au/~herbert/dash/)
 [![ksh](https://img.shields.io/badge/ksh-&ge;93s-lightgrey.svg?style=flat)](http://kornshell.org)
 [![mksh](https://img.shields.io/badge/mksh-&ge;R28-lightgrey.svg?style=flat)](http://www.mirbsd.org/mksh.htm)
@@ -28,7 +28,7 @@ ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh,
 
 ----
 
-**Thank you for your interest in ShellSpec. Please visit [the official website](https://shellspec.info/) to know the impressive features!**
+**Thank you for your interest in ShellSpec. Please visit 🚩[the official website](https://shellspec.info/) to know the impressive features!**
 
 Let's have fun testing your shell scripts! (Try [Online Demo](https://shellspec.info/demo) on your browser).
 
@@ -119,7 +119,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 ### Supported shells and platforms <!-- omit in toc -->
 
 - <code>[bash][bash]</code>_>=2.03_, <code>[bosh/pbosh][bosh]</code>_>=2018/10/07_, <code>[posh][posh]</code>_>=0.3.14_, <code>[yash][yash]</code>_>=2.29_, <code>[zsh][zsh]</code>_>=3.1.9_
-- <code>[dash][dash]</code>_>=0.5.4_, <code>[busybox][busybox] ash</code>_>=1.10.2_, <code>[busybox-w32][busybox-w32]</code>, <code>[GWSH][gwsh]</code>_>=20190627_
+- <code>[dash][dash]</code>_>=0.5.4_, <code>[busybox][busybox] ash</code>_>=1.20.0_, <code>[busybox-w32][busybox-w32]</code>, <code>[GWSH][gwsh]</code>_>=20190627_
 - <code>ksh88</code>, <code>[ksh93][ksh93]</code>_>=93s_, <code>[ksh2020][ksh2020]</code>, <code>[mksh/lksh][mksh]</code>_>=R28_, <code>[pdksh][pdksh]</code>_>=5.2.14_
 - <code>[FreeBSD sh][freebsdsh]</code>, <code>[NetBSD sh][netbsdsh]</code>, <code>[OpenBSD ksh][openbsdksh]</code>, <code>[loksh][loksh]</code>, <code>[oksh][oksh]</code>
 
@@ -183,6 +183,8 @@ or
 ```sh
 wget -O- https://git.io/shellspec | sh
 ```
+
+NOTE: `https://git.io/shellspec` is redirected to `https://github.com/shellspec/shellspec/raw/master/install.sh`
 
 <details>
 <summary>Advanced installation / upgrade / uninstall</summary>

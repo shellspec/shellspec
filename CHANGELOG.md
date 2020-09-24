@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Drop support for dash 0.5.3 due to unstable bug.
+- Drop support for busybox < 1.20.0 due to unstable bug.
 
 ### Fixed
 
