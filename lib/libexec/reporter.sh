@@ -180,3 +180,33 @@ base_() {
 base26() {
   base "$1" "$2" a b c d e f g h i j k l m n o p q r s t u v w x y z
 }
+
+tssv_parse() {
+  set -- "$1" "$2" "$US"
+  tssv_buf=''
+  while IFS= read -r tssv_line || [ "$tssv_line" ]; do
+    case $tssv_line in
+      $RS*)
+        if [ "$tssv_buf" ]; then
+          tssv_fields "$@" "$tssv_buf" || return $?
+        fi
+        tssv_buf=${tssv_line#?}
+        ;;
+      *) tssv_buf="$tssv_buf${tssv_buf:+$LF}${tssv_line}"
+    esac
+  done
+  [ ! "$tssv_buf" ] || tssv_fields "$@" "$tssv_buf"
+}
+
+tssv_fields() {
+  tssv_prefix=$1 tssv_callback=$2
+  tssv_oldifs=$IFS && IFS=$3 && eval "set -- \$4" && IFS=$tssv_oldifs
+
+  for tssv_field; do
+    eval "${tssv_prefix}_${tssv_field%%:*}=\${tssv_field#*:}"
+    set -- "$@" "${tssv_field%%:*}"
+    shift
+  done
+
+  "$tssv_callback" "$@"
+}

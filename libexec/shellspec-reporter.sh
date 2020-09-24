@@ -43,36 +43,6 @@ generators prepare "$@"
 
 output_formatters begin
 
-tssv_parse() {
-  set -- "$1" "$2" "$US"
-  tssv_buf=''
-  while IFS= read -r tssv_line || [ "$tssv_line" ]; do
-    case $tssv_line in
-      $RS*)
-        if [ "$tssv_buf" ]; then
-          tssv_fields "$@" "$tssv_buf" || return $?
-        fi
-        tssv_buf=${tssv_line#?}
-        ;;
-      *) tssv_buf="$tssv_buf${tssv_buf:+$LF}${tssv_line}"
-    esac
-  done
-  [ ! "$tssv_buf" ] || tssv_fields "$@" "$tssv_buf"
-}
-
-tssv_fields() {
-  tssv_prefix=$1 tssv_callback=$2
-  tssv_oldifs=$IFS && IFS=$3 && eval "set -- \$4" && IFS=$tssv_oldifs
-
-  for tssv_field; do
-    eval "${tssv_prefix}_${tssv_field%%:*}=\${tssv_field#*:}"
-    set -- "$@" "${tssv_field%%:*}"
-    shift
-  done
-
-  "$tssv_callback" "$@"
-}
-
 reporter_callback() {
   case $field_type in
     begin)
@@ -139,6 +109,8 @@ reporter_callback() {
       case $field_tag in (skipped | fixed | todo)
         [ "$example_index" ] || inc "suppressed_${field_tag}_count"
       esac
+
+      add_quick_data "$field_specfile:@$field_id" "$field_tag" "$field_quick"
       ;;
     end)
       # field_example_count not provided when range or filter option specified
@@ -161,14 +133,10 @@ reporter_callback() {
       fi
   esac
 
-  case $field_type in (result)
-    add_quick_data "$field_specfile:@$field_id" "$field_tag" "$field_quick"
-  esac
   color_schema
   output_formatters each "$@"
 
-  [ "${fail_fast}${interrupt}${repetition}" ] && return 1
-  return 0
+  [ ! "${fail_fast}${interrupt}${repetition}" ]
 }
 
 tssv_parse "field" reporter_callback ||:

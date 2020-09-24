@@ -415,4 +415,47 @@ Describe "libexec/reporter.sh"
       The variable ret should eq "aaa"
     End
   End
+
+  Describe "tssv_parse()"
+    # shellcheck disable=SC2034
+    RS=$SHELLSPEC_RS US=$SHELLSPEC_US
+
+    Data:expand
+      #|${RS}field1:a${US}field2:b${US}field3:c
+      #|${RS}field1:A${US}field2:B${US}field3:C
+      #|C'
+      #|${RS}field1:1${US}field2:2${US}field3:3
+    End
+
+    init() {
+      count=0 prefix_field1='' prefix_field2='' prefix_field3=''
+    }
+
+    callback() {
+      echo "$prefix_field1 $prefix_field2 $prefix_field3" ":" "$@"
+      count=$(($count + 1))
+    }
+
+    Before init
+
+    It "parses tagged separator separated values"
+      When call tssv_parse "prefix" callback
+      The line 1 should eq "a b c : field1 field2 field3"
+      The line 2 should eq "A B C"
+      The line 3 should eq "C' : field1 field2 field3"
+      The line 4 should eq "1 2 3 : field1 field2 field3"
+      The variable count should eq 3
+    End
+
+    It "can stop parsing"
+      callback2() { [ "$count" -eq 1 ] && return 12; callback "$@"; }
+      When call tssv_parse "prefix" callback2
+      The line 1 should eq "a b c : field1 field2 field3"
+      The line 2 should be undefined
+      The line 3 should be undefined
+      The line 4 should be undefined
+      The variable count should eq 1
+      The status should eq 12
+    End
+  End
 End
