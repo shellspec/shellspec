@@ -43,31 +43,37 @@ generators prepare "$@"
 
 output_formatters begin
 
-parse_lines() {
-  buf=''
-  while IFS= read -r line || [ "$line" ]; do
-    [ "${fail_fast}${interrupt}${repetition}" ] && break
-    case $line in
-      $RS*) [ "$buf" ] && parse_fields "$1" "$buf"; buf=${line#?} ;;
-      *) buf="$buf${buf:+$LF}${line}" ;;
+tssv_parse() {
+  set -- "$1" "$2" "$US"
+  tssv_buf=''
+  while IFS= read -r tssv_line || [ "$tssv_line" ]; do
+    case $tssv_line in
+      $RS*)
+        if [ "$tssv_buf" ]; then
+          tssv_fields "$@" "$tssv_buf" || return $?
+        fi
+        tssv_buf=${tssv_line#?}
+        ;;
+      *) tssv_buf="$tssv_buf${tssv_buf:+$LF}${tssv_line}"
     esac
   done
-  [ ! "$buf" ] || parse_fields "$1" "$buf"
+  [ ! "$tssv_buf" ] || tssv_fields "$@" "$tssv_buf"
 }
 
-parse_fields() {
-  parse_callback=$1
-  OLDIFS=$IFS && IFS=$US && eval "set -- \$2" && IFS=$OLDIFS
+tssv_fields() {
+  tssv_prefix=$1 tssv_callback=$2
+  tssv_oldifs=$IFS && IFS=$3 && eval "set -- \$4" && IFS=$tssv_oldifs
 
-  # Workaround: Do not merge two 'for'. A bug occurs in variable expansion
-  # rarely in busybox-1.10.2.
-  for field; do eval "field_${field%%:*}=\"\${field#*:}\""; done
-  for field; do set -- "$@" "${field%%:*}" && shift; done
+  for tssv_field; do
+    eval "${tssv_prefix}_${tssv_field%%:*}=\${tssv_field#*:}"
+    set -- "$@" "${tssv_field%%:*}"
+    shift
+  done
 
-  parse_line "$parse_callback" "$@"
+  "$tssv_callback" "$@"
 }
 
-parse_line() {
+reporter_callback() {
   case $field_type in
     begin)
       field_example_count='' last_example_no=0 \
@@ -155,17 +161,17 @@ parse_line() {
       fi
   esac
 
-  "$@"
-}
-
-parse_callback() {
   case $field_type in (result)
     add_quick_data "$field_specfile:@$field_id" "$field_tag" "$field_quick"
   esac
   color_schema
   output_formatters each "$@"
+
+  [ "${fail_fast}${interrupt}${repetition}" ] && return 1
+  return 0
 }
-parse_lines parse_callback
+
+tssv_parse "field" reporter_callback ||:
 
 {
   ( trap - TERM ||:
