@@ -142,9 +142,8 @@ reporter_callback() {
 tssv_parse "field" reporter_callback ||:
 
 {
-  ( trap - TERM ||:
-    until read_time_log "time" "$SHELLSPEC_TIME_LOG"; do sleep 0; done
-  ) & timeout 1 $!
+  ( until read_time_log "time" "$SHELLSPEC_TIME_LOG"; do sleep 0; done ) &
+  timeout 1 $!
 } 2>/dev/null &&:
 read_time_log "time" "$SHELLSPEC_TIME_LOG" ||:
 

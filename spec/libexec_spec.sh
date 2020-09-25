@@ -208,6 +208,17 @@ Describe 'libexec.sh'
     End
   End
 
+  Describe "sigkill()"
+    kill() { echo "kill" "$@"; return 1; }
+    env() { echo "env" "$@"; }
+    It "calls kill"
+      When call sigkill 0
+      The line 1 of stdout should eq "kill -KILL 0"
+      The line 2 of stdout should eq "kill -s KILL 0"
+      The line 3 of stdout should eq "env kill -s KILL 0"
+    End
+  End
+
   Describe "read_quickfile()"
     Data
       #|spec/libexec/general_spec.sh:@1-1:failed

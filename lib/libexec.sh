@@ -122,9 +122,9 @@ sleep_wait() {
 
 timeout() {
   {
-    ( trap - TERM ||:; sleep "$1"; sigterm "$2" ) &
+    ( sleep "$1"; sigkill "$2" ) &
     wait "$2" ||:
-    sigterm $! ||:
+    sigkill $! ||:
     wait $! ||:
   } 2>/dev/null &&:
 }
@@ -139,6 +139,12 @@ sigterm() {
   {
     kill -TERM "$1" || kill -s TERM "$1"
   } 2>/dev/null || env kill -s TERM "$1"
+}
+
+sigkill() {
+  {
+    kill -KILL "$1" || kill -s KILL "$1"
+  } 2>/dev/null || env kill -s KILL "$1"
 }
 
 read_quickfile() {
