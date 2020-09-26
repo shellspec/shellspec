@@ -1,5 +1,0 @@
-FROM fedora:21
-RUN useradd -m user \
- && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-21-x86_64 \
- && yum install -y tar
-ENV SH=/bin/sh

@@ -48,7 +48,7 @@ Default shell: `busybox ash`
 | OpenWrt 14.07       |        | 1.22.1   |      | -     |      |      | -    |     |
 | OpenWrt 15.05.1     |        | 1.23.2   | -    | -     |      |      | -    |     |
 | **OpenWrt 18.06.8** |        | 1.28.4   | -    | -     |      |      | -    |     |
-| **OpenWrt 19.07.3** |        | 1.30.1   | -    | -     |      |      | -    |     |
+| **OpenWrt 19.07.4** |        | 1.30.1   | -    | -     |      |      | -    |     |
 
 - _busybox 1.15.3, 1.19.4_: `readonly` is not working properly.
 - `busybox hush` not supported.
@@ -61,17 +61,11 @@ Default shell: `bash`
 | ------------------- | ------ | ------- | ---- | --- | ---- | ---- | ----- |
 | **CentOS 6.10**     | 4.1.2  |         |      |     |      | -    |       |
 | **CentOS 7.8.2003** | 4.2.46 | -       | -    |     |      | -    |       |
-| **CentOS 8.1.1911** | 4.4.19 | -       | -    |     |      | -    | 5.5.1 |
-| fedora 20           | 4.2.53 |         |      |     |      |      |       |
-| fedora 21           | 4.3.30 |         |      |     |      |      |       |
-| fedora 24           | 4.3.42 |         |      |     |      |      |       |
-| fedora 25           | 4.3.43 |         |      |     |      |      |       |
-| fedora 26           | 4.4.12 |         |      |     |      |      |       |
-| fedora 29           | 4.4.23 |         |      |     |      |      |       |
+| **CentOS 8.2.2004** | 4.4.19 | -       | -    |     |      | -    | 5.5.1 |
 | **fedora 31**       | 5.0.7  |         |      |     |      |      |       |
 | **fedora 32**       | 5.0.11 |         |      |     |      |      |       |
 
-- Testing bash 4.1.2- in POSIX mode only.
+- Testing bash 3.2.25- in POSIX mode only.
 
 #### Debian / Ubuntu
 
@@ -86,9 +80,9 @@ Default shell: `dash` or `bash` (until debian 5.0)
 | Debian 5.0.10    | 3.2.39 | _1.10.2_   | 0.5.4         | 93s+ 2008-01-31 | -        | R35  | 5.2.14   | 0.6.13   | -    | 4.3.6   |
 | Debian 6.0.10    | 4.1.5  | 1.17.1     | 0.5.5.1       | 93s+ 2008-01-31 | -        | R39  | 5.2.14   | 0.8.5    | -    | 4.3.10  |
 | Debian 7.11      | 4.2.37 | 1.20.0     | 0.5.7         | 93u+ 2012-02-29 | -        | R40  | -        | _0.10.2_ | 2.30 | 4.3.17  |
-| **Debian 8.11**  | 4.3.30 | 1.22.0     | 0.5.7         | 93u+ 2012-08-01 | -        | R50d | -        | 0.12.3   | 2.36 | 5.0.7   |
+| Debian 8.11      | 4.3.30 | 1.22.0     | 0.5.7         | 93u+ 2012-08-01 | -        | R50d | -        | 0.12.3   | 2.36 | 5.0.7   |
 | **Debian 9.13**  | 4.4.12 | 1.22.0     | 0.5.8         | 93u+ 2012-08-01 | -        | R54  | -        | 0.12.6   | 2.43 | 5.3.1   |
-| **Debian 10.4**  | 5.0.3  | 1.30.1     | 0.5.10.2      | 93u+ 2012-08-01 | -        | R57  | -        | 0.13.2   | 2.48 | 5.7.1   |
+| **Debian 10.5**  | 5.0.3  | 1.30.1     | 0.5.10.2      | 93u+ 2012-08-01 | -        | R57  | -        | 0.13.2   | 2.48 | 5.7.1   |
 | Debian bullseye  |        |            |               | 93u+ 2012-08-01 | -        | R59b | -        | 0.14.1   | 2.50 | 5.8     |
 | Ubuntu 12.04     | 4.2.25 | 1.18.5     | 0.5.7         | 93u 2011-02-08  | -        | R40  | -        | _0.10_   | 2.29 | 4.3.17  |
 | **Ubuntu 14.04** | 4.3.11 | 1.21.0     | 0.5.7         | 93u+ 2012-08-01 | -        | R46  | -        | 0.12.3   | 2.35 | 5.0.2   |
@@ -153,17 +147,18 @@ These are tested by Docker (`contrib/test_in_docker.sh`).
 
 #### Schily Bourne Shell
 
-| Platform                             | bosh / pbosh |
-| ------------------------------------ | ------------ |
-| Debian buster + Schily AN-2018-10-30 | 2018/10/07   |
-| Debian buster + Schily AN-2019-03-11 | 2019/02/05   |
-| Debian buster + Schily AN-2019-09-22 | 2019/08/25   |
-| Debian buster + Schily AN-2019-10-07 | 2019/09/27   |
-| Debian buster + Schily AN-2019-12-05 | 2019/10/25   |
-| Debian buster + Schily AN-2020-02-11 | 2020/01/24   |
-| Debian buster + Schily AN-2020-03-27 | 2020/03/25   |
-| Debian buster + Schily AN-2020-04-18 | _2020/04/10_ |
-| Debian buster + Schily AN-2020-05-11 | 2020/04/27   |
+| Platform      | Schily versions               | bosh / pbosh |
+| ------------- | ----------------------------- | ------------ |
+| Debian buster | AN-2018-10-30                 | 2018/10/07   |
+| Debian buster | AN-2019-03-11                 | 2019/02/05   |
+| Debian buster | AN-2019-09-22                 | 2019/08/25   |
+| Debian buster | AN-2019-10-07                 | 2019/09/27   |
+| Debian buster | AN-2019-10-25 - AN-2019-12-05 | 2019/10/25   |
+| Debian buster | AN-2020-02-11 - AN-2020-03-11 | 2020/01/24   |
+| Debian buster | AN-2020-03-27                 | 2020/03/25   |
+| Debian buster | AN-2020-04-18                 | _2020/04/10_ |
+| Debian buster | AN-2020-05-11 - AN-2020-08-12 | 2020/04/27   |
+| Debian buster | AN-2020-09-04 - AN-2020-09-22 | 2020/09/03   |
 
 - [Schily Bourne Shell][bosh] (`bosh`, `pbosh`)
 - Packages are available on [The NetBSD package collection][pkgsrc].
