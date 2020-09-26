@@ -40,7 +40,7 @@ error_handler() {
       Syntax\ error:*) putsn "${LF}${line}"; error_handler_status=1 ;;
       # Workaround for posh 0.6.13 when executed as a background process
       *internal\ error:\ j_async:\ bad\ nzombie*) ;;
-      # Workaround for loksh 6.5 when executed as a background process
+      # Workaround for loksh <= 6.7.2 when executed as a background process
       *internal\ error:\ j_set_async:\ bad\ nzombie*) ;;
       # Workaround for ksh with coverage
       *version*sh*AT\&T\ Research*) ;;
