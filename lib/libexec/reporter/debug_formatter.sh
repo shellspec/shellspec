@@ -17,14 +17,14 @@ debug_each() {
     *        ) _mark='?' ;;
   esac
 
-  debug '=' "${BOLD}${WHITE}${_mark}"
-  debug '+=' "${field_color}${BOLD}${BLACK}<RS>${field_color}"
+  debug '=' "${BOLD}${GRAY}${_mark}"
+  debug '+=' "${field_color}${BOLD}${GRAY}<RS>${field_color}"
   while [ $# -gt 0 ]; do
     eval "_value=\$field_$1"
-    replace_all _value "$VT" "${BOLD}${BLACK}<VT>${field_color}"
+    replace_all _value "$VT" "${GRAY}<VT>${field_color}"
     debug '+=' "${field_color}$1:${_value}"
     shift
-    [ $# -eq 0 ] || debug '+=' "${BOLD}${BLACK}<US>${field_color}"
+    [ $# -eq 0 ] || debug '+=' "${BOLD}${GRAY}<US>${field_color}"
   done
   debug '+=' "${RESET}${LF}"
 }

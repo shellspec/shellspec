@@ -78,7 +78,7 @@ info() {
 
 grayout() {
   while IFS= read -r line; do
-    printf '\033[1;30m%s\033[0m\n' "$line" >&2
+    printf '\033[1;2;37m\033[90m%s\033[0m\n' "$line" >&2
   done
 }
 

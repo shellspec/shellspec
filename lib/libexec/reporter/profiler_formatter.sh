@@ -24,7 +24,7 @@ profiler_output() {
   case $1 in (end)
     _i=0 _slowest=$SHELLSPEC_PROFILER_LIMIT
     [ "$profiler_count" -le "$_slowest" ] && _slowest=$profiler_count
-    puts "${BOLD}${BLACK}"
+    puts "${BOLD}${GRAY}"
     putsn "# Top $_slowest slowest examples of the $profiler_count examples"
 
     if [ "$example_count" -gt 0 ] && [ "$profiler_count" -eq 0 ]; then
@@ -44,7 +44,7 @@ profiler_output() {
         [ "$_i" -ge "$SHELLSPEC_PROFILER_LIMIT" ] && break
         inc _i
         padding _prefix ' ' $((${#SHELLSPEC_PROFILER_LIMIT} - ${#_i}))
-        putsn "${BOLD}${BLACK}#  ${_prefix}${_i} $_duration ${_line}${RESET}"
+        putsn "${BOLD}${GRAY}#  ${_prefix}${_i} $_duration ${_line}${RESET}"
       done
     )
   esac

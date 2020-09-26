@@ -16,7 +16,8 @@ color_constants() {
     BLUE="${ESC}[34m"    BG_BLUE="${ESC}[44m" \
     MAGENTA="${ESC}[35m" BG_MAGENTA="${ESC}[45m" \
     CYAN="${ESC}[36m"    BG_CYAN="${ESC}[46m" \
-    WHITE="${ESC}[37m"   BG_WHITE="${ESC}[47m"
+    WHITE="${ESC}[37m"   BG_WHITE="${ESC}[47m" \
+    GRAY="${ESC}[2\;37m${ESC}[90m"
   each callback "$@"
 }
 
