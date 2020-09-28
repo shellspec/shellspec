@@ -203,6 +203,8 @@ elif [ "$aborted" ]; then
   exit_status=1
 elif [ "$SHELLSPEC_FAIL_LOW_COVERAGE" ] && [ "$coverage_failed" ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+elif [ "$SHELLSPEC_WARNING_AS_FAILURE" ] && [ "$warned_count" ]; then
+  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 elif [ "${failed_count}${error_count}" ]; then
   exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
 elif [ "${not_enough_examples}${no_examples}" ]; then
