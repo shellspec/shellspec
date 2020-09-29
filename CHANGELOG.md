@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Drop support for posh 0.8.5 due to signal handling broken.
+
+### Fixed
+
+- Fixed gray color.
+- Fixed broken `--warning-as-failure`.
+- Fixed a bug that can not CTRL-C with posh.
+
 ## [0.27.0] - 2020-09-25
 
 ### Added

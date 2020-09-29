@@ -78,7 +78,7 @@ Default shell: `dash` or `bash` (until debian 5.0)
 | Debian 3.1r8     | 2.05b  | ~~0.60.5~~ | 0.5.2         | _93q_           | -        | -    | 5.2.14   | 0.3.14   | -    | _4.2.5_ |
 | Debian 4.0r9     | 3.1.17 | _1.1.3_    | _0.5.3_       | _93r_           | -        | R28  | 5.2.14   | 0.5.4    | -    | 4.3.2   |
 | Debian 5.0.10    | 3.2.39 | _1.10.2_   | 0.5.4         | 93s+ 2008-01-31 | -        | R35  | 5.2.14   | 0.6.13   | -    | 4.3.6   |
-| Debian 6.0.10    | 4.1.5  | 1.17.1     | 0.5.5.1       | 93s+ 2008-01-31 | -        | R39  | 5.2.14   | 0.8.5    | -    | 4.3.10  |
+| Debian 6.0.10    | 4.1.5  | 1.17.1     | 0.5.5.1       | 93s+ 2008-01-31 | -        | R39  | 5.2.14   | _0.8.5_  | -    | 4.3.10  |
 | Debian 7.11      | 4.2.37 | 1.20.0     | 0.5.7         | 93u+ 2012-02-29 | -        | R40  | -        | _0.10.2_ | 2.30 | 4.3.17  |
 | Debian 8.11      | 4.3.30 | 1.22.0     | 0.5.7         | 93u+ 2012-08-01 | -        | R50d | -        | 0.12.3   | 2.36 | 5.0.7   |
 | **Debian 9.13**  | 4.4.12 | 1.22.0     | 0.5.8         | 93u+ 2012-08-01 | -        | R54  | -        | 0.12.6   | 2.43 | 5.3.1   |
@@ -96,6 +96,7 @@ Default shell: `dash` or `bash` (until debian 5.0)
 - _ksh 93q, 93r_: Sometimes abort due to unstable bugs.
 - _busybox 1.1.3_: Builtin commands cannot be mocked.
 - _busybox 1.10.2_: It may not work properly due to a bug.
+- _posh 0.8.5_: Signal handling (`trap`) broken.
 - _posh 0.10, 0.10.2_: Shell flags (e.g. `set -e`, `set -u`) not working properly.
 - _zsh 4.2.5_: errexit handling broken.
 
