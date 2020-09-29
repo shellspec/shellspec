@@ -141,6 +141,8 @@ fi
 
 timeout() {
   {
+    ( shift; "$@" ) &
+    set -- "$1" "$!"
     ( sleep "$1"; signal KILL "$2" ) &
     wait "$2" ||:
     signal KILL $! ||:
