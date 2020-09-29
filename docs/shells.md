@@ -40,7 +40,7 @@ Default shell: `busybox ash`
 | Platform            | bash   | busybox  | dash | loksh | mksh | oksh | yash | zsh |
 | ------------------- | ------ | -------- | ---- | ----- | ---- | ---- | ---- | --- |
 | **Alpine 3.12.0**   | 5.0.17 | 1.31.1   |      | 6.7.1 |      |      | -    |     |
-| Alpine edge         |        |          |      |       |      | 6.7  | -    |     |
+| Alpine edge         |        |          |      | 6.7.4 |      | 6.7  | -    |     |
 | **BusyBox 1.32.0**  | -      | 1.32.0   | -    | -     | -    |      | -    | -   |
 | LEDE 17.01.7        |        | 1.25.1   | -    | -     |      |      | -    |     |
 | OpenWrt 10.03.1     |        | _1.15.3_ |      | -     |      |      | -    | -   |
