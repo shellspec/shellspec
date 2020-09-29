@@ -83,6 +83,10 @@ if typeset >/dev/null 2>&1; then
 fi
 echo "SHELLSPEC_CLONE_TYPE=$SHELLSPEC_CLONE_TYPE"
 
+if sleep 0.1 2>/dev/null; then
+  echo "SHELLSPEC_MSLEEP=1"
+fi
+
 if (: >/dev/tty && : </dev/tty) 2>/dev/null; then
   echo "SHELLSPEC_TTY=1"
 fi

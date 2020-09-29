@@ -25,7 +25,7 @@ read_pid_file() {
   set -- "$1" "$2" "${3:-999999999}"
   while [ ! -e "$2" ] && [ "$3" -gt 0 ]; do
     set -- "$1" "$2" "$(($3 - 1))"
-    sleep 0
+    nap
   done
   if [ -e "$2" ]; then
     eval "read -r $1 < \"$2\""

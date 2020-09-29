@@ -74,7 +74,7 @@ detect_unexpected_error() {
     [ "$1" ] && set -- " occurred in '$1'"
     putsn "${LF}Unexpected error occurred (syntax error?)$1"
   fi
-  sleep 0
+  nap
 }
 
 is_separetor_statement() {

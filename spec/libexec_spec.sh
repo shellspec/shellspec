@@ -162,6 +162,26 @@ Describe 'libexec.sh'
     End
   End
 
+  Describe "nap()"
+    sleep() { echo sleep "$@"; }
+
+    Context 'when milliseconds not supported'
+      BeforeRun SHELLSPEC_MSLEEP=''
+      It "naps 0 seconds"
+        When run nap
+        The output should eq "sleep 0"
+      End
+    End
+
+    Context 'when milliseconds supported'
+      BeforeRun SHELLSPEC_MSLEEP=1
+      It "naps 0.1 seconds"
+        When run nap
+        The output should eq "sleep 0.1"
+      End
+    End
+  End
+
   Describe "sleep_wait()"
     Before called=""
 

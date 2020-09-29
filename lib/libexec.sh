@@ -114,12 +114,20 @@ set_exit_status() {
   return "$1"
 }
 
+nap() {
+  if [ "$SHELLSPEC_MSLEEP" ]; then
+    sleep 0.1
+  else
+    sleep 0
+  fi
+}
+
 sleep_wait() {
-  while "$@"; do sleep 0; done
+  while "$@"; do nap; done
 }
 
 sleep_wait_until() {
-  until "$@"; do sleep 0; done
+  until "$@"; do nap; done
 }
 
 timeout() {
