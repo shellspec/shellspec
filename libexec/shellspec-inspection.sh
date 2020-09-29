@@ -44,7 +44,7 @@ if [ "${ZSH_VERSION:-}" ] && zshexit; then
 fi
 
 # Workaround for posh 0.8.5
-if [ "$(kill -l 1 2>/dev/null)" = 1 ]; then
+if [ ! "$(kill -l 1 2>/dev/null)" = 'HUP' ]; then
   echo "SHELLSPEC_DEFECT_SIGNAL=1"
 fi
 

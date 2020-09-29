@@ -130,6 +130,15 @@ sleep_wait_until() {
   until "$@"; do nap; done
 }
 
+signal() { kill -"$1" "$2"; }
+if kill -s 0 $$ 2>/dev/null; then
+  signal() { kill -s "$1" "$2"; }
+  # workaround for posh 0.8.5. broken signal
+  if [ "$SHELLSPEC_DEFECT_SIGNAL" ]; then
+    kill() { env kill "$@"; }
+  fi
+fi
+
 timeout() {
   {
     ( sleep "$1"; signal KILL "$2" ) &
@@ -138,15 +147,6 @@ timeout() {
     wait $! ||:
   } 2>/dev/null &&:
 }
-
-signal() { kill -"$1" "$2"; }
-if kill -s 0 $$ 2>/dev/null; then
-  signal() { kill -s "$1" "$2"; }
-  # workaround for posh 0.8.5. broken signal
-  if [ "$(kill -l 1)" = 1 ]; then
-    kill() { env kill "$@"; }
-  fi
-fi
 
 read_quickfile() {
   set -- "$1" "${2:-}" "${3:-}"
