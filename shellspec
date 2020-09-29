@@ -376,6 +376,9 @@ parse_options() {
         shift ;;
       -j | --jobs) [ "${2:-}" ] || invalid 'Require JOBS.'
         SHELLSPEC_WORKERS=$2
+        case $2 in (*[!0-9]*)
+          SHELLSPEC_WORKERS=0
+        esac
         shift ;;
       -q | --quick) SHELLSPEC_QUICK=1 ;;
       +q | --no-quick) SHELLSPEC_QUICK='' ;;
