@@ -1,7 +1,7 @@
 #!/bin/sh
 #shellcheck disable=SC2004
 
-if (trap - INT) 2>/dev/null; then trap : INT; fi
+"$SHELLSPEC_TRAP" : INT
 
 if [ "$BASH_VERSION" ] || [ "$KSH_VERSION" ]; then
   time -p "$@"

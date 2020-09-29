@@ -115,37 +115,30 @@ set_exit_status() {
 }
 
 sleep_wait() {
-  case $1 in
-    *[!0-9]*) while "$@"; do sleep 0; done; return 0 ;;
-  esac
+  while "$@"; do sleep 0; done
+}
+
+sleep_wait_until() {
+  until "$@"; do sleep 0; done
 }
 
 timeout() {
   {
-    ( sleep "$1"; sigkill "$2" ) &
+    ( sleep "$1"; signal KILL "$2" ) &
     wait "$2" ||:
-    sigkill $! ||:
+    signal KILL $! ||:
     wait $! ||:
   } 2>/dev/null &&:
 }
 
-if kill -0 $$ 2>/dev/null; then
-  sigchk() { kill -0 "$1" 2>/dev/null; }
-else
-  sigchk() { kill -s 0 "$1" 2>/dev/null; }
+signal() { kill -"$1" "$2"; }
+if kill -s 0 $$ 2>/dev/null; then
+  signal() { kill -s "$1" "$2"; }
+  # workaround for posh 0.8.5. broken signal
+  if [ "$(kill -l 1)" = 1 ]; then
+    kill() { env kill "$@"; }
+  fi
 fi
-
-sigterm() {
-  {
-    kill -TERM "$1" || kill -s TERM "$1"
-  } 2>/dev/null || env kill -s TERM "$1"
-}
-
-sigkill() {
-  {
-    kill -KILL "$1" || kill -s KILL "$1"
-  } 2>/dev/null || env kill -s KILL "$1"
-}
 
 read_quickfile() {
   set -- "$1" "${2:-}" "${3:-}"

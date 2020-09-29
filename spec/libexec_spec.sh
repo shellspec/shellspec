@@ -176,46 +176,26 @@ Describe 'libexec.sh'
     End
   End
 
+  Describe "sleep_wait_until()"
+    Before called=""
+
+    It "waits with sleep"
+      sleep() { echo sleep; }
+      condition() {
+        called="$called."
+        [ "${#called}" -gt 2 ]
+      }
+      When call sleep_wait_until condition
+      The lines of stdout should eq 2
+    End
+  End
+
   Describe "timeout()"
     sleep() { :; }
     _timeout() { { ( sleep 1 ) & timeout 0 $!; } 2>/dev/null; }
     It "stops when timed out"
       When call _timeout 1
       The status should be success
-    End
-  End
-
-  Describe "sigchk()"
-    kill() { echo "$@"; }
-    check_kill_args() {
-      # shellcheck disable=SC2154
-      [ "$check_kill_args" = "-0 $1" ] || [ "$check_kill_args" = "-s 0 $1" ]
-    }
-    It "calls kill"
-      When call sigchk 0
-      The stdout should satisfy check_kill_args 0
-    End
-  End
-
-  Describe "sigterm()"
-    kill() { echo "kill" "$@"; return 1; }
-    env() { echo "env" "$@"; }
-    It "calls kill"
-      When call sigterm 0
-      The line 1 of stdout should eq "kill -TERM 0"
-      The line 2 of stdout should eq "kill -s TERM 0"
-      The line 3 of stdout should eq "env kill -s TERM 0"
-    End
-  End
-
-  Describe "sigkill()"
-    kill() { echo "kill" "$@"; return 1; }
-    env() { echo "env" "$@"; }
-    It "calls kill"
-      When call sigkill 0
-      The line 1 of stdout should eq "kill -KILL 0"
-      The line 2 of stdout should eq "kill -s KILL 0"
-      The line 3 of stdout should eq "env kill -s KILL 0"
     End
   End
 

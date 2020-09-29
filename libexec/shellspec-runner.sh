@@ -21,7 +21,7 @@ stop_profiler() {
 }
 
 cleanup() {
-  if (trap - INT) 2>/dev/null; then trap '' INT; fi
+  "$SHELLSPEC_TRAP" '' INT
   set -- "$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
   [ "$SHELLSPEC_KEEP_TEMPDIR" ] && return 0
   [ "$1" ] || return 0
@@ -29,12 +29,12 @@ cleanup() {
 }
 
 interrupt() {
-  trap '' TERM # Workaround for posh: Prevent display 'Terminated'.
+  "$SHELLSPEC_TRAP" '' TERM # Workaround for posh: Prevent display 'Terminated'.
   stop_profiler
   reporter_pid=''
   read_pid_file reporter_pid "$SHELLSPEC_TMPBASE/$SHELLSPEC_REPORTER_PID" 0
-  [ "$reporter_pid" ] && sleep_wait sigchk "$reporter_pid"
-  sigterm 0 &&:
+  [ "$reporter_pid" ] && sleep_wait signal 0 "$reporter_pid" 2>/dev/null
+  signal TERM 0 2>/dev/null &&:
   cleanup
   exit 130
 }
@@ -62,8 +62,8 @@ error_handler() {
   [ "$error_count" -eq 0 ] || exit "$SHELLSPEC_STDERR_OUTPUT_CODE"
 }
 
-if (trap - INT) 2>/dev/null; then trap 'interrupt' INT; fi
-if (trap - TERM) 2>/dev/null; then trap ':' TERM; fi
+"$SHELLSPEC_TRAP" 'interrupt' INT
+"$SHELLSPEC_TRAP" ':' TERM
 trap 'cleanup' EXIT
 
 if [ "$SHELLSPEC_REPAIR" ]; then

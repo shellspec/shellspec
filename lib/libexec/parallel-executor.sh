@@ -33,7 +33,8 @@ reduce() {
 
 executor() {
   jobs=0 workers=''
-  if (trap - INT) 2>/dev/null; then trap 'eval "terminator $workers"' INT; fi
+  # shellcheck disable=SC2016
+  "$SHELLSPEC_TRAP" 'eval "terminator $workers"' INT
 
   SHELLSPEC_JOBDIR="$SHELLSPEC_TMPBASE/jobs"
   mkdir "$SHELLSPEC_JOBDIR"

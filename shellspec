@@ -36,6 +36,7 @@ export SHELLSPEC_ENV="env"
 export SHELLSPEC_UNREADONLY_PATH=''
 export SHELLSPEC_PRINTF="printf"
 export SHELLSPEC_SLEEP="sleep"
+export SHELLSPEC_TRAP="trap"
 export SHELLSPEC_BUILTIN_PRINTF=''
 export SHELLSPEC_BUILTIN_PRINT=''
 export SHELLSPEC_BUILTIN_TYPESETF=''
@@ -106,6 +107,7 @@ export SHELLSPEC_DEFECT_SUBSHELL=''
 export SHELLSPEC_DEFECT_SETE=''
 export SHELLSPEC_DEFECT_XTRACE=''
 export SHELLSPEC_DEFECT_EXPORTP=''
+export SHELLSPEC_DEFECT_SIGNAL=''
 export SHELLSPEC_SHEBANG_MULTIARG=''
 export SHELLSPEC_BUSYBOX_W32=''
 export SHELLSPEC_SHOPT_AVAILABLE=''
@@ -572,6 +574,11 @@ fi
     warn "Unsupported shell (errexit handling broken)."
   fi
 
+  if [ "$SHELLSPEC_DEFECT_SIGNAL" ]; then
+    SHELLSPEC_TRAP=":"
+    warn "Unsupported shell (signal handling broken)."
+  fi
+
   [ "$SHELLSPEC_BUSYBOX_W32" ] && SHELLSPEC_PATHSEP=";"
   [ "$SHELLSPEC_TTY" ] && SHELLSPEC_DEV_TTY=/dev/tty
 }
@@ -626,7 +633,7 @@ else
   fi
 fi
 
-if ! sigchk $$; then
+if ! signal 0 $$ 2>/dev/null; then
   # For example posh 0.13.2 does not implement kill as builtin and
   # debian 10 docker image does not have kill command installed by default.
   warn "kill not found. You may encounter errors with some features."

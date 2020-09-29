@@ -43,6 +43,11 @@ if [ "${ZSH_VERSION:-}" ] && zshexit; then
   echo "SHELLSPEC_DEFECT_ZSHEXIT=1"
 fi
 
+# Workaround for posh 0.8.5
+if [ "$(kill -l 1 2>/dev/null)" = 1 ]; then
+  echo "SHELLSPEC_DEFECT_SIGNAL=1"
+fi
+
 set +e
 (set -e; subshell() { return 2; }; subshell) 2>/dev/null
 if [ $? -eq 1 ]; then

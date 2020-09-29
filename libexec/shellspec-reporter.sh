@@ -4,8 +4,8 @@
 set -euf
 
 interrupt=''
-if (trap - INT) 2>/dev/null; then trap 'interrupt=1' INT; fi
-if (trap - TERM) 2>/dev/null; then trap '' TERM; fi
+"$SHELLSPEC_TRAP" 'interrupt=1' INT
+"$SHELLSPEC_TRAP" '' TERM
 
 echo $$ > "$SHELLSPEC_TMPBASE/$SHELLSPEC_REPORTER_PID"
 
@@ -142,7 +142,7 @@ reporter_callback() {
 tssv_parse "field" reporter_callback ||:
 
 {
-  ( until read_time_log "time" "$SHELLSPEC_TIME_LOG"; do sleep 0; done ) &
+  sleep_wait_until read_time_log "time" "$SHELLSPEC_TIME_LOG" &
   timeout 1 $!
 } 2>/dev/null &&:
 read_time_log "time" "$SHELLSPEC_TIME_LOG" ||:
