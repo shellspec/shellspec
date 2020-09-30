@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.27.1] - 2020-09-30
+
 ### Removed
 
 - Drop support for posh 0.8.5 due to signal handling broken.
@@ -468,7 +470,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.27.0...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.27.1...HEAD
+[0.27.1]: https://github.com/shellspec/shellspec/compare/0.27.0...0.27.1
 [0.27.0]: https://github.com/shellspec/shellspec/compare/0.26.1...0.27.0
 [0.26.1]: https://github.com/shellspec/shellspec/compare/0.26.0...0.26.1
 [0.26.0]: https://github.com/shellspec/shellspec/compare/0.25.0...0.26.0
