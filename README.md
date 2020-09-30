@@ -62,7 +62,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
       - [`run` with special command](#run-with-special-command)
         - [`command` - runs a external command](#command---runs-a-external-command)
         - [`script` - runs a shell script](#script---runs-a-shell-script)
-        - [`source` - runs the script by `.` (dot) command](#source---runs-the-script-by--dot-command)
+        - [`source` - runs a script by `.` (dot) command](#source---runs-a-script-by--dot-command)
     - [`The` - expectation](#the---expectation)
       - [Subjects](#subjects)
       - [Modifiers](#modifiers)
@@ -665,7 +665,7 @@ It will be executed in another instance of the same shell as the current shell.
 When run script my.sh # run `my.sh` script.
 ```
 
-###### `source` - runs the script by `.` (dot) command
+###### `source` - runs a script by `.` (dot) command
 
 It source a shell script, ignoring shebang. The script have to be a shell script.
 It similar to `run script`, but with some differences.
