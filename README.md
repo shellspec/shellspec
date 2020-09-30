@@ -53,38 +53,44 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Project directory structure](#project-directory-structure)
 - [DSL syntax](#dsl-syntax)
   - [Basic structure](#basic-structure)
-    - [`Describe`, `Context`, `ExampleGroup` - example group](#describe-context-examplegroup---example-group)
-      - [`xDescribe`, `xContext`, `xExampleGroup` - skipped example group](#xdescribe-xcontext-xexamplegroup---skipped-example-group)
-      - [`fDescribe`, `fContext`, `fExampleGroup` - focused example group](#fdescribe-fcontext-fexamplegroup---focused-example-group)
-    - [`It`, `Specify`, `Example` - example](#it-specify-example---example)
-      - [`xIt`, `xSpecify`, `xExample` - skipped example](#xit-xspecify-xexample---skipped-example)
-      - [`fIt`, `fSpecify`, `fExample` - focused example](#fit-fspecify-fexample---focused-example)
-      - [`Todo` - one liner pending example](#todo---one-liner-pending-example)
+    - [`Describe`, `Context`, `ExampleGroup` - example group block](#describe-context-examplegroup---example-group-block)
+    - [`It`, `Specify`, `Example` - example block](#it-specify-example---example-block)
+    - [`Todo` - one liner empty example](#todo---one-liner-empty-example)
     - [`When` - evaluation](#when---evaluation)
-      - [`call` - call a shell function](#call---call-a-shell-function)
-      - [`run` - run a command](#run---run-a-command)
-      - [`run command` - run a external command](#run-command---run-a-external-command)
-      - [`run script` - run a shell script](#run-script---run-a-shell-script)
-      - [`run source` - run a script by `.` (`source`) command](#run-source---run-a-script-by--source-command)
+      - [`call` - call a shell function (without subshell)](#call---call-a-shell-function-without-subshell)
+      - [`run` - run a command (within subshell)](#run---run-a-command-within-subshell)
+      - [`run` with special command](#run-with-special-command)
+        - [`command` - runs a external command](#command---runs-a-external-command)
+        - [`script` - runs a shell script](#script---runs-a-shell-script)
+        - [`source` - runs the script by `.` (dot) command](#source---runs-the-script-by--dot-command)
     - [`The` - expectation](#the---expectation)
       - [Subjects](#subjects)
       - [Modifiers](#modifiers)
       - [Matchers](#matchers)
       - [Language chains](#language-chains)
     - [`Assert` - expectation for custom assertion](#assert---expectation-for-custom-assertion)
-    - [`Skip`, `Pending` - skip and pending example](#skip-pending---skip-and-pending-example)
-      - [Temporary skip and pending](#temporary-skip-and-pending)
+  - [Pending, skip and focus](#pending-skip-and-focus)
+    - [`Pending` - pending example](#pending---pending-example)
+    - [`Skip` - skip example](#skip---skip-example)
+      - [`if` - conditional skip](#if---conditional-skip)
+    - ['x' prefix for example group and example](#x-prefix-for-example-group-and-example)
+      - [`xDescribe`, `xContext`, `xExampleGroup` - skipped example group](#xdescribe-xcontext-xexamplegroup---skipped-example-group)
+      - [`xIt`, `xSpecify`, `xExample` - skipped example](#xit-xspecify-xexample---skipped-example)
+    - ['f' prefix for example group and example](#f-prefix-for-example-group-and-example)
+      - [`fDescribe`, `fContext`, `fExampleGroup` - focused example group](#fdescribe-fcontext-fexamplegroup---focused-example-group)
+      - [`fIt`, `fSpecify`, `fExample` - focused example](#fit-fspecify-fexample---focused-example)
+    - [About temporary pending and skip](#about-temporary-pending-and-skip)
   - [Hooks](#hooks)
     - [`Before`, `After` - example hook](#before-after---example-hook)
     - [`BeforeAll`, `AfterAll` - example group hook](#beforeall-afterall---example-group-hook)
     - [`BeforeCall`, `AfterCall` - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
     - [`BeforeRun`, `AfterRun` - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
   - [Helpers](#helpers)
-    - [`Dump` - dump stdout, stderr and status](#dump---dump-stdout-stderr-and-status)
+    - [`Dump` - dump stdout, stderr and status for debugging](#dump---dump-stdout-stderr-and-status-for-debugging)
     - [`Include` - include a script file](#include---include-a-script-file)
     - [`Set` - set shell option](#set---set-shell-option)
     - [`Path`, `File`, `Dir` - path alias](#path-file-dir---path-alias)
-    - [`Data` - input data for evaluation](#data---input-data-for-evaluation)
+    - [`Data` - pass data as stdin to evaluation](#data---pass-data-as-stdin-to-evaluation)
     - [`Parameters` - parameterized example](#parameters---parameterized-example)
     - [`Mock` - create a command-based mock](#mock---create-a-command-based-mock)
     - [`Intercept` - create an intercept point](#intercept---create-an-intercept-point)
@@ -562,7 +568,7 @@ End
 
 ### Basic structure
 
-#### `Describe`, `Context`, `ExampleGroup` - example group
+#### `Describe`, `Context`, `ExampleGroup` - example group block
 
 `ExampleGroup` is a block for grouping example groups or examples.
 `Describe` and `Context` are alias for `ExampleGroup`.
@@ -580,33 +586,7 @@ Describe 'is example group'
 End
 ```
 
-##### `xDescribe`, `xContext`, `xExampleGroup` - skipped example group
-
-`xDescribe`, `xContext`, `xExampleGroup` are skipped example group block.
-Execution of example contained in these is skipped.
-
-```sh
-Describe 'is example group'
-  xDescribe 'is skipped example group'
-    ...
-  End
-End
-```
-
-##### `fDescribe`, `fContext`, `fExampleGroup` - focused example group
-
-`fDescribe`, `fContext`, `fExampleGroup` are focused example group block.
-Only the examples included in these will be executed when the `--focus` option is specified.
-
-```sh
-Describe 'is example group'
-  fDescribe 'is focues example group'
-    ...
-  End
-End
-```
-
-#### `It`, `Specify`, `Example` - example
+#### `It`, `Specify`, `Example` - example block
 
 `Example` is a block for writing evaluation and expectations.
 `It` and `Specify` are alias for `Example`.
@@ -623,31 +603,9 @@ It 'performs addition'          # example
 End
 ```
 
-##### `xIt`, `xSpecify`, `xExample` - skipped example
+#### `Todo` - one liner empty example
 
-`xIt`, `xSpecify`, `xExample` are skipped example block.
-Execution of example is skipped.
-
-```sh
-xIt 'is skipped example'
-  ...
-End
-```
-
-##### `fIt`, `fSpecify`, `fExample` - focused example
-
-`fIt`, `fSpecify`, `fExample` are focused example block.
-Only these examples will be executed when the `--focus` option is specified.
-
-```sh
-fIt 'is focused example'
-  ...
-End
-```
-
-##### `Todo` - one liner pending example
-
-`Todo` is a pending one-liner example, the same as the empty example.
+`Todo` is the same as the empty example and is treated as [pending](#pending---pending-example) example.
 
 ```sh
 Todo 'will be used later when write a test'
@@ -663,7 +621,7 @@ Only one evaluation can be defined for each example and also can be omitted.
 
 See more details of [Evaluation](docs/references.md#evaluation)
 
-##### `call` - call a shell function
+##### `call` - call a shell function (without subshell)
 
 It call a function without subshell.
 Practically, it can also run commands.
@@ -672,7 +630,7 @@ Practically, it can also run commands.
 When call add 1 2 # call `add` shell function with two arguments.
 ```
 
-##### `run` - run a command
+##### `run` - run a command (within subshell)
 
 It runs a command within subshell. Practically, it can also call shell function.
 The command does not have to be a shell script.
@@ -683,7 +641,11 @@ NOTE: This is not supporting coverage measurement.
 When run touch /tmp/foo # run `touch` command.
 ```
 
-##### `run command` - run a external command
+##### `run` with special command
+
+Some commands are specially handled by ShellSpec.
+
+###### `command` - runs a external command
 
 It runs a command, respecting shebang.
 It can not call shell function. The command does not have to be a shell script.
@@ -694,7 +656,7 @@ NOTE: This is not supporting coverage measurement.
 When run command touch /tmp/foo # run `touch` command.
 ```
 
-##### `run script` - run a shell script
+###### `script` - runs a shell script
 
 It runs a shell script, ignoring shebang. The script have to be a shell script.
 It will be executed in another instance of the same shell as the current shell.
@@ -703,7 +665,7 @@ It will be executed in another instance of the same shell as the current shell.
 When run script my.sh # run `my.sh` script.
 ```
 
-##### `run source` - run a script by `.` (`source`) command
+###### `source` - runs the script by `.` (dot) command
 
 It source a shell script, ignoring shebang. The script have to be a shell script.
 It similar to `run script`, but with some differences.
@@ -813,32 +775,9 @@ Describe "example.com"
 End
 ```
 
-#### `Skip`, `Pending` - skip and pending example
+### Pending, skip and focus
 
-Use `Skip` to skip executing the example. If you want to skip only in
-some cases, use a conditional skip `Skip if`.
-
-```sh
-Describe 'Skip'
-  Skip "not exists bc"
-
-  It 'is always skip'
-    ...
-  End
-End
-
-Describe 'Conditional skip'
-  not_exists_bc() { ! type bc >/dev/null 2>&1; }
-  Skip if "not exists bc" not_exists_bc
-
-  add() { echo "$1 + $2" | bc; }
-
-  It 'performs addition'
-    When call add 2 3
-    The output should eq 5
-  End
-End
-```
+#### `Pending` - pending example
 
 `Pending` is similar to `Skip`, but the test passes if the validation fails,
 and the test fails if the validation succeeds. This is useful if you want to
@@ -857,20 +796,113 @@ Describe 'Pending'
 End
 ```
 
-##### Temporary skip and pending
+#### `Skip` - skip example
 
-The (non-temporary) skip and pending is for long term skip and pending.
-It need time to resolve and it may commit to a version control system.
-
-The temporary skip and pending is for short term skip and pending.
-Used during the current work, do not commit to a version control system.
-
-The skip and pending without message is temporary skip and pending.
+Use `Skip` to skip executing the example.
 
 ```sh
-Skip "some reason" # Skip with message is non-temporary skip
-Skip if "reason" condition # Skip with condition is also non-temporary skip
-Skip # temporary skip (this is comment but will be displayed in the report)
+Describe 'Skip'
+  Skip "not exists bc"
+
+  It 'is always skip'
+    ...
+  End
+End
+```
+
+##### `if` - conditional skip
+
+Use `Skip if` if you want to skip with conditional.
+
+```sh
+Describe 'Conditional skip'
+  not_exists_bc() { ! type bc >/dev/null 2>&1; }
+  Skip if "not exists bc" not_exists_bc
+
+  add() { echo "$1 + $2" | bc; }
+
+  It 'performs addition'
+    When call add 2 3
+    The output should eq 5
+  End
+End
+```
+
+#### 'x' prefix for example group and example
+
+##### `xDescribe`, `xContext`, `xExampleGroup` - skipped example group
+
+`xDescribe`, `xContext`, `xExampleGroup` are skipped example group block.
+Execution of example contained in these is skipped.
+
+```sh
+Describe 'is example group'
+  xDescribe 'is skipped example group'
+    ...
+  End
+End
+```
+
+##### `xIt`, `xSpecify`, `xExample` - skipped example
+
+`xIt`, `xSpecify`, `xExample` are skipped example block.
+Execution of example is skipped.
+
+```sh
+xIt 'is skipped example'
+  ...
+End
+```
+
+#### 'f' prefix for example group and example
+
+##### `fDescribe`, `fContext`, `fExampleGroup` - focused example group
+
+`fDescribe`, `fContext`, `fExampleGroup` are focused example group block.
+Only the examples included in these will be executed when the `--focus` option is specified.
+
+```sh
+Describe 'is example group'
+  fDescribe 'is focues example group'
+    ...
+  End
+End
+```
+
+##### `fIt`, `fSpecify`, `fExample` - focused example
+
+`fIt`, `fSpecify`, `fExample` are focused example block.
+Only these examples will be executed when the `--focus` option is specified.
+
+```sh
+fIt 'is focused example'
+  ...
+End
+```
+
+#### About temporary pending and skip
+
+The pending and skip without message is "temporary pending" and "temporary skip. "x" prefixed example groups and examples are treated as temporary skip.
+
+The (non-temporary) pending and skip is used when it takes a long time to resolve. It may also commit to a version control system. The temporary pending and skip is used during the current work. We do not recommend committing it to a version control system.
+
+These two types are differ in the display of the report. Refer to `--skip-message` and `--pending-message` options.
+
+```sh
+# Temporary pending and skip
+Pending
+Skip
+Skip # this comment will be displayed in the report
+Todo
+xIt
+  ...
+End
+
+# Non-temporary pending and skip
+Pending "reason"
+Skip "reason"
+Skip if "reason" condition
+Todo "It will be implemented"
 ```
 
 ### Hooks
@@ -967,7 +999,7 @@ End
 
 ### Helpers
 
-#### `Dump` - dump stdout, stderr and status
+#### `Dump` - dump stdout, stderr and status for debugging
 
 Dump stdout, stderr and status of the evaluation. It is useful for debugging.
 
@@ -1026,7 +1058,7 @@ Describe 'Path helper'
 End
 ```
 
-#### `Data` - input data for evaluation
+#### `Data` - pass data as stdin to evaluation
 
 You can use the Data Helper which inputs data from stdin for evaluation.
 The input data is specified after `#|` in the `Data` or `Data:expand` block.
