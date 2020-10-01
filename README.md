@@ -59,10 +59,10 @@ NOTE: This documentation contains unreleased features. Check them in the changel
     - [`When` - evaluation](#when---evaluation)
       - [`call` - call a shell function (without subshell)](#call---call-a-shell-function-without-subshell)
       - [`run` - run a command (within subshell)](#run---run-a-command-within-subshell)
-      - [`run` with special command](#run-with-special-command)
         - [`command` - runs a external command](#command---runs-a-external-command)
         - [`script` - runs a shell script](#script---runs-a-shell-script)
         - [`source` - runs a script by `.` (dot) command](#source---runs-a-script-by--dot-command)
+      - [About executing aliases](#about-executing-aliases)
     - [`The` - expectation](#the---expectation)
       - [Subjects](#subjects)
       - [Modifiers](#modifiers)
@@ -621,6 +621,8 @@ Only one evaluation can be defined for each example and also can be omitted.
 
 See more details of [Evaluation](docs/references.md#evaluation)
 
+NOTE: [About executing aliases](#about-executing-aliases)
+
 ##### `call` - call a shell function (without subshell)
 
 It call a function without subshell.
@@ -641,9 +643,7 @@ NOTE: This is not supporting coverage measurement.
 When run touch /tmp/foo # run `touch` command.
 ```
 
-##### `run` with special command
-
-Some commands are specially handled by ShellSpec.
+Some commands below are specially handled by ShellSpec.
 
 ###### `command` - runs a external command
 
@@ -673,6 +673,22 @@ Unlike `run script`, function-based mock is available.
 
 ```sh
 When run source my.sh # source `my.sh` script.
+```
+
+##### About executing aliases
+
+If you want to execute aliases, you need a workaround using `eval`.
+
+```sh
+alias alias-name='echo this is alias'
+When call alias-name # alias-name: not found
+
+# eval is required
+When call eval alias-name
+
+# When using embedded shell scripts
+foo() { eval alias-name; }
+When call foo
 ```
 
 #### `The` - expectation
