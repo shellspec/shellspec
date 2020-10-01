@@ -118,7 +118,6 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Extension](#extension)
   - [Custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
 - [For developers](#for-developers)
-  - [About specfile translation process](#about-specfile-translation-process)
 
 ## Requirements
 
@@ -1487,15 +1486,13 @@ NOTE: If you want to verify using shell function, You can use [result](docs/refe
 
 ## For developers
 
-If you want to know ShellSpec architecture and self test, see [CONTRIBUTING.md](CONTRIBUTING.md)
+All contributions are welcome!
 
-### About specfile translation process
+ShellSpec use an peculiar coding style as for shell scripts to realize high performance, reliability and portability, and the external commands that allowed to use are also greatly restricted.
 
-The specfile is a valid shell script, but a translation process is performed to implement the scope,
-line number etc. Each example group block and example block is translated to commands in a subshell.
-Therefore changes inside those blocks do not affect the outside of the block. In other words it realizes
-local variables and local functions in the specfile. This is very useful for describing a structured spec.
-If you are interested in how to translate, use the `--translate` option.
+We recommend that you create WIP PR early or offer suggestions in discussions to avoid ruining your work.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ### Subproject <!-- omit in toc -->
 
