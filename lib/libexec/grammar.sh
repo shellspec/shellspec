@@ -26,7 +26,7 @@ define_dsls() {
 
   while IFS= read -r line; do
     case $line in ("" | \#*) continue; esac
-    dsls="$dsls${dsls:+|}${line%% *}"
+    dsls="$dsls${dsls:+|}${line%%\=\>*}"
     echo "${line%\=\>*}) ${line#*\=\>} \"\$2\" ;;"
   done < "$SHELLSPEC_GRAMMAR_DSLS" &&:
 
@@ -36,6 +36,7 @@ define_dsls() {
   done < "$SHELLSPEC_GRAMMAR_DIRECTIVES" &&:
 
   echo '*) return 1 ;; esac; }'
+  shellspec_replace_all dsls " " ""
   echo "is_dsl() { case \$1 in ($dsls) true ;; (*) false ; esac; }"
 }
 eval "$(define_dsls)"
