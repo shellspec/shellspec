@@ -81,7 +81,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
       - [`fIt`, `fSpecify`, `fExample` - focused example](#fit-fspecify-fexample---focused-example)
     - [About temporary pending and skip](#about-temporary-pending-and-skip)
   - [Hooks](#hooks)
-    - [`Before`, `After` - example hook](#before-after---example-hook)
+    - [`BeforeEach` (`Before`), `AfterEach` (`After`) - example hook](#beforeeach-before-aftereach-after---example-hook)
     - [`BeforeAll`, `AfterAll` - example group hook](#beforeall-afterall---example-group-hook)
     - [`BeforeCall`, `AfterCall` - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
     - [`BeforeRun`, `AfterRun` - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
@@ -756,7 +756,8 @@ The output should equal 4
                    +-- matcher
 ```
 
-There are many matchers such as string matcher, status matcher, variable matchers and stat matchers. The `satisfy` matcher is useful for verification with user-defined function.
+There are many matchers such as string matcher, status matcher, variable matchers and stat matchers.
+The `satisfy` matcher is useful for verification with user-defined function.
 
 Please refer to the [Matchers](docs/references.md#matchers) for more details.
 
@@ -897,9 +898,12 @@ End
 
 #### About temporary pending and skip
 
-The pending and skip without message is "temporary pending" and "temporary skip. "x" prefixed example groups and examples are treated as temporary skip.
+The pending and skip without message is "temporary pending" and "temporary skip.
+"x" prefixed example groups and examples are treated as temporary skip.
 
-The (non-temporary) pending and skip is used when it takes a long time to resolve. It may also commit to a version control system. The temporary pending and skip is used during the current work. We do not recommend committing it to a version control system.
+The (non-temporary) pending and skip is used when it takes a long time to resolve.
+It may also commit to a version control system. The temporary pending and skip is used during the current work.
+We do not recommend committing it to a version control system.
 
 These two types are differ in the display of the report. Refer to `--skip-message` and `--pending-message` options.
 
@@ -922,18 +926,21 @@ Todo "It will be implemented"
 
 ### Hooks
 
-#### `Before`, `After` - example hook
+#### `BeforeEach` (`Before`), `AfterEach` (`After`) - example hook
 
-You can specify commands to be executed before / after each example by `Before` and `After`
+You can specify commands to be executed before / after each example by `BeforeEach` (`Before`), `AfterEach` (`After`).
 
-NOTE: Do not assert in `After` hook. it is a place to clean up.
+NOTE: `BeforeEach` and `AfterEach` are supported in version 0.28.0 and later.
+Previous versions should use `Before` and `After` instead.
+
+NOTE: `AfterEach` is for cleanup and do not use for assertions.
 
 ```sh
 Describe 'example hook'
   setup() { :; }
   cleanup() { :; }
-  Before 'setup'
-  After 'cleanup'
+  BeforeEach 'setup'
+  AfterEach 'cleanup'
 
   It 'is called before and after each example'
     ...
@@ -971,7 +978,7 @@ End
 You can specify commands to be executed before / after call evaluation by `BeforeCall` and `AfterCall`
 
 NOTE: These hooks were originally created to test ShellSpec itself.
-Please use the `Before` / `After` hooks whenever possible.
+Please use the `BeforeEach` / `AfterEach` hooks whenever possible.
 
 ```sh
 Describe 'call evaluation hook'
@@ -996,7 +1003,7 @@ These hooks are executed in the same subshell as the "run evaluation".
 Therefore, you can access the variables after executing the evaluation.
 
 NOTE: These hooks were originally created to test ShellSpec itself.
-Please use the `Before` / `After` hooks whenever possible.
+Please use the `BeforeEach` / `AfterEach` hooks whenever possible.
 
 ```sh
 Describe 'run evaluation hook'
@@ -1488,7 +1495,8 @@ NOTE: If you want to verify using shell function, You can use [result](docs/refe
 
 All contributions are welcome!
 
-ShellSpec use an peculiar coding style as for shell scripts to realize high performance, reliability and portability, and the external commands that allowed to use are also greatly restricted.
+ShellSpec use an peculiar coding style as for shell scripts to realize high performance,
+reliability and portability, and the external commands that allowed to use are also greatly restricted.
 
 We recommend that you create WIP PR early or offer suggestions in discussions to avoid ruining your work.
 
