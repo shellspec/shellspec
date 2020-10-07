@@ -155,6 +155,8 @@ shellspec_spec_helper_configure() {
 
   shellspec_before :
   shellspec_after :
+  shellspec_before_each :
+  shellspec_after_each :
   shellspec_before_all :
   shellspec_after_all :
 }

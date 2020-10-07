@@ -1,16 +1,25 @@
 #shellcheck shell=sh disable=SC2016
 
+% MARK_FILE: "$SHELLSPEC_TMPBASE/before_after_each_all"
+
 BeforeAll 'var=0'
 Describe 'BeforeAll / AfterAll hook'
-  BeforeAll '[ "$var" = 0 ] && var=$(($var+1))'
-  AfterAll 'var=$(($var-1)) && [ "$var" = 0 ]'
+  prepare() { @rm -f "$MARK_FILE"; }
+  append() { %printf ' ' >> "$MARK_FILE"; }
+  clean() { @rm "$MARK_FILE"; }
+
+  BeforeAll 'prepare'
+  BeforeAll 'append'
+  AfterAll 'clean'
+
+  File mark-file="$MARK_FILE"
 
   Specify "BeforeAll calls once per block"
-    The variable var should eq 1
+    The length of contents of file mark-file should eq 1
   End
 
   Specify "BeforeAll shares the state"
-    The variable var should eq 1
+    The length of contents of file mark-file should eq 1
   End
 End
 

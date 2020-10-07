@@ -375,6 +375,9 @@ shellspec_proxy shellspec_after_all "shellspec_register_after_hook ALL"
 shellspec_proxy shellspec_before "shellspec_register_before_hook EACH"
 shellspec_proxy shellspec_after "shellspec_register_after_hook EACH"
 
+shellspec_proxy shellspec_before_each "shellspec_register_before_hook EACH"
+shellspec_proxy shellspec_after_each "shellspec_register_after_hook EACH"
+
 shellspec_proxy shellspec_before_call "shellspec_register_before_hook CALL"
 shellspec_proxy shellspec_after_call "shellspec_register_after_hook CALL"
 
