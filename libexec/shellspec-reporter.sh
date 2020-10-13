@@ -141,7 +141,7 @@ reporter_callback() {
 
 tssv_parse "field" reporter_callback ||:
 
-timeout 1 sleep_wait_until read_time_log "time" "$SHELLSPEC_TIME_LOG" ||:
+timeout 1 read_time_log "time" "$SHELLSPEC_TIME_LOG" ||:
 read_time_log "time" "$SHELLSPEC_TIME_LOG" ||:
 
 output_formatters end

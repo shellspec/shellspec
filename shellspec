@@ -130,6 +130,7 @@ export SHELLSPEC_XTRACEFD_VAR=''
 export SHELLSPEC_CLONE_TYPE=''
 export SHELLSPEC_MV="mv"
 export SHELLSPEC_CHMOD="chmod"
+export SHELLSPEC_DATE="date"
 export SHELLSPEC_RM="rm"
 export SHELLSPEC_DOCKER_IMAGE=""
 
@@ -623,6 +624,7 @@ fi
 command_path SHELLSPEC_ENV "env" ||:
 command_path SHELLSPEC_MV "mv" ||:
 command_path SHELLSPEC_CHMOD "chmod" ||:
+command_path SHELLSPEC_DATE "date" ||:
 command_path SHELLSPEC_RM "rm" ||:
 command_path SHELLSPEC_SLEEP "sleep" ||:
 
