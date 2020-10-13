@@ -7,4 +7,4 @@ if [ "$1" = "shellspec" ]; then
   )
 fi
 
-"$@"
+exec "$@"
