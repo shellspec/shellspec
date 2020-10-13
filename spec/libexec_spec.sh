@@ -8,13 +8,15 @@ Describe 'libexec.sh'
   Include "$SHELLSPEC_LIB/libexec.sh"
 
   Describe 'unixtime()'
+    Before "SHELLSPEC_DATE=fake_date"
+
     Parameters
       "2019 08 18 08 17 44" 1566116264
       "2020 01 01 01 23 45" 1577841825
     End
 
     _unixtime() {
-      eval "date() { echo \"$2\"; }"
+      eval "fake_date() { echo \"$2\"; }"
       unixtime "$1"
     }
 

@@ -27,7 +27,7 @@ load() {
 unixtime() {
   IFS=" $IFS"
   #shellcheck disable=SC2046
-  set -- $(date -u +'%Y %m %d %H %M %S') "$1"
+  set -- $("$SHELLSPEC_DATE" -u +'%Y %m %d %H %M %S') "$1"
   IFS=${IFS# }
   set -- "$1" "${2#0}" "${3#0}" "${4#0}" "${5#0}" "${6#0}" "$7"
   [ "$2" -lt 3 ] && set -- $(( $1-1 )) $(( $2+12 )) "$3" "$4" "$5" "$6" "$7"
@@ -140,14 +140,12 @@ if kill -s 0 $$ 2>/dev/null; then
 fi
 
 timeout() {
-  {
-    ( shift; "$@" ) &
-    set -- "$1" "$!"
-    ( sleep "$1"; signal KILL "$2" ) &
-    wait "$2" ||:
-    signal KILL $! ||:
-    wait $! ||:
-  } 2>/dev/null &&:
+  set -- "$(t=0; unixtime t; echo "$t")" "$@"
+  while [ "$(t=0; unixtime t; echo "$t")" -le "$(($1 + $2))" ]; do
+    ( shift 2; "$@" ) && return 0
+    nap
+  done
+  return 0
 }
 
 read_quickfile() {
