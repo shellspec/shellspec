@@ -52,6 +52,9 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Tutorial](#tutorial)
 - [ShellSpec CLI](#shellspec-cli)
 - [Project directory structure](#project-directory-structure)
+- [Specfile (test file)](#specfile-test-file)
+  - [Embedded shell scripts](#embedded-shell-scripts)
+  - [Sample](#sample)
 - [DSL syntax](#dsl-syntax)
   - [Basic structure](#basic-structure)
     - [`Describe`, `Context`, `ExampleGroup` - example group block](#describe-context-examplegroup---example-group-block)
@@ -550,11 +553,15 @@ Project directory
 │                  :
 ```
 
-## DSL syntax
+## Specfile (test file)
 
-**The best place to learn how to write a specfile is the
-[sample/spec](sample/spec) directory. You should take a look at it !**
-*(Those samples include failure examples on purpose.)*
+In ShellSpec, you write your tests in a specfile.
+By default, specfile is a file ending with `_spec.sh` under the `spec` directory.
+
+ShellSpec has its own DSL to write tests. You may seem like distinctive code
+because DSL starts with a capital letter (to distinguish it from a command),
+but the syntax is compatible with shell scripts, and you can embed shell functions
+and use [ShellCheck](https://github.com/koalaman/shellcheck) to check the syntax.
 
 ```sh
 Describe 'lib.sh' # example group
@@ -568,6 +575,28 @@ Describe 'lib.sh' # example group
   End
 End
 ```
+
+NOTE: The specfile is not run directly in the shell, but is converted into
+regular shell scripts before it is run. If you are interested in
+the translated code, you can see with `shellspec --translate`.
+
+### Embedded shell scripts
+
+You can embed shell function (or shell script code) in the specfile.
+This shell function can be used for test preparation and complex testing.
+
+Note that the specfile implements the scope using subshell.
+Shell functions defined in the specfile can only be used within blocks (e.g. `Describe`, `It`, etc).
+
+If you want to use a global function, you can define it in `spec_helper.sh`.
+
+### Sample
+
+**The best place to learn how to write a specfile is the
+[sample/spec](sample/spec) directory. You should take a look at it !**
+*(Those samples include failure examples on purpose.)*
+
+## DSL syntax
 
 ### Basic structure
 
