@@ -1,6 +1,6 @@
 # ShellSpec
 
-ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh, zsh and **all POSIX shells** that provides first-class features such as code coverage, mocking, parallel execution, parameterized testing and more. It was developed as a dev/test tool for **cross-platform shell scripts and shell script libraries**. With lots of practical CLI features and simple yet powerful syntax, it provides you with a fun shell script test environment.
+ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh, zsh and **all POSIX shells** that provides first-class features such as code coverage, mocking, parameterized test, parallel execution and more. It was developed as a dev/test tool for **cross-platform shell scripts and shell script libraries**. With lots of practical CLI features and simple yet powerful syntax, it provides you with a fun shell script test environment.
 
 [![Travis CI](https://img.shields.io/travis/com/shellspec/shellspec/master.svg?label=TravisCI&style=flat-square)](https://travis-ci.com/shellspec/shellspec)
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI&style=flat-square)](https://cirrus-ci.com/github/shellspec/shellspec)
@@ -46,6 +46,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 
 ## Table of Contents <!-- omit in toc -->
 
+- [Supported shells and platforms](#supported-shells-and-platforms)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Tutorial](#tutorial)
@@ -118,10 +119,11 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Extension](#extension)
   - [Custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
 - [For developers](#for-developers)
+  - [Contributions](#contributions)
+  - [Inspired frameworks](#inspired-frameworks)
+  - [Subprojects](#subprojects)
 
-## Requirements
-
-### Supported shells and platforms <!-- omit in toc -->
+## Supported shells and platforms
 
 - <code>[bash][bash]</code>_>=2.03_, <code>[bosh/pbosh][bosh]</code>_>=2018/10/07_, <code>[posh][posh]</code>_>=0.3.14_, <code>[yash][yash]</code>_>=2.29_, <code>[zsh][zsh]</code>_>=3.1.9_
 - <code>[dash][dash]</code>_>=0.5.4_, <code>[busybox][busybox] ash</code>_>=1.20.0_, <code>[busybox-w32][busybox-w32]</code>, <code>[GWSH][gwsh]</code>_>=20190627_
@@ -160,6 +162,8 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 [Docker]: dockerfiles
 
 [Tested version details](docs/shells.md)
+
+## Requirements
 
 ### POSIX-compliant commands <!-- omit in toc -->
 
@@ -1493,6 +1497,8 @@ NOTE: If you want to verify using shell function, You can use [result](docs/refe
 
 ## For developers
 
+### Contributions
+
 All contributions are welcome!
 
 ShellSpec use an peculiar coding style as for shell scripts to realize high performance,
@@ -1502,7 +1508,16 @@ We recommend that you create WIP PR early or offer suggestions in discussions to
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-### Subproject <!-- omit in toc -->
+### Inspired frameworks
+
+- [RSpec](https://rspec.info/) - Behaviour Driven Development for Ruby
+- [Jest](https://jestjs.io/]) - Delightful JavaScript Testing
+- [Mocha](https://mochajs.org/) - the fun, simple, flexible JavaScript test framework
+- [Jasmine](https://jasmine.github.io/) - Behavior-Driven JavaScript
+- [Ginkgo](https://onsi.github.io/ginkgo/) - A Golang BDD Testing Framework
+- [JUnit 5](https://junit.org/junit5/) - The programmer-friendly testing framework for Java
+
+### Subprojects
 
 - [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
 - [ShellBench](https://github.com/shellspec/shellbench) - A benchmark utility for POSIX shell comparison
