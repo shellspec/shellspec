@@ -1,6 +1,6 @@
 # ShellSpec docker images
 
-[ShellSpec](https://github.com/shellspec/shellspec) is BDD style unit testing framework for POSIX compliant shell script
+[ShellSpec](https://shellspec.info/) is a full-featured BDD unit testing framework for shell scripts.
 
 These docker images are for running ShellSpec easily and suitable for incorporating into CI.
 
