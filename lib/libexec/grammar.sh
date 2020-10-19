@@ -36,7 +36,6 @@ define_dsls() {
   done < "$SHELLSPEC_GRAMMAR_DIRECTIVES" &&:
 
   echo '*) return 1 ;; esac; }'
-  shellspec_replace_all dsls " " ""
   echo "is_dsl() { case \$1 in ($dsls) true ;; (*) false ; esac; }"
 }
 eval "$(define_dsls)"
