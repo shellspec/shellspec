@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `BeforeEach` / `AfterEach` as synonym for `Before` / `After`.
 
+### Removed
+
+- Removed `--kcov-common-options` option.
+
 ## [0.27.1] - 2020-09-30
 
 ### Removed
