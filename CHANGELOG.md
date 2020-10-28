@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed `--kcov-common-options` option.
 
+## [0.27.2] - 2020-10-28
+
+### Fixed
+
+- Fixed a bug that didn't cause an error if there are fixed examples
+
 ## [0.27.1] - 2020-09-30
 
 ### Removed
