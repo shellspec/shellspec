@@ -58,6 +58,8 @@
     "lib/cov/kcov/.zshenv",
     "lib/ext/ext.sh",
     "lib/general.sh",
+    "lib/getoptions.sh",
+    "lib/getoptions_help.sh",
     "lib/libexec.sh",
     "lib/libexec/binary.sh",
     "lib/libexec/executor.sh",
