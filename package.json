@@ -69,6 +69,7 @@
     "lib/libexec/grammar/dsls",
     "lib/libexec/kcov-executor.sh",
     "lib/libexec/list.sh",
+    "lib/libexec/optparser.sh",
     "lib/libexec/parallel-executor.sh",
     "lib/libexec/reporter.sh",
     "lib/libexec/reporter/color_schema.sh",
