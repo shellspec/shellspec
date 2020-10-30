@@ -25,78 +25,41 @@ export SHELLSPEC_GRAMMAR_DIRECTIVES=''
 export SHELLSPEC_GRAMMAR_BLOCKS=''
 export SHELLSPEC_SPECDIR=''
 export SHELLSPEC_LOAD_PATH=''
-export SHELLSPEC_SHELL=''
-export SHELLSPEC_SANDBOX=''
-export SHELLSPEC_SANDBOX_PATH=''
 export SHELLSPEC_DEFECT_SANDBOX=''
 export SHELLSPEC_PATH_IS_READONLY=''
 export SHELLSPEC_SUPPORT_BIN=''
 export SHELLSPEC_SUPPORT_BINDIR=''
-export SHELLSPEC_ENV="env"
 export SHELLSPEC_UNREADONLY_PATH=''
-export SHELLSPEC_PRINTF="printf"
-export SHELLSPEC_SLEEP="sleep"
 export SHELLSPEC_MSLEEP=''
-export SHELLSPEC_TRAP="trap"
 export SHELLSPEC_BUILTIN_PRINTF=''
 export SHELLSPEC_BUILTIN_PRINT=''
 export SHELLSPEC_BUILTIN_TYPESETF=''
 export SHELLSPEC_TIME=''
 export SHELLSPEC_TMPBASE=''
 export SHELLSPEC_TIME_LOG=''
-export SHELLSPEC_FORMATTER='progress'
-export SHELLSPEC_GENERATORS=''
 export SHELLSPEC_REPORTDIR=''
-export SHELLSPEC_COLOR=''
-export SHELLSPEC_REQUIRES=''
 export SHELLSPEC_SPEC_FAILURE_CODE=101
 export SHELLSPEC_STDERR_OUTPUT_CODE=102
 export SHELLSPEC_SYNTAX_ERROR_CODE=103
-export SHELLSPEC_SKIP_MESSAGE=verbose
-export SHELLSPEC_PENDING_MESSAGE=verbose
-export SHELLSPEC_WARNING_AS_FAILURE=1
-export SHELLSPEC_FAIL_FAST_COUNT=''
-export SHELLSPEC_FAIL_NO_EXAMPLES=''
-export SHELLSPEC_FAIL_LOW_COVERAGE=''
-export SHELLSPEC_WORKERS=0
-export SHELLSPEC_DRYRUN=''
-export SHELLSPEC_FOCUS_FILTER=''
-export SHELLSPEC_TAG_FILTER=''
-export SHELLSPEC_EXAMPLE_FILTER=''
-export SHELLSPEC_BANNER=''
-export SHELLSPEC_MODE='runner'
+export SHELLSPEC_BANNER_FILE=''
 export SHELLSPEC_LIST=''
 export SHELLSPEC_COUNT_FILE=''
-export SHELLSPEC_ENV_FROM=''
-export SHELLSPEC_PATTERN="*_spec.sh"
 export SHELLSPEC_UNIXTIME=''
 export SHELLSPEC_DEBUG_TRAP=''
 export SHELLSPEC_TMPDIR=${TMPDIR:-${TMP:-/tmp}}
-export SHELLSPEC_LOGFILE=/dev/tty
-export SHELLSPEC_DEPRECATION_LOG=1
 export SHELLSPEC_DEPRECATION_LOGFILE=".shellspec-deprecation.log"
-export SHELLSPEC_KEEP_TEMPDIR=''
-export SHELLSPEC_DEFAULT_PATH=spec
 export SHELLSPEC_INFILE=file
-export SHELLSPEC_RANDOM=''
-export SHELLSPEC_SEED=''
 export SHELLSPEC_COVERAGE_SETUP=''
 export SHELLSPEC_COVERAGE_SHELL_OPTIONS=''
 export SHELLSPEC_COVERAGE_DIR=''
-export SHELLSPEC_COVERAGE_KSH_WORKAROUND=''
-export SHELLSPEC_KCOV=''
+export SHELLSPEC_KCOV_COMMON_OPTS='' # TODO: remove
 export SHELLSPEC_KCOV_COMPATIBLE_SHELL=''
 export SHELLSPEC_KCOV_VERSION=''
-export SHELLSPEC_KCOV_PATH='kcov'
-export SHELLSPEC_KCOV_COMMON_OPTS=''
-export SHELLSPEC_KCOV_OPTS=''
 export SHELLSPEC_KCOV_FILENAME=''
 export SHELLSPEC_KCOV_IN_FILE=''
 export SHELLSPEC_OUTPUT_FD=9
 export SHELLSPEC_REPORTER_PID='.shellspec-reporter.pid'
-export SHELLSPEC_PROFILER=''
 export SHELLSPEC_PROFILER_LOG=''
-export SHELLSPEC_PROFILER_LIMIT=10
 export SHELLSPEC_PROFILER_REPORT=".shellspec-profiler.log"
 export SHELLSPEC_DEFECT_READONLY=''
 export SHELLSPEC_DEFECT_BUILTIN=''
@@ -115,24 +78,25 @@ export SHELLSPEC_SHOPT_AVAILABLE=''
 export SHELLSPEC_FAILGLOB_AVAILABLE=''
 export SHELLSPEC_NOMATCH_AVAILABLE=''
 export SHELLSPEC_PATHSEP=":"
-export SHELLSPEC_QUICK=''
 export SHELLSPEC_QUICK_FILE=".shellspec-quick.log"
 export SHELLSPEC_REPAIR=''
 export SHELLSPEC_INFO=''
 export SHELLSPEC_TTY=''
 export SHELLSPEC_DEV_TTY="/dev/null"
-export SHELLSPEC_XTRACE=''
-export SHELLSPEC_XTRACE_ONLY=''
 export SHELLSPEC_XTRACE_ON=''
 export SHELLSPEC_XTRACE_OFF=''
 export SHELLSPEC_XTRACEFD=2
 export SHELLSPEC_XTRACEFD_VAR=''
 export SHELLSPEC_CLONE_TYPE=''
+
+export SHELLSPEC_ENV="env"
+export SHELLSPEC_PRINTF="printf"
+export SHELLSPEC_SLEEP="sleep"
+export SHELLSPEC_TRAP="trap"
 export SHELLSPEC_MV="mv"
 export SHELLSPEC_CHMOD="chmod"
 export SHELLSPEC_DATE="date"
 export SHELLSPEC_RM="rm"
-export SHELLSPEC_DOCKER_IMAGE=""
 
 #shellcheck disable=SC2039,SC3028
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -162,10 +126,10 @@ SHELLSPEC_ROOT="${SHELLSPEC_SELF%/*}"
 SHELLSPEC_LIB="$SHELLSPEC_ROOT/lib"
 SHELLSPEC_REPORTERLIB="$SHELLSPEC_LIB/libexec/reporter"
 
-[ -t 1 ] && [ ! "${NO_COLOR:-}" ] && SHELLSPEC_COLOR=1
-
 # shellcheck source=lib/libexec/shellspec.sh
 . "$SHELLSPEC_LIB/libexec/shellspec.sh"
+# shellcheck source=lib/libexec/optparser.sh
+. "$SHELLSPEC_LIB/libexec/optparser.sh"
 
 unixtime SHELLSPEC_UNIXTIME
 
@@ -182,7 +146,7 @@ SHELLSPEC_SUPPORT_BIN="$SHELLSPEC_LIB/support-bin.sh"
 SHELLSPEC_SUPPORT_BINDIR="$SHELLSPEC_SPECDIR/support/bin"
 SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/.shellspec-time.log"
 SHELLSPEC_PROFILER_LOG="$SHELLSPEC_TMPBASE/.shellspec-profiler.log"
-SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner"
+SHELLSPEC_BANNER_FILE="$SHELLSPEC_SPECDIR/banner"
 
 while IFS= read -r option; do
   SHELLSPEC_KCOV_COMMON_OPTS="$SHELLSPEC_KCOV_COMMON_OPTS$option "
@@ -195,316 +159,10 @@ HERE
 SHELLSPEC_KCOV_FILENAME="$SHELLSPEC_PROJECT_NAME [specfiles]"
 SHELLSPEC_KCOV_IN_FILE="$SHELLSPEC_TMPBASE/kcov/$SHELLSPEC_KCOV_FILENAME"
 
-usage() {
-  while IFS= read -r line; do
-    [ "$1" = "--help" ] && echo "${line%\ \|\ *}" && continue
-    spaces=${line%%[! ]*} && [ ${#spaces} -lt 10 ] && echo "$line"
-  done <<USAGE
-Usage: shellspec [options...] [files or directories...]
+eval "$(getoptions parser_definition parse_options SHELLSPEC error_message)"
 
-  Using + instead of - for short options causes reverses the meaning
-
-    -s, --shell SHELL               Specify a path of shell [default: "auto" (the shell running shellspec)]
-                                      ShellSpec ignores shebang and runs in the specified shell.
-        --path PATH                 Set PATH environment variable at startup
-                                      e.g. --path /bin:/usr/bin, --path "\$(getconf PATH)"
-        --[no-]sandbox              Force the use of the mock instead of the actual command
-                                      Make PATH empty (except "spec/support/bin" and mock dir) and readonly
-                                      This is not a security feature and does not provide complete isolation
-        --sandbox-path SANDBOX-PATH Make PATH the sandbox path instead of empty (default: empty)
-        --require MODULE            Require a MODULE (shell script file)
-    -e, --env NAME=VALUE            Set environment variable
-        --env-from ENV-SCRIPT       Set environment variable from shell script file
-    -w, --[no-]warning-as-failure   Treat warning as failure [default: enabled]
-        --[no-]fail-fast[=COUNT]    Abort the run after first (or COUNT) of failures [default: disabled]
-        --[no-]fail-no-examples     Fail if no examples found [default: disabled]
-        --[no-]fail-low-coverage    Fail on low coverage [default: disabled]
-                                    The coverage threshold is specified by the coverage option
-    -p, --[no-]profile              Enable profiling and list the slowest examples [default: disabled]
-                                      Profiler tries to use 100% ability of 1 CPU (1 core).
-                                      Therefore, not recommended for single(-core) CPU.
-        --profile-limit N           List the top N slowest examples [default: 10]
-        --[no-]boost                Increase the CPU frequency to boost up testing speed [default: disabled]
-                                      Equivalent of --profile --profile-limit 0
-                                      (Don't worry, this is not overclocking. This is joke option but works.)
-        --log-file LOGFILE          Log file for %logger directive and trace [default: /dev/tty]
-        --keep-tempdir              Do not cleanup temporary directory [default: disabled]
-
-  **** Execution ****
-
-    -q, --[no-]quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
-                                      not-passed examples: failure and temporary pending examples
-                                      Quick mode is automatically enabled. To disable quick mode,
-                                      delete .shellspec-quick.log on the project root directory.
-    -r, --repair, --only-failures   Run failure examples only (Depends on quick mode)
-    -n, --next,   --next-failure    Run failure examples and abort on first failure (Depends on quick mode)
-                                      Equivalent of --repair --fail-fast --random none
-    -j, --jobs JOBS                 Number of parallel jobs to run [default: 0 (disabled)]
-        --random TYPE[:SEED]        Run examples by the specified random type | <[none]> [specfiles] [examples]
-                                      [none]          run in the defined order [default]
-                                      [specfiles]     randomize the order of specfiles
-                                      [examples]      randomize the order of examples (slow)
-    -x, --xtrace                    Run examples with trace output of evaluation enabled [default: disabled]
-                                      Fall back to --xtrace-only if BASH_XTRACEFD not supported.
-    -X, --xtrace-only               Run examples with trace output only enabled [default: disabled]
-                                      The evaluation is executed, but the expectations are skipped.
-        --dry-run                   Print the formatter output without running any examples [default: disabled]
-
-  **** Output ****
-
-        --[no-]banner               Show banner if exist 'spec/banner' [default: enabled]
-    -f, --format FORMATTER          Choose a formatter for display | <[p]> [d] [t] [j] [f] [null] [debug]
-                                      [p]rogress      dots [default]
-                                      [d]ocumentation group and example names
-                                      [t]ap           TAP format
-                                      [j]unit         JUnit XML (time attributre with --profile)
-                                      [f]ailures      file:line:message (suitable for editors integration)
-                                      [null]          do not display anything
-                                      [debug]         for developers
-                                      custom formatter name
-    -o, --output GENERATOR          Choose a generator(s) to generate a report file(s) [default: none]
-                                      You can use the same name as FORMATTER. (multiple options allowed)
-        --[no-]color                Enable or disable color [default: enabled if the output is a TTY]
-                                      Disable if NO_COLOR environment variable set
-        --skip-message VERBOSITY    Mute skip message | <[verbose]> [moderate] [quiet]
-                                      [verbose]       do not mute any messages [default]
-                                      [moderate]      mute repeated messages
-                                      [quiet]         mute repeated or non-temporary messages
-        --pending-message VERBOSITY Mute pending message | <[verbose]> [quiet]
-                                      [verbose]       do not mute any messages [default]
-                                      [quiet]         mute non-temporary messages
-        --quiet                     Equivalent of --skip-message quiet --pending-message quiet
-        --(show|hide)-deprecations  Show or hide deprecations details [default: show]
-
-  **** Ranges / Filters / Focus ****
-
-    You can run selected examples by specified the line numbers or ids
-
-      shellspec path/to/a_spec.sh:10    # Run the groups or examples that includes lines 10
-      shellspec path/to/a_spec.sh:@1-5  # Run the 5th groups/examples defined in the 1st group
-      shellspec a_spec.sh:10:@1:20:@2   # You can mixing multiple line numbers and ids with join by ':'
-
-    -F, --focus                     Run focused groups / examples only
-    -P, --pattern PATTERN           Load files matching pattern [default: "*_spec.sh"]
-    -E, --example PATTERN           Run examples whose names include PATTERN
-    -T, --tag TAG[:VALUE]           Run examples with the specified TAG
-    -D, --default-path PATH         Set the default path where looks for examples [defualt: "spec"]
-
-  **** Coverage ****
-
-        --[no-]kcov                 Enable coverage using kcov [default: disabled]
-                                      Requires kcov (v35 or later) and bash/zsh/ksh, parallel execution is ignored.
-        --kcov-path PATH            Specify kcov path [default: kcov]
-        --kcov-options OPTIONS      Additional Kcov options (coverage limits, coveralls id, etc)
-                                      Default specified options: (can be overwritten)
-                                        --include-path=.
-                                        --include-pattern=.sh
-                                        --exclude-pattern=/.shellspec,/spec/,/coverage/,/report/
-                                        --path-strip-level=1
-                                      To include files without extension, specify --include-pattern
-                                      without '.sh' and filter with --include-*/--exclude-* options.
-
-  **** Utility ****
-
-        --init [TEMPLATE...]        Initialize your project with ShellSpec | [git] [hg] [svn]
-                                      Template: Create additional files.
-                                        [git]   .gitignore
-                                        [hg]    .hgignore
-                                        [svn]   .svnignore
-        --gen-bin [@COMMAND...]     Generate test support commands in spec/support/bin
-                                      This is useful for run actual commands from mock/stub.
-        --count                     Count the number of specfiles and examples
-        --list LIST                 List the specfiles/examples | [specfiles] [examples(:id|:lineno)]
-                                      [specfiles]       list the specfiles
-                                      [examples]        list the examples with id
-                                      [examples:id]     alias for examples
-                                      [examples:lineno] list the examples with lineno
-                                      [debug]           for developer
-                                      The order is randomized with --random but random TYPE is ignored.
-        --syntax, --syntax-check    Syntax check of the specfiles without running any examples
-        --translate                 Output translated specfile
-        --docker DOCKER-IMAGE       Run tests in specified docker image (EXPERIMENTAL)
-                                      This is an experimental feature and may be changed/removed in the future.
-        --task [TASK]               Run the TASK or Show the task list if TASK is not specified
-    -v, --version                   Display the version
-    -h, --help                      -h: short help, --help: long help
-USAGE
-}
-
-parse_options() {
-  length=$# params='' formatters="progress documentation tap junit failures"
-  while [ $# -gt 0 ]; do
-    case $1 in
-      --banner) SHELLSPEC_BANNER="$SHELLSPEC_SPECDIR/banner" ;;
-      --no-banner) SHELLSPEC_BANNER='' ;;
-      -f | --format) [ "${2:-}" ] || invalid 'Require FORMATTER.'
-        case $2 in (*[!a-z0-9_]*) invalid 'Invalid FORMATTER name.'; esac
-        SHELLSPEC_FORMATTER=$2
-        for formatter in $formatters; do
-          case $formatter in ($2*) SHELLSPEC_FORMATTER=$formatter; esac
-        done
-        shift ;;
-      -o | --output) [ "${2:-}" ] || invalid 'Require GENERATOR.'
-        case $2 in (*[!a-z0-9_]*) invalid 'Invalid GENERATOR name.'; esac
-        SHELLSPEC_GENERATORS="$SHELLSPEC_GENERATORS $2"
-        for formatter in $formatters; do
-          case $formatter in ($2*)
-            SHELLSPEC_GENERATORS="${SHELLSPEC_GENERATORS% *} $formatter"
-          esac
-        done
-        shift ;;
-      --force-color | --force-colour) SHELLSPEC_COLOR=1 ;;
-      --color | --colour) SHELLSPEC_COLOR=1 ;;
-      --no-color | --no-colour) SHELLSPEC_COLOR='' ;;
-      -s | --shell) [ "${2:-}" ] || invalid 'Require SHELL.'
-        [ "$2" = "auto" ] && SHELLSPEC_SHELL="" || SHELLSPEC_SHELL=$2
-        shift ;;
-      --path) [ "${2:-}" ] || invalid 'Require PATH.'
-        PATH=$2
-        shift ;;
-      --sandbox) SHELLSPEC_SANDBOX=1 ;;
-      --no-sandbox) SHELLSPEC_SANDBOX='' ;;
-      --sandbox-path) [ "${2+x}" ] || invalid 'Require SANDBOX-PATH.'
-        SHELLSPEC_SANDBOX_PATH=${2:-}
-        shift ;;
-      --random) [ "${2:-}" ] || invalid 'Require TYPE[:SEED].'
-        case ${2%%:*} in
-          none) SHELLSPEC_RANDOM='' ;;
-          specfiles|examples) SHELLSPEC_RANDOM=${2%%:*} ;;
-          *) invalid 'Invalid TYPE[:SEED].'
-        esac
-        case $2 in (*:*) SHELLSPEC_SEED=${2#*:} ;; (*) SHELLSPEC_SEED=''; esac
-        shift ;;
-      -j | --jobs) [ "${2:-}" ] || invalid 'Require JOBS.'
-        SHELLSPEC_WORKERS=$2
-        case $2 in (*[!0-9]*)
-          SHELLSPEC_WORKERS=0
-        esac
-        shift ;;
-      -q | --quick) SHELLSPEC_QUICK=1 ;;
-      +q | --no-quick) SHELLSPEC_QUICK='' ;;
-      -r | --repair | --only | --only-failures)
-        SHELLSPEC_QUICK=1 SHELLSPEC_REPAIR=1 ;;
-      -n | --next | --next-failure)
-        SHELLSPEC_QUICK=1 SHELLSPEC_REPAIR=1
-        SHELLSPEC_FAIL_FAST_COUNT=1 SHELLSPEC_RANDOM="" ;;
-      --dry-run) SHELLSPEC_DRYRUN=1 ;;
-      --log-file) [ "${2:-}" ] || invalid 'Require LOGFILE.'
-        SHELLSPEC_LOGFILE=$2
-        shift ;;
-      --keep-tempdir) SHELLSPEC_KEEP_TEMPDIR=1 ;;
-      -F | --focus) SHELLSPEC_FOCUS_FILTER=1 ;;
-      -P | --pattern) [ "${2:-}" ] || invalid 'Require PATTERN.'
-        SHELLSPEC_PATTERN=$2
-        shift ;;
-      -E | --example) [ "${2:-}" ] || invalid 'Require PATTERN.'
-        if [ "$SHELLSPEC_EXAMPLE_FILTER" ]; then
-          SHELLSPEC_EXAMPLE_FILTER="$SHELLSPEC_EXAMPLE_FILTER|$2"
-        else
-          SHELLSPEC_EXAMPLE_FILTER="$2"
-        fi
-        shift ;;
-      -T | --tag) [ "${2:-}" ] || invalid 'Require TAG.'
-        SHELLSPEC_TAG_FILTER="${SHELLSPEC_TAG_FILTER%,},$2,"
-        shift ;;
-      -D | --default-path) [ "${2:-}" ] || invalid 'Require PATH.'
-        SHELLSPEC_DEFAULT_PATH=$2
-        shift ;;
-      -e | --env) [ "${2:-}" ] || invalid 'Require NAME=VALUE.'
-        #shellcheck disable=SC2034
-        case $2 in
-          *=*) name=${2%%=*} value=${2#*=} ;;
-          *) name=$2 value='' ;;
-        esac
-        case $name in ([!a-zA-Z_]*) invalid 'Invalid environment name.'; esac
-        case $name in (*[!a-zA-Z0-9_]*) invalid 'Invalid environment name.'; esac
-        eval "export $name=\$value"
-        shift ;;
-      --env-from) [ "${2:-}" ] || invalid 'Require ENV-SCRIPT.'
-        [ -e "$2" ] || invalid "Not found ENV-SCRIPT '$2'."
-        case $2 in
-          /* | ./* | ../*) SHELLSPEC_ENV_FROM=$2 ;;
-          *) SHELLSPEC_ENV_FROM="./$2" ;;
-        esac
-        shift ;;
-      --require) [ "${2:-}" ] || invalid 'Require PATH.'
-        SHELLSPEC_REQUIRES="$SHELLSPEC_REQUIRES${SHELLSPEC_REQUIRES:+:}$2"
-        shift ;;
-      -w | --warning-as-failure) SHELLSPEC_WARNING_AS_FAILURE=1 ;;
-      +w | --no-warning-as-failure) SHELLSPEC_WARNING_AS_FAILURE='' ;;
-      --skip-message) [ "${2:-}" ] || invalid 'Require VERBOSE.'
-        case $2 in (verbose|moderate|quiet) ;;
-          *) invalid 'Invalid VERBOSE.'
-        esac
-        SHELLSPEC_SKIP_MESSAGE="$2"
-        shift ;;
-      --pending-message) [ "${2:-}" ] || invalid 'Require VERBOSE.'
-        case $2 in (verbose|quiet) ;;
-          *) invalid 'Invalid VERBOSE.'
-        esac
-        SHELLSPEC_PENDING_MESSAGE="$2"
-        shift ;;
-      --quiet) SHELLSPEC_SKIP_MESSAGE=quiet SHELLSPEC_PENDING_MESSAGE=quiet ;;
-      --fail-fast | --fail-fast=*)
-        SHELLSPEC_FAIL_FAST_COUNT=${1#*=}
-        case $SHELLSPEC_FAIL_FAST_COUNT in (*[!0-9]*)
-          SHELLSPEC_FAIL_FAST_COUNT=1
-        esac ;;
-      --no-fail-fast) SHELLSPEC_FAIL_FAST_COUNT='' ;;
-      --fail-no-examples) SHELLSPEC_FAIL_NO_EXAMPLES=1 ;;
-      --no-fail-no-examples) SHELLSPEC_FAIL_NO_EXAMPLES='' ;;
-      --fail-low-coverage) SHELLSPEC_FAIL_LOW_COVERAGE=1 ;;
-      --no-fail-low-coverage) SHELLSPEC_FAIL_LOW_COVERAGE='' ;;
-      --kcov) SHELLSPEC_KCOV=1 ;;
-      --no-kcov) SHELLSPEC_KCOV='' ;;
-      --kcov-path) [ "${2:-}" ] || invalid 'Require PATH.'
-        SHELLSPEC_KCOV_PATH="$2"
-        shift ;;
-      --kcov-common-options) [ "${2:-}" ] || invalid 'Require OPTIONS.'
-        SHELLSPEC_KCOV_COMMON_OPTS="$2"
-        warn "--kcov-common-options is deprecated, merge into --kcov-options"
-        shift ;;
-      --kcov-options) [ "${2:-}" ] || invalid 'Require OPTIONS.'
-        SHELLSPEC_KCOV_OPTS="${SHELLSPEC_KCOV_OPTS}${SHELLSPEC_KCOV_OPTS:+ }$2"
-        shift ;;
-      --coverage-ksh-workaround) SHELLSPEC_COVERAGE_KSH_WORKAROUND=1 ;;
-      -p | --profile) SHELLSPEC_PROFILER=1 ;;
-      +p | --no-profile) SHELLSPEC_PROFILER='' ;;
-      --profile-limit) [ "${2:-}" ] || invalid 'Require N.'
-        SHELLSPEC_PROFILER_LIMIT="$2"
-        shift ;;
-      --boost) SHELLSPEC_PROFILER=1 SHELLSPEC_PROFILER_LIMIT=0 ;;
-      --no-boost) SHELLSPEC_PROFILER='' SHELLSPEC_PROFILER_LIMIT=10 ;;
-      --show-deprecations) SHELLSPEC_DEPRECATION_LOG=1 ;;
-      --hide-deprecations) SHELLSPEC_DEPRECATION_LOG='' ;;
-      --init | --gen-bin | --task | --translate)
-        SHELLSPEC_MODE=${1#--} ;;
-      --count) SHELLSPEC_MODE=list SHELLSPEC_LIST='' ;;
-      --syntax | --syntax-check)
-        SHELLSPEC_MODE=syntax-check ;;
-      --list) [ "${2:-}" ] || invalid 'Require LIST.'
-        case $2 in (specfiles|examples|examples:id|examples:lineno|debug) ;;
-          *) invalid 'Invalid LIST.'
-        esac
-        SHELLSPEC_MODE=list SHELLSPEC_LIST=$2
-        shift ;;
-      -x | --xtrace) SHELLSPEC_XTRACE=1 ;;
-      -X | --xtrace-only) SHELLSPEC_XTRACE=1 SHELLSPEC_XTRACE_ONLY=1 ;;
-      --docker) [ "${2:-}" ] || invalid 'Require DOCKER-IMAGE.'
-        SHELLSPEC_DOCKER_IMAGE=$2
-        shift ;;
-      -h | --help) usage "$1" && exit 0;;
-      -v | --version) echo "$SHELLSPEC_VERSION" && exit 0 ;;
-      -*) invalid "Unknown option '$1'." ;;
-      *) params="$params \"\${$(($length - $# + 1))}\""
-    esac
-    shift
-  done
-}
-
-invalid() {
-  [ "${options_file:-}" ] && set -- "$@" "[$options_file]"
-  abort "$@"
+error_message() {
+  error "$1${options_file:+" [$options_file]"}"
 }
 
 options_file() {
@@ -512,7 +170,6 @@ options_file() {
   read_options_file "$1" parse_options
   unset options_file
 }
-
 enum_options_file options_file
 params=''
 [ $# -gt 0 ] && parse_options "$@"
@@ -530,7 +187,7 @@ if [ "${SHELLSPEC_DOCKER_IMAGE#:}" ]; then
 fi
 eval "set -- $params"
 
-if [ ! "$SHELLSPEC_SHELL" ]; then
+if [ "${SHELLSPEC_SHELL:-auto}" = "auto" ]; then
   # shellcheck disable=SC2039,SC3047
   if [ "$SHELLSPEC_KCOV" ] && ! (trap '' DEBUG) 2>/dev/null; then
     for shell in sh bash ksh zsh :; do
@@ -552,7 +209,7 @@ fi
 if command_path shell "${SHELLSPEC_SHELL%% *}"; then
   case $SHELLSPEC_SHELL in (*\ *) shell="$shell ${SHELLSPEC_SHELL#* }"; esac
   SHELLSPEC_SHELL=$shell
-elif ! $SHELLSPEC_SHELL -c ''; then
+elif ! $SHELLSPEC_SHELL -c '' >/dev/null 2>&1; then
   abort "Not found specified shell: $SHELLSPEC_SHELL."
 fi
 
@@ -592,6 +249,7 @@ if [ "$SHELLSPEC_DEFECT_SANDBOX" ]; then
   warn "Some features may fail due to incompatibilities with sandbox features."
 fi
 
+# shellcheck disable=SC2153
 if [ "$SHELLSPEC_XTRACE" ]; then
   if [ ! "$SHELLSPEC_XTRACE_ONLY" ]; then
     [ "$SHELLSPEC_XTRACEFD_VAR" ] && SHELLSPEC_XTRACEFD=9
@@ -674,12 +332,12 @@ case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
 esac
 
 case $SHELLSPEC_MODE in (runner | list)
+  # shellcheck disable=SC2153
   if [ "$SHELLSPEC_RANDOM" ] && [ ! "$SHELLSPEC_SEED" ]; then
     random_seed SHELLSPEC_SEED "$SHELLSPEC_UNIXTIME" "$$"
     info "Randomized with seed $SHELLSPEC_SEED" >&2
   fi
 esac
-
 [ "$SHELLSPEC_ENV_FROM" ] && exec="load-env" || exec=$SHELLSPEC_MODE
 exec="$SHELLSPEC_LIBEXEC/shellspec-${exec}.sh"
 eval exec "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'}
