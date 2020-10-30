@@ -76,6 +76,10 @@ Describe "getoptions()"
 				flag FLAG_A -a
 			}
 			It "resets OPTIND and OPTARG"
+				# Workaround for ksh 88
+				foo() { [ "$OPTIND" -eq 1 ] || unset OPTIND; }
+				OPTIND=1 && foo
+
 				When call parse -a
 				The variable OPTIND should eq 1
 				The variable OPTARG should be undefined
