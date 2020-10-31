@@ -122,9 +122,14 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Extension](#extension)
   - [Custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
 - [For developers](#for-developers)
-  - [Contributions](#contributions)
-  - [Inspired frameworks](#inspired-frameworks)
   - [Subprojects](#subprojects)
+    - [ShellMetrics - Cyclomatic Complexity Analyzer for shell scripts](#shellmetrics---cyclomatic-complexity-analyzer-for-shell-scripts)
+    - [ShellBench - A benchmark utility for POSIX shell comparison](#shellbench---a-benchmark-utility-for-posix-shell-comparison)
+  - [Related projects](#related-projects)
+    - [getoptions - An elegant option parser and generator for shell scripts](#getoptions---an-elegant-option-parser-and-generator-for-shell-scripts)
+    - [readlinkf - readlink -f implementation for shell scripts](#readlinkf---readlink--f-implementation-for-shell-scripts)
+  - [Inspired frameworks](#inspired-frameworks)
+  - [Contributions](#contributions)
 
 ## Supported shells and platforms
 
@@ -1526,16 +1531,25 @@ NOTE: If you want to verify using shell function, You can use [result](docs/refe
 
 ## For developers
 
-### Contributions
+### Subprojects
 
-All contributions are welcome!
+#### ShellMetrics - Cyclomatic Complexity Analyzer for shell scripts
 
-ShellSpec use an peculiar coding style as for shell scripts to realize high performance,
-reliability and portability, and the external commands that allowed to use are also greatly restricted.
+URL: [https://github.com/shellspec/shellmetrics](https://github.com/shellspec/shellmetrics)
 
-We recommend that you create WIP PR early or offer suggestions in discussions to avoid ruining your work.
+#### ShellBench - A benchmark utility for POSIX shell comparison
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+URL: [https://github.com/shellspec/shellbench](https://github.com/shellspec/shellbench)
+
+### Related projects
+
+#### getoptions - An elegant option parser and generator for shell scripts
+
+URL: [https://github.com/ko1nksm/getoptions](https://github.com/ko1nksm/getoptions)
+
+#### readlinkf - readlink -f implementation for shell scripts
+
+URL: [https://github.com/ko1nksm/readlinkf](https://github.com/ko1nksm/readlinkf)
 
 ### Inspired frameworks
 
@@ -1546,7 +1560,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 - [Ginkgo](https://onsi.github.io/ginkgo/) - A Golang BDD Testing Framework
 - [JUnit 5](https://junit.org/junit5/) - The programmer-friendly testing framework for Java
 
-### Subprojects
+### Contributions
 
-- [ShellMetrics](https://github.com/shellspec/shellmetrics) - Cyclomatic Complexity Analyzer for shell scripts
-- [ShellBench](https://github.com/shellspec/shellbench) - A benchmark utility for POSIX shell comparison
+All contributions are welcome!
+
+ShellSpec use an peculiar coding style as for shell scripts to realize high performance,
+reliability and portability, and the external commands that allowed to use are also greatly restricted.
+
+We recommend that you create WIP PR early or offer suggestions in discussions to avoid ruining your work.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
