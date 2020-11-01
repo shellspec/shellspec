@@ -17,18 +17,18 @@ jobs:
     - os: linux # Ubuntu 14.04
       dist: trusty
       env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
-    - os: linux # Ubuntu 16.04
-      dist: xenial
-      env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
-    - os: linux # Ubuntu 18.04
-      dist: bionic
-      env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
-    - os: linux # Ubuntu 20.04
-      dist: focal
-      env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
-    # - os: osx # macOS Homebrew
-    #   osx_image: xcode11.5
-    #   env: FORMULAS="dash bash zsh ksh mksh yash"
+#   - os: linux # Ubuntu 16.04
+#     dist: xenial
+#     env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+#   - os: linux # Ubuntu 18.04
+#     dist: bionic
+#     env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+#   - os: linux # Ubuntu 20.04
+#     dist: focal
+#     env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+#   - os: osx # macOS Homebrew
+#     osx_image: xcode11.5
+#     env: FORMULAS="dash bash zsh ksh mksh yash"
     - os: osx # macOS 10.10 Yosemite 2014-06
       osx_image: xcode6.4
       env: SHELLS="sh bash zsh ksh"
@@ -44,11 +44,11 @@ jobs:
     - os: osx # macOS 10.14 Mojave 2018-06
       osx_image: xcode10.2
       env: SHELLS="sh bash zsh ksh"
-    - os: osx # macOS 10.15.4 Catalina 2020-03
-      osx_image: xcode11.5
-      env: SHELLS="sh bash zsh ksh"
+#   - os: osx # macOS 10.15.4 Catalina 2020-03
+#     osx_image: xcode11.5
+#     env: SHELLS="sh bash zsh ksh"
     - os: osx # coverage
-      osx_image: xcode11.5
+      osx_image: xcode12.2
       env: FORMULAS="bash kcov" COVERAGE=1 CODECOV=1 CC=1
 before_install:
   - if [ "$PACKAGES" ]; then sudo apt-get install -y $PACKAGES; fi

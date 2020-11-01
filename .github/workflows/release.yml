@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Make dist archive
       run: make dist
     - name: Create release
@@ -23,7 +23,7 @@ jobs:
         draft: false
         prerelease: ${{ contains(github.ref, '-') }}
     - name: Upload release asset
-      uses: actions/upload-release-asset@v1.0.1
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
