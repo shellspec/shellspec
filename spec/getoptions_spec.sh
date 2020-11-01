@@ -192,19 +192,19 @@ Describe "getoptions()"
 		arg() { false; }
 		myerror() {
 			case $2 in
-				unknown) echo "custom $2: $3"; return 20 ;;
-				valid:3) echo "valid $2: $3"; return 30 ;;
-				pattern:'foo | bar') echo "pattern $2: $3"; return 40 ;;
-				arg:*) echo "invalid argument: $OPTARG"; return 1 ;;
-				noarg) echo "noarg: $OPTARG"; return 1 ;;
+				unknown) echo "custom $2: $3 [$OPTARG]"; return 20 ;;
+				valid:3) echo "valid $2: $3 [$OPTARG]"; return 30 ;;
+				pattern:'foo | bar') echo "pattern $2: $3 [$OPTARG]"; return 40 ;;
+				arg:*) echo "invalid argument [$OPTARG]"; return 1 ;;
+				noarg) echo "noarg [$OPTARG]"; return 1 ;;
 			esac
-			[ "$3" = "-q" ] && echo "$1" && return 1
+			[ "$3" = "-q" ] && echo "$1 [$OPTARG]" && return 1
 			return 0
 		}
 
 		It "display custom error message"
 			When run parse -x
-			The stderr should eq "custom unknown: -x"
+			The stderr should eq "custom unknown: -x []"
 			The status should eq 20
 		End
 
@@ -216,37 +216,31 @@ Describe "getoptions()"
 
 		It "receives default error message"
 			When run parse -q
-			The stderr should eq "Requires an argument: -q"
+			The stderr should eq "Requires an argument: -q []"
 			The status should eq 1
 		End
 
 		It "receives exit status of custom validation"
 			When run parse -v value
-			The stderr should eq "valid valid:3: -v"
+			The stderr should eq "valid valid:3: -v [value]"
 			The status should eq 30
 		End
 
 		It "receives pattern"
 			When run parse --pattern baz
-			The stderr should eq "pattern pattern:foo | bar: --pattern"
+			The stderr should eq "pattern pattern:foo | bar: --pattern [baz]"
 			The status should eq 40
 		End
 
 		It "can refer to the OPTARG variable"
 			When run parse --arg argument
-			The stderr should eq "invalid argument: argument"
+			The stderr should eq "invalid argument [argument]"
 			The status should eq 1
 		End
 
 		It "can refer to the OPTARG variable"
 			When run parse --flag=argument
-			The stderr should eq "noarg: argument"
-			The status should eq 1
-		End
-
-		It "can refer to the OPTARG variable"
-			When run parse --arg argument
-			The stderr should eq "invalid argument: argument"
+			The stderr should eq "noarg [argument]"
 			The status should eq 1
 		End
 	End

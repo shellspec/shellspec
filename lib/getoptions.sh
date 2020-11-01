@@ -1,10 +1,10 @@
 # shellcheck shell=sh
-# URL: https://github.com/ko1nksm/getoptions (v2.0.0)
+# URL: https://github.com/ko1nksm/getoptions (v2.1.0-dev)
 # License: Creative Commons Zero v1.0 Universal
-# shellcheck disable=2016
+# shellcheck disable=SC2016
 getoptions() {
 	_error='' _on=1 _off='' _export='' _plus='' _mode='' _alt='' _rest=''
-	_opts='' _help='' _indent='' _init=@empty IFS=' '
+	_opts='' _help='' _abbr='' _indent='' _init=@empty IFS=' '
 
 	for i in 0 1 2 3 4 5; do
 		eval "_$i() { echo \"$_indent\$@\"; }"
@@ -64,6 +64,11 @@ getoptions() {
 	"$@"
 	_0 "${_rest:?}=''"
 
+	_0 "$2() {"
+	_1 'OPTIND=$(($#+1))'
+	_1 'while OPTARG= && [ $# -gt 0 ]; do'
+	[ "$_abbr" ] && getoptions_abbr "$@"
+
 	args() {
 		sw='' validate='' pattern='' counter='' on=$_on off=$_off export=$_export
 		while [ $# -gt 1 ] && [ "$2" != '--' ] && shift; do
@@ -80,7 +85,7 @@ getoptions() {
 		quote on "$on" && quote off "$off"
 		[ "$counter" ] && on=1 off=-1 v="\$((\${$1:-0}+\${OPTARG:-0}))" || v=''
 		_3 "$sw)"
-		_4 '[ "${OPTARG:-}" ] && OPTARG=${OPTARG#*\=} && set -- noarg "$1" && break'
+		_4 '[ "${OPTARG:-}" ] && OPTARG=${OPTARG#*\=} && set "noarg" "$1" && break'
 		_4 "eval '[ \${OPTARG+x} ] &&:' && OPTARG=$on || OPTARG=$off"
 		valid "$1" "${v:-\$OPTARG}"
 		_4 ';;'
@@ -88,7 +93,7 @@ getoptions() {
 	_param() {
 		args "$@"
 		_3 "$sw)"
-		_4 '[ $# -le 1 ] && set -- required "$1" && break'
+		_4 '[ $# -le 1 ] && set "required" "$1" && break'
 		_4 'OPTARG=$2'
 		valid "$1" '$OPTARG'
 		_4 'shift ;;'
@@ -99,7 +104,7 @@ getoptions() {
 		_3 "$sw)"
 		_4 'set -- "$1" "$@"'
 		_4 '[ ${OPTARG+x} ] && {'
-		_5 'case $1 in --no-*) set -- noarg "${1%%\=*}"; break; esac'
+		_5 'case $1 in --no-*) set "noarg" "${1%%\=*}"; break; esac'
 		_5 '[ "${OPTARG:-}" ] && { shift; OPTARG=$2; } ||' "OPTARG=$on"
 		_4 "} || OPTARG=$off"
 		valid "$1" '$OPTARG'
@@ -109,9 +114,8 @@ getoptions() {
 		set -- "$validate" "$pattern" "$1" "$2"
 		[ "$1" ] && _4 "$1 || { set -- ${1%% *}:\$? \"\$1\" $1; break; }"
 		[ "$2" ] && {
-			quote pattern "$2"
 			_4 "case \$OPTARG in $2) ;;"
-			_5 "*) set -- pattern:$pattern \"\$1\"; break"
+			_5 "*) set \"pattern:$pattern\" \"\$1\"; break"
 			_4 "esac"
 		}
 		code "$3" _4 "${export:+export }$3=\"$4\"" "${3#:}"
@@ -124,9 +128,6 @@ getoptions() {
 	}
 	_msg() { :; }
 
-	_0 "$2() {"
-	_1 'OPTIND=$(($#+1))'
-	_1 'while OPTARG= && [ $# -gt 0 ]; do'
 	[ "$_alt" ] && _2 'case $1 in -[!-]?*) set -- "-$@"; esac'
 	_2 'case $1 in'
 	wa() { _4 "eval '${1% *}' \${1+'\"\$@\"'}"; }
@@ -162,7 +163,7 @@ getoptions() {
 		_4 'break ;;'
 	}
 	rest '--) shift'
-	_3 "[-${_plus:++}]?*)" 'set -- unknown "$1" && break ;;'
+	_3 "[-${_plus:++}]?*)" 'set "unknown" "$1" && break ;;'
 	case $_mode in
 		+) rest '*)' ;;
 		*) _3 "*) $_rest=\"\${$_rest}" '\"\${$((${OPTIND:-0}-$#))}\""'
@@ -172,11 +173,11 @@ getoptions() {
 	_1 'done'
 	_1 '[ $# -eq 0 ] && { OPTIND=1; unset OPTARG; return 0; }'
 	_1 'case $1 in'
-	_2 'unknown) set -- "Unrecognized option: $2" "$@" ;;'
-	_2 'noarg) set -- "Does not allow an argument: $2" "$@" ;;'
-	_2 'required) set -- "Requires an argument: $2" "$@" ;;'
-	_2 'pattern:*) set -- "Does not match the pattern (${1#*:}): $2" "$@" ;;'
-	_2 '*) set -- "Validation error ($1): $2" "$@"'
+	_2 'unknown) set "Unrecognized option: $2" "$@" ;;'
+	_2 'noarg) set "Does not allow an argument: $2" "$@" ;;'
+	_2 'required) set "Requires an argument: $2" "$@" ;;'
+	_2 'pattern:*) set "Does not match the pattern (${1#*:}): $2" "$@" ;;'
+	_2 '*) set "Validation error ($1): $2" "$@"'
 	_1 'esac'
 	[ "$_error" ] && _1 "$_error" '"$@" >&2 || exit $?'
 	_1 'echo "$1" >&2'
