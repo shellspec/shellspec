@@ -4,13 +4,15 @@
 . "$SHELLSPEC_LIB/getoptions.sh"
 # shellcheck source=lib/getoptions_help.sh
 . "$SHELLSPEC_LIB/getoptions_help.sh"
+# shellcheck source=lib/getoptions_abbr.sh
+. "$SHELLSPEC_LIB/getoptions_abbr.sh"
 
 # shellcheck disable=SC1083
 parser_definition() {
   extension "$@"
   set -- "$1" "$2" "error_handler ${3:-echo}"
 
-  setup params export:true error:"$3" help:usage width:36 leading:'    ' -- \
+  setup params export:true error:"$3" abbr:true help:usage width:36 leading:'    ' -- \
     'Usage: shellspec [options...] [files or directories...]' \
     '' \
     '  Using + instead of - for short options causes reverses the meaning' \
@@ -81,12 +83,10 @@ parser_definition() {
     '  Quick mode is automatically enabled. To disable quick mode,' \
     '  delete .shellspec-quick.log on the project root directory.'
 
-  flag :only_failures -r --repair --only --only-failures \
-    label:'-r, --repair, --only-failures' -- \
+  flag :only_failures -r --repair --only-failures -- \
     'Run failure examples only (Depends on quick mode)'
 
-  flag :next_failure -n --next --next-failure \
-    label:'-n, --next,   --next-failure' -- \
+  flag :next_failure -n --next-failure -- \
     'Run failure examples and abort on first failure (Depends on quick mode)' \
     '  Equivalent of --repair --fail-fast --random none'
 
@@ -226,7 +226,7 @@ parser_definition() {
     '  [debug]           for developer' \
     '  The order is randomized with --random but random TYPE is ignored.'
 
-  flag :mode --syntax --syntax-check on:syntax-check -- \
+  flag :mode --syntax-check on:syntax-check -- \
     'Syntax check of the specfiles without running any examples'
 
   flag :mode --translate on:translate -- \
@@ -393,15 +393,14 @@ error_handler() {
   # $4: Option
   # $5-: Validator name and arguments
   case $3 in
-    check_number:*) set -- "$1" "Not a number" "$4" ;;
-    check_formatter:*) set -- "$1" "Invalid formatter name" "$4" ;;
-    check_env_name:*) set -- "$1" "Invalid environment name" "$4" ;;
-    check_env_file:*) set -- "$1" "Not found env file" "$4" ;;
+    check_number:*) set -- "$1" "Not a number: $4" ;;
+    check_formatter:*) set -- "$1" "Invalid formatter name: $4" ;;
+    check_env_name:*) set -- "$1" "Invalid environment name: $4" ;;
+    check_env_file:*) set -- "$1" "Not found env file: $4" ;;
     check_random:*)
       set -- "$1" "Specify in one of the following formats" "$4"
-      set -- "$1" "$2 (none[:SEED], specfiles[:SEED], examples[:SEED])" "$3" ;;
-    *) set -- "$1" "${2%:*}" "$4" ;;
+      set -- "$1" "$2 (none[:SEED], specfiles[:SEED], examples[:SEED]): $3"
   esac
-  "$1" "$2: $3"
+  "$1" "$2"
   return 1
 }

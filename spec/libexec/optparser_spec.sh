@@ -339,7 +339,7 @@ Describe "libexec/optparser.sh"
     End
 
     It
-      When call error_handler echo "Default error message" "$1" --option
+      When call error_handler echo "Default error message: --option" "$1" --option
       The output should eq "$2"
       The status should be failure
     End
