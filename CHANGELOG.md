@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed `--kcov-common-options` option.
 
+### Fixed
+
+- Fixed possibility of I/O error in satisfy matcher (GitHub Actions only?)
+
 ## [0.27.2] - 2020-10-28
 
 ### Fixed

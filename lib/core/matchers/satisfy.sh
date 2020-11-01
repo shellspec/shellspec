@@ -23,7 +23,13 @@ shellspec_matcher_satisfy() {
           unset "$1" ||:
         fi
       fi
+
       "$@"
+      ex=$?
+      # shellcheck disable=SC2034
+      while read -r line; do :; done # Discard unnecessary STDIN data
+      set_exit_status() { return "$1"; }
+      set_exit_status "$ex"
     ) 2>"$SHELLSPEC_SATISFY_STDERR_FILE" >&4 &&:
 
     set -- "$?"
