@@ -1,3 +1,6 @@
+env:
+  FORCE_COLOR: 1
+
 freebsd_task:
   freebsd_instance:
     matrix:
@@ -7,7 +10,6 @@ freebsd_task:
       # - image_family: freebsd-13-0-snap
   install_script: pkg install -y dash bash zsh ksh93 mksh oksh
   prepare_script:
-    - echo --force-color > ./.shellspec-local
     - ./shellspec --task fixture:stat:prepare
   script:
     - contrib/all.sh contrib/various_test.sh
@@ -23,7 +25,6 @@ gitbash_task:
   prepare_script:
     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
     - bash -c "mount"
-    - bash -c "echo --force-color > ./.shellspec-local"
     - bash -c "./shellspec --task fixture:stat:prepare"
   script:
     - bash -c "contrib/all.sh shellspec"
@@ -42,7 +43,6 @@ msys_task:
   prepare_script:
     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
     - bash -c "mount"
-    - bash -c "echo --force-color > ./.shellspec-local"
     - bash -c "./shellspec --task fixture:stat:prepare"
   script:
     - bash -c "contrib/all.sh shellspec"
@@ -60,7 +60,6 @@ cygwin_task:
   prepare_script:
     - bash -c "env | grep -E '^(LC_|LANG|CYGWIN|MSYS)'"
     - bash -c "mount"
-    - bash -c "echo --force-color > ./.shellspec-local"
     - bash -c "./shellspec --task fixture:stat:prepare"
     # I don't know why but tests using below files fail in cirrus ci environment.
     - bash -c "rm -f ./spec/fixture/stat/{readable,writable}"
@@ -73,7 +72,5 @@ busybox_task:
     os_version: 2019
   install_script:
     - choco install -y --no-progress busybox
-  prepare_script:
-    - busybox ash -c "echo --force-color > ./.shellspec-local"
   script:
     - busybox ash -c "contrib/all.sh shellspec"
