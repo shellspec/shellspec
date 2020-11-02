@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed possibility of I/O error in satisfy matcher (GitHub Actions only?)
+- Fixed a bug in which zsh on macOS occasionally exits with exit code 147 (SIGCONT)
 
 ## [0.27.2] - 2020-10-28
 
