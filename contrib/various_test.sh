@@ -4,6 +4,14 @@ set -eu
 
 : "${SH:=sh}"
 
+# Workaround for GitHub Actions (SIGPIPE)
+# In GitHub Actions, SIGPIPE seems to be set to SIG_IGN and if the process exits
+# before receiving all STDIN data, it will result in Broken PIPE or I/O will be output
+head() {
+  command head "$@"
+  cat >/dev/null
+}
+
 shellspec() {
   set -- $SH shellspec --shell "$SH" "$@"
   echo '$' "$@" >&2
