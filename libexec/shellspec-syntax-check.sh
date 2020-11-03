@@ -54,15 +54,15 @@ one_line_syntax_check() {
 specfile() {
   specfile=$2
   putsn "$specfile"
-  ( ( ( syntax_check "$specfile" >&3; echo $? >&4 ) 2>&1 \
-    | ( error_handler >&2; echo $? >&4 ) ) 4>&1 \
+  ( ( ( syntax_check "$specfile" >&3; echo $? >&5 ) 2>&1 \
+    | ( error_handler >&2; echo $? >&5 ) ) 5>&1 \
     | (
-        xs=0
-        read -r xs1; read -r xs2
-        [ "$xs1" -ne 0 ] && xs="$xs1"
-        [ "$xs2" -ne 0 ] && xs="$xs2"
-        set_exit_status "$xs"
-      )
+      xs=0
+      read -r xs1; read -r xs2
+      [ "$xs1" -eq 0 ] || xs="$xs1"
+      [ "$xs2" -eq 0 ] || xs="$xs2"
+      set_exit_status "$xs"
+    )
   ) 3>&1 || exit_status=$?
 }
 find_specfiles specfile "$@"
