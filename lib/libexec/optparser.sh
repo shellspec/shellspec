@@ -133,7 +133,7 @@ parser_definition() {
   flag COLOR --{no-}color init:"detect_color_mode $2" -- \
     'Enable or disable color [default: enabled if the output is a TTY]' \
     '  Disable if NO_COLOR environment variable set'
-  flag COLOR --{no-}colour --force-color --force-colour init:@none hidden
+  flag COLOR --{no-}colour --force-color --force-colour init:@none hidden abbr:
 
   param SKIP_MESSAGE --skip-message pattern:'verbose | moderate | quiet' init:='verbose' var:VERBOSITY -- \
     'Mute skip message | <[verbose]> [moderate] [quiet]' \
@@ -196,7 +196,7 @@ parser_definition() {
     '  To include files without extension, specify --include-pattern' \
     '  without ".sh" and filter with --include-*/--exclude-* options.'
 
-  flag COVERAGE_KSH_WORKAROUND --coverage-ksh-workaround hidden
+  flag COVERAGE_KSH_WORKAROUND --coverage-ksh-workaround hidden abbr:
 
   msg -- '' '  **** Utility ****' ''
 
