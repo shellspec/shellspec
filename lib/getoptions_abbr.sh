@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# URL: https://github.com/ko1nksm/getoptions (v2.1.0-dev)
+# URL: https://github.com/ko1nksm/getoptions (v2.1.0)
 # License: Creative Commons Zero v1.0 Universal
 # shellcheck disable=SC2016,SC2154
 getoptions_abbr() {
@@ -10,7 +10,7 @@ getoptions_abbr() {
 		_3 'esac'
 	}
 	args() {
-		hidden=''
+		abbr=1
 		shift
 		for i; do
 			case $i in
@@ -18,7 +18,7 @@ getoptions_abbr() {
 				[!-+]*) eval "${i%%:*}=\${i#*:}"
 			esac
 		done
-		[ "$hidden" ] && return 0
+		[ "$abbr" ] || return 0
 
 		for i; do
 			case $i in

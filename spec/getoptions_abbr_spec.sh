@@ -90,11 +90,11 @@ Describe "getoptions_abbr()"
 		End
 	End
 
-	Context "when hide attribute specified"
+	Context "when abbr attribute not specified"
 		parser_definition() {
 			setup ARGS abbr:true
-			flag  FLAG --flag -- hidden
-			param PARAM --param hidden:true
+			flag  FLAG --flag -- abbr:
+			param PARAM --param abbr:
 		}
 
 		It "does not treat as an abbreviation option"

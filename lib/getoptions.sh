@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# URL: https://github.com/ko1nksm/getoptions (v2.1.0-dev)
+# URL: https://github.com/ko1nksm/getoptions (v2.1.0)
 # License: Creative Commons Zero v1.0 Universal
 # shellcheck disable=SC2016
 getoptions() {
