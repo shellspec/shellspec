@@ -340,10 +340,10 @@ xtrace() {
 
 is_terminal() { [ -t 1 ]; }
 detect_color_mode() {
-  if is_terminal && [ ! "${NO_COLOR:-}" ]; then
+  export "$1_COLOR="
+  [ "${NO_COLOR:-}" ] && return 0
+  if is_terminal || [ "${FORCE_COLOR:-}" ]; then
     export "$1_COLOR=1"
-  else
-    export "$1_COLOR="
   fi
 }
 

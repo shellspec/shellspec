@@ -198,7 +198,7 @@ Describe "libexec/optparser.sh"
   End
 
   Describe "detect_color_mode()"
-    Before "NO_COLOR=''"
+    Before NO_COLOR='' CI='' FORCE_COLOR=''
     Context "when on the terminal"
       is_terminal() { true; }
       It "sets 1 to the COLOR variable"
@@ -207,9 +207,9 @@ Describe "libexec/optparser.sh"
         The variable PREFIX_COLOR should be exported
       End
 
-      Context "when NO_COLOR variable set"
+      Context "when NO_COLOR variable is set"
         is_terminal() { true; }
-        Before "NO_COLOR=1"
+        Before FORCE_COLOR=1 CI=1 NO_COLOR=1
         It "sets empty to the COLOR variable"
           When call detect_color_mode PREFIX
           The variable PREFIX_COLOR should eq ''
@@ -224,6 +224,16 @@ Describe "libexec/optparser.sh"
         When call detect_color_mode PREFIX
         The variable PREFIX_COLOR should eq ''
         The variable PREFIX_COLOR should be exported
+      End
+
+      Context "when FORCE_COLOR variable is set"
+        Before FORCE_COLOR=1
+        is_terminal() { false; }
+        It "sets 1 to the COLOR variable"
+          When call detect_color_mode PREFIX
+          The variable PREFIX_COLOR should eq 1
+          The variable PREFIX_COLOR should be exported
+        End
       End
     End
   End
