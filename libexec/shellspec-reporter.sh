@@ -192,19 +192,19 @@ if [ -e "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE" ]; then
 fi
 
 if [ "$repetition" ]; then
-  exit_status=$SHELLSPEC_SYNTAX_ERROR_CODE
+  exit_status=$SHELLSPEC_FATAL_EXIT_CODE
 elif [ "$interrupt" ]; then
   exit_status=130
 elif [ "$aborted" ]; then
   exit_status=1
 elif [ "$SHELLSPEC_FAIL_LOW_COVERAGE" ] && [ "$coverage_failed" ]; then
-  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+  exit_status=$SHELLSPEC_FAILURE_EXIT_CODE
 elif [ "$SHELLSPEC_WARNING_AS_FAILURE" ] && [ "$warned_count" ]; then
-  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+  exit_status=$SHELLSPEC_FAILURE_EXIT_CODE
 elif [ "${failed_count}${error_count}${fixed_count}" ]; then
-  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+  exit_status=$SHELLSPEC_FAILURE_EXIT_CODE
 elif [ "${not_enough_examples}${no_examples}" ]; then
-  exit_status=$SHELLSPEC_SPEC_FAILURE_CODE
+  exit_status=$SHELLSPEC_FAILURE_EXIT_CODE
 else
   exit_status=0
 fi

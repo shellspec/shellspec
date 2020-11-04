@@ -59,7 +59,7 @@ error_handler() {
     error "$line"
   done
 
-  [ "$error_count" -eq 0 ] || exit "$SHELLSPEC_STDERR_OUTPUT_CODE"
+  [ "$error_count" -eq 0 ] || exit "$SHELLSPEC_FATAL_EXIT_CODE"
 }
 
 "$SHELLSPEC_TRAP" 'interrupt' INT
@@ -144,22 +144,26 @@ fi
   | error_handler >&4; echo $? >&5 ) 5>&1 \
   | (
       read -r xs1; read -r xs2; read -r xs3
-      xs=0 msg="Aborted with status code"
+      xs='' error='' msg="Aborted with status code"
       for i in "$xs1" "$xs2" "$xs3"; do
-        [ "$i" = 0 ] && continue || xs=$i
-        if [ ! "$i" = "$SHELLSPEC_SPEC_FAILURE_CODE" ]; then
-          error "$msg [executor: $xs1] [reporter: $xs2] [error handler: $xs3]"
-          break
-        fi
+        case $i in
+          0) continue ;;
+          "$SHELLSPEC_FAILURE_EXIT_CODE") [ "$xs" ] || xs=$i ;;
+          "$SHELLSPEC_FATAL_EXIT_CODE") xs=$i error=1 && break ;;
+          *) [ "${xs#$SHELLSPEC_FAILURE_EXIT_CODE}" ] || xs=$i; error=1
+        esac
       done
-      set_exit_status "$xs"
+      if [ "$error" ]; then
+        error "$msg [executor: $xs1] [reporter: $xs2] [error handler: $xs3]"
+      fi
+      set_exit_status "${xs:-0}"
     )
 ) 3>&1 4>&2 8>&1 &&:
 exit_status=$?
 
 case $exit_status in
   0) ;; # Running specs exit with successfully.
-  "$SHELLSPEC_SPEC_FAILURE_CODE") ;; # Running specs exit with failure.
+  "$SHELLSPEC_FAILURE_EXIT_CODE") ;; # Running specs exit with failure.
   *) error "Fatal error occurred, terminated with exit status $exit_status."
 esac
 
