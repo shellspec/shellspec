@@ -15,6 +15,7 @@ freebsd_task:
     - contrib/all.sh contrib/various_test.sh
 
 gitbash_task:
+  timeout_in: 120m
   windows_container:
     image: cirrusci/windowsservercore:2019
     os_version: 2019
@@ -30,6 +31,7 @@ gitbash_task:
     - bash -c "contrib/all.sh shellspec"
 
 msys_task:
+  timeout_in: 120m
   windows_container:
     image: cirrusci/windowsservercore:2019
     os_version: 2019
@@ -48,6 +50,7 @@ msys_task:
     - bash -c "contrib/all.sh shellspec"
 
 cygwin_task:
+  timeout_in: 120m
   windows_container:
     image: cirrusci/windowsservercore:2019
     os_version: 2019
@@ -67,6 +70,7 @@ cygwin_task:
     - bash -c 'contrib/all.sh shellspec'
 
 busybox_task:
+  timeout_in: 120m
   windows_container:
     image: cirrusci/windowsservercore:2019
     os_version: 2019
