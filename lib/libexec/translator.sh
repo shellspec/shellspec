@@ -163,7 +163,7 @@ block_example() {
 
 block_end() {
   if [ ! "$_block_no_stack" ]; then
-    syntax_error "unexpected 'End'"
+    syntax_error "Unexpected 'End'"
     return 0
   fi
 

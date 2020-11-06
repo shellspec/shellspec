@@ -366,7 +366,7 @@ Describe "libexec/translator.sh"
     Context "when outside of block"
       It "outputs syntax error"
         When run block_end "desc"
-        The stdout should eq "unexpected 'End'"
+        The stdout should eq "Unexpected 'End'"
       End
     End
 

@@ -56,6 +56,12 @@ parser_definition() {
     'Fail on low coverage [default: disabled]' \
     '  The coverage threshold is specified by the coverage option'
 
+  param FAILURE_EXIT_CODE --failure-exit-code validate:check_number init:=101 var:CODE -- \
+    'Override the exit code used when there are failing specs [default: 101]'
+
+  param ERROR_EXIT_CODE --error-exit-code validate:check_number init:=102 var:CODE -- \
+    'Override the exit code used when there are fatal errors [default: 102]'
+
   flag PROFILER -p +p --{no-}profile -- \
     'Enable profiling and list the slowest examples [default: disabled]' \
     '  Profiler tries to use 100% ability of 1 CPU (1 core).' \
