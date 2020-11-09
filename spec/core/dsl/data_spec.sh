@@ -30,7 +30,7 @@ Describe 'Data helper'
     End
 
     It 'reads data as stdin with filter'
-      Data | @tr 'abc' 'ABC' # comment
+      Data | uppercase # comment
         #|aaa
         #|bbb
         #|ccc
@@ -85,7 +85,7 @@ Describe 'Data helper'
     End
 
     It 'reads data as stdin from function with filter'
-      Data foo a b c | @tr 'abc' 'ABC' # comment
+      Data foo a b c | uppercase # comment
       When call output
       The first line of output should eq 'A'
       The second line of output should eq 'B'
@@ -108,7 +108,7 @@ Describe 'Data helper'
     End
 
     It 'reads data as stdin from string with filter'
-      Data "abc" | @tr 'abc' 'ABC' # comment
+      Data "abc" | uppercase # comment
       When call output
       The output should eq 'ABC'
     End

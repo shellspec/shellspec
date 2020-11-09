@@ -153,6 +153,14 @@ shellspec_spec_helper_configure() {
   exists_tty() { [ "$SHELLSPEC_TTY" ]; }
   not_exists_shopt() { [ ! "$SHELLSPEC_SHOPT_AVAILABLE" ]; }
 
+  uppercase() {
+    set -- aA bB cC dD eE fF gG hH iI jJ kK lL mM nN oO pP qQ rR sS tT uU vV wW xX yY zZ
+    while IFS= read -r line; do
+      for i; do shellspec_replace_all line "${i%?}" "${i#?}"; done
+      echo "$line"
+    done
+  }
+
   shellspec_before :
   shellspec_after :
   shellspec_before_each :
