@@ -1,0 +1,31 @@
+name: Windows MSYS
+
+on: [push, pull_request]
+
+env:
+  PATH: 'C:\msys64\usr\bin;C:\Program Files\Git\bin;C:\windows\system32;C:\windows'
+  FORCE_COLOR: 1
+
+defaults:
+  run:
+    shell: cmd
+
+jobs:
+  windows-msys:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        shells:
+          - {shell: sh,          package: sh}
+          - {shell: dash,        package: dash}
+          - {shell: bash,        package: bash}
+          - {shell: busybox ash, package: busybox}
+          - {shell: mksh,        package: mksh}
+          - {shell: zsh,         package: zsh}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - run: pacman.exe -Syu --noprogressbar --noconfirm
+      - run: pacman.exe -S --noprogressbar --noconfirm ${{ matrix.shells.package }}
+      - run: ${{ matrix.shells.shell }} ./shellspec --task fixture:stat:prepare
+      - run: ${{ matrix.shells.shell }} ./shellspec

@@ -1,0 +1,26 @@
+name: macOS Homebrew
+
+on: [push, pull_request]
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  macos-brew:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        shells:
+          - {shell: dash, package: dash}
+          - {shell: bash, package: bash}
+          - {shell: ksh,  package: ksh}
+          - {shell: mksh, package: mksh}
+          - {shell: yash, package: yash}
+          - {shell: zsh,  package: zsh}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - run: brew upgrade
+      - run: brew install ${{ matrix.shells.package }}
+      - run: ${{ matrix.shells.shell }} ./shellspec --shell "${{ matrix.shells.shell }}" --task fixture:stat:prepare
+      - run: SH="${{ matrix.shells.shell }}" contrib/various_test.sh

@@ -1,0 +1,27 @@
+name: Windows busybox
+
+on: [push, pull_request]
+
+env:
+  PATH: 'C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin'
+  FORCE_COLOR: 1
+
+defaults:
+  run:
+    shell: cmd
+
+jobs:
+  windows-busybox:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        shells:
+          - {shell: sh}
+          - {shell: ash}
+          - {shell: bash}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - run: choco install -y --no-progress busybox
+      - run: busybox ${{ matrix.shells.shell }} ./shellspec --task fixture:stat:prepare
+      - run: busybox ${{ matrix.shells.shell }} ./shellspec

@@ -1,0 +1,34 @@
+name: Windows Cygwin
+
+on: [push, pull_request]
+
+env:
+  PATH: 'C:\tools\cygwin\bin;C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\Windows\System32\WindowsPowerShell\v1.0;C:\ProgramData\Chocolatey\bin'
+  FORCE_COLOR: 1
+
+defaults:
+  run:
+    shell: cmd
+
+jobs:
+  windows-cygwin:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        shells:
+          - {shell: sh,   package: sh}
+          - {shell: dash, package: dash}
+          - {shell: bash, package: bash}
+          - {shell: ash,  package: busybox}
+          - {shell: mksh, package: mksh}
+          - {shell: posh, package: posh}
+          - {shell: zsh,  package: zsh}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - run: choco install -y --no-progress cygwin cyg-get
+      - run: cyg-get nc ${{ matrix.shells.package }}
+      - run: cygcheck -c
+      - run: ${{ matrix.shells.shell }} ./shellspec --task fixture:stat:prepare
+      - run: ${{ matrix.shells.shell }} -c "rm spec/fixture/stat/no-permission"
+      - run: ${{ matrix.shells.shell }} ./shellspec

@@ -1,2 +1,3 @@
-dockerfiles/* linguist-language=Dockerfile
+* text eol=lf
 spec/fixture/** -text
+dockerfiles/* linguist-language=Dockerfile

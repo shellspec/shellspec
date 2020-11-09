@@ -1,0 +1,26 @@
+name: Windows GitBash
+
+on: [push, pull_request]
+
+env:
+  PATH: 'C:\Program Files\Git\bin;C:\windows\system32;C:\windows'
+  FORCE_COLOR: 1
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  windows-gitbash:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        shells:
+          - {shell: sh}
+          - {shell: dash}
+          - {shell: bash}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - run: ${{ matrix.shells.shell }} ./shellspec --task fixture:stat:prepare
+      - run: ${{ matrix.shells.shell }} ./shellspec
