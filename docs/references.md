@@ -160,7 +160,7 @@ When run <FUNCTION | COMMAND> [ARGUMENTS...]
 
 This is primarily designed for external command calls.
 The external command does not have to be a shell script.
-Even shell scripts are processed as external commands (respect shebang), so it is not covered by coverage.
+Even shell scripts are executed as external commands according to the shebang, so they are not covered by coverage.
 
 ##### about calling shell function with run
 
