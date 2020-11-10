@@ -7,7 +7,7 @@
 # shellcheck source=lib/getoptions_abbr.sh
 . "$SHELLSPEC_LIB/getoptions_abbr.sh"
 
-# shellcheck disable=SC1083
+# shellcheck disable=SC1083,SC2016
 parser_definition() {
   extension "$@"
   set -- "$1" "$2" "error_handler ${3:-echo}"
@@ -77,6 +77,9 @@ parser_definition() {
 
   param LOGFILE --log-file init:='/dev/tty' -- \
     'Log file for %logger directive and trace [default: /dev/tty]'
+
+  param TMPDIR --tmpdir init:="${TMPDIR:-${TMP:-/tmp}}" -- \
+    'Specify temporary directory [default: $TMPDIR, $TMP or /tmp]'
 
   flag KEEP_TMPDIR --keep-tmpdir -- \
     'Do not cleanup temporary directory [default: disabled]'

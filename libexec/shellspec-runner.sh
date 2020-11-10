@@ -3,8 +3,6 @@
 
 set -eu
 
-export SHELLSPEC_PROFILER_SIGNAL="$SHELLSPEC_TMPBASE/profiler.signal"
-
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
 
@@ -32,7 +30,7 @@ interrupt() {
   "$SHELLSPEC_TRAP" '' TERM # Workaround for posh: Prevent display 'Terminated'.
   stop_profiler
   reporter_pid=''
-  read_pid_file reporter_pid "$SHELLSPEC_TMPBASE/$SHELLSPEC_REPORTER_PID" 0
+  read_pid_file reporter_pid "$SHELLSPEC_REPORTER_PID" 0
   [ "$reporter_pid" ] && sleep_wait signal 0 "$reporter_pid" 2>/dev/null
   signal TERM 0 2>/dev/null &&:
   cleanup
