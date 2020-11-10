@@ -28,8 +28,9 @@
 
 ### Packages
 
-- These are tested by [Travis CI][travis], [Cirrus CI][cirrus] and Docker (`contrib/test_in_docker.sh`).
+- These are tested by [GitHub Actions][actions], [Travis CI][travis], [Cirrus CI][cirrus] and Docker (`contrib/test_in_docker.sh`).
 
+[actions]: https://github.com/shellspec/shellspec/actions
 [travis]: https://travis-ci.org/shellspec/shellspec
 [cirrus]: https://cirrus-ci.com/github/shellspec/shellspec
 
