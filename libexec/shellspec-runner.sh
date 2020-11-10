@@ -23,7 +23,7 @@ stop_profiler() {
 cleanup() {
   "$SHELLSPEC_TRAP" '' INT
   set -- "$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
-  [ "$SHELLSPEC_KEEP_TEMPDIR" ] && return 0
+  [ "$SHELLSPEC_KEEP_TMPDIR" ] && return 0
   [ "$1" ] || return 0
   { rmtempdir "$1" & } 2>/dev/null
 }
@@ -118,7 +118,7 @@ SHELLSPEC_INFO="${quick_mode}${info}${info_extra:+ }${info_extra}"
 
 mktempdir "$SHELLSPEC_TMPBASE"
 
-if [ "$SHELLSPEC_KEEP_TEMPDIR" ]; then
+if [ "$SHELLSPEC_KEEP_TMPDIR" ]; then
   warn "Keeping temporary directory. "
   warn "Manually delete: rm -rf \"$SHELLSPEC_TMPBASE\""
 fi

@@ -78,8 +78,9 @@ parser_definition() {
   param LOGFILE --log-file init:='/dev/tty' -- \
     'Log file for %logger directive and trace [default: /dev/tty]'
 
-  flag KEEP_TEMPDIR --keep-tempdir -- \
+  flag KEEP_TMPDIR --keep-tmpdir -- \
     'Do not cleanup temporary directory [default: disabled]'
+  flag KEEP_TMPDIR --keep-tempdir validate:'deprecated $1' abbr: hidden:true
 
   msg -- '' '  **** Execution ****' ''
 
@@ -409,4 +410,11 @@ error_handler() {
   esac
   "$1" "$2"
   return 1
+}
+
+deprecated() {
+  case $1 in
+    --keep-tempdir)
+      warn "--keep-tempdir is deprecated. replace with --keep-tmpdir."
+  esac
 }

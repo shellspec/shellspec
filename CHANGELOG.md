@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `BeforeEach` / `AfterEach` as synonym for `Before` / `After`.
 - Added `FORCE_COLOR` environment variable.
 
+### Changed
+
+- Replace `--keep-tempdir` with `--keep-tmpdir`.
+
 ### Removed
 
 - Removed `--kcov-common-options` option.
