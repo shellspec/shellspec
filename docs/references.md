@@ -183,7 +183,7 @@ When run command <COMMAND> [ARGUMENTS...]
 
 Run an external command explicitly.
 The external command does not have to be a shell script.
-Even shell scripts are processed as external commands (respect shebang), so it not covered by coverage.
+Even shell scripts are executed as external commands according to the shebang, so they are not covered by coverage.
 
 #### `When run script`
 
