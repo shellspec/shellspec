@@ -11,12 +11,12 @@ addons:
     update: true
 jobs:
   include:
-    - os: linux # Ubuntu 12.04
-      dist: precise
-      env: PACKAGES="dash bash zsh ksh mksh yash busybox"
-    - os: linux # Ubuntu 14.04
-      dist: trusty
-      env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
+#   - os: linux # Ubuntu 12.04
+#     dist: precise
+#     env: PACKAGES="dash bash zsh ksh mksh yash busybox"
+#   - os: linux # Ubuntu 14.04
+#     dist: trusty
+#     env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
 #   - os: linux # Ubuntu 16.04
 #     dist: xenial
 #     env: PACKAGES="dash bash zsh ksh mksh yash posh busybox"
