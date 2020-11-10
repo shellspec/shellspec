@@ -498,7 +498,7 @@ Usage: shellspec [options...] [files or directories...]
     -P, --pattern PATTERN           Load files matching pattern [default: "*_spec.sh"]
     -E, --example PATTERN           Run examples whose names include PATTERN
     -T, --tag TAG[:VALUE]           Run examples with the specified TAG
-    -D, --default-path PATH         Set the default path where looks for examples [defualt: "spec"]
+    -D, --default-path PATH         Set the default path where looks for examples [default: "spec"]
 
   **** Coverage ****
 
