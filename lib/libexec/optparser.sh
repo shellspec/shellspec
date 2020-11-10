@@ -182,7 +182,7 @@ parser_definition() {
     'Run examples with the specified TAG'
 
   param DEFAULT_PATH -D --default-path init:='spec' var:PATH -- \
-    'Set the default path where looks for examples [defualt: "spec"]'
+    'Set the default path where looks for examples [default: "spec"]'
 
   msg -- '' '  **** Coverage ****' ''
 
