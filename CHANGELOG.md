@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `BeforeEach` / `AfterEach` as synonym for `Before` / `After`.
 - Added `FORCE_COLOR` environment variable.
+- Added `--tmpdir` option.
+
+### Changed
+
+- Replaced `--keep-tempdir` with `--keep-tmpdir`.
 
 ### Removed
 

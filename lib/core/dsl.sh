@@ -435,7 +435,7 @@ shellspec_logger() {
 
 shellspec_deprecated() {
   set -- "${SHELLSPEC_SPECFILE:-}:${SHELLSPEC_LINENO:-$SHELLSPEC_LINENO_BEGIN}" "$@"
-  shellspec_putsn "$@" >>"$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE"
+  shellspec_putsn "$@" >>"$SHELLSPEC_DEPRECATION_LOGFILE"
 }
 
 shellspec_intercept() {

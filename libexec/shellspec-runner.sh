@@ -3,8 +3,6 @@
 
 set -eu
 
-export SHELLSPEC_PROFILER_SIGNAL="$SHELLSPEC_TMPBASE/profiler.signal"
-
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
 
@@ -23,7 +21,7 @@ stop_profiler() {
 cleanup() {
   "$SHELLSPEC_TRAP" '' INT
   set -- "$SHELLSPEC_TMPBASE" && SHELLSPEC_TMPBASE=''
-  [ "$SHELLSPEC_KEEP_TEMPDIR" ] && return 0
+  [ "$SHELLSPEC_KEEP_TMPDIR" ] && return 0
   [ "$1" ] || return 0
   { rmtempdir "$1" & } 2>/dev/null
 }
@@ -32,7 +30,7 @@ interrupt() {
   "$SHELLSPEC_TRAP" '' TERM # Workaround for posh: Prevent display 'Terminated'.
   stop_profiler
   reporter_pid=''
-  read_pid_file reporter_pid "$SHELLSPEC_TMPBASE/$SHELLSPEC_REPORTER_PID" 0
+  read_pid_file reporter_pid "$SHELLSPEC_REPORTER_PID" 0
   [ "$reporter_pid" ] && sleep_wait signal 0 "$reporter_pid" 2>/dev/null
   signal TERM 0 2>/dev/null &&:
   cleanup
@@ -118,7 +116,7 @@ SHELLSPEC_INFO="${quick_mode}${info}${info_extra:+ }${info_extra}"
 
 mktempdir "$SHELLSPEC_TMPBASE"
 
-if [ "$SHELLSPEC_KEEP_TEMPDIR" ]; then
+if [ "$SHELLSPEC_KEEP_TMPDIR" ]; then
   warn "Keeping temporary directory. "
   warn "Manually delete: rm -rf \"$SHELLSPEC_TMPBASE\""
 fi

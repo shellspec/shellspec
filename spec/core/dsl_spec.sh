@@ -1053,10 +1053,15 @@ Describe "core/dsl.sh"
   End
 
   Describe "shellspec_deprecated()"
+    # shellcheck disable=SC2034
+    setup() {
+      SHELLSPEC_SPECFILE=spec.sh
+      SHELLSPEC_LINENO=10
+      SHELLSPEC_DEPRECATION_LOGFILE="$SHELLSPEC_TMPBASE/test-deprecation.log"
+    }
     It 'outputs to logfile'
       Path log="$SHELLSPEC_TMPBASE/test-deprecation.log"
-      BeforeRun SHELLSPEC_SPECFILE=spec.sh SHELLSPEC_LINENO=10
-      BeforeRun SHELLSPEC_DEPRECATION_LOGFILE=test-deprecation.log
+      BeforeRun "setup"
       When run shellspec_deprecated "deprecated test"
       The contents of file log should eq "spec.sh:10 deprecated test"
     End

@@ -7,7 +7,7 @@ interrupt=''
 "$SHELLSPEC_TRAP" 'interrupt=1' INT
 "$SHELLSPEC_TRAP" '' TERM
 
-echo $$ > "$SHELLSPEC_TMPBASE/$SHELLSPEC_REPORTER_PID"
+echo $$ > "$SHELLSPEC_REPORTER_PID"
 
 # shellcheck source=lib/libexec/reporter.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/reporter.sh"
@@ -178,11 +178,11 @@ if [ -e "$SHELLSPEC_QUICK_FILE" ] && [ ! "$interrupt" ]; then
   puts "$quick_file_data${quick_file_data:+"$LF"}" | sort > "$quick_file"
 fi
 
-if [ -e "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE" ]; then
+if [ -e "$SHELLSPEC_DEPRECATION_LOGFILE" ]; then
   count=0 found='Found '
   while IFS= read -r line && inc count; do
     [ "$SHELLSPEC_DEPRECATION_LOG" ] && info "$line"
-  done < "$SHELLSPEC_TMPBASE/$SHELLSPEC_DEPRECATION_LOGFILE"
+  done < "$SHELLSPEC_DEPRECATION_LOGFILE"
   pluralize found "$count deprecation"
   if [ "$SHELLSPEC_DEPRECATION_LOG" ]; then
     info "$found. Use --hide-deprecations to hide the details."
