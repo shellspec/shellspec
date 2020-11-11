@@ -1374,19 +1374,19 @@ Describe "Support commands sample"
 End
 ```
 
-Support commands are generate to the `spec/support/bin` directory by `--gen-bin` option.
-For example, run `shellspec --gen-bin @touch` to generate the `@touch` command.
+Support commands are generated in the `spec/support/bin` directory by the `--gen-bin` option.
+For example run `shellspec --gen-bin @touch` to generate the `@touch` command.
 
-This is main purpose but support commands is just shell script, so you can
+This is the main purpose, but support commands are just shell scripts, so they can
 also be used for other purposes. You can freely edit the support command script.
 
 ### Make mock not mandatory in sandbox mode
 
-The sandbox mode is force the use of the mock. However, you may not want to require mocks in some commands.
-For example, `printf` is a built-in command in many shells and does not require a mock,
-but some shells require a mock in sandbox mode because it is an external command.
+The sandbox mode forces the use of mocks. However, you may not want to require mocks for some commands.
+For example, `printf` is a built-in command in many shells and does not require a mock in the sandbox mode for these shells. But
+there are shells where it is an external command and then it requires to be mocked.
 
-To allow `printf` to be called without mocking in such cases,
+To allow `printf` to be called without mocking in certain cases,
 create a support command named `printf` (`shellspec --gen-bin printf`).
 
 ### Resolve command incompatibilities
@@ -1480,7 +1480,7 @@ If you want to run a specfile directly, use shebang below and give execute permi
 #!/usr/bin/env shellspec
 ```
 
-If you want to use `#!/bin/sh` as shebang, by adding `eval "$(shellspec -)"` to
+If you want to use `#!/bin/sh` as shebang, add `eval "$(shellspec -)"` to
 the top of the specfile.
 
 ```sh
@@ -1514,7 +1514,7 @@ $ shellspec test.sh
 
 ## Use with Docker
 
-You can run ShellSpec without installation by using Docker. ShellSpec and
+You can run ShellSpec without installation using Docker. ShellSpec and
 specfiles run in a Docker container.
 
 See [How to use ShellSpec with Docker](docs/docker.md).
@@ -1527,8 +1527,8 @@ You can create custom subject, custom modifier and custom matcher.
 
 See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
 
-NOTE: If you want to verify using shell function, You can use [result](docs/references.md#result) modifier or
-[satisfy](docs/references.md#satisfy) matcher. You don't necessarily have to create a custom matcher, etc.
+NOTE: If you want to verify using shell function, you can use [result](docs/references.md#result) modifier or
+[satisfy](docs/references.md#satisfy) matcher. You don't need to create a custom matcher, etc.
 
 ## For developers
 
@@ -1565,8 +1565,8 @@ URL: [https://github.com/ko1nksm/readlinkf](https://github.com/ko1nksm/readlinkf
 
 All contributions are welcome!
 
-ShellSpec use an peculiar coding style as for shell scripts to realize high performance,
-reliability and portability, and the external commands that allowed to use are also greatly restricted.
+ShellSpec uses a peculiar coding style to assure high performance,
+reliability and portability, and the external commands allowed to use are greatly restricted.
 
 We recommend that you create WIP PR early or offer suggestions in discussions to avoid ruining your work.
 
