@@ -1164,7 +1164,7 @@ End
 In addition to the default `Parameters`, three styles are supported:
 `Parameters:value`, `Parameters:matrix` and `Parameters:dynamic`.
 
-See more details of [Parameters](docs/references.md##parameters)
+See more details of [Parameters](docs/references.md#parameters)
 
 NOTE: You can also cooperate the `Parameters` and `Data:expand` helpers.
 
