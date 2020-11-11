@@ -63,7 +63,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
     - [`When` - evaluation](#when---evaluation)
       - [`call` - call a shell function (without subshell)](#call---call-a-shell-function-without-subshell)
       - [`run` - run a command (within subshell)](#run---run-a-command-within-subshell)
-        - [`command` - runs a external command](#command---runs-a-external-command)
+        - [`command` - runs an external command](#command---runs-an-external-command)
         - [`script` - runs a shell script](#script---runs-a-shell-script)
         - [`source` - runs a script by `.` (dot) command](#source---runs-a-script-by--dot-command)
       - [About executing aliases](#about-executing-aliases)
@@ -177,7 +177,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 ### POSIX-compliant commands <!-- omit in toc -->
 
 ShellSpec uses shell built-in commands and only few basic [POSIX-compliant commands][utilities] to
-support widely environments (except `kcov` for optional code coverage).
+support wide range of environments (except `kcov` for optional code coverage).
 
 [utilities]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/contents.html
 
@@ -261,10 +261,10 @@ OPTIONS:
   -p, --prefix PREFIX   Specify prefix                 [default: $HOME/.local]
   -b, --bin BIN         Specify bin directory          [default: <PREFIX>/bin]
   -d, --dir DIR         Specify installation directory [default: <PREFIX>/lib/shellspec]
-  -s, --switch          Switch version (requires installed via git)
+  -s, --switch          Switch version (requires installation via git)
   -l, --list            List available versions (tags)
       --pre             Include pre-release
-      --fetch FETCH     Force command to use when install from archive (curl or wget)
+      --fetch FETCH     Force command to use when installing from archive (curl or wget)
   -y, --yes             Automatic yes to prompts
   -h, --help            You're looking at it
 ```
@@ -392,7 +392,7 @@ $ chmod +x /EXECUTABLE/PATH/shellspec
 
 ## Tutorial
 
-**Just create your project directory and run `shellspec --init` to setup to your project**
+**Just create your project directory and run `shellspec --init` to setup your project**
 
 ```console
 # Create your project directory, for example "hello".
@@ -564,7 +564,7 @@ Project directory
 In ShellSpec, you write your tests in a specfile.
 By default, specfile is a file ending with `_spec.sh` under the `spec` directory.
 
-ShellSpec has its own DSL to write tests. You may seem like distinctive code
+ShellSpec has its own DSL to write tests. It may seem like a distinctive code
 because DSL starts with a capital letter (to distinguish it from a command),
 but the syntax is compatible with shell scripts, and you can embed shell functions
 and use [ShellCheck](https://github.com/koalaman/shellcheck) to check the syntax.
@@ -618,7 +618,7 @@ Describe 'is example group'
     ...
   End
 
-  Context 'is used to make easier to understand depending on the context'
+  Context 'is used to facilitate understanding depending on the context'
     ...
   End
 End
@@ -646,9 +646,9 @@ End
 `Todo` is the same as the empty example and is treated as [pending](#pending---pending-example) example.
 
 ```sh
-Todo 'will be used later when write a test'
+Todo 'will be used later when we write a test'
 
-It 'is empty example, the same as Todo'
+It 'is an empty example, the same as Todo'
 End
 ```
 
@@ -663,7 +663,7 @@ NOTE: [About executing aliases](#about-executing-aliases)
 
 ##### `call` - call a shell function (without subshell)
 
-It call a function without subshell.
+It calls a function without subshell.
 Practically, it can also run commands.
 
 ```sh
@@ -672,7 +672,7 @@ When call add 1 2 # call `add` shell function with two arguments.
 
 ##### `run` - run a command (within subshell)
 
-It runs a command within subshell. Practically, it can also call shell function.
+It runs a command within subshell. Practically, it can also call a shell function.
 The command does not have to be a shell script.
 
 NOTE: This is not supporting coverage measurement.
@@ -683,7 +683,7 @@ When run touch /tmp/foo # run `touch` command.
 
 Some commands below are specially handled by ShellSpec.
 
-###### `command` - runs a external command
+###### `command` - runs an external command
 
 It runs a command, respecting shebang.
 It can not call shell function. The command does not have to be a shell script.
@@ -696,7 +696,7 @@ When run command touch /tmp/foo # run `touch` command.
 
 ###### `script` - runs a shell script
 
-It runs a shell script, ignoring shebang. The script have to be a shell script.
+It runs a shell script, ignoring shebang. The script has to be a shell script.
 It will be executed in another instance of the same shell as the current shell.
 
 ```sh
@@ -705,8 +705,8 @@ When run script my.sh # run `my.sh` script.
 
 ###### `source` - runs a script by `.` (dot) command
 
-It source a shell script, ignoring shebang. The script have to be a shell script.
-It similar to `run script`, but with some differences.
+It sources a shell script, ignoring its shebang. The script has to be a shell script.
+It is similar to `run script`, but with some differences.
 Unlike `run script`, function-based mock is available.
 
 ```sh
@@ -731,7 +731,7 @@ When call foo
 
 #### `The` - expectation
 
-Expectation begin with `The`, which does the verification.
+Expectation begins with `The` which does the verification.
 The basic syntax is as follows:
 
 ```sh
@@ -746,7 +746,7 @@ The output should not equal 4
 
 ##### Subjects
 
-The subject is the target of verification.
+The subject is the target of the verification.
 
 ```sh
 The output should equal 4
@@ -754,13 +754,13 @@ The output should equal 4
       +-- subject
 ```
 
-There are `output` (`stdout`), `error` (`stdout`), `status`, `variable`, `path`, etc.
+There are `output` (`stdout`), `error` (`stdout`), `status`, `variable`, `path`, etc. subjects.
 
 Please refer to the [Subjects](docs/references.md#subjects) for more details.
 
 ##### Modifiers
 
-The modifier is modified the verification target.
+The modifier concretizes the target of the verification (subject).
 
 ```sh
 The line 2 of output should equal 4
@@ -768,19 +768,19 @@ The line 2 of output should equal 4
       +-- modifier
 ```
 
-The modifier is chainable.
+The modifiers are chainable.
 
 ```sh
 The word 1 of line 2 of output should equal 4
 ```
 
-If the modifier argument is a number, you can use ordinal numbers instead of a number.
+If the modifier argument is a number, you can use an ordinal numeral instead of a number.
 
 ```sh
 The first word of second line of output should equal 4
 ```
 
-There are `line`, `word`, `length`, `contents`, `result`, etc.
+There are `line`, `word`, `length`, `contents`, `result`, etc. modifiers.
 The `result` modifier is useful for making the result of a user-defined function the subject.
 
 Please refer to the [Modifiers](docs/references.md#modifiers) for more details.
@@ -816,7 +816,7 @@ The first word of the second line of output should valid as a number
 #### `Assert` - expectation for custom assertion
 
 The `Assert` is yet another expectation to verify with a user-defined function.
-It is designed for verification of side effects, not result of evaluation.
+It is designed for verification of side effects, not the result of the evaluation.
 
 ```sh
 still_alive() {
@@ -834,9 +834,9 @@ End
 
 #### `Pending` - pending example
 
-`Pending` is similar to `Skip`, but the test passes if the validation fails,
-and the test fails if the validation succeeds. This is useful if you want to
-specify that you will implement it later.
+`Pending` is similar to `Skip`, but the test passes if the verification fails,
+and the test fails if the verification succeeds. This is useful if you want to
+specify that you will implement something later.
 
 ```sh
 Describe 'Pending'
@@ -867,7 +867,7 @@ End
 
 ##### `if` - conditional skip
 
-Use `Skip if` if you want to skip with conditional.
+Use `Skip if` if you want to skip conditionally.
 
 ```sh
 Describe 'Conditional skip'
@@ -887,8 +887,8 @@ End
 
 ##### `xDescribe`, `xContext`, `xExampleGroup` - skipped example group
 
-`xDescribe`, `xContext`, `xExampleGroup` are skipped example group block.
-Execution of example contained in these is skipped.
+`xDescribe`, `xContext`, `xExampleGroup` are skipped example group blocks.
+Execution of examples contained in these blocks is skipped.
 
 ```sh
 Describe 'is example group'
@@ -900,8 +900,8 @@ End
 
 ##### `xIt`, `xSpecify`, `xExample` - skipped example
 
-`xIt`, `xSpecify`, `xExample` are skipped example block.
-Execution of example is skipped.
+`xIt`, `xSpecify`, `xExample` are skipped example blocks.
+Execution of the example is skipped.
 
 ```sh
 xIt 'is skipped example'
@@ -913,7 +913,7 @@ End
 
 ##### `fDescribe`, `fContext`, `fExampleGroup` - focused example group
 
-`fDescribe`, `fContext`, `fExampleGroup` are focused example group block.
+`fDescribe`, `fContext`, `fExampleGroup` are focused example group blocks.
 Only the examples included in these will be executed when the `--focus` option is specified.
 
 ```sh
@@ -926,7 +926,7 @@ End
 
 ##### `fIt`, `fSpecify`, `fExample` - focused example
 
-`fIt`, `fSpecify`, `fExample` are focused example block.
+`fIt`, `fSpecify`, `fExample` are focused example blocks.
 Only these examples will be executed when the `--focus` option is specified.
 
 ```sh
@@ -937,14 +937,14 @@ End
 
 #### About temporary pending and skip
 
-The pending and skip without message is "temporary pending" and "temporary skip.
-"x" prefixed example groups and examples are treated as temporary skip.
+The pending and skip without message is "temporary pending" and "temporary skip".
+"x"-prefixed example groups and examples are treated as a temporary skip.
 
-The (non-temporary) pending and skip is used when it takes a long time to resolve.
-It may also commit to a version control system. The temporary pending and skip is used during the current work.
+The non-temporary pending and skip (with message) is used when it takes a long time to resolve.
+It may be committed to a version control system. The temporary pending and skip is used during the current work.
 We do not recommend committing it to a version control system.
 
-These two types are differ in the display of the report. Refer to `--skip-message` and `--pending-message` options.
+These two types differ in the display of the report. Refer to `--skip-message` and `--pending-message` options.
 
 ```sh
 # Temporary pending and skip
@@ -972,7 +972,7 @@ You can specify commands to be executed before / after each example by `BeforeEa
 NOTE: `BeforeEach` and `AfterEach` are supported in version 0.28.0 and later.
 Previous versions should use `Before` and `After` instead.
 
-NOTE: `AfterEach` is for cleanup and do not use for assertions.
+NOTE: `AfterEach` is for cleanup and not for assertions.
 
 ```sh
 Describe 'example hook'
@@ -1071,7 +1071,7 @@ Dump # stdout, stderr and status
 
 #### `Include` - include a script file
 
-Include the shell script to test.
+Include a shell script to test.
 
 ```sh
 Describe 'lib.sh'
@@ -1107,7 +1107,7 @@ End
 #### `Path`, `File`, `Dir` - path alias
 
 `Path` is used to define a short pathname alias.
-`File` and `Dir` are alias for `Path`.
+`File` and `Dir` are aliases for `Path`.
 
 ```sh
 Describe 'Path helper'
@@ -1138,7 +1138,7 @@ Describe 'Data helper'
 End
 ```
 
-You can also use a file, function, or string as data sources.
+You can also use a file, function or string as data sources.
 
 See more details of [Data](docs/references.md##data)
 
@@ -1208,13 +1208,13 @@ The value is evaluated during the specfile translation process.
 So you can access ShellSpec variables, but you can not access variable or
 function in the specfile.
 
-This feature assumed use with conditional skip. The conditional skip may runs
-outside of the examples. As a result, sometime you may need variables defined
+This feature assumes use with conditional skip. The conditional skip may run
+outside of the examples. As a result, sometimes you may need variables defined
 outside of the examples.
 
 ### `%text` - embedded text
 
-You can use the `%text` directive instead of an hard-to-use heredoc with
+You can use the `%text` directive instead of a hard-to-use heredoc with
 indented code. The input data is specified after `#|`.
 
 ```sh
@@ -1253,11 +1253,11 @@ regardless of the shell. `%-` is an alias of `%puts`, `%=` is an alias of
 
 ### `%printf` - alias for printf
 
-This is same as `printf`, But it can be used in sandbox mode because the path has been resolved.
+This is the same as `printf`, but it can be used in the sandbox mode because the path has been resolved.
 
 ### `%sleep` - alias for sleep
 
-This is same as `sleep`, But it can be used in sandbox mode because the path has been resolved.
+This is the same as `sleep`, but it can be used in the sandbox mode because the path has been resolved.
 
 ### `%preserve` - preserve variables
 
@@ -1319,17 +1319,17 @@ End
 
 ### Command-based mock
 
-The command-based mock is create a temporary mock shell script and run as external command.
+The command-based mock creates a temporary mock shell script and runs as an external command.
 To accomplish this, a directory for mock commands is included at the beginning of `PATH`.
 
-This is slow, but there are some advantages over function-based.
+This is slow, but there are some advantages over the function-based mock.
 
 - You can use invalid characters as the shell function name.
   - e.g `docker-compose` (It can be defined with bash etc., but invalid as POSIX.)
 - You can use the mock command from an external shell script.
 
 A command-based mock creates an external shell script with the contents of
-a `Mock` block. Therefore, there are some restrictions.
+a `Mock` block, so there are some restrictions.
 
 - You cannot call shell functions outside the `Mock` block.
   - Only bash can export and call shell functions with `export -f`.
