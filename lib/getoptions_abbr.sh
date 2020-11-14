@@ -1,12 +1,12 @@
 # shellcheck shell=sh
-# URL: https://github.com/ko1nksm/getoptions (v2.1.0)
+# URL: https://github.com/ko1nksm/getoptions (v2.2.0)
 # License: Creative Commons Zero v1.0 Universal
 # shellcheck disable=SC2016,SC2154
 getoptions_abbr() {
 	abbr() {
-		_3 "case $1 in"
+		_3 "case '$1' in"
 		_4 '$1) OPTARG=; break ;;'
-		_4 '$1*) OPTARG="$OPTARG${OPTARG:+ }'"$1"'"'
+		_4 '$1*) OPTARG="$OPTARG '"$1"'"'
 		_3 'esac'
 	}
 	args() {
@@ -40,7 +40,7 @@ getoptions_abbr() {
 	"$@"
 	_3 'break'
 	_2 'done'
-	_2 'case $OPTARG in'
+	_2 'case ${OPTARG# } in'
 	_3 '*\ *)'
 	_4 'eval "set -- $OPTARG $1 $OPTARG"'
 	_4 'OPTIND=$((($#+1)/2)) OPTARG=$1; shift'
@@ -51,7 +51,7 @@ getoptions_abbr() {
 	_4 'exit 1 ;;'
 	_3 '?*)'
 	_4 '[ "$2" = "$3" ] || OPTARG="$OPTARG=$2"'
-	_4 "shift 3; eval 'set -- \"\$OPTARG\"' \${1+'\"\$@\"'}; OPTARG= ;;"
+	_4 "shift 3; eval 'set -- \"\${OPTARG# }\"' \${1+'\"\$@\"'}; OPTARG= ;;"
 	_3 '*) shift 2'
 	_2 'esac'
 }

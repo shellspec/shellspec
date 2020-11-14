@@ -1,37 +1,40 @@
 # shellcheck shell=sh
-# URL: https://github.com/ko1nksm/getoptions (v2.1.0)
+# URL: https://github.com/ko1nksm/getoptions (v2.2.0)
 # License: Creative Commons Zero v1.0 Universal
 getoptions_help() {
-	width=30 plus='' leading='  '
+	_width='30,12' _plus='' _leading='  '
 
 	pad() { p=$2; while [ ${#p} -lt "$3" ]; do p="$p "; done; eval "$1=\$p"; }
+	kv() { eval "${1%%:*}=\${1#*:}"; }
+	sw() { pad sw "$sw${sw:+, }" "$1"; sw="$sw$2"; }
 
 	args() {
-		_type=$1 var=${2%% *} sw='' label='' hidden='' _width=$width && shift 2
-		while [ $# -gt 0 ] && i=$1 && shift && [ ! "$i" = '--' ]; do
+		_type=$1 var=${2%% *} sw='' label='' hidden='' && shift 2
+		while [ $# -gt 0 ] && i=$1 && shift && [ "$i" != -- ]; do
 			case $i in
-				--*) pad sw "$sw${sw:+, }" $((${plus:+4}+4)); sw="$sw$i" ;;
-				-?) sw="$sw${sw:+, }$i" ;;
-				+?) [ ! "$plus" ] || { pad sw "$sw${sw:+, }" 4; sw="$sw$i"; } ;;
-				*) eval "${i%%:*}=\${i#*:}"
+				--*) sw $((${_plus:+4}+4)) "$i" ;;
+				-?) sw 0 "$i" ;;
+				+?) [ ! "$_plus" ] || sw 4 "$i" ;;
+				*) [ "$_type" = setup ] && kv "_$i"; kv "$i"
 			esac
 		done
-		[ "$hidden" ] && return 0
+		[ "$hidden" ] && return 0 || len=${_width%,*}
 
 		[ "$label" ] || case $_type in
-			setup | msg) label='' _width=0 ;;
+			setup | msg) label='' len=0 ;;
 			flag | disp) label="$sw " ;;
 			param) label="$sw $var " ;;
 			option) label="${sw}[=$var] "
 		esac
-		pad label "${label:+$leading}$label" "$_width"
-		[ ${#label} -le "$_width" ] && [ $# -gt 0 ] && label="$label$1" && shift
+		[ "$_type" = cmd ] && label=${label:-$var } len=${_width#*,}
+		pad label "${label:+$_leading}$label" "$len"
+		[ ${#label} -le "$len" ] && [ $# -gt 0 ] && label="$label$1" && shift
 		echo "$label"
-		pad label '' "$_width"
+		pad label '' "$len"
 		for i; do echo "$label$i"; done
 	}
 
-	for i in 'setup :' flag param option disp 'msg :'; do
+	for i in setup flag param option disp 'msg -' cmd; do
 		eval "${i% *}() { args $i \"\$@\"; }"
 	done
 

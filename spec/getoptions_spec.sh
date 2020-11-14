@@ -11,6 +11,14 @@ Describe "getoptions()"
 		esac
 	}
 
+	restargs() {
+		parse "$@"
+		eval "set -- $ARGS"
+		if [ $# -gt 0 ]; then
+			echo "$@"
+		fi
+	}
+
 	It "generates option parser"
 		parser_definition() { setup ARGS; echo 'called' >&2; }
 		When call parse
@@ -27,18 +35,11 @@ Describe "getoptions()"
 	End
 
 	Describe 'handling arguments'
-		restargs() {
-			parse "$@"
-			eval "set -- $ARGS"
-			echo "$@"
-		}
-
 		Context 'when scanning mode is default'
 			parser_definition() {
 				setup ARGS -- 'foo bar'
 				flag FLAG_A -a
 			}
-
 			Specify "treats non-options as arguments"
 				When call restargs -a 1 -a 2 -a 3 - -- -a
 				The variable FLAG_A should eq 1
@@ -51,7 +52,6 @@ Describe "getoptions()"
 				setup ARGS mode:+ -- 'foo bar'
 				flag FLAG_A -a
 			}
-
 			Specify "treats rest following a non-option as arguments"
 				When call restargs -a 1 -a 2 -a 3 -- -a
 				The variable FLAG_A should eq 1
@@ -61,7 +61,6 @@ Describe "getoptions()"
 
 		Context 'when the plus attribute disabled (default)'
 			parser_definition() { setup ARGS; }
-
 			Specify "treats as arguments"
 				When call restargs +o
 				The output should eq "+o"
@@ -89,8 +88,8 @@ Describe "getoptions()"
 
 	Describe 'Default error handler'
 		Context "when specified unknown option"
+			parser_definition() { setup ARGS; }
 			It "displays error"
-				parser_definition() { setup ARGS; }
 				When run parse -x
 				The stderr should eq "Unrecognized option: -x"
 				The status should be failure
@@ -98,8 +97,8 @@ Describe "getoptions()"
 		End
 
 		Context "when specified unknown long option"
+			parser_definition() { setup ARGS; }
 			It "displays error"
-				parser_definition() { setup ARGS; }
 				When run parse --long
 				The stderr should eq "Unrecognized option: --long"
 				The status should be failure
@@ -107,8 +106,8 @@ Describe "getoptions()"
 		End
 
 		Context "when specified an argument to flag"
+			parser_definition() { setup ARGS; flag FLAG --flag; }
 			It "displays error"
-				parser_definition() { setup ARGS; flag FLAG --flag; }
 				When run parse --flag=value
 				The stderr should eq "Does not allow an argument: --flag"
 				The status should be failure
@@ -116,8 +115,8 @@ Describe "getoptions()"
 		End
 
 		Context "when missing an argument for parameter"
+			parser_definition() { setup ARGS; param PARAM --param; }
 			It "displays error"
-				parser_definition() { setup ARGS; param PARAM --param; }
 				When run parse --param
 				The stderr should eq "Requires an argument: --param"
 				The status should be failure
@@ -126,12 +125,6 @@ Describe "getoptions()"
 
 		Context 'when the plus attribute enabled'
 			parser_definition() { setup ARGS plus:true; }
-			restargs() {
-				parse "$@"
-				eval "set -- $ARGS"
-				echo "$@"
-			}
-
 			It "displays error if unknown +option specified"
 				When run restargs +o
 				The stderr should eq "Unrecognized option: +o"
@@ -141,13 +134,13 @@ Describe "getoptions()"
 	End
 
 	Describe 'alternative mode'
+		parser_definition() {
+			setup ARGS alt:true
+			flag FLAG --flag
+			param PARAM --param
+			option OPTION --option
+		}
 		It "allow long options to start with a single '-'"
-			parser_definition() {
-				setup ARGS alt:true
-				flag FLAG --flag
-				param PARAM --param
-				option OPTION --option
-			}
 			When call parse -flag -param p -option=o
 			The variable FLAG should eq 1
 			The variable PARAM should eq "p"
@@ -156,15 +149,15 @@ Describe "getoptions()"
 	End
 
 	Describe 'prehook'
+		parser_definition() {
+			prehook() { echo "$@" >&2; invoke "$@"; }
+			setup ARGS alt:true
+			flag FLAG --flag
+			param PARAM --param
+			option OPTION --option
+			msg -- 'message'
+		}
 		It "called before helper functions is called"
-			parser_definition() {
-				prehook() { echo "$@" >&2; invoke "$@"; }
-				setup ARGS alt:true
-				flag FLAG --flag
-				param PARAM --param
-				option OPTION --option
-				msg -- 'message'
-			}
 			When call parse -flag -param p -option=o
 			The line 1 of stderr should eq "setup ARGS alt:true"
 			The line 2 of stderr should eq "flag FLAG --flag"
@@ -538,6 +531,46 @@ Describe "getoptions()"
 			}
 			When run parse
 			The output should be blank
+		End
+	End
+
+	Describe 'subcommand'
+		parser_definition() {
+			setup ARGS
+			flag FLAG -f
+			cmd list
+		}
+
+		Context "when specify a subcommand that exists"
+			Specify "treat subcommands and the rest as arguments"
+				When call restargs -f list -g 1 2
+				The output should eq "list -g 1 2"
+				The variable FLAG should eq "1"
+			End
+		End
+
+		Context "when not specify a subcommand"
+			Specify "parse global options only"
+				When call restargs -f
+				The output should eq ""
+				The variable FLAG should eq "1"
+			End
+		End
+
+		Context "when no subcommand and only arguments are passed"
+			Specify "the first argument is --"
+				When call restargs -f -- list 1 2
+				The output should eq "-- list 1 2"
+				The variable FLAG should eq "1"
+			End
+		End
+
+		Context "when specify a subcommand that not exists"
+			Specify "displays error"
+				When run restargs -f unknown -g 1 2
+				The error should eq "Not a command: unknown"
+				The status should be failure
+			End
 		End
 	End
 End

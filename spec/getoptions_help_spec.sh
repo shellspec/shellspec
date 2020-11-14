@@ -20,10 +20,11 @@ Describe "getoptions_help()"
 
 	It "displays usage"
 		parser_definition() {
-			setup width:20 plus:true -- 'usage'
+			setup - width:20 plus:true -- 'usage'
 			msg -- "header"
 			msg label:option -- "description"
 			flag FLAG_A -a +a --{no-}flag-a -- "flag a"
+			setup - width:25 hidden
 			param PARAM_P -p -- "param p"
 			option OPTION_O -o -- "option o"
 			msg -- "footer"
@@ -34,8 +35,8 @@ Describe "getoptions_help()"
 		The line 3 should eq "  option            description"
 		The line 4 should eq "  -a, +a, --{no-}flag-a "
 		The line 5 should eq "                    flag a"
-		The line 6 should eq "  -p PARAM_P        param p"
-		The line 7 should eq "  -o[=OPTION_O]     option o"
+		The line 6 should eq "  -p PARAM_P             param p"
+		The line 7 should eq "  -o[=OPTION_O]          option o"
 		The line 8 should eq "footer"
 	End
 End
