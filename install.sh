@@ -31,10 +31,10 @@ OPTIONS:
   -p, --prefix PREFIX   Specify prefix                 [default: \$HOME/.local]
   -b, --bin BIN         Specify bin directory          [default: <PREFIX>/bin]
   -d, --dir DIR         Specify installation directory [default: <PREFIX>/lib/$project]
-  -s, --switch          Switch version (requires installed via git)
+  -s, --switch          Switch version (requires installation via git)
   -l, --list            List available versions (tags)
       --pre             Include pre-release
-      --fetch FETCH     Force command to use when install from archive (curl or wget)
+      --fetch FETCH     Force command to use when installing from archive (curl or wget)
   -y, --yes             Automatic yes to prompts
   -h, --help            You're looking at it
 USAGE
