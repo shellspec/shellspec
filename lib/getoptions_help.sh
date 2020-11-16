@@ -5,7 +5,7 @@ getoptions_help() {
 	_width='30,12' _plus='' _leading='  '
 
 	pad() { p=$2; while [ ${#p} -lt "$3" ]; do p="$p "; done; eval "$1=\$p"; }
-	kv() { eval "${1%%:*}=\${1#*:}"; }
+	kv() { eval "${2-}${1%%:*}=\${1#*:}"; }
 	sw() { pad sw "$sw${sw:+, }" "$1"; sw="$sw$2"; }
 
 	args() {
@@ -15,7 +15,7 @@ getoptions_help() {
 				--*) sw $((${_plus:+4}+4)) "$i" ;;
 				-?) sw 0 "$i" ;;
 				+?) [ ! "$_plus" ] || sw 4 "$i" ;;
-				*) [ "$_type" = setup ] && kv "_$i"; kv "$i"
+				*) [ "$_type" = setup ] && kv "$i" _; kv "$i"
 			esac
 		done
 		[ "$hidden" ] && return 0 || len=${_width%,*}

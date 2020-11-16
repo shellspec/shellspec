@@ -5,7 +5,7 @@
 getoptions_abbr() {
 	abbr() {
 		_3 "case '$1' in"
-		_4 '$1) OPTARG=; break ;;'
+		_4 '"$1") OPTARG=; break ;;'
 		_4 '$1*) OPTARG="$OPTARG '"$1"'"'
 		_3 'esac'
 	}

@@ -173,7 +173,7 @@ Describe "getoptions()"
 
 	Describe 'custom error handler'
 		parser_definition() {
-			setup RESTARGS error:myerror
+			setup RESTARGS error
 			param PARAM -p
 			param PARAM -q
 			param PARAM --pattern pattern:'foo | bar'
@@ -183,7 +183,7 @@ Describe "getoptions()"
 		}
 		valid() { [ "$1" = "-v" ] && return 3; }
 		arg() { false; }
-		myerror() {
+		error() {
 			case $2 in
 				unknown) echo "custom $2: $3 [$OPTARG]"; return 20 ;;
 				valid:3) echo "valid $2: $3 [$OPTARG]"; return 30 ;;

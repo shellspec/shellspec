@@ -19,7 +19,7 @@ getoptions() {
 		[ "${1#:}" = "$1" ] && c=3 || c=4
 		eval "[ ! \${$c:+x} ] || $2 \"\$$c\""
 	}
-	kv() { eval "${1%%:*}=\${1#*:}"; }
+	kv() { eval "${2-}${1%%:*}=\${1#*:}"; }
 	loop() { [ $# -gt 1 ] && [ "$2" != -- ]; }
 
 	invoke() { eval '"_$@"'; }
@@ -53,7 +53,7 @@ getoptions() {
 	}
 	_setup() {
 		[ "${1#-}" ] && _rest=$1
-		while loop "$@" && shift; do kv "_$1"; done
+		while loop "$@" && shift; do kv "$1" _; done
 	}
 	_flag() { args : "$@"; defvar "$@"; }
 	_param() { args '' "$@"; defvar "$@"; }

@@ -83,7 +83,7 @@ parser_definition() {
 
   flag KEEP_TMPDIR --keep-tmpdir -- \
     'Do not cleanup temporary directory [default: disabled]'
-  flag KEEP_TMPDIR --keep-tempdir validate:'deprecated $1' abbr: hidden:true
+  flag KEEP_TMPDIR --keep-tempdir validate:'deprecated "$1"' abbr: hidden:true
 
   msg -- '' '  **** Execution ****' ''
 
@@ -251,7 +251,7 @@ parser_definition() {
     '  This is an experimental feature and may be changed/removed in the future.'
 
   disp VERSION -v --version -- 'Display the version'
-  disp ":help \$1" -h --help -- '-h: short help, --help: long help'
+  disp ':help "$1"' -h --help -- '-h: short help, --help: long help'
 }
 
 extension() {
