@@ -11,11 +11,6 @@ Describe "libexec/optparser.sh"
     esac
   }
 
-  It "generates option parser"
-    When call parse
-    The status should be success
-  End
-
   Describe "multiple()"
     Before VAR=''
 

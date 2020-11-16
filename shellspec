@@ -144,7 +144,7 @@ done <<HERE
 HERE
 export SHELLSPEC_KCOV_FILENAME="$SHELLSPEC_PROJECT_NAME [specfiles]"
 
-eval "$(getoptions parser_definition parse_options SHELLSPEC error_message)"
+optparser parse_options SHELLSPEC error_message
 
 error_message() {
   error "$1${options_file:+" [$options_file]"}"
