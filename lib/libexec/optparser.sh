@@ -1,16 +1,18 @@
 # shellcheck shell=sh
 
 optparser() {
-  # shellcheck source=lib/getoptions.sh
-  . "$SHELLSPEC_LIB/getoptions.sh"
-  # shellcheck source=lib/getoptions_help.sh
-  . "$SHELLSPEC_LIB/getoptions_help.sh"
-  # shellcheck source=lib/getoptions_abbr.sh
-  . "$SHELLSPEC_LIB/getoptions_abbr.sh"
-  # shellcheck source=lib/libexec/parser_definition.sh
-  . "$SHELLSPEC_LIB/libexec/parser_definition.sh"
+  # # shellcheck source=lib/getoptions.sh
+  # . "$SHELLSPEC_LIB/getoptions.sh"
+  # # shellcheck source=lib/getoptions_help.sh
+  # . "$SHELLSPEC_LIB/getoptions_help.sh"
+  # # shellcheck source=lib/getoptions_abbr.sh
+  # . "$SHELLSPEC_LIB/getoptions_abbr.sh"
+  # # shellcheck source=lib/libexec/parser_definition.sh
+  # . "$SHELLSPEC_LIB/libexec/parser_definition.sh"
+  # eval "$(getoptions parser_definition "$@")"
 
-  eval "$(getoptions parser_definition "$@")"
+  # shellcheck source=lib/libexec/parser_definition_generated.sh
+  . "$SHELLSPEC_LIB/libexec/parser_definition_generated.sh"
 }
 
 multiple() {

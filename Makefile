@@ -2,6 +2,11 @@ PREFIX ?= /usr/local
 BINDIR := $(PREFIX)/bin
 LIBDIR := $(PREFIX)/lib
 
+GETOPTIONS := getoptions --indent=2 --shellcheck
+GETOPTIONS_IN := lib/libexec/parser_definition.sh
+GETOPTIONS_PARAMS := parse_options SHELLSPEC error_message
+GETOPTIONS_OUT := lib/libexec/parser_definition_generated.sh
+
 .PHONY: coverage test dist build release
 
 all: test check
@@ -21,6 +26,9 @@ uninstall:
 
 package:
 	contrib/make_package_json.sh > package.json
+
+getoptions:
+	$(GETOPTIONS) $(GETOPTIONS_IN) $(GETOPTIONS_PARAMS) > $(GETOPTIONS_OUT)
 
 demo:
 	ttyrec -e "ghostplay contrib/demo.sh"
