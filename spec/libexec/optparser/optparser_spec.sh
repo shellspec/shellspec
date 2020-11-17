@@ -1,7 +1,7 @@
 #shellcheck shell=sh
 
-Describe "libexec/optparser.sh"
-  Include "$SHELLSPEC_LIB/libexec/optparser.sh"
+Describe "libexec/optparser/optparser.sh"
+  Include "$SHELLSPEC_LIB/libexec/optparser/optparser.sh"
 
   parse() {
     eval "$(getoptions parser_definition _parse PREFIX)"

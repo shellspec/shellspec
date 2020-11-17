@@ -3,9 +3,9 @@ BINDIR := $(PREFIX)/bin
 LIBDIR := $(PREFIX)/lib
 
 GETOPTIONS := getoptions --indent=2 --shellcheck
-GETOPTIONS_IN := lib/libexec/parser_definition.sh
-GETOPTIONS_PARAMS := parse_options SHELLSPEC error_message
-GETOPTIONS_OUT := lib/libexec/parser_definition_generated.sh
+GETOPTIONS_IN := lib/libexec/optparser/parser_definition.sh
+GETOPTIONS_PARAMS := optparser_parse SHELLSPEC optparser_error
+GETOPTIONS_OUT := lib/libexec/optparser/parser_definition_generated.sh
 
 .PHONY: coverage test dist build release
 
