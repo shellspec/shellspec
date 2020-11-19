@@ -630,25 +630,31 @@ shellspec_list_envkeys_parse() {
   shellspec_list_envkeys_callback "${1%%[=]*}"
 }
 
-# Sanitize to reduce security risk when environment variable name
+# Sanitize to avoid security risk when environment variable name
 # contains meta characters
 #
 # e.g.
 # $ env 'FOO; echo bad; # =aaa' ksh -c 'export -p | grep FOO'
 # export FOO; echo bad; # =aaa
 shellspec_list_envkeys_sanitize() {
-  set -- "$1" "$2;" ""
-  while [ "$2" ]; do
-    set -- "$1" "${2#*[;!#~<>[*?&]}" "${3}${2%%[;!#~<>[*?&]*}_"
-  done
-  eval "$1=\${3%_}"
+  eval "$1=\$2"
+  shellspec_replace_all "$1" '!' '_'
+  shellspec_replace_all "$1" '#' '_'
+  shellspec_replace_all "$1" '&' '_'
   shellspec_replace_all "$1" '(' '_'
   shellspec_replace_all "$1" ')' '_'
-  shellspec_replace_all "$1" '`' '_'
-  shellspec_replace_all "$1" '|' '_'
+  shellspec_replace_all "$1" '*' '_'
+  shellspec_replace_all "$1" ';' '_'
+  shellspec_replace_all "$1" '<' '_'
+  shellspec_replace_all "$1" '>' '_'
+  shellspec_replace_all "$1" '?' '_'
+  shellspec_replace_all "$1" '[' '_'
   shellspec_replace_all "$1" ']' '_'
+  shellspec_replace_all "$1" '`' '_'
   shellspec_replace_all "$1" '{' '_'
+  shellspec_replace_all "$1" '|' '_'
   shellspec_replace_all "$1" '}' '_'
+  shellspec_replace_all "$1" '~' '_'
 }
 
 shellspec_exists_envkey() {
