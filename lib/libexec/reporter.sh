@@ -79,6 +79,14 @@ xmlattrs() {
   eval "$EVAL"
 }
 
+xmlcdata() {
+  eval "$1=\$2"
+  if [ "$2" ]; then
+    replace_all "$1" ']]>' ']]]]><![CDATA[>'
+    eval "$1=\"<![CDATA[\${$1}]]>\""
+  fi
+}
+
 remove_escape_sequence() {
   while IFS= read -r line || [ "$line" ]; do
     text=''
