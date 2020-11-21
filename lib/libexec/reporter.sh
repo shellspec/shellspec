@@ -3,7 +3,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 use import constants sequence replace_all each padding trim wrap
-use is_empty_file pluralize exists_file
+use is_empty_file pluralize exists_file readfile
 
 count_examples() {
   set -- "$SHELLSPEC_LIBEXEC/shellspec-list.sh" "$@"

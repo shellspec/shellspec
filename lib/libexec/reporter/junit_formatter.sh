@@ -40,11 +40,11 @@ junit_each() {
         xmlattrs _attrs "message=$field_message"
         _text="$field_failure_message${LF}# $field_specfile:$field_lineno"
         xmlescape _text "$_text"
-        junit '=' "${LF}      <failure $_attrs>$_text</failure>${LF}    "
+        junit '=' "${LF}      <failure $_attrs>$_text</failure>"
       else
         case $field_tag in (skip | pending)
           xmlattrs _attrs "message=$field_message"
-          junit '='  "${LF}      <skip $_attrs />${LF}    "
+          junit '='  "${LF}      <skip $_attrs />"
         esac
       fi
       ;;
@@ -55,7 +55,14 @@ junit_each() {
       elif [ "$field_tag" = "todo" ] || [ "$field_tag" = "skipped" ]; then
         inc _skipped
       fi
-      junit '=' "</testcase>${LF}"
+      _stdout='' _stderr=''
+      [ -r "$field_stdout" ] && readfile _stdout "$field_stdout"
+      [ -r "$field_stderr" ] && readfile _stderr "$field_stderr"
+      xmlcdata _stdout "$_stdout"
+      xmlcdata _stderr "$_stderr"
+      junit '=' "${LF}      <system-out>$_stdout></system-out>"
+      junit '+=' "${LF}      <system-err>$_stderr</system-err>"
+      junit '+=' "${LF}    </testcase>${LF}"
       ;;
     end)
       junit '='
