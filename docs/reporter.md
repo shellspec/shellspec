@@ -6,9 +6,9 @@
 | ------ | --------- | ------------------------------- |
 |        | meta      | 1                               |
 | +----- | begin     | 0..N (number of specfiles)      |
-| :  +-- | example   | 0..N                            |
-| :  :   | statement | 0..N                            |
-| :  +-- | result    | same number of times as example |
+| :　+-- | example   | 0..N                            |
+| :　:   | statement | 0..N                            |
+| :　+-- | result    | same number of times as example |
 | +----- | end       | same number of times as begin   |
 |        | finished  | 1                               |
 |        |           |                                 |
@@ -16,16 +16,16 @@
 
 ### types
 
-| type      | fields                                                       |
-| --------- | ------------------------------------------------------------ |
-| meta      | shell, shell_type, shell_version, info                       |
-| begin     | specfile                                                     |
-| example   | id, block_no, example_no, focused, description, lineno_range |
-| statement | tag, lineno, [statement type fields...]                      |
-| result    | [result type fields...], trace                               |
-| end       |                                                              |
-| finished  |                                                              |
-| error     | lineno, note, message, failure_message                       |
+| type      | fields                                                                       |
+| --------- | ---------------------------------------------------------------------------- |
+| meta      | shell, shell_type, shell_version, info                                       |
+| begin     | specfile                                                                     |
+| example   | id, block_no, example_no, focused, description, lineno_range, stdout, stderr |
+| statement | tag, lineno, [statement type fields...]                                      |
+| result    | [result type fields...], trace                                               |
+| end       |                                                                              |
+| finished  |                                                                              |
+| error     | lineno, note, message, failure_message                                       |
 
 ### statement type
 

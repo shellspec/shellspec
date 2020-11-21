@@ -223,6 +223,13 @@ Describe "libexec/reporter.sh"
     End
   End
 
+  Describe "xmlcdata()"
+    It 'creates xml CDATA'
+      When call xmlcdata cdata 'test1<![CDATA[test2]]>test3'
+      The variable cdata should eq '<![CDATA[test1<![CDATA[test2]]]]><![CDATA[>test3]]>'
+    End
+  End
+
   Describe "remove_escape_sequence()"
     It 'removes escape sequence'
       Data printf '\033[1;31m%s\033[0m \033[1;31m%s\033[0m\n' "foo" "bar"

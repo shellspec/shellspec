@@ -19,16 +19,18 @@ color_constants
 found_focus='' no_examples='' aborted=1 repetition='' coverage_failed='' \
 fail_fast='' fail_fast_count=${SHELLSPEC_FAIL_FAST_COUNT:-999999} reason='' \
 current_example_index=0 example_index='' \
-last_example_no='' last_skip_id='' not_enough_examples='' \
-field_id='' field_type='' field_tag='' field_example_no='' field_focused='' \
-field_temporary='' field_skipid='' field_pending='' field_message='' \
-field_quick='' field_specfile=''
+last_example_no='' last_skip_id='' not_enough_examples=''
 
 # shellcheck disable=SC2034
 specfile_count=0 expected_example_count=0 example_count=0 \
 succeeded_count='' failed_count='' warned_count='' error_count='' \
 todo_count='' fixed_count='' skipped_count='' error_index='' \
 suppressed_todo_count='' suppressed_fixed_count='' suppressed_skipped_count=''
+
+# shellcheck disable=SC2034
+field_id='' field_type='' field_tag='' field_example_no='' field_focused='' \
+field_temporary='' field_skipid='' field_pending='' field_message='' \
+field_quick='' field_specfile='' field_stdout='' field_stderr=''
 
 init_quick_data
 

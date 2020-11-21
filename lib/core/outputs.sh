@@ -20,7 +20,8 @@ shellspec_output_END() {
 shellspec_output_EXAMPLE() {
   shellspec_output_example "id:$SHELLSPEC_EXAMPLE_ID" \
     "block_no:$SHELLSPEC_BLOCK_NO" "example_no:$SHELLSPEC_EXAMPLE_NO" \
-    "focused:$SHELLSPEC_FOCUSED" "description:$SHELLSPEC_DESCRIPTION"
+    "focused:$SHELLSPEC_FOCUSED" "description:$SHELLSPEC_DESCRIPTION" \
+    "stdout:$SHELLSPEC_STDOUT_FILE" "stderr:$SHELLSPEC_STDERR_FILE"
 }
 
 shellspec_output_EVALUATION() {
