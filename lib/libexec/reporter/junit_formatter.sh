@@ -39,7 +39,7 @@ junit_each() {
       if [ "$field_fail" ]; then
         xmlattrs _attrs "message=$field_message"
         _text="$field_failure_message${LF}# $field_specfile:$field_lineno"
-        xmlescape _text "$_text"
+        xmlcdata _text "$_text"
         junit '=' "${LF}      <failure $_attrs>$_text</failure>"
       else
         case $field_tag in (skip | pending)
