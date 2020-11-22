@@ -60,7 +60,7 @@ junit_each() {
       [ -r "$field_stderr" ] && readfile _stderr "$field_stderr"
       xmlcdata _stdout "$_stdout"
       xmlcdata _stderr "$_stderr"
-      junit '=' "${LF}      <system-out>$_stdout></system-out>"
+      junit '=' "${LF}      <system-out>$_stdout</system-out>"
       junit '+=' "${LF}      <system-err>$_stderr</system-err>"
       junit '+=' "${LF}    </testcase>${LF}"
       ;;
