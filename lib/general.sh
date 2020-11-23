@@ -673,6 +673,53 @@ shellspec_is_readonly() {
   return 0
 }
 
+shellspec_abspath() {
+  if [ "$SHELLSPEC_BUSYBOX_W32" ]; then
+    shellspec_abspath_win "$@"
+  else
+    shellspec_abspath_unix "$@"
+  fi
+}
+
+shellspec_abspath_unix() {
+  case $2 in
+    /*) set -- "$1" "$2/" "" "" ;;
+    *) set -- "$1" "${3:-$PWD}/$2/" "" ""
+  esac
+
+  while [ "$2" ]; do
+    case ${2%%/*} in
+      "" | .) set -- "$1" "${2#*/}" "${2%%/*}" "$4" ;;
+      ..) set -- "$1" "${2#*/}" "${2%%/*}" "${4%/*}" ;;
+      *) set -- "$1" "${2#*/}" "${2%%/*}" "$4/${2%%/*}"
+    esac
+  done
+  eval "$1=\"/\${4#/}\""
+}
+
+shellspec_chdrv() { cd "$1:" 2>/dev/null; }
+
+shellspec_abspath_win() {
+  set -- "$1" "$2" "${3:-$PWD}"
+
+  case $2 in (//*) # UNC path
+    shellspec_abspath_unix "$1" "${2#/}"
+    eval "$1=\"/\${$1}\""
+    return 0
+  esac
+
+  case $2 in
+    [a-zA-Z]:/*) set -- "$1" "/$2" ;;
+    [a-zA-Z]:*)
+      set -- "$1" "$2" "$(shellspec_chdrv "${2%%:*}" && echo "$3")"
+      set -- "$1" "/${3%/}/${2#?:}" ;;
+    /*) set -- "$1" "/${3%%:*}:$2" ;;
+    *) set -- "$1" "/${3%/}/$2" ;;
+  esac
+  shellspec_abspath_unix "$@"
+  eval "$1=\"\${$1#/}\""
+}
+
 shellspec_mv() { "$SHELLSPEC_MV" "$@"; }
 shellspec_rm() { "$SHELLSPEC_RM" "$@"; }
 shellspec_chmod() { "$SHELLSPEC_CHMOD" "$@"; }
