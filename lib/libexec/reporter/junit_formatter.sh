@@ -67,7 +67,8 @@ junit_each() {
     end)
       junit '='
       if [ "$_system_error" ]; then
-        junit '+=' "    <system-error>$_system_error</system-error>${LF}"
+        xmlcdata _system_error "$_system_error"
+        junit '+=' "    <system-err>$_system_error</system-err>${LF}"
         _system_error=''
       fi
       junit '+=' "  </testsuite>${LF}"
