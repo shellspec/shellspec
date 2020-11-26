@@ -32,7 +32,6 @@ export SHELLSPEC_COVERAGE_SETUP=''
 export SHELLSPEC_COVERAGE_SHELL_OPTIONS=''
 export SHELLSPEC_KCOV_COMPATIBLE_SHELL=''
 export SHELLSPEC_OUTPUT_FD=9
-export SHELLSPEC_PROFILER_REPORT=".shellspec-profiler.log"
 export SHELLSPEC_DEFECT_READONLY=''
 export SHELLSPEC_DEFECT_BUILTIN=''
 export SHELLSPEC_DEFECT_REDEFINE=''
@@ -50,7 +49,6 @@ export SHELLSPEC_SHOPT_AVAILABLE=''
 export SHELLSPEC_FAILGLOB_AVAILABLE=''
 export SHELLSPEC_NOMATCH_AVAILABLE=''
 export SHELLSPEC_PATHSEP=":"
-export SHELLSPEC_QUICK_FILE=".shellspec-quick.log"
 export SHELLSPEC_REPAIR=''
 export SHELLSPEC_INFO=''
 export SHELLSPEC_TTY=''
@@ -118,6 +116,17 @@ opts="$opts --exclude-pattern=/.shellspec,/spec/,/coverage/,/report/"
 opts="$opts --path-strip-level=1"
 export SHELLSPEC_KCOV_COMMON_OPTS="${opts# } "
 
+# project root path
+export SHELLSPEC_CWD="$PWD"
+export SHELLSPEC_PROJECT_ROOT="$PWD"
+until [ -f "$SHELLSPEC_PROJECT_ROOT/.shellspec" ]; do
+  [ "$SHELLSPEC_PROJECT_ROOT" ] || break
+  SHELLSPEC_PROJECT_ROOT=${SHELLSPEC_PROJECT_ROOT%/*}
+done
+if [ "$SHELLSPEC_PROJECT_ROOT" ]; then
+  cd "$SHELLSPEC_PROJECT_ROOT"
+fi
+
 # option parsing
 {
   optparser parse_options error_message
@@ -150,12 +159,18 @@ export SHELLSPEC_KCOV_COMMON_OPTS="${opts# } "
   eval "set -- $params"
 }
 
+[ "$SHELLSPEC_MODE" = "init" ] && SHELLSPEC_PROJECT_ROOT=$SHELLSPEC_CWD
+if [ ! "$SHELLSPEC_PROJECT_ROOT" ]; then
+  abort "File .shellspec not found in the current or any of the parent directory."
+fi
+
 # project path
-export SHELLSPEC_PROJECT_ROOT="$PWD"
 export SHELLSPEC_PROJECT_NAME="${SHELLSPEC_PROJECT_ROOT##*/}"
 export SHELLSPEC_COVERAGE_DIR="$SHELLSPEC_PROJECT_ROOT/coverage"
 export SHELLSPEC_SPECDIR="$SHELLSPEC_PROJECT_ROOT/spec"
+export SHELLSPEC_QUICK_FILE="$SHELLSPEC_PROJECT_ROOT/.shellspec-quick.log"
 export SHELLSPEC_REPORTDIR="$SHELLSPEC_PROJECT_ROOT/report"
+export SHELLSPEC_PROFILER_REPORT="$SHELLSPEC_REPORTDIR/shellspec-profiler.log"
 export SHELLSPEC_LOAD_PATH="$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_REPORTERLIB"
 export SHELLSPEC_SUPPORT_BINDIR="$SHELLSPEC_SPECDIR/support/bin"
 export SHELLSPEC_BANNER_FILE="$SHELLSPEC_SPECDIR/banner"
@@ -317,12 +332,19 @@ fi
 case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
   [ $# -eq 0 ] && set -- "$SHELLSPEC_DEFAULT_PATH"
   for p in "$@"; do
-    [ -e "${p%%:*}" ] || abort "Not found path: ${p%%:*}."
-    [ -f "${p%%:*}" ] && SHELLSPEC_PATTERN="$SHELLSPEC_PATTERN|${p%%:*}"
-    case $p in (*:*)
-      [ -d "${p%%:*}" ] && abort "Invalid range for directory: $p."
-      check_range "${p#*:}" || abort "Invalid range: $p."
-    esac
+    abspath='' range=''
+    abspath abspath "$SHELLSPEC_CWD/$p"
+    separate_abspath_and_range abspath range "$abspath"
+    is_path_in_project "$abspath" || abort "Not a path in the project: $p."
+    [ -e "$abspath" ] || abort "Not found path: ${p%%:*}."
+    [ -f "$abspath" ] && SHELLSPEC_PATTERN="$SHELLSPEC_PATTERN|${p%%:*}"
+    if [ "$range" ]; then
+      [ -d "$abspath" ] && abort "Invalid range for directory: $p."
+      check_range "$range" || abort "Invalid range: $p."
+    fi
+    relpath=${abspath#"$SHELLSPEC_PROJECT_ROOT/"}
+    set -- "$@" "${relpath}${range:+:}${range}"
+    shift
   done
 esac
 

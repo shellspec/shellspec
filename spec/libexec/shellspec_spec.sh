@@ -243,6 +243,19 @@ Describe "libexec/shellspec.sh"
     End
   End
 
+  Describe "is_path_in_project()"
+    Parameters
+      "/path/to/project"        "/path/to/project" success
+      "/path/to/project/file"   "/path/to/project" success
+      "/path/to/project-file"   "/path/to/project" failure
+    End
+
+    It "checks path is in the project ($1)"
+      When call is_path_in_project "$1" "$2"
+      The status should be "$3"
+    End
+  End
+
   Describe "separate_abspath_and_range()"
     Parameters
       "/path/to/spec"           "/path/to/spec" ""

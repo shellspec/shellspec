@@ -3,6 +3,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 load binary
+use abspath starts_with
 
 read_options_file() {
   [ -e "$1" ] || return 0
@@ -115,6 +116,11 @@ command_path() {
     return 0
   done
   return 1
+}
+
+is_path_in_project() {
+  set -- "$1" "${2:-$SHELLSPEC_PROJECT_ROOT}"
+  [ "$1" = "$2" ] || starts_with "$1" "$2/"
 }
 
 separate_abspath_and_range() {
