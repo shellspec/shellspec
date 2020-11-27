@@ -273,38 +273,6 @@ Describe "libexec/shellspec.sh"
     End
   End
 
-  Describe "check_range()"
-    It "returns success when passed line number"
-      When call check_range "1"
-      The status should be success
-    End
-
-    It "returns success when passed multiple line number"
-      When call check_range "1:2:3"
-      The status should be success
-    End
-
-    It "returns success when passed id"
-      When call check_range "@1"
-      The status should be success
-    End
-
-    It "returns success when passed multiple id"
-      When call check_range "@1:@2:@3"
-      The status should be success
-    End
-
-    It "returns success when passed mixed line number and id"
-      When call check_range "@1:2:@3:4"
-      The status should be success
-    End
-
-    It "returns fails when passed invalid string"
-      When call check_range "foo"
-      The status should be failure
-    End
-  End
-
   Describe "random_seed()"
     MAX_64BIT_PID=4194304
 
