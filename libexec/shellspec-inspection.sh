@@ -44,9 +44,12 @@ if [ "${ZSH_VERSION:-}" ] && zshexit; then
 fi
 
 # Workaround for posh 0.8.5
-case $(kill -l 1 2>/dev/null) in (1*)
-  echo "SHELLSPEC_DEFECT_SIGNAL=1"
-esac
+if [ ! "$(kill -l 2 2>/dev/null)" = "INT" ]; then
+  # Workaround for procps-ng kill
+  if [ ! "$(kill -l2 2>/dev/null)" = "INT" ]; then
+    echo "SHELLSPEC_DEFECT_SIGNAL=1"
+  fi
+fi
 
 set +e
 (set -e; subshell() { return 2; }; subshell) 2>/dev/null
