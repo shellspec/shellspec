@@ -243,35 +243,33 @@ Describe "libexec/shellspec.sh"
     End
   End
 
-  Describe "check_range()"
-    It "returns success when passed line number"
-      When call check_range "1"
-      The status should be success
+  Describe "is_path_in_project()"
+    Parameters
+      "/path/to/project"        "/path/to/project" success
+      "/path/to/project/file"   "/path/to/project" success
+      "/path/to/project-file"   "/path/to/project" failure
     End
 
-    It "returns success when passed multiple line number"
-      When call check_range "1:2:3"
-      The status should be success
+    It "checks path is in the project ($1)"
+      When call is_path_in_project "$1" "$2"
+      The status should be "$3"
+    End
+  End
+
+  Describe "separate_abspath_and_range()"
+    Parameters
+      "/path/to/spec"           "/path/to/spec" ""
+      "/path/to/spec:100"       "/path/to/spec" "100"
+      "D:/path/to/spec"         "D:/path/to/spec" ""
+      "D:/path/to/spec:100"     "D:/path/to/spec" "100"
+      "//unc/path/to/spec"      "//unc/path/to/spec" ""
+      "//unc/path/to/spec:100"  "//unc/path/to/spec" "100"
     End
 
-    It "returns success when passed id"
-      When call check_range "@1"
-      The status should be success
-    End
-
-    It "returns success when passed multiple id"
-      When call check_range "@1:@2:@3"
-      The status should be success
-    End
-
-    It "returns success when passed mixed line number and id"
-      When call check_range "@1:2:@3:4"
-      The status should be success
-    End
-
-    It "returns fails when passed invalid string"
-      When call check_range "foo"
-      The status should be failure
+    It "separates abspath and range ($1)"
+      When call separate_abspath_and_range abspath range "$1"
+      The variable abspath should eq "$2"
+      The variable range should eq "$3"
     End
   End
 

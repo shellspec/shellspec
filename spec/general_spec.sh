@@ -946,4 +946,47 @@ Describe "general.sh"
       The status should be "$2"
     End
   End
+
+  Describe "shellspec_abspath_unix()"
+    Parameters
+      "/"               "/"                   "/"
+      "/"               ""                    "/"
+      "/"               "a"                   "/a"
+      "/foo/bar"        ""                    "/foo/bar"
+      "/foo/bar/"       ""                    "/foo/bar"
+      "/foo/bar/"       "/"                   "/"
+      "/foo/bar/"       "/"                   "/"
+      "/foo/bar"        "../a"                "/foo/a"
+      "/foo/bar"        "../../../../../a"    "/a"
+      "/foo/bar"        "../../../a/../b"     "/b"
+      "/foo/bar"        "./a/b"               "/foo/bar/a/b"
+      "/foo/bar"        "a///b//c"            "/foo/bar/a/b/c"
+      "/foo/bar"        "/a/"                 "/a"
+      "/foo/bar"        "//a"                 "/a"
+    End
+
+    It "converts to absolute path ($1 + $2 => $3)"
+      When call shellspec_abspath_unix ret "$2" "$1"
+      The variable ret should eq "$3"
+    End
+  End
+
+  Describe "shellspec_abspath_win()"
+    Parameters
+      'dummy'     '//WSL$/ubuntu' '//WSL$/ubuntu'
+      'dummy'     'D:/path'       'D:/path'
+      'D:/temp'   'D:path'        'D:/temp/path'
+      'D:/'       'D:path'        'D:/path'
+      'D:/temp'   '/path'         'D:/path'
+      'D:/temp'   'path'          'D:/temp/path'
+      'D:/'       'path'          'D:/path'
+    End
+
+    shellspec_chdrv() { :; }
+
+    It "converts to absolute path ($1 + $2 => $3)"
+      When call shellspec_abspath_win ret "$2" "$1"
+      The variable ret should eq "$3"
+    End
+  End
 End

@@ -15,7 +15,7 @@ profiler_end() {
   # shellcheck disable=SC2031
   read_profiler callback "$profiler_tick_total" "$time_real" \
     < "$SHELLSPEC_PROFILER_LOG" \
-    > "$SHELLSPEC_REPORTDIR/$SHELLSPEC_PROFILER_REPORT"
+    > "$SHELLSPEC_PROFILER_REPORT"
 }
 
 profiler_output() {
