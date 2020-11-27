@@ -243,6 +243,23 @@ Describe "libexec/shellspec.sh"
     End
   End
 
+  Describe "separate_abspath_and_range()"
+    Parameters
+      "/path/to/spec"           "/path/to/spec" ""
+      "/path/to/spec:100"       "/path/to/spec" "100"
+      "D:/path/to/spec"         "D:/path/to/spec" ""
+      "D:/path/to/spec:100"     "D:/path/to/spec" "100"
+      "//unc/path/to/spec"      "//unc/path/to/spec" ""
+      "//unc/path/to/spec:100"  "//unc/path/to/spec" "100"
+    End
+
+    It "separates abspath and range ($1)"
+      When call separate_abspath_and_range abspath range "$1"
+      The variable abspath should eq "$2"
+      The variable range should eq "$3"
+    End
+  End
+
   Describe "check_range()"
     It "returns success when passed line number"
       When call check_range "1"

@@ -117,6 +117,24 @@ command_path() {
   return 1
 }
 
+separate_abspath_and_range() {
+  case $3 in
+    [a-zA-Z]:*)
+      set -- "$1" "$2" "${3%%:*}" "${3#*:}"
+      case $4 in
+        *:*) set -- "$1" "$2" "$3:${4%%:*}" "${4#*:}" ;;
+        *) set -- "$1" "$2" "$3:$4" "" ;;
+      esac
+      ;;
+    *)
+      case $3 in
+        *:*) set -- "$1" "$2" "${3%%:*}" "${3#*:}" ;;
+        *) set -- "$1" "$2" "$3" "" ;;
+      esac
+  esac
+  eval "$1=\$3 $2=\$4"
+}
+
 check_range() {
   set -- "$1:"
   while [ "$1" ] && set -- "${1#*:}" "${1%%:*}"; do
