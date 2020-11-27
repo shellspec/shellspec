@@ -245,9 +245,10 @@ Describe "libexec/shellspec.sh"
 
   Describe "is_path_in_project()"
     Parameters
-      "/path/to/project"        "/path/to/project" success
-      "/path/to/project/file"   "/path/to/project" success
-      "/path/to/project-file"   "/path/to/project" failure
+      "/path/to/project"        "/path/to/project"  success
+      "/path/to/project/file"   "/path/to/project"  success
+      "/path/to/project-file"   "/path/to/project"  failure
+      "/spec"                   "/"                 success
     End
 
     It "checks path is in the project ($1)"

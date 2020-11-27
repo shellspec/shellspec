@@ -120,7 +120,7 @@ command_path() {
 
 is_path_in_project() {
   set -- "$1" "${2:-$SHELLSPEC_PROJECT_ROOT}"
-  [ "$1" = "$2" ] || starts_with "$1" "$2/"
+  [ "$1" = "$2" ] || starts_with "$1" "${2%/}/"
 }
 
 separate_abspath_and_range() {
