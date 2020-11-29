@@ -138,7 +138,7 @@ The line beginning with `When` is the evaluation.
 | Evaluation       | Description                                                          |
 | :--------------- | :------------------------------------------------------------------- |
 | When call        | Call shell function without subshell.                                |
-| When run         | Run shell function (within subshell) or external command.            |
+| When run         | Run shell function or external command within a subshell.            |
 | When run command | Run external command (including non-shell scripts).                  |
 | When run script  | Run shell script by new process of the current shell.                |
 | When run source  | Run shell script in the current shell by `.` command (aka `source`). |
