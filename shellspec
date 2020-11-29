@@ -332,8 +332,9 @@ fi
 case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
   [ $# -eq 0 ] && set -- "$SHELLSPEC_DEFAULT_PATH"
   for p in "$@"; do
-    abspath='' range=''
-    abspath abspath "$SHELLSPEC_CWD/$p"
+    abspath=$p range=''
+    [ "$p" = "${p#/}" ] && abspath="$SHELLSPEC_CWD/$p"
+    abspath abspath "$abspath"
     separate_abspath_and_range abspath range "$abspath"
     is_path_in_project "$abspath" || abort "Not a path in the project: $p."
     [ -e "$abspath" ] || abort "Not found path: ${p%%:*}."
