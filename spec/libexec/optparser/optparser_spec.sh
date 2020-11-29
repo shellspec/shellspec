@@ -111,6 +111,21 @@ Describe "libexec/optparser/optparser.sh"
     End
   End
 
+  Describe "check_directory()"
+    Parameters
+      spec/dir      success
+      spec/..dir    success
+      spec/..       failure
+      spec/../dir   failure
+    End
+
+    It "checks directory name"
+      BeforeCall OPTARG="$1"
+      When call check_directory
+      The status should be "$2"
+    End
+  End
+
   Describe "only_failures()"
     It "sets QUICK and REPAIR variables"
       When call only_failures PREFIX

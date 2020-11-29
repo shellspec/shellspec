@@ -72,6 +72,7 @@ shellspec_unbuiltin "cat"
 shellspec_unbuiltin "od"
 shellspec_unbuiltin "hexdump"
 shellspec_unbuiltin "tar"
+shellspec_unbuiltin "cd"
 
 shellspec_spec_helper_configure() {
   shellspec_import 'support/custom_matcher'
