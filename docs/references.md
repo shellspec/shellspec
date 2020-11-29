@@ -150,7 +150,7 @@ When call <FUNCTION> [ARGUMENTS...]
 ```
 
 This is primarily designed for shell function calls. It is the recommended evaluation as a unit test.
-It does not use a subshell, therefore most fast and and you can assert variables.
+It does not use a subshell, therefore it is the fastest evaluation variant and you can assert variables.
 
 #### `When run`
 
@@ -160,20 +160,20 @@ When run <FUNCTION | COMMAND> [ARGUMENTS...]
 
 This is primarily designed for external command calls.
 The external command does not have to be a shell script.
-Even shell scripts are executed as external commands according to the shebang, so they are not covered by coverage.
+Even shell scripts are executed as external commands according to the shebang, so they are not covered by the coverage.
 
 ##### about calling shell function with run
 
 If a shell function is specified, it will be executed in a subshell. The slight advantage of
 executing shell functions with `run` is that you can trap errors with `set -e`.
-Unlike `call`, it does not cause an error, so you can use assert the exit status.
+Unlike `call`, it does not cause an error, so you can assert the exit status.
 
-Also, Because executed in in the subshell, the variable changed is restored.
-This is often a disadvantage, but ShellSpec's itself tests intentionally use `run`
-because changing internal variables confuse ShellSpec behavior.
+Also, because of the execution in the subshell, the variables which change values in the function are restored once `run` finishes.
+This is often a disadvantage, but tests of ShellSpec itself intentionally use `run`
+because changing internal variables confuses ShellSpec's behavior.
 
 If you want to assert variables with `run`, use the `%preserve` directive in function called by `AfterRun` hook.
-It can preserve variables even if it exits the subshell.
+It can preserve variables even if `run` exits the subshell.
 
 #### `When run command`
 
@@ -183,7 +183,7 @@ When run command <COMMAND> [ARGUMENTS...]
 
 Run an external command explicitly.
 The external command does not have to be a shell script.
-Even shell scripts are executed as external commands according to the shebang, so they are not covered by coverage.
+Even shell scripts are executed as external commands according to the shebang, so they are not covered by the coverage.
 
 #### `When run script`
 
