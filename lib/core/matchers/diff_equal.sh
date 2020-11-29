@@ -15,9 +15,9 @@ shellspec_matcher_diff_equal() {
   shellspec_matcher__failure_message() {
     shellspec_putsn "Expected the same contents in $1 and $2"
     shellspec_putsn "diff $1 $2"
-    shellspec_replace_all _one $1 '"' ''
-    shellspec_replace_all _two $2 '"' ''
-    shellspec_putsn "$(diff $_one $_two)"
+    shellspec_replace_all _one "$1" '"' ''
+    shellspec_replace_all _two "$2" '"' ''
+    shellspec_putsn "$(diff "$_one" "$_two")"
   }
 
   shellspec_matcher__failure_message_when_negated() {
