@@ -32,6 +32,14 @@ parser_definition() {
   multi REQUIRES ':' --require var:MODULE -- \
     'Require a MODULE (shell script file)'
 
+  param DIRECTORY -C --directory init:='@project' validate:check_directory var:"@LOCATION[/DIR]" \
+    pattern:'@project | @project/* | @basedir | @basedir/* | @specfile | @specfile/*' -- \
+    'Change to the directory before running each specfile | [default: @project]' \
+    '  [@project]       Project root directory [default]' \
+    '  [@basedir]       Where the file .shellspec-basedir is located' \
+    '  [@specfile]      Where the specfile is located' \
+    '  In addition, it can be specified a directory relative to the location'
+
   param :set_env -e --env validate:check_env_name var:'NAME[=VALUE]' -- \
     'Set environment variable'
 

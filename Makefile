@@ -2,7 +2,7 @@ PREFIX ?= /usr/local
 BINDIR := $(PREFIX)/bin
 LIBDIR := $(PREFIX)/lib
 
-GETOPTIONS := getoptions --indent=2 --shellcheck
+GETOPTIONS := getoptions-cli --indent=2 --shellcheck
 GETOPTIONS_IN := lib/libexec/optparser/parser_definition.sh
 GETOPTIONS_PARAMS := optparser_parse SHELLSPEC optparser_error
 GETOPTIONS_OUT := lib/libexec/optparser/parser_definition_generated.sh

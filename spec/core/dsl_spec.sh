@@ -109,6 +109,32 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_location()"
+    Before SHELLSPEC_SPECFILE="spec/fixture/spec_structure/basedir/dir1/dir2/test_spec.sh"
+    cd() { echo "$1"; }
+
+    Parameters
+      @project     "$SHELLSPEC_PROJECT_ROOT"
+      @project/    "$SHELLSPEC_PROJECT_ROOT/"
+      @project/dir "$SHELLSPEC_PROJECT_ROOT/dir"
+
+      @basedir     "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir"
+      @basedir/    "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir/"
+      @basedir/dir "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir/dir"
+
+      @specfile     "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir/dir1/dir2"
+      @specfile/    "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir/dir1/dir2/"
+      @specfile/dir "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir/dir1/dir2/dir"
+
+      other         "$SHELLSPEC_PROJECT_ROOT" # May change the specifications in the future
+    End
+
+    It 'changes the directory'
+      When run shellspec_location "$1"
+      The output should eq "$2"
+    End
+  End
+
   Describe "shellspec_perform()"
     echo_enabled_filter() { echo "$SHELLSPEC_ENABLED $SHELLSPEC_FILTER"; }
     AfterRun echo_enabled_filter

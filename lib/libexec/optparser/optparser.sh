@@ -58,6 +58,13 @@ check_env_file() {
   [ -f "$OPTARG" ]
 }
 
+check_directory() {
+  case $OPTARG in
+    */.. | */../* ) return 1
+  esac
+  return 0
+}
+
 only_failures() {
   export "$1_QUICK=1" "$1_REPAIR=1"
 }
@@ -152,6 +159,7 @@ error_handler() {
     check_formatter:*) set -- "$1" "Invalid formatter name: $4" ;;
     check_env_name:*) set -- "$1" "Invalid environment name: $4" ;;
     check_env_file:*) set -- "$1" "Not found env file: $4" ;;
+    check_directory:*) set -- "$1" "Cannot include '..' in the directory: $4" ;;
     check_random:*)
       set -- "$1" "Specify in one of the following formats" "$4"
       set -- "$1" "$2 (none[:SEED], specfiles[:SEED], examples[:SEED]): $3"
