@@ -332,18 +332,18 @@ fi
 case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
   [ $# -eq 0 ] && set -- "$SHELLSPEC_DEFAULT_PATH"
   for p in "$@"; do
-    abspath=$p range=''
-    [ "$p" = "${p#/}" ] && abspath="$SHELLSPEC_CWD/$p"
-    abspath abspath "$abspath"
+    abspath='' range=''
+    abspath abspath "$p" "$SHELLSPEC_CWD"
     separate_abspath_and_range abspath range "$abspath"
     is_path_in_project "$abspath" || abort "Not a path in the project: $p."
-    [ -e "$abspath" ] || abort "Not found path: ${p%%:*}."
+    [ -e "$abspath" ] || abort "Not found a path: ${p%%:*}."
     [ -f "$abspath" ] && SHELLSPEC_PATTERN="$SHELLSPEC_PATTERN|${p%%:*}"
-    if [ "$range" ]; then
-      [ -d "$abspath" ] && abort "Invalid range for directory: $p."
-      check_range "$range" || abort "Invalid range: $p."
+    if [ -d "$abspath" ] && [ "$range" ]; then
+      abort "Cannot specify range for the directory: $p."
     fi
-    relpath=${abspath#"$SHELLSPEC_PROJECT_ROOT/"}
+    check_range "$range" || abort "Invalid range: $p."
+    relpath=${abspath#"$SHELLSPEC_PROJECT_ROOT"}
+    [ "$relpath" ] && relpath=${relpath#/} || relpath='./'
     set -- "$@" "${relpath}${range:+:}${range}"
     shift
   done

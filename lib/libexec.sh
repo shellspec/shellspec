@@ -42,6 +42,7 @@ is_specfile() {
 }
 
 found_specfile() {
+  set -- "$1" "${2#./}"
   set -- "$@" "${2%%:*}"
   case $2 in (*:*)
     set -- "$@" "${2#*:}"
@@ -161,6 +162,7 @@ read_quickfile() {
 }
 
 includes_path() {
+  [ "$2" = "./" ] && return 0
   set -- "/${1%/}" "/${2%/}"
   while [ "$1" ]; do
     [ "$1" = "$2" ] && return 0

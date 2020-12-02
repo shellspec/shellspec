@@ -46,24 +46,20 @@ Describe 'libexec.sh'
   End
 
   Describe 'found_specfile()'
-    callback() {
-      echo "path:$1"
-      echo "file:$2"
-      echo "range:${3-[unset]}"
-    }
+    # shellcheck disable=SC2034
+    callback() { _path="$1" _file="$2" _range="${3-[unset]}"; }
 
-    It 'calls callback with no range'
-      When call found_specfile callback "a_spec.sh"
-      The line 1 of output should eq "path:a_spec.sh"
-      The line 2 of output should eq "file:a_spec.sh"
-      The line 3 of output should eq "range:[unset]"
+    Parameters
+      "./a_spec.sh"         "a_spec.sh"          "a_spec.sh"  "[unset]"
+      "a_spec.sh"           "a_spec.sh"          "a_spec.sh"  "[unset]"
+      "a_spec.sh:1:2:@1-2"  "a_spec.sh:1:2:@1-2" "a_spec.sh"  "1 2 @1-2"
     End
 
-    It 'calls callback with range'
-      When call found_specfile callback "a_spec.sh:1:2:@1-2"
-      The line 1 of output should eq "path:a_spec.sh:1:2:@1-2"
-      The line 2 of output should eq "file:a_spec.sh"
-      The line 3 of output should eq "range:1 2 @1-2"
+    It 'calls callback with specfile info'
+      When call found_specfile callback "$1"
+      The variable _path should eq "$2"
+      The variable _file should eq "$3"
+      The variable _range should eq "$4"
     End
   End
 
@@ -263,6 +259,7 @@ Describe 'libexec.sh'
 
   Describe "includes_path()"
     Parameters
+      success "spec" "./"
       success "spec" "spec"
       success "spec" "spec/"
       success "spec/" "spec"

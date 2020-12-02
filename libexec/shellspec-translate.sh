@@ -250,6 +250,7 @@ specfile() {
   progress "${CR}Translate[$spec_no/$specfile_count]: $2${ESC}[K"
   (
     specfile=$2 ranges=${3:-} run_all='' location=$SHELLSPEC_DIRECTORY
+    specfile=${specfile#"${SHELLSPEC_PROJECT_ROOT%/}/"}
     escape_quote specfile
     escape_quote location
     [ "$ranges" ] && enabled='' || enabled=1
