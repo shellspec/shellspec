@@ -27,7 +27,7 @@ uninstall:
 package:
 	contrib/make_package_json.sh > package.json
 
-getoptions:
+optparser:
 	$(GETOPTIONS) $(GETOPTIONS_IN) $(GETOPTIONS_PARAMS) > $(GETOPTIONS_OUT)
 
 demo:

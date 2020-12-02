@@ -109,7 +109,7 @@ Describe "core/dsl.sh"
     End
   End
 
-  Describe "shellspec_location()"
+  Describe "shellspec_execdir()"
     Before SHELLSPEC_SPECFILE="spec/fixture/spec_structure/basedir/dir1/dir2/test_spec.sh"
     cd() { echo "$1"; }
 
@@ -129,8 +129,8 @@ Describe "core/dsl.sh"
       other         "$SHELLSPEC_PROJECT_ROOT" # May change the specifications in the future
     End
 
-    It 'changes the directory'
-      When run shellspec_location "$1"
+    It 'changes the execution directory'
+      When run shellspec_execdir "$1"
       The output should eq "$2"
     End
   End

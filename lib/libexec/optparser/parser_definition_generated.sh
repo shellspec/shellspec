@@ -5,7 +5,7 @@ export SHELLSPEC_SHELL=''
 export SHELLSPEC_SANDBOX=''
 export SHELLSPEC_SANDBOX_PATH=''
 export SHELLSPEC_REQUIRES=''
-export SHELLSPEC_DIRECTORY='@project'
+export SHELLSPEC_EXECDIR='@project'
 export SHELLSPEC_ENV_FROM=''
 export SHELLSPEC_WARNING_AS_FAILURE='1'
 export SHELLSPEC_FAIL_FAST_COUNT=''
@@ -74,9 +74,9 @@ optparser_parse() {
         "$1") OPTARG=; break ;;
         $1*) OPTARG="$OPTARG --require"
       esac
-      case '--directory' in
+      case '--execdir' in
         "$1") OPTARG=; break ;;
-        $1*) OPTARG="$OPTARG --directory"
+        $1*) OPTARG="$OPTARG --execdir"
       esac
       case '--env' in
         "$1") OPTARG=; break ;;
@@ -339,7 +339,7 @@ optparser_parse() {
         eval 'set -- "${OPTARG%%\=*}" "${OPTARG#*\=}"' ${1+'"$@"'}
         ;;
       --no-*) unset OPTARG ;;
-      -[sCejfoPETD]?*) OPTARG=$1; shift
+      -[sejfoPETD]?*) OPTARG=$1; shift
         eval 'set -- "${OPTARG%"${OPTARG#??}"}" "${OPTARG#??}"' ${1+'"$@"'}
         ;;
       -[!-]?*) OPTARG=$1; shift
@@ -376,14 +376,14 @@ optparser_parse() {
         OPTARG=$2
         multiple SHELLSPEC_REQUIRES ':' SHELLSPEC
         shift ;;
-      '-C'|'--directory')
+      '--execdir')
         [ $# -le 1 ] && set "required" "$1" && break
         OPTARG=$2
         check_directory || { set -- check_directory:$? "$1" check_directory; break; }
         case $OPTARG in @project | @project/* | @basedir | @basedir/* | @specfile | @specfile/*) ;;
           *) set "pattern:@project | @project/* | @basedir | @basedir/* | @specfile | @specfile/*" "$1"; break
         esac
-        export SHELLSPEC_DIRECTORY="$OPTARG"
+        export SHELLSPEC_EXECDIR="$OPTARG"
         shift ;;
       '-e'|'--env')
         [ $# -le 1 ] && set "required" "$1" && break
@@ -705,10 +705,10 @@ Usage: shellspec [options...] [files or directories...]
                                       This is not a security feature and does not provide complete isolation
         --sandbox-path PATH         Make PATH the sandbox path instead of empty (default: empty)
         --require MODULE            Require a MODULE (shell script file)
-    -C, --directory @LOCATION[/DIR] Change to the directory before running each specfile | [default: @project]
-                                      [@project]       Project root directory [default]
-                                      [@basedir]       Where the file .shellspec-basedir is located
-                                      [@specfile]      Where the specfile is located
+        --execdir @LOCATION[/DIR]   Specify the execution directory of each specfile | [default: @project]
+                                      [@project]   Where the ".shellspec" file is located (project root) [default]
+                                      [@basedir]   Where the ".shellspec" or ".shellspec-basedir" file is located
+                                      [@specfile]  Where the specfile is located
                                       In addition, it can be specified a directory relative to the location
     -e, --env NAME[=VALUE]          Set environment variable
         --env-from ENV-SCRIPT       Set environment variable from shell script file
