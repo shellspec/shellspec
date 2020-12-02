@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Replaced `--keep-tempdir` with `--keep-tmpdir`.
+- Specifying a file in the shellspec's argument is now ignored if it does not match `--pattern`.
 
 ### Removed
 
