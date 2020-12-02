@@ -249,15 +249,15 @@ specfile() {
   [ -e "$2" ] || return 0
   progress "${CR}Translate[$spec_no/$specfile_count]: $2${ESC}[K"
   (
-    specfile=$2 ranges=${3:-} run_all='' location=$SHELLSPEC_DIRECTORY
+    specfile=$2 ranges=${3:-} run_all='' execdir=$SHELLSPEC_EXECDIR
     escape_quote specfile
-    escape_quote location
+    escape_quote execdir
     [ "$ranges" ] && enabled='' || enabled=1
     [ "$enabled" ] && [ "$filter" ] && run_all=1
 
     putsn "shellspec_marker '$specfile' ---"
     putsn "(shellspec_begin '$specfile' '$spec_no'"
-    putsn "shellspec_location '$location'"
+    putsn "shellspec_execdir '$execdir'"
     putsn "shellspec_perform '$enabled' '$filter'"
     initialize
     putsn "shellspec_marker '$specfile' BOF"

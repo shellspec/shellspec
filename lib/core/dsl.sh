@@ -69,7 +69,7 @@ shellspec_begin() {
   shellspec_output BEGIN
 }
 
-shellspec_location() {
+shellspec_execdir() {
   case $1 in
     @project | @project/*) set -- "${1#@project}" ;;
     @basedir | @basedir/*)
