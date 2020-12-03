@@ -3,13 +3,15 @@
 Describe "libexec/optparser/optparser.sh"
   Include "$SHELLSPEC_LIB/libexec/optparser/optparser.sh"
 
-  parse() {
-    eval "$(getoptions parser_definition _parse PREFIX)"
-    case $# in
-      0) _parse ;;
-      *) _parse "$@" ;;
-    esac
-  }
+  Describe "optparser()"
+    error_message() { :; }
+
+    It "defines option parser and error message functions"
+      When call optparser parse_options error_message
+      Assert parse_options
+      Assert optparser_error error_message
+    End
+  End
 
   Describe "multiple()"
     Before VAR=''
@@ -353,6 +355,20 @@ Describe "libexec/optparser/optparser.sh"
       When call error_handler echo "Default error message: --option" "$1" --option
       The output should eq "$2"
       The status should be failure
+    End
+  End
+
+  Describe "deprecated()"
+    warn() { echo "$@"; }
+
+    It "displays a deprecated message"
+      When call deprecated "-X"
+      The output should eq "-X is deprecated."
+    End
+
+    It "displays a deprecated message with additional message"
+      When call deprecated "-X" "Do not use -X."
+      The output should eq "-X is deprecated. Do not use -X."
     End
   End
 End

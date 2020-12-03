@@ -467,7 +467,7 @@ optparser_parse() {
       '--keep-tempdir')
         [ "${OPTARG:-}" ] && OPTARG=${OPTARG#*\=} && set "noarg" "$1" && break
         eval '[ ${OPTARG+x} ] &&:' && OPTARG='1' || OPTARG=''
-        deprecated "$1" || { set -- deprecated:$? "$1" deprecated "$1"; break; }
+        deprecated "$1" "Replace with --keep-tmpdir." || { set -- deprecated:$? "$1" deprecated "$1" "Replace with --keep-tmpdir."; break; }
         export SHELLSPEC_KEEP_TMPDIR="$OPTARG"
         ;;
       '-q'|'+q'|'--quick'|'--no-quick')
@@ -590,7 +590,13 @@ optparser_parse() {
         OPTARG=$2
         multiple SHELLSPEC_TAG_FILTER ',' SHELLSPEC
         shift ;;
-      '-D'|'--default-path')
+      '-D')
+        [ $# -le 1 ] && set "required" "$1" && break
+        OPTARG=$2
+        deprecated "$1" "Replace with --default-path." || { set -- deprecated:$? "$1" deprecated "$1" "Replace with --default-path."; break; }
+        export SHELLSPEC_DEFAULT_PATH="$OPTARG"
+        shift ;;
+      '--default-path')
         [ $# -le 1 ] && set "required" "$1" && break
         OPTARG=$2
         export SHELLSPEC_DEFAULT_PATH="$OPTARG"
@@ -788,7 +794,7 @@ Usage: shellspec [options...] [files or directories...]
     -P, --pattern PATTERN           Load files matching pattern [default: "*_spec.sh"]
     -E, --example PATTERN           Run examples whose names include PATTERN
     -T, --tag TAG[:VALUE]           Run examples with the specified TAG
-    -D, --default-path PATH         Set the default path where looks for examples [default: "spec"]
+        --default-path PATH         Set the default path where looks for examples [default: "spec"]
 
   **** Coverage ****
 

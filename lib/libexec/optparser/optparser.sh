@@ -1,7 +1,7 @@
 # shellcheck shell=sh
 
 optparser() {
-  eval "$1() { optparser_parse \"\$@\"; }"
+  eval "$1() { if [ \$# -gt 0 ]; then optparser_parse \"\$@\"; fi; }"
   eval "optparser_error() { $2 \"\$@\"; }"
 
   # # shellcheck source=lib/getoptions.sh
@@ -169,8 +169,5 @@ error_handler() {
 }
 
 deprecated() {
-  case $1 in
-    --keep-tempdir)
-      warn "--keep-tempdir is deprecated. replace with --keep-tmpdir."
-  esac
+  warn "$1 is deprecated.${2:+ }${2:-}"
 }
