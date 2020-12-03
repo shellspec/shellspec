@@ -169,8 +169,5 @@ error_handler() {
 }
 
 deprecated() {
-  case $1 in
-    --keep-tempdir)
-      warn "--keep-tempdir is deprecated. replace with --keep-tmpdir."
-  esac
+  warn "$1 is deprecated.${2:+ }${2:-}"
 }

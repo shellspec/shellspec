@@ -355,4 +355,18 @@ Describe "libexec/optparser/optparser.sh"
       The status should be failure
     End
   End
+
+  Describe "deprecated()"
+    warn() { echo "$@"; }
+
+    It "displays a deprecated message"
+      When call deprecated "-X"
+      The output should eq "-X is deprecated."
+    End
+
+    It "displays a deprecated message with additional message"
+      When call deprecated "-X" "Do not use -X."
+      The output should eq "-X is deprecated. Do not use -X."
+    End
+  End
 End

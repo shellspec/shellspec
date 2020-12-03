@@ -93,7 +93,7 @@ parser_definition() {
 
   flag KEEP_TMPDIR --keep-tmpdir -- \
     'Do not cleanup temporary directory [default: disabled]'
-  flag KEEP_TMPDIR --keep-tempdir validate:'deprecated "$1"' abbr: hidden:true
+  flag KEEP_TMPDIR --keep-tempdir validate:'deprecated "$1" "Replace with --keep-tmpdir."' abbr: hidden:true
 
   msg -- '' '  **** Execution ****' ''
 
@@ -195,7 +195,8 @@ parser_definition() {
   multi TAG_FILTER ',' -T --tag var:'TAG[:VALUE]' -- \
     'Run examples with the specified TAG'
 
-  param DEFAULT_PATH -D --default-path init:='spec' var:PATH -- \
+  param DEFAULT_PATH -D init:@none validate:'deprecated "$1" "Replace with --default-path."' hidden:true
+  param DEFAULT_PATH --default-path init:='spec' var:PATH -- \
     'Set the default path where looks for examples [default: "spec"]'
 
   msg -- '' '  **** Coverage ****' ''
