@@ -3,13 +3,15 @@
 Describe "libexec/optparser/optparser.sh"
   Include "$SHELLSPEC_LIB/libexec/optparser/optparser.sh"
 
-  parse() {
-    eval "$(getoptions parser_definition _parse PREFIX)"
-    case $# in
-      0) _parse ;;
-      *) _parse "$@" ;;
-    esac
-  }
+  Describe "optparser()"
+    error_message() { :; }
+
+    It "defines option parser and error message functions"
+      When call optparser parse_options error_message
+      Assert parse_options
+      Assert optparser_error error_message
+    End
+  End
 
   Describe "multiple()"
     Before VAR=''
