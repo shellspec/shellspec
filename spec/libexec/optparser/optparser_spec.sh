@@ -111,7 +111,7 @@ Describe "libexec/optparser/optparser.sh"
     End
   End
 
-  Describe "check_directory()"
+  Describe "check_execdir()"
     Parameters
       spec/dir      success
       spec/..dir    success
@@ -121,7 +121,7 @@ Describe "libexec/optparser/optparser.sh"
 
     It "checks directory name"
       BeforeCall OPTARG="$1"
-      When call check_directory
+      When call check_execdir
       The status should be "$2"
     End
   End
@@ -346,9 +346,10 @@ Describe "libexec/optparser/optparser.sh"
       check_env_name:1  "Invalid environment name: --option"
       check_env_file:1  "Not found env file: --option"
       check_random:1    "Specify in one of the following formats (none[:SEED], specfiles[:SEED], examples[:SEED]): --option"
+      check_execdir:1   "Cannot include '..' in the execution directory: --option"
     End
 
-    It
+    It "displays a error message"
       When call error_handler echo "Default error message: --option" "$1" --option
       The output should eq "$2"
       The status should be failure

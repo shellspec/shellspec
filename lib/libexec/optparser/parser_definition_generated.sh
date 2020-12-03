@@ -379,7 +379,7 @@ optparser_parse() {
       '--execdir')
         [ $# -le 1 ] && set "required" "$1" && break
         OPTARG=$2
-        check_directory || { set -- check_directory:$? "$1" check_directory; break; }
+        check_execdir || { set -- check_execdir:$? "$1" check_execdir; break; }
         case $OPTARG in @project | @project/* | @basedir | @basedir/* | @specfile | @specfile/*) ;;
           *) set "pattern:@project | @project/* | @basedir | @basedir/* | @specfile | @specfile/*" "$1"; break
         esac

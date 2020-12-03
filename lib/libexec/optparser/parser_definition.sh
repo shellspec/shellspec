@@ -38,7 +38,7 @@ parser_definition() {
   multi REQUIRES ':' --require var:MODULE -- \
     'Require a MODULE (shell script file)'
 
-  param EXECDIR --execdir init:='@project' validate:check_directory var:"@LOCATION[/DIR]" \
+  param EXECDIR --execdir init:='@project' validate:check_execdir var:"@LOCATION[/DIR]" \
     pattern:'@project | @project/* | @basedir | @basedir/* | @specfile | @specfile/*' -- \
     'Specify the execution directory of each specfile | [default: @project]' \
     '  [@project]   Where the ".shellspec" file is located (project root) [default]' \
