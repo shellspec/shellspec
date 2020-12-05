@@ -3,6 +3,7 @@
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 % DOT_SHELLSPEC: "fixture/dot-shellspec"
 % CMDLINE: "$SHELLSPEC_SPECDIR/fixture/proc/cmdline"
+% PROC: "$SHELLSPEC_SPECDIR/fixture/proc/"
 
 Describe "libexec/shellspec.sh"
   Include "$SHELLSPEC_LIB/libexec/shellspec.sh"
@@ -174,6 +175,20 @@ Describe "libexec/shellspec.sh"
         The status should be success
         The stdout should equal ""
       End
+    End
+  End
+
+  Describe "is_wsl()"
+    Parameters
+      version_linux failure
+      version_wsl   success
+    End
+
+    It "detects WSL"
+      # shellcheck disable=SC2034
+      SHELLSPEC_PROC_VERSION="$PROC/$1"
+      When call is_wsl
+      The status should be "$2"
     End
   End
 

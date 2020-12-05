@@ -87,6 +87,15 @@ read_ps() {
   ) &&: ||:
 }
 
+is_wsl() {
+  [ -r "$SHELLSPEC_PROC_VERSION" ] || return 1
+  read -r proc_version < "$SHELLSPEC_PROC_VERSION"
+  case $proc_version in
+    *[Mm]icrosoft*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 current_shell() {
   self=$1 pid=$2
 
