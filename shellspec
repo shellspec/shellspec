@@ -68,6 +68,9 @@ export SHELLSPEC_MV="mv"
 export SHELLSPEC_CHMOD="chmod"
 export SHELLSPEC_DATE="date"
 export SHELLSPEC_RM="rm"
+export SHELLSPEC_LS="ls"
+export SHELLSPEC_SORT="sort"
+export SHELLSPEC_FIND="find"
 
 #shellcheck disable=SC2039,SC3028
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
@@ -295,6 +298,9 @@ fi
   command_path SHELLSPEC_DATE "date" ||:
   command_path SHELLSPEC_RM "rm" ||:
   command_path SHELLSPEC_SLEEP "sleep" ||:
+  command_path SHELLSPEC_LS "ls" ||:
+  command_path SHELLSPEC_SORT "sort" ||:
+  command_path SHELLSPEC_FIND "find" ||:
 
   if command_path "time" || [ "$SHELLSPEC_BUSYBOX_W32" ]; then
     SHELLSPEC_TIME="time -p"

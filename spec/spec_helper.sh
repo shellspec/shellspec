@@ -147,6 +147,14 @@ shellspec_spec_helper_configure() {
     [ "${1#"$2"}" = "a*b" ] && return 1 || return 0
   }
 
+  not_found_find() {
+    "$SHELLSPEC_FIND" . -prune >/dev/null 2>&1 && return 1 || return 0
+  }
+
+  not_supported_find() {
+    "$SHELLSPEC_FIND" -L . -prune >/dev/null 2>&1 && return 1 || return 0
+  }
+
   readonly_malfunction() { [ "$SHELLSPEC_DEFECT_READONLY" ]; }
   posh_shell_flag_bug() { [ "$SHELLSPEC_DEFECT_SHELLFLAG" ]; }
   not_exist_failglob() { [ ! "$SHELLSPEC_FAILGLOB_AVAILABLE" ]; }

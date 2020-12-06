@@ -127,6 +127,100 @@ command_path() {
   return 1
 }
 
+finddirs() {
+  {
+    if [ "${2:-}" ] && is_wsl; then
+      # find -L is very slow on WSL
+      finddirs_lssort "$@"
+    else
+      finddirs_find "$@" || finddirs_lssort "$@"
+    fi
+  } 2>/dev/null || finddirs_native "$@"
+}
+
+finddirs_native() {
+  (
+    set +f +u
+    [ "${ZSH_VERSION:-}" ] && setopt nonomatch
+    cd "$1"
+    echo "."
+    if [ "${2:-}" ]; then
+      check() { [ ! -d "$i" ]; }
+    else
+      check() { [ ! -d "$i" ] || [ -L "$i" ]; }
+    fi
+    recursive() {
+      pwd=$1 oldpwd=$PWD
+      cd "$pwd" && set -- * && cd "$oldpwd"
+      for i; do set -- "$@" "$pwd/$i"; shift; done
+      for i; do
+        check "$i" && continue
+        i=${i#"$PWD"}
+        echo "$i"
+        recursive "$i"
+      done
+    }
+    recursive .
+  )
+}
+
+# finddirs_ls() {
+#   (
+#     cd "$1"
+#     echo "."
+#     # shellcheck disable=SC2012
+#     ls -R ${2:+-L} . | while IFS= read -r line; do
+#       case $line in (./*:)
+#         echo "${line%:}"
+#       esac
+#     done
+#   )
+# }
+
+# finddirs_lsgrep() {
+#   (
+#     cd "$1"
+#     echo "."
+#     # shellcheck disable=SC2010
+#     ls -R ${2:+-L} . | grep '^\.*/.*:$' | while IFS= read -r line; do
+#       echo "${line%:}"
+#     done
+#   )
+# }
+
+# finddirs_lssed() {
+#   (
+#     cd "$1"
+#     echo "."
+#     # shellcheck disable=SC2012
+#     ls -R ${2:+-L} . | sed -n '/^\.*\/.*:$/ s/:$// p'
+#   )
+# }
+
+finddirs_lssort() {
+  (
+    cd "$1"
+    echo "."
+    # shellcheck disable=SC2012,SC2153
+    "$SHELLSPEC_LS" -R ${2:+-L} . | { export LC_ALL=C; "$SHELLSPEC_SORT"; } | {
+      while IFS= read -r line; do
+        case $line in (./*:) echo "${line%:}"; break; esac
+      done
+      while IFS= read -r line; do
+        case $line in (./*:) echo "${line%:}"; continue; esac
+        break
+      done
+    }
+  )
+}
+
+finddirs_find() {
+  (
+    cd "$1"
+    "$SHELLSPEC_FIND" ${2:+-L} . -name ".?*" -prune -o -type d -print
+  )
+}
+
 is_path_in_project() {
   set -- "$1" "${2:-$SHELLSPEC_PROJECT_ROOT}"
   [ "$1" = "$2" ] || starts_with "$1" "${2%/}/"

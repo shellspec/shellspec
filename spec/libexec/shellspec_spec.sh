@@ -4,6 +4,7 @@
 % DOT_SHELLSPEC: "fixture/dot-shellspec"
 % CMDLINE: "$SHELLSPEC_SPECDIR/fixture/proc/cmdline"
 % PROC: "$SHELLSPEC_SPECDIR/fixture/proc/"
+% FINDDIRS: "$SHELLSPEC_SPECDIR/fixture/finddirs"
 
 Describe "libexec/shellspec.sh"
   Include "$SHELLSPEC_LIB/libexec/shellspec.sh"
@@ -255,6 +256,111 @@ Describe "libexec/shellspec.sh"
         The status should be failure
         The variable ret should eq ""
       End
+    End
+  End
+
+  Describe "finddirs()"
+    _finddirs() { "$@" | @sort; }
+
+    Describe "finddirs fallbacks"
+      finddirs_lssort() { echo lssort; }
+      finddirs_find() { echo find; }
+      finddirs_native() { echo native; }
+
+      Context "when not WSL"
+        is_wsl() { false; }
+
+        It "calls finddirs_find"
+          When call finddirs "path"
+          The output should eq "find"
+        End
+
+        It "calls finddirs_find"
+          When call finddirs "path" follow
+          The output should eq "find"
+        End
+      End
+
+      Context "when WSL"
+        is_wsl() { true; }
+
+        It "calls finddirs_find"
+          When call finddirs "path"
+          The output should eq "find"
+        End
+
+        It "calls finddirs_lssort"
+          When call finddirs "path" follow
+          The output should eq "lssort"
+        End
+      End
+
+      Context "when find fails"
+        is_wsl() { false; }
+        finddirs_find() { echo "error" >&2; false; }
+
+        It "fallback to finddirs_lssort"
+          When call finddirs "path"
+          The output should eq "lssort"
+        End
+      End
+
+      Context "when find and lssort fails"
+        is_wsl() { false; }
+        finddirs_find() { echo "error" >&2; false; }
+        finddirs_lssort() { echo "error" >&2; false; }
+
+        It "fallback to finddirs_native"
+          When call finddirs "path"
+          The output should eq "native"
+        End
+      End
+    End
+
+    Parameters
+      finddirs_native
+      finddirs_lssort
+      finddirs_find
+      finddirs
+    End
+
+    It 'finds directories'
+      if [ "$1" = "finddirs_find" ]; then
+        Skip if "find is not found" not_found_find
+      fi
+      When call _finddirs "$1" "$FINDDIRS"
+      The line 1 should eq "."
+      The line 2 should eq "./dir1"
+      The line 3 should eq "./dir1/dir1-1"
+      The line 4 should eq "./dir1/dir1-2"
+      The line 5 should eq "./dir2"
+      The line 6 should eq "./dir2/dir2-1"
+      The line 7 should eq "./dir2/dir2-2"
+      The line 8 should eq "./dir3"
+      The lines of stdout should eq 8
+    End
+
+    It 'follows symlinks and finds directories'
+      Skip if "busybox-w32 not supported" busybox_w32
+      if [ "$1" = "finddirs_find" ]; then
+        Skip if "find is not found or not supported" not_supported_find
+      fi
+      When call _finddirs "$1" "$FINDDIRS" follow
+      The line 1 should eq "."
+      The line 2 should eq "./dir1"
+      The line 3 should eq "./dir1/dir1-1"
+      The line 4 should eq "./dir1/dir1-2"
+      The line 5 should eq "./dir2"
+      The line 6 should eq "./dir2/dir2-1"
+      The line 7 should eq "./dir2/dir2-2"
+      The line 8 should eq "./dir3"
+      The line 9 should eq "./dir3/dir1"
+      The line 10 should eq "./dir3/dir1/dir1-1"
+      The line 11 should eq "./dir3/dir1/dir1-2"
+      The line 12 should eq "./dir3/dir2"
+      The line 13 should eq "./dir3/dir2/dir2-1"
+      The line 14 should eq "./dir3/dir2/dir2-2"
+      The lines of stdout should eq 14
     End
   End
 
