@@ -343,14 +343,9 @@ case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
       includes_pathstar "$p" || continue
       check_pathstar "$p" || abort "The path pattern is invalid: $p."
     done
-    args='' arg=''
-    callback() {
-      if [ ! "$2" ] || [ -e "${1%%:*}" ]; then
-        escape_quote arg "$1"
-        args="$args $arg"
-      fi
-    }
+    args=''
     cd "$SHELLSPEC_CWD"
+    callback() { if [ ! "$2" ] || [ -e "${1%%:*}" ]; then pack args "$1"; fi; }
     expand_pathstar callback "." "$@"
     cd "$SHELLSPEC_PROJECT_ROOT"
     eval "set -- $args"

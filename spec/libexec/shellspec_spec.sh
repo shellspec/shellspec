@@ -9,6 +9,22 @@
 Describe "libexec/shellspec.sh"
   Include "$SHELLSPEC_LIB/libexec/shellspec.sh"
 
+  Describe "pack()"
+    _packs() {
+      var=''
+      for i; do pack var "$i"; done
+      eval "set -- $var"
+      %printf '%s\n' "$@"
+    }
+    It "packs the values into the variable"
+      When call _packs "a" "foo bar" "foo'bar" 'foo"bar'
+      The line 1 of stdout should equal "a"
+      The line 2 of stdout should equal "foo bar"
+      The line 3 of stdout should equal "foo'bar"
+      The line 4 of stdout should equal 'foo"bar'
+    End
+  End
+
   Describe "read_options_file()"
     parser() { printf '%s\n' "$@"; }
 

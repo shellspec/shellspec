@@ -5,6 +5,12 @@
 load binary
 use abspath starts_with escape_quote
 
+pack() {
+  eval "set -- \"\$1\" \"\$2\" \"\${$1}\""
+  escape_quote "$1" "$2"
+  eval "$1=\"\$3 '\${$1}'\""
+}
+
 read_options_file() {
   [ -e "$1" ] || return 0
   file="$1" parser=$2
@@ -261,14 +267,14 @@ expand_pathstar_create_matcher() {
     escape_quote arg "$arg"
     if [ "$doublestar" ]; then
       echo "  case \$1 in (${pattern}*)"
-      echo "    [ \"\${1##*/}\" = $arg ] && return 0"
+      echo "    [ \"\${1##*/}\" = '$arg' ] && return 0"
       echo "  esac"
     elif [ "$pattern" ]; then
       echo "  case \$1 in (${pattern}*)"
-      echo "    [ \"\${1#$pattern}\" = $arg ] && return 0"
+      echo "    [ \"\${1#$pattern}\" = '$arg' ] && return 0"
       echo "  esac"
     else
-      echo "  [ \"\$1\" = $arg ] && return 0"
+      echo "  [ \"\$1\" = '$arg' ] && return 0"
     fi
     echo ""
   done
