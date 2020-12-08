@@ -176,12 +176,10 @@ parser_definition() {
 
   msg -- '' '  **** Ranges / Filters / Focus ****' ''
 
-  msg -- '    You can run selected examples by specified the line numbers or ids' \
-    '' \
-    '      shellspec path/to/a_spec.sh:10    # Run the groups or examples that includes lines 10' \
-    '      shellspec path/to/a_spec.sh:@1-5  # Run the 5th groups/examples defined in the 1st group' \
-    '      shellspec a_spec.sh:10:@1:20:@2   # You can mixing multiple line numbers and ids with join by ":"' \
-    ''
+  msg -- '    You can run selected examples by specified the line numbers or ids' '' \
+    '      shellspec path/to/a_spec.sh:10   # Run the groups or examples that includes lines 10' \
+    '      shellspec path/to/a_spec.sh:@1-5 # Run the 5th groups/examples defined in the 1st group' \
+    '      shellspec a_spec.sh:10:@1:20:@2  # You can mixing multiple line numbers and ids with join by ":"' ''
 
   flag FOCUS_FILTER -F --focus -- \
     'Run focused groups / examples only'
@@ -197,7 +195,17 @@ parser_definition() {
 
   param DEFAULT_PATH -D init:@none validate:'deprecated "$1" "Replace with --default-path."' hidden:true
   param DEFAULT_PATH --default-path init:='spec' var:PATH -- \
-    'Set the default path where looks for examples [default: "spec"]'
+    'Set the default path where looks for examples [default: "spec"]' \
+    ' The path to a specfile or a directory containing specfiles'
+
+  msg -- '' '    You can specify the path recursively by prefixing it with the pattern "*/" or "**/"' \
+    '      (This is not glob patterns and requires quotes. It is also available with --default-path)' '' \
+    '      shellspec "*/spec"               # The pattern "*/" matches 1 directory' \
+    '      shellspec "**/spec"              # The pattern "**/" matches 0 and more directories' \
+    '      shellspec "*/*/**/test_spec.sh"  # These patterns can be specified multiple times' ''
+
+  flag DEREFERENCE -L --dereference -- \
+    'Dereference all symlinks in in the above pattern [default: disabled]'
 
   msg -- '' '  **** Coverage ****' ''
 
