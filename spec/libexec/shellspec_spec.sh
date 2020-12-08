@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+#shellcheck shell=sh disable=SC2004,SC2016
 
 % BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
 % DOT_SHELLSPEC: "fixture/dot-shellspec"
@@ -361,6 +361,101 @@ Describe "libexec/shellspec.sh"
       The line 13 should eq "./dir3/dir2/dir2-1"
       The line 14 should eq "./dir3/dir2/dir2-2"
       The lines of stdout should eq 14
+    End
+  End
+
+  Describe "includes_pathstar()"
+    Parameters
+      "*/path"  success
+      "**/path" success
+      "path"    failure
+    End
+
+    It "checks includes pathstar ($1)"
+      When call includes_pathstar "$1"
+      The status should be "$2"
+    End
+  End
+
+  Describe "check_pathstar()"
+    Parameters
+      "*/path"  success
+      "*/path/" success
+      "*/"      failure
+      "*/*"     failure
+      "*/pa*th" failure
+    End
+
+    It "checks pathstar ($1)"
+      When call check_pathstar "$1"
+      The status should be "$2"
+    End
+  End
+
+  Describe "expand_pathstar()"
+    Before SHELLSPEC_DEREFERENCE=''
+    setup() {
+      count=0
+      cd "$FINDDIRS" || exit $?
+
+      callback() {
+        if [ ! "$2" ] || [ -e "$1" ]; then
+          echo "$1 ($2)"
+          count=$(($count+1))
+        fi
+      }
+    }
+    Before setup
+
+    It "expands the pattern */"
+      When call expand_pathstar callback "." a "*/*/.ignore" b
+      The line 1 should eq "a ()"
+      The line 2 should eq "b ()"
+      The line 3 should eq "dir1/dir1-1/.ignore (*/*/.ignore)"
+      The line 4 should eq "dir1/dir1-2/.ignore (*/*/.ignore)"
+      The line 5 should eq "dir2/dir2-1/.ignore (*/*/.ignore)"
+      The line 6 should eq "dir2/dir2-2/.ignore (*/*/.ignore)"
+      The variable count should eq 6
+    End
+
+    It "expands the pattern **/"
+      When call expand_pathstar callback "." a "**/.ignore" b
+      The line 1 should eq "a ()"
+      The line 2 should eq "b ()"
+      The line 3 should eq "dir1/dir1-1/.ignore (**/.ignore)"
+      The line 4 should eq "dir1/dir1-2/.ignore (**/.ignore)"
+      The line 5 should eq "dir2/dir2-1/.ignore (**/.ignore)"
+      The line 6 should eq "dir2/dir2-2/.ignore (**/.ignore)"
+      The variable count should eq 6
+    End
+
+    It "expands the pattern */**/"
+      When call expand_pathstar callback "." a "*/**/.ignore" b
+      The line 1 should eq "a ()"
+      The line 2 should eq "b ()"
+      The line 3 should eq "dir1/dir1-1/.ignore (*/**/.ignore)"
+      The line 4 should eq "dir1/dir1-2/.ignore (*/**/.ignore)"
+      The line 5 should eq "dir2/dir2-1/.ignore (*/**/.ignore)"
+      The line 6 should eq "dir2/dir2-2/.ignore (*/**/.ignore)"
+      The variable count should eq 6
+    End
+
+    Context 'when --dereference option specified'
+      Before SHELLSPEC_DEREFERENCE=1
+      It "expands the pattern **/"
+        When call expand_pathstar callback "." a "**/.ignore" b
+        The line 1 should eq "a ()"
+        The line 2 should eq "b ()"
+        The line 3 should eq "dir1/dir1-1/.ignore (**/.ignore)"
+        The line 4 should eq "dir1/dir1-2/.ignore (**/.ignore)"
+        The line 5 should eq "dir2/dir2-1/.ignore (**/.ignore)"
+        The line 6 should eq "dir2/dir2-2/.ignore (**/.ignore)"
+        The line 7 should eq "dir3/dir1/dir1-1/.ignore (**/.ignore)"
+        The line 8 should eq "dir3/dir1/dir1-2/.ignore (**/.ignore)"
+        The line 9 should eq "dir3/dir2/dir2-1/.ignore (**/.ignore)"
+        The line 10 should eq "dir3/dir2/dir2-2/.ignore (**/.ignore)"
+        The variable count should eq 10
+      End
     End
   End
 

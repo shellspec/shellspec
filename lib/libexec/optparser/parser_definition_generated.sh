@@ -36,6 +36,7 @@ export SHELLSPEC_PATTERN='*_spec.sh'
 export SHELLSPEC_EXAMPLE_FILTER=''
 export SHELLSPEC_TAG_FILTER=''
 export SHELLSPEC_DEFAULT_PATH='spec'
+export SHELLSPEC_DEREFERENCE=''
 export SHELLSPEC_KCOV=''
 export SHELLSPEC_KCOV_PATH='kcov'
 export SHELLSPEC_KCOV_OPTS=''
@@ -261,6 +262,10 @@ optparser_parse() {
       case '--default-path' in
         "$1") OPTARG=; break ;;
         $1*) OPTARG="$OPTARG --default-path"
+      esac
+      case '--dereference' in
+        "$1") OPTARG=; break ;;
+        $1*) OPTARG="$OPTARG --dereference"
       esac
       case '--kcov' in
         "$1") OPTARG=; break ;;
@@ -601,6 +606,11 @@ optparser_parse() {
         OPTARG=$2
         export SHELLSPEC_DEFAULT_PATH="$OPTARG"
         shift ;;
+      '-L'|'--dereference')
+        [ "${OPTARG:-}" ] && OPTARG=${OPTARG#*\=} && set "noarg" "$1" && break
+        eval '[ ${OPTARG+x} ] &&:' && OPTARG='1' || OPTARG=''
+        export SHELLSPEC_DEREFERENCE="$OPTARG"
+        ;;
       '--kcov'|'--no-kcov')
         [ "${OPTARG:-}" ] && OPTARG=${OPTARG#*\=} && set "noarg" "$1" && break
         eval '[ ${OPTARG+x} ] &&:' && OPTARG='1' || OPTARG=''
@@ -786,15 +796,25 @@ Usage: shellspec [options...] [files or directories...]
 
     You can run selected examples by specified the line numbers or ids
 
-      shellspec path/to/a_spec.sh:10    # Run the groups or examples that includes lines 10
-      shellspec path/to/a_spec.sh:@1-5  # Run the 5th groups/examples defined in the 1st group
-      shellspec a_spec.sh:10:@1:20:@2   # You can mixing multiple line numbers and ids with join by ":"
+      shellspec path/to/a_spec.sh:10   # Run the groups or examples that includes lines 10
+      shellspec path/to/a_spec.sh:@1-5 # Run the 5th groups/examples defined in the 1st group
+      shellspec a_spec.sh:10:@1:20:@2  # You can mixing multiple line numbers and ids with join by ":"
 
     -F, --focus                     Run focused groups / examples only
     -P, --pattern PATTERN           Load files matching pattern [default: "*_spec.sh"]
     -E, --example PATTERN           Run examples whose names include PATTERN
     -T, --tag TAG[:VALUE]           Run examples with the specified TAG
         --default-path PATH         Set the default path where looks for examples [default: "spec"]
+                                     The path to a specfile or a directory containing specfiles
+
+    You can specify the path recursively by prefixing it with the pattern "*/" or "**/"
+      (This is not glob patterns and requires quotes. It is also available with --default-path)
+
+      shellspec "*/spec"               # The pattern "*/" matches 1 directory
+      shellspec "**/spec"              # The pattern "**/" matches 0 and more directories
+      shellspec "*/*/**/test_spec.sh"  # These patterns can be specified multiple times
+
+    -L, --dereference               Dereference all symlinks in in the above pattern [default: disabled]
 
   **** Coverage ****
 

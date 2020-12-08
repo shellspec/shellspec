@@ -3,7 +3,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 load binary
-use abspath starts_with
+use abspath starts_with escape_quote
 
 read_options_file() {
   [ -e "$1" ] || return 0
@@ -139,8 +139,7 @@ finddirs() {
 }
 
 finddirs_native() {
-  (
-    set +f +u
+  ( set +f +u
     [ "${ZSH_VERSION:-}" ] && setopt nonomatch
     cd "$1"
     echo "."
@@ -165,8 +164,7 @@ finddirs_native() {
 }
 
 # finddirs_ls() {
-#   (
-#     cd "$1"
+#   ( cd "$1"
 #     echo "."
 #     # shellcheck disable=SC2012
 #     ls -R ${2:+-L} . | while IFS= read -r line; do
@@ -178,8 +176,7 @@ finddirs_native() {
 # }
 
 # finddirs_lsgrep() {
-#   (
-#     cd "$1"
+#   ( cd "$1"
 #     echo "."
 #     # shellcheck disable=SC2010
 #     ls -R ${2:+-L} . | grep '^\.*/.*:$' | while IFS= read -r line; do
@@ -189,8 +186,7 @@ finddirs_native() {
 # }
 
 # finddirs_lssed() {
-#   (
-#     cd "$1"
+#   ( cd "$1"
 #     echo "."
 #     # shellcheck disable=SC2012
 #     ls -R ${2:+-L} . | sed -n '/^\.*\/.*:$/ s/:$// p'
@@ -198,8 +194,7 @@ finddirs_native() {
 # }
 
 finddirs_lssort() {
-  (
-    cd "$1"
+  ( cd "$1"
     echo "."
     # shellcheck disable=SC2012,SC2153
     "$SHELLSPEC_LS" -R ${2:+-L} . | { export LC_ALL=C; "$SHELLSPEC_SORT"; } | {
@@ -215,10 +210,107 @@ finddirs_lssort() {
 }
 
 finddirs_find() {
-  (
-    cd "$1"
+  ( cd "$1"
     "$SHELLSPEC_FIND" ${2:+-L} . -name ".?*" -prune -o -type d -print
   )
+}
+
+includes_pathstar() {
+  while [ $# -gt 0 ]; do
+    case $1 in (\*/* | \*\*/*)
+      return 0
+    esac
+    shift
+  done
+  return 1
+}
+
+check_pathstar() {
+  while [ "$1" ]; do
+    case $1 in (\*/* | \*\*/*)
+      set -- "${1#*/}"
+      continue
+    esac
+    case $1 in (*\**)
+      return 1
+    esac
+    return 0
+  done
+  return 1
+}
+
+expand_pathstar() {
+  eval "$(shift 2; expand_pathstar_create_matcher "$@")"
+  # shellcheck disable=SC2034
+  expand_pathstar=$(shift; expand_pathstar_retrive '|||' "$@")
+  eval "$(expand_pathstar_iterator "$1" expand_pathstar '\|\|\|')"
+}
+
+expand_pathstar_create_matcher() {
+  echo "expand_pathstar_matcher() {"
+  for arg; do
+    pattern='' doublestar=''
+    while :; do
+      case $arg in
+        \*\*/*) arg=${arg#*/} doublestar=1 ;;
+        \*/*) arg=${arg#*/} pattern="${pattern}*/" ;;
+        *) break
+      esac
+    done
+
+    escape_quote arg "$arg"
+    if [ "$doublestar" ]; then
+      echo "  case \$1 in (${pattern}*)"
+      echo "    [ \"\${1##*/}\" = $arg ] && return 0"
+      echo "  esac"
+    elif [ "$pattern" ]; then
+      echo "  case \$1 in (${pattern}*)"
+      echo "    [ \"\${1#$pattern}\" = $arg ] && return 0"
+      echo "  esac"
+    else
+      echo "  [ \"\$1\" = $arg ] && return 0"
+    fi
+    echo ""
+  done
+  echo "  return 1"
+  echo "}"
+}
+
+expand_pathstar_retrive() {
+  finddirs "$2" ${SHELLSPEC_DEREFERENCE:+follow} | {
+    sep=$1 dir=${2%"${2##*[!/]}"}
+    [ "$dir" = "." ] && dir="" || dir="$dir/"
+    shift 2
+    for i; do
+      pattern=$i
+      case $i in
+        \*/* | \*\*/*)
+          while i=${i#*/}; do
+            case $i in (\*/* | \*\*/*) continue; esac
+            break
+          done
+          set -- "$@" "${i}${sep}${pattern}"
+          ;;
+        *) echo "${i}${sep}"
+      esac
+      shift
+    done
+    while IFS= read -r line; do
+      [ "$line" = "." ] && line="$dir" || line="${dir}${line#./}/"
+      for i; do
+        echo "${line}${i}"
+      done
+    done
+  } | "$SHELLSPEC_SORT"
+}
+
+expand_pathstar_iterator() {
+  echo "while IFS= read -r $2; do"
+  echo "  expand_pathstar_matcher \"\${$2%$3*}\" || continue"
+  echo "  \"$1\" \"\${$2%$3*}\" \"\${$2##*$3}\""
+  echo 'done <''< HERE'
+  echo "\$$2"
+  echo 'HERE'
 }
 
 is_path_in_project() {
