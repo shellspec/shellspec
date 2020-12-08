@@ -506,6 +506,22 @@ Describe "libexec/shellspec.sh"
     End
   End
 
+  Describe "check_range()"
+    Parameters
+      ""          success
+      "100"       success
+      "100:200"   success
+      "100:a"     failure
+      "100:@1-1"  success
+      "100:@a"    failure
+    End
+
+    It "checks range ($1)"
+      When call check_range "$1"
+      The status should be "$2"
+    End
+  End
+
   Describe "random_seed()"
     MAX_64BIT_PID=4194304
 
