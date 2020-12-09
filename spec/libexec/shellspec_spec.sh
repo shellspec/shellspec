@@ -58,9 +58,10 @@ Describe "libexec/shellspec.sh"
         When call enum_options_file callback
         The line 1 of stdout should eq "/home/user/.config/shellspec/options"
         The line 2 of stdout should eq "/home/user/.shellspec"
-        The line 3 of stdout should eq ".shellspec"
-        The line 4 of stdout should eq ".shellspec-local"
-        The lines of stdout should eq 4
+        The line 3 of stdout should eq "/home/user/.shellspec-options"
+        The line 4 of stdout should eq ".shellspec"
+        The line 5 of stdout should eq ".shellspec-local"
+        The lines of stdout should eq 5
       End
     End
 
@@ -70,9 +71,10 @@ Describe "libexec/shellspec.sh"
         When call enum_options_file callback
         The line 1 of stdout should eq "/home/user/config/shellspec/options"
         The line 2 of stdout should eq "/home/user/.shellspec"
-        The line 3 of stdout should eq ".shellspec"
-        The line 4 of stdout should eq ".shellspec-local"
-        The lines of stdout should eq 4
+        The line 3 of stdout should eq "/home/user/.shellspec-options"
+        The line 4 of stdout should eq ".shellspec"
+        The line 5 of stdout should eq ".shellspec-local"
+        The lines of stdout should eq 5
       End
     End
 

@@ -27,7 +27,12 @@ read_options_file() {
 enum_options_file() {
   callback=$1
   set -- ".shellspec" ".shellspec-local"
-  [ "${HOME:-}" ] && set -- "$HOME/.shellspec" "$@"
+  if [ "${HOME:-}" ]; then
+    set -- "$HOME/.shellspec-options" "$@"
+
+    # DEPRECATED: Remove loading the $HOME/.shellspec
+    [ -e "$HOME/.shellspec-options" ] || set -- "$HOME/.shellspec" "$@"
+  fi
   if [ "${XDG_CONFIG_HOME:-}" ]; then
     set -- "$XDG_CONFIG_HOME/shellspec/options" "$@"
   elif [ "${HOME:-}" ]; then
