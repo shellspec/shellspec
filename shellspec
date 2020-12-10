@@ -166,15 +166,16 @@ fi
 [ "$SHELLSPEC_MODE" = "init" ] && SHELLSPEC_PROJECT_ROOT=$SHELLSPEC_CWD
 if [ ! "$SHELLSPEC_PROJECT_ROOT" ]; then
   # DEPRECATED: Not a shellspec project directory (TODO: change from error to abort)
+  SHELLSPEC_PROJECT_ROOT=$SHELLSPEC_CWD
   error 'Not a shellspec project directory (".shellspec" not found in any of the parent directories).'
   warn '| IMPORTANT NOTES:'
   warn '| In future releases, run from outside the project directory will not be allowed.'
   warn '| Create a ".shellspec" or run shellspec from under the directory where the ".shellspec" is located.'
-  warn '| Fallback to the previous behavior for compatibility (The project root is the current directory).'
+  warn '| Fallback to the previous behavior for compatibility.'
+  warn "| Current project root directory: $SHELLSPEC_PROJECT_ROOT"
   case $SHELLSPEC_EXECDIR in (@basedir*)
     abort '--execdir @basedir is not supported (requires ".shellspec").'
   esac
-  SHELLSPEC_PROJECT_ROOT=$SHELLSPEC_CWD
   # abort
 fi
 
@@ -372,15 +373,28 @@ case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
     abspath='' range=''
     abspath abspath "$p" "$SHELLSPEC_CWD"
     separate_abspath_and_range abspath range "$abspath"
-    is_path_in_project "$abspath" || abort "Not a path in the project: $p."
     [ -e "$abspath" ] || abort "Not found a path: ${p%%:*}."
     if [ -d "$abspath" ] && [ "$range" ]; then
-      abort "Cannot specify range for the directory: $p."
+      abort "Cannot specify range for the directory: $p"
     fi
-    check_range "$range" || abort "Invalid range: $p."
-    relpath=${abspath#"$SHELLSPEC_PROJECT_ROOT"}
-    [ "$relpath" ] && relpath=${relpath#/} || relpath='./'
-    set -- "$@" "${relpath}${range:+:}${range}"
+    check_range "$range" || abort "Invalid range: $p"
+    if is_path_in_project "$abspath"; then
+      relpath=${abspath#"$SHELLSPEC_PROJECT_ROOT"}
+      [ "$relpath" ] && relpath=${relpath#/} || relpath='./'
+      set -- "$@" "${relpath}${range:+:}${range}"
+    else
+      # DEPRECATED: Accept only files in the project
+      # abort "Not a path in the project directory: $p."
+      if [ -e "$SHELLSPEC_PROJECT_ROOT/.shellspec" ]; then
+        error "Not a path in the project directory: $p"
+        warn '| IMPORTANT NOTES:'
+        warn '| You have specified specfile(s) that outside of the current project directory.'
+        warn '| In future releases, run specfile(s) that outside the current project directory will not be allowed.'
+        warn '| Fallback to the previous behavior for compatibility.'
+        warn "| Current project root directory: $SHELLSPEC_PROJECT_ROOT"
+      fi
+      set -- "$@" "${abspath}${range:+:}${range}"
+    fi
     shift
   done
 esac
