@@ -75,6 +75,11 @@ export SHELLSPEC_FIND="find"
 #shellcheck disable=SC2039,SC3028
 export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
 
+export SHELLSPEC_COLOR=''
+if [ ! "${NO_COLOR:-}" ] && { [ -t 1 ] || [ "${FORCE_COLOR:-}" ]; } then
+  SHELLSPEC_COLOR=1
+fi
+
 # Based on https://github.com/ko1nksm/readlinkf
 # Changed the interpretation of symlinks to my preference (Change cd -P to cd)
 readlinkf() {

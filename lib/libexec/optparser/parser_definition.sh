@@ -150,7 +150,7 @@ parser_definition() {
     'Choose a generator(s) to generate a report file(s) [default: none]' \
     '  You can use the same name as FORMATTER. (multiple options allowed)'
 
-  flag COLOR --{no-}color init:"detect_color_mode $2" -- \
+  flag COLOR --{no-}color init:@none -- \
     'Enable or disable color [default: enabled if the output is a TTY]' \
     '  Disable if NO_COLOR environment variable set'
   flag COLOR --{no-}colour --force-color --force-colour init:@none hidden abbr:

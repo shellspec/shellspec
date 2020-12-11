@@ -100,15 +100,6 @@ xtrace() {
   esac
 }
 
-is_terminal() { [ -t 1 ]; }
-detect_color_mode() {
-  export "$1_COLOR="
-  [ "${NO_COLOR:-}" ] && return 0
-  if is_terminal || [ "${FORCE_COLOR:-}" ]; then
-    export "$1_COLOR=1"
-  fi
-}
-
 quiet() {
   export "$1_SKIP_MESSAGE=quiet" "$1_PENDING_MESSAGE=quiet"
 }

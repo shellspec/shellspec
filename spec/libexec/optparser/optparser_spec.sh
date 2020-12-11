@@ -209,47 +209,6 @@ Describe "libexec/optparser/optparser.sh"
     End
   End
 
-  Describe "detect_color_mode()"
-    Before NO_COLOR='' CI='' FORCE_COLOR=''
-    Context "when on the terminal"
-      is_terminal() { true; }
-      It "sets 1 to the COLOR variable"
-        When call detect_color_mode PREFIX
-        The variable PREFIX_COLOR should eq 1
-        The variable PREFIX_COLOR should be exported
-      End
-
-      Context "when NO_COLOR variable is set"
-        is_terminal() { true; }
-        Before FORCE_COLOR=1 CI=1 NO_COLOR=1
-        It "sets empty to the COLOR variable"
-          When call detect_color_mode PREFIX
-          The variable PREFIX_COLOR should eq ''
-          The variable PREFIX_COLOR should be exported
-        End
-      End
-    End
-
-    Context "when not on the terminal"
-      is_terminal() { false; }
-      It "sets empty to the COLOR variable"
-        When call detect_color_mode PREFIX
-        The variable PREFIX_COLOR should eq ''
-        The variable PREFIX_COLOR should be exported
-      End
-
-      Context "when FORCE_COLOR variable is set"
-        Before FORCE_COLOR=1
-        is_terminal() { false; }
-        It "sets 1 to the COLOR variable"
-          When call detect_color_mode PREFIX
-          The variable PREFIX_COLOR should eq 1
-          The variable PREFIX_COLOR should be exported
-        End
-      End
-    End
-  End
-
   Describe "quiet()"
     It "sets SKIP_MESSAGE and PENDING_MESSAGE variables"
       When call quiet PREFIX
