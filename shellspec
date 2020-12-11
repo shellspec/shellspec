@@ -118,13 +118,6 @@ export SHELLSPEC_UNREADONLY_PATH="$SHELLSPEC_LIBEXEC/shellspec-unreadonly-path.s
 export SHELLSPEC_UNIXTIME=''
 unixtime SHELLSPEC_UNIXTIME
 
-opts=''
-opts="$opts --include-path=."
-opts="$opts --include-pattern=.sh"
-opts="$opts --exclude-pattern=/.shellspec,/spec/,/coverage/,/report/"
-opts="$opts --path-strip-level=1"
-export SHELLSPEC_KCOV_COMMON_OPTS="${opts# } "
-
 # project root path
 export SHELLSPEC_CWD="$PWD"
 export SHELLSPEC_PROJECT_ROOT="$PWD"
@@ -202,6 +195,12 @@ export SHELLSPEC_LOAD_PATH="$SHELLSPEC_SPECDIR:$SHELLSPEC_LIB:$SHELLSPEC_REPORTE
 export SHELLSPEC_SUPPORT_BINDIR="$SHELLSPEC_SPECDIR/support/bin"
 export SHELLSPEC_BANNER_FILE="$SHELLSPEC_SPECDIR/banner"
 export SHELLSPEC_KCOV_FILENAME="$SHELLSPEC_PROJECT_NAME [specfiles]"
+opts=''
+opts="$opts --include-path=."
+opts="$opts --include-pattern=.sh"
+opts="$opts --exclude-pattern=/.shellspec,/spec/,/coverage/,/report/"
+opts="$opts --path-strip-level=1"
+export SHELLSPEC_KCOV_COMMON_OPTS="${opts# } "
 
 # temporary path
 export SHELLSPEC_TMPDIR="${SHELLSPEC_TMPDIR%/}"
