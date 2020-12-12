@@ -3,7 +3,7 @@
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 load binary
-use abspath starts_with escape_quote
+use abspath starts_with escape_quote starts_with includes
 
 pack() {
   eval "set -- \"\$1\" \"\$2\" \"\${$1}\""
@@ -228,9 +228,8 @@ finddirs_find() {
 
 includes_pathstar() {
   while [ $# -gt 0 ]; do
-    case $1 in (\*/* | \*\*/*)
-      return 0
-    esac
+    starts_with "$1" "*/" && return 0
+    starts_with "$1" "**/" && return 0
     shift
   done
   return 1
@@ -238,13 +237,11 @@ includes_pathstar() {
 
 check_pathstar() {
   while [ "$1" ]; do
-    case $1 in (\*/* | \*\*/*)
+    if starts_with "$1" "*/" || starts_with "$1" "**/"; then
       set -- "${1#*/}"
       continue
-    esac
-    case $1 in (*\**)
-      return 1
-    esac
+    fi
+    includes "$1" '*' && return 1
     return 0
   done
   return 1
@@ -262,11 +259,13 @@ expand_pathstar_create_matcher() {
   for arg; do
     pattern='' doublestar=''
     while :; do
-      case $arg in
-        \*\*/*) arg=${arg#*/} doublestar=1 ;;
-        \*/*) arg=${arg#*/} pattern="${pattern}*/" ;;
-        *) break
-      esac
+      if starts_with "$arg" '**/'; then
+        arg=${arg#*/} doublestar=1
+      elif starts_with "$arg" '*/'; then
+        arg=${arg#*/} pattern="${pattern}*/"
+      else
+        break
+      fi
     done
 
     escape_quote arg "$arg"
@@ -294,16 +293,16 @@ expand_pathstar_retrive() {
     shift 2
     for i; do
       pattern=$i
-      case $i in
-        \*/* | \*\*/*)
-          while i=${i#*/}; do
-            case $i in (\*/* | \*\*/*) continue; esac
-            break
-          done
-          set -- "$@" "${i}${sep}${pattern}"
-          ;;
-        *) echo "${i}${sep}"
-      esac
+      if starts_with "$i" "*/" || starts_with "$i" "**/"; then
+        while i=${i#*/}; do
+          starts_with "$i" "*/" && continue
+          starts_with "$i" "**/" && continue
+          break
+        done
+        set -- "$@" "${i}${sep}${pattern}"
+      else
+        echo "${i}${sep}"
+      fi
       shift
     done
     while IFS= read -r line; do
