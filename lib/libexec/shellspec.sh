@@ -248,9 +248,9 @@ check_pathstar() {
 }
 
 expand_pathstar() {
-  eval "$(shift 2; expand_pathstar_create_matcher "$@")"
+  eval "$(shift 2 && expand_pathstar_create_matcher "$@")"
   # shellcheck disable=SC2034
-  expand_pathstar=$(shift; expand_pathstar_retrive '|||' "$@")
+  expand_pathstar=$(shift && expand_pathstar_retrive '|||' "$@")
   eval "$(expand_pathstar_iterator "$1" expand_pathstar '\|\|\|')"
 }
 
