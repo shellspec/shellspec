@@ -1,7 +1,5 @@
-# shellcheck shell=sh
-# URL: https://github.com/ko1nksm/getoptions (v2.3.0)
-# License: Creative Commons Zero v1.0 Universal
-# shellcheck disable=SC2016
+# shellcheck shell=sh disable=SC2016
+# [getoptions] License: Creative Commons Zero v1.0 Universal
 getoptions() {
 	_error='' _on=1 _off='' _export='' _plus='' _mode='' _alt='' _rest=''
 	_opts='' _help='' _abbr='' _cmds='' _init=@empty IFS=' '
@@ -61,7 +59,7 @@ getoptions() {
 	_disp() { args : "$@"; }
 	_msg() { args : _ "$@"; }
 
-	cmd() { _mode=@ _cmds="$_cmds|'$1'"; }
+	cmd() { _mode=@ _cmds="$_cmds${_cmds:+|}'$1'"; }
 	"$@"
 	cmd() { :; }
 	_0 "${_rest:?}=''"
@@ -165,17 +163,18 @@ getoptions() {
 		_4 'break ;;'
 	}
 	_3 '--)'
-	[ "$_cmds" ] || _4 'shift'
+	[ "$_mode" = @ ] || _4 'shift'
 	rest
-	_3 "[-${_plus:++}]?*)" 'set "unknown" "$1"; break ;;'
+	_3 "[-${_plus:++}]?*)"
+	case $_mode in [=#]) rest ;; *) _4 'set "unknown" "$1"; break ;;'; esac
 	_3 '*)'
 	case $_mode in
 		@)
-			_4 "case \$1 in ${_cmds#?}) ;;"
+			_4 "case \$1 in ${_cmds:-*}) ;;"
 			_5 '*) set "notcmd" "$1"; break'
 			_4 'esac'
 			rest ;;
-		+) rest ;;
+		[+#]) rest ;;
 		*) _4 "$_rest=\"\${$_rest}" '\"\${$(($OPTIND-$#))}\""'
 	esac
 	_2 'esac'

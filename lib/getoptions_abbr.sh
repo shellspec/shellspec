@@ -1,7 +1,5 @@
-# shellcheck shell=sh
-# URL: https://github.com/ko1nksm/getoptions (v2.3.0)
-# License: Creative Commons Zero v1.0 Universal
-# shellcheck disable=SC2016,SC2154
+# shellcheck shell=sh disable=SC2016,SC2154
+# [getoptions_abbr] License: Creative Commons Zero v1.0 Universal
 getoptions_abbr() {
 	abbr() {
 		_3 "case '$1' in"
