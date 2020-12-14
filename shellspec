@@ -6,13 +6,20 @@
 set -e -u -f
 
 if [ "${1:-}" = "-" ]; then
+  if [ $# -gt 1 ]; then shift; set -- "$0" "$@"; else set -- "$0"; fi
+  for i; do i="$i'" j=''
+    while [ "$i" ]; do j="$j${i%%\'*}'\''" && i=${i#*\'}; done
+    set -- "$@" "'${j%????}'" && shift
+  done
   echo 'IFS= read -r shebang < "$0"'
   echo 'case $shebang in \#\!*) shell=${shebang#??};; *) shell="";; esac'
-  echo "exec \$shell \"$0\" \"\$0\" \"\$@\""
+  echo 'exec $shell' "$@" '"$0" "$@"'
+  echo 'return 0'
   return 0
 fi
 
 export SHELLSPEC_VERSION='0.28.0-dev'
+export SHELLSPEC_CWD=$PWD
 export SHELLSPEC_PATH=''
 export SHELLSPEC_GRAMMAR_DSLS=''
 export SHELLSPEC_GRAMMAR_DIRECTIVES=''
@@ -118,16 +125,37 @@ export SHELLSPEC_UNREADONLY_PATH="$SHELLSPEC_LIBEXEC/shellspec-unreadonly-path.s
 export SHELLSPEC_UNIXTIME=''
 unixtime SHELLSPEC_UNIXTIME
 
+# option parsing for change directory
+{
+  error_message() { error "$1"; return 1; }
+  abort_chdir() { abort "Cannot change to '$1'${2:+: }${2:-}"; }
+  preparser preparse_options error_message
+  [ $# -gt 0 ] && preparse_options "$@"
+  eval "set -- $REST"
+  if [ "${DIRECTORY+x}" ]; then
+    if [ ! "$DIRECTORY" ]; then
+      [ $# -gt 0 ] || abort "There is no file or directory path"
+      case $1 in ([-+]?*)
+        abort "The file or directory path is required before the option '$1'"
+      esac
+      [ -f "$1" ] && DIRECTORY=${1%/*} || DIRECTORY=$1
+    fi
+    [ -e "${DIRECTORY:-.}" ] || abort_chdir "$DIRECTORY" 'No such file or directory'
+    [ -d "${DIRECTORY:-.}" ] || abort_chdir "$DIRECTORY" 'Not a directory'
+    cd "$DIRECTORY" 2>/dev/null || {
+      error "$(cd "$DIRECTORY" 2>&1)"
+      abort_chdir "$DIRECTORY"
+    }
+  fi
+}
+
 # project root path
-export SHELLSPEC_CWD="$PWD"
 export SHELLSPEC_PROJECT_ROOT="$PWD"
 until [ -f "$SHELLSPEC_PROJECT_ROOT/.shellspec" ]; do
   [ "$SHELLSPEC_PROJECT_ROOT" ] || break
   SHELLSPEC_PROJECT_ROOT=${SHELLSPEC_PROJECT_ROOT%/*}
 done
-if [ "$SHELLSPEC_PROJECT_ROOT" ]; then
-  cd "$SHELLSPEC_PROJECT_ROOT"
-fi
+cd "${SHELLSPEC_PROJECT_ROOT:-.}"
 
 # option parsing
 {
@@ -161,16 +189,19 @@ fi
   eval "set -- $params"
 }
 
-[ "$SHELLSPEC_MODE" = "init" ] && SHELLSPEC_PROJECT_ROOT=$SHELLSPEC_CWD
+case $SHELLSPEC_MODE in (init)
+  SHELLSPEC_PROJECT_ROOT=${SHELLSPEC_PROJECT_ROOT:-$SHELLSPEC_CWD}
+esac
 if [ ! "$SHELLSPEC_PROJECT_ROOT" ]; then
   # DEPRECATED: Not a shellspec project directory (TODO: change from error to abort)
   SHELLSPEC_PROJECT_ROOT=$SHELLSPEC_CWD
   error 'Not a shellspec project directory (".shellspec" not found in any of the parent directories).'
-  warn '| IMPORTANT NOTES:'
-  warn '| In future releases, run from outside the project directory will not be allowed.'
-  warn '| Create a ".shellspec" or run shellspec from under the directory where the ".shellspec" is located.'
-  warn '| Fallback to the previous behavior for compatibility.'
-  warn "| Current project root directory: $SHELLSPEC_PROJECT_ROOT"
+  warn 'IMPORTANT NOTES:'
+  warn '  In future releases, run from outside the project directory will not be allowed.'
+  warn '  Create a ".shellspec" or run shellspec from under the directory where the ".shellspec"'
+  warn '  is located. If you are executing specfile directly, the -c (--chdir) option is useful.'
+  warn '  Fallback to the previous behavior for compatibility.'
+  warn "Current project root directory: $SHELLSPEC_PROJECT_ROOT"
   case $SHELLSPEC_EXECDIR in (@basedir*)
     abort '--execdir @basedir is not supported (requires ".shellspec").'
   esac
@@ -391,11 +422,11 @@ case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
       # abort "Not a path in the project directory: $p."
       if [ -e "$SHELLSPEC_PROJECT_ROOT/.shellspec" ]; then
         error "Not a path in the project directory: $p"
-        warn '| IMPORTANT NOTES:'
-        warn '| You have specified specfile(s) that outside of the current project directory.'
-        warn '| In future releases, run specfile(s) that outside the current project directory will not be allowed.'
-        warn '| Fallback to the previous behavior for compatibility.'
-        warn "| Current project root directory: $SHELLSPEC_PROJECT_ROOT"
+        warn 'IMPORTANT NOTES:'
+        warn '  You have specified specfile(s) that outside of the current project directory.'
+        warn '  In future releases, run specfile(s) that outside the current project directory'
+        warn '  will not be allowed. Fallback to the previous behavior for compatibility.'
+        warn "Current project root directory: $SHELLSPEC_PROJECT_ROOT"
       fi
       set -- "$@" "${abspath}${range:+:}${range}"
     fi

@@ -1,16 +1,24 @@
 # shellcheck shell=sh
 
+# shellcheck source=lib/getoptions.sh
+# . "$SHELLSPEC_LIB/getoptions.sh"
+# shellcheck source=lib/getoptions_help.sh
+# . "$SHELLSPEC_LIB/getoptions_help.sh"
+# shellcheck source=lib/getoptions_abbr.sh
+# . "$SHELLSPEC_LIB/getoptions_abbr.sh"
+
+preparser() {
+  # . "$SHELLSPEC_LIB/libexec/optparser/preparser_definition.sh"
+  # eval "$(getoptions preparser_definition "$@")"
+
+  # shellcheck source=lib/libexec/optparser/preparser_definition_generated.sh
+  . "$SHELLSPEC_LIB/libexec/optparser/preparser_definition_generated.sh"
+}
+
 optparser() {
   eval "$1() { if [ \$# -gt 0 ]; then optparser_parse \"\$@\"; fi; }"
   eval "optparser_error() { $2 \"\$@\"; }"
 
-  # # shellcheck source=lib/getoptions.sh
-  # . "$SHELLSPEC_LIB/getoptions.sh"
-  # # shellcheck source=lib/getoptions_help.sh
-  # . "$SHELLSPEC_LIB/getoptions_help.sh"
-  # # shellcheck source=lib/getoptions_abbr.sh
-  # . "$SHELLSPEC_LIB/getoptions_abbr.sh"
-  # # shellcheck source=lib/libexec/parser_definition.sh
   # . "$SHELLSPEC_LIB/libexec/optparser/parser_definition.sh"
   # set -- "optparser_parse" "SHELLSPEC" "optparser_error"
   # eval "$(getoptions parser_definition "$@")"
@@ -30,11 +38,17 @@ boost() {
   esac
 }
 
+check_directory() {
+  OPTARG=${OPTARG:-$PWD}
+}
+
 check_env_name() {
   case ${OPTARG%%\=*} in ([!a-zA-Z_]*) return 1; esac
   case ${OPTARG%%\=*} in (*[!a-zA-Z0-9_]*) return 1; esac
   return 0
 }
+
+directory_not_available() { false; }
 
 set_path() {
   export "$1=$OPTARG"
@@ -146,6 +160,8 @@ error_handler() {
   # $4: Option
   # $5-: Validator name and arguments
   case $3 in
+    directory_not_available:*)
+      set -- "$1" "The $4 option must be specified before other options and cannot be specified in an options file" ;;
     check_number:*) set -- "$1" "Not a number: $4" ;;
     check_formatter:*) set -- "$1" "Invalid formatter name: $4" ;;
     check_env_name:*) set -- "$1" "Invalid environment name: $4" ;;

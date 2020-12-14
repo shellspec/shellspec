@@ -15,10 +15,10 @@ parser_definition() {
   set -- "$1" "$2" "error_handler ${3:-echo}"
 
   setup params export:true error:"$3" abbr:true help:usage width:36 leading:'    ' -- \
-    'Usage: shellspec [options...] [files or directories...]' \
-    '' \
-    '  Using + instead of - for short options causes reverses the meaning' \
-    ''
+    'Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]'
+
+  msg -- '' '  Using + instead of - for short options causes reverses the meaning' ''
+
   param SHELL -s --shell -- \
     'Specify a path of shell [default: "auto" (the shell running shellspec)]' \
     '  ShellSpec ignores shebang and runs in the specified shell.'
@@ -93,7 +93,14 @@ parser_definition() {
 
   flag KEEP_TMPDIR --keep-tmpdir -- \
     'Do not cleanup temporary directory [default: disabled]'
-  flag KEEP_TMPDIR --keep-tempdir validate:'deprecated "$1" "Replace with --keep-tmpdir."' abbr: hidden:true
+  flag KEEP_TMPDIR --keep-tempdir validate:'deprecated "$1" "Replace with --keep-tmpdir."' abbr: hidden:true init:@none
+
+  msg -- '' '  The following options must be specified before other options and cannot be specified in the options file' ''
+
+  flag DIRECTORY -c --chdir validate:'directory_not_available' init:@none \
+    -- 'Change the current directory to the first path of arguments at the start'
+  param DIRECTORY -C --directory validate:'directory_not_available' init:@none \
+    -- 'Change the current directory at the start'
 
   msg -- '' '  **** Execution ****' ''
 

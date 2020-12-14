@@ -2,10 +2,8 @@ PREFIX ?= /usr/local
 BINDIR := $(PREFIX)/bin
 LIBDIR := $(PREFIX)/lib
 
-GETOPTIONS := getoptions-cli --indent=2 --shellcheck
-GETOPTIONS_IN := lib/libexec/optparser/parser_definition.sh
-GETOPTIONS_PARAMS := optparser_parse SHELLSPEC optparser_error
-GETOPTIONS_OUT := lib/libexec/optparser/parser_definition_generated.sh
+GETOPTIONSCLI := getoptions-cli --indent=2 --shellcheck
+OPTPARSERDIR := lib/libexec/optparser
 
 .PHONY: coverage test dist build release
 
@@ -28,7 +26,11 @@ package:
 	contrib/make_package_json.sh > package.json
 
 optparser:
-	$(GETOPTIONS) $(GETOPTIONS_IN) $(GETOPTIONS_PARAMS) > $(GETOPTIONS_OUT)
+	$(GETOPTIONSCLI) $(OPTPARSERDIR)/preparser_definition.sh preparse_options \
+		> $(OPTPARSERDIR)/preparser_definition_generated.sh
+	$(GETOPTIONSCLI) $(OPTPARSERDIR)/parser_definition.sh \
+		optparser_parse SHELLSPEC optparser_error \
+		> $(OPTPARSERDIR)/parser_definition_generated.sh
 
 demo:
 	ttyrec -e "ghostplay contrib/demo.sh"

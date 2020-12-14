@@ -73,6 +73,8 @@
     "lib/libexec/optparser/optparser.sh",
     "lib/libexec/optparser/parser_definition.sh",
     "lib/libexec/optparser/parser_definition_generated.sh",
+    "lib/libexec/optparser/preparser_definition.sh",
+    "lib/libexec/optparser/preparser_definition_generated.sh",
     "lib/libexec/parallel-executor.sh",
     "lib/libexec/reporter.sh",
     "lib/libexec/reporter/color_schema.sh",

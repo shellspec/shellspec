@@ -3,6 +3,16 @@
 Describe "libexec/optparser/optparser.sh"
   Include "$SHELLSPEC_LIB/libexec/optparser/optparser.sh"
 
+  Describe "preparser()"
+    error_message() { :; }
+
+    It "defines pre option parser and error message functions"
+      When call preparser preparse_options error_message
+      Assert preparse_options
+      Assert error_message
+    End
+  End
+
   Describe "optparser()"
     error_message() { :; }
 
@@ -43,6 +53,20 @@ Describe "libexec/optparser/optparser.sh"
       The variable PREFIX_PROFILER_LIMIT should eq "$3"
       The variable PREFIX_PROFILER should be exported
       The variable PREFIX_PROFILER_LIMIT should be exported
+    End
+  End
+
+  Describe "check_directory()"
+    It "leaves OPTARG as it is if it is not empty"
+      BeforeCall OPTARG=directory
+      When call check_directory
+      The variable OPTARG should eq "directory"
+    End
+
+    It "sets OPTARG to PWD if it is empty"
+      BeforeCall OPTARG=''
+      When call check_directory
+      The variable OPTARG should eq "$PWD"
     End
   End
 
@@ -301,6 +325,7 @@ Describe "libexec/optparser/optparser.sh"
 
   Describe "error_handler()"
     Parameters
+      directory_not_available:1 "The --option option must be specified before other options and cannot be specified in an options file"
       default_error:1   "Default error message: --option"
       check_number:1    "Not a number: --option"
       check_formatter:1 "Invalid formatter name: --option"

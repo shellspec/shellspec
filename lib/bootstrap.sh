@@ -1,6 +1,6 @@
 #shellcheck shell=sh disable=SC2016
 
-shellspec() { :; }
+shellspec() { echo '#'; }
 
 # Disable verbose_errexit by default for osh
 # shellcheck disable=SC2039,SC3044
