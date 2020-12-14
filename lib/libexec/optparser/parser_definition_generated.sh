@@ -4,6 +4,7 @@
 export SHELLSPEC_SHELL=''
 export SHELLSPEC_SANDBOX=''
 export SHELLSPEC_SANDBOX_PATH=''
+export SHELLSPEC_HELPERDIR='spec'
 export SHELLSPEC_REQUIRES=''
 export SHELLSPEC_EXECDIR='@project'
 export SHELLSPEC_ENV_FROM=''
@@ -68,6 +69,10 @@ optparser_parse() {
       case '--sandbox-path' in
         "$1") OPTARG=; break ;;
         $1*) OPTARG="$OPTARG --sandbox-path"
+      esac
+      case '--helperdir' in
+        "$1") OPTARG=; break ;;
+        $1*) OPTARG="$OPTARG --helperdir"
       esac
       case '--require' in
         "$1") OPTARG=; break ;;
@@ -381,6 +386,11 @@ optparser_parse() {
         [ $# -le 1 ] && set "required" "$1" && break
         OPTARG=$2
         export SHELLSPEC_SANDBOX_PATH="$OPTARG"
+        shift ;;
+      '--helperdir')
+        [ $# -le 1 ] && set "required" "$1" && break
+        OPTARG=$2
+        export SHELLSPEC_HELPERDIR="$OPTARG"
         shift ;;
       '--require')
         [ $# -le 1 ] && set "required" "$1" && break
@@ -738,7 +748,8 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
         --{no-}sandbox              Force the use of the mock instead of the actual command
                                       Make PATH empty (except "spec/support/bin" and mock dir) and readonly
                                       This is not a security feature and does not provide complete isolation
-        --sandbox-path PATH         Make PATH the sandbox path instead of empty (default: empty)
+        --sandbox-path PATH         Make PATH the sandbox path instead of empty [default: empty]
+        --helperdir DIRECTORY       The directory to load helper files (spec_helper.sh, etc) [default: "spec"]
         --require MODULE            Require a MODULE (shell script file)
         --execdir @LOCATION[/DIR]   Specify the execution directory of each specfile | [default: @project]
                                       [@project]   Where the ".shellspec" file is located (project root) [default]
@@ -761,8 +772,8 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
         --{no-}boost                Increase the CPU frequency to boost up testing speed [default: disabled]
                                       Equivalent of --profile --profile-limit 0
                                       (Don't worry, this is not overclocking. This is joke option but works.)
-        --log-file LOGFILE          Log file for %logger directive and trace [default: /dev/tty]
-        --tmpdir TMPDIR             Specify temporary directory [default: $TMPDIR, $TMP or /tmp]
+        --log-file LOGFILE          Log file for %logger directive and trace [default: "/dev/tty"]
+        --tmpdir TMPDIR             Specify temporary directory [default: $TMPDIR, $TMP or "/tmp"]
         --keep-tmpdir               Do not cleanup temporary directory [default: disabled]
 
   The following options must be specified before other options and cannot be specified in the options file
@@ -792,7 +803,7 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
 
   **** Output ****
 
-        --{no-}banner               Show banner if exist 'spec/banner' [default: enabled]
+        --{no-}banner               Show banner if exist "<HELPERDIR>/banner" [default: enabled]
     -f, --format FORMATTER          Choose a formatter for display | <[p]> [d] [t] [j] [f] [null] [debug]
                                       [p]rogress      dots [default]
                                       [d]ocumentation group and example names
@@ -860,7 +871,7 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
                                         [git]   .gitignore
                                         [hg]    .hgignore
                                         [svn]   .svnignore
-        --gen-bin [@COMMAND...]     Generate test support commands in spec/support/bin
+        --gen-bin [@COMMAND...]     Generate test support commands in "<HELPERDIR>/support/bin"
                                       This is useful for run actual commands from mock/stub.
         --count                     Count the number of specfiles and examples
         --list LIST                 List the specfiles/examples | [specfiles] [examples(:id|:lineno)]

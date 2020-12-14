@@ -33,7 +33,10 @@ parser_definition() {
     '  This is not a security feature and does not provide complete isolation'
 
   param SANDBOX_PATH --sandbox-path var:PATH -- \
-    'Make PATH the sandbox path instead of empty (default: empty)'
+    'Make PATH the sandbox path instead of empty [default: empty]'
+
+  param HELPERDIR --helperdir init:="spec" var:DIRECTORY -- \
+    'The directory to load helper files (spec_helper.sh, etc) [default: "spec"]'
 
   multi REQUIRES ':' --require var:MODULE -- \
     'Require a MODULE (shell script file)'
@@ -86,10 +89,10 @@ parser_definition() {
     "  (Don't worry, this is not overclocking. This is joke option but works.)"
 
   param LOGFILE --log-file init:='/dev/tty' -- \
-    'Log file for %logger directive and trace [default: /dev/tty]'
+    'Log file for %logger directive and trace [default: "/dev/tty"]'
 
   param TMPDIR --tmpdir init:"export $2_TMPDIR="'${TMPDIR:-${TMP:-/tmp}}' -- \
-    'Specify temporary directory [default: $TMPDIR, $TMP or /tmp]'
+    'Specify temporary directory [default: $TMPDIR, $TMP or "/tmp"]'
 
   flag KEEP_TMPDIR --keep-tmpdir -- \
     'Do not cleanup temporary directory [default: disabled]'
@@ -140,7 +143,7 @@ parser_definition() {
   msg -- '' '  **** Output ****' ''
 
   flag BANNER --{no-}banner init:@on -- \
-    "Show banner if exist 'spec/banner' [default: enabled]"
+    'Show banner if exist "<HELPERDIR>/banner" [default: enabled]'
 
   param FORMATTER -f --format validate:check_formatter init:='progress' -- \
     'Choose a formatter for display | <[p]> [d] [t] [j] [f] [null] [debug]' \
@@ -246,7 +249,7 @@ parser_definition() {
 
   flag :mode --gen-bin on:gen-bin \
     label:'    --gen-bin [@COMMAND...]' -- \
-    'Generate test support commands in spec/support/bin' \
+    'Generate test support commands in "<HELPERDIR>/support/bin"' \
     '  This is useful for run actual commands from mock/stub.'
 
   flag :mode --count on:count -- \
