@@ -1,6 +1,6 @@
 #shellcheck shell=sh disable=SC2016
 
-% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
 
 Describe "libexec/translator.sh"
   Include "$SHELLSPEC_LIB/libexec/translator.sh"

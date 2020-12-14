@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-% FILE: "$SHELLSPEC_SPECDIR/fixture/end-with-multiple-lf.txt"
+% FILE: "$SHELLSPEC_HELPERDIR/fixture/end-with-multiple-lf.txt"
 
 Describe "core/modifiers/contents.sh"
   BeforeRun set_subject modifier_mock

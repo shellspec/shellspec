@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
 
 Describe "core/matchers/has/stat.sh"
   BeforeRun set_subject matcher_mock

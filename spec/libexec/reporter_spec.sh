@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2004,SC2016
 
-% FILE: "$SHELLSPEC_SPECDIR/fixture/time_log.txt"
-% PROFILER_LOG: "$SHELLSPEC_SPECDIR/fixture/profiler/profiler.log"
+% FILE: "$SHELLSPEC_HELPERDIR/fixture/time_log.txt"
+% PROFILER_LOG: "$SHELLSPEC_HELPERDIR/fixture/profiler/profiler.log"
 
 Describe "libexec/reporter.sh"
   Include "$SHELLSPEC_LIB/libexec/reporter.sh"

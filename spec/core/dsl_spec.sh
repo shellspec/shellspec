@@ -1,9 +1,9 @@
 #shellcheck shell=sh disable=SC2004,SC2016
 
-% LIB: "$SHELLSPEC_SPECDIR/fixture/lib"
-% BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
+% LIB: "$SHELLSPEC_HELPERDIR/fixture/lib"
+% BIN: "$SHELLSPEC_HELPERDIR/fixture/bin"
 % TMPBASE: "$SHELLSPEC_TMPBASE"
-% MOCKDIR: "$SHELLSPEC_SPECDIR/fixture/mock"
+% MOCKDIR: "$SHELLSPEC_HELPERDIR/fixture/mock"
 
 # This Include do not place inside of Describe. posh fails.
 Include "$SHELLSPEC_LIB/core/dsl.sh"

@@ -1,18 +1,20 @@
 #shellcheck shell=sh disable=SC2016
 
 % GENBIN: "$SHELLSPEC_TMPBASE/gen-bin"
+% HELPERDIR: "$SHELLSPEC_TMPBASE/gen-bin/spec"
 
 Describe "run shellspec-gen-bin.sh"
+  # shellcheck disable=SC2034
   __main__() {
-    SHELLSPEC_SPECDIR="$GENBIN/spec"
-    # shellcheck disable=SC2034
-    SHELLSPEC_SUPPORT_BINDIR="$SHELLSPEC_SPECDIR/support/bin"
+    SHELLSPEC_HELPERDIR="$HELPERDIR"
+    SHELLSPEC_COLOR=''
+    SHELLSPEC_SUPPORT_BINDIR="$HELPERDIR/support/bin"
   }
   Intercept main
-  Path dummy-bin="$GENBIN/spec/support/bin/@dummy"
+  Path dummy-bin="$HELPERDIR/support/bin/@dummy"
 
   Context "when spec directory exists"
-    setup() { @mkdir -p "$GENBIN/spec"; }
+    setup() { @mkdir -p "$HELPERDIR"; }
     Before setup
 
     cleanup() { @rm -rf "$GENBIN"; }
@@ -31,7 +33,7 @@ Describe "run shellspec-gen-bin.sh"
   Context "when spec directory not exists"
     It 'raises error'
       When run source ./libexec/shellspec-gen-bin.sh "@dummy"
-      The output should eq "Not a shellspec directory"
+      The error should eq "shellspec helper directory not found: $HELPERDIR"
       The file dummy-bin should not be exist
       The status should be failure
     End
@@ -39,15 +41,15 @@ Describe "run shellspec-gen-bin.sh"
 
   Context "when spec support bin already exists"
     setup() {
-      @mkdir -p "$GENBIN/spec/support/bin"
-      @touch "$GENBIN/spec/support/bin/@dummy"
+      @mkdir -p "$HELPERDIR/support/bin"
+      @touch "$HELPERDIR/support/bin/@dummy"
     }
     Before setup
     mkdir() { @mkdir "$@"; }
 
     It 'skips generate support bin'
       When run source ./libexec/shellspec-gen-bin.sh "@dummy"
-      The output should start with "Skip, @dummy already exist"
+      The error should start with "Skip, @dummy already exist"
       The file dummy-bin should be exist
     End
   End

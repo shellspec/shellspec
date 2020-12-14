@@ -1,6 +1,6 @@
 #shellcheck shell=sh disable=SC2016
 
-% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
 % EMPTYDIR: "$SHELLSPEC_TMPBASE/emptydir"
 
 Describe "core/matchers/be/empty.sh"

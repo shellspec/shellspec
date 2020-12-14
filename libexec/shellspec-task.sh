@@ -24,7 +24,7 @@ each_file() {
     . "$1"
   esac
 }
-find_files each_file "$SHELLSPEC_SPECDIR/support"
+find_files each_file "$SHELLSPEC_HELPERDIR/support"
 
 if [ $# -eq 0 ]; then
   enum_tasks show_task

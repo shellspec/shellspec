@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2016
 
-% BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
-% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
+% BIN: "$SHELLSPEC_HELPERDIR/fixture/bin"
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
 % TMPBASE: "$SHELLSPEC_TMPBASE"
 
 Describe "core/evaluation.sh"

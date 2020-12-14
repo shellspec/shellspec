@@ -1,6 +1,6 @@
 #shellcheck shell=sh disable=SC2016
 
-% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
 
 Describe "shellspec-load-env.sh"
   BeforeRun 'export SHELLSPEC_ENV_FROM=$FIXTURE/env-script.sh'

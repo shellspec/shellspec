@@ -1,9 +1,9 @@
 #shellcheck shell=sh disable=SC2016
 
-% BIN: "$SHELLSPEC_SPECDIR/fixture/bin"
-% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
-% EMPTY_FILE: "$SHELLSPEC_SPECDIR/fixture/empty"
-% NON_EMPTY_FILE: "$SHELLSPEC_SPECDIR/fixture/file"
+% BIN: "$SHELLSPEC_HELPERDIR/fixture/bin"
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
+% EMPTY_FILE: "$SHELLSPEC_HELPERDIR/fixture/empty"
+% NON_EMPTY_FILE: "$SHELLSPEC_HELPERDIR/fixture/file"
 
 Describe "general.sh"
   Describe 'shellspec_shell_info()'

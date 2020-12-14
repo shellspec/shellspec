@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2016,SC2004
 
-% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
-% INFILE: "$SHELLSPEC_SPECDIR/fixture/infile"
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
+% INFILE: "$SHELLSPEC_HELPERDIR/fixture/infile"
 % TMPBASE: "$SHELLSPEC_TMPBASE"
 
 Describe 'libexec.sh'

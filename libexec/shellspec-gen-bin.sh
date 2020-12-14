@@ -2,6 +2,9 @@
 
 set -eu
 
+# shellcheck source=lib/libexec.sh
+. "${SHELLSPEC_LIB:-./lib}/libexec.sh"
+
 test || __() { :; }
 
 # shellcheck disable=SC2016
@@ -13,9 +16,8 @@ generate() {
 
 __ main __
 
-if [ ! -e "$SHELLSPEC_SPECDIR" ]; then
-  echo "Not a shellspec directory"
-  exit 1
+if [ ! -e "$SHELLSPEC_HELPERDIR" ]; then
+  abort "shellspec helper directory not found: $SHELLSPEC_HELPERDIR"
 fi
 
 mkdir -p "$SHELLSPEC_SUPPORT_BINDIR"
@@ -23,7 +25,7 @@ mkdir -p "$SHELLSPEC_SUPPORT_BINDIR"
 for cmd; do
   bin="$SHELLSPEC_SUPPORT_BINDIR/$cmd"
   if [ -e "$bin" ]; then
-    echo "Skip, $cmd already exist (${SHELLSPEC_SUPPORT_BINDIR#"$PWD/"}/$cmd)"
+    warn "Skip, $cmd already exist (${SHELLSPEC_SUPPORT_BINDIR#"$PWD/"}/$cmd)"
   else
     generate "${cmd#@}" > "$bin"
     chmod +x "$bin"

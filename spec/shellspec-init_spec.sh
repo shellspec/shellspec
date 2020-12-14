@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2016
 
 % TMPBASE: "$SHELLSPEC_TMPBASE"
-% FIXTURE: "$SHELLSPEC_SPECDIR/fixture"
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
 
 Describe "shellspec-init.sh"
   Include ./libexec/shellspec-init.sh

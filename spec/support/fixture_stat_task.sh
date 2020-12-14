@@ -15,7 +15,7 @@ set -eu
 task "fixture:stat:prepare" "Prepare file stat tests"
 task "fixture:stat:cleanup" "Cleanup file stat tests"
 
-fixture="$SHELLSPEC_SPECDIR/fixture"
+fixture="$SHELLSPEC_HELPERDIR/fixture"
 
 owner() {
   echo "${SUDO_UID:-$(id -u)}:${SUDO_GID:-$(id -g)}"
