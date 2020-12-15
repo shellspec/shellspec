@@ -674,11 +674,10 @@ shellspec_is_readonly() {
 }
 
 shellspec_abspath() {
-  if [ "$SHELLSPEC_BUSYBOX_W32" ]; then
-    shellspec_abspath_win "$@"
-  else
-    shellspec_abspath_unix "$@"
-  fi
+  case $PWD in
+    [a-zA-Z]:* | //*) shellspec_abspath_win "$@" ;;
+    *) shellspec_abspath_unix "$@" ;;
+  esac
 }
 
 shellspec_abspath_unix() {
