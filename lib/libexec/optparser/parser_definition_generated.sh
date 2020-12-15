@@ -36,6 +36,7 @@ export SHELLSPEC_EXAMPLE_FILTER=''
 export SHELLSPEC_TAG_FILTER=''
 export SHELLSPEC_DEFAULT_PATH='spec'
 export SHELLSPEC_DEREFERENCE=''
+export SHELLSPEC_COVERAGEDIR='coverage'
 export SHELLSPEC_KCOV=''
 export SHELLSPEC_KCOV_PATH='kcov'
 export SHELLSPEC_KCOV_OPTS=''
@@ -277,6 +278,10 @@ optparser_parse() {
       case '--dereference' in
         "$1") OPTARG=; break ;;
         $1*) OPTARG="$OPTARG --dereference"
+      esac
+      case '--covdir' in
+        "$1") OPTARG=; break ;;
+        $1*) OPTARG="$OPTARG --covdir"
       esac
       case '--kcov' in
         "$1") OPTARG=; break ;;
@@ -639,6 +644,11 @@ optparser_parse() {
         eval '[ ${OPTARG+x} ] &&:' && OPTARG='1' || OPTARG=''
         export SHELLSPEC_DEREFERENCE="$OPTARG"
         ;;
+      '--covdir')
+        [ $# -le 1 ] && set "required" "$1" && break
+        OPTARG=$2
+        export SHELLSPEC_COVERAGEDIR="$OPTARG"
+        shift ;;
       '--kcov'|'--no-kcov')
         [ "${OPTARG:-}" ] && OPTARG=${OPTARG#*\=} && set "noarg" "$1" && break
         eval '[ ${OPTARG+x} ] &&:' && OPTARG='1' || OPTARG=''
@@ -853,6 +863,7 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
 
   **** Coverage ****
 
+        --covdir DIRECTORY          Output directory of the Coverage Report [default: coverage]
         --{no-}kcov                 Enable coverage using kcov [default: disabled]
         --kcov-path PATH            Specify kcov path [default: kcov]
         --kcov-options OPTIONS      Additional Kcov options (coverage limits, coveralls id, etc)

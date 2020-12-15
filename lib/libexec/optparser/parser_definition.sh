@@ -219,6 +219,9 @@ parser_definition() {
 
   msg -- '' '  **** Coverage ****' ''
 
+  param COVERAGEDIR --covdir init:="coverage" var:DIRECTORY -- \
+    'Output directory of the Coverage Report [default: coverage]'
+
   flag KCOV --{no-}kcov -- \
     'Enable coverage using kcov [default: disabled]'
 

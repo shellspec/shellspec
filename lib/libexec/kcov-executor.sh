@@ -32,24 +32,24 @@ executor() {
     --bash-parser="$SHELLSPEC_SHELL" \
     --bash-parse-files-in-dir=. \
     --configure=command-name="shellspec $*" \
-    "$SHELLSPEC_COVERAGE_DIR" "$SHELLSPEC_KCOV_IN_FILE"
+    "$SHELLSPEC_COVERAGEDIR" "$SHELLSPEC_KCOV_IN_FILE"
   )
 
   eval "kcov_postprocess; return $?"
 }
 
 kcov_preprocess() {
-  [ -d "$SHELLSPEC_COVERAGE_DIR" ] || return 0
+  [ -d "$SHELLSPEC_COVERAGEDIR" ] || return 0
 
   # Cleanup previous coverage data
-  rm -rf "${SHELLSPEC_COVERAGE_DIR:?}/${SHELLSPEC_KCOV_FILENAME:?}"*
+  rm -rf "${SHELLSPEC_COVERAGEDIR:?}/${SHELLSPEC_KCOV_FILENAME:?}"*
 }
 
 kcov_postprocess() {
-  [ -d "$SHELLSPEC_COVERAGE_DIR" ] || return 0
+  [ -d "$SHELLSPEC_COVERAGEDIR" ] || return 0
 
   ( CDPATH=
-    cd "$SHELLSPEC_COVERAGE_DIR"
+    cd "$SHELLSPEC_COVERAGEDIR"
     # Delete unnecessary files and directories
     rm -rf bash-helper.sh bash-helper-debug-trap.sh \
       libbash_execve_redirector.so kcov-merged ||:
@@ -68,7 +68,7 @@ kcov_postprocess() {
     # Replace physical path to logical path
     cd "$SHELLSPEC_PROJECT_ROOT"
     set -- "$(pwd -P)" "$(pwd -L)" "$SHELLSPEC_KCOV_FILENAME"
-    cd "$SHELLSPEC_COVERAGE_DIR"
+    cd "$SHELLSPEC_COVERAGEDIR"
     for file in coverage.json sonarqube.xml cobertura.xml; do
       edit_in_place "$3/$file" "kcov_fix_${file%.*}" "$1" "$2"
       ln -snf "$3/$file" "$file" ||:
