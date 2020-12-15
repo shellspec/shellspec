@@ -121,8 +121,12 @@ if [ "$SHELLSPEC_KEEP_TMPDIR" ]; then
   warn "Manually delete: rm -rf \"$SHELLSPEC_TMPBASE\""
 fi
 
-if [ "$SHELLSPEC_BANNER" ] && [ -s "$SHELLSPEC_BANNER_FILE" ]; then
-  cat "$SHELLSPEC_BANNER_FILE"
+if [ "$SHELLSPEC_BANNER" ]; then
+  if [ -s "$SHELLSPEC_BANNER_FILE" ]; then
+    cat "$SHELLSPEC_BANNER_FILE"
+  elif [ -s "$SHELLSPEC_BANNER_FILE.md" ]; then
+    cat "$SHELLSPEC_BANNER_FILE.md"
+  fi
 fi
 
 if [ "${SHELLSPEC_RANDOM:-}" ]; then

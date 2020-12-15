@@ -823,7 +823,7 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
 
   **** Output ****
 
-        --{no-}banner               Show banner if exist "<HELPERDIR>/banner" [default: enabled]
+        --{no-}banner               Show banner if exist "<HELPERDIR>/banner(.md)" [default: enabled]
         --reportdir DIRECTORY       Output directory of the report [default: "report"]
     -f, --format FORMATTER          Choose a formatter for display | <[p]> [d] [t] [j] [f] [null] [debug]
                                       [p]rogress      dots [default]
