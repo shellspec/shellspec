@@ -145,6 +145,9 @@ parser_definition() {
   flag BANNER --{no-}banner init:@on -- \
     'Show banner if exist "<HELPERDIR>/banner" [default: enabled]'
 
+  param REPORTDIR --reportdir init:='report' var:DIRECTORY -- \
+    'Output directory of the report [default: "report"]'
+
   param FORMATTER -f --format validate:check_formatter init:='progress' -- \
     'Choose a formatter for display | <[p]> [d] [t] [j] [f] [null] [debug]' \
     '  [p]rogress      dots [default]' \

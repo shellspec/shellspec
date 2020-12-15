@@ -25,6 +25,7 @@ OPTARG=''; random SHELLSPEC
 OPTARG='0'; xtrace SHELLSPEC
 export SHELLSPEC_DRYRUN=''
 export SHELLSPEC_BANNER='1'
+export SHELLSPEC_REPORTDIR='report'
 export SHELLSPEC_FORMATTER='progress'
 export SHELLSPEC_GENERATORS=''
 export SHELLSPEC_SKIP_MESSAGE='verbose'
@@ -218,6 +219,10 @@ optparser_parse() {
       case '--no-banner' in
         "$1") OPTARG=; break ;;
         $1*) OPTARG="$OPTARG --no-banner"
+      esac
+      case '--reportdir' in
+        "$1") OPTARG=; break ;;
+        $1*) OPTARG="$OPTARG --reportdir"
       esac
       case '--format' in
         "$1") OPTARG=; break ;;
@@ -555,6 +560,11 @@ optparser_parse() {
         eval '[ ${OPTARG+x} ] &&:' && OPTARG='1' || OPTARG=''
         export SHELLSPEC_BANNER="$OPTARG"
         ;;
+      '--reportdir')
+        [ $# -le 1 ] && set "required" "$1" && break
+        OPTARG=$2
+        export SHELLSPEC_REPORTDIR="$OPTARG"
+        shift ;;
       '-f'|'--format')
         [ $# -le 1 ] && set "required" "$1" && break
         OPTARG=$2
@@ -814,6 +824,7 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
   **** Output ****
 
         --{no-}banner               Show banner if exist "<HELPERDIR>/banner" [default: enabled]
+        --reportdir DIRECTORY       Output directory of the report [default: "report"]
     -f, --format FORMATTER          Choose a formatter for display | <[p]> [d] [t] [j] [f] [null] [debug]
                                       [p]rogress      dots [default]
                                       [d]ocumentation group and example names
