@@ -27,15 +27,30 @@ Describe "libexec/optparser/optparser.sh"
     Before VAR=''
 
     _multiple() {
-      multiple "$@"
-      multiple "$@"
-      multiple "$@"
+      OPTARG=1 && multiple "$@"
+      OPTARG=2 && multiple "$@"
+      OPTARG=3 && multiple "$@"
     }
 
     It "joins by separator and store in variable"
-      BeforeCall OPTARG=v
       When call _multiple VAR '|'
-      The variable VAR should eq "v|v|v"
+      The variable VAR should eq "1|2|3"
+      The variable VAR should be exported
+    End
+  End
+
+  Describe "multiple_rev()"
+    Before VAR=''
+
+    _multiple_rev() {
+      OPTARG=1 && multiple_rev "$@"
+      OPTARG=2 && multiple_rev "$@"
+      OPTARG=3 && multiple_rev "$@"
+    }
+
+    It "joins by separator and store in variable"
+      When call _multiple_rev VAR '|'
+      The variable VAR should eq "3|2|1"
       The variable VAR should be exported
     End
   End

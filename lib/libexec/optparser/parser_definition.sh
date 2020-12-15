@@ -23,6 +23,15 @@ parser_definition() {
     'Specify a path of shell [default: "auto" (the shell running shellspec)]' \
     '  ShellSpec ignores shebang and runs in the specified shell.'
 
+  multi REQUIRES ':' --require var:MODULE -- \
+    'Require a MODULE (shell script file)'
+
+  multirev LOAD_PATH ':' -I --load-path var:PATH -- \
+    'Specify PATH to add to $SHELLSPEC_LOAD_PATH (may be used more than once)'
+
+  param HELPERDIR --helperdir init:="spec" var:DIRECTORY -- \
+    'The directory to load helper files (spec_helper.sh, etc) [default: "spec"]'
+
   param :'set_path PATH' --path var:PATH -- \
     'Set PATH environment variable at startup' \
     "  e.g. --path /bin:/usr/bin, --path \"\$(getconf PATH)\""
@@ -34,12 +43,6 @@ parser_definition() {
 
   param SANDBOX_PATH --sandbox-path var:PATH -- \
     'Make PATH the sandbox path instead of empty [default: empty]'
-
-  param HELPERDIR --helperdir init:="spec" var:DIRECTORY -- \
-    'The directory to load helper files (spec_helper.sh, etc) [default: "spec"]'
-
-  multi REQUIRES ':' --require var:MODULE -- \
-    'Require a MODULE (shell script file)'
 
   param EXECDIR --execdir init:='@project' validate:check_execdir var:"@LOCATION[/DIR]" \
     pattern:'@project | @project/* | @basedir | @basedir/* | @specfile | @specfile/*' -- \
@@ -157,7 +160,7 @@ parser_definition() {
     '  [f]ailures      file:line:message (suitable for editors integration)' \
     '  [null]          do not display anything' \
     '  [debug]         for developers' \
-    '  custom formatter name'
+    '  Custom formatter name (which load from $SHELLSPEC_LOAD_PATH)'
 
   multi GENERATORS ' ' -o --output validate:check_formatter var:FORMATTER -- \
     'Choose a generator(s) to generate a report file(s) [default: none]' \
@@ -295,6 +298,11 @@ extension() {
     name=${prefix}_$1 separator="$2"
     shift 2
     param ":multiple $name '$separator'" "init:export $name=''" "$@"
+  }
+  multirev() {
+    name=${prefix}_$1 separator="$2"
+    shift 2
+    param ":multiple_rev $name '$separator'" "init:export $name=''" "$@"
   }
   prehook() {
     helper=$1 name=$2

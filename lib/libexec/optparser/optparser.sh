@@ -31,6 +31,10 @@ multiple() {
   eval "export $1=\"\${$1}\${$1:+$2}\$OPTARG\""
 }
 
+multiple_rev() {
+  eval "export $1=\"\$OPTARG\${$1:+$2}\${$1}\""
+}
+
 boost() {
   case $OPTARG in
     1) export "$1_PROFILER=1" "$1_PROFILER_LIMIT=0" ;;
