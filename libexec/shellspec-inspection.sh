@@ -8,6 +8,10 @@ umask >/dev/null
 # mrsh: https://github.com/emersion/mrsh WIP 657ea07 fails
 ( false ) 2>/dev/null && exit 1
 
+if ! (set -eu --; : "$@") 2>/dev/null; then
+  echo "SHELLSPEC_DEFECT_EMPTYPARAMS=1"
+fi
+
 redefine() { echo redefine; }
 if [ "$(redefine() { :; }; redefine)" = "redefine" ]; then
   # ksh

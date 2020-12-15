@@ -64,13 +64,13 @@ shellspec_constants SHELLSPEC_
 # shellcheck disable=SC2153,SC2034
 SHELLSPEC_IFS=" ${SHELLSPEC_TAB}${SHELLSPEC_LF}"
 
-if (set -eu --; : "$@") 2>/dev/null; then
+if [ "$SHELLSPEC_DEFECT_EMPTYPARAMS" ]; then
   shellspec_proxy() {
-    eval "$1() { $2 \"\$@\"; }"
+    eval "$1() { case \$# in (0) $2 ;; (*) $2 \"\$@\" ;; esac; }"
   }
 else
   shellspec_proxy() {
-    eval "$1() { case \$# in (0) $2 ;; (*) $2 \"\$@\" ;; esac; }"
+    eval "$1() { $2 \"\$@\"; }"
   }
 fi
 
