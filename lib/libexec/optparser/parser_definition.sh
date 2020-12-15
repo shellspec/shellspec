@@ -26,6 +26,9 @@ parser_definition() {
   multi REQUIRES ':' --require var:MODULE -- \
     'Require a MODULE (shell script file)'
 
+  param OPTIONS -O --options var:PATH -- \
+    'Specify the path to an additional options file'
+
   multirev LOAD_PATH ':' -I --load-path var:PATH -- \
     'Specify PATH to add to $SHELLSPEC_LOAD_PATH (may be used more than once)'
 

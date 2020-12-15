@@ -3,6 +3,7 @@
 # URL: https://github.com/ko1nksm/getoptions (v2.5.0)
 export SHELLSPEC_SHELL=''
 export SHELLSPEC_REQUIRES=''
+export SHELLSPEC_OPTIONS=''
 export SHELLSPEC_LOAD_PATH=''
 export SHELLSPEC_HELPERDIR='spec'
 export SHELLSPEC_SANDBOX=''
@@ -60,6 +61,10 @@ optparser_parse() {
       case '--require' in
         "$1") OPTARG=; break ;;
         $1*) OPTARG="$OPTARG --require"
+      esac
+      case '--options' in
+        "$1") OPTARG=; break ;;
+        $1*) OPTARG="$OPTARG --options"
       esac
       case '--load-path' in
         "$1") OPTARG=; break ;;
@@ -370,7 +375,7 @@ optparser_parse() {
         eval 'set -- "${OPTARG%%\=*}" "${OPTARG#*\=}"' ${1+'"$@"'}
         ;;
       --no-*) unset OPTARG ;;
-      -[sIeCjfoPETD]?*) OPTARG=$1; shift
+      -[sOIeCjfoPETD]?*) OPTARG=$1; shift
         eval 'set -- "${OPTARG%"${OPTARG#??}"}" "${OPTARG#??}"' ${1+'"$@"'}
         ;;
       -[!-]?*) OPTARG=$1; shift
@@ -391,6 +396,11 @@ optparser_parse() {
         [ $# -le 1 ] && set "required" "$1" && break
         OPTARG=$2
         multiple SHELLSPEC_REQUIRES ':' SHELLSPEC
+        shift ;;
+      '-O'|'--options')
+        [ $# -le 1 ] && set "required" "$1" && break
+        OPTARG=$2
+        export SHELLSPEC_OPTIONS="$OPTARG"
         shift ;;
       '-I'|'--load-path')
         [ $# -le 1 ] && set "required" "$1" && break
@@ -774,6 +784,7 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
     -s, --shell SHELL               Specify a path of shell [default: "auto" (the shell running shellspec)]
                                       ShellSpec ignores shebang and runs in the specified shell.
         --require MODULE            Require a MODULE (shell script file)
+    -O, --options PATH              Specify the path to an additional options file
     -I, --load-path PATH            Specify PATH to add to $SHELLSPEC_LOAD_PATH (may be used more than once)
         --helperdir DIRECTORY       The directory to load helper files (spec_helper.sh, etc) [default: "spec"]
         --path PATH                 Set PATH environment variable at startup

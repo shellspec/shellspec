@@ -166,13 +166,19 @@ cd "${SHELLSPEC_PROJECT_ROOT:-.}"
   }
 
   options_file() {
+    set -- "$1" "$params"
     options_file=$1
     read_options_file "$1" parse_options
     unset options_file
+    params=$2
   }
   enum_options_file options_file
-  params=''
   [ $# -gt 0 ] && parse_options "$@"
+  if [ "$SHELLSPEC_OPTIONS" ]; then
+    [ -e "$SHELLSPEC_OPTIONS" ] || abort "Options file not found: $SHELLSPEC_OPTIONS"
+    options_file "$SHELLSPEC_OPTIONS"
+  fi
+
   # Run inside docker container
   if [ "${SHELLSPEC_DOCKER_IMAGE#:}" ]; then
     case $SHELLSPEC_DOCKER_IMAGE in (:*)
