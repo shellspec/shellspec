@@ -152,7 +152,7 @@ finddirs() {
 finddirs_native() {
   ( set +f +u
     [ "${ZSH_VERSION:-}" ] && setopt nonomatch
-    cd "$1"
+    cd "$1" || exit
     echo "."
     if [ "${2:-}" ]; then
       check() { [ ! -d "$i" ]; }
@@ -161,7 +161,9 @@ finddirs_native() {
     fi
     recursive() {
       pwd=$1 oldpwd=$PWD
-      cd "$pwd" && set -- * && cd "$oldpwd"
+      cd "$pwd" || exit
+      set -- *
+      cd "$oldpwd" || exit
       for i; do set -- "$@" "$pwd/$i"; shift; done
       for i; do
         check "$i" && continue
@@ -205,7 +207,7 @@ finddirs_native() {
 # }
 
 finddirs_lssort() {
-  ( cd "$1"
+  ( cd "$1" || exit
     echo "."
     # shellcheck disable=SC2012,SC2153
     "$SHELLSPEC_LS" -R ${2:+-L} . | { export LC_ALL=C; "$SHELLSPEC_SORT"; } | {
@@ -221,7 +223,7 @@ finddirs_lssort() {
 }
 
 finddirs_find() {
-  ( cd "$1"
+  ( cd "$1" || exit
     "$SHELLSPEC_FIND" ${2:+-L} . -name ".?*" -prune -o -type d -print
   )
 }

@@ -697,7 +697,7 @@ shellspec_abspath_unix() {
   eval "$1=\"/\${4#/}\""
 }
 
-shellspec_chdrv() { cd "$1:" 2>/dev/null; }
+shellspec_chdrv() { cd "$1:" 2>/dev/null || exit; }
 
 shellspec_abspath_win() {
   set -- "$1" "$2" "${3:-$PWD}"

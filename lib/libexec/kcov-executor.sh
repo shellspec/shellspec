@@ -49,7 +49,7 @@ kcov_postprocess() {
   [ -d "$SHELLSPEC_COVERAGEDIR" ] || return 0
 
   ( CDPATH=
-    cd "$SHELLSPEC_COVERAGEDIR"
+    cd "$SHELLSPEC_COVERAGEDIR" || exit
     # Delete unnecessary files and directories
     rm -rf bash-helper.sh bash-helper-debug-trap.sh \
       libbash_execve_redirector.so kcov-merged ||:
@@ -66,9 +66,9 @@ kcov_postprocess() {
     fi
 
     # Replace physical path to logical path
-    cd "$SHELLSPEC_PROJECT_ROOT"
+    cd "$SHELLSPEC_PROJECT_ROOT" || exit
     set -- "$(pwd -P)" "$(pwd -L)" "$SHELLSPEC_KCOV_FILENAME"
-    cd "$SHELLSPEC_COVERAGEDIR"
+    cd "$SHELLSPEC_COVERAGEDIR" || exit
     for file in coverage.json sonarqube.xml cobertura.xml; do
       edit_in_place "$3/$file" "kcov_fix_${file%.*}" "$1" "$2"
       ln -snf "$3/$file" "$file" ||:
