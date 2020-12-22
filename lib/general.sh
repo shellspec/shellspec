@@ -446,15 +446,16 @@ shellspec_escape_quote() {
 }
 
 shellspec_pack() {
-  eval " \
+  SHELLSPEC_EVAL="
     $1=''; shift; \
     for $1; do \
       shellspec_escape_quote $1 \"\${$1}\"; \
       set -- \"\$@\" \"'\${$1}'\"; \
       shift; \
     done; \
-    IFS=\" \$IFS\"; set -- \"\${*:-}\"; IFS=\${IFS#?}; unset $1; $1=\$1; \
+    IFS=\" \$IFS\"; set -- \"\${*:-}\"; IFS=\${IFS#?}; unset $1; $1=\$1
   "
+  eval "$SHELLSPEC_EVAL"
 }
 
 shellspec_match_pattern_escape() {
