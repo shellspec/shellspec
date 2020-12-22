@@ -58,6 +58,7 @@ shellspec_redefinable shellspec_create_mock_file
 shellspec_redefinable shellspec_gen_mock_code
 shellspec_redefinable shellspec_is_function
 shellspec_redefinable shellspec_sleep
+shellspec_redefinable shellspec_source
 
 # Workaround for busybox-1.1.3, ksh88
 shellspec_unbuiltin "ps"

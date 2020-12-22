@@ -1,5 +1,6 @@
 #shellcheck shell=sh disable=SC2004,SC2016
 
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
 % LIB: "$SHELLSPEC_HELPERDIR/fixture/lib"
 % BIN: "$SHELLSPEC_HELPERDIR/fixture/bin"
 % TMPBASE: "$SHELLSPEC_TMPBASE"
@@ -142,6 +143,14 @@ Describe "core/dsl.sh"
     It 'sets filter variables'
       When run shellspec_perform enabled filter
       The stdout should eq "enabled filter"
+    End
+  End
+
+  Describe "shellspec_include_pack()"
+    It 'packs data for include'
+      When call shellspec_include_pack src args "$FIXTURE/source.sh" a b c
+      The variable src should eq "$FIXTURE/source.sh"
+      The variable args should eq "'a' 'b' 'c'"
     End
   End
 

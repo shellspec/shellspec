@@ -103,6 +103,20 @@ Describe "general.sh"
     End
   End
 
+  Describe 'shellspec_source()'
+    It 'sources file'
+      When run shellspec_source "$FIXTURE/source.sh"
+      The status should be success
+      The stdout should be blank
+    End
+
+    It 'sources file with arguments'
+      When run shellspec_source "$FIXTURE/source.sh" a b c
+      The status should be success
+      The stdout should eq "a:b:c"
+    End
+  End
+
   Describe 'shellspec_find_files()'
     found() { echo "${1#"$FIXTURE/files/"}"; }
     It "finds files"
@@ -557,6 +571,28 @@ Describe "general.sh"
       AfterCall decode
       When call shellspec_escape_quote var
       The variable ret should equal "te'st"
+    End
+  End
+
+  Describe 'shellspec_pack()'
+    _pack() {
+      shellspec_pack "$@"
+      eval "set -- $var"
+      if [ $# -gt 0 ]; then
+        %printf '%s\n' "$@"
+      fi
+    }
+
+    It 'pack the empty arguments into one variable'
+      When call _pack var
+      The variable var should equal ""
+    End
+
+    It 'pack the arguments into one variable'
+      When call _pack var "a" "a b" "a'b"
+      The line 1 should equal "a"
+      The line 2 should equal "a b"
+      The line 3 should equal "a'b"
     End
   End
 

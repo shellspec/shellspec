@@ -79,22 +79,25 @@ shellspec_import() {
 }
 
 shellspec_import_deep() {
-  SHELLSPEC_SOURCE="${1%%:*}/$2.sh"
-  if [ -e "$SHELLSPEC_SOURCE" ]; then
-    # shellcheck disable=SC1090
-    . "$SHELLSPEC_SOURCE"
+  if [ -e "${1%%:*}/$2.sh" ]; then
+    shellspec_source "${1%%:*}/$2.sh"
     return 0
   fi
-  SHELLSPEC_SOURCE="${1%%:*}/$2/$2.sh"
-  if [ -e "$SHELLSPEC_SOURCE" ]; then
-    # shellcheck disable=SC1090
-    . "$SHELLSPEC_SOURCE"
+  if [ -e "${1%%:*}/$2/$2.sh" ]; then
+    shellspec_source "${1%%:*}/$2/$2.sh"
     return 0
   fi
   case $1 in
     *:*) shellspec_import_deep "${1#*:}" "$2" ;;
     *) shellspec_error "Import failed, '$2' not found" ;;
   esac
+}
+
+shellspec_source() {
+  SHELLSPEC_SOURCE=$1
+  shift
+  # shellcheck disable=SC1090
+  . "$SHELLSPEC_SOURCE"
 }
 
 if [ "${ZSH_VERSION:-}" ]; then
@@ -436,6 +439,18 @@ shellspec_match() {
 shellspec_escape_quote() {
   [ $# -lt 2 ] && eval "set -- \"\$1\" \"\$${1}\""
   shellspec_replace_all "$1" "$2" "'" "'\"'\"'"
+}
+
+shellspec_pack() {
+  eval " \
+    $1=''; shift; \
+    for $1; do \
+      shellspec_escape_quote $1 \"\${$1}\"; \
+      set -- \"\$@\" \"'\${$1}'\"; \
+      shift; \
+    done; \
+    IFS=\" \$IFS\"; set -- \"\${*:-}\"; IFS=\${IFS#?}; unset $1; $1=\$1; \
+  "
 }
 
 shellspec_match_pattern_escape() {

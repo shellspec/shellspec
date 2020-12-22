@@ -5,7 +5,7 @@ define_block() {
 }
 
 define_blocks() {
-  : "${SHELLSPEC_GRAMMAR_BLOCKS:="${SHELLSPEC_SOURCE%.*}/blocks"}"
+  : "${SHELLSPEC_GRAMMAR_BLOCKS:="${1%.*}/blocks"}"
   varname="" dsl=""
   while IFS= read -r line; do
     case $line in ("" | \#*) continue; esac
@@ -15,11 +15,11 @@ define_blocks() {
     echo "define_block \"is_$varname\" \"\$$varname\""
   done < "$SHELLSPEC_GRAMMAR_BLOCKS" &&:
 }
-eval "$(define_blocks)"
+eval "$(define_blocks "$SHELLSPEC_SOURCE")"
 
 define_dsls() {
-  : "${SHELLSPEC_GRAMMAR_DSLS:="${SHELLSPEC_SOURCE%.*}/dsls"}"
-  : "${SHELLSPEC_GRAMMAR_DIRECTIVES:="${SHELLSPEC_SOURCE%.*}/directives"}"
+  : "${SHELLSPEC_GRAMMAR_DSLS:="${1%.*}/dsls"}"
+  : "${SHELLSPEC_GRAMMAR_DIRECTIVES:="${1%.*}/directives"}"
   dsls=''
 
   echo 'dsl() { case $1 in'
@@ -38,10 +38,10 @@ define_dsls() {
   echo '*) return 1 ;; esac; }'
   echo "is_dsl() { case \$1 in ($dsls) true ;; (*) false ; esac; }"
 }
-eval "$(define_dsls)"
+eval "$(define_dsls "$SHELLSPEC_SOURCE")"
 
 define_directives() {
-  : "${SHELLSPEC_GRAMMAR_DIRECTIVES:="${SHELLSPEC_SOURCE%.*}/directives"}"
+  : "${SHELLSPEC_GRAMMAR_DIRECTIVES:="${1%.*}/directives"}"
   echo 'directive() { case $2 in'
   while IFS= read -r line; do
     case $line in ("" | \#*) continue; esac
@@ -49,7 +49,7 @@ define_directives() {
   done < "$SHELLSPEC_GRAMMAR_DIRECTIVES" &&:
   echo '*) return 1 ;; esac; }'
 }
-eval "$(define_directives)"
+eval "$(define_directives "$SHELLSPEC_SOURCE")"
 
 mapping() {
   dsl "$@" && return 0

@@ -101,6 +101,10 @@ shellspec_end() {
   shellspec_output END
 }
 
+shellspec_include_pack() {
+  eval "$1=\$3; shift 3; eval shellspec_pack $2 \${1+'\"\$@\"'}"
+}
+
 shellspec_before_first_block() {
   shellspec_mark_group "$SHELLSPEC_BLOCK_NO" ""
   [ "$SHELLSPEC_DRYRUN" ] && return 0

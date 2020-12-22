@@ -1,5 +1,5 @@
 #!/bin/sh
-#shellcheck disable=SC2004
+#shellcheck disable=SC2004,SC2016
 
 set -eu
 
@@ -173,13 +173,17 @@ trans_constant() {
 }
 
 trans_include() {
-  putsn "if shellspec_unless SKIP; then"
-  putsn "  __SOURCED__=${1# }"
-  putsn "  shellspec_coverage_start"
-  putsn "  . $1"
-  putsn "  shellspec_coverage_stop"
-  putsn "  unset __SOURCED__ ||:"
-  putsn "fi"
+  # Do not use the dot command in a function. The behavior will be different
+  putsn 'if shellspec_unless SKIP; then'
+  putsn "  eval shellspec_pack SHELLSPEC_OLDARGS \${1+'\"\$@\"'}"
+  putsn '  shellspec_include_pack __SOURCED__ SHELLSPEC_ARGS' "$1"
+  putsn '  eval "set -- $SHELLSPEC_ARGS"'
+  putsn '  shellspec_coverage_start'
+  putsn '  . "$__SOURCED__"'
+  putsn '  shellspec_coverage_stop'
+  putsn '  eval "set -- $SHELLSPEC_OLDARGS"'
+  putsn '  unset __SOURCED__ SHELLSPEC_ARGS SHELLSPEC_OLDARGS ||:'
+  putsn 'fi'
 }
 
 trans_line() {
