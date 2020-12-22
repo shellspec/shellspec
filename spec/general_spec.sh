@@ -96,10 +96,24 @@ Describe "general.sh"
   End
 
   Describe 'shellspec_import()'
+    Before 'SHELLSPEC_LOAD_PATH=$FIXTURE'
+
     It 'exits when module not found'
       When run shellspec_import not-found-module
       The status should be failure
       The stderr should include "not-found-module"
+    End
+
+    It 'imports file'
+      When run shellspec_import "source"
+      The status should be success
+      The stdout should be blank
+    End
+
+    It 'imports file with arguments'
+      When run shellspec_import "source" a b c
+      The status should be success
+      The stdout should eq "a:b:c"
     End
   End
 

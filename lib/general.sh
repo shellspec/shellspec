@@ -75,22 +75,26 @@ else
 fi
 
 shellspec_import() {
-  shellspec_import_deep "$SHELLSPEC_LOAD_PATH" "$1"
+  shellspec_find_module "$SHELLSPEC_LOAD_PATH" "$1" "SHELLSPEC_SOURCE"
+  shift
+  if [ $# -eq 0 ]; then
+    shellspec_source "$SHELLSPEC_SOURCE"
+  else
+    shellspec_source "$SHELLSPEC_SOURCE" "$@"
+  fi
 }
 
-shellspec_import_deep() {
+shellspec_find_module() {
   if [ -e "${1%%:*}/$2.sh" ]; then
-    shellspec_source "${1%%:*}/$2.sh"
-    return 0
+    eval "$3=\${1%%:*}/\$2.sh"
+  elif [ -e "${1%%:*}/$2/$2.sh" ]; then
+    eval "$3=\${1%%:*}/\$2/\$2.sh"
+  else
+    case $1 in
+      *:*) shellspec_find_module "${1#*:}" "$2" "$3" ;;
+      *) shellspec_error "Unable to find the required module '$2'." ;;
+    esac
   fi
-  if [ -e "${1%%:*}/$2/$2.sh" ]; then
-    shellspec_source "${1%%:*}/$2/$2.sh"
-    return 0
-  fi
-  case $1 in
-    *:*) shellspec_import_deep "${1#*:}" "$2" ;;
-    *) shellspec_error "Import failed, '$2' not found" ;;
-  esac
 }
 
 shellspec_source() {
