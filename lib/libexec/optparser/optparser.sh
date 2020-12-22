@@ -42,6 +42,12 @@ boost() {
   esac
 }
 
+check_module_name() {
+  case $OPTARG in ([!a-zA-Z_]*) return 1; esac
+  case $OPTARG in (*[!a-zA-Z0-9_]*) return 1; esac
+  return 0
+}
+
 check_directory() {
   OPTARG=${OPTARG:-$PWD}
 }
@@ -167,6 +173,7 @@ error_handler() {
     directory_not_available:*)
       set -- "$1" "The $4 option must be specified before other options and cannot be specified in an options file" ;;
     check_number:*) set -- "$1" "Not a number: $4" ;;
+    check_module_name:*) set -- "$1" "Invalid module name: $4" ;;
     check_formatter:*) set -- "$1" "Invalid formatter name: $4" ;;
     check_env_name:*) set -- "$1" "Invalid environment name: $4" ;;
     check_env_file:*) set -- "$1" "Not found env file: $4" ;;

@@ -23,7 +23,7 @@ parser_definition() {
     'Specify a path of shell [default: "auto" (the shell running shellspec)]' \
     '  ShellSpec ignores shebang and runs in the specified shell.'
 
-  multi REQUIRES ':' --require var:MODULE -- \
+  multi REQUIRES ' ' validate:check_module_name --require var:MODULE -- \
     'Require a MODULE (shell script file)'
 
   param OPTIONS -O --options var:PATH -- \

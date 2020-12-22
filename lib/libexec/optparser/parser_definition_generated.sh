@@ -395,7 +395,8 @@ optparser_parse() {
       '--require')
         [ $# -le 1 ] && set "required" "$1" && break
         OPTARG=$2
-        multiple SHELLSPEC_REQUIRES ':' SHELLSPEC
+        check_module_name || { set -- check_module_name:$? "$1" check_module_name; break; }
+        multiple SHELLSPEC_REQUIRES ' ' SHELLSPEC
         shift ;;
       '-O'|'--options')
         [ $# -le 1 ] && set "required" "$1" && break

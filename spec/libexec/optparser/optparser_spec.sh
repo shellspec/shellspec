@@ -71,6 +71,23 @@ Describe "libexec/optparser/optparser.sh"
     End
   End
 
+  Describe "check_module_name()"
+    Parameters
+      a100  success
+      A100  success
+      _A100 success
+      A_100 success
+      1foo  failure
+      A-100 failure
+    End
+
+    It "checks module name ($1)"
+      BeforeCall OPTARG="$1"
+      When call check_module_name
+      The status should be "$2"
+    End
+  End
+
   Describe "check_directory()"
     It "leaves OPTARG as it is if it is not empty"
       BeforeCall OPTARG=directory
@@ -341,13 +358,14 @@ Describe "libexec/optparser/optparser.sh"
   Describe "error_handler()"
     Parameters
       directory_not_available:1 "The --option option must be specified before other options and cannot be specified in an options file"
-      default_error:1   "Default error message: --option"
-      check_number:1    "Not a number: --option"
-      check_formatter:1 "Invalid formatter name: --option"
-      check_env_name:1  "Invalid environment name: --option"
-      check_env_file:1  "Not found env file: --option"
-      check_random:1    "Specify in one of the following formats (none[:SEED], specfiles[:SEED], examples[:SEED]): --option"
-      check_execdir:1   "Cannot include '..' in the execution directory: --option"
+      default_error:1     "Default error message: --option"
+      check_number:1      "Not a number: --option"
+      check_module_name:1 "Invalid module name: --option"
+      check_formatter:1   "Invalid formatter name: --option"
+      check_env_name:1    "Invalid environment name: --option"
+      check_env_file:1    "Not found env file: --option"
+      check_random:1      "Specify in one of the following formats (none[:SEED], specfiles[:SEED], examples[:SEED]): --option"
+      check_execdir:1     "Cannot include '..' in the execution directory: --option"
     End
 
     It "displays a error message"

@@ -29,9 +29,9 @@ else
 fi
 
 shellspec_load_requires() {
-  set -- "$1${1:+:}" "" "$1${1:+:}"
+  set -- "$1${1:+ }" "" "$1${1:+ }"
 
-  while [ "$1" ] && set -- "${1#*:}" "${1%%:*}" "$3"; do
+  while [ "$1" ] && set -- "${1#* }" "${1%% *}" "$3"; do
     eval "shellspec_$2_configure() { :; }"
     shellspec_import "$2"
   done
@@ -39,7 +39,7 @@ shellspec_load_requires() {
   shellspec_import "core"
 
   shift 2
-  while [ "$1" ] && set -- "${1#*:}" "${1%%:*}"; do
+  while [ "$1" ] && set -- "${1#* }" "${1%% *}"; do
     "shellspec_$2_configure"
   done
 }

@@ -22,7 +22,7 @@ Describe 'bootstrap.sh'
     End
 
     It 'loads required scripts'
-      When call shellspec_load_requires "foo:bar"
+      When call shellspec_load_requires "foo bar"
       The line 1 of stdout should eq "import foo"
       The line 2 of stdout should eq "import bar"
       The line 3 of stdout should eq "import core"
