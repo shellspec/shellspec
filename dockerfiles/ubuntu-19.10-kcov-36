@@ -1,5 +1,6 @@
 FROM ubuntu:19.10
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
+ && sed -i -E 's/(archive|security).ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
  && apt-get update && apt-get -y install kcov
 ENV SH=/bin/bash KCOV=1
