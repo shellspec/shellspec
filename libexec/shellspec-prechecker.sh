@@ -1,6 +1,8 @@
 #!/bin/sh
 # shellcheck disable=SC1090,SC2016,SC2034,SC2064
 
+. "${SHELLSPEC_LIB:-./lib}/libexec/prechecker.sh"
+
 warn_fd=2 status_file=""
 while [ $# -gt 0 ]; do
   case ${1:-} in

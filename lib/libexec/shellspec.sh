@@ -5,6 +5,14 @@
 load binary
 use abspath starts_with escape_quote starts_with includes
 
+check_semver() {
+  case ${1%%[+-]*} in
+    *.*.*.*) return 1 ;;
+    ?*.?*.?*) case ${1%%[+-]*} in (*[!0-9.]*) return 1; esac ;;
+    *) return 1 ;;
+  esac
+}
+
 pack() {
   eval "set -- \"\$1\" \"\$2\" \"\${$1}\""
   escape_quote "$1" "$2"

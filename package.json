@@ -76,6 +76,7 @@
     "lib/libexec/optparser/preparser_definition.sh",
     "lib/libexec/optparser/preparser_definition_generated.sh",
     "lib/libexec/parallel-executor.sh",
+    "lib/libexec/prechecker.sh",
     "lib/libexec/reporter.sh",
     "lib/libexec/reporter/color_schema.sh",
     "lib/libexec/reporter/conclusion_formatter.sh",

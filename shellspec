@@ -125,6 +125,10 @@ export SHELLSPEC_UNREADONLY_PATH="$SHELLSPEC_LIBEXEC/shellspec-unreadonly-path.s
 
 export SHELLSPEC_UNIXTIME=''
 unixtime SHELLSPEC_UNIXTIME
+if ! check_semver "$SHELLSPEC_VERSION"; then
+  abort "SHELLSPEC_VERSION: Invalid version format" \
+    "(major.minor.patch[-pre][+build]): $SHELLSPEC_VERSION"
+fi
 
 # option parsing for change directory
 {
