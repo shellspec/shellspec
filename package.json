@@ -107,6 +107,7 @@
     "libexec/shellspec-inspection.sh",
     "libexec/shellspec-list.sh",
     "libexec/shellspec-load-env.sh",
+    "libexec/shellspec-prechecker.sh",
     "libexec/shellspec-profiler.sh",
     "libexec/shellspec-reporter.sh",
     "libexec/shellspec-runner.sh",

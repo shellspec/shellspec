@@ -33,7 +33,9 @@ shellspec_load_requires() {
 
   while [ "$1" ] && set -- "${1#* }" "${1%% *}" "$3"; do
     eval "shellspec_$2_configure() { :; }"
+    eval "shellspec_$2_loaded() { :; }"
     shellspec_import "$2"
+    "shellspec_$2_loaded"
   done
 
   shellspec_import "core"

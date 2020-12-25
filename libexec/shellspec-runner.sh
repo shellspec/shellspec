@@ -37,6 +37,23 @@ interrupt() {
   exit 130
 }
 
+precheck() {
+  export VERSION="$SHELLSPEC_VERSION"
+  export SHELL_VERSION="$SHELLSPEC_SHELL_VERSION"
+  export SHELL_TYPE="$SHELLSPEC_SHELL_TYPE"
+  eval "set -- $1"
+  [ $# -gt 0 ] || return 0
+  for import_path; do
+    resolve_import_path import_path "$import_path"
+    set -- "$@" "$import_path"
+    shift
+  done
+  prechecker="$SHELLSPEC_LIBEXEC/shellspec-prechecker.sh"
+  status_file="$SHELLSPEC_PRECHECKER_STATUS"
+  # shellcheck disable=SC2086
+  $SHELLSPEC_SHELL "$prechecker" --warn-fd=3 --status-file="$status_file" "$@"
+}
+
 executor() {
   start_profiler
   executor="$SHELLSPEC_LIBEXEC/shellspec-executor.sh"
@@ -135,6 +152,17 @@ if [ "${SHELLSPEC_RANDOM:-}" ]; then
   eval "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'} >"$SHELLSPEC_INFILE"
   set -- -
 fi
+
+{
+  exit_status=$(
+    ( ( ( ( ( ( precheck "$SHELLSPEC_REQUIRES" ) &&:; echo "$?" >&9; ) >&8
+      ) 2>&1 | while IFS= read -r line; do error "$line"; done >&2
+      ) 3>&1 | while IFS= read -r line; do warn "$line"; done >&2
+      ) 4>&1 | while IFS= read -r line; do info "$line"; done >&8
+    ) 9>&1
+  )
+} 8>&1
+[ -s "$SHELLSPEC_PRECHECKER_STATUS" ] && exit "$exit_status"
 
 # I want to process with non-blocking output
 # and the stdout of runner streams to the reporter

@@ -74,7 +74,7 @@ edit_in_place() {
 info() {
   IFS=" $IFS"
   if [ "$SHELLSPEC_COLOR" ]; then
-    set -- '\033[33m%s\033[m\n' "${*:-}"
+    set -- '\033[36m%s\033[m\n' "${*:-}"
   else
     set -- '%s\n' "${*:-}"
   fi

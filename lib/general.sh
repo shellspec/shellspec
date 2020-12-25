@@ -84,6 +84,10 @@ shellspec_import() {
   fi
 }
 
+shellspec_resolve_import_path() {
+  shellspec_find_module "$SHELLSPEC_LOAD_PATH" "$2" "$1"
+}
+
 shellspec_find_module() {
   if [ -e "${1%%:*}/$2.sh" ]; then
     eval "$3=\${1%%:*}/\$2.sh"

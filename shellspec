@@ -255,6 +255,7 @@ export SHELLSPEC_DEPRECATION_LOGFILE="$SHELLSPEC_TMPBASE/.shellspec-deprecation.
 export SHELLSPEC_PROFILER_SIGNAL="$SHELLSPEC_TMPBASE/.shellspec-profiler.signal"
 export SHELLSPEC_REPORTER_PID="$SHELLSPEC_TMPBASE/.shellspec-reporter.pid"
 export SHELLSPEC_KCOV_IN_FILE="$SHELLSPEC_TMPBASE/kcov/$SHELLSPEC_KCOV_FILENAME"
+export SHELLSPEC_PRECHECKER_STATUS="$SHELLSPEC_TMPBASE/.shellspec-prechecker.status"
 
 # shell detection
 {
