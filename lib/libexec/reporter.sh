@@ -5,6 +5,8 @@
 use import constants sequence replace_all each padding trim wrap
 use is_empty_file pluralize exists_file readfile
 
+notice() { warn "$@" 2>&1; }
+
 count_examples() {
   set -- "$SHELLSPEC_LIBEXEC/shellspec-list.sh" "$@"
   #shellcheck shell=sh disable=SC2046

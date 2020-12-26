@@ -95,7 +95,7 @@ Describe 'libexec.sh'
       BeforeRun 'SHELLSPEC_COLOR=1'
       It "outputs information"
         When run info foo bar
-        The entire stdout should eq "${SHELLSPEC_ESC}[33mfoo bar${SHELLSPEC_ESC}[m${SHELLSPEC_LF}"
+        The entire stdout should eq "${SHELLSPEC_ESC}[36mfoo bar${SHELLSPEC_ESC}[m${SHELLSPEC_LF}"
       End
     End
 

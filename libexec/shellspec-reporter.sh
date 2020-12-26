@@ -159,12 +159,12 @@ fi
 
 if [ "${SHELLSPEC_FOCUS_FILTER:-}" ]; then
   if [ ! "$found_focus" ]; then
-    info "You specified --focus option, but not found any focused examples."
-    info "To focus, prepend 'f' to groups / examples. (e.g. fDescribe, fIt)$LF"
+    notice "You specified --focus option, but not found any focused examples."
+    notice "To focus, prepend 'f' to groups / examples. (e.g. fDescribe, fIt)$LF"
   fi
 else
   if [ "$found_focus" ]; then
-    info "You need to specify --focus option" \
+    notice "You need to specify --focus option" \
       "to run focused (underlined) example(s) only.$LF"
   fi
 fi
@@ -175,7 +175,7 @@ if [ -e "$SHELLSPEC_QUICK_FILE" ] && [ ! "$interrupt" ]; then
   [ -e "$quick_file" ] && in_quick_file=$quick_file || in_quick_file=/dev/null
   quick_file_data=$(filter_quick_file "$done" "$@" < "$in_quick_file")
   if [ -s "$quick_file" ] && [ ! "$quick_file_data" ]; then
-    info "All examples have been passed. Rerun to prevent regression.$LF"
+    notice "All examples have been passed. Rerun to prevent regression.$LF"
   fi
   puts "$quick_file_data${quick_file_data:+"$LF"}" | sort > "$quick_file"
 fi
@@ -183,13 +183,13 @@ fi
 if [ -e "$SHELLSPEC_DEPRECATION_LOGFILE" ]; then
   count=0 found='Found '
   while IFS= read -r line && inc count; do
-    [ "$SHELLSPEC_DEPRECATION_LOG" ] && info "$line"
+    [ "$SHELLSPEC_DEPRECATION_LOG" ] && notice "$line" 2>&1
   done < "$SHELLSPEC_DEPRECATION_LOGFILE"
   pluralize found "$count deprecation"
   if [ "$SHELLSPEC_DEPRECATION_LOG" ]; then
-    info "$found. Use --hide-deprecations to hide the details."
+    notice "$found. Use --hide-deprecations to hide the details."
   else
-    info "$found. Use --show-deprecations to show the details."
+    notice "$found. Use --show-deprecations to show the details."
   fi
 fi
 

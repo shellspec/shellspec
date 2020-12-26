@@ -1,5 +1,31 @@
 #shellcheck shell=sh
 
+error() {
+  [ $# -gt 0 ] || return 0
+  IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s\n' "$*" >&2; IFS=" ${IFS#?}"
+}
+
+warn() {
+  [ $# -gt 0 ] || return 0
+  IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s\n' "$*" >&3; IFS=" ${IFS#?}"
+}
+
+info() {
+  [ $# -gt 0 ] || return 0
+  IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s\n' "$*" >&4; IFS=" ${IFS#?}"
+}
+
+abort() {
+  [ $# -gt 0 ] || return 0
+  case $1 in
+    *[!0-9]*) error "$@"; exit 1 ;;
+    *) xs=$1; shift ;;
+  esac
+  [ $# -eq 0 ] && set -- "Aborted (exit status: $xs)"
+  error "$@"
+  exit "$xs"
+}
+
 minimum_version() {
   if [ $# -eq 0 ]; then
     echo "minimum_version: The minimum version is not specified" >&2

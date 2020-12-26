@@ -3,6 +3,53 @@
 Describe "libexec/prechecker.sh"
   Include "$SHELLSPEC_LIB/libexec/prechecker.sh"
 
+  Describe "error()"
+    _error() { error "$@" 2>&1 >/dev/null; }
+
+    It 'outputs to stderr'
+      When call _error "foo" "bar"
+      The output should eq "foo bar"
+    End
+  End
+
+  Describe "warn()"
+    _warn() { warn "$@" 3>&1 >/dev/null; }
+
+    It 'outputs to fd3'
+      When call _warn "foo" "bar"
+      The output should eq "foo bar"
+    End
+  End
+
+  Describe "info()"
+    _info() { info "$@" 4>&1 >/dev/null; }
+
+    It 'outputs to fd4'
+      When call _info "foo" "bar"
+      The output should eq "foo bar"
+    End
+  End
+
+  Describe "abort()"
+    It 'exits with an error message'
+      When run abort "foo" "bar"
+      The error should eq "foo bar"
+      The status should eq 1
+    End
+
+    It 'exits with an exit status'
+      When run abort 2
+      The error should eq "Aborted (exit status: 2)"
+      The status should eq 2
+    End
+
+    It 'exits with an exit status and error message'
+      When run abort 2 "foo" "bar"
+      The error should eq "foo bar"
+      The status should eq 2
+    End
+  End
+
   Describe "minimum_version()"
     Context "when the minimum version is not specified"
       It 'raises error'
