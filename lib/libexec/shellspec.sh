@@ -1,17 +1,11 @@
 #shellcheck shell=sh disable=SC2004,SC2016
 
+# shellcheck source=lib/semver.sh
+. "${SHELLSPEC_LIB:-./lib}/semver.sh"
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
 load binary
 use abspath starts_with escape_quote starts_with includes
-
-check_semver() {
-  case ${1%%[+-]*} in
-    *.*.*.*) return 1 ;;
-    ?*.?*.?*) case ${1%%[+-]*} in (*[!0-9.]*) return 1; esac ;;
-    *) return 1 ;;
-  esac
-}
 
 pack() {
   eval "set -- \"\$1\" \"\$2\" \"\${$1}\""

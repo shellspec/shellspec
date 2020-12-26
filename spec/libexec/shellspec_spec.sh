@@ -9,27 +9,6 @@
 Describe "libexec/shellspec.sh"
   Include "$SHELLSPEC_LIB/libexec/shellspec.sh"
 
-  Describe "check_semver()"
-    Parameters
-      1.2               failure
-      1.2.3             success
-      1.2.3.4           failure
-      1..3              failure
-      .2.3              failure
-      1.2.              failure
-      1.2.3.            failure
-      1.2.3-pre         success
-      1.2.3-pre+build   success
-      1.2.3+build       success
-      1.2.3-pre.1       success
-    End
-
-    It "checks semantic versioning format"
-      When call check_semver "$1"
-      The status should be "$2"
-    End
-  End
-
   Describe "pack()"
     _packs() {
       var=''
