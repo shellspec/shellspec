@@ -380,6 +380,11 @@ Describe "core/evaluation.sh"
         The status should be failure
       End
 
+      It 'catches exit code'
+        When run script "$BIN/script.sh" --exit-with 123
+        The status should eq 123
+      End
+
       Describe 'shebang arguments'
         set_fake_shell() { export SHELLSPEC_SHELL="$SHELLSPEC_PRINTF '%s\n'"; }
         shellspec_shebang_arguments() { %= "-u -u -u -u"; }

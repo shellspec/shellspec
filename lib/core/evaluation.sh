@@ -80,7 +80,11 @@ shellspec_evaluation_run() {
 shellspec_evaluation_run_subshell() {
   if [ "$SHELLSPEC_DEFECT_SUBSHELL" ]; then
     #shellcheck disable=SC2034
-    SHELLSPEC_DUMMY=$( shellspec_evaluation_run_subshell_ "$@" )
+    if [ "$2" = "script" ]; then
+      SHELLSPEC_DUMMY=$( shellspec_evaluation_run_subshell_ "$@" &&: )
+    else
+      SHELLSPEC_DUMMY=$( shellspec_evaluation_run_subshell_ "$@" )
+    fi
   else
     ( shellspec_evaluation_run_subshell_ "$@" )
   fi
