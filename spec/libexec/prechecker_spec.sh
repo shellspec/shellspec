@@ -8,7 +8,7 @@ Describe "libexec/prechecker.sh"
 
     It 'outputs to stderr'
       When call _error "foo" "bar"
-      The output should eq "foo bar"
+      The output should eq "[error] foo bar"
     End
   End
 
@@ -17,7 +17,7 @@ Describe "libexec/prechecker.sh"
 
     It 'outputs to fd3'
       When call _warn "foo" "bar"
-      The output should eq "foo bar"
+      The output should eq "[warn] foo bar"
     End
   End
 
@@ -26,26 +26,26 @@ Describe "libexec/prechecker.sh"
 
     It 'outputs to fd4'
       When call _info "foo" "bar"
-      The output should eq "foo bar"
+      The output should eq "[info] foo bar"
     End
   End
 
   Describe "abort()"
     It 'exits with an error message'
       When run abort "foo" "bar"
-      The error should eq "foo bar"
+      The error should eq "[error] foo bar"
       The status should eq 1
     End
 
     It 'exits with an exit status'
       When run abort 2
-      The error should eq "Aborted (exit status: 2)"
+      The error should eq "[error] Aborted (exit status: 2)"
       The status should eq 2
     End
 
     It 'exits with an exit status and error message'
       When run abort 2 "foo" "bar"
-      The error should eq "foo bar"
+      The error should eq "[error] foo bar"
       The status should eq 2
     End
   End
@@ -61,19 +61,19 @@ Describe "libexec/prechecker.sh"
     It 'raises error when the minimum version is not specified'
       When call minimum_version
       The status should be failure
-      The stderr should eq "minimum_version: The minimum version is not specified"
+      The stderr should eq "[error] minimum_version: The minimum version is not specified"
     End
 
     It 'raises error when an invalid version is specified'
       When call minimum_version "0.10a.0"
       The status should be failure
-      The stderr should eq "minimum_version: Invalid version format (major.minor.patch[-pre][+build]): 0.10a.0"
+      The stderr should eq "[error] minimum_version: Invalid version format (major.minor.patch[-pre][+build]): 0.10a.0"
     End
 
     It 'raises error when the minimum version is not met'
       When call minimum_version "0.28.0-pre"
       The status should be failure
-      The stderr should eq "ShellSpec version 0.28.0-pre or higher is required"
+      The stderr should eq "[error] ShellSpec version 0.28.0-pre or higher is required"
     End
   End
 End

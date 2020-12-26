@@ -5,17 +5,17 @@
 
 error() {
   [ $# -gt 0 ] || return 0
-  IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s\n' "$*" >&2; IFS=" ${IFS#?}"
+  IFS=" $IFS"; "$SHELLSPEC_PRINTF" '[error] %s\n' "$*" >&2; IFS=" ${IFS#?}"
 }
 
 warn() {
   [ $# -gt 0 ] || return 0
-  IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s\n' "$*" >&3; IFS=" ${IFS#?}"
+  IFS=" $IFS"; "$SHELLSPEC_PRINTF" '[warn] %s\n' "$*" >&3; IFS=" ${IFS#?}"
 }
 
 info() {
   [ $# -gt 0 ] || return 0
-  IFS=" $IFS"; "$SHELLSPEC_PRINTF" '%s\n' "$*" >&4; IFS=" ${IFS#?}"
+  IFS=" $IFS"; "$SHELLSPEC_PRINTF" '[info] %s\n' "$*" >&4; IFS=" ${IFS#?}"
 }
 
 abort() {
