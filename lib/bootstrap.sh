@@ -39,7 +39,7 @@ shellspec_configure_functions() {
   esac
 }
 
-w() { :; }
+t() { :; }
 
 shellspec_load_requires() {
   set -- "$1${1:+ }" "" "$1${1:+ }"
