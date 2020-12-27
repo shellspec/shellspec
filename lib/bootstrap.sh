@@ -3,7 +3,7 @@
 shellspec() { echo '#'; }
 
 # Disable verbose_errexit by default for osh
-# shellcheck disable=SC2039,SC3044
+# shellcheck disable=SC2039
 shopt -u verbose_errexit 2>/dev/null ||:
 
 # shellcheck source=lib/general.sh
