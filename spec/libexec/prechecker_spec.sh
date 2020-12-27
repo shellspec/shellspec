@@ -76,4 +76,39 @@ Describe "libexec/prechecker.sh"
       The stderr should eq "[error] ShellSpec version 0.28.0-pre or higher is required"
     End
   End
+
+  Describe "setenv()"
+    _setenv() { { setenv "$@" >/dev/null; } 9>&1; }
+
+    It 'outputs the export statement to fd9'
+      When call _setenv A "123 '\" 456"
+      The output should eq "export A='123 '\''\" 456'"
+    End
+
+    It 'outputs the export statement to fd9 when not specified the value'
+      When call _setenv A
+      The output should eq "export A=''"
+    End
+
+    It 'raises error when the environment variable name is invalid'
+      When call _setenv "%"
+      The status should be failure
+      The error should eq "[error] setenv: Invalid environment variable name: %"
+    End
+  End
+
+  Describe "unset()"
+    _unsetenv() { { unsetenv "$@" >/dev/null; } 9>&1; }
+
+    It 'outputs the unset statement to fd9'
+      When call _unsetenv A
+      The output should eq "unset A ||:"
+    End
+
+    It 'raises error when the environment variable name is invalid'
+      When call _unsetenv "%"
+      The status should be failure
+      The error should eq "[error] unsetenv: Invalid environment variable name: %"
+    End
+  End
 End

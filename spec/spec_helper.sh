@@ -2,29 +2,41 @@
 
 set -eu
 
+# shellcheck disable=SC2039,SC3040,SC3044
 shellspec_spec_helper_precheck() {
-  :
+  if [ "${PIPEFAIL:-}" ]; then
+    if ( set -o pipefail ) 2>/dev/null; then
+      info "pipefail enabled"
+    else
+      warn "pipefail is not available"
+      unsetenv PIPEFAIL
+    fi
+  fi
+
+  if [ "${EXTGLOB:-}" ]; then
+    if shopt -s extglob 2>/dev/null; then
+      info "extglob enabled"
+      setenv EXTGLOB "extglob"
+    elif setopt extendedglob 2>/dev/null; then
+      info "extendedglob enabled"
+      setenv EXTGLOB "extendedglob"
+    else
+      warn "extglob is not available"
+      unsetenv EXTGLOB
+    fi
+  fi
 }
 
+# shellcheck disable=SC2039,SC3040,SC3044
 shellspec_spec_helper_loaded() {
+  [ "${PIPEFAIL:-}" ] && set -o pipefail
+  unset PIPEFAIL ||:
 
-  log() { echo "$@" > "$SHELLSPEC_DEV_TTY"; }
-
-  if [ "${PIPEFAIL:-}" ] && PIPEFAIL=''; then
-    # shellcheck disable=SC2039,SC3040
-    if set -o pipefail 2>/dev/null; then
-      log "pipefail enabled"
-    fi
-  fi
-
-  if [ "${EXTGLOB:-}" ] && EXTGLOB=''; then
-    # shellcheck disable=SC2039,SC3044
-    if shopt -s extglob 2>/dev/null; then
-      log "extglob enabled"
-    elif setopt extendedglob 2>/dev/null; then
-      log "extendedglob enabled"
-    fi
-  fi
+  case ${EXTGLOB:-} in
+    extglob) shopt -s extglob ;;
+    extendedglob) setopt extendedglob ;;
+  esac
+  unset EXTGLOB ||:
 
   # http://redsymbol.net/articles/unofficial-bash-strict-mode/
   # shellcheck disable=SC2153

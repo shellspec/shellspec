@@ -44,3 +44,24 @@ minimum_version() {
   error "ShellSpec version $1 or higher is required"
   return 1
 }
+
+setenv() {
+  if ! ( export "${1:-}" ) 2>/dev/null; then
+    error "setenv: Invalid environment variable name: ${1:-}"
+    return 1
+  fi
+  set -- "$1" "${2:-}'" ""
+  while [ "$2" ]; do
+    set -- "$1" "${2#*\'}" "$3${2%%\'*}'\''"
+  done
+  set -- "$1" "${3%????}"
+  echo "export $1='$2'" >&9
+}
+
+unsetenv() {
+  if ! ( export "${1:-}" ) 2>/dev/null; then
+    error "unsetenv: Invalid environment variable name: ${1:-}"
+    return 1
+  fi
+  echo "unset $1 ||:" >&9
+}

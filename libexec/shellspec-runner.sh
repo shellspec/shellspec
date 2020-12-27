@@ -154,13 +154,13 @@ if [ "${SHELLSPEC_RANDOM:-}" ]; then
 fi
 
 {
-  exit_status=$(
-    ( ( ( ( ( ( precheck "$SHELLSPEC_REQUIRES" ) &&:; echo "$?" >&9; ) >&8
-      ) 2>&1 | while IFS= read -r line; do error "$line"; done >&2
-      ) 3>&1 | while IFS= read -r line; do warn "$line"; done >&2
-      ) 4>&1 | while IFS= read -r line; do info "$line"; done >&8
-    ) 9>&1
-  )
+  env=$( ( ( ( (
+    ( ( precheck "$SHELLSPEC_REQUIRES" ) &&:; echo "exit_status=$?" >&9; ) >&8
+    ) 2>&1 | while IFS= read -r line; do error "$line"; done >&2
+    ) 3>&1 | while IFS= read -r line; do warn "$line"; done >&2
+    ) 4>&1 | while IFS= read -r line; do info "$line"; done >&8
+  ) 9>&1 )
+  eval "$env"
 } 8>&1
 [ -s "$SHELLSPEC_PRECHECKER_STATUS" ] && exit "$exit_status"
 

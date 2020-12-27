@@ -48,7 +48,7 @@ unset code warn_fd status_file work
     . "$3"
     unset success xs loaded ||:
     set +e
-    { success=$( set -eu; eval "shellspec_$1_precheck" >&9; xs=$?; [ "$xs" -eq 0 ] || exit "$xs"; echo 1 ); } 9>&1
+    { success=$( set -eu; eval "shellspec_$1_precheck" >&7; xs=$?; [ "$xs" -eq 0 ] || exit "$xs"; echo 1 ); } 7>&1
     xs=$? loaded=1
     [ "$success" ] || break
     [ "$xs" -eq 0 ] || break
