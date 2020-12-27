@@ -1,4 +1,4 @@
-FROM shellspec/openwrt:19.07.4
+FROM shellspec/openwrt:19.07.5
 RUN mkdir /var/lock /home \
  && opkg update && opkg install shadow-useradd \
  && useradd -m user
