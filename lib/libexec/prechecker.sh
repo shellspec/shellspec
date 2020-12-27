@@ -46,7 +46,7 @@ minimum_version() {
 }
 
 setenv() {
-  if ! ( export "${1:-}" ) 2>/dev/null; then
+  if ! ( export "${1:-}=" ) 2>/dev/null; then
     error "setenv: Invalid environment variable name: ${1:-}"
     return 1
   fi
@@ -59,7 +59,7 @@ setenv() {
 }
 
 unsetenv() {
-  if ! ( export "${1:-}" ) 2>/dev/null; then
+  if ! ( export "${1:-}=" ) 2>/dev/null; then
     error "unsetenv: Invalid environment variable name: ${1:-}"
     return 1
   fi
