@@ -41,15 +41,22 @@ precheck() {
   export VERSION="$SHELLSPEC_VERSION"
   export SHELL_VERSION="$SHELLSPEC_SHELL_VERSION"
   export SHELL_TYPE="$SHELLSPEC_SHELL_TYPE"
+  status_file="$SHELLSPEC_PRECHECKER_STATUS"
+  echo "-" > "$status_file"
+
   eval "set -- $1"
   [ $# -gt 0 ] || return 0
-  for import_path; do
-    resolve_import_path import_path "$import_path"
+  for module; do
+    import_path=''
+    resolve_import_path import_path "$module"
+    if [ ! -r "$import_path" ]; then
+      echo "Unable to load the required module '$module': $import_path" >&2
+      exit 1
+    fi
     set -- "$@" "$import_path"
     shift
   done
   prechecker="$SHELLSPEC_LIBEXEC/shellspec-prechecker.sh"
-  status_file="$SHELLSPEC_PRECHECKER_STATUS"
   # shellcheck disable=SC2086
   $SHELLSPEC_SHELL "$prechecker" --warn-fd=3 --status-file="$status_file" "$@"
 }

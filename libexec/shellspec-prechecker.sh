@@ -13,7 +13,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-[ -s "$status_file" ] && : > "$status_file"
+: > "$status_file"
 
 work="$status_file'" && status_file=''
 while [ "$work" ]; do

@@ -89,16 +89,13 @@ shellspec_resolve_import_path() {
 }
 
 shellspec_find_module() {
-  if [ -e "${1%%:*}/$2.sh" ]; then
-    eval "$3=\${1%%:*}/\$2.sh"
-  elif [ -e "${1%%:*}/$2/$2.sh" ]; then
-    eval "$3=\${1%%:*}/\$2/\$2.sh"
-  else
-    case $1 in
-      *:*) shellspec_find_module "${1#*:}" "$2" "$3" ;;
-      *) shellspec_error "Unable to find the required module '$2'." ;;
-    esac
-  fi
+  [ -e "${1%%:*}/$2.sh" ] && eval "$3=\${1%%:*}/\$2.sh" && return 0
+  [ -e "${1%%:*}/$2/$2.sh" ] && eval "$3=\${1%%:*}/\$2/\$2.sh" && return 0
+  case $1 in (*:*)
+    shellspec_find_module "${1#*:}" "$2" "$3"
+    return 0
+  esac
+  shellspec_error "The required module '$2' is not found in SHELLSPEC_LOAD_PATH."
 }
 
 shellspec_source() {
