@@ -39,8 +39,6 @@ shellspec_configure_functions() {
   esac
 }
 
-s() { :; }
-
 shellspec_load_requires() {
   set -- "$1${1:+ }" "" "$1${1:+ }"
 

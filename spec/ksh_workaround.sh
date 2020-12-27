@@ -1,9 +1,7 @@
 #shellcheck shell=sh
 
-set -eu
-
-wa_loaded() {
-  # for ksh
+ksh_workaround_loaded() {
+  # for ksh93 and ksh2020
   shellspec_redefinable shellspec_puts
   shellspec_redefinable shellspec_putsn
   shellspec_redefinable shellspec_output
@@ -39,7 +37,7 @@ wa_loaded() {
   shellspec_redefinable shellspec_sleep
   shellspec_redefinable shellspec_source
 
-  # for busybox-1.1.3, ksh88
+  # for ksh88 and busybox-1.1.3
   shellspec_unbuiltin "ps"
   shellspec_unbuiltin "last"
   shellspec_unbuiltin "sleep"
