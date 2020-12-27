@@ -16,23 +16,34 @@ generate() {
     "$SHELLSPEC_PRINTF" '%s\n' "$@" > "$file"
     set -- create "$file"
   fi
-  "$SHELLSPEC_PRINTF" '%8s   %s\n' "$@"
+  relpath=${2#"$SHELLSPEC_CWD"}
+  if [ "$relpath" = "$2" ]; then
+    set -- "$1" "${SHELLSPEC_CWD%/}/$2"
+  fi
+  "$SHELLSPEC_PRINTF" '%8s   %s\n' "$1" "$2"
 }
 
 ignore_file() {
   [ "${2:-}" ] && echo "$2"
   echo "${1:-}.shellspec-local"
   echo "${1:-}.shellspec-quick.log"
-  echo "${1:-}report/"
-  echo "${1:-}coverage/"
+  echo "${1:-}$SHELLSPEC_REPORTDIR/"
+  echo "${1:-}$SHELLSPEC_COVERAGEDIR/"
 }
 
 ${__SOURCED__:+return}
 
+default_options() {
+  echo "--require spec_helper"
+  if [ ! "$SHELLSPEC_HELPERDIR" = "spec" ]; then
+    echo "--helperdir $SHELLSPEC_HELPERDIR"
+  fi
+}
+
 __ main __
 
 generate ".shellspec" <<DATA
---require spec_helper
+$(default_options)
 
 ## Default kcov (coverage) options
 # --kcov-options "--include-path=. --path-strip-level=1"
@@ -46,7 +57,7 @@ generate ".shellspec" <<DATA
 # --kcov-options "--include-pattern=myprog,/lib/"
 DATA
 
-generate "spec/spec_helper.sh" <<DATA
+generate "$SHELLSPEC_HELPERDIR/spec_helper.sh" <<DATA
 #shellcheck shell=sh
 
 # set -eu
@@ -57,7 +68,7 @@ generate "spec/spec_helper.sh" <<DATA
 DATA
 
 generate "spec/${SHELLSPEC_PROJECT_NAME}_spec.sh" <<'DATA'
-Describe "Sample specfile"
+Describe "Example specfile"
   Describe "hello()"
     hello() {
       echo # "hello $1"

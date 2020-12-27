@@ -202,6 +202,9 @@ cd "${SHELLSPEC_PROJECT_ROOT:-.}"
 
 case $SHELLSPEC_MODE in (init)
   SHELLSPEC_PROJECT_ROOT=${SHELLSPEC_PROJECT_ROOT:-$SHELLSPEC_CWD}
+  helperdir=$SHELLSPEC_HELPERDIR
+  coveragedir=$SHELLSPEC_COVERAGEDIR
+  reportdir=$SHELLSPEC_REPORTDIR
 esac
 if [ ! "$SHELLSPEC_PROJECT_ROOT" ]; then
   # DEPRECATED: Not a shellspec project directory (TODO: change from error to abort)
@@ -447,6 +450,15 @@ case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
     fi
     shift
   done
+esac
+
+case $SHELLSPEC_MODE in (init)
+  SHELLSPEC_PROJECT_ROOT=$SHELLSPEC_CWD
+  SHELLSPEC_PROJECT_NAME=${SHELLSPEC_PROJECT_ROOT##*/}
+  SHELLSPEC_HELPERDIR=$helperdir
+  SHELLSPEC_COVERAGEDIR=$coveragedir
+  SHELLSPEC_REPORTDIR=$reportdir
+  cd "$SHELLSPEC_CWD"
 esac
 
 case $SHELLSPEC_MODE in (runner | list)
