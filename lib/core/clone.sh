@@ -169,8 +169,8 @@ shellspec_clone_old_zsh() {
     case $1 in (*' integer '*)
       shellspec_clone="$shellspec_clone -i"
       eval "set -- \"\${$2}\" \"\$@\""
-      case $1 in (*#*)
-        shellspec_clone="$shellspec_clone ${1%%#*}"
+      case $1 in (*\#*)
+        shellspec_clone="$shellspec_clone ${1%%\#*}"
       esac
       shift
     esac

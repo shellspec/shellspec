@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - bash 4.1 - 4.3: Fixed a bug that `run script` could not get the exit status.
+- zsh < 4.2.0: Fixed a bug when extendedglob is enabled
 - Fixed possibility of I/O error in satisfy matcher (GitHub Actions only?)
 - Fixed a bug in which zsh on macOS occasionally exits with exit code 147 (SIGCONT)
 
