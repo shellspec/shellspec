@@ -91,13 +91,13 @@ Describe "libexec/prechecker.sh"
     End
 
     It 'raises error when the environment variable name is invalid'
-      When call _setenv "%"
+      When call _setenv "="
       The status should be failure
-      The error should eq "[error] setenv: Invalid environment variable name: %"
+      The error should eq "[error] setenv: Invalid environment variable name: ="
     End
   End
 
-  Describe "unset()"
+  Describe "unsetenv()"
     _unsetenv() { { unsetenv "$@" >/dev/null; } 9>&1; }
 
     It 'outputs the unset statement to fd9'
@@ -106,9 +106,9 @@ Describe "libexec/prechecker.sh"
     End
 
     It 'raises error when the environment variable name is invalid'
-      When call _unsetenv "%"
+      When call _unsetenv "="
       The status should be failure
-      The error should eq "[error] unsetenv: Invalid environment variable name: %"
+      The error should eq "[error] unsetenv: Invalid environment variable name: ="
     End
   End
 End
