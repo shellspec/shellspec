@@ -2,7 +2,7 @@
 
 set -eu
 
-shellspec_workaround_loaded() {
+workaround_loaded() {
   # for ksh
   shellspec_redefinable shellspec_puts
   shellspec_redefinable shellspec_putsn

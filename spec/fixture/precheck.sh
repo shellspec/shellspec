@@ -4,7 +4,7 @@ case $MODE in
   abort:*) exit "${MODE#*:}"
 esac
 
-shellspec_precheck_precheck() {
+precheck_precheck() {
   echo "precheck"
   case $MODE in
     exit:*) exit "${MODE#*:}" ;;

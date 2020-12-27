@@ -31,7 +31,7 @@ code="${code}  echo \"Skip precheck because an error (\$xs) occurred when loadin
 code="${code}  echo \"Since ShellSpec 0.28.0, modules are loaded earlier, so it is no longer possible\";"
 code="${code}  echo \"to call shellspec's internal functions from the top level of the module.\";"
 code="${code}  echo \"If the module worked in an earlier ShellSpec version, move those codes to\";"
-code="${code}  echo \"the function shellspec_\${mod}_loaded or shellspec_\${mod}_configure (recommended).\";"
+code="${code}  echo \"the function \${mod}_loaded or \${mod}_configure (recommended).\";"
 code="${code}  echo \"The process will continue for compatibility, but will abort here in the future.\";"
 # TODO abort here in the future
 # code="${code}  echo \"\$xs\" > '${status_file:-/dev/null}';"
@@ -44,12 +44,13 @@ unset code warn_fd status_file work
     set -- "${1##*/}" "$@"
     set -- "${1%%.*}" "$@"
     unset success xs loaded ||:
-    eval "shellspec_$1_precheck() { :; }"
+    eval "$1_precheck() { :; }"
     . "$3"
     unset success xs loaded ||:
     set +e
-    { success=$( set -eu; eval "shellspec_$1_precheck" >&7; xs=$?; [ "$xs" -eq 0 ] || exit "$xs"; echo 1 ); } 7>&1
+    { success=$( set -eu; eval "$1_precheck" >&7; xs=$?; [ "$xs" -eq 0 ] || exit "$xs"; echo 1 ); } 7>&1
     xs=$? loaded=1
+    unset -f "$1_precheck"
     [ "$success" ] || break
     [ "$xs" -eq 0 ] || break
     shift 3

@@ -3,7 +3,9 @@
 set -eu
 
 # shellcheck disable=SC2039
-shellspec_spec_helper_precheck() {
+spec_helper_precheck() {
+  minimum_version "$SHELLSPEC_VERSION"
+
   if [ "${PIPEFAIL:-}" ]; then
     if ( set -o pipefail ) 2>/dev/null; then
       info "pipefail enabled"
@@ -28,7 +30,7 @@ shellspec_spec_helper_precheck() {
 }
 
 # shellcheck disable=SC2039
-shellspec_spec_helper_loaded() {
+spec_helper_loaded() {
   # http://redsymbol.net/articles/unofficial-bash-strict-mode/
   IFS="${SHELLSPEC_LF}${SHELLSPEC_TAB}"
 
@@ -42,8 +44,8 @@ shellspec_spec_helper_loaded() {
   unset EXTGLOB ||:
 }
 
-shellspec_spec_helper_configure() {
-  shellspec_import 'support/custom_matcher'
+spec_helper_configure() {
+  import 'support/custom_matcher'
 
   set_subject() {
     if subject > /dev/null; then
@@ -140,8 +142,9 @@ shellspec_spec_helper_configure() {
 
   shellspec_before :
   shellspec_after :
-  shellspec_before_each :
-  shellspec_after_each :
-  shellspec_before_all :
-  shellspec_after_all :
+
+  before_each :
+  after_each :
+  before_all :
+  after_all :
 }
