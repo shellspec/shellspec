@@ -6,8 +6,8 @@ FROM $IMAGE
 COPY --from=helpers /usr/local/bin/* /usr/local/bin/
 WORKDIR /shellspec
 RUN chmod ug+s /usr/local/bin/su-exec \
- && echo "--no-banner" > /home/user/.shellspec \
- && if [ "$KCOV" ]; then echo "--kcov" >> /home/user/.shellspec; fi \
+ && echo "--no-banner" > /home/user/.shellspec-options \
+ && if [ "$KCOV" ]; then echo "--kcov" >> /home/user/.shellspec-options; fi \
  && ln -s /shellspec/shellspec /usr/local/bin/shellspec \
  && echo "$SH" > /etc/invokesh.conf \
  && [ "$SH" = "/bin/sh" ] || ln -snf /usr/local/bin/invokesh /bin/sh

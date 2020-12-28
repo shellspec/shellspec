@@ -53,12 +53,12 @@ Describe "libexec/shellspec.sh"
     callback() { printf '%s\n' "$@"; }
 
     Context 'When HOME environemnt variable exists, XDG_CONFIG_HOME not exists'
-      Before HOME=/home/user XDG_CONFIG_HOME=''
+      Before HOME=/home/-user@ XDG_CONFIG_HOME=''
       It "enumerates options file"
         When call enum_options_file callback
-        The line 1 of stdout should eq "/home/user/.config/shellspec/options"
-        The line 2 of stdout should eq "/home/user/.shellspec"
-        The line 3 of stdout should eq "/home/user/.shellspec-options"
+        The line 1 of stdout should eq "/home/-user@/.config/shellspec/options"
+        The line 2 of stdout should eq "/home/-user@/.shellspec"
+        The line 3 of stdout should eq "/home/-user@/.shellspec-options"
         The line 4 of stdout should eq ".shellspec"
         The line 5 of stdout should eq ".shellspec-local"
         The lines of stdout should eq 5
@@ -66,12 +66,12 @@ Describe "libexec/shellspec.sh"
     End
 
     Context 'When HOME, XDG_CONFIG_HOME environemnt variable exists'
-      Before HOME=/home/user XDG_CONFIG_HOME=/home/user/config
+      Before HOME=/home/-user@ XDG_CONFIG_HOME=/home/-user@/config
       It "enumerates options file"
         When call enum_options_file callback
-        The line 1 of stdout should eq "/home/user/config/shellspec/options"
-        The line 2 of stdout should eq "/home/user/.shellspec"
-        The line 3 of stdout should eq "/home/user/.shellspec-options"
+        The line 1 of stdout should eq "/home/-user@/config/shellspec/options"
+        The line 2 of stdout should eq "/home/-user@/.shellspec"
+        The line 3 of stdout should eq "/home/-user@/.shellspec-options"
         The line 4 of stdout should eq ".shellspec"
         The line 5 of stdout should eq ".shellspec-local"
         The lines of stdout should eq 5
