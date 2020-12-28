@@ -6,12 +6,7 @@ shellspec_modifier_lines() {
   # shellcheck disable=SC2034
   SHELLSPEC_META='number'
   if [ "${SHELLSPEC_SUBJECT+x}" ]; then
-    if [ "$SHELLSPEC_SUBJECT" ]; then
-      shellspec_callback() { SHELLSPEC_SUBJECT=$2; }
-      shellspec_lines shellspec_callback "$SHELLSPEC_SUBJECT"
-    else
-      SHELLSPEC_SUBJECT=0
-    fi
+    shellspec_count_lines SHELLSPEC_SUBJECT "$SHELLSPEC_SUBJECT"
   else
     unset SHELLSPEC_SUBJECT ||:
   fi

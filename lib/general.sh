@@ -250,18 +250,6 @@ shellspec_loop() {
   shellspec_loop "$1" $(($2 - 1))
 }
 
-shellspec_lines() {
-  [ "${2:-}" ] || return 0
-  shellspec_lines_ "$1" "${2%$SHELLSPEC_LF}" 1
-}
-
-shellspec_lines_() {
-  "$1" "${2%%$SHELLSPEC_LF*}" "$3" || return 0
-  case $2 in (*$SHELLSPEC_LF*)
-    shellspec_lines_ "$1" "${2#*$SHELLSPEC_LF}" "$(($3 + 1))"
-  esac
-}
-
 shellspec_get_line() {
   [ "$2" -le 0 ] && set -- "$1" "$2" ""
   while [ "$2" -gt 1 ]; do

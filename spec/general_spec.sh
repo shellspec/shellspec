@@ -266,31 +266,6 @@ Describe "general.sh"
     End
   End
 
-  Describe 'shellspec_lines()'
-    callback() { printf '%s ' "$2:$1"; }
-    callback_with_cancel() { printf '%s ' "$2:$1"; return 1; }
-
-    It 'does not call callback with empty string'
-      When call shellspec_lines callback ""
-      The stdout should eq ""
-    End
-
-    It 'calls callback by each line'
-      When call shellspec_lines callback "a${IFS%?}b"
-      The stdout should eq "1:a 2:b "
-    End
-
-    It 'ignores last LF'
-      When call shellspec_lines callback "a${IFS%?}b${IFS%?}"
-      The stdout should eq "1:a 2:b "
-    End
-
-    It 'can cancels calls of callback.'
-      When call shellspec_lines callback_with_cancel "a${IFS%?}b"
-      The stdout should eq "1:a "
-    End
-  End
-
   Describe 'shellspec_get_line()'
     lf="$SHELLSPEC_LF"
 

@@ -10,15 +10,8 @@ shellspec_modifier_line() {
 
   # shellcheck disable=SC2034
   SHELLSPEC_META='text'
-  if [ "${SHELLSPEC_SUBJECT:-}" ]; then
-    SHELLSPEC_EVAL="
-      shellspec_callback() { \
-        [ \$2 -eq $1 ] && SHELLSPEC_SUBJECT=\$1 && return 1; \
-        unset SHELLSPEC_SUBJECT ||:; \
-      }
-    "
-    eval "$SHELLSPEC_EVAL"
-    shellspec_lines shellspec_callback "$SHELLSPEC_SUBJECT"
+  if [ "${SHELLSPEC_SUBJECT+x}" ]; then
+    shellspec_get_line SHELLSPEC_SUBJECT "$1" "$SHELLSPEC_SUBJECT"
   else
     unset SHELLSPEC_SUBJECT ||:
   fi
