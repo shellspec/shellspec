@@ -27,6 +27,18 @@ Describe "shellspec-init.sh"
     End
   End
 
+  Describe "spec()"
+    Data
+      #|example
+    End
+
+    It "generates specfile"
+      When call spec file contents "proj_spec.sh"
+      The variable file should eq "proj_spec.sh"
+      The variable contents should eq "example"
+    End
+  End
+
   Describe "ignore_file()"
     Before SHELLSPEC_REPORTDIR="my-report"
     Before SHELLSPEC_COVERAGEDIR="my-coverage"
@@ -48,6 +60,28 @@ Describe "shellspec-init.sh"
       The line 5 of output should eq "^my-coverage/"
     End
   End
+
+  Describe "default_options()"
+    Context "when helperdir is spec"
+      Before SHELLSPEC_HELPERDIR="spec"
+
+      It "generates default options"
+        When call default_options
+        The line 1 should eq "--require spec_helper"
+        The line 2 should be undefined
+      End
+    End
+
+    Context "when helperdir specified"
+      Before SHELLSPEC_HELPERDIR="helper"
+
+      It "generates default options with --helperdir"
+        When call default_options
+        The line 1 should eq "--require spec_helper"
+        The line 2 should eq "--helperdir helper"
+      End
+    End
+  End
 End
 
 Describe "run shellspec-init.sh"
@@ -60,7 +94,7 @@ Describe "run shellspec-init.sh"
   Before SHELLSPEC_HELPERDIR="my-helper"
 
   It 'generates template'
-    When run source ./libexec/shellspec-init.sh
+    When run source ./libexec/shellspec-init.sh spec
     The line 1 of output should eq ".shellspec"
     The line 2 of output should eq "my-helper/spec_helper.sh"
     The line 3 of output should eq "spec/proj_spec.sh"
@@ -74,7 +108,7 @@ Describe "run shellspec-init.sh"
   End
 
   It "generates template with ignore file ($1)"
-    When run source ./libexec/shellspec-init.sh "$1"
+    When run source ./libexec/shellspec-init.sh spec "$1"
     The line 1 of output should eq ".shellspec"
     The line 2 of output should eq "my-helper/spec_helper.sh"
     The line 3 of output should eq "spec/proj_spec.sh"

@@ -911,8 +911,9 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
 
   **** Utility ****
 
-        --init [TEMPLATE...]        Initialize your project with ShellSpec | [git] [hg] [svn]
+        --init [TEMPLATE...]        Initialize your project with ShellSpec | [spec] [git] [hg] [svn]
                                       Template: Create additional files.
+                                        [spec]  example specfile
                                         [git]   .gitignore
                                         [hg]    .hgignore
                                         [svn]   .svnignore

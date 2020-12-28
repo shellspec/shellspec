@@ -17,10 +17,12 @@ generate() {
     set -- create "$file"
   fi
   relpath=${2#"$SHELLSPEC_CWD"}
-  if [ "$relpath" = "$2" ]; then
-    set -- "$1" "${SHELLSPEC_CWD%/}/$2"
-  fi
+  [ "$relpath" = "$2" ] && set -- "$1" "${SHELLSPEC_CWD%/}/$2"
   "$SHELLSPEC_PRINTF" '%8s   %s\n' "$1" "$2"
+}
+
+spec() {
+  eval "$1=\$3 $2=\$(cat)"
 }
 
 ignore_file() {
@@ -31,14 +33,14 @@ ignore_file() {
   echo "${1:-}$SHELLSPEC_COVERAGEDIR/"
 }
 
-${__SOURCED__:+return}
-
 default_options() {
   echo "--require spec_helper"
   if [ ! "$SHELLSPEC_HELPERDIR" = "spec" ]; then
     echo "--helperdir $SHELLSPEC_HELPERDIR"
   fi
 }
+
+${__SOURCED__:+return}
 
 __ main __
 
@@ -95,7 +97,8 @@ spec_helper_configure() {
 }
 DATA
 
-generate "spec/${SHELLSPEC_PROJECT_NAME}_spec.sh" <<'DATA'
+specfile='' example=''
+spec specfile example "spec/${SHELLSPEC_PROJECT_NAME}_spec.sh" <<'DATA'
 Describe "Example specfile"
   Describe "hello()"
     hello() {
@@ -113,6 +116,7 @@ DATA
 
 for template; do
   case $template in
+    spec) generate "$specfile" "$example" ;;
     git ) generate ".gitignore" "$(ignore_file "/")" ;;
     hg  ) generate ".hgignore" "$(ignore_file "^" "syntax: regexp")" ;;
     svn ) generate ".svnignore" "$(ignore_file "/")" ;;

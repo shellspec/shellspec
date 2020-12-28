@@ -9,5 +9,5 @@ services:
     command:
       - |
         shellspec --version
-        shellspec --init
+        shellspec --init spec
         shellspec -f tap
