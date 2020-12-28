@@ -255,7 +255,12 @@ expand_pathstar() {
   eval "$(shift 2 && expand_pathstar_create_matcher "$@")"
   # shellcheck disable=SC2034
   expand_pathstar=$(shift && expand_pathstar_retrive '|||' "$@")
-  eval "$(expand_pathstar_iterator "$1" expand_pathstar '\|\|\|')"
+  while IFS= read -r expand_pathstar; do
+    expand_pathstar_matcher "${expand_pathstar%\|\|\|*}" || continue
+    "$1" "${expand_pathstar%\|\|\|*}" "${expand_pathstar##*\|\|\|}"
+  done << HERE
+$expand_pathstar
+HERE
 }
 
 expand_pathstar_create_matcher() {
@@ -316,15 +321,6 @@ expand_pathstar_retrive() {
       done
     done
   } | "$SHELLSPEC_SORT"
-}
-
-expand_pathstar_iterator() {
-  echo "while IFS= read -r $2; do"
-  echo "  expand_pathstar_matcher \"\${$2%$3*}\" || continue"
-  echo "  \"$1\" \"\${$2%$3*}\" \"\${$2##*$3}\""
-  echo 'done <''< HERE'
-  echo "\$$2"
-  echo 'HERE'
 }
 
 is_path_in_project() {

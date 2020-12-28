@@ -22,7 +22,7 @@ while [ "$work" ]; do
 done
 status_file=${status_file%????}
 
-code='xs=${xs:-$?} mod=${1:-<module>};'
+code='xs=${xs:-$?} mod=${1:-"<module>"};'
 code="${code}if [ \"\${loaded:-}\" ]; then"
 code="${code}  echo \"\$xs\" > '${status_file:-/dev/null}';"
 code="${code}else"
