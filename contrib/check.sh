@@ -19,6 +19,10 @@ sources() {
   find lib libexec -name '*.sh'
 }
 
+helpers() {
+  find helper -name '*.sh'
+}
+
 specs() {
   find spec -name '*.sh'
 }
@@ -37,13 +41,14 @@ count() {
 }
 
 echo '     #   lines  bytes name'
-wc -lc $(sources; specs; samples) | nl | sed '$d'
+wc -lc $(sources; helpers; specs; samples) | nl | sed '$d'
 echo
 
 count source $(sources)
+count helper $(helpers)
 count spec $(specs)
 count sample $(samples)
-count total $(sources; specs; samples)
+count total $(sources; helpers; specs; samples)
 echo
 
 echo "Checking package.json..."
@@ -71,7 +76,7 @@ set -- -t "$tag" --build-arg "VERSION=$shellcheck_version"
 [ "$PULL" ] && set -- "$@" --pull
 docker build "$@" -f dockerfiles/.shellcheck .
 docker run -i --rm "$tag" shellcheck --version
-docker run -i --rm "$tag" shellcheck -C $(sources; specs; samples)
+docker run -i --rm "$tag" shellcheck -C $(sources; helpers; specs; samples)
 
 [ "$package_json_status" -ne 0 ] && exit "$package_json_status"
 

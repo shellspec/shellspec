@@ -111,28 +111,28 @@ Describe "core/dsl.sh"
   End
 
   Describe "shellspec_execdir()"
-    Before SHELLSPEC_SPECFILE="spec/fixture/spec_structure/basedir/dir1/dir2/test_spec.sh"
+    Before SHELLSPEC_SPECFILE="helper/fixture/spec_structure/basedir/dir1/dir2/test_spec.sh"
     cd() { echo "$1"; }
 
     Parameters
-      @project     "$SHELLSPEC_PROJECT_ROOT"
-      @project/    "$SHELLSPEC_PROJECT_ROOT/"
-      @project/dir "$SHELLSPEC_PROJECT_ROOT/dir"
+      @project     ""
+      @project/    "/"
+      @project/dir "/dir"
 
-      @basedir     "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir"
-      @basedir/    "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir/"
-      @basedir/dir "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir/dir"
+      @basedir     "/helper/fixture/spec_structure/basedir"
+      @basedir/    "/helper/fixture/spec_structure/basedir/"
+      @basedir/dir "/helper/fixture/spec_structure/basedir/dir"
 
-      @specfile     "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir/dir1/dir2"
-      @specfile/    "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir/dir1/dir2/"
-      @specfile/dir "$SHELLSPEC_PROJECT_ROOT/spec/fixture/spec_structure/basedir/dir1/dir2/dir"
+      @specfile     "/helper/fixture/spec_structure/basedir/dir1/dir2"
+      @specfile/    "/helper/fixture/spec_structure/basedir/dir1/dir2/"
+      @specfile/dir "/helper/fixture/spec_structure/basedir/dir1/dir2/dir"
 
-      other         "$SHELLSPEC_PROJECT_ROOT" # May change the specifications in the future
+      other         "" # May change the specifications in the future
     End
 
     It 'changes the execution directory'
       When run shellspec_execdir "$1"
-      The output should eq "$2"
+      The output should eq "${SHELLSPEC_PROJECT_ROOT}$2"
     End
   End
 

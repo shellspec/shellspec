@@ -156,9 +156,9 @@ Describe "libexec/optparser/optparser.sh"
 
   Describe "check_env_fiile()"
     Parameters
-      spec/fixture/exist              success   ./spec/fixture/exist
-      ./spec/fixture/exist            success   ./spec/fixture/exist
-      ./spec/fixture/no-such-a-file   failure   ./spec/fixture/no-such-a-file
+      helper/fixture/exist            success ./helper/fixture/exist
+      ./helper/fixture/exist          success ./helper/fixture/exist
+      ./helper/fixture/no-such-a-file failure ./helper/fixture/no-such-a-file
     End
 
     It "checks env file exists ($1)"

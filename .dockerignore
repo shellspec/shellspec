@@ -6,9 +6,10 @@
 !libexec
 !dockerfiles/.shellspec-entrypoint.sh
 !sample
+!helper
 !spec
 !stub
-spec/fixture/stat/*
+helper/fixture/stat/*
 !.shellspec
 !shellspec
 !install.sh
@@ -16,4 +17,3 @@ spec/fixture/stat/*
 !Makefile
 !package.json
 !*.sh
-

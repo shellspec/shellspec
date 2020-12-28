@@ -11,7 +11,7 @@ set -eu
 sources() {
   echo shellspec
   echo install.sh
-  find lib libexec -name '*.sh'
+  find lib libexec helper -name '*.sh'
 }
 
 shellmetrics $(sources)

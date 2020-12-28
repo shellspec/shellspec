@@ -1,9 +1,10 @@
 --require spec_helper
 --require ksh_workaround
+--helperdir helper
 --sandbox
 --skip-message moderate
 --fail-no-examples
---env-from spec/env.sh
+--env-from helper/env.sh
 --kcov-options "--include-pattern="
 --kcov-options "--include-path=./shellspec,./install.sh,./lib,./libexec"
 --kcov-options "--exclude-pattern=/.,_generated.sh"
