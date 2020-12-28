@@ -55,13 +55,13 @@ shellspec_load_requires() {
 
   shellspec_import "core"
 
-  shellspec_configure_functions define
+  shellspec_configure_functions define || return $?
   shift 2
   while [ "$1" ] && set -- "${1#* }" "${1%% *}"; do
     "$2_configure"
     unset -f "$2_configure"
   done
-  shellspec_configure_functions prune
+  shellspec_configure_functions prune || return $?
 }
 shellspec_load_requires "$SHELLSPEC_REQUIRES"
 
