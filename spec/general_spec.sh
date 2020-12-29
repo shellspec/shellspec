@@ -291,6 +291,45 @@ Describe "general.sh"
     End
   End
 
+  Describe 'shellspec_get_line()'
+    lf="$SHELLSPEC_LF"
+
+    Parameters
+      1 ""                be undefined    ''
+      1 "${lf}"           eq ""           '${lf}'
+      2 "${lf}"           be undefined    '${lf}'
+      1 "a"               eq "a"          'a'
+      2 "a"               be undefined    'a'
+      2 "1${lf}2${lf}3"   eq 2            '1${lf}2${lf}3'
+      2 "1${lf}${lf}3"    eq ""           '1${lf}${lf}3'
+      2 "1${lf}${lf}"     eq ""           '1${lf}${lf}'
+      3 "1${lf}${lf}"     be undefined    '1${lf}${lf}'
+    End
+
+    It "gets the specified line (line $1 of \"$5\")"
+      When call shellspec_get_line ret "$1" "$2"
+      The variable ret should "$3" "$4"
+    End
+  End
+
+  Describe 'shellspec_count_lines()'
+    lf="$SHELLSPEC_LF"
+
+    Parameters
+      ""                0 ''
+      "${lf}"           1 '${lf}'
+      "a"               1 'a'
+      "1${lf}2${lf}3"   3 '1${lf}2${lf}3'
+      "1${lf}${lf}3"    3 '1${lf}${lf}3'
+      "1${lf}${lf}"     2 '1${lf}${lf}'
+    End
+
+    It "counts the number of lines ($3)"
+      When call shellspec_count_lines ret "$1"
+      The variable ret should eq "$2"
+    End
+  End
+
   Describe "shellspec_padding()"
     It "paddings with @"
       When call shellspec_padding str "@" 10

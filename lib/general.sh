@@ -262,6 +262,29 @@ shellspec_lines_() {
   esac
 }
 
+shellspec_get_line() {
+  [ "$2" -le 0 ] && set -- "$1" "$2" ""
+  while [ "$2" -gt 1 ]; do
+    case $3 in
+      *$SHELLSPEC_LF*) set -- "$1" $(($2 - 1)) "${3#*$SHELLSPEC_LF}" ;;
+      *) set -- "$1" "$2" "" && break
+    esac
+  done
+  [ "$3" ] && eval "$1=\${3%%\$SHELLSPEC_LF*}" && return 0
+  unset "$1" ||:
+}
+
+shellspec_count_lines() {
+  set -- "$1" "$2" 0
+  while [ "$2" ]; do
+    case $2 in
+      *$SHELLSPEC_LF*) set -- "$1" "${2#*$SHELLSPEC_LF}" $(($3 + 1)) ;;
+      *) set -- "$1" "$2" $(($3 + 1)) && break
+    esac
+  done
+  eval "$1=\$3"
+}
+
 # $1: variable, $2: string, $3 N times
 shellspec_padding() {
   eval "$1=''"
