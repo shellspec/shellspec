@@ -34,7 +34,8 @@ shellspec_configure_functions() {
     define)
       while [ $# -gt 1 ] && shift; do
         shellspec_proxy "$1" "shellspec_$1"
-      done ;;
+      done
+      ;;
     prune) shift; unset -f "$@" ;;
   esac
 }
