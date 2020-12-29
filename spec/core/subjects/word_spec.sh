@@ -8,6 +8,7 @@ Describe "core/subjects/word.sh"
       foobarbaz() { echo "foo bar"; echo "baz"; }
       When call foobarbaz
       The word 3 should equal "baz"
+      The word 4 should be undefined
     End
 
     It "gets specified word of stdout when stdout is defined"

@@ -5,9 +5,12 @@ Describe "core/subjects/line.sh"
 
   Describe "line subject"
     Example 'example'
-      foobarbaz() { echo "foo"; echo "bar"; echo "baz"; }
+      foobarbaz() { echo "foo"; echo "bar"; echo "baz"; echo; }
       When call foobarbaz
       The line 2 should equal "bar"
+      The line 3 should equal "baz"
+      The line 4 should be undefined
+      The line 4 of output should be undefined
     End
 
     It "gets specified line of stdout when stdout is defined"

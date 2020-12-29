@@ -10,7 +10,7 @@ shellspec_subject_stderr() {
   SHELLSPEC_META='text'
   if [ ${SHELLSPEC_STDERR+x} ]; then
     # shellcheck disable=SC2034
-    SHELLSPEC_SUBJECT=${SHELLSPEC_STDERR:-}
+    SHELLSPEC_SUBJECT=$SHELLSPEC_STDERR
     shellspec_chomp SHELLSPEC_SUBJECT
   else
     unset SHELLSPEC_SUBJECT ||:
@@ -26,7 +26,7 @@ shellspec_subject_entire_stderr() {
   SHELLSPEC_META='text'
   if [ ${SHELLSPEC_STDERR+x} ]; then
     # shellcheck disable=SC2034
-    SHELLSPEC_SUBJECT=${SHELLSPEC_STDERR:-}
+    SHELLSPEC_SUBJECT=$SHELLSPEC_STDERR
   else
     unset SHELLSPEC_SUBJECT ||:
   fi

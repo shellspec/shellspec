@@ -11,6 +11,7 @@ shellspec_subject_line() {
   if [ ${SHELLSPEC_STDOUT+x} ]; then
     # shellcheck disable=SC2034
     SHELLSPEC_SUBJECT=$SHELLSPEC_STDOUT
+    shellspec_chomp SHELLSPEC_SUBJECT
   else
     unset SHELLSPEC_SUBJECT ||:
   fi
