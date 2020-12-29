@@ -84,7 +84,7 @@ shellspec_import() {
   fi
 }
 
-shellspec_resolve_import_path() {
+shellspec_resolve_module_path() {
   shellspec_find_module "$SHELLSPEC_LOAD_PATH" "$2" "$1"
 }
 

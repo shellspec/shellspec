@@ -48,7 +48,7 @@ precheck() {
   [ $# -gt 0 ] || return 0
   for module; do
     import_path=''
-    resolve_import_path import_path "$module"
+    resolve_module_path import_path "$module"
     if [ ! -r "$import_path" ]; then
       echo "Unable to load the required module '$module': $import_path" >&2
       exit 1

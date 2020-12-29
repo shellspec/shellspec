@@ -104,16 +104,31 @@ Describe "general.sh"
       The stderr should include "not-found-module"
     End
 
-    It 'imports file'
+    It 'imports module'
       When run shellspec_import "source"
       The status should be success
       The stdout should be blank
     End
 
-    It 'imports file with arguments'
+    It 'imports module with arguments'
       When run shellspec_import "source" a b c
       The status should be success
       The stdout should eq "a:b:c"
+    End
+  End
+
+  Describe 'shellspec_resolve_module_path()'
+    Before 'SHELLSPEC_LOAD_PATH=$FIXTURE'
+
+    It 'exits when module not found'
+      When run shellspec_resolve_module_path module_path not-found-module
+      The status should be failure
+      The stderr should include "not-found-module"
+    End
+
+    It 'resolve module path'
+      When call shellspec_resolve_module_path module_path "source"
+      The variable module_path should eq "$FIXTURE/source.sh"
     End
   End
 
