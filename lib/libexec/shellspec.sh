@@ -140,6 +140,17 @@ command_path() {
   return 1
 }
 
+setup_load_path() {
+  set -- "$SHELLSPEC_REPORTERLIB" "$SHELLSPEC_LIB" "$SHELLSPEC_HELPERDIR"
+  eval "set -- \"\$@\" $SHELLSPEC_LOAD_PATH"
+  SHELLSPEC_LOAD_PATH=''
+  while [ $# -gt 0 ]; do
+    SHELLSPEC_LOAD_PATH="${1}${SHELLSPEC_PATHSEP}${SHELLSPEC_LOAD_PATH}"
+    shift
+  done
+  SHELLSPEC_LOAD_PATH=${SHELLSPEC_LOAD_PATH%$SHELLSPEC_PATHSEP}
+}
+
 finddirs() {
   {
     if [ "${2:-}" ] && is_wsl; then

@@ -89,10 +89,16 @@ shellspec_resolve_module_path() {
 }
 
 shellspec_find_module() {
-  [ -e "${1%%:*}/$2.sh" ] && eval "$3=\${1%%:*}/\$2.sh" && return 0
-  [ -e "${1%%:*}/$2/$2.sh" ] && eval "$3=\${1%%:*}/\$2/\$2.sh" && return 0
-  case $1 in (*:*)
-    shellspec_find_module "${1#*:}" "$2" "$3"
+  if [ -e "${1%%$SHELLSPEC_PATHSEP*}/$2.sh" ]; then
+    eval "$3=\${1%%\$SHELLSPEC_PATHSEP*}/\$2.sh"
+    return 0
+  fi
+  if [ -e "${1%%$SHELLSPEC_PATHSEP*}/$2/$2.sh" ]; then
+    eval "$3=\${1%%\$SHELLSPEC_PATHSEP*}/\$2/\$2.sh"
+    return 0
+  fi
+  case $1 in (*$SHELLSPEC_PATHSEP*)
+    shellspec_find_module "${1#*$SHELLSPEC_PATHSEP}" "$2" "$3"
     return 0
   esac
   shellspec_error "The required module '$2' is not found in SHELLSPEC_LOAD_PATH."

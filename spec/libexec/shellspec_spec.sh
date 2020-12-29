@@ -277,6 +277,24 @@ Describe "libexec/shellspec.sh"
     End
   End
 
+  Describe "setup_load_path()"
+    # shellcheck disable=SC2034
+    setup() {
+      [ "$SHELLSPEC_BUSYBOX_W32" ] && sep=";" || sep=":"
+      SHELLSPEC_REPORTERLIB="reportlib"
+      SHELLSPEC_LIB="lib"
+      SHELLSPEC_HELPERDIR="helper"
+      SHELLSPEC_LOAD_PATH="foo bar baz"
+    }
+    Before setup
+
+    It "setups load path"
+      When call setup_load_path
+      The variable SHELLSPEC_LOAD_PATH should eq "baz${sep}bar${sep}foo${sep}helper${sep}lib${sep}reportlib"
+    End
+
+  End
+
   Describe "finddirs()"
     _finddirs() { "$@" | @sort; }
 

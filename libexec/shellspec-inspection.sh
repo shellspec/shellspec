@@ -108,6 +108,10 @@ if (trap '' DEBUG) 2>/dev/null; then
   echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
 fi
 
+case $PWD in ([a-zA-Z]:* | //*)
+  echo "SHELLSPEC_BUSYBOX_W32=1"
+esac
+
 set_path() {
   if [ "${KSH_VERSION:-}" ] && (eval ': "${.sh.version}"' 2>/dev/null); then
     # Workaround for ksh with kcov. Prevent ShellSpec self test fails.
@@ -115,11 +119,6 @@ set_path() {
   fi
   PATH="$1"
 }
-
-set_path "${PATH:-}:/"
-case $PATH in (*\;/)
-  echo "SHELLSPEC_BUSYBOX_W32=1"
-esac
 
 # shellcheck disable=SC2123
 set_path /

@@ -39,18 +39,22 @@ Describe "libexec/optparser/optparser.sh"
     End
   End
 
-  Describe "multiple_rev()"
-    Before VAR=''
-
-    _multiple_rev() {
-      OPTARG=1 && multiple_rev "$@"
-      OPTARG=2 && multiple_rev "$@"
-      OPTARG=3 && multiple_rev "$@"
+  Describe "array()"
+    _array() {
+      # shellcheck disable=SC2034
+      VAR=''
+      OPTARG="foo" && array "$1"
+      OPTARG="b a r" && array "$1"
+      OPTARG="b'a'z" && array "$1"
+      eval "eval set -- \${$1}"
+      printf '%s\n' "$@"
     }
 
-    It "joins by separator and store in variable"
-      When call _multiple_rev VAR '|'
-      The variable VAR should eq "3|2|1"
+    It "stores the escaped values into a variable"
+      When call _array VAR
+      The line 1 should eq "foo"
+      The line 2 should eq "b a r"
+      The line 3 should eq "b'a'z"
       The variable VAR should be exported
     End
   End

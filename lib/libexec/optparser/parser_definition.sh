@@ -29,7 +29,7 @@ parser_definition() {
   param OPTIONS -O --options var:PATH -- \
     'Specify the path to an additional options file'
 
-  multirev LOAD_PATH ':' -I --load-path var:PATH -- \
+  array LOAD_PATH -I --load-path var:PATH -- \
     'Specify PATH to add to $SHELLSPEC_LOAD_PATH (may be used more than once)'
 
   param HELPERDIR --helperdir init:="spec" var:DIRECTORY -- \
@@ -303,10 +303,10 @@ extension() {
     shift 2
     param ":multiple $name '$separator'" "init:export $name=''" "$@"
   }
-  multirev() {
-    name=${prefix}_$1 separator="$2"
-    shift 2
-    param ":multiple_rev $name '$separator'" "init:export $name=''" "$@"
+  array() {
+    name=${prefix}_$1
+    shift
+    param ":array $name" "init:export $name=''" "$@"
   }
   prehook() {
     helper=$1 name=$2
