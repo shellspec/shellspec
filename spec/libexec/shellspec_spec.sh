@@ -1,7 +1,7 @@
 #shellcheck shell=sh disable=SC2004,SC2016
 
 % BIN: "$SHELLSPEC_HELPERDIR/fixture/bin"
-% DOT_SHELLSPEC: "fixture/dot-shellspec"
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture/"
 % CMDLINE: "$SHELLSPEC_HELPERDIR/fixture/proc/cmdline"
 % PROC: "$SHELLSPEC_HELPERDIR/fixture/proc/"
 % FINDDIRS: "$SHELLSPEC_HELPERDIR/fixture/finddirs"
@@ -29,7 +29,7 @@ Describe "libexec/shellspec.sh"
     parser() { printf '%s\n' "$@"; }
 
     It "reads options file"
-      When call read_options_file "$SHELLSPEC_HELPERDIR/$DOT_SHELLSPEC" parser
+      When call read_options_file "$FIXTURE/shellspec-options" parser
       The line 1 of stdout should equal "--require"
       The line 2 of stdout should equal "spec_helper"
       The line 3 of stdout should equal "--format"
@@ -43,7 +43,7 @@ Describe "libexec/shellspec.sh"
     End
 
     It "does not read options file if not exist file"
-      When call read_options_file "$DOT_SHELLSPEC" parser
+      When call read_options_file "$FIXTURE/shellspec-options-not-exist" parser
       The stdout should be blank
       The status should be success
     End
