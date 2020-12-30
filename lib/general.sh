@@ -661,8 +661,11 @@ shellspec_list_envkeys_rework() {
   "$@"
 }
 shellspec_list_envkeys_parse() {
-  while [ $# -gt 2 ] && shift; do
-    case $2 in (*=*) break; esac
+  while [ $# -gt 2 ]; do
+    case $2 in
+      *=*) break ;;
+      *) shift ;;
+    esac
   done
   [ $# -gt 1 ] && shift
   shellspec_list_envkeys_callback "${1%%[=]*}"
