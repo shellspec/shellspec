@@ -678,24 +678,12 @@ shellspec_list_envkeys_parse() {
 # $ env 'FOO; echo bad; # =aaa' ksh -c 'export -p | grep FOO'
 # export FOO; echo bad; # =aaa
 shellspec_list_envkeys_sanitize() {
-  eval "$1=\$2"
-  shellspec_replace_all "$1" '!' '_'
-  shellspec_replace_all "$1" '#' '_'
-  shellspec_replace_all "$1" '&' '_'
-  shellspec_replace_all "$1" '(' '_'
-  shellspec_replace_all "$1" ')' '_'
-  shellspec_replace_all "$1" '*' '_'
-  shellspec_replace_all "$1" ';' '_'
-  shellspec_replace_all "$1" '<' '_'
-  shellspec_replace_all "$1" '>' '_'
-  shellspec_replace_all "$1" '?' '_'
-  shellspec_replace_all "$1" '[' '_'
-  shellspec_replace_all "$1" ']' '_'
-  shellspec_replace_all "$1" '`' '_'
-  shellspec_replace_all "$1" '{' '_'
-  shellspec_replace_all "$1" '|' '_'
-  shellspec_replace_all "$1" '}' '_'
-  shellspec_replace_all "$1" '~' '_'
+  set -- "$IFS" "$1" "_$2_"
+  IFS='!#&()*;<>?[]`{|}~'
+  eval "set -- \"\$1\" \"\$2\" \${${ZSH_VERSION:+=}3}"
+  IFS="_$1"
+  eval "shift 2; $2=\"\$*\"; $2=\${$2%_}; $2=\${$2#_}"
+  IFS=${IFS#_}
 }
 
 shellspec_exists_envkey() {
