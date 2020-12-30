@@ -209,7 +209,7 @@ Describe 'libexec.sh'
   End
 
   Describe "timeout()"
-    sleep() { "$SHELLSPEC_SLEEP" 0; }
+    sleep() { "$SHELLSPEC_ENV" sleep 0; }
     _timeout() { { ( sleep 1 ) & timeout 0 $!; } 2>/dev/null; }
     It "stops when timed out"
       When call _timeout 1
