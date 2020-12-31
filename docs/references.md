@@ -862,19 +862,23 @@ There are many undocumented variables. You can use them at your own risk.
 
 These variables can be overridden by the `--env-from` option, except for some
 variables. This is an assumed usage, but has not been fully tested.
+It is recommended to use it as read-only.
 
-| Name                 | Description                              | Value                                                               |
-| :------------------- | :--------------------------------------- | ------------------------------------------------------------------- |
-| SHELLSPEC_ROOT       | ShellSpec root directory                 |                                                                     |
-| SHELLSPEC_LIB        | ShellSpec lib directory                  | `${SHELLSPEC_ROOT}/lib`                                             |
-| SHELLSPEC_LIBEXEC    | ShellSpec libexec directory              | `${SHELLSPEC_ROOT}/libexec`                                         |
-| SHELLSPEC_TMPDIR     | Temporary directory                      | `${TMPDIR}` or `/tmp` if not specified.                             |
-| SHELLSPEC_TMPBASE    | Temporary directory used by ShellSpec    | `${SHELLSPEC_TMPDIR}/shellspec.${SHELLSPEC_UNIXTIME}.$$`.           |
-| SHELLSPEC_WORKDIR    | Temporary directory for each spec number | `${SHELLSPEC_TMPBASE}/${SHELLSPEC_SPEC_NO}`.                        |
-| SHELLSPEC_SPECDIR    | Specfiles directory                      | `${PWD}/spec`                                                       |
-| SHELLSPEC_LOAD_PATH  | Load path of library                     | `${SHELLSPEC_SPECDIR}:${SHELLSPEC_LIB}:${SHELLSPEC_LIB}/formatters` |
-| SHELLSPEC_UNIXTIME   | Unix Time when ShellSpec starts          |                                                                     |
-| SHELLSPEC_SPEC_NO    | Current specfile number                  |                                                                     |
-| SHELLSPEC_GROUP_ID   | Current group ID                         | e.g. `1-2`                                                          |
-| SHELLSPEC_EXAMPLE_ID | Current example ID (including group ID)  | e.g. `1-2-3`                                                        |
-| SHELLSPEC_EXAMPLE_NO | Current serial number of example         |                                                                     |
+| Name                   | Description                              | Value                                                               |
+| :--------------------- | :--------------------------------------- | ------------------------------------------------------------------- |
+| SHELLSPEC_ROOT         | ShellSpec root directory                 |                                                                     |
+| SHELLSPEC_LIB          | ShellSpec lib directory                  | `${SHELLSPEC_ROOT}/lib`                                             |
+| SHELLSPEC_LIBEXEC      | ShellSpec libexec directory              | `${SHELLSPEC_ROOT}/libexec`                                         |
+| SHELLSPEC_TMPDIR       | Temporary directory                      | `${TMPDIR}` or `/tmp` if not specified.                             |
+| SHELLSPEC_TMPBASE      | Temporary directory used by ShellSpec    | `${SHELLSPEC_TMPDIR}/shellspec.${SHELLSPEC_UNIXTIME}.$$`.           |
+| SHELLSPEC_WORKDIR      | Temporary directory for each spec number | `${SHELLSPEC_TMPBASE}/${SHELLSPEC_SPEC_NO}`.                        |
+| SHELLSPEC_PROJECT_ROOT | Where `.shellspec` is located            |                                                                     |
+| ~~SHELLSPEC_SPECDIR~~  | Specfiles directory                      | `${SHELLSPEC_PROJECT_ROOT}/spec` [depricated]                       |
+| SHELLSPEC_HELPERDIR    | spec_helper directory                    | `${SHELLSPEC_PROJECT_ROOT}/spec` (default)                          |
+| SHELLSPEC_LOAD_PATH    | Load path of library                     | `${SHELLSPEC_SPECDIR}:${SHELLSPEC_LIB}:${SHELLSPEC_LIB}/formatters` |
+| SHELLSPEC_UNIXTIME     | Unix Time when ShellSpec starts          |                                                                     |
+| SHELLSPEC_SPECFILE     | Current running specfile path            |                                                                     |
+| SHELLSPEC_SPEC_NO      | Current specfile number                  |                                                                     |
+| SHELLSPEC_GROUP_ID     | Current group ID                         | e.g. `1-2`                                                          |
+| SHELLSPEC_EXAMPLE_ID   | Current example ID (including group ID)  | e.g. `1-2-3`                                                        |
+| SHELLSPEC_EXAMPLE_NO   | Current serial number of example         |                                                                     |

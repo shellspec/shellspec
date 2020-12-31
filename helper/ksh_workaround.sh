@@ -2,6 +2,8 @@
 
 ksh_workaround_loaded() {
   # for ksh93 and ksh2020
+  # These shells do not allow functions defined outside of the subshell
+  # to be redefined within the subshell. a hack using aliases avoids this.
   shellspec_redefinable shellspec_puts
   shellspec_redefinable shellspec_putsn
   shellspec_redefinable shellspec_output
@@ -38,6 +40,8 @@ ksh_workaround_loaded() {
   shellspec_redefinable shellspec_source
 
   # for ksh88 and busybox-1.1.3
+  # These shells do not allow built-in commands cannot be redefined
+  # by shell functions. a hack using aliases avoids this.
   shellspec_unbuiltin "ps"
   shellspec_unbuiltin "last"
   shellspec_unbuiltin "sleep"
