@@ -88,6 +88,17 @@ shellspec_resolve_module_path() {
   shellspec_find_module "$SHELLSPEC_LOAD_PATH" "$2" "$1"
 }
 
+shellspec_module_exists() {
+  set -- "$1" "${2:-$SHELLSPEC_LOAD_PATH}"
+  [ -e "${2%%$SHELLSPEC_PATHSEP*}/$1.sh" ] && return 0
+  [ -e "${2%%$SHELLSPEC_PATHSEP*}/$1/$1.sh" ] && return 0
+  case $2 in (*$SHELLSPEC_PATHSEP*)
+    shellspec_module_exists "$1" "${2#*$SHELLSPEC_PATHSEP}" &&:
+    return $?
+  esac
+  return 1
+}
+
 shellspec_find_module() {
   if [ -e "${1%%$SHELLSPEC_PATHSEP*}/$2.sh" ]; then
     eval "$3=\${1%%\$SHELLSPEC_PATHSEP*}/\$2.sh"

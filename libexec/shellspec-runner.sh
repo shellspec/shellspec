@@ -89,6 +89,15 @@ error_handler() {
 "$SHELLSPEC_TRAP" ':' TERM
 trap 'cleanup' EXIT
 
+check_formatters() {
+  eval "set -- $1"
+  for module; do
+    module_exists "${module}_formatter" && continue
+    abort "The specified formatter '$module' is not found."
+  done
+}
+check_formatters "$SHELLSPEC_FORMATTER $SHELLSPEC_GENERATORS"
+
 if [ "$SHELLSPEC_REPAIR" ]; then
   if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
     SHELLSPEC_QUICK=1

@@ -132,6 +132,20 @@ Describe "general.sh"
     End
   End
 
+  Describe 'shellspec_module_exists()'
+    Before 'SHELLSPEC_LOAD_PATH=$FIXTURE'
+
+    Parameters
+      + "not-found-module"  failure
+      + "source"            success
+    End
+
+    It "checks the existence of the module"
+      When run shellspec_module_exists "$2"
+      The status should be "$3"
+    End
+  End
+
   Describe 'shellspec_source()'
     It 'sources file'
       When run shellspec_source "$FIXTURE/source.sh"

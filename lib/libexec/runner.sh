@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use is_empty_directory resolve_module_path
+use is_empty_directory resolve_module_path module_exists
 
 mktempdir() {
   ( umask 0077
