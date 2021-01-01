@@ -41,11 +41,12 @@ precheck() {
   export VERSION="$SHELLSPEC_VERSION"
   export SHELL_VERSION="$SHELLSPEC_SHELL_VERSION"
   export SHELL_TYPE="$SHELLSPEC_SHELL_TYPE"
-  status_file="$SHELLSPEC_PRECHECKER_STATUS"
-  echo "-" > "$status_file"
 
   eval "set -- $1"
   [ $# -gt 0 ] || return 0
+
+  status_file=$SHELLSPEC_PRECHECKER_STATUS
+  echo "-" > "$status_file"
   for module; do
     import_path=''
     resolve_module_path import_path "$module"
