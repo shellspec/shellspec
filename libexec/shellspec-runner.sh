@@ -98,6 +98,12 @@ check_formatters() {
 }
 check_formatters "$SHELLSPEC_FORMATTER $SHELLSPEC_GENERATORS"
 
+for p; do
+  [ -f "$p" ] || continue
+  is_specfile "$p" && continue
+  abort "File '$p' cannot be executed because it does not match the pattern '$SHELLSPEC_PATTERN'."
+done
+
 if [ "$SHELLSPEC_REPAIR" ]; then
   if [ -e "$SHELLSPEC_QUICK_FILE" ]; then
     SHELLSPEC_QUICK=1
