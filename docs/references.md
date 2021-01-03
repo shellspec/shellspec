@@ -283,8 +283,8 @@ The line 1 should equal foo # stdout omitted
 When combined with word, `stdout` can be omitted.
 
 ```sh
-The line 1 of stdout should equal foo
-The line 1 should equal foo # stdout omitted
+The word 1 of stdout should equal foo
+The word 1 should equal foo # stdout omitted
 ```
 
 #### `path` / `file` / `directory` subject
