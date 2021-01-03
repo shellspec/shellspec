@@ -62,37 +62,26 @@ DATA
 generate "$SHELLSPEC_HELPERDIR/spec_helper.sh" <<DATA
 # shellcheck shell=sh
 
-# Any changes made here will affect all specfiles.
-
-# Changing the shell options in the function may cause unexpected
-# behavior in some shells, so it is recommended to set them here.
+# Defining variables and functions here will affect all specfiles.
+# Change shell options inside a function may cause different behavior,
+# so it is better to set them here.
 # set -eu
 
 # This callback function will be invoked only once before loading specfiles.
-# Since it is invoked in a separate process from specfiles, changes made in
-# this function will not be affected in specfiles, but it is possible to pass
-# environment variables using "setenv" and "unsetenv".
-# You can stop the execution with "exit" or "abort".
 spec_helper_precheck() {
   # Available functions: info, warn, error, abort, setenv, unsetenv
+  # Available variables: VERSION, SHELL_TYPE, SHELL_VERSION
   : minimum_version "${SHELLSPEC_VERSION%%[+-]*}"
 }
 
-# This callback function will be invoked immediately after a specfile has been
-# loaded. If parallel execution is enabled, it may be invoked multiple times
-# in isolated processes.
+# This callback function will be invoked after a specfile has been loaded.
 spec_helper_loaded() {
   :
 }
 
 # This callback function will be invoked after core modules has been loaded.
-# If parallel execution is enabled, it may be invoked multiple times
-# in isolated processes. It can be used to set global hooks, load custom
-# matchers, etc., and override core module functions.
 spec_helper_configure() {
   # Available functions: import, before_each, after_each, before_all, after_all
-  # Internal functions starting with "shellspec_" can also be used,
-  # but be aware that they may change.
   : import 'support/custom_matcher'
 }
 DATA
