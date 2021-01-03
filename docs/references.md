@@ -290,7 +290,7 @@ The line 1 should equal foo # stdout omitted
 #### `path` / `file` / `directory` subject
 
 ```sh
-Path data-file /tmp/data.txt
+Path data-file=/tmp/data.txt
 The path data-file should be exist
 ```
 
