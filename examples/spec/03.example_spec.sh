@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-Describe 'example sample'
+Describe 'example example'
   It 'is "example"'
     When call echo 'foo'
     The output should eq 'foo'

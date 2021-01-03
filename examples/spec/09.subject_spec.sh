@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-Describe 'subject sample'
+Describe 'subject example'
   Describe 'stdout'
     foo() { echo "ok"; }
 

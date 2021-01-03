@@ -1,4 +1,4 @@
-Describe "Profiler sample"
+Describe "Profiler example"
   Example "1: sleep 0.1 (line 2)"
     When call sleep 0.1
     The status should be success

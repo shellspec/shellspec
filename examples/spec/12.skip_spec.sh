@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-Describe 'skip sample'
+Describe 'skip example'
   Describe 'calc()'
     calc() { echo "$(($*))"; }
 

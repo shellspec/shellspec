@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-Describe 'intercept sample'
+Describe 'intercept example'
   Intercept begin
   __begin__() {
     # Define stubs for cat

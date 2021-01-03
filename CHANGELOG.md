@@ -470,7 +470,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change behavior of `line` and `lines` modifier to like "grep -c" not "wc -l".
 - Change `function` subject to alias for `value` subject.
 - Improve handling unexpected errors.
-- Improve samples.
+- Improve examples.
 
 ### Removed
 

@@ -60,7 +60,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Project directory structure](#project-directory-structure)
 - [Specfile (test file)](#specfile-test-file)
   - [Embedded shell scripts](#embedded-shell-scripts)
-  - [Sample](#sample)
+  - [Example](#example)
 - [DSL syntax](#dsl-syntax)
   - [Basic structure](#basic-structure)
     - [`Describe`, `Context`, `ExampleGroup` - example group block](#describe-context-examplegroup---example-group-block)
@@ -409,7 +409,7 @@ $ cd hello
 $ shellspec --init
   create   .shellspec
   create   spec/spec_helper.sh
-  create   spec/hello_spec.sh # sample
+  create   spec/hello_spec.sh # example
 
 # Write your first specfile (of course you can use your favorite editor)
 $ cat<<'HERE'>spec/hello_spec.sh
@@ -602,11 +602,11 @@ Shell functions defined in the specfile can only be used within blocks (e.g. `De
 
 If you want to use a global function, you can define it in `spec_helper.sh`.
 
-### Sample
+### Example
 
 **The best place to learn how to write a specfile is the
-[sample/spec](sample/spec) directory. You should take a look at it !**
-*(Those samples include failure examples on purpose.)*
+[examples/spec](examples/spec) directory. You should take a look at it !**
+*(Those examples include failure examples on purpose.)*
 
 ## DSL syntax
 
@@ -1366,7 +1366,7 @@ For example, it can be used in a mock function to execute the actual command.
 It is recommended that the support command name be the actual command name prefixed with `@`.
 
 ```sh
-Describe "Support commands sample"
+Describe "Support commands example"
   touch() {
     @touch "$@" # @touch executes actual touch command
     echo "$1 was touched"
@@ -1435,7 +1435,7 @@ hello "$1"
 ```
 
 ```sh
-Describe "sample"
+Describe "example"
   Include "./hello.sh"
   Example "hello test"
     When call hello world
@@ -1462,7 +1462,7 @@ date +"%A, %B %d, %Y"
 ```
 
 ```sh
-Describe "sample"
+Describe "example"
   Intercept begin
   __begin__() {
     date() {
@@ -1531,7 +1531,7 @@ See [How to use ShellSpec with Docker](docs/docker.md).
 
 You can create custom subject, custom modifier and custom matcher.
 
-See [sample/spec/support/custom_matcher.sh](sample/spec/support/custom_matcher.sh) for custom matcher.
+See [examples/spec/support/custom_matcher.sh](examples/spec/support/custom_matcher.sh) for custom matcher.
 
 NOTE: If you want to verify using shell function, you can use [result](docs/references.md#result) modifier or
 [satisfy](docs/references.md#satisfy) matcher. You don't need to create a custom matcher, etc.

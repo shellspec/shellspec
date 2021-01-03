@@ -1,4 +1,4 @@
-Describe 'sample'
+Describe 'example'
   Describe 'bc command'
     It 'performs addition'
       Data '2 + 3'

@@ -3,7 +3,7 @@
 # Each block (example group / example) runs within subshell.
 # It mean that it works like lexical scope.
 
-Describe 'scope sample'
+Describe 'scope example'
   foo() { echo "foo"; } # It can call from anywhere within this example group
 
   # By the way, you can only use shellspec DSL or define function here.

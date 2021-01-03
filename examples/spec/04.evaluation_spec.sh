@@ -1,6 +1,6 @@
 #shellcheck shell=sh disable=SC2016
 
-Describe 'evaluation sample'
+Describe 'evaluation example'
   Describe 'call evaluation'
     It 'calls function'
       foo() { echo "foo"; }

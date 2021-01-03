@@ -5,7 +5,7 @@
 # The pend example success if the expectations fails as expected.
 # The pend example fails if the expectation succeeds unexpectedly.
 
-Describe 'pending sample'
+Describe 'pending example'
   Example 'this example not fails (because it is not yet implemented as expected)'
     Pending 'not yet implemented'
     echo_ok() { :; } # not yet implemented

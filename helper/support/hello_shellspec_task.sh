@@ -2,7 +2,7 @@
 
 set -eu
 
-task "hello:shellspec" "Sample task"
+task "hello:shellspec" "Example task"
 
 hello_shellspec_task() {
   echo "Hello ShellSpec"

@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-Describe 'include helper sample'
+Describe 'include helper example'
   Describe 'include helper'
     # Include helper is include external file immediately.
     Include ./lib.sh

@@ -8,7 +8,7 @@
 
 # Example of use
 #   contrib/all.sh
-#   contrib/all.sh shellspec sample/addition_spec.sh
+#   contrib/all.sh shellspec example/addition_spec.sh
 #   contrib/all.sh -c 'echo ok'
 
 set -eu

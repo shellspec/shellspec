@@ -5,7 +5,7 @@
 !lib
 !libexec
 !dockerfiles/.shellspec-entrypoint.sh
-!sample
+!examples
 !helper
 !spec
 !stub

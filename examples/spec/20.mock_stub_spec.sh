@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-Describe 'mock stub sample'
+Describe 'mock stub example'
   unixtime() { date +%s; }
   get_next_day() { echo $(($(unixtime) + 86400)); }
 

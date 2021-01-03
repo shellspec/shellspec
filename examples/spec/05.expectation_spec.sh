@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-Describe 'expectation sample'
+Describe 'expectation example'
   It 'is succeeds because expectation is successful'
     foo() { echo "foo"; }
     When call foo

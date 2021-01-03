@@ -5,7 +5,7 @@
 # There is no hooks execute for each example group (Describe/Context).
 # In other words, There is no BeforeAll / AfterAll hooks. It is design policy.
 
-Describe 'before / after hook sample'
+Describe 'before / after hook example'
   Describe '1: before hook'
     setup() { value=10; }
     Before 'setup'

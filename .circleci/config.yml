@@ -5,7 +5,7 @@ jobs:
       - image: koalaman/shellcheck-alpine:v0.7.1
     steps:
       - checkout
-      - run: shellcheck shellspec $(find lib libexec spec sample -name '*.sh')
+      - run: shellcheck shellspec $(find lib libexec spec examples -name '*.sh')
   test:
     working_directory: ~/shellspec
     docker:

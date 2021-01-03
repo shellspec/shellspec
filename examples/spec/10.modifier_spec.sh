@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-Describe 'modifier sample'
+Describe 'modifier example'
   data() {
     echo '1 a A'
     echo '2 b B'

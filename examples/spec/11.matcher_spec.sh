@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-Describe 'matcher sample'
+Describe 'matcher example'
   Describe 'status matchers'
     Describe 'be success matcher'
       It 'checks if status is successful'
