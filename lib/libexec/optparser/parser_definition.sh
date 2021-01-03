@@ -149,7 +149,7 @@ parser_definition() {
   msg -- '' '  **** Output ****' ''
 
   flag BANNER --{no-}banner init:@on -- \
-    'Show banner if exist "<HELPERDIR>/banner(.md)" [default: enabled]'
+    'Show banner if exist "<HELPERDIR>/banner[.md]" [default: enabled]'
 
   param REPORTDIR --reportdir init:='report' var:DIRECTORY -- \
     'Output directory of the report [default: "report"]'
