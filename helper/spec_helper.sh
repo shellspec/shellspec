@@ -18,10 +18,10 @@ spec_helper_precheck() {
   if [ "${EXTGLOB:-}" ]; then
     if shopt -s extglob 2>/dev/null; then
       info "extglob enabled"
-      setenv EXTGLOB "extglob"
+      setenv EXTGLOB="extglob"
     elif setopt extendedglob 2>/dev/null; then
       info "extendedglob enabled"
-      setenv EXTGLOB "extendedglob"
+      setenv EXTGLOB="extendedglob"
     else
       warn "extglob is not available"
       unsetenv EXTGLOB
@@ -40,6 +40,7 @@ spec_helper_loaded() {
   case ${EXTGLOB:-} in
     extglob) shopt -s extglob ;;
     extendedglob) setopt extendedglob ;;
+    ?*) echo "[error] EXTGLOB value is invalid: $EXTGLOB" >&2; exit 1
   esac
   unset EXTGLOB ||:
 }

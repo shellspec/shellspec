@@ -46,11 +46,21 @@ minimum_version() {
 }
 
 setenv() {
-  if ! ( export "${1:-}=" ) 2>/dev/null; then
-    error "setenv: Invalid environment variable name: ${1:-}"
-    return 1
-  fi
-  set -- "$1" "${2:-}'" ""
+  while [ $# -gt 0 ]; do
+    if ! ( export "${1%%\=*}=" ) 2>/dev/null; then
+      error "setenv: Invalid environment variable name: ${1%%\=*}"
+      return 1
+    fi
+    case $1 in
+      *=*) setenv_ "${1%%\=*}" "${1#*\=}" || return $? ;;
+      *) error "setenv: No value for environment variable: $1"; return 1
+    esac
+    shift
+  done
+}
+
+setenv_() {
+  set -- "$1" "$2'" ""
   while [ "$2" ]; do
     set -- "$1" "${2#*\'}" "$3${2%%\'*}'\''"
   done
@@ -59,9 +69,12 @@ setenv() {
 }
 
 unsetenv() {
-  if ! ( export "${1:-}=" ) 2>/dev/null; then
-    error "unsetenv: Invalid environment variable name: ${1:-}"
-    return 1
-  fi
-  echo "unset $1 ||:" >&9
+  while [ $# -gt 0 ]; do
+    if ! ( export "$1=" ) 2>/dev/null; then
+      error "unsetenv: Invalid environment variable name: $1"
+      return 1
+    fi
+    echo "unset $1 ||:" >&9
+    shift
+  done
 }

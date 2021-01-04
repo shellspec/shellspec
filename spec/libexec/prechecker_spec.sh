@@ -81,13 +81,20 @@ Describe "libexec/prechecker.sh"
     _setenv() { { setenv "$@" >/dev/null; } 9>&1; }
 
     It 'outputs the export statement to fd9'
-      When call _setenv A "123 '\" 456"
-      The output should eq "export A='123 '\''\" 456'"
+      When call _setenv A="123 '\" 456=789" B=abc
+      The line 1 should eq "export A='123 '\''\" 456=789'"
+      The line 2 should eq "export B='abc'"
     End
 
     It 'outputs the export statement to fd9 when not specified the value'
-      When call _setenv A
+      When call _setenv A=
       The output should eq "export A=''"
+    End
+
+    It 'raises error when the value for environment variable is not specified'
+      When call _setenv A
+      The status should be failure
+      The error should eq "[error] setenv: No value for environment variable: A"
     End
 
     It 'raises error when the environment variable name is invalid'
@@ -101,8 +108,9 @@ Describe "libexec/prechecker.sh"
     _unsetenv() { { unsetenv "$@" >/dev/null; } 9>&1; }
 
     It 'outputs the unset statement to fd9'
-      When call _unsetenv A
-      The output should eq "unset A ||:"
+      When call _unsetenv A B
+      The line 1 should eq "unset A ||:"
+      The line 2 should eq "unset B ||:"
     End
 
     It 'raises error when the environment variable name is invalid'
