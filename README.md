@@ -28,7 +28,7 @@ ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh,
 
 ----
 
-**About the next version 0.28.0**: It has a lot of enhancements in the CLI. Basically, they are still compatible, but there are a lot of changes, so please be careful. See [here](https://github.com/shellspec/shellspec/wiki/Migration-Guide-to-Version-0.28.0) (to be published later) for details.
+**About the next version 0.28.0**: It has a lot of enhancements in the CLI. Basically, they are still compatible, but there are a lot of changes, so please be careful. See [here](https://github.com/shellspec/shellspec/wiki/Migration-Guide-to-Version-0.28.0) for details.
 
 Version 0.28.0 will be released on 2021-01-05 midday (UTC).
 
@@ -44,6 +44,8 @@ Let's have fun testing your shell scripts! (Try [Online Demo](https://shellspec.
 
 **Latest Update.**
 
+**Version 0.28.0**: Many enhancements have been made to the CLI. It is still basically compatible, but there are a lot of changes, so please be careful. See here for details.
+
 See [CHANGELOG.md](CHANGELOG.md)
 
 NOTE: This documentation contains unreleased features. Check them in the changelog.
@@ -55,12 +57,35 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Supported shells and platforms](#supported-shells-and-platforms)
 - [Requirements](#requirements)
 - [Installation](#installation)
+  - [Web installer (for developers)](#web-installer-for-developers)
+  - [Package manager](#package-manager)
+  - [Manual installation](#manual-installation)
+  - [Distribution archive (runtime only)](#distribution-archive-runtime-only)
 - [Tutorial](#tutorial)
 - [ShellSpec CLI](#shellspec-cli)
-- [Project directory structure](#project-directory-structure)
+  - [runs specfile using `/bin/sh` by default](#runs-specfile-using-binsh-by-default)
+  - [command options](#command-options)
+- [Project directory](#project-directory)
+  - [Typical directory structure](#typical-directory-structure)
+  - [Options file](#options-file)
+  - [`.shellspec` - project options file](#shellspec---project-options-file)
+  - [`.shellspec-local` - user custom options file](#shellspec-local---user-custom-options-file)
+  - [`.shellspec-basedir`](#shellspec-basedir)
+  - [`.shellspec-quick.log` - quick execution log](#shellspec-quicklog---quick-execution-log)
+  - [`report/` - report file directory](#report---report-file-directory)
+  - [`coverage/` - coverage reports directory](#coverage---coverage-reports-directory)
+  - [`spec/` - (default) specfiles directory](#spec---default-specfiles-directory)
+  - [\<HELPERDIR\> (default: `spec/`)](#helperdir-default-spec)
+    - [`spec_helper.sh` - (default) helper file for specfile](#spec_helpersh---default-helper-file-for-specfile)
+    - [`banner[.md]` - banner file displayed at test execution](#bannermd---banner-file-displayed-at-test-execution)
+    - [`support/` - directory for support files](#support---directory-for-support-files)
+      - [`bin` - directory for support commands](#bin---directory-for-support-commands)
 - [Specfile (test file)](#specfile-test-file)
-  - [Embedded shell scripts](#embedded-shell-scripts)
   - [Example](#example)
+  - [About DSL](#about-dsl)
+  - [Execution directory](#execution-directory)
+  - [Embedded shell scripts](#embedded-shell-scripts)
+  - [Translation process](#translation-process)
 - [DSL syntax](#dsl-syntax)
   - [Basic structure](#basic-structure)
     - [`Describe`, `Context`, `ExampleGroup` - example group block](#describe-context-examplegroup---example-group-block)
@@ -123,6 +148,18 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Testing a single file script](#testing-a-single-file-script)
   - [Sourced Return](#sourced-return)
   - [Intercept](#intercept)
+- [spec_helper](#spec_helper)
+  - [`<module>_precheck`](#module_precheck)
+    - [`minimum_version`](#minimum_version)
+    - [`error`, `warn`, `info`](#error-warn-info)
+    - [`abort`](#abort)
+    - [`setenv`, `unsetenv`](#setenv-unsetenv)
+    - [environment variables](#environment-variables)
+  - [`<module>_loaded`](#module_loaded)
+  - [`<module>_configure`](#module_configure)
+    - [`import`](#import)
+    - [`before_each`, `after_each`](#before_each-after_each)
+    - [`before_all`, `after_all`](#before_all-after_all)
 - [Self-executable specfile](#self-executable-specfile)
 - [Use with Docker](#use-with-docker)
 - [Extension](#extension)
@@ -142,7 +179,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - <code>[bash][bash]</code>_>=2.03_, <code>[bosh/pbosh][bosh]</code>_>=2018/10/07_, <code>[posh][posh]</code>_>=0.3.14_, <code>[yash][yash]</code>_>=2.29_, <code>[zsh][zsh]</code>_>=3.1.9_
 - <code>[dash][dash]</code>_>=0.5.4_, <code>[busybox][busybox] ash</code>_>=1.20.0_, <code>[busybox-w32][busybox-w32]</code>, <code>[GWSH][gwsh]</code>_>=20190627_
 - <code>ksh88</code>, <code>[ksh93][ksh93]</code>_>=93s_, <code>[ksh2020][ksh2020]</code>, <code>[mksh/lksh][mksh]</code>_>=R28_, <code>[pdksh][pdksh]</code>_>=5.2.14_
-- <code>[FreeBSD sh][freebsdsh]</code>, <code>[NetBSD sh][netbsdsh]</code>, <code>[OpenBSD ksh][openbsdksh]</code>, <code>[loksh][loksh]</code>, <code>[oksh][oksh]</code>
+- <code>[FreeBSD sh][freebsdsh]</code>, <code>[NetBSD sh][netbsdsh]</code>, <code>[NetBSD ksh][netbsdksh]</code>, <code>[OpenBSD ksh][openbsdksh]</code>, <code>[loksh][loksh]</code>, <code>[oksh][oksh]</code>
 
 [bash]: https://www.gnu.org/software/bash/
 [bosh]: http://schilytools.sourceforge.net/bosh.html
@@ -157,6 +194,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 [yash]: https://yash.osdn.jp/
 [zsh]: https://www.zsh.org/
 [netbsdsh]: http://cvsweb.netbsd.org/bsdweb.cgi/src/bin/sh/
+[netbsdksh]: http://cvsweb.netbsd.org/bsdweb.cgi/src/bin/ksh/
 [freebsdsh]: https://www.freebsd.org/cgi/man.cgi?sh(1)
 [openbsdksh]: https://man.openbsd.org/ksh.1
 [pdksh]: https://web.archive.org/web/20160918190548/http://www.cs.mun.ca:80/~michael/pdksh/
@@ -196,7 +234,9 @@ Currently used external (not shell builtins) commands:
 
 ## Installation
 
-### Install the latest release version <!-- omit in toc -->
+### Web installer (for developers)
+
+#### Install the latest release version <!-- omit in toc -->
 
 ```sh
 curl -fsSL https://git.io/shellspec | sh
@@ -208,39 +248,52 @@ or
 wget -O- https://git.io/shellspec | sh
 ```
 
-NOTE: `https://git.io/shellspec` is redirected to `https://github.com/shellspec/shellspec/raw/master/install.sh`
+NOTE: `https://git.io/shellspec` is redirected to [install.sh](https://github.com/shellspec/shellspec/raw/master/install.sh)
+
+The installation using the web installer is mainly intended for development use.
+For CI, it is recommended to use a specific version (tag) in git or archives to avoid unexpected failures.
 
 <details>
-<summary>Advanced installation / upgrade / uninstall</summary>
+<summary>Advanced installation / upgrade</summary>
 
-### Automatic installation <!-- omit in toc -->
+#### Automatic installation <!-- omit in toc -->
 
 ```sh
 curl -fsSL https://git.io/shellspec | sh -s -- --yes
 ```
 
-### Install the specified version <!-- omit in toc -->
+#### Install the specified version <!-- omit in toc -->
 
 ```sh
 curl -fsSL https://git.io/shellspec | sh -s 0.19.1
 ```
 
-### Upgrade to the latest release version <!-- omit in toc -->
+#### Upgrade to the latest release version <!-- omit in toc -->
 
 ```sh
 curl -fsSL https://git.io/shellspec | sh -s -- --switch
 ```
 
-### Switch to the specified version <!-- omit in toc -->
+#### Switch to the specified version <!-- omit in toc -->
 
 ```sh
 curl -fsSL https://git.io/shellspec | sh -s 0.18.0 --switch
 ```
 
-### How to uninstall <!-- omit in toc -->
+</details>
+
+<details>
+<summary>Uninstall</summary>
+
+#### How to uninstall <!-- omit in toc -->
 
 1. Delete the ShellSpec executable file [default: `$HOME/.local/bin/shellspec`].
 2. Delete the ShellSpec installation directory [default: `$HOME/.local/lib/shellspec`].
+
+</details>
+
+<details>
+<summary>Other usage</summary>
 
 ### Other usage <!-- omit in toc -->
 
@@ -277,10 +330,10 @@ OPTIONS:
 
 </details>
 
-<details>
-<summary>Package manager (Arch Linux / Homebrew / Linuxbrew / basher / bpkg)</summary>
+### Package manager
 
-### Arch Linux <!-- omit in toc -->
+<details>
+<summary>Arch Linux</summary>
 
 Installation on Arch Linux from the AUR [ShellSpec package](https://aur.archlinux.org/packages/shellspec/) using `aura`:
 
@@ -289,7 +342,10 @@ Installation on Arch Linux from the AUR [ShellSpec package](https://aur.archlinu
 $ aura -A shellspec
 ```
 
-### Homebrew / Linuxbrew <!-- omit in toc -->
+</details>
+
+<details>
+<summary>Homebrew / Linuxbrew</summary>
 
 ```console
 # Install the latest stable version
@@ -297,7 +353,10 @@ $ brew tap shellspec/shellspec
 $ brew install shellspec
 ```
 
-### basher <!-- omit in toc -->
+</details>
+
+<details>
+<summary>basher / bpkg</summary>
 
 Installation with [basher](https://github.com/basherpm/basher)
 
@@ -310,8 +369,6 @@ $ basher install shellspec/shellspec
 # To specify a version (example: 0.19.1)
 $ basher install shellspec/shellspec@0.19.1
 ```
-
-### bpkg <!-- omit in toc -->
 
 Installation with [bpkg](https://github.com/bpkg/bpkg)
 
@@ -327,14 +384,40 @@ $ bpkg install shellspec/shellspec@0.19.1
 
 </details>
 
+### Manual installation
+
 <details>
-<summary>Other methods (archive / make / manual)</summary>
+<summary>git / archive (source code)</summary>
 
-### Archive <!-- omit in toc -->
+Download from git or archive and create a symbolic link.
 
-See [Releases](https://github.com/shellspec/shellspec/releases) page if you want to download distribution archive.
+From git
 
-### Make <!-- omit in toc -->
+```console
+$ cd /SOME/WHERE/TO/INSTALL
+$ git clone https://github.com/shellspec/shellspec.git
+
+$ ln -s /SOME/WHERE/TO/INSTALL/shellspec/shellspec /EXECUTABLE/PATH/
+```
+
+From archive
+
+```console
+$ cd /SOME/WHERE/TO/INSTALL
+$ wget https://github.com/shellspec/shellspec/archive/{VERSION}.tar.gz
+$ tar xzvf shellspec-{VERSION}.tar.gz
+
+$ ln -s /SOME/WHERE/TO/INSTALL/shellspec-{VERSION}/shellspec /EXECUTABLE/PATH/
+```
+
+Executable path: e.g. `/usr/local/bin/`, `$HOME/bin/`
+
+</details>
+
+<details>
+<summary>Use make instead of symbolic link creation</summary>
+
+Download from git or archive and use `make` command.
 
 **How to install.**
 
@@ -360,31 +443,12 @@ sudo make uninstall
 make uninstall PREFIX=$HOME
 ```
 
-### Manual installation <!-- omit in toc -->
+</details>
 
-**Just get ShellSpec and create a symlink in your executable PATH!**
+<details>
+<summary>For environments that do not support symbolic links</summary>
 
-From git
-
-```console
-$ cd /SOME/WHERE/TO/INSTALL
-$ git clone https://github.com/shellspec/shellspec.git
-$ ln -s /SOME/WHERE/TO/INSTALL/shellspec/shellspec /EXECUTABLE/PATH/
-# (e.g. /EXECUTABLE/PATH/ = /usr/local/bin/, $HOME/bin/)
-```
-
-From tar.gz
-
-```console
-$ cd /SOME/WHERE/TO/INSTALL
-$ wget https://github.com/shellspec/shellspec/archive/{VERSION}.tar.gz
-$ tar xzvf shellspec-{VERSION}.tar.gz
-
-$ ln -s /SOME/WHERE/TO/INSTALL/shellspec-{VERSION}/shellspec /EXECUTABLE/PATH/
-# (e.g. /EXECUTABLE/PATH/ = /usr/local/bin/, $HOME/bin/)
-```
-
-If you can't create symlink (like default of Git for Windows), create the `shellspec` file.
+Download from git or archive and create the following `shellspec` file instead of the symbolic link.
 
 ```console
 $ cat<<'HERE'>/EXECUTABLE/PATH/shellspec
@@ -395,6 +459,10 @@ $ chmod +x /EXECUTABLE/PATH/shellspec
 ```
 
 </details>
+
+### Distribution archive (runtime only)
+
+See [Releases](https://github.com/shellspec/shellspec/releases) page if you want to download distribution archive.
 
 ## Tutorial
 
@@ -409,7 +477,6 @@ $ cd hello
 $ shellspec --init
   create   .shellspec
   create   spec/spec_helper.sh
-  create   spec/hello_spec.sh # example
 
 # Write your first specfile (of course you can use your favorite editor)
 $ cat<<'HERE'>spec/hello_spec.sh
@@ -442,39 +509,71 @@ $ shellspec
 
 ## ShellSpec CLI
 
-See more info: [ShellSpec CLI](docs/cli.md)
+### runs specfile using `/bin/sh` by default
 
-NOTE: ShellSpec CLI ignores shebang except in some cases and runs specfiles with the shell running `shellspec` (normally `/bin/sh`).
-For example, if you want to run specfiles in bash, specify the `-s` (`--shell`) option or add the option to `.shellspec` file.
+ShellSpec CLI runs specfiles with the shell running `shellspec`.
+Usually it is `/bin/sh` that is the shebang of `shellspec`. If you run `bash shellspec`, it will be bash.
+`Include` files from specfile will be executed in the same shell as well.
+
+The purpose of this specification is to allow ShellSpec to easily change multiple types of shells
+and enable the development of cross-platform shell scripts that support multiple shells and environments.
+
+If you want to test with a specific shell, use the `-s` (`--shell`) option.
+You can specify the default shell in the `.shellspec` file.
+
+NOTE: If you execute a **shell script file** (not a shell function) from within the specfile,
+its shebang will be respected. Because in that case, it will be run as an external command.
+The `-s` (`--shell`) option also has no effect.
+If you are testing a external shell script file, you can use `When run script` or `When run source`.
+These ignore the shebang of external shell script file and run in the same shell that runs specfile.
+
+### command options
+
+NOTE: Since version 0.28.0, [getoptions](https://github.com/ko1nksm/getoptions) is used to parse options,
+so all POSIX and GNU compatible option syntax can be used. For example, you can abbreviate a long option.
+
+See more info: [ShellSpec CLI](docs/cli.md)
 
 ```console
 $ shellspec -h
-Usage: shellspec [options...] [files or directories...]
+Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
 
   Using + instead of - for short options causes reverses the meaning
 
     -s, --shell SHELL               Specify a path of shell [default: "auto" (the shell running shellspec)]
-        --path PATH                 Set PATH environment variable at startup
-        --[no-]sandbox              Force the use of the mock instead of the actual command
-        --sandbox-path SANDBOX-PATH Make PATH the sandbox path instead of empty (default: empty)
         --require MODULE            Require a MODULE (shell script file)
-    -e, --env NAME=VALUE            Set environment variable
+    -O, --options PATH              Specify the path to an additional options file
+    -I, --load-path PATH            Specify PATH to add to $SHELLSPEC_LOAD_PATH (may be used more than once)
+        --helperdir DIRECTORY       The directory to load helper files (spec_helper.sh, etc) [default: "spec"]
+        --path PATH                 Set PATH environment variable at startup
+        --{no-}sandbox              Force the use of the mock instead of the actual command
+        --sandbox-path PATH         Make PATH the sandbox path instead of empty [default: empty]
+        --execdir @LOCATION[/DIR]   Specify the execution directory of each specfile | [default: @project]
+    -e, --env NAME[=VALUE]          Set environment variable
         --env-from ENV-SCRIPT       Set environment variable from shell script file
-    -w, --[no-]warning-as-failure   Treat warning as failure [default: enabled]
-        --[no-]fail-fast[=COUNT]    Abort the run after first (or COUNT) of failures [default: disabled]
-        --[no-]fail-no-examples     Fail if no examples found [default: disabled]
-        --[no-]fail-low-coverage    Fail on low coverage [default: disabled]
-    -p, --[no-]profile              Enable profiling and list the slowest examples [default: disabled]
+    -w, --{no-}warning-as-failure   Treat warning as failure [default: enabled]
+        --{no-}fail-fast[=COUNT]    Abort the run after first (or COUNT) of failures [default: disabled]
+        --{no-}fail-no-examples     Fail if no examples found [default: disabled]
+        --{no-}fail-low-coverage    Fail on low coverage [default: disabled]
+        --failure-exit-code CODE    Override the exit code used when there are failing specs [default: 101]
+        --error-exit-code CODE      Override the exit code used when there are fatal errors [default: 102]
+    -p, --{no-}profile              Enable profiling and list the slowest examples [default: disabled]
         --profile-limit N           List the top N slowest examples [default: 10]
-        --[no-]boost                Increase the CPU frequency to boost up testing speed [default: disabled]
-        --log-file LOGFILE          Log file for %logger directive and trace [default: /dev/tty]
-        --keep-tempdir              Do not cleanup temporary directory [default: disabled]
+        --{no-}boost                Increase the CPU frequency to boost up testing speed [default: disabled]
+        --log-file LOGFILE          Log file for %logger directive and trace [default: "/dev/tty"]
+        --tmpdir TMPDIR             Specify temporary directory [default: $TMPDIR, $TMP or "/tmp"]
+        --keep-tmpdir               Do not cleanup temporary directory [default: disabled]
+
+  The following options must be specified before other options and cannot be specified in the options file
+
+    -c, --chdir                     Change the current directory to the first path of arguments at the start
+    -C, --directory DIRECTORY       Change the current directory at the start
 
   **** Execution ****
 
-    -q, --[no-]quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
+    -q, --{no-}quick                Run not-passed examples if it exists, otherwise run all [default: disabled]
     -r, --repair, --only-failures   Run failure examples only (Depends on quick mode)
-    -n, --next,   --next-failure    Run failure examples and abort on first failure (Depends on quick mode)
+    -n, --next-failure              Run failure examples and abort on first failure (Depends on quick mode)
     -j, --jobs JOBS                 Number of parallel jobs to run [default: 0 (disabled)]
         --random TYPE[:SEED]        Run examples by the specified random type | <[none]> [specfiles] [examples]
     -x, --xtrace                    Run examples with trace output of evaluation enabled [default: disabled]
@@ -483,10 +582,11 @@ Usage: shellspec [options...] [files or directories...]
 
   **** Output ****
 
-        --[no-]banner               Show banner if exist 'spec/banner' [default: enabled]
+        --{no-}banner               Show banner if exist "<HELPERDIR>/banner[.md]" [default: enabled]
+        --reportdir DIRECTORY       Output directory of the report [default: "report"]
     -f, --format FORMATTER          Choose a formatter for display | <[p]> [d] [t] [j] [f] [null] [debug]
-    -o, --output GENERATOR          Choose a generator(s) to generate a report file(s) [default: none]
-        --[no-]color                Enable or disable color [default: enabled if the output is a TTY]
+    -o, --output FORMATTER          Choose a generator(s) to generate a report file(s) [default: none]
+        --{no-}color                Enable or disable color [default: enabled if the output is a TTY]
         --skip-message VERBOSITY    Mute skip message | <[verbose]> [moderate] [quiet]
         --pending-message VERBOSITY Mute pending message | <[verbose]> [quiet]
         --quiet                     Equivalent of --skip-message quiet --pending-message quiet
@@ -496,49 +596,69 @@ Usage: shellspec [options...] [files or directories...]
 
     You can run selected examples by specified the line numbers or ids
 
-      shellspec path/to/a_spec.sh:10    # Run the groups or examples that includes lines 10
-      shellspec path/to/a_spec.sh:@1-5  # Run the 5th groups/examples defined in the 1st group
-      shellspec a_spec.sh:10:@1:20:@2   # You can mixing multiple line numbers and ids with join by ':'
+      shellspec path/to/a_spec.sh:10   # Run the groups or examples that includes lines 10
+      shellspec path/to/a_spec.sh:@1-5 # Run the 5th groups/examples defined in the 1st group
+      shellspec a_spec.sh:10:@1:20:@2  # You can mixing multiple line numbers and ids with join by ":"
 
     -F, --focus                     Run focused groups / examples only
     -P, --pattern PATTERN           Load files matching pattern [default: "*_spec.sh"]
     -E, --example PATTERN           Run examples whose names include PATTERN
     -T, --tag TAG[:VALUE]           Run examples with the specified TAG
-    -D, --default-path PATH         Set the default path where looks for examples [default: "spec"]
+        --default-path PATH         Set the default path where looks for examples [default: "spec"]
+
+    You can specify the path recursively by prefixing it with the pattern "*/" or "**/"
+      (This is not glob patterns and requires quotes. It is also available with --default-path)
+
+      shellspec "*/spec"               # The pattern "*/" matches 1 directory
+      shellspec "**/spec"              # The pattern "**/" matches 0 and more directories
+      shellspec "*/*/**/test_spec.sh"  # These patterns can be specified multiple times
+
+    -L, --dereference               Dereference all symlinks in in the above pattern [default: disabled]
 
   **** Coverage ****
 
-        --[no-]kcov                 Enable coverage using kcov [default: disabled]
+        --covdir DIRECTORY          Output directory of the Coverage Report [default: coverage]
+        --{no-}kcov                 Enable coverage using kcov [default: disabled]
         --kcov-path PATH            Specify kcov path [default: kcov]
         --kcov-options OPTIONS      Additional Kcov options (coverage limits, coveralls id, etc)
 
   **** Utility ****
 
-        --init [TEMPLATE...]        Initialize your project with ShellSpec | [git] [hg] [svn]
-        --gen-bin [@COMMAND...]     Generate test support commands in spec/support/bin
+        --init [TEMPLATE...]        Initialize your project with ShellSpec | [spec] [git] [hg] [svn]
+        --gen-bin [@COMMAND...]     Generate test support commands in "<HELPERDIR>/support/bin"
         --count                     Count the number of specfiles and examples
         --list LIST                 List the specfiles/examples | [specfiles] [examples(:id|:lineno)]
-        --syntax, --syntax-check    Syntax check of the specfiles without running any examples
+        --syntax-check              Syntax check of the specfiles without running any examples
         --translate                 Output translated specfile
-        --docker DOCKER-IMAGE       Run tests in specified docker image (EXPERIMENTAL)
         --task [TASK]               Run the TASK or Show the task list if TASK is not specified
+        --docker DOCKER-IMAGE       Run tests in specified docker image (EXPERIMENTAL)
     -v, --version                   Display the version
     -h, --help                      -h: short help, --help: long help
 ```
 
-## Project directory structure
+## Project directory
 
-See more info: [Directory structure](docs/directory_structure.md)
+All specfiles for ShellSpec must be under the project directory. The root of the project directory
+must have a `.shellspec` file. This file is that specify the default options to be used in
+the project, but an empty file is required even if the project has no options.
 
-Typical project directory structure
+NOTE: The `.shellspec` file was described in the documentation as a required file for some time,
+but ShellSpec worked without it. Starting with version 0.28.0, this file is checked and will be
+required in future versions.
 
-```
-Project directory
-├─ .shellspec                 [Required]
-├─ .shellspec-local           [Optional, Ignore from VCS]
-├─ .shellspec-quick.log       [Optional, Ignore from VCS]
-├─ report/                    [Optional, Ignore from VCS]
-├─ coverage/                  [Optional, Ignore from VCS]
+You can easily create the necessary files by executing the `shellspec --init` command in an existing directory.
+
+### Typical directory structure
+
+This is the typical directory structure. Version 0.28.0 allows many of these to be changed by specifying options, supporting a more flexible [directory structure](docs/directory_structure.md).
+
+```text
+<PROJECT-ROOT> directory
+├─ .shellspec                       [mandatory]
+├─ .shellspec-local                 [optional] Ignore from version control
+├─ .shellspec-quick.log             [optional] Ignore from version control
+├─ report/                          [optional] Ignore from version control
+├─ coverage/                        [optional] Ignore from version control
 │
 ├─ bin/
 │   ├─ your_script1.sh
@@ -546,34 +666,102 @@ Project directory
 ├─ lib/
 │   ├─ your_library1.sh
 │              :
-├─ libexec/
-│   ├─ project-your_script1.sh
-│              :
-├─ spec/
-│   ├─ banner                 [Optional]
-│   ├─ spec_helper.sh         [Required]
-│   ├─ support/               [Optional]
+│
+├─ spec/ (also <HELPERDIR>)
+│   ├─ spec_helper.sh               [recommended]
+│   ├─ banner[.md]                  [optional]
+│   ├─ support/                     [optional]
 │   │
 │   ├─ bin/
 │   │   ├─ your_script1_spec.sh
 │   │             :
 │   ├─ lib/
 │   │   ├─ your_library1_spec.sh
-│   │             :
-│   ├─ libexec/
-│   │   ├─ project-your_script1_spec.sh
-│                  :
 ```
+
+### Options file
+
+To change the default options for the `shellspec` command, create options file(s).
+Files are read in the order shown below, options defined last take precedence.
+
+1. `$XDG_CONFIG_HOME/shellspec/options`
+2. `$HOME/.shellspec-options` (version >= 0.28.0) or `$HOME/.shellspec` (deprecated)
+3. `<PROJECT-ROOT>/.shellspec`
+4. `<PROJECT-ROOT>/.shellspec-local` (Do not store in VCS such as git)
+
+Specify your default options with `$XDG_CONFIG_HOME/shellspec/options` or `$HOME/.shellspec-options`.
+Specify default project options with `.shellspec` and overwrite to your favorites with `.shellspec-local`.
+
+### `.shellspec` - project options file
+
+Specifies the default options to use for the project.
+
+### `.shellspec-local` - user custom options file
+
+Override the default options used by the project with your favorites.
+
+### `.shellspec-basedir`
+
+Used to specify the directory in which the specfile will be run.
+See [directory structure](docs/directory_structure.md) or `--execdir` option for details.
+
+### `.shellspec-quick.log` - quick execution log
+
+If this file is present, Quick mode will be enabled and the log of Quick execution will be recorded.
+It created automatically when `--quick` option is specified.
+If you want to turn off Quick mode, delete it.
+
+### `report/` - report file directory
+
+The output location for reports generated by the `--output` or `--profile` options.
+This can be changed with the `--reportdir` option.
+
+### `coverage/` - coverage reports directory
+
+The output location for coverage reports.
+This can be changed with the `--covdir` option.
+
+### `spec/` - (default) specfiles directory
+
+By default, it is assumed that all specfiles are store under the `spec` directory,
+but it is possible to create multiple directories with different names.
+
+NOTE: In Version <= 0.27.x, the `spec` directory was the only directory that contained the specfiles.
+
+### \<HELPERDIR\> (default: `spec/`)
+
+The directory to store `spec_helper.sh` and other files.
+By default, the `spec` directory also serves as `HELPERDIR` directory,
+but you can change it to another directory with the `--helperdir` option.
+
+#### `spec_helper.sh` - (default) helper file for specfile
+
+The `spec_helper.sh` is loaded to specfile by the `--require spec_helper` option.
+This file is used to define global functions, initial setting for examples, custom matchers, etc.
+
+#### `banner[.md]` - banner file displayed at test execution
+
+If the file `<HELPERDIR>/banner` or `<HELPERDIR>/banner.md` exists, Display a banner when
+the `shellspec` command is executed. It can be used to display information about the tests.
+The `--no-banner` option can be used to disable this behavior.
+
+#### `support/` - directory for support files
+
+This directory can be used to store files such as custom matchers and tasks.
+
+##### `bin` - directory for support commands
+
+This directory is used to store [support commands](#support-commands).
 
 ## Specfile (test file)
 
 In ShellSpec, you write your tests in a specfile.
 By default, specfile is a file ending with `_spec.sh` under the `spec` directory.
 
-ShellSpec has its own DSL to write tests. It may seem like a distinctive code
-because DSL starts with a capital letter (to distinguish it from a command),
-but the syntax is compatible with shell scripts, and you can embed shell functions
-and use [ShellCheck](https://github.com/koalaman/shellcheck) to check the syntax.
+The specfile is executed using the `shellspec` command, but it can also be executed directly.
+See [self-executable specfile](#self-executable-specfile) for details.
+
+### Example
 
 ```sh
 Describe 'lib.sh' # example group
@@ -588,9 +776,41 @@ Describe 'lib.sh' # example group
 End
 ```
 
-NOTE: The specfile is not run directly in the shell, but is converted into
-regular shell scripts before it is run. If you are interested in
-the translated code, you can see with `shellspec --translate`.
+**The best place to learn how to write a specfile is the
+[examples/spec](examples/spec) directory. You should take a look at it !**
+*(Those examples include failure examples on purpose.)*
+
+### About DSL
+
+ShellSpec has its own DSL to write tests. It may seem like a distinctive code because DSL starts
+with a capital letter, but the syntax is compatible with shell scripts, and you can embed
+shell functions and use [ShellCheck](https://github.com/koalaman/shellcheck) to check the syntax.
+
+You may feel rejected by this DSL, but It starts with a capital letter to avoid confusion with
+the command, and it does a lot more than you think, such as realizing scopes, getting
+shell-independent line numbers, and workarounds for bugs in some shells.
+
+### Execution directory
+
+Since version 0.28.0, the current directory when run a specfile is the project root directory by default. Even if you run a specfile from a any subdirectory in the project directory,
+It is the project root directory.
+Before 0.27.x, it was the current directory when the `shellspec` is executed.
+
+You can change this directory (location) by using the `--execdir @LOCATION[/DIR]` option.
+You can choose from the following locations and specify a path relative to the location if necessary.
+However, you cannot specify a directory outside the project directory.
+
+- @project   Where the ".shellspec" file is located (project root) [default]
+- @basedir   Where the ".shellspec" or ".shellspec-basedir" file is located
+- @specfile  Where the specfile is located
+
+If basedir is specified, the parent directory is searched from the directory containing the specfile
+to be run, and the first directory where `.shellspec-basedir` or `.shellspec` is found is used as
+the execution directory. This is useful if you want to have a separate directory for each
+utilities (command) you want to test.
+
+NOTE: You will need to change under the project directory or use the `-c` (`--chdir`) or
+`-C` (`--directory`) option before running specfile.
 
 ### Embedded shell scripts
 
@@ -602,11 +822,13 @@ Shell functions defined in the specfile can only be used within blocks (e.g. `De
 
 If you want to use a global function, you can define it in `spec_helper.sh`.
 
-### Example
+### Translation process
 
-**The best place to learn how to write a specfile is the
-[examples/spec](examples/spec) directory. You should take a look at it !**
-*(Those examples include failure examples on purpose.)*
+The specfile will not be executed directly by the shell, but will be translated into a regular
+shell script and output to a temporary directory (default: `/tmp`) before being executed.
+
+The translation process is simple in that it only replaces forward-matched words (DSLs), with a few
+exceptions. If you are interested in the translated code, you can see with `shellspec --translate`.
 
 ## DSL syntax
 
@@ -1477,23 +1699,183 @@ Describe "example"
 End
 ```
 
-## Self-executable specfile
+## spec_helper
 
-Normally, you use `shellspec` to run a specfile.
-If you want to run a specfile directly, use shebang below and give execute permission.
+The `spec_helper` can be used to set shell options for all specfiles,
+define global functions,check the execution shell, load custom matchers, etc.
+
+The `spec_helper` is the default module name. It can be changed to any other name, and multiple
+modules can be used. Only characters accepted by POSIX as identifiers can be used in module names.
+The file name of the module must be the module name with the extension `.sh` appended.
+It is loaded from `SHELLSPEC_LOAD_PATH` using the `--require` option.
+
+The following is a typical `spec_helper`. The following three callback functions are available.
 
 ```sh
-#!/usr/bin/env shellspec
+# Filename: spec/spec_helper.sh
+
+set -eu
+
+spec_helper_precheck() {
+  minimum_version "0.28.0"
+  if [ "$SHELL_TYPE" != "bash" ]; then
+    abort "Only bash is supported."
+  fi
+}
+
+spec_helper_loaded() {
+  : # In most cases, you won't use it.
+}
+
+spec_helper_configure() {
+  import 'support/custom_matcher'
+  before_each "global_before_each_hook"
+}
+
+# User-defined global function
+global_before_each_hook() {
+  :
+}
+
+# In version <= 0.27.x, only shellspec_spec_helper_configure was available.
+# This callback function is still supported but deprecated in the future.
+# Please rename it to spec_helper_configure.
+# shellspec_spec_helper_configure() {
+#  :
+# }
 ```
 
-If you want to use `#!/bin/sh` as shebang, add `eval "$(shellspec -)"` to
-the top of the specfile.
+The `spec_helper` will be loaded at least twice. The first time is at precheck phase,
+which is executed in a separate process before the specfile execution.
+The second time will be load at the beginning of the specfile execution.
+If you are using parallel execution, it will be loaded every specfile.
+
+Within each callback function, there are several helper functions available. These functions are
+not available outside of the callback function. Also, these callback functions will be removed
+automatically when `spec_helper` is finished loading. (User-defined functions will not be removed.)
+
+### `<module>_precheck`
+
+This callback function will be invoked only once before loading specfiles.
+Exit with `exit` or `abort`, or `return` non-zero to exit without executing specfiles.
+Inside this function, `set -eu` is executed, so an explicit return on error is not necessary.
+
+Since it is invoked in a separate process from specfiles, changes made in
+this function will not be affected in specfiles.
+
+#### `minimum_version`
+
+- Usage: `minimum_version <version>`
+
+Specifies the minimum version of ShellSpec that the specfile supports. The version format is
+[semantic version](https://semver.org/). Pre-release versions have a lower precedence than
+the associated normal version, but comparison between pre-release versions is not supported.
+The build metadata will simply be ignored.
+
+NOTE: Since `<module>_precheck` is only available in 0.28.0 or later,
+it can be executed with earlier ShellSpecs even if minimum_version is specified.
+To avoid this, you can implement a workaround using `--env-from`.
+
+```sh
+# spec/env.sh
+# Add `--env-from spec/env.sh` to `.shellspec`
+major_minor=${SHELLSPEC_VERSION%".${SHELLSPEC_VERSION#*.*.}"}
+if [ "${major_minor%.*}" -eq 0 ] && [ "${major_minor#*.}" -lt 28 ]; then
+  echo "ShellSpec version 0.28.0 or higher is required." >&2
+  exit 1
+fi
+```
+
+#### `error`, `warn`, `info`
+
+- Usage: `error [messages...]`
+- Usage: `warn [messages...]`
+- Usage: `info [messages...]`
+
+Outputs a message according to the type. You can also use `echo` or `printf`.
+
+#### `abort`
+
+- Usage: `abort [messages...]`
+- Usage: `abort <exit status> [messages...]`
+
+Display an error message and `exit`. If the exit status is omitted, it is `1`.
+You can also exit with exit. `exit 0` will exit normally without executing the specfiles.
+
+#### `setenv`, `unsetenv`
+
+- Usage: `setenv [name=value...]`
+- Usage: `unset [name...]`
+
+You can use `setenv` or `unsetenv` to pass or remove environment variables from precheck to specfiles.
+
+#### environment variables
+
+The following environment variables are defined.
+
+- `VERSION` - ShellSpec Version
+- `SHELL_TYPE` - Currently running shell type (e.g. `bash`)
+- `SHELL_VERSION` - Currently running shell version (e.g. `4.4.20(1)-release`)
+
+NOTE: Be careful not to confuse `SHELL_TYPE` with the environment variable `SHELL`.
+The environment variable `SHELL` is the user login shell, not the currently running shell.
+It is a variable set by the system, and which unrelated to ShellSpec.
+
+### `<module>_loaded`
+
+It is called after loading the shellspec's general internal functions,
+but before loading the core modules (subject, modifire, matcher, etc).
+If parallel execution is enabled, it may be called multiple times in isolated processes.
+Internal functions starting with `shellspec_` can also be used, but be aware that they may change.
+
+This was created to perform [workarounds](helper/ksh_workaround.sh) for specific shells in order to
+test ShellSpec itself. Other than that, I have not come up with a case where this is
+absolutely necessary, but if you have one, please let me know.
+
+### `<module>_configure`
+
+This callback function will be called after core modules (subject, modifire, matcher, etc) has been loaded.
+If parallel execution is enabled, it may be called multiple times in isolated processes.
+Internal functions starting with `shellspec_` can also be used, but be aware that they may change.
+It can be used to set global hooks, load custom matchers, etc., and override core module functions.
+
+#### `import`
+
+- Usage: `import <module> [arguments...]`
+
+Import a custom module from `SHELLSPEC_LOAD_PATH`.
+
+#### `before_each`, `after_each`
+
+- Usage: `before_each [hooks...]`
+- Usage: `after_each [hooks...]`
+
+Register hooks to be executed before and after every example.
+It is the same as executing `BeforeEach`/`AfterEach` at the top of all specfiles.
+
+#### `before_all`, `after_all`
+
+- Usage: `before_all [hooks...]`
+- Usage: `after_all [hooks...]`
+
+Register hooks to be executed before and after all example.
+It is the same as executing `BeforeAll`/`AfterAll` at the top of all specfiles.
+
+NOTE: This is a hook that is called before and after each specfile, not before and after all specfiles.
+
+## Self-executable specfile
+
+Add `eval "$(shellspec - -c) exit 1"` to the top of the specfile and give execute permission
+to the specfile. You can use `/bin/sh`, `/usr/bin/env bash`, etc. for shebang.
+The specfile will be run in the shell written in shebang.
 
 ```sh
 #!/bin/sh
-# 'test.sh' with executable permission
 
-eval "$(shellspec -)"
+eval "$(shellspec - -c) exit 1"
+
+# Use the following if version <= 0.27.x
+# eval "$(shellspec -)"
 
 Describe "bc command"
   bc() { echo "$@" | command bc; }
@@ -1505,17 +1887,18 @@ Describe "bc command"
 End
 ```
 
-```sh
-# You can run 'test.sh' directly
-$ ./test.sh
-Running: /bin/sh [sh]
-.
+The `-c` option is available since 0.28.0, and you can also pass other options.
+If you run the specfile directly, `--pattern` will be automatically set to `*`.
+These options will be ignored if run via `shellspec` command.
 
-Finished in 0.12 seconds (user 0.00 seconds, sys 0.10 seconds)
-1 example, 0 failures
+The use of `shellspec` as shebang is deprecated because it is not portable.
 
-# Also you can run via shellspec
-$ shellspec test.sh
+```awk
+#!/usr/bin/env shellspec -c
+Linux does not allow passing options
+
+#!/usr/bin/env -S shellspec -c
+The -S option requires GNU Core Utilities 8.30 (2018-07-01) or later.
 ```
 
 ## Use with Docker

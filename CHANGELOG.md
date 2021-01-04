@@ -12,11 +12,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `BeforeEach` / `AfterEach` as synonym for `Before` / `After`.
 - Added `FORCE_COLOR` environment variable.
 - Added `--tmpdir` option.
+- Added `--execdir` option to specify the directory for specfile execution.
+- Added `-c` (`--chdir`) and `-C` (`--directory`) options to change directory at startup.
+- Added path syntax (`*/` and `**/`) and `-L` (`--dereference`) option to match recursive directories.
+- Added `--helperdir` to specify the location of `spec_helper` etc.
+- Added the environment variable `SHELLSPEC_HELPERDIR` to indicate the location of `spec_helper` etc.
+- Added `--reportdir` and `--covdir` options.
+- Added `-O` (`--option`) option.
+- Added `-I` (`--load-path`) option.
+- Added `<module>_precheck` callback and some helper functions to `spec_helper` for pre-checking.
+- Added `<module>_loaded` callback to be called after `spec_helper` loading.
 
 ### Changed
 
+- Replaced with a new option parser [getoptions](https://github.com/ko1nksm/getoptions) which supports the standard option syntax.
 - Replaced `--keep-tempdir` with `--keep-tmpdir`.
 - Specifying a file in the shellspec's argument is now ignored if it does not match `--pattern`.
+- Filled in system-out and system-err in junit xml.
+- Allowed run the tests from any subdirectory.
+- The `-D` option has been deprecated (Replace with the `--default-path` option).
+- The environment variable `SHELLSPEC_SPECDIR` has been deprecated since there is not always a single directory for specfiles.
+- Rename `.shellspec-profiler.log` to `profiler.log` for profiler log.
+- Accept `banner.md` as a banner file
+- `Include` and `import` (`shellspec_import`) can now pass arguments.
+- The delimiter of the environment variable `SHELLSPEC_REQUIRES` has been changed from `:` to space.
+- Improved documentation. (#117, #119 ldicarlo)
+- Improved documentation. (#120, #139 Antoni Marcinek)
+- Improved documentation. (#159 Leon Stafford)
 
 ### Removed
 
@@ -25,15 +47,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - bash 4.1 - 4.3: Fixed a bug that `run script` could not get the exit status.
-- zsh < 4.2.0: Fixed a bug when extendedglob is enabled
-- Fixed possibility of I/O error in satisfy matcher (GitHub Actions only?)
-- Fixed a bug in which zsh on macOS occasionally exits with exit code 147 (SIGCONT)
+- zsh < 4.2.0: Fixed a bug when extendedglob is enabled.
+- Fixed possibility of I/O error in satisfy matcher (GitHub Actions only?).
+- Fixed a bug in which zsh on macOS occasionally exits with exit code 147 (SIGCONT).
+- Fixed several bugs related to the Windows path for busybox-w32.
 
 ## [0.27.2] - 2020-10-28
 
 ### Fixed
 
-- Fixed a bug that didn't cause an error if there are fixed examples
+- Fixed a bug that didn't cause an error if there are fixed examples.
 
 ## [0.27.1] - 2020-09-30
 
