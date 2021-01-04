@@ -139,6 +139,7 @@ if kill -s 0 $$ 2>/dev/null; then
 fi
 
 timeout() {
+  sleep 0
   set -- "$(t=0; unixtime t; echo "$t")" "$@"
   while [ "$(t=0; unixtime t; echo "$t")" -le "$(($1 + $2))" ]; do
     ( shift 2; "$@" ) && return 0
