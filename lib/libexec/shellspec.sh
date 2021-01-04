@@ -307,7 +307,7 @@ expand_pathstar_create_matcher() {
 }
 
 expand_pathstar_retrive() {
-  finddirs "$2" ${SHELLSPEC_DEREFERENCE:+follow} | {
+  finddirs "$2" ${SHELLSPEC_DEREFERENCE:+follow} | (
     sep=$1 dir=${2%"${2##*[!/]}"}
     [ "$dir" = "." ] && dir="" || dir="$dir/"
     shift 2
@@ -331,7 +331,7 @@ expand_pathstar_retrive() {
         echo "${line}${i}"
       done
     done
-  } | "$SHELLSPEC_SORT"
+  ) | "$SHELLSPEC_SORT"
 }
 
 is_path_in_project() {
