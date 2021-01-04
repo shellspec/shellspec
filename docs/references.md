@@ -113,19 +113,19 @@ You can write a structured *Example* by using the DSL shown below:
 
 | DSL                  | Description                 |
 | :------------------- | :-------------------------- |
-| ExampleGroup ... End | Define a example group.     |
+| ExampleGroup ... End | Define an example group.     |
 | Describe ... End     | Synonym for `ExampleGroup`. |
 | Context ... End      | Synonym for `ExampleGroup`. |
 
 #### `ExampleGroup` / `Describe` / `Context`
 
-Examples groups are nestable.
+Example groups are nestable.
 
 ### Example
 
 | DSL             | Description            |
 | :-------------- | :--------------------- |
-| Example ... End | Define a example.      |
+| Example ... End | Define an example.      |
 | It ... End      | Synonym for `Example`. |
 | Specify ... End | Synonym for `Example`. |
 
@@ -199,8 +199,8 @@ Run the external shell script in the same shell as the currently running shell.
 When run source <SCRIPT> [ARGUMENTS...]
 ```
 
-This is similar to the `run script`, but simulate the running of shell
-script with `.` command instead of running directly.
+This is similar to `run script`, but simulates the running of shell
+scripts using the `.` command instead of running directly.
 
 The advantage over `run script` is that you can use `Intercept` to intercept
 at any point in the external shell script.
@@ -283,14 +283,14 @@ The line 1 should equal foo # stdout omitted
 When combined with word, `stdout` can be omitted.
 
 ```sh
-The line 1 of stdout should equal foo
-The line 1 should equal foo # stdout omitted
+The word 1 of stdout should equal foo
+The word 1 should equal foo # stdout omitted
 ```
 
 #### `path` / `file` / `directory` subject
 
 ```sh
-Path data-file /tmp/data.txt
+Path data-file=/tmp/data.txt
 The path data-file should be exist
 ```
 
@@ -307,7 +307,7 @@ The result of "foo()" should be successful # shorthand
 The value "foo" should equal "foo"
 ```
 
-I do not recommend using this subject as it will may generate not clear
+I do not recommend using this subject as it may not generate clear
 failure messages. Use the `variable` subject instead.
 
 #### `variable` subject
@@ -782,9 +782,9 @@ Parameters:dynamic
 End
 ```
 
-Only %data directive can be used within Parameters:dynamic block.
-You can not call function or accessing variable defined within specfile.
-You can refer to variables defined with %const.
+Only `%data` directives can be used within a `Parameters:dynamic` block.
+You can not call a function or access variables defined within the specfile.
+You can refer to variables defined with `%const`.
 
 ### Others
 
@@ -857,11 +857,11 @@ Use this with the `When run` evaluation.
 
 ShellSpec provides special environment variables with prefix `SHELLSPEC_`.
 They are useful for writing tests and extensions.
-I will not change it as much as possible for compatibility, but currently not guaranteed.
+I'll try to avoid making breaking changes to these, but can't guarantee it.
 There are many undocumented variables. You can use them at your own risk.
 
-These variables can be overridden by `--env-from` option except for some variables.
-This is an assumed usage, but has not been fully tested.
+These variables can be overridden by the `--env-from` option, except for some
+variables. This is an assumed usage, but has not been fully tested.
 
 | Name                 | Description                              | Value                                                               |
 | :------------------- | :--------------------------------------- | ------------------------------------------------------------------- |
