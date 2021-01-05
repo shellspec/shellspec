@@ -132,11 +132,14 @@ Describe "libexec/translator.sh"
       "tag"         "TAG"         failure
       "tag"         "tag"         success
       "tag1,tag2"   "tag2"        success
+      "tag2"        "tag1,tag2"   failure
       "tag"         "tag:value"   success
 
       "tag:value"   "tag:value"   success
       "tag:value1"  "tag:value2"  failure
       "tag:value"   "tag"         failure
+      "tag:value"   "*"           failure
+      "tag:*"       "value"       failure
     End
 
     It "checks if matches the tag (tag: '$1', attributes: '$2')"

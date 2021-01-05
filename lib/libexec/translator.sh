@@ -2,7 +2,7 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use constants trim match_pattern ends_with escape_quote replace_all match
+use constants trim match_pattern ends_with escape_quote replace_all match includes
 load grammar
 
 initialize() {
@@ -52,10 +52,9 @@ check_filter() {
 check_tag_filter() {
   [ "$SHELLSPEC_TAG_FILTER" ] || return 1
   while [ $# -gt 0 ]; do
-    case ",$SHELLSPEC_TAG_FILTER," in (*,$1,*) return 0; esac
-    case $1 in
-      *:*) case ",$SHELLSPEC_TAG_FILTER," in (*,${1%%:*},*) return 0; esac ;;
-      *  ) case ",$SHELLSPEC_TAG_FILTER," in (*,$1,*) return 0 ; esac ;;
+    includes ",$SHELLSPEC_TAG_FILTER," ",$1," && return 0
+    case $1 in (*:*)
+      includes ",$SHELLSPEC_TAG_FILTER," ",${1%%:*}," && return 0
     esac
     shift
   done
