@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.0] - 2021-01-05
+
 ### Added
 
 - Added `BeforeEach` / `AfterEach` as synonym for `Before` / `After`.
@@ -49,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed possibility of I/O error in satisfy matcher (GitHub Actions only?).
 - Fixed a bug in which zsh on macOS occasionally exits with exit code 147 (SIGCONT).
 - Fixed several bugs related to the Windows path for busybox-w32.
+- Fixed a bug when using metacharacters for tags.
 
 ## [0.27.2] - 2020-10-28
 
@@ -519,7 +522,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.27.1...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.28.0...HEAD
+[0.28.0]: https://github.com/shellspec/shellspec/compare/0.27.2...0.28.0
 [0.27.2]: https://github.com/shellspec/shellspec/compare/0.27.1...0.27.2
 [0.27.1]: https://github.com/shellspec/shellspec/compare/0.27.0...0.27.1
 [0.27.0]: https://github.com/shellspec/shellspec/compare/0.26.1...0.27.0

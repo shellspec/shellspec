@@ -28,9 +28,7 @@ ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh,
 
 ----
 
-**About the next version 0.28.0**: It has a lot of enhancements in the CLI. Basically, they are still compatible, but there are a lot of changes, so please be careful. See [here](https://github.com/shellspec/shellspec/wiki/Migration-Guide-to-Version-0.28.0) for details.
-
-Version 0.28.0 will be released on 2021-01-05 midday (UTC).
+**Version 0.28.0** has a lot of enhancements in the CLI. It is basically compatible, but there are some changes that you need to be aware of. See [Migration Guide to Version 0.28.0](https://github.com/shellspec/shellspec/wiki/Migration-Guide-to-Version-0.28.0) for details.
 
 ----
 
@@ -43,8 +41,6 @@ Let's have fun testing your shell scripts! (Try [Online Demo](https://shellspec.
 [![Coverage report](docs/coverage.png)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html?branch=master)
 
 **Latest Update.**
-
-**Version 0.28.0**: Many enhancements have been made to the CLI. It is still basically compatible, but there are a lot of changes, so please be careful. See here for details.
 
 See [CHANGELOG.md](CHANGELOG.md)
 
