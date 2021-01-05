@@ -47,10 +47,10 @@ check_filter() {
   fi
   [ "$SHELLSPEC_TAG_FILTER" ] || return 1
   while [ $# -gt 0 ]; do
-    case $SHELLSPEC_TAG_FILTER in (*,$1,*) return 0; esac
+    case ",$SHELLSPEC_TAG_FILTER," in (*,$1,*) return 0; esac
     case $1 in
-      *:*) case $SHELLSPEC_TAG_FILTER in (*,${1%%:*},*) return 0; esac ;;
-      *  ) case $SHELLSPEC_TAG_FILTER in (*,$1,*) return 0 ; esac ;;
+      *:*) case ",$SHELLSPEC_TAG_FILTER," in (*,${1%%:*},*) return 0; esac ;;
+      *  ) case ",$SHELLSPEC_TAG_FILTER," in (*,$1,*) return 0 ; esac ;;
     esac
     shift
   done

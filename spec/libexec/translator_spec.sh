@@ -98,7 +98,7 @@ Describe "libexec/translator.sh"
       End
 
       It 'does not match tag'
-        BeforeRun SHELLSPEC_TAG_FILTER=",tag,"
+        BeforeRun SHELLSPEC_TAG_FILTER="tag"
         When run check_filter "desc"
         The status should be failure
       End
@@ -115,25 +115,25 @@ Describe "libexec/translator.sh"
 
       Context 'when specified tag has no value'
         It 'returns failure when not match tag'
-          BeforeRun SHELLSPEC_TAG_FILTER=",tag,"
+          BeforeRun SHELLSPEC_TAG_FILTER="tag"
           When run check_filter "desc TAG"
           The status should be failure
         End
 
         It 'returns success when match tag'
-          BeforeRun SHELLSPEC_TAG_FILTER=",tag,"
+          BeforeRun SHELLSPEC_TAG_FILTER="tag"
           When run check_filter "desc tag"
           The status should be success
         End
 
         It 'returns success when match any tag'
-          BeforeRun SHELLSPEC_TAG_FILTER=",tag1,tag2,"
+          BeforeRun SHELLSPEC_TAG_FILTER="tag1,tag2"
           When run check_filter "desc tag2"
           The status should be success
         End
 
         It 'matches tag with value'
-          BeforeRun SHELLSPEC_TAG_FILTER=",tag,"
+          BeforeRun SHELLSPEC_TAG_FILTER="tag"
           When run check_filter "desc tag:value"
           The status should be success
         End
@@ -141,19 +141,19 @@ Describe "libexec/translator.sh"
 
       Context 'when specified tag has a value'
         It 'returns success when match tag'
-          BeforeRun SHELLSPEC_TAG_FILTER=",tag:value,"
+          BeforeRun SHELLSPEC_TAG_FILTER="tag:value"
           When run check_filter "desc tag:value"
           The status should be success
         End
 
         It 'does not match tag with different value'
-          BeforeRun SHELLSPEC_TAG_FILTER=",tag:value1,"
+          BeforeRun SHELLSPEC_TAG_FILTER="tag:value1"
           When run check_filter "desc tag:value2"
           The status should be failure
         End
 
         It 'does not matches tag without value'
-          BeforeRun SHELLSPEC_TAG_FILTER=",tag:value,"
+          BeforeRun SHELLSPEC_TAG_FILTER="tag:value"
           When run check_filter "desc tag"
           The status should be failure
         End
