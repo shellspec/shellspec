@@ -145,6 +145,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
   - [Execute the actual command within a mock function](#execute-the-actual-command-within-a-mock-function)
   - [Make mock not mandatory in sandbox mode](#make-mock-not-mandatory-in-sandbox-mode)
   - [Resolve command incompatibilities](#resolve-command-incompatibilities)
+- [Tagging](#tagging)
 - [Testing a single file script](#testing-a-single-file-script)
   - [Sourced Return](#sourced-return)
   - [Intercept](#intercept)
@@ -852,6 +853,12 @@ Describe 'is example group'
 End
 ```
 
+The example groups can be optionally tagged. See [Tagging](#tagging) for details.
+
+```sh
+Describe 'is example group' tag1:value1 tag2:value2 ...
+```
+
 #### `It`, `Specify`, `Example` - example block
 
 `Example` is a block for writing evaluation and expectations.
@@ -867,6 +874,12 @@ It 'performs addition'          # example
   The output should eq 5        # expectation
   The status should be success  # another expectation
 End
+```
+
+The examples can be optionally tagged. See [Tagging](#tagging) for details.
+
+```sh
+It 'performs addition' tag1:value1 tag2:value2 ...
 ```
 
 #### `Todo` - one liner empty example
@@ -1632,6 +1645,29 @@ case $OSTYPE in
   *) invoke sed "$@" ;;
 esac
 ```
+
+## Tagging
+
+The example groups or examples can be tagged, and the `--tag` option can be used to filter the examples to be run.
+The tag name and tag value are separated by `:`, and the tag value is optional. You can use any character if quoted.
+
+```sh
+Describe "Checking something" someTag:someVal
+  It "does foo" tagA:val1
+    ...
+  It "does bar" tagA:val2
+    ...
+  It "does baz" tagA
+    ...
+End
+```
+
+1. Everything nested inside a selected element is selected in parent elements. e.g. `--tag someTag` will select everything above.
+2. Specifying a tag but no value selects everything with that tag whether or not it has a value, e.g. `--tag tagA` will select everything above.
+3. Specifying multiple tags will select the union of everything tagged, e.g. `--tag tagA:val1,tagA:val2` will select `does foo` and `does bar`.
+4. Tests included multiple times are not a problem, e.g. `--tag someTag,tagA,tagA:val1` just selects everything.
+5. If no tag matches, nothing will be run, e.g. `--tag tagA:` runs nothing (it does not match baz above, as empty values are not the same as no value).
+6. The --tag option can be used multiple times, e.g. `--tag tagA:val1 --tag tagA:val2` works the same as `--tag tagA:val1,tagA:val2`
 
 ## Testing a single file script
 

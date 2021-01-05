@@ -36,9 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Accept `banner.md` as a banner file
 - `Include` and `import` (`shellspec_import`) can now pass arguments.
 - The delimiter of the environment variable `SHELLSPEC_REQUIRES` has been changed from `:` to space.
-- Improved documentation. (#117, #119 ldicarlo)
-- Improved documentation. (#120, #139 Antoni Marcinek)
-- Improved documentation. (#159 Leon Stafford)
+- Improved documentation. Thanks to ldicarlo (#117, #119), Antoni Marcinek (#120, #139), Stuart R. Jefferys (#155), Leon Stafford (#159).
 
 ### Removed
 
