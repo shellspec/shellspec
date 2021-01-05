@@ -113,51 +113,36 @@ Describe "libexec/translator.sh"
     Context 'when tag exists'
       BeforeRun 'SHELLSPEC_EXAMPLE_FILTER='
 
-      Context 'when specified tag has no value'
-        It 'returns failure when not match tag'
-          BeforeRun SHELLSPEC_TAG_FILTER="tag"
-          When run check_filter "desc TAG"
-          The status should be failure
-        End
-
-        It 'returns success when match tag'
-          BeforeRun SHELLSPEC_TAG_FILTER="tag"
-          When run check_filter "desc tag"
-          The status should be success
-        End
-
-        It 'returns success when match any tag'
-          BeforeRun SHELLSPEC_TAG_FILTER="tag1,tag2"
-          When run check_filter "desc tag2"
-          The status should be success
-        End
-
-        It 'matches tag with value'
-          BeforeRun SHELLSPEC_TAG_FILTER="tag"
-          When run check_filter "desc tag:value"
-          The status should be success
-        End
+      It 'returns failure when matches tags'
+        check_tag_filter() { return 1; }
+        When run check_filter "desc TAG"
+        The status should be failure
       End
 
-      Context 'when specified tag has a value'
-        It 'returns success when match tag'
-          BeforeRun SHELLSPEC_TAG_FILTER="tag:value"
-          When run check_filter "desc tag:value"
-          The status should be success
-        End
-
-        It 'does not match tag with different value'
-          BeforeRun SHELLSPEC_TAG_FILTER="tag:value1"
-          When run check_filter "desc tag:value2"
-          The status should be failure
-        End
-
-        It 'does not matches tag without value'
-          BeforeRun SHELLSPEC_TAG_FILTER="tag:value"
-          When run check_filter "desc tag"
-          The status should be failure
-        End
+      It 'returns success when matches tags'
+        check_tag_filter() { return 0; }
+        When run check_filter "desc tag"
+        The status should be success
       End
+    End
+  End
+
+  Describe "check_tag_filter()"
+    Parameters
+      "tag"         "TAG"         failure
+      "tag"         "tag"         success
+      "tag1,tag2"   "tag2"        success
+      "tag"         "tag:value"   success
+
+      "tag:value"   "tag:value"   success
+      "tag:value1"  "tag:value2"  failure
+      "tag:value"   "tag"         failure
+    End
+
+    It "checks if matches the tag (tag: '$1', attributes: '$2')"
+      BeforeRun SHELLSPEC_TAG_FILTER="$1"
+      When run check_tag_filter "$2"
+      The status should be "$3"
     End
   End
 

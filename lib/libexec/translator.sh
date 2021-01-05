@@ -45,6 +45,11 @@ check_filter() {
     match_pattern "$check_filter" "$SHELLSPEC_EXAMPLE_FILTER" && return 0
     shift
   fi
+  [ $# -gt 0 ] || return 1
+  check_tag_filter "$@"
+}
+
+check_tag_filter() {
   [ "$SHELLSPEC_TAG_FILTER" ] || return 1
   while [ $# -gt 0 ]; do
     case ",$SHELLSPEC_TAG_FILTER," in (*,$1,*) return 0; esac
