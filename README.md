@@ -66,7 +66,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
   - [Options file](#options-file)
   - [`.shellspec` - project options file](#shellspec---project-options-file)
   - [`.shellspec-local` - user custom options file](#shellspec-local---user-custom-options-file)
-  - [`.shellspec-basedir`](#shellspec-basedir)
+  - [`.shellspec-basedir` - specfile execution base directory](#shellspec-basedir---specfile-execution-base-directory)
   - [`.shellspec-quick.log` - quick execution log](#shellspec-quicklog---quick-execution-log)
   - [`report/` - report file directory](#report---report-file-directory)
   - [`coverage/` - coverage reports directory](#coverage---coverage-reports-directory)
@@ -697,7 +697,7 @@ Specifies the default options to use for the project.
 
 Override the default options used by the project with your favorites.
 
-### `.shellspec-basedir`
+### `.shellspec-basedir` - specfile execution base directory
 
 Used to specify the directory in which the specfile will be run.
 See [directory structure](docs/directory_structure.md) or `--execdir` option for details.
@@ -1531,13 +1531,13 @@ See `Parameters`.
 
 ## Mocking
 
-There are two ways to create a mock, function-based mock and command-based mock.
+There are two ways to create a mock, (shell) function-based mock and (external) command-based mock.
 The function-based mock is usually recommended for performance reasons.
 Both can be overwritten with an internal block and will be restored when the block ends.
 
 ### Function-based mock
 
-The function-based mock is simply (re)defined with shell function.
+The (shell) function-based mock is simply (re)defined with shell function.
 
 ```sh
 Describe 'function-based mock'
@@ -1556,22 +1556,21 @@ End
 
 ### Command-based mock
 
-The command-based mock creates a temporary mock shell script and runs as an external command.
-To accomplish this, a directory for mock commands is included at the beginning of `PATH`.
-
+The (external) command-based mock creates a temporary mock shell script and runs as an external command.
 This is slow, but there are some advantages over the function-based mock.
 
-- You can use invalid characters as the shell function name.
-  - e.g `docker-compose` (It can be defined with bash etc., but invalid as POSIX.)
-- You can use the mock command from an external shell script.
+- Can be use invalid characters as the shell function name.
+  - e.g `docker-compose` (`-` cannot be used as a function name in POSIX)
+- Can be invoke a mocked command from an external command (not limited to shell script).
 
-A command-based mock creates an external shell script with the contents of
-a `Mock` block, so there are some restrictions.
+A command-based mock creates an external shell script with the contents of a `Mock` block,
+so there are some restrictions.
 
-- You cannot call shell functions outside the `Mock` block.
-  - Only bash can export and call shell functions with `export -f`.
-- To reference a variable outside the `Mock` block, that variable must be exported.
-- `%preserve` directive is required to return a variable from a `Mock` block.
+- It is not possible to mock shell functions or shell built-in functions.
+- It is not possible to call shell functions outside the `Mock` block.
+  - Exception: Can be called exported (`export -f`) functions. (bash only)
+- To reference variables outside the `Mock` block, they must be exported.
+- To return a variable from a Mock block, you need to use the `%preserve` directive.
 
 ```sh
 Describe 'command-based mock'
@@ -1587,6 +1586,8 @@ Describe 'command-based mock'
   End
 End
 ```
+
+NOTE: To achieve this feature, a directory for mock commands is included at the beginning of the `PATH`.
 
 ## Support commands
 
