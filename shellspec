@@ -14,8 +14,8 @@ if [ "${1:-}" = "-" ]; then
   echo 'IFS= read -r shebang < "$0"'
   echo 'case $shebang in \#\!*) shell=${shebang#??};; *) shell="";; esac'
   echo 'exec $shell' "$@" '"$0" --pattern "*" "$@"'
-  echo 'return 0'
-  return 0
+  echo 'exit 1'
+  exit 0
 fi
 
 export SHELLSPEC_VERSION='0.28.1-dev'

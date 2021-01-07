@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- bash: Fixed an unexpected error message in self-executable specfile.
+
 ## [0.28.0] - 2021-01-05
 
 ### Added
