@@ -137,14 +137,18 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Mocking](#mocking)
   - [Function-based mock](#function-based-mock)
   - [Command-based mock](#command-based-mock)
+- [Interceptor](#interceptor)
+  - [Intercept](#intercept)
+  - [`__`](#__)
+  - [`test || __() { :; }`](#test--__---)
 - [Support commands](#support-commands)
   - [Execute the actual command within a mock function](#execute-the-actual-command-within-a-mock-function)
   - [Make mock not mandatory in sandbox mode](#make-mock-not-mandatory-in-sandbox-mode)
   - [Resolve command incompatibilities](#resolve-command-incompatibilities)
 - [Tagging](#tagging)
-- [Testing a single file script](#testing-a-single-file-script)
-  - [Sourced Return](#sourced-return)
-  - [Intercept](#intercept)
+- [How to test a single file shell script](#how-to-test-a-single-file-shell-script)
+  - [Using Sourced Return](#using-sourced-return)
+  - [Using Interceptor](#using-interceptor)
 - [spec_helper](#spec_helper)
   - [`<module>_precheck`](#module_precheck)
     - [`minimum_version`](#minimum_version)
@@ -1589,6 +1593,95 @@ End
 
 NOTE: To achieve this feature, a directory for mock commands is included at the beginning of the `PATH`.
 
+## Interceptor
+
+Interceptor is a feature that allows you to intercept your shell script in the middle of its execution.
+This makes it possible to mock functions that cannot be mocked in advance at arbitrary timing,
+and to make assertions by retrieving the state of during script execution.
+
+It is a powerful feature, but avoid using it as possible, because it requires you to modify your code
+and may reduce readability. Normally, it is not a good idea to modify the code just for testing, but in some cases,
+such a shell script that consist of a single file, there is no choice but to use this.
+
+NOTE: Currently, this feature is only available in `run source`.
+
+```sh
+#!/bin/sh
+# ./today.sh
+
+# When run directly without testing, the "__()" function does nothing.
+test || __() { :; }
+
+# the "now()" function is defined here, so it can't be mocked in advance.
+now() { date +"%Y-%m-%d %H:%M:%S"; }
+
+# The function you want to test
+today() {
+  now=$(now)
+  echo "${now% *}"
+}
+
+# I want to mock the "now()" function here.
+__ begin __
+
+today=$(today)
+echo "Today is $today"
+
+__ end __
+```
+
+```sh
+Describe "today.sh"
+  Intercept begin
+  __begin__() {
+    now() { echo "2021-01-01 01:02:03"; }
+  }
+  __end__() {
+    # The "run source" is run in a subshell, so you need to use "%preserve"
+    # to preserve variables
+    %preserve today
+  }
+
+  It "gets today's date"
+    When run source ./today.sh
+    The output should eq "Today is 2021-01-01"
+    The variable today should eq "2021-01-01"
+  End
+End
+```
+
+### Intercept
+
+Usage: `Intercept [<name>...]`
+
+Specify the name(s) to intercept.
+
+NOTE: I will change `Intercept` to `Interceptors` to make it a declarative DSL.
+
+### `__`
+
+Usage: `__ <name> __`
+
+This is where the process is intercepted. You can define more than one.
+If the name matches the name specified in `Intercept`, the `__<name>__` function will be called.
+
+Note that if the name is not specified in `Intercept`, nothing will be done,
+but the exit status will be changed to 0.
+
+### `test || __() { :; }`
+
+Define the `__` function that does nothing except when run as a test (via ShellSpec).
+This allows you to run it as a production without changing the code.
+
+The `test` command is the shell built-in `test` command. This command returns false (non-zero)
+when called with no arguments. This will allow who are not familiar with ShellSpec to will
+understand what the result will be, even if they don't know what the code is for.
+Of course, it is good practice to comment on what the code is for
+
+When run via ShellSpec, the `test` command is redefined and returns true "only once" when called
+with no arguments. After that, it will return to its original behavior. This means that this code
+needs to be executed only once, at the start of the shell script.
+
 ## Support commands
 
 ### Execute the actual command within a mock function
@@ -1666,17 +1759,19 @@ End
 5. If no tag matches, nothing will be run, e.g. `--tag tagA:` runs nothing (it does not match baz above, as empty values are not the same as no value).
 6. The --tag option can be used multiple times, e.g. `--tag tagA:val1 --tag tagA:val2` works the same as `--tag tagA:val1,tagA:val2`
 
-## Testing a single file script
+## How to test a single file shell script
 
-Shell scripts are often made up of a single file. ShellSpec provides two ways
-of testing a single shell script.
+If the shell script consists of a single file, unit testing becomes difficult.
+However, there are many such shell scripts.
 
-### Sourced Return
+ShellSpec has the ability to testing in such cases with only few modifications to the shell script.
 
-This is a method for testing functions defined in shell scripts. Loading a
-script with `Include` defines a `__SOURCED__` variable available in the sourced
-script. If the `__SOURCED__` variable is defined, return in your shell script
-process.
+### Using Sourced Return
+
+This is the way to test functions defined in a shell script.
+
+Loading a script with `Include` defines a `__SOURCED__` variable available in the sourced script.
+If the variable `__SOURCED__` is defined, please return from the shell script.
 
 ```sh
 #!/bin/sh
@@ -1684,53 +1779,37 @@ process.
 
 hello() { echo "Hello $1"; }
 
+# This is the writing style presented by ShellSpec, which is short but unfamiliar.
+# Note that it returns the current exit status.
 ${__SOURCED__:+return}
+
+# The above means the same as below.
+# ${__SOURCED__:+x} && return
+
+# If you don't like the coding style, you can use the general writing style.
+# if [ "${__SOURCED__:+x}" ]; then
+#   return 0
+# fi
 
 hello "$1"
 ```
 
 ```sh
-Describe "example"
+Describe "hello.sh"
   Include "./hello.sh"
-  Example "hello test"
-    When call hello world
-    The output should eq "Hello world"
+
+  Describe "hello()"
+    It "says hello"
+      When call hello world
+      The output should eq "Hello world"
+    End
   End
 End
 ```
 
-### Intercept
+### Using Interceptor
 
-This is a method to mock functions and commands when executing shell
-scripts. By placing intercept points in your script, you can call the hooks
-defined in specfile.
-
-```sh
-#!/bin/sh
-# today.sh
-
-test || __() { :; }
-
-__ begin __
-
-date +"%A, %B %d, %Y"
-```
-
-```sh
-Describe "example"
-  Intercept begin
-  __begin__() {
-    date() {
-      export LANG=C
-      command date "$@" --date="2019-07-19"
-    }
-  }
-  Example "today test"
-    When run source ./today.sh
-    The output should eq "Friday, July 19, 2019"
-  End
-End
-```
+See [Interceptor](#interceptor).
 
 ## spec_helper
 
