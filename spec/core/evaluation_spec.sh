@@ -501,6 +501,12 @@ Describe "core/evaluation.sh"
           The line 3 should eq "xtrace off"
         End
       End
+
+      It "can be redefined the test command"
+        test() { echo "test command redefined"; }
+        When run shellspec_evaluation_run_source "$FIXTURE/test_when_run_source"
+        The output should eq "test command redefined"
+      End
     End
   End
 
