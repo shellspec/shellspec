@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - bash: Fixed an unexpected error message in self-executable specfile.
+- Fix a bug that test command cannot redefine when using "when run source"
 
 ## [0.28.0] - 2021-01-05
 

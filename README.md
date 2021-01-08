@@ -138,7 +138,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
   - [Function-based mock](#function-based-mock)
   - [Command-based mock](#command-based-mock)
 - [Interceptor](#interceptor)
-  - [Intercept](#intercept)
+  - [`Intercept`](#intercept)
   - [`__`](#__)
   - [`test || __() { :; }`](#test--__---)
 - [Support commands](#support-commands)
@@ -146,7 +146,10 @@ NOTE: This documentation contains unreleased features. Check them in the changel
   - [Make mock not mandatory in sandbox mode](#make-mock-not-mandatory-in-sandbox-mode)
   - [Resolve command incompatibilities](#resolve-command-incompatibilities)
 - [Tagging](#tagging)
+- [About testing external commands](#about-testing-external-commands)
 - [How to test a single file shell script](#how-to-test-a-single-file-shell-script)
+  - [Using `run script`](#using-run-script)
+  - [Using `run source`](#using-run-source)
   - [Using Sourced Return](#using-sourced-return)
   - [Using Interceptor](#using-interceptor)
 - [spec_helper](#spec_helper)
@@ -1650,7 +1653,7 @@ Describe "today.sh"
 End
 ```
 
-### Intercept
+### `Intercept`
 
 Usage: `Intercept [<name>...]`
 
@@ -1759,12 +1762,61 @@ End
 5. If no tag matches, nothing will be run, e.g. `--tag tagA:` runs nothing (it does not match baz above, as empty values are not the same as no value).
 6. The --tag option can be used multiple times, e.g. `--tag tagA:val1 --tag tagA:val2` works the same as `--tag tagA:val1,tagA:val2`
 
+## About testing external commands
+
+ShellSpec is a testing framework for shell scripts, but it can be used to test anything that can be executed as an external command, even if it is written in another language. Even shell scripts can be tested as external commands.
+
+If you are testing a shell script as an external command, please note the following.
+
+- It will be executed in the shell specified by the shebang not the shell running the specfile.
+- The coverage of the shell script will not be measured.
+- Cannot refer to variables inside the shell script.
+- Shell built-in commands cannot be mocked.
+- Functions defined inside the shell script cannot be mocked.
+- Only command-based mock can be used (if the script is calling an external command).
+- Interceptor is not available.
+
+To get around these limitations, use `run script` or `run source`. See [How to test a single file shell script](#how-to-test-a-single-file-shell-script).
+
 ## How to test a single file shell script
 
 If the shell script consists of a single file, unit testing becomes difficult.
 However, there are many such shell scripts.
 
 ShellSpec has the ability to testing in such cases with only few modifications to the shell script.
+
+### Using `run script`
+
+Unlike the case of executing as an [external command](#about-testing-external-commands), it has the following features.
+
+- It will run in the same shell (but another process) that is running specfile.
+- The coverage of the shell script will be measured.
+
+There are limitations as follows.
+
+- Cannot refer to variables inside the shell script.
+- Shell built-in commands cannot be mocked.
+- Functions defined inside the shell script cannot be mocked.
+- Only command-based mock can be used (if the script is calling an external command).
+- Interceptor is not available.
+
+### Using `run source`
+
+It is even less limitations than `run script` and has the following features.
+
+- It will run in the same shell and same process that is running specfile.
+- The coverage of the shell script will be measured.
+- Can be refer to variables inside the shell script.
+- Function-based mock and command-based mock are available.
+- Interceptor is available.
+- Shell built-in commands can be mocked.
+- Functions defined inside the shell script can be mocked using interceptor.
+
+However, since it is simulated using the `.` command, there are some differences in behavior.
+For example, the value of `$0` is different.
+
+NOTE: Mocking of shell built-in commands can be done before `run source`. However, if you are using
+interceptor, mocking of the `test` command must be done in the `__<name>__` function.
 
 ### Using Sourced Return
 
