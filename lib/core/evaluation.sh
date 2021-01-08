@@ -219,13 +219,15 @@ shellspec_evaluation_run_command() {
 }
 
 shellspec_evaluation_run_source() {
-  test() {
-    case $# in
-      0) test() { case $# in (0) false ;; (*) [ "$@" ]; esac; } ;;
-      *) [ "$@" ] ;;
-    esac
-  }
-  __() { shellspec_interceptor "$@"; }
+  if [ "${SHELLSPEC_INTERCEPTOR#\|}" ]; then
+    test() {
+      case $# in
+        0) test() { case $# in (0) false ;; (*) [ "$@" ]; esac; } ;;
+        *) [ "$@" ] ;;
+      esac
+    }
+    __() { shellspec_interceptor "$@"; }
+  fi
   shellspec_coverage_start
   # shellcheck disable=SC2031
   if [ "$SHELLSPEC_XTRACE" ]; then
