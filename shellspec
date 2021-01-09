@@ -253,6 +253,7 @@ export SHELLSPEC_KCOV_COMMON_OPTS="${opts# } "
 
 # temporary path
 export SHELLSPEC_TMPDIR="${SHELLSPEC_TMPDIR%/}"
+abspath SHELLSPEC_TMPDIR "$SHELLSPEC_TMPDIR" "$SHELLSPEC_CWD"
 if [ ! -d "$SHELLSPEC_TMPDIR" ]; then
   abort "Temporary directory '$SHELLSPEC_TMPDIR' does not exist or is not a directory."
 fi
