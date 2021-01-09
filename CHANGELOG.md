@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - bash: Fixed an unexpected error message in self-executable specfile.
 - Fix a bug that test command cannot redefine when using "when run source"
+- Fixed a bug when specified relative tmp directory path.
 
 ## [0.28.0] - 2021-01-05
 
