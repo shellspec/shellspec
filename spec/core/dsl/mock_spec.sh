@@ -1,10 +1,12 @@
 #shellcheck shell=sh disable=SC2016
 
+Skip if "tmp directory is not executable" noexec_tmpdir
+
 Mock mocked-command
   echo a
 End
 
-It "can be used outer example group"
+Specify "Mock helper can be used outer example group"
   When run mocked-command
   The output should eq a
 End

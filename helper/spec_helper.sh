@@ -27,6 +27,11 @@ spec_helper_precheck() {
       unsetenv EXTGLOB
     fi
   fi
+
+  if [ "$SHELLSPEC_NOEXEC_TMPDIR" ]; then
+    info "Some tests will be skipped" \
+      "because the files under tmp direcotry cannot be executed"
+  fi
 }
 
 # shellcheck disable=SC2039
@@ -132,6 +137,7 @@ spec_helper_configure() {
   busybox_w32() { [ "$SHELLSPEC_BUSYBOX_W32" ]; }
   exists_tty() { [ "$SHELLSPEC_TTY" ]; }
   not_exists_shopt() { [ ! "$SHELLSPEC_SHOPT_AVAILABLE" ]; }
+  noexec_tmpdir() { [ "$SHELLSPEC_NOEXEC_TMPDIR" ]; }
 
   uppercase() {
     set -- aA bB cC dD eE fF gG hH iI jJ kK lL mM nN oO pP qQ rR sS tT uU vV wW xX yY zZ

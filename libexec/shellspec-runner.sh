@@ -157,8 +157,17 @@ SHELLSPEC_INFO="${quick_mode}${info}${info_extra:+ }${info_extra}"
 mktempdir "$SHELLSPEC_TMPBASE"
 
 if [ "$SHELLSPEC_KEEP_TMPDIR" ]; then
-  warn "Keeping temporary directory. "
+  warn "Keeping temporary directory."
   warn "Manually delete: rm -rf \"$SHELLSPEC_TMPBASE\""
+fi
+
+noexec_check="$SHELLSPEC_TMPBASE/.shellspec-check-executable"
+echo '#!/bin/sh' > "$noexec_check"
+"$SHELLSPEC_CHMOD" +x "$noexec_check"
+if ! "$noexec_check" 2>/dev/null; then
+  export SHELLSPEC_NOEXEC_TMPDIR=1
+  warn "Some features will not work properly because files under" \
+    "the tmp directory (mounted with noexec option?) cannot be executed."
 fi
 
 if [ "$SHELLSPEC_BANNER" ]; then
