@@ -14,6 +14,8 @@ Describe "run shellspec-gen-bin.sh"
   Path dummy-bin="$HELPERDIR/support/bin/@dummy"
 
   Context "when spec directory exists"
+    Skip if "tmp directory is not executable" noexec_tmpdir
+
     setup() { @mkdir -p "$HELPERDIR"; }
     Before setup
 
