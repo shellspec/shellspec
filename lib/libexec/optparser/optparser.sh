@@ -7,14 +7,6 @@
 # shellcheck source=lib/getoptions_abbr.sh
 # . "$SHELLSPEC_LIB/getoptions_abbr.sh"
 
-preparser() {
-  # . "$SHELLSPEC_LIB/libexec/optparser/preparser_definition.sh"
-  # eval "$(getoptions preparser_definition "$@")"
-
-  # shellcheck source=lib/libexec/optparser/preparser_definition_generated.sh
-  . "$SHELLSPEC_LIB/libexec/optparser/preparser_definition_generated.sh"
-}
-
 optparser() {
   eval "$1() { if [ \$# -gt 0 ]; then optparser_parse \"\$@\"; fi; }"
   eval "optparser_error() { $2 \"\$@\"; }"
@@ -51,10 +43,6 @@ check_module_name() {
   case $OPTARG in ([!a-zA-Z_]*) return 1; esac
   case $OPTARG in (*[!a-zA-Z0-9_]*) return 1; esac
   return 0
-}
-
-check_directory() {
-  OPTARG=${OPTARG:-$PWD}
 }
 
 check_env_name() {

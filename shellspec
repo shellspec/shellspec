@@ -133,26 +133,43 @@ fi
 
 # option parsing for change directory
 {
-  error_message() { error "$1"; return 1; }
-  abort_chdir() { abort "Cannot change to '$1'${2:+: }${2:-}"; }
-  preparser preparse_options error_message
-  [ $# -gt 0 ] && preparse_options "$@"
-  eval "set -- $REST"
-  if [ "${DIRECTORY+x}" ]; then
-    if [ ! "$DIRECTORY" ]; then
-      [ $# -gt 0 ] || abort "There is no file or directory path"
-      case $1 in ([-+]?*)
-        abort "The file or directory path is required before the option '$1'"
+  dir='.'
+  while [ $# -gt 0 ]; do
+    case $1 in (-c?*)
+      opts=${1#??}
+      shift
+      case $# in
+        0) set -- -c -"$opts" ;;
+        *) set -- -c -"$opts" "$@" ;;
       esac
-      [ -f "$1" ] && DIRECTORY=${1%/*} || DIRECTORY=$1
-    fi
-    [ -e "${DIRECTORY:-.}" ] || abort_chdir "$DIRECTORY" 'No such file or directory'
-    [ -d "${DIRECTORY:-.}" ] || abort_chdir "$DIRECTORY" 'Not a directory'
-    cd "$DIRECTORY" 2>/dev/null || {
-      error "$(cd "$DIRECTORY" 2>&1)"
-      abort_chdir "$DIRECTORY"
-    }
+    esac
+    case $1 in
+      -C?*) dir=${1#??} ;;
+      -c | --chdir) dir='' ;;
+      --directory=*) dir=${1#*=} ;;
+      -C | --directory)
+        [ $# -lt 2 ] && abort "Requires an argument: $1"
+        dir=${2:-.}
+        shift ;;
+      *) break ;;
+    esac
+    shift
+  done
+
+  abort_chdir() { abort "Cannot change to '$1'${2:+: }${2:-}"; }
+  if [ ! "$dir" ]; then
+    [ $# -gt 0 ] || abort "There is no file or directory path"
+    case $1 in ([-+]?*)
+      abort "The file or directory path is required before the option '$1'"
+    esac
+    [ -f "$1" ] && dir=${1%/*} || dir=$1
   fi
+  [ -e "${dir:-.}" ] || abort_chdir "$dir" 'No such file or directory'
+  [ -d "${dir:-.}" ] || abort_chdir "$dir" 'Not a directory'
+  cd "$dir" 2>/dev/null || {
+    error "$(cd "$dir" 2>&1)"
+    abort_chdir "$dir"
+  }
 }
 
 # project root path
