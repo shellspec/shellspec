@@ -26,6 +26,8 @@ package:
 	contrib/make_package_json.sh > package.json
 
 optparser:
+	@printf "getoptions: "
+	@$(GETOPTIONSCLI) --version
 	$(GETOPTIONSCLI) $(OPTPARSERDIR)/preparser_definition.sh preparse_options \
 		> $(OPTPARSERDIR)/preparser_definition_generated.sh
 	$(GETOPTIONSCLI) $(OPTPARSERDIR)/parser_definition.sh \

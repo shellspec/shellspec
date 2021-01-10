@@ -67,8 +67,9 @@ Describe "getoptions()"
 
 		Context "when scanning mode is '#'"
 			parser_definition() {
-				setup ARGS mode:'#'
+				setup ARGS mode:'#' plus:true
 				flag FLAG_A -a
+				flag FLAG_B +b off:1
 			}
 
 			Specify "treats rest following a non-option as arguments"
@@ -78,8 +79,9 @@ Describe "getoptions()"
 			End
 
 			Specify "treats rest following a non-option or an unknown option as arguments"
-				When call restargs -a -a -x 2 -a 3 -- -a
+				When call restargs -a -a -aa +bb -x 2 -a 3 -- -a
 				The variable FLAG_A should eq 1
+				The variable FLAG_B should eq 1
 				The output should eq "-x 2 -a 3 -- -a"
 			End
 
@@ -87,6 +89,14 @@ Describe "getoptions()"
 				When call restargs -a -- -a
 				The variable FLAG_A should eq 1
 				The output should eq "-a"
+			End
+
+			Describe "leaves unknown options as is:"
+				Parameters:value -xx +xx
+				Specify "$1"
+					When call restargs "$1"
+					The output should eq "$1"
+				End
 			End
 		End
 
@@ -110,7 +120,7 @@ Describe "getoptions()"
 
 		Context "when scanning mode is '='"
 			parser_definition() {
-				setup ARGS mode:'='
+				setup ARGS mode:'=' plus:true
 				flag FLAG -f
 				param PARAM -p
 			}
@@ -118,6 +128,14 @@ Describe "getoptions()"
 				When call restargs -p 1 -f a -p 2 b -x -p 3
 				The variable PARAM should eq 2
 				The output should eq "a b -x -p 3"
+			End
+
+			Describe "leaves unknown options as is:"
+				Parameters:value -xx +xx
+				Specify "$1"
+					When call restargs "$1"
+					The output should eq "$1"
+				End
 			End
 		End
 
