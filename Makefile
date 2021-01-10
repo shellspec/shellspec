@@ -28,8 +28,6 @@ package:
 optparser:
 	@printf "getoptions: "
 	@$(GETOPTIONSCLI) --version
-	$(GETOPTIONSCLI) $(OPTPARSERDIR)/preparser_definition.sh preparse_options \
-		> $(OPTPARSERDIR)/preparser_definition_generated.sh
 	$(GETOPTIONSCLI) $(OPTPARSERDIR)/parser_definition.sh \
 		optparser_parse SHELLSPEC optparser_error \
 		> $(OPTPARSERDIR)/parser_definition_generated.sh

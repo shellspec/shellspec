@@ -3,16 +3,6 @@
 Describe "libexec/optparser/optparser.sh"
   Include "$SHELLSPEC_LIB/libexec/optparser/optparser.sh"
 
-  Describe "preparser()"
-    error_message() { :; }
-
-    It "defines pre option parser and error message functions"
-      When call preparser preparse_options error_message
-      Assert preparse_options
-      Assert error_message
-    End
-  End
-
   Describe "optparser()"
     error_message() { :; }
 
@@ -89,20 +79,6 @@ Describe "libexec/optparser/optparser.sh"
       BeforeCall OPTARG="$1"
       When call check_module_name
       The status should be "$2"
-    End
-  End
-
-  Describe "check_directory()"
-    It "leaves OPTARG as it is if it is not empty"
-      BeforeCall OPTARG=directory
-      When call check_directory
-      The variable OPTARG should eq "directory"
-    End
-
-    It "sets OPTARG to PWD if it is empty"
-      BeforeCall OPTARG=''
-      When call check_directory
-      The variable OPTARG should eq "$PWD"
     End
   End
 
