@@ -137,10 +137,6 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Mocking](#mocking)
   - [Function-based mock](#function-based-mock)
   - [Command-based mock](#command-based-mock)
-- [Interceptor](#interceptor)
-  - [`Intercept`](#intercept)
-  - [`__`](#__)
-  - [`test || __() { :; }`](#test--__---)
 - [Support commands](#support-commands)
   - [Execute the actual command within a mock function](#execute-the-actual-command-within-a-mock-function)
   - [Make mock not mandatory in sandbox mode](#make-mock-not-mandatory-in-sandbox-mode)
@@ -150,8 +146,12 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [How to test a single file shell script](#how-to-test-a-single-file-shell-script)
   - [Using `run script`](#using-run-script)
   - [Using `run source`](#using-run-source)
-  - [Using Sourced Return](#using-sourced-return)
-  - [Using Interceptor](#using-interceptor)
+  - [Testing shell functions](#testing-shell-functions)
+    - [`__SOURCED__`](#__sourced__)
+  - [Intercepting](#intercepting)
+    - [`Intercept`](#intercept)
+    - [`test || __() { :; }`](#test--__---)
+    - [`__`](#__)
 - [spec_helper](#spec_helper)
   - [`<module>_precheck`](#module_precheck)
     - [`minimum_version`](#minimum_version)
@@ -1596,95 +1596,6 @@ End
 
 NOTE: To achieve this feature, a directory for mock commands is included at the beginning of the `PATH`.
 
-## Interceptor
-
-Interceptor is a feature that allows you to intercept your shell script in the middle of its execution.
-This makes it possible to mock functions that cannot be mocked in advance at arbitrary timing,
-and to make assertions by retrieving the state of during script execution.
-
-It is a powerful feature, but avoid using it as possible, because it requires you to modify your code
-and may reduce readability. Normally, it is not a good idea to modify the code just for testing, but in some cases,
-such a shell script that consist of a single file, there is no choice but to use this.
-
-NOTE: Currently, this feature is only available in `run source`.
-
-```sh
-#!/bin/sh
-# ./today.sh
-
-# When run directly without testing, the "__()" function does nothing.
-test || __() { :; }
-
-# the "now()" function is defined here, so it can't be mocked in advance.
-now() { date +"%Y-%m-%d %H:%M:%S"; }
-
-# The function you want to test
-today() {
-  now=$(now)
-  echo "${now% *}"
-}
-
-# I want to mock the "now()" function here.
-__ begin __
-
-today=$(today)
-echo "Today is $today"
-
-__ end __
-```
-
-```sh
-Describe "today.sh"
-  Intercept begin
-  __begin__() {
-    now() { echo "2021-01-01 01:02:03"; }
-  }
-  __end__() {
-    # The "run source" is run in a subshell, so you need to use "%preserve"
-    # to preserve variables
-    %preserve today
-  }
-
-  It "gets today's date"
-    When run source ./today.sh
-    The output should eq "Today is 2021-01-01"
-    The variable today should eq "2021-01-01"
-  End
-End
-```
-
-### `Intercept`
-
-Usage: `Intercept [<name>...]`
-
-Specify the name(s) to intercept.
-
-NOTE: I will change `Intercept` to `Interceptors` to make it a declarative DSL.
-
-### `__`
-
-Usage: `__ <name> __`
-
-This is where the process is intercepted. You can define more than one.
-If the name matches the name specified in `Intercept`, the `__<name>__` function will be called.
-
-Note that if the name is not specified in `Intercept`, nothing will be done,
-but the exit status will be changed to 0.
-
-### `test || __() { :; }`
-
-Define the `__` function that does nothing except when run as a test (via ShellSpec).
-This allows you to run it as a production without changing the code.
-
-The `test` command is the shell built-in `test` command. This command returns false (non-zero)
-when called with no arguments. This will allow who are not familiar with ShellSpec to will
-understand what the result will be, even if they don't know what the code is for.
-Of course, it is good practice to comment on what the code is for
-
-When run via ShellSpec, the `test` command is redefined and returns true "only once" when called
-with no arguments. After that, it will return to its original behavior. This means that this code
-needs to be executed only once, at the start of the shell script.
-
 ## Support commands
 
 ### Execute the actual command within a mock function
@@ -1818,9 +1729,11 @@ For example, the value of `$0` is different.
 NOTE: Mocking of shell built-in commands can be done before `run source`. However, if you are using
 interceptor, mocking of the `test` command must be done in the `__<name>__` function.
 
-### Using Sourced Return
+### Testing shell functions
 
-This is the way to test functions defined in a shell script.
+#### `__SOURCED__`
+
+This is the way to test shell functions defined in a shell script.
 
 Loading a script with `Include` defines a `__SOURCED__` variable available in the sourced script.
 If the variable `__SOURCED__` is defined, please return from the shell script.
@@ -1832,11 +1745,11 @@ If the variable `__SOURCED__` is defined, please return from the shell script.
 hello() { echo "Hello $1"; }
 
 # This is the writing style presented by ShellSpec, which is short but unfamiliar.
-# Note that it returns the current exit status.
+# Note that it returns the current exit status (could be non-zero).
 ${__SOURCED__:+return}
 
 # The above means the same as below.
-# ${__SOURCED__:+x} && return
+# ${__SOURCED__:+x} && return $?
 
 # If you don't like the coding style, you can use the general writing style.
 # if [ "${__SOURCED__:+x}" ]; then
@@ -1859,9 +1772,92 @@ Describe "hello.sh"
 End
 ```
 
-### Using Interceptor
+### Intercepting
 
-See [Interceptor](#interceptor).
+Interceptor is a feature that allows you to intercept your shell script in the middle of its execution.
+This makes it possible to mock functions that cannot be mocked in advance at arbitrary timing,
+and to make assertions by retrieving the state of during script execution.
+
+It is a powerful feature, but avoid using it as possible, because it requires you to modify your code
+and may reduce readability. Normally, it is not a good idea to modify the code just for testing,
+but in some cases, there is no choice but to use this.
+
+```sh
+#!/bin/sh
+# ./today.sh
+
+# When run directly without testing, the "__()" function does nothing.
+test || __() { :; }
+
+# the "now()" function is defined here, so it can't be mocked in advance.
+now() { date +"%Y-%m-%d %H:%M:%S"; }
+
+# The function you want to test
+today() {
+  now=$(now)
+  echo "${now% *}"
+}
+
+# I want to mock the "now()" function here.
+__ begin __
+
+today=$(today)
+echo "Today is $today"
+
+__ end __
+```
+
+```sh
+Describe "today.sh"
+  Intercept begin
+  __begin__() {
+    now() { echo "2021-01-01 01:02:03"; }
+  }
+  __end__() {
+    # The "run source" is run in a subshell, so you need to use "%preserve"
+    # to preserve variables
+    %preserve today
+  }
+
+  It "gets today's date"
+    When run source ./today.sh
+    The output should eq "Today is 2021-01-01"
+    The variable today should eq "2021-01-01"
+  End
+End
+```
+
+#### `Intercept`
+
+Usage: `Intercept [<name>...]`
+
+Specify the name(s) to intercept.
+
+NOTE: I will change `Intercept` to `Interceptors` to make it a declarative DSL.
+
+#### `test || __() { :; }`
+
+Define the `__` function that does nothing except when run as a test (via ShellSpec).
+This allows you to run it as a production without changing the code.
+
+The `test` command is the shell built-in `test` command. This command returns false (non-zero)
+when called with no arguments. This will allow who are not familiar with ShellSpec to will
+understand what the result will be, even if they don't know what the code is for.
+Of course, it is good practice to comment on what the code is for
+
+When run via ShellSpec, the `test` command is redefined and returns true "only once" when called
+with no arguments. After that, it will return to its original behavior. This means that this code
+needs to be executed only once, at the start of the shell script.
+
+#### `__`
+
+Usage: `__ <name> [arguments...] __`
+
+This is where the process is intercepted. You can define more than one.
+If the name matches the name specified in `Intercept`, the `__<name>__` function will be called.
+
+Note that if the name is not specified in `Intercept`, nothing will be done,
+but the exit status will be changed to 0.
 
 ## spec_helper
 
