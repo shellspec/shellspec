@@ -561,32 +561,32 @@ The status should be failure
 ##### `equal` matcher
 
 ```sh
-The outout should equal <STRING>
-The outout should eq <STRING>
+The output should equal <STRING>
+The output should eq <STRING>
 ```
 
 ##### `start with` matcher
 
 ```sh
-The outout should start with <STRING>
+The output should start with <STRING>
 ```
 
 ##### `end with` matcher
 
 ```sh
-The outout should end with <STRING>
+The output should end with <STRING>
 ```
 
 ##### `include` matcher
 
 ```sh
-The outout should include <STRING>
+The output should include <STRING>
 ```
 
 ##### `match pattern` matcher
 
 ```sh
-The outout should match pattern <PATTERN>
+The output should match pattern <PATTERN>
 ```
 
 PATTERN examples
