@@ -2,7 +2,7 @@
 # [getoptions] License: Creative Commons Zero v1.0 Universal
 getoptions() {
 	_error='' _on=1 _off='' _export='' _plus='' _mode='' _alt='' _rest=''
-	_opts='' _help='' _abbr='' _cmds='' _init=@empty IFS=' '
+	_flags='' _nflags='' _opts='' _help='' _abbr='' _cmds='' _init=@empty IFS=' '
 
 	_0() { echo "$@"; }
 	for i in 1 2 3 4 5; do eval "_$i() { _$((${i-}-1)) \"	\$@\"; }"; done
@@ -30,8 +30,8 @@ getoptions() {
 		on=$_on off=$_off export=$_export init=$_init _hasarg=$1 && shift
 		while loop "$@" && shift; do
 			case $1 in
-				-?) [ "$_hasarg" ] || _opts="$_opts${1#-}" ;;
-				+?) _plus=1 ;;
+				-?) [ "$_hasarg" ] && _opts="$_opts${1#-}" || _flags="$_flags${1#-}" ;;
+				+?) _plus=1 _nflags="$_nflags${1#+}" ;;
 				[!-+]*) kv "$1"
 			esac
 		done
@@ -53,11 +53,11 @@ getoptions() {
 		[ "${1#-}" ] && _rest=$1
 		while loop "$@" && shift; do kv "$1" _; done
 	}
-	_flag() { args : "$@"; defvar "$@"; }
-	_param() { args '' "$@"; defvar "$@"; }
-	_option() { args '' "$@"; defvar "$@"; }
-	_disp() { args : "$@"; }
-	_msg() { args : _ "$@"; }
+	_flag() { args '' "$@"; defvar "$@"; }
+	_param() { args 1 "$@"; defvar "$@"; }
+	_option() { args 1 "$@"; defvar "$@"; }
+	_disp() { args '' "$@"; }
+	_msg() { args '' _ "$@"; }
 
 	cmd() { _mode=@ _cmds="$_cmds${_cmds:+|}'$1'"; }
 	"$@"
@@ -131,25 +131,21 @@ getoptions() {
 	[ "$_alt" ] && _2 'case $1 in -[!-]?*) set -- "-$@"; esac'
 	_2 'case $1 in'
 	_wa() { _4 "eval 'set -- $1' \${1+'\"\$@\"'}"; }
-	_op() { _wa '"${OPTARG%"${OPTARG#??}"}" '"$1"'"${OPTARG#??}"'; }
+	_op() {
+		_3 "$1) OPTARG=\$1; shift"
+		_wa '"${OPTARG%"${OPTARG#??}"}" '"$2"'"${OPTARG#??}"'
+		_4 "$3"
+	}
 	_3 '--?*=*) OPTARG=$1; shift'
 	_wa '"${OPTARG%%\=*}" "${OPTARG#*\=}"'
 	_4 ';;'
 	_3 '--no-*) unset OPTARG ;;'
 	[ "$_alt" ] || {
-		[ "$_opts" ] && {
-			_3 "-[$_opts]?*) OPTARG=\$1; shift"
-			_op ''
-			_4 ';;'
-		}
-		_3 '-[!-]?*) OPTARG=$1; shift'
-		_op -
-		_4 'OPTARG= ;;'
+		[ "$_opts" ] && _op "-[$_opts]?*" '' ';;'
+		[ ! "$_flags" ] || _op "-[$_flags]?*" - 'OPTARG= ;;'
 	}
 	[ "$_plus" ] && {
-		_3 '+??*) OPTARG=$1; shift'
-		_op +
-		_4 'unset OPTARG ;;'
+		[ "$_nflags" ] && _op "+[$_nflags]?*" + 'unset OPTARG ;;'
 		_3 '+*) unset OPTARG ;;'
 	}
 	_2 'esac'
