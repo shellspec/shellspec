@@ -7,11 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.1] - 2021-01-11
+
+### Changed
+
+- Improved documentation. Thanks to Yohei Kawahara (#173).
+
 ### Fixed
 
 - bash: Fixed an unexpected error message in self-executable specfile.
-- Fix a bug that test command cannot redefine when using "when run source"
+- Fixed a bug that test command cannot redefine when using "when run source"
 - Fixed a bug when specified relative tmp directory path.
+- Fixed option parsing
 
 ## [0.28.0] - 2021-01-05
 
@@ -528,7 +535,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.28.0...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.28.1...HEAD
+[0.28.1]: https://github.com/shellspec/shellspec/compare/0.28.0...0.28.1
 [0.28.0]: https://github.com/shellspec/shellspec/compare/0.27.2...0.28.0
 [0.27.2]: https://github.com/shellspec/shellspec/compare/0.27.1...0.27.2
 [0.27.1]: https://github.com/shellspec/shellspec/compare/0.27.0...0.27.1
