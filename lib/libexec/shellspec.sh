@@ -266,12 +266,15 @@ expand_pathstar() {
   eval "$(shift 2 && expand_pathstar_create_matcher "$@")"
   # shellcheck disable=SC2034
   expand_pathstar=$(shift && expand_pathstar_retrive '|||' "$@")
-  while IFS= read -r expand_pathstar; do
-    expand_pathstar_matcher "${expand_pathstar%\|\|\|*}" || continue
-    "$1" "${expand_pathstar%\|\|\|*}" "${expand_pathstar##*\|\|\|}"
-  done << HERE
-$expand_pathstar
-HERE
+  set -- "$IFS" "$expand_pathstar" "$1"
+  expand_pathstar=$3
+  IFS=$SHELLSPEC_LF
+  eval "set -- \"\$1\" \${${ZSH_VERSION:+=}2}"
+  IFS=$1
+  while [ $# -gt 1 ] && shift; do
+    expand_pathstar_matcher "${1%\|\|\|*}" || continue
+    "$expand_pathstar" "${1%\|\|\|*}" "${1##*\|\|\|}"
+  done
 }
 
 expand_pathstar_create_matcher() {
