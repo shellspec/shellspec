@@ -33,7 +33,7 @@ executor() {
     --bash-parse-files-in-dir=. \
     --configure=command-name="shellspec $*" \
     "$SHELLSPEC_COVERAGEDIR" "$SHELLSPEC_KCOV_IN_FILE"
-  )
+  ) 8>&1
 
   eval "kcov_postprocess; return $?"
 }

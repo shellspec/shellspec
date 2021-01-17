@@ -201,7 +201,8 @@ fi
 # and capture stderr both of the runner and the reporter
 # and the stderr streams to error hander
 # and also handle both exit status. As a result of
-( ( ( ( set -e; { executor "$@"; } 9>&1 >&8; echo $? >&5 ) \
+( ( ( ( export SHELLSPEC_OUTPUT_FD=9
+  set -e; ( exec 3>&- 4>&- 5>&- 8>&-; executor "$@") 9>&1 >&8; echo $? >&5 ) \
   | reporter "$@" >&3; echo $? >&5 ) 2>&1 \
   | error_handler >&4; echo $? >&5 ) 5>&1 \
   | (
