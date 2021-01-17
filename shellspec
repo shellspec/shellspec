@@ -18,7 +18,7 @@ if [ "${1:-}" = "-" ]; then
   exit 0
 fi
 
-export SHELLSPEC_VERSION='0.28.1'
+export SHELLSPEC_VERSION='0.29.0-dev'
 export SHELLSPEC_CWD=$PWD
 export SHELLSPEC_PATH=''
 export SHELLSPEC_GRAMMAR_DSLS=''
