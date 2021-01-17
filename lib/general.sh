@@ -1,5 +1,12 @@
 #shellcheck shell=sh disable=SC2016
 
+# Workaround for ksh 2020
+if [ "${KSH_VERSION:-}" ]; then
+  ( exec 3>/dev/null 4>&3 5>&3 6>&3 7>&3 8>&3 9>&3
+    eval "dummy() { $(printf %8192s :); }"
+  ) 3>&- 4>&- 5>&- 6>&- 7>&- 8>&- 9>&-
+fi
+
 : "${SHELLSPEC_SHELL_TYPE:=}" "${SHELLSPEC_SHELL_VERSION:=}"
 SHELLSPEC_SH_VERSION=$(eval 'echo "${.sh.version}"' 2>/dev/null) ||:
 : "${SHELLSPEC_SH_VERSION:=${SH_VERSION:-}}"
