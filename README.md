@@ -177,6 +177,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
   - [Related projects](#related-projects)
     - [getoptions - An elegant option parser and generator for shell scripts](#getoptions---an-elegant-option-parser-and-generator-for-shell-scripts)
     - [readlinkf - readlink -f implementation for shell scripts](#readlinkf---readlink--f-implementation-for-shell-scripts)
+    - [portable-echo - Portable echo shell function for POSIX compliant shells](#portable-echo---portable-echo-shell-function-for-posix-compliant-shells)
   - [Inspired frameworks](#inspired-frameworks)
   - [Contributions](#contributions)
 
@@ -2111,6 +2112,10 @@ URL: [https://github.com/ko1nksm/getoptions](https://github.com/ko1nksm/getoptio
 #### readlinkf - readlink -f implementation for shell scripts
 
 URL: [https://github.com/ko1nksm/readlinkf](https://github.com/ko1nksm/readlinkf)
+
+#### portable-echo - Portable echo shell function for POSIX compliant shells
+
+URL: [https://github.com/ko1nksm/portable-echo.sh](https://github.com/ko1nksm/portable-echo.sh)
 
 ### Inspired frameworks
 
