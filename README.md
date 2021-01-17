@@ -82,6 +82,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
   - [Execution directory](#execution-directory)
   - [Embedded shell scripts](#embedded-shell-scripts)
   - [Translation process](#translation-process)
+  - [Syntax formatter (`altshfmt`)](#syntax-formatter-altshfmt)
 - [DSL syntax](#dsl-syntax)
   - [Basic structure](#basic-structure)
     - [`Describe`, `Context`, `ExampleGroup` - example group block](#describe-context-examplegroup---example-group-block)
@@ -172,6 +173,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
   - [Subprojects](#subprojects)
     - [ShellMetrics - Cyclomatic Complexity Analyzer for shell scripts](#shellmetrics---cyclomatic-complexity-analyzer-for-shell-scripts)
     - [ShellBench - A benchmark utility for POSIX shell comparison](#shellbench---a-benchmark-utility-for-posix-shell-comparison)
+    - [altshfmt - AltSH (alternative shell script) formatter](#altshfmt---altsh-alternative-shell-script-formatter)
   - [Related projects](#related-projects)
     - [getoptions - An elegant option parser and generator for shell scripts](#getoptions---an-elegant-option-parser-and-generator-for-shell-scripts)
     - [readlinkf - readlink -f implementation for shell scripts](#readlinkf---readlink--f-implementation-for-shell-scripts)
@@ -833,6 +835,11 @@ shell script and output to a temporary directory (default: `/tmp`) before being 
 
 The translation process is simple in that it only replaces forward-matched words (DSLs), with a few
 exceptions. If you are interested in the translated code, you can see with `shellspec --translate`.
+
+### Syntax formatter (`altshfmt`)
+
+The specfile contains DSLs, so it cannot be properly formatted by general shell script formatters.
+If you want to format the specfile, use [altshfmt](https://github.com/shellspec/altshfmt).
 
 ## DSL syntax
 
@@ -2090,6 +2097,10 @@ URL: [https://github.com/shellspec/shellmetrics](https://github.com/shellspec/sh
 #### ShellBench - A benchmark utility for POSIX shell comparison
 
 URL: [https://github.com/shellspec/shellbench](https://github.com/shellspec/shellbench)
+
+#### altshfmt - AltSH (alternative shell script) formatter
+
+URL: [https://github.com/shellspec/altshfmt](https://github.com/shellspec/altshfmt)
 
 ### Related projects
 
