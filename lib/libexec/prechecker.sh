@@ -31,29 +31,26 @@ abort() {
 
 minimum_version() {
   if [ $# -eq 0 ]; then
-    error "minimum_version: The minimum version is not specified"
-    return 1
+    abort "minimum_version: The minimum version is not specified"
   fi
 
   if ! check_semver "$1"; then
-    error "minimum_version: Invalid version format (major.minor.patch[-pre][+build]): $1"
-    return 1
+    abort "minimum_version: Invalid version format (major.minor.patch[-pre][+build]): $1"
   fi
 
-  semver "$1" -le "$VERSION" && return 0
-  error "ShellSpec version $1 or higher is required"
-  return 1
+  if ! semver "$1" -le "$VERSION"; then
+    abort "ShellSpec version $1 or higher is required"
+  fi
 }
 
 setenv() {
   while [ $# -gt 0 ]; do
     if ! ( export "${1%%\=*}=" ) 2>/dev/null; then
-      error "setenv: Invalid environment variable name: ${1%%\=*}"
-      return 1
+      abort "setenv: Invalid environment variable name: ${1%%\=*}"
     fi
     case $1 in
-      *=*) setenv_ "${1%%\=*}" "${1#*\=}" || return $? ;;
-      *) error "setenv: No value for environment variable: $1"; return 1
+      *=*) setenv_ "${1%%\=*}" "${1#*\=}" ;;
+      *) abort "setenv: No value for environment variable: $1"
     esac
     shift
   done
@@ -71,8 +68,7 @@ setenv_() {
 unsetenv() {
   while [ $# -gt 0 ]; do
     if ! ( export "$1=" ) 2>/dev/null; then
-      error "unsetenv: Invalid environment variable name: $1"
-      return 1
+      abort "unsetenv: Invalid environment variable name: $1"
     fi
     echo "unset $1 ||:" >&9
     shift
