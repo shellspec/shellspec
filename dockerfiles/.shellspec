@@ -7,7 +7,9 @@ COPY --from=helpers /usr/local/bin/* /usr/local/bin/
 WORKDIR /shellspec
 RUN chmod ug+s /usr/local/bin/su-exec \
  && echo "--no-banner" > /home/user/.shellspec-options \
- && if [ "$KCOV" ]; then echo "--kcov" >> /home/user/.shellspec-options; fi \
+ && echo '--fail-low-coverage' >> /home/user/.shellspec-options \
+ && echo '--kcov-options "--limits=60,75"' >> /home/user/.shellspec-options \
+ && if [ "$KCOV" ]; then echo '--kcov' >> /home/user/.shellspec-options; fi \
  && ln -s /shellspec/shellspec /usr/local/bin/shellspec \
  && echo "$SH" > /etc/invokesh.conf \
  && [ "$SH" = "/bin/sh" ] || ln -snf /usr/local/bin/invokesh /bin/sh
