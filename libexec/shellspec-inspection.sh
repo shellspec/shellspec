@@ -112,7 +112,7 @@ if "${0%/*}/shellspec-shebang" 2>/dev/null; then
 fi
 
 # shellcheck disable=SC2039,SC3047
-if (trap '' DEBUG) 2>/dev/null; then
+if (ulimit -t unlimited; trap '' DEBUG) 2>/dev/null; then
   echo "SHELLSPEC_DEBUG_TRAP=1"
   echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
 fi
