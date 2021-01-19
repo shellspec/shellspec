@@ -67,9 +67,10 @@ Describe "shellspec-precheck.sh"
     It 'loads env file'
       When run script ./libexec/shellspec-prechecker.sh --status-file="$FILE" --warn-fd=1 "$FIXTURE/precheck.sh" "$FIXTURE/empty"
       The output should include "precheck_loaded"
-      The status should be failure
+      The status should be success
       The contents of file "$FILE" should be blank
-      # The contents of file "$FILE" should eq 127 # abort in the future
+      # The status should eq 127 # abort in the future
+      # The contents of file "$FILE" should eq 127
     End
   End
 End

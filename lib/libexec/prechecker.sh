@@ -74,3 +74,24 @@ unsetenv() {
     shift
   done
 }
+
+shellspec_precheck_run() {
+  unset "$1" ||:
+  set +e -- "$1" "$2" "$SHELLSPEC_TMPBASE/.shellspec-prechecker-exit-status"
+  if [ "$SHELLSPEC_DEFECT_BOSHEXIT" ]; then
+    [ -s "$3" ] && : > "$3"
+    ( set -e; eval "$2"; eval "[ $? -eq 0 ] || exit $?"; echo 1 >"$3" )
+    eval "[ -s \"\$3\" ] && $1='' || $1=$?"
+  elif [ "$SHELLSPEC_DEFECT_ZSHEXIT" ]; then
+    [ -s "$3" ] && : > "$3"
+    eval "$1"'=$( sf=$(printf "%q" "$3")
+      eval "exit() { echo \"\$1\" > \"$sf\"; { unset status; } 2>/dev/null; }"
+      set -e; '"$2"'; eval "[ $? -eq 0 ] || exit $?"; echo 1)'
+    eval "[ \"\${$1}\" ] && $1='' || $1=$?"
+    [ -s "$3" ] && read -r "$1" < "$3"
+  else
+    eval "$1"='$(eval "set -e; '"$2"'"; eval "[ $? -eq 0 ] || exit $?"; echo 1)'
+    eval "[ \"\${$1}\" ] && $1='' || $1=$?"
+  fi
+  set -e
+}

@@ -46,7 +46,6 @@ precheck() {
   [ $# -gt 0 ] || return 0
 
   status_file=$SHELLSPEC_PRECHECKER_STATUS
-  echo "-" > "$status_file"
   for module; do
     import_path=''
     resolve_module_path import_path "$module"
@@ -186,15 +185,17 @@ if [ "${SHELLSPEC_RANDOM:-}" ]; then
 fi
 
 {
-  env=$( ( ( ( (
-    ( ( precheck "$SHELLSPEC_REQUIRES" ) &&:; echo "exit_status=$?" >&9; ) >&8
+  env=$( ( ( ( ( _do() { set +e; (set -e; "$@" ); echo "exit_status=$?" >&9; }
+    _do precheck "$SHELLSPEC_REQUIRES" >&8
     ) 2>&1 | while IFS= read -r line; do error "$line"; done >&2
     ) 3>&1 | while IFS= read -r line; do warn "$line"; done >&2
     ) 4>&1 | while IFS= read -r line; do info "$line"; done >&8
   ) 9>&1 )
   eval "$env"
 } 8>&1
-[ -s "$SHELLSPEC_PRECHECKER_STATUS" ] && exit "$exit_status"
+if [ "$exit_status" -ne 0 ] || [ -s "$SHELLSPEC_PRECHECKER_STATUS" ]; then
+  exit "$exit_status"
+fi
 
 # I want to process with non-blocking output
 # and the stdout of runner streams to the reporter

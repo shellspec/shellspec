@@ -47,6 +47,15 @@ if [ "${ZSH_VERSION:-}" ] && zshexit; then
   echo "SHELLSPEC_DEFECT_ZSHEXIT=1"
 fi
 
+set +e
+(set -e; false; :)
+# shellcheck disable=SC2181
+if [ $? -eq 0 ] && [ ! "${POSH_VERSION:-}" ]; then
+  # bosh <= 2020/03/25
+  echo "SHELLSPEC_DEFECT_BOSHEXIT=1"
+fi
+set -e
+
 # Workaround for posh 0.8.5
 if [ ! "$(kill -l 2 2>/dev/null)" = "INT" ]; then
   # Workaround for procps-ng kill
