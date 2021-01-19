@@ -117,6 +117,10 @@ if (ulimit -t unlimited; trap '' DEBUG) 2>/dev/null; then
   echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
 fi
 
+if [ "$SHELLSPEC_KCOV" ] && [ "${KSH_VERSION:-}" ]; then
+  echo "SHELLSPEC_DEFECT_KSHCOV=1"
+fi
+
 case $PWD in ([a-zA-Z]:* | //*)
   echo "SHELLSPEC_BUSYBOX_W32=1"
 esac

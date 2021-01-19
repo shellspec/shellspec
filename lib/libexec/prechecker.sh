@@ -78,7 +78,7 @@ unsetenv() {
 shellspec_precheck_run() {
   unset "$1" ||:
   set +e -- "$1" "$2" "$SHELLSPEC_TMPBASE/.shellspec-prechecker-exit-status"
-  if [ "$SHELLSPEC_DEFECT_BOSHEXIT" ]; then
+  if [ "$SHELLSPEC_DEFECT_BOSHEXIT" ] || [ "$SHELLSPEC_DEFECT_KSHCOV" ]; then
     [ -s "$3" ] && : > "$3"
     ( set -e; eval "$2"; eval "[ $? -eq 0 ] || exit $?"; echo 1 >"$3" )
     eval "[ -s \"\$3\" ] && $1='' || $1=$?"
