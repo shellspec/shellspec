@@ -12,17 +12,18 @@ check_semver() {
   return 0
 }
 
-# shellcheck disable=SC2181
 semver() {
   case $2 in
-    -lt) cmp_semver "$1" "$3" &&:; [ $? -eq 1 ] ;;
-    -le) cmp_semver "$1" "$3" &&:; [ $? -ne 2 ] ;;
-    -eq) cmp_semver "$1" "$3" &&:; [ $? -eq 0 ] ;;
-    -ne) cmp_semver "$1" "$3" &&:; [ $? -ne 0 ] ;;
-    -gt) cmp_semver "$1" "$3" &&:; [ $? -eq 2 ] ;;
-    -ge) cmp_semver "$1" "$3" &&:; [ $? -ne 1 ] ;;
+    -lt) set -- "$1" "$2" "$3" -eq 1 ;;
+    -le) set -- "$1" "$2" "$3" -ne 2 ;;
+    -eq) set -- "$1" "$2" "$3" -eq 0 ;;
+    -ne) set -- "$1" "$2" "$3" -ne 0 ;;
+    -gt) set -- "$1" "$2" "$3" -eq 2 ;;
+    -ge) set -- "$1" "$2" "$3" -ne 1 ;;
     *) echo "Unexpected operator: $2" >&2; exit 1 ;;
   esac
+  cmp_semver "$1" "$3" &&:
+  test $? "$4" "$5"
 }
 
 cmp_semver() {
