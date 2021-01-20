@@ -66,7 +66,7 @@ Describe "core/clone.sh"
     Parameters
       # shellcheck disable=SC2218
       "var"       success
-      "var1"      failure
+      "VAR"       failure
       "array[1]"  success
       "array[2]"  failure
     End
@@ -77,13 +77,13 @@ Describe "core/clone.sh"
     End
   End
 
-  BeforeCall 'var=$(var)'
+  BeforeCall 'var=$(var1)'
   shellspec_clone_typeset() { %= "$var"; }
   [ "$SHELLSPEC_BUILTIN_PRINT" ] || eval 'print() { printf "%s\n" "$3"; }'
 
   Describe "shellspec_clone_posix()"
     Specify 'var="abc"'
-      var() { %text
+      var1() { %text
         #|abc
       }
       var2() { %text
@@ -94,7 +94,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var="foo${LF}bar"'
-      var() { %text
+      var1() { %text
         #|foo
         #|bar
       }
@@ -111,7 +111,7 @@ Describe "core/clone.sh"
 
   Describe 'shellspec_clone_bash()'
     Specify 'var=123'
-      var() { %text
+      var1() { %text
         #|declare -- var="123"
       }
       var2() { %text
@@ -122,7 +122,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var="foo\nbar"'
-      var() { %text
+      var1() { %text
         #|declare -- var="foo
         #|bar"
       }
@@ -135,7 +135,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var=(1 2 3)'
-      var() { %text
+      var1() { %text
         #|declare -a var=([0]="1" [1]="2" [2]="3")
       }
       var2() { %text
@@ -146,7 +146,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'typeset -A var=([a]=1 [b]=2 [c]="foo\nbar")' # bash >= 4.x
-      var() { %text
+      var1() { %text
         #|declare -A var='([a]="1" [b]="2" [c]="foo
         #|bar" )'
       }
@@ -161,7 +161,7 @@ Describe "core/clone.sh"
 
   Describe 'shellspec_clone_zsh()'
     Specify 'var=123'
-      var() { %text
+      var1() { %text
         #|typeset var=123
       }
       var2() { %text
@@ -172,7 +172,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'export var'
-      var() { %text
+      var1() { %text
         #|export var=''
       }
       var2() { %text
@@ -183,7 +183,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var=123 # 5.4.2 in function'
-      var() { %text
+      var1() { %text
         #|typeset -g var=123
       }
       var2() { %text
@@ -194,7 +194,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var="foo\nbar" # 4.2.5'
-      var() { %text
+      var1() { %text
         #|typeset var='foo
         #|bar'
       }
@@ -207,7 +207,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var="foo\nbar" # 5.3.1'
-      var() { %text
+      var1() { %text
         #|typeset var=$'foo\nbar'
       }
       var2() { %text
@@ -218,7 +218,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var=(1 2 3 "foo\nbar") # 4.2.5'
-      var() { %text
+      var1() { %text
         #|typeset -a var
         #|var=(1 2 3 'foo
         #|var=')
@@ -233,7 +233,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'array with global # exists?'
-      var() { %text
+      var1() { %text
         #|typeset -g -a var
         #|var=(1 2 3 'foo
         #|var=')
@@ -248,7 +248,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var=(1 2 3 "foo\nbar") # 5.4.2'
-      var() { %text
+      var1() { %text
         #|typeset -a var=( 1 2 3 $'foo\nbar' )
       }
       var2() { %text
@@ -259,7 +259,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'typeset -A var=( a 1 b 2 ) # 5.4.2'
-      var() { %text
+      var1() { %text
         #|typeset -A var=( a 1 b 2 )
       }
       var2() { %text
@@ -272,7 +272,7 @@ Describe "core/clone.sh"
 
   Describe 'shellspec_clone_ksh()'
     Specify 'var=123'
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
@@ -283,7 +283,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var="foo\nbar"'
-      var() { %text
+      var1() { %text
         #|var=$'foo\nbar'
       }
       var2() { %text
@@ -294,7 +294,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var="foo\nbar" # exists?'
-      var() { %text
+      var1() { %text
         #|var='foo
         #|bar'
       }
@@ -307,7 +307,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var=(1 2 3) # ksh'
-      var() { %text
+      var1() { %text
         #|typeset -a var=(1 2 3)
       }
       var2() { %text
@@ -318,7 +318,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var=(1 2 3) # mksh'
-      var() { %text
+      var1() { %text
         #|set -A var
         #|typeset var[0]=1
         #|typeset var[1]=2
@@ -335,7 +335,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'readonly var # ksh'
-      var() { %text
+      var1() { %text
         #|typeset -r var
       }
       var2() { %text
@@ -346,7 +346,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var=(1 2 3); var[10]=10'
-      var() { %text
+      var1() { %text
         #|typeset -a var=([0]=1 [1]=2 [2]=3 [10]=10)
       }
       var2() { %text
@@ -357,7 +357,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'typeset -A var=([a]=1 [b]=2)'
-      var() { %text
+      var1() { %text
         #|typeset -A var=([a]=1 [b]=2)
       }
       var2() { %text
@@ -370,7 +370,7 @@ Describe "core/clone.sh"
 
   Describe 'shellspec_clone_yash()'
     Specify 'var=123'
-      var() { %text
+      var1() { %text
         #|typeset var='123'
       }
       var2() { %text
@@ -381,7 +381,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var="foo\nbar"'
-      var() { %text
+      var1() { %text
         #|typeset var='foo
         #|var='
       }
@@ -394,7 +394,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'var=(1 2 3 "foo\nvar=bar")'
-      var() { %text
+      var1() { %text
         #|var=('1' '2' '3' 'foo
         #|var=bar')
         #|typeset var
@@ -409,7 +409,7 @@ Describe "core/clone.sh"
     End
 
     Specify 'readonly var'
-      var() { %text
+      var1() { %text
         #|typeset -r var
       }
       var2() { %text
@@ -438,7 +438,7 @@ Describe "core/clone.sh"
         #|var
         #|undefined functions
       }
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
@@ -455,7 +455,7 @@ Describe "core/clone.sh"
         #|var
         #|undefined functions
       }
-      var() { %text
+      var1() { %text
         #|var='foo
         #|bar'
       }
@@ -472,7 +472,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|association var
       }
-      var() { %text
+      var1() { %text
         #|var=(a 1 b 2 )
       }
       var2() { %text
@@ -487,7 +487,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|float var
       }
-      var() { %text
+      var1() { %text
         #|var=1.230000000e+02
       }
       var2() { %text
@@ -502,7 +502,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|float var
       }
-      var() { %text
+      var1() { %text
         #|var=123.00000
       }
       var2() { %text
@@ -517,7 +517,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|left justified 3 var
       }
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
@@ -532,7 +532,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|right justified 3 var
       }
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
@@ -547,7 +547,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|zero filled 3 var
       }
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
@@ -562,7 +562,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|array var
       }
-      var() { %text
+      var1() { %text
         #|var=(1 2)
       }
       var2() { %text
@@ -577,7 +577,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|integer var
       }
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
@@ -592,7 +592,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|integer var
       }
-      var() { %text
+      var1() { %text
         #|var=8#173
       }
       var2() { %text
@@ -608,7 +608,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|lowercase var
       }
-      var() { %text
+      var1() { %text
         #|var=abc
       }
       var2() { %text
@@ -623,7 +623,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|readonly var
       }
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
@@ -638,7 +638,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|tagged var
       }
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
@@ -653,7 +653,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|uppercase var
       }
-      var() { %text
+      var1() { %text
         #|var=ABC
       }
       var2() { %text
@@ -668,7 +668,7 @@ Describe "core/clone.sh"
       vars() { %text
         #|exported var
       }
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
@@ -696,7 +696,7 @@ Describe "core/clone.sh"
         #|typeset -x PATH
         #|typeset -x TERM
       }
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
@@ -713,7 +713,7 @@ Describe "core/clone.sh"
         #|typeset -x TERM
         #|typeset -i var
       }
-      var() { %text
+      var1() { %text
         #|var=0
       }
       var2() { %text
@@ -731,7 +731,7 @@ Describe "core/clone.sh"
         #|typeset -x TERM
         #|typeset -x var
       }
-      var() { :; }
+      var1() { :; }
       var2() { %text
         #|typeset -x var2
       }
@@ -745,7 +745,7 @@ Describe "core/clone.sh"
         #|typeset -x PATH
         #|typeset -x TERM
       }
-      var() { %text
+      var1() { %text
         #|var[0]=1
         #|var[1]=2
         #|var[2]=3
@@ -772,7 +772,7 @@ Describe "core/clone.sh"
 
     Specify 'var=123'
       vars() { :; }
-      var() { :; }
+      var1() { :; }
       BeforeCall "unset var ||:"
       When call shellspec_clone_old_pdksh var var2
       The status should be failure
@@ -784,14 +784,14 @@ Describe "core/clone.sh"
         #|typeset -i SECONDS
         #|typeset var
       }
-      var() { %text
+      var1() { %text
         #|var=123
       }
       var2() { %text
         #|typeset var2
         #|var2='123'
       }
-      shellspec_clone_exists_variable() { eval "$(var)"; }
+      shellspec_clone_exists_variable() { eval "$(var1)"; }
       When call shellspec_clone_old_pdksh var var2
       The output should eq "$(var2)"
     End
