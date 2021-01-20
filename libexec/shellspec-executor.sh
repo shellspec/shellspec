@@ -3,6 +3,9 @@
 
 set -eu
 
+# Close the file descriptor for time command
+exec 2>&3
+
 # shellcheck source=lib/libexec/executor.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/executor.sh"
 
