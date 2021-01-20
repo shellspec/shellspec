@@ -204,8 +204,8 @@ shellspec_example() {
   ( set -e
     shift
     case $# in
-      0) shellspec_invoke_example 3>&2 ;;
-      *) shellspec_invoke_example "$@" 3>&2 ;;
+      0) shellspec_invoke_example ;;
+      *) shellspec_invoke_example "$@" ;;
     esac
   )
   set "$1" -- $? "$SHELLSPEC_LEAK_FILE"

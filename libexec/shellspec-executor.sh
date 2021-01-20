@@ -100,8 +100,10 @@ detect_range() {
   echo "${lineno_begin}-${lineno_end:-$lineno}"
 }
 
-( ( ( ( set +e; executor "$@" 2>&1 >&4; echo $? >&5 ) 2>&1 \
-  | error_handler >&3; echo $? >&5) 5>&1) \
+set +e
+( ( ( ( (
+  ( set -e; exec 3>&- 4>&- 5>&-; executor "$@" ) ) 2>&1 >&4; echo $? >&5 ) \
+  | ( set -e; error_handler ) >&3; echo $? >&5 ) 5>&1) \
   | (
       read -r xs1 && [ "$xs1" -ne 0 ] && exit "$xs1"
       read -r xs2 && [ "$xs2" -ne 0 ] && exit "$xs2"

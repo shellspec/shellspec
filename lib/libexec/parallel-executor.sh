@@ -49,7 +49,7 @@ executor() {
   translator --no-finished | $SHELLSPEC_SHELL # output only metadata
   # Workaround for osh: Use FD3 to avoid display "Started PID"
   callback() {
-    { worker "$1" "$jobs" 2>&3 & } 3>&2 2>/dev/null
+    { ( exec 3>&-; worker "$1" "$jobs" ) 2>&3 & } 3>&2 2>/dev/null
     workers="$workers $!"
   }
   sequence callback 1 "$SHELLSPEC_WORKERS"

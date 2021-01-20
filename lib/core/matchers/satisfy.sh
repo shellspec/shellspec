@@ -30,7 +30,7 @@ shellspec_matcher_satisfy() {
       while read -r line; do :; done # Discard unnecessary STDIN data
       set_exit_status() { return "$1"; }
       set_exit_status "$ex"
-    ) 2>"$SHELLSPEC_SATISFY_STDERR_FILE" >&4 &&:
+    ) 2>"$SHELLSPEC_SATISFY_STDERR_FILE" &&:
 
     set -- "$?"
     if [ -s "$SHELLSPEC_SATISFY_STDERR_FILE" ]; then
