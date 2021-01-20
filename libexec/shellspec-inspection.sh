@@ -48,7 +48,7 @@ if [ "${ZSH_VERSION:-}" ] && zshexit; then
 fi
 
 set +e
-(set -e; false; :)
+(set -e; false; :) 2>/dev/null
 # shellcheck disable=SC2181
 if [ $? -eq 0 ] && [ ! "${POSH_VERSION:-}" ]; then
   # bosh <= 2020/03/25
