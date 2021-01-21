@@ -4,7 +4,7 @@
 set -euf
 
 interrupt=''
-"$SHELLSPEC_TRAP" 'interrupt=1' INT
+"$SHELLSPEC_TRAP" '[ "$interrupt" ] && exit 130; interrupt=1' INT
 "$SHELLSPEC_TRAP" '' TERM
 
 echo $$ > "$SHELLSPEC_REPORTER_PID"
