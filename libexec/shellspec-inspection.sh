@@ -111,15 +111,23 @@ if "${0%/*}/shellspec-shebang" 2>/dev/null; then
   echo "SHELLSPEC_SHEBANG_MULTIARG=1"
 fi
 
-# shellcheck disable=SC2039,SC3047
-if (ulimit -t unlimited; trap '' DEBUG) 2>/dev/null; then
+set +e
+# shellcheck disable=SC2034,SC2039
+(
+  ulimit -t unlimited || exit 1
+
+  trap '' DEBUG || exit 1
   echo "SHELLSPEC_DEBUG_TRAP=1"
   echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
-fi
 
-if [ "$SHELLSPEC_KCOV" ] && [ "${KSH_VERSION:-}" ]; then
-  echo "SHELLSPEC_DEFECT_KSHCOV=1"
-fi
+  # Workaround for ksh93u+ and ksh2020 (fixed in ksh93u+m)
+  trap ':' DEBUG
+  r=$(exit 123)
+  if [ $? -ne 123 ]; then
+    echo "SHELLSPEC_DEFECT_DEBUGXS=1"
+  fi
+) 2>/dev/null
+set -e
 
 case $PWD in ([a-zA-Z]:* | //*)
   echo "SHELLSPEC_BUSYBOX_W32=1"
