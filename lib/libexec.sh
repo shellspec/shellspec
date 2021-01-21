@@ -66,9 +66,9 @@ find_specfiles() {
 }
 
 edit_in_place() {
-  if [ -e "$1" ]; then
-    eval 'shift; putsn "$("$@" < "'"$1"'")" > "'"$1"'"'
-  fi
+  [ -e "$1" ] || return 0
+  set -- "$1" "$(eval 'shift; "$@"' < "$1")"
+  putsn "$2" > "$1"
 }
 
 info() {
