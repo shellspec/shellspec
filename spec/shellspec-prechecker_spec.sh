@@ -35,6 +35,7 @@ Describe "shellspec-precheck.sh"
     It 'loads env file'
       When run script ./libexec/shellspec-prechecker.sh --status-file="$FILE" "$FIXTURE/precheck.sh" "$FIXTURE/empty"
       The output should eq "precheck"
+      The error should be defined
       The status should eq 2
       The contents of file "$FILE" should eq 2
     End

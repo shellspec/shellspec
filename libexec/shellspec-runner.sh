@@ -2,6 +2,8 @@
 #shellcheck disable=SC2004
 
 set -eu
+# shellcheck disable=SC2039
+shopt -u verbose_errexit 2>/dev/null ||:
 
 # shellcheck source=lib/libexec/runner.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/runner.sh"
