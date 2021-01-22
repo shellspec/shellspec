@@ -7,7 +7,7 @@ use sequence
 worker() {
   job() {
     # posh 0.10.2 workaround: uses mkdir instead of set -C
-    (mkdir "$SHELLSPEC_JOBDIR/$1.lock") 2>/dev/null || return 0
+    ( mkdir "$SHELLSPEC_JOBDIR/$1.lock" ) 2>/dev/null || return 0
     IFS= read -r specfile < "$SHELLSPEC_JOBDIR/$1.job"
     translator --no-metadata --no-finished --spec-no="$1" "$specfile" \
       | eval "\$SHELLSPEC_SHELL" \
@@ -47,13 +47,9 @@ executor() {
   create_workdirs "$jobs"
 
   translator --no-finished | $SHELLSPEC_SHELL # output only metadata
-  # Workaround for osh: Use FD3 to avoid display "Started PID"
-  callback() {
-    { ( exec 3>&-; worker "$1" "$jobs" ) 2>&3 & } 3>&2 2>/dev/null
-    workers="$workers $!"
-  }
+  callback() { worker "$1" "$jobs" & nap; workers="$workers $!"; }
   sequence callback 1 "$SHELLSPEC_WORKERS"
-  (reduce "$jobs") &&:
+  ( reduce "$jobs" ) &&:
   eval "[ $? -eq 0 ] || return $?"
   translator --no-metadata | $SHELLSPEC_SHELL # output only finished
 }
