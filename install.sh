@@ -165,7 +165,7 @@ latest_version() {
   get_versions | version_sort | last
 }
 
-${__SOURCED__:+return}
+${__SOURCED__:+false} : || return 0
 
 trap finished EXIT
 VERSION='' PREFIX=$HOME/.local BIN='' DIR='' SWITCH='' PRE='' YES='' FETCH=''

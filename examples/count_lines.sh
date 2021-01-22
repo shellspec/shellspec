@@ -13,7 +13,7 @@ count_lines() {
 
 # When included from shellspec, __SOURCED__ variable defined and script
 # end here. The script path is assigned to the __SOURCED__ variable.
-${__SOURCED__:+return}
+${__SOURCED__:+false} : || return 0
 
 if [ "${1:-}" ]; then
   count_lines < "$1"

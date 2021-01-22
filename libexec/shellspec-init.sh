@@ -40,7 +40,7 @@ default_options() {
   fi
 }
 
-${__SOURCED__:+return}
+${__SOURCED__:+false} : || return 0
 
 __ main __
 
