@@ -10,7 +10,6 @@
 - [Sandbox mode (`--sandbox`)](#sandbox-mode---sandbox)
 - [Ranges (`:LINENO`, `:@ID`) / Filters (`--example`) / Focus (`--focus`)](#ranges-lineno-id--filters---example--focus---focus)
 - [Reporter (`--format`) / Generator (`--output`)](#reporter---format--generator---output)
-- [Coverage (`--kcov`)](#coverage---kcov)
 - [Profiler (`--profile`)](#profiler---profile)
 - [Run tests in Docker container (`--docker`)](#run-tests-in-docker-container---docker)
 - [Task runner (`--task`)](#task-runner---task)
@@ -100,38 +99,6 @@ You can specify one reporter (output to stdout) and multiple generators
 `documentation`, `tap`, `junit`, `failures`, `null`, `debug`.
 
 NOTE: Custom formatter is supported (but not documented yet, sorry).
-
-## Coverage (`--kcov`)
-
-ShellSpec has integrated coverage feature. To use this feature [Kcov][] (v35 or later) is required.
-
-[Kcov]: https://github.com/SimonKagstrom/kcov
-
-- How to [install kcov](https://github.com/SimonKagstrom/kcov/blob/master/INSTALL.md).
-- Shells that support coverage are **bash**, **zsh**, and **ksh**.
-- Coverage measures only `The` evaluation and `Include`.
-
-By default only files whose names contain `.sh` are coverage targeted.
-If you want to include other files, you need to adjust options with `--kcov-options`.
-
-```sh
-# Default kcov (coverage) options
---kcov-options "--include-path=. --path-strip-level=1"
---kcov-options "--include-pattern=.sh"
---kcov-options "--exclude-pattern=/.shellspec,/spec/,/coverage/,/report/"
-
-# Example: Include script "myprog" with no extension
---kcov-options "--include-pattern=.sh,myprog"
-
-# Example: Only specified files/directories
---kcov-options "--include-pattern=myprog,/lib/"
-```
-
-[Coverage report][coverage] and `cobertura.xml` and `sonarqube.xml` files are generated under the `coverage` directory by Kcov.
-You can easily integrate with [Coveralls](https://coveralls.io/), [Code Climate](https://codeclimate.com/),
-[Codecov](https://codecov.io/) and more.
-
-[coverage]: https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html
 
 ## Profiler (`--profile`)
 

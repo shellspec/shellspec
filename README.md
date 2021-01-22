@@ -169,6 +169,10 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 - [Use with Docker](#use-with-docker)
 - [Extension](#extension)
   - [Custom subject, modifier and matcher](#custom-subject-modifier-and-matcher)
+- [Code Coverage](#code-coverage)
+  - [Supported shells](#supported-shells)
+  - [Measurement target](#measurement-target)
+  - [Coverage report](#coverage-report)
 - [For developers](#for-developers)
   - [Subprojects](#subprojects)
     - [ShellMetrics - Cyclomatic Complexity Analyzer for shell scripts](#shellmetrics---cyclomatic-complexity-analyzer-for-shell-scripts)
@@ -2086,6 +2090,61 @@ See [examples/spec/support/custom_matcher.sh](examples/spec/support/custom_match
 
 NOTE: If you want to verify using shell function, you can use [result](docs/references.md#result) modifier or
 [satisfy](docs/references.md#satisfy) matcher. You don't need to create a custom matcher, etc.
+
+## Code Coverage
+
+ShellSpec has integrated coverage feature. To use this feature [Kcov][] (v35 or later) is required.
+
+[Kcov]: https://github.com/SimonKagstrom/kcov
+
+### Supported shells
+
+Supported only in **bash**, **zsh**, and **ksh**, where `DEBUG` trap is implemented.
+However, we recommend latest **bash** for the following reasons.
+
+- bash (older versions): There seems to be some code that cannot be measured correctly.
+- zsh: There seems to be some code that cannot be measured correctly, and the measurement rate will be the lowest.
+- ksh: ksh93u+ and ksh2020 may have side effects on exit status when DEBUG trap is enabled due to a bug.
+This bug has been [fixed](https://github.com/ksh93/ksh/issues/155) in [ksh93u+m](https://github.com/ksh93/ksh).
+These are also prone to instability, especially with ksh2020 (which has been abandoned).
+
+In any shell, some code may not be measured correctly (e.g., code containing `eval` or newline).
+These are limitations and problems caused by shells and Kcov.
+
+### Measurement target
+
+ShellSpec measures only the necessary codes to improve the measurement speed.
+Also, there are some things that cannot be measured due to implementation.
+
+- The shell scripts loaded by `Include` will be measured.
+- The shell functions called by the `When` evaluation will be measured.
+- The shell scripts executed by the `When run script` evaluation will be measured.
+- The shell scripts executed by the `When run source` evaluation will be measured.
+- The external commands executed by the `When` evaluation will NOT be measured.
+  - Even if it is a shell script, it is not measured when it is executed as an external command.
+- If other than the above, it will not be measured.
+
+By default only shell scripts whose names contain `.sh` are coverage targeted.
+If you want to include other files, you need to adjust options with `--kcov-options`.
+
+```sh
+# Default kcov (coverage) options
+--kcov-options "--include-path=. --path-strip-level=1"
+--kcov-options "--include-pattern=.sh"
+--kcov-options "--exclude-pattern=/.shellspec,/spec/,/coverage/,/report/"
+
+# Example: Include script "myprog" with no extension
+--kcov-options "--include-pattern=.sh,myprog"
+
+# Example: Only specified files/directories
+--kcov-options "--include-pattern=myprog,/lib/"
+```
+
+### Coverage report
+
+[Coverage report][coverage] and `cobertura.xml` and `sonarqube.xml` files are generated under the coverage directory by Kcov.
+You can easily integrate with [Coveralls](https://coveralls.io/), [Code Climate](https://codeclimate.com/),
+[Codecov](https://codecov.io/), etc.
 
 ## For developers
 
