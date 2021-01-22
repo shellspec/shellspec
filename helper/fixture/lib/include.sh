@@ -6,6 +6,6 @@ foo() {
 
 eval "get_sourced() { echo '$__SOURCED__'; }"
 
-eval ${__SOURCED__:+return 0}
+${__SOURCED__:+return}
 
 echo "this will not be executed"

@@ -40,7 +40,7 @@ default_options() {
   fi
 }
 
-eval ${__SOURCED__:+return 0}
+${__SOURCED__:+return}
 
 __ main __
 
