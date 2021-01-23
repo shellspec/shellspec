@@ -18,6 +18,7 @@ shellspec_shell_info() {
   shellspec_shell_version zsh  ZSH_VERSION  && return 0
   shellspec_shell_version yash YASH_VERSION && return 0
   shellspec_shell_version posh POSH_VERSION && return 0
+  shellspec_shell_version oil OIL_VERSION && return 0
   if shellspec_shell_version ksh KSH_VERSION; then
     case $SHELLSPEC_SHELL_VERSION in
       *MIRBSD* ) SHELLSPEC_SHELL_TYPE=mksh ;;
