@@ -5,6 +5,9 @@
 
 set -e -u -f
 
+#shellcheck disable=SC2039
+[ "${OIL_VERSION:-}" ] && shopt -s compat_array
+
 if [ "${1:-}" = "-" ]; then
   if [ $# -gt 1 ]; then shift; set -- "$0" "$@"; else set -- "$0"; fi
   for i; do i="$i'" j=''

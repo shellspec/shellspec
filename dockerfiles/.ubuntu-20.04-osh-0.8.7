@@ -1,0 +1,17 @@
+FROM buildpack-deps:20.04 as builder
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+RUN apt-get update
+WORKDIR /root/oil
+RUN URL=https://www.oilshell.org/download/oil-0.8.7.tar.xz \
+ && curl -fsSL "$URL" | tar xvJ --strip-components 1 \
+ && ./configure \
+ && make \
+ && make install
+
+FROM ubuntu:20.04
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+RUN useradd -m user && apt-get update
+RUN apt-get -y install libreadline8
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /usr/local/share /usr/local/share
+ENV SH=/usr/local/bin/osh

@@ -62,10 +62,10 @@ Describe 'bootstrap.sh'
       ) &
     } 2>/dev/null
     Before fake_profiler
-    BeforeCall "SHELLSPEC_PROFILER_SIGNAL='$SIGNAL'"
+    BeforeRun "SHELLSPEC_PROFILER_SIGNAL='$SIGNAL'"
 
     It 'waits until signal file is empty'
-      When call shellspec_profile_wait
+      When run shellspec_profile_wait
       The file "$SIGNAL" should be empty file
     End
   End
