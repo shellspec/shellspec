@@ -53,7 +53,7 @@ Describe "core/evaluation.sh"
   End
 
   Describe 'shellspec_evaluation_to_xtrace()'
-    BeforeRun 'SHELLSPEC_XTRACEFD=1' 'SHELLSPEC_XTRACE_FILE="$TMPBASE/trace"'
+    BeforeRun 'SHELLSPEC_XTRACEFD=5' 'SHELLSPEC_XTRACE_FILE="$TMPBASE/trace"'
     AfterRun 'cat "$SHELLSPEC_XTRACE_FILE"'
     It "writes to trace file"
       When run shellspec_evaluation_to_xtrace echo "trace data"

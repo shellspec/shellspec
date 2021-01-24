@@ -60,6 +60,7 @@ export SHELLSPEC_BUSYBOX_W32=''
 export SHELLSPEC_SHOPT_AVAILABLE=''
 export SHELLSPEC_FAILGLOB_AVAILABLE=''
 export SHELLSPEC_NOMATCH_AVAILABLE=''
+export SHELLSPEC_FDVAR_AVAILABLE=''
 export SHELLSPEC_PATHSEP=":"
 export SHELLSPEC_REPAIR=''
 export SHELLSPEC_INFO=''
@@ -361,7 +362,10 @@ fi
   # shellcheck disable=SC2153
   if [ "$SHELLSPEC_XTRACE" ]; then
     if [ ! "$SHELLSPEC_XTRACE_ONLY" ]; then
-      [ "$SHELLSPEC_XTRACEFD_VAR" ] && SHELLSPEC_XTRACEFD=9
+      if [ "$SHELLSPEC_XTRACEFD_VAR" ]; then
+        SHELLSPEC_XTRACEFD="{SHELLSPEC_XTRACEFD}"
+        [ "$SHELLSPEC_FDVAR_AVAILABLE" ] || SHELLSPEC_XTRACEFD=9
+      fi
       if [ "$SHELLSPEC_XTRACEFD" = "2" ] && SHELLSPEC_XTRACE_ONLY=1; then
         warn "Fall back to trace-only mode. All expectations will be skipped."
       fi
