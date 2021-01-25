@@ -66,9 +66,7 @@ export SHELLSPEC_REPAIR=''
 export SHELLSPEC_INFO=''
 export SHELLSPEC_TTY=''
 export SHELLSPEC_DEV_TTY="/dev/null"
-export SHELLSPEC_XTRACE_ON=''
-export SHELLSPEC_XTRACE_OFF=''
-export SHELLSPEC_XTRACEFD=2
+export SHELLSPEC_XTRACEFD=''
 export SHELLSPEC_XTRACEFD_VAR=''
 export SHELLSPEC_CLONE_TYPE=''
 export SHELLSPEC_PROC_VERSION='/proc/version'
@@ -357,37 +355,26 @@ if [ "$SHELLSPEC_DEFECT_SANDBOX" ]; then
   warn "Some features may fail due to incompatibilities with sandbox features."
 fi
 
-# xtrace
-{
-  # shellcheck disable=SC2153
-  if [ "$SHELLSPEC_XTRACE" ]; then
-    if [ ! "$SHELLSPEC_XTRACE_ONLY" ]; then
-      if [ "$SHELLSPEC_XTRACEFD_VAR" ]; then
-        SHELLSPEC_XTRACEFD="{SHELLSPEC_XTRACEFD}"
-        [ "$SHELLSPEC_FDVAR_AVAILABLE" ] || SHELLSPEC_XTRACEFD=9
-      fi
-      if [ "$SHELLSPEC_XTRACEFD" = "2" ] && SHELLSPEC_XTRACE_ONLY=1; then
-        warn "Fall back to trace-only mode. All expectations will be skipped."
-      fi
+# shellcheck disable=SC2153
+if [ "$SHELLSPEC_XTRACE" ]; then
+  if [ "$SHELLSPEC_XTRACE_ONLY" ]; then
+    SHELLSPEC_XTRACEFD=2
+  elif [ "$SHELLSPEC_XTRACEFD_VAR" ]; then
+    if [ "$SHELLSPEC_FDVAR_AVAILABLE" ]; then
+      SHELLSPEC_XTRACEFD=${SHELLSPEC_XTRACEFD:-"{SHELLSPEC_XTRACEFD}"}
+    else
+      # Busybox ash only?
+      SHELLSPEC_XTRACEFD=${SHELLSPEC_XTRACEFD:-8}
     fi
-
-    if [ "$SHELLSPEC_DEFECT_XTRACE" ]; then
-      warn "If xtrace doesn't work, " \
-        'execute `set -x` manually inside the function.'
-    fi
-  fi
-
-  if [ "$SHELLSPEC_DEFECT_XTRACE" = "2" ]; then
-    SHELLSPEC_XTRACE_ON='typeset -ft $(typeset +f); '
-    SHELLSPEC_XTRACE_OFF='typeset +ft $(typeset +f); '
   else
-    if [ "$SHELLSPEC_XTRACEFD_VAR" ]; then
-      SHELLSPEC_XTRACE_ON="$SHELLSPEC_XTRACEFD_VAR=\$SHELLSPEC_XTRACEFD; "
-    fi
+    SHELLSPEC_XTRACE_ONLY=1 SHELLSPEC_XTRACEFD=2
+    warn "Fall back to trace-only mode. All expectations will be skipped."
   fi
-  SHELLSPEC_XTRACE_ON="${SHELLSPEC_XTRACE_ON}set -x"
-  SHELLSPEC_XTRACE_OFF=": @SHELLSPEC_XTRACE_OFF@; ${SHELLSPEC_XTRACE_OFF}set +x"
-}
+
+  if [ "$SHELLSPEC_DEFECT_XTRACE" ]; then
+    warn "If xtrace doesn't work, execute 'set -x' manually inside a function."
+  fi
+fi
 
 # resolve basic command path
 {
