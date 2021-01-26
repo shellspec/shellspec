@@ -28,6 +28,8 @@ translator() {
 }
 
 error_handler() {
+  "$SHELLSPEC_TRAP" 'show_break_point' INT
+
   specfile='' lineno='' errors='' error_handler_status=0
 
   while IFS= read -r line; do
@@ -57,6 +59,10 @@ error_handler() {
     detect_unexpected_error "$specfile" "$lineno" "$errors"
   fi
   return $error_handler_status
+}
+
+show_break_point() {
+  abort "${LF}Break at ${specfile:-}:${lineno:-}" 2>&4
 }
 
 detect_unexpected_error() {
