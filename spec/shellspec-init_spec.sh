@@ -7,6 +7,7 @@ Describe "shellspec-init.sh"
 
   Describe "generate()"
     Context "when the specified file exists"
+      Before SHELLSPEC_CWD="$SHELLSPEC_PROJECT_ROOT"
       It "skips generating the file"
         When call generate "$FIXTURE/exist"
         The output should eq "   exist   $FIXTURE/exist"
