@@ -6,7 +6,6 @@ Describe "core/output.sh"
     RS="${SHELLSPEC_RS}" US="${SHELLSPEC_US}" ETB="${SHELLSPEC_ETB}"
   }
   Before setup
-  BeforeRun SHELLSPEC_OUTPUT_FD=1
 
   Describe "shellspec_output()"
     shellspec_output_ABC() { echo abc "$@"; }

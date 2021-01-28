@@ -5,11 +5,6 @@ shellspec_output() {
   "shellspec_output_$@"
 }
 
-shellspec_output_to_fd() {
-  # shellcheck disable=SC2039,SC3021
-  "$@" >&"$SHELLSPEC_OUTPUT_FD"
-}
-
 shellspec_output_raw() {
   [ $# -gt 0 ] || return 0
   for shellspec_output_raw; do
@@ -26,7 +21,7 @@ shellspec_output_raw() {
     shift
   done
   IFS="${SHELLSPEC_US}${IFS}"
-  shellspec_output_to_fd shellspec_putsn "${SHELLSPEC_RS}$*${SHELLSPEC_ETB}"
+  shellspec_putsn "${SHELLSPEC_RS}$*${SHELLSPEC_ETB}"
   IFS=${IFS#?}
 }
 shellspec_output_raw_sanitize() {

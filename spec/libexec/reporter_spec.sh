@@ -431,6 +431,7 @@ Describe "libexec/reporter.sh"
       #|${RS}field1:a${US}field2:b${US}field3:c${ETB}
       #|${RS}field1:A${US}field2:B${US}field3:C
       #|C'${ETB}
+      #|test
       #|${RS}field1:1${US}field2:2${US}field3:3${ETB}
     End
 
@@ -450,7 +451,8 @@ Describe "libexec/reporter.sh"
       The line 1 should eq "a b c : field1 field2 field3"
       The line 2 should eq "A B C"
       The line 3 should eq "C' : field1 field2 field3"
-      The line 4 should eq "1 2 3 : field1 field2 field3"
+      The line 4 should eq "test"
+      The line 5 should eq "1 2 3 : field1 field2 field3"
       The variable count should eq 3
     End
 
@@ -461,6 +463,7 @@ Describe "libexec/reporter.sh"
       The line 2 should be undefined
       The line 3 should be undefined
       The line 4 should be undefined
+      The line 5 should be undefined
       The variable count should eq 1
       The status should eq 12
     End

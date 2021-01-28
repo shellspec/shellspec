@@ -205,8 +205,7 @@ fi
 # and the stderr streams to error hander
 # and also handle both exit status. As a result of
 set +e
-( ( ( ( export SHELLSPEC_OUTPUT_FD=9
-  ( set -e; exec 3>&- 4>&- 5>&- 8>&-; executor "$@" ) 9>&1 >&8; echo $? >&5; ) \
+( ( ( ( ( set -e; exec 3>&- 4>&- 5>&-; executor "$@" ); echo $? >&5; ) \
   | ( set -e; reporter "$@" ) >&3; echo $? >&5 ) 2>&1 \
   | ( set -e; error_handler ) >&4; echo $? >&5 ) 5>&1 \
   | (
@@ -225,7 +224,7 @@ set +e
       fi
       set_exit_status "${xs:-0}"
     )
-) 3>&1 4>&2 8>&1
+) 3>&1 4>&2
 exit_status=$?
 
 case $exit_status in

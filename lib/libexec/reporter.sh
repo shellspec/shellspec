@@ -201,7 +201,7 @@ tssv_parse() {
         if [ "$tssv_buf" ]; then
           tssv_buf="${tssv_buf}${LF}${tssv_line}"
         else
-          puts "$tssv_line"
+          putsn "$tssv_line"
         fi
     esac
     case $tssv_line in (*$ETB)
