@@ -58,7 +58,7 @@ shellspec_output_NOT_IMPLEMENTED() {
     "temporary:" "message:$SHELLSPEC_PENDING_REASON"
 }
 
-shellspec_output_EXPECTATION() {
+shellspec_output_NO_EXPECTATION() {
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:Not found any expectation" "failure_message:"
@@ -68,165 +68,155 @@ shellspec_output_UNHANDLED_STATUS() {
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
-    "message:It exits with status non-zero but not found expectation"
-  shellspec_output_raw_append "failure_message:status:" "$SHELLSPEC_STATUS"
+    "message:It exits with status non-zero but not found expectation" \
+    "failure_message:status:${SHELLSPEC_STATUS}${SHELLSPEC_LF}"
 }
 
 shellspec_output_UNHANDLED_STDOUT() {
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
+  shellspec_chomp SHELLSPEC_STDOUT
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
-    "message:There was output to stdout but not found expectation"
-  shellspec_chomp SHELLSPEC_STDOUT
-  shellspec_output_raw_append "failure_message:stdout:" "$SHELLSPEC_STDOUT"
+    "message:There was output to stdout but not found expectation" \
+    "failure_message:stdout:${SHELLSPEC_STDOUT}${SHELLSPEC_LF}"
 }
 
 shellspec_output_UNHANDLED_STDERR() {
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
+  shellspec_chomp SHELLSPEC_STDERR
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
-    "message:There was output to stderr but not found expectation"
-  shellspec_chomp SHELLSPEC_STDERR
-  shellspec_output_raw_append "failure_message:stderr:" "$SHELLSPEC_STDERR"
+    "message:There was output to stderr but not found expectation" \
+    "failure_message:stderr:${SHELLSPEC_STDERR}${SHELLSPEC_LF}"
 }
 
 shellspec_output_ASSERT_WARN() {
-  shellspec_output_statement "tag:warn" "note:WARNING" \
-    "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
-    "message:$SHELLSPEC_EXPECTATION"
+  shellspec_capturefile SHELLSPEC_ASSERT_STDERR "$2"
   set -- "Unexpected output to stderr occurred (exit status: $1)"
-  shellspec_output_raw_append "failure_message:$1"
+  if [ "$SHELLSPEC_ASSERT_STDERR" ]; then
+    set -- "$1${SHELLSPEC_LF}${SHELLSPEC_ASSERT_STDERR}${SHELLSPEC_LF}"
+  fi
+  shellspec_output_statement tag:warn note:WARNING \
+    "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
+    "message:$SHELLSPEC_EXPECTATION" "failure_message:$1"
 }
 
 shellspec_output_ASSERT_ERROR() {
-  shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:$SHELLSPEC_EXPECTATION"
-  shellspec_output_raw_append "failure_message:assertion failure" \
-    "(exit status: $1)"
+  shellspec_capturefile SHELLSPEC_ASSERT_STDERR "$2"
+  set -- "assertion failure (exit status: $1)"
+  if [ "$SHELLSPEC_ASSERT_STDERR" ]; then
+    set -- "$1${SHELLSPEC_LF}${SHELLSPEC_ASSERT_STDERR}${SHELLSPEC_LF}"
+  fi
+  shellspec_output_statement tag:bad note: fail:y \
+    "message:$SHELLSPEC_EXPECTATION" "failure_message:$1"
 }
 
 shellspec_output_BEFORE_ALL_ERROR() {
-  shellspec_capturefile SHELLSPEC_BEFORE_ALL_ERROR "$SHELLSPEC_ERROR_FILE"
-  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_BEFORE_ALL_ERROR" \
-    "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
-  shellspec_output_error "note:ERROR" "lineno:$SHELLSPEC_HOOK_LINENO" \
-    "message:An error occurred in before all hook '$1' (exit status: $4)"
-  shellspec_output_raw_append "failure_message:${2:-<no error>}"
+  shellspec_capturefile SHELLSPEC_ERROR "$SHELLSPEC_ERROR_FILE"
+  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_HOOK_STATUS"
+  shellspec_output_error note:ERROR "lineno:$SHELLSPEC_HOOK_LINENO" \
+    "message:An error occurred in before all hook '$1' (exit status: $2)" \
+    "failure_message:${SHELLSPEC_ERROR:-<no error>}${SHELLSPEC_LF}"
 }
 
 shellspec_output_AFTER_ALL_ERROR() {
-  shellspec_capturefile SHELLSPEC_AFTER_ALL_ERROR "$SHELLSPEC_ERROR_FILE"
-  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_AFTER_ALL_ERROR" \
-    "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
-  shellspec_output_error "note:ERROR" "lineno:$SHELLSPEC_HOOK_LINENO" \
-    "message:An error occurred in after hook '$1' (exit status: $4)"
-  shellspec_output_raw_append "failure_message:${2:-<no error>}"
+  shellspec_capturefile SHELLSPEC_ERROR "$SHELLSPEC_ERROR_FILE"
+  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_HOOK_STATUS"
+  shellspec_output_error note:ERROR "lineno:$SHELLSPEC_HOOK_LINENO" \
+    "message:An error occurred in after hook '$1' (exit status: $2)" \
+    "failure_message:${SHELLSPEC_ERROR:-<no error>}${SHELLSPEC_LF}"
 }
 
 shellspec_output_BEFORE_EACH_ERROR() {
-  shellspec_capturefile SHELLSPEC_BEFORE_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
-  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_BEFORE_EACH_ERROR" \
-    "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
+  shellspec_capturefile SHELLSPEC_ERROR "$SHELLSPEC_ERROR_FILE"
+  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
-  shellspec_output_statement "tag:bad" "note:" "fail:y" "evaluation:" \
-    "message:An error occurred in before hook '$1' (line: $3, exit status: $4)"
-  shellspec_output_raw_append "failure_message:${2:-<no error>}"
+  shellspec_output_statement tag:bad note: fail:y evaluation: \
+    "message:An error occurred in before hook '$1' (line: $2, exit status: $3)" \
+    "failure_message:${SHELLSPEC_ERROR:-<no error>}${SHELLSPEC_LF}"
 }
 
 shellspec_output_AFTER_EACH_ERROR() {
-  shellspec_capturefile SHELLSPEC_AFTER_EACH_ERROR "$SHELLSPEC_ERROR_FILE"
-  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_AFTER_EACH_ERROR" \
-    "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
+  shellspec_capturefile SHELLSPEC_ERROR "$SHELLSPEC_ERROR_FILE"
+  set -- "$SHELLSPEC_HOOK" "$SHELLSPEC_HOOK_LINENO" "$SHELLSPEC_HOOK_STATUS"
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
-  shellspec_output_statement "tag:bad" "note:" "fail:y" "evaluation:" \
-    "message:An error occurred in after hook '$1' (line: $3, exit status: $4)"
-  shellspec_output_raw_append "failure_message:${2:-<no error>}"
+  shellspec_output_statement tag:bad note: fail:y evaluation: \
+    "message:An error occurred in after hook '$1' (line: $2, exit status: $3)" \
+    "failure_message:${SHELLSPEC_ERROR:-<no error>}${SHELLSPEC_LF}"
 }
 
 shellspec_output_HOOK_ERROR() {
-  shellspec_output_statement "tag:bad" "note:" "fail:y" "failure_message:" \
+  shellspec_output_statement tag:bad note: fail:y failure_message: \
     "message:Treat as a failure due to a preceding hook error"
 }
 
 shellspec_output_MATCHED() {
   shellspec_if PENDING && shellspec_output_MATCHED_FIXED && return 0
-  shellspec_output_statement "tag:good" "note:" "fail:" \
+  shellspec_output_statement tag:good note: fail: \
     "message:$SHELLSPEC_EXPECTATION"
 }
 
 shellspec_output_MATCHED_FIXED() {
-  shellspec_output_statement "tag:good" "note:FIXED" "fail:" \
+  shellspec_output_statement tag:good note:FIXED fail: \
     "message:$SHELLSPEC_EXPECTATION"
 }
 
 shellspec_output_UNMATCHED() {
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:$SHELLSPEC_EXPECTATION"
+    "message:$SHELLSPEC_EXPECTATION" "failure_message:$1${SHELLSPEC_LF}"
 }
 
 shellspec_output_SYNTAX_ERROR() {
-  shellspec_output_statement "tag:bad" "note:SYNTAX ERROR" "fail:y" \
-    "message:$SHELLSPEC_EXPECTATION"
-  shellspec_output_raw_append "failure_message:${1:-unknown syntax error}"
+  shellspec_output_statement tag:bad note:SYNTAX ERROR fail:y \
+    "message:$SHELLSPEC_EXPECTATION" \
+    "failure_message:${1:-unknown syntax error}${SHELLSPEC_LF}"
 }
 
 shellspec_output_SYNTAX_ERROR_EVALUATION() {
-  shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:$SHELLSPEC_EVALUATION"
-  shellspec_output_raw_append "failure_message:${1:-unknown syntax error}"
+  shellspec_output_statement tag:bad note: fail:y \
+    "message:$SHELLSPEC_EVALUATION" \
+    "failure_message:${1:-unknown syntax error}${SHELLSPEC_LF}"
 }
 
 shellspec_output_SYNTAX_ERROR_EXPECTATION() {
-  shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:$SHELLSPEC_EXPECTATION"
-  shellspec_output_raw_append "failure_message:${1:-unknown syntax error}"
+  shellspec_output_statement tag:bad note: fail:y \
+    "message:$SHELLSPEC_EXPECTATION" \
+    "failure_message:${1:-unknown syntax error}${SHELLSPEC_LF}"
 }
 
 shellspec_output_SYNTAX_ERROR_MATCHER_REQUIRED() {
-  shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:$SHELLSPEC_EXPECTATION"
-  shellspec_output_raw_append "failure_message:A word is required after" \
-    "$(shellspec_output_syntax_name)." \
-    "The correct word is one of the following."
-  shellspec_output_following_words "shellspec_matcher"
+  set -- "A word is required after $(shellspec_syntax_name)" \
+    "The correct word is one of the following" \
+    "$(shellspec_syntax_following_words "shellspec_matcher")"
+  shellspec_output_statement tag:bad note: fail:y \
+    "message:$SHELLSPEC_EXPECTATION" \
+    "failure_message:$1. $2. ${SHELLSPEC_LF}${SHELLSPEC_LF}$3${SHELLSPEC_LF}"
 }
 
 shellspec_output_SYNTAX_ERROR_DISPATCH_FAILED() {
-  shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:$SHELLSPEC_EXPECTATION"
   [ "$1" = modifier ] && set -- "$1/verb" "${2:-}"
-  if [ "${2:-}" ]; then
-    shellspec_output_raw_append "failure_message:Unknown word '$2' after" \
-      "$(shellspec_output_syntax_name)." \
-      "The correct word is one of the following."
-  else
-    shellspec_output_raw_append "failure_message:A word is required after" \
-      "$(shellspec_output_syntax_name)." \
-      "The correct word is one of the following."
-  fi
-  shellspec_output_following_words "shellspec_${1%/verb}"
-}
-
-shellspec_output_SYNTAX_ERROR_COMPOUND_WORD() {
-  shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:$SHELLSPEC_EXPECTATION"
-  shellspec_output_raw_append "failure_message:The next word of" \
-    "'${1##*_}' should be one of the following."
-  shellspec_output_following_words "$1"
+  case ${2:-} in
+    '') set -- "$1" "Unknown word '$2' after" ;;
+    *) set -- "$1" "A word is required after" ;;
+  esac
+  set -- "$2 $(shellspec_syntax_name)." \
+    "The correct word is one of the following." \
+    "$(shellspec_syntax_following_words "shellspec_${1%/verb}")"
+  shellspec_output_statement tag:bad note: fail:y \
+    "message:$SHELLSPEC_EXPECTATION" \
+    "failure_message:$1$2${SHELLSPEC_LF}${SHELLSPEC_LF}$3${SHELLSPEC_LF}"
 }
 
 shellspec_output_SYNTAX_ERROR_WRONG_PARAMETER_COUNT() {
+  set -- "Wrong parameter $1 of $(shellspec_syntax_name)"
   shellspec_output_statement "tag:bad" "note:" "fail:y" \
-    "message:$SHELLSPEC_EXPECTATION"
-  shellspec_output_raw_append "failure_message:Wrong parameter $1 of" \
-    "$(shellspec_output_syntax_name)"
+    "message:$SHELLSPEC_EXPECTATION" "failure_message:$1${SHELLSPEC_LF}"
 }
 
 shellspec_output_SYNTAX_ERROR_PARAM_TYPE() {
-  shellspec_output_raw statement "tag:bad" "note:" "fail:y" \
-    "message:$SHELLSPEC_EXPECTATION"
-  shellspec_output_raw_append "failure_message:The parameter #$1 of" \
-    "$(shellspec_output_syntax_name) is not a $2"
+  set -- "The parameter #$1 of $(shellspec_syntax_name) is not a $2"
+  shellspec_output_statement "tag:bad" "note:" "fail:y" \
+    "message:$SHELLSPEC_EXPECTATION" "failure_message:$1${SHELLSPEC_LF}"
 }
 
 shellspec_output_RESULT_WARN() {

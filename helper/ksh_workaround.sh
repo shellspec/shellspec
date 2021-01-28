@@ -38,6 +38,8 @@ ksh_workaround_loaded() {
   shellspec_redefinable shellspec_is_function
   shellspec_redefinable shellspec_sleep
   shellspec_redefinable shellspec_source
+  shellspec_redefinable shellspec_is_temporary_skip
+  shellspec_redefinable shellspec_is_temporary_pending
 
   # for ksh88 and busybox-1.1.3
   # These shells do not allow built-in commands cannot be redefined

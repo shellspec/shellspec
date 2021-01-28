@@ -95,3 +95,32 @@ shellspec_syntax_failure_message() {
   done
   eval "${SHELLSPEC_EVAL}${SHELLSPEC_LF}}"
 }
+
+shellspec_syntax_following_words() {
+  set -- "$1" "${SHELLSPEC_SYNTAXES#:}" "" ""
+
+  while [ "$2" ] && set -- "$1" "${2#*:}" "${2%%:*}" "$4"; do
+    eval "set -- \"\$@\" \${3#${1}_}"
+    case $5 in (*_*) continue; esac
+    set -- "$1" "$2" "$3" "$4${4:+ }$5"
+  done
+  eval "set -- $4"
+
+  shellspec_syntax_following_words_callback() {
+    [ $(( ($2 - 1) % 8)) -eq 0 ] && shellspec_puts '  '
+    shellspec_puts "$1"
+    [ "$2" -eq "$3" ] || shellspec_puts ', '
+    [ $(( $2 % 8)) -ne 0 ] || shellspec_puts "$SHELLSPEC_LF"
+  }
+  shellspec_each shellspec_syntax_following_words_callback "$@"
+}
+
+shellspec_syntax_name() {
+  [ "${SHELLSPEC_SYNTAX_NAME:-}" ] || return 0
+  set -- "${SHELLSPEC_SYNTAX_NAME#shellspec_}"
+  set -- "${1#*_}_${1%%_*}_" "" ""
+  while [ "$1" ] && set -- "${1#*_}" "${1%%_*}" "$3"; do
+    set -- "$1" "$2" "$3${3:+ }$2"
+  done
+  shellspec_putsn "$3"
+}

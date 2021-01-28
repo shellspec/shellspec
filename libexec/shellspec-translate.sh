@@ -196,7 +196,7 @@ trans_with_function() {
 
 syntax_error() {
   set -- "Syntax error: $1 in $specfile line $lineno" "${2:-}"
-  putsn "shellspec_abort $SHELLSPEC_ERROR_EXIT_CODE \"$1\" \"$2\" 2>&3"
+  putsn "shellspec_abort $SHELLSPEC_ERROR_EXIT_CODE \"$1\" \"$2\""
 }
 
 metadata=1 finished=1 coverage='' fd='' spec_no=1 progress=''
@@ -239,7 +239,9 @@ putsn "shellspec_coverage_setup() { shellspec_coverage_disabled; }"
 [ "$fd" ] && putsn "exec 1>&$fd"
 putsn ". \"\$SHELLSPEC_LIB/bootstrap.sh\""
 putsn "shellspec_coverage_setup \"\$SHELLSPEC_SHELL_TYPE\""
-putsn "shellspec_metadata $metadata"
+if [ "$metadata" ]; then
+  putsn "shellspec_metadata"
+fi
 
 specfile_count=0
 progress() { :; }
@@ -276,4 +278,6 @@ specfile() {
 eval find_specfiles specfile ${1+'"$@"'}
 progress "${CR}${ESC}[2K"
 
-putsn "shellspec_finished $finished"
+if [ "$finished" ]; then
+  putsn "shellspec_finished"
+fi

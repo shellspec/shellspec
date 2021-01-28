@@ -2,6 +2,22 @@
 
 ## Reporting protocol
 
+### Format
+
+```text
+<RS>key1:value1<US>key2:value2<US>key3:value3<US>...<ETB>
+<RS>key1:value1<US>key2:value2<US>key3:value3<US>...<ETB>
+<RS>key1:value1<US>key2:value2<US>key3:value3<US>...<ETB>
+...
+```
+
+- The value may contain newlines.
+- Ignore data that is not enclosed in `RS` and `ETB`.
+  - Note: The reporter will output the ignored data as is.
+- The `RS`, `US`, and `ETB` in the value must be removed.
+
+### Structure
+
 | pair   | type      | number of times                 |
 | ------ | --------- | ------------------------------- |
 |        | meta      | 1                               |
@@ -23,7 +39,7 @@
 | example   | id, block_no, example_no, focused, description, lineno_range, stdout, stderr |
 | statement | tag, lineno, [statement type fields...]                                      |
 | result    | [result type fields...], trace                                               |
-| end       |                                                                              |
+| end       | example_count                                                                |
 | finished  |                                                                              |
 | error     | lineno, note, message, failure_message                                       |
 

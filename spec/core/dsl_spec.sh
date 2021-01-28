@@ -52,13 +52,8 @@ Describe "core/dsl.sh"
     mock() { shellspec_output() { echo "$1"; }; }
     BeforeRun mock
 
-    It 'does not output METADATA if not supplied flag'
+    It 'outputs METADATA'
       When run shellspec_metadata
-      The stdout should not include 'METADATA'
-    End
-
-    It 'outputs METADATA if supplied flag'
-      When run shellspec_metadata 1
       The stdout should eq 'METADATA'
     End
   End
@@ -67,13 +62,8 @@ Describe "core/dsl.sh"
     mock() { shellspec_output() { echo "$1"; }; }
     BeforeRun mock
 
-    It 'does not output FINISHED if not supplied flag'
+    It 'outputs FINISHED'
       When run shellspec_finished
-      The stdout should not include 'FINISHED'
-    End
-
-    It 'outputs FINISHED if supplied flag'
-      When run shellspec_finished 1
       The stdout should eq 'FINISHED'
     End
   End
@@ -467,7 +457,7 @@ Describe "core/dsl.sh"
   End
 
   Describe "shellspec_invoke_example()"
-    expectation() { shellspec_on EXPECTATION; shellspec_off NOT_IMPLEMENTED; }
+    expectation() { shellspec_off NOT_IMPLEMENTED NO_EXPECTATION; }
     mock() {
       shellspec_output() { echo "$1"; }
       shellspec_yield0() { echo "yield $#"; block; }
@@ -763,8 +753,8 @@ Describe "core/dsl.sh"
 
   Describe "shellspec_when()"
     init() {
-      shellspec_off EVALUATION EXPECTATION
-      shellspec_on NOT_IMPLEMENTED
+      shellspec_off EVALUATION
+      shellspec_on NOT_IMPLEMENTED NO_EXPECTATION
     }
 
     mock() {
@@ -810,7 +800,7 @@ Describe "core/dsl.sh"
     End
 
     It 'is syntax error when already executed expectation'
-      prepare() { shellspec_on EXPECTATION; }
+      prepare() { shellspec_off NO_EXPECTATION; }
       BeforeRun init prepare mock
       When run shellspec_when
       The stdout should include 'off:NOT_IMPLEMENTED'
@@ -857,16 +847,15 @@ Describe "core/dsl.sh"
     mock() {
       shellspec_statement_preposition() { echo expectation; }
       shellspec_output() { echo "output:$1"; }
-      eval 'shellspec_on() { echo "on:$*"; }'
-      eval 'shellspec_off() { echo "off:$*"; }'
+      eval 'shellspec_on() { echo "on:$@"; }'
+      eval 'shellspec_off() { echo "off:$@"; }'
     }
 
     It 'calls expectation'
       BeforeRun prepare mock
       When run shellspec_the expectation
       The stdout should not include 'output:SYNTAX_ERROR_EXPECTATION'
-      The stdout should include 'off:NOT_IMPLEMENTED'
-      The stdout should include 'on:EXPECTATION'
+      The stdout should include 'off:NOT_IMPLEMENTED NO_EXPECTATION'
       The stdout should not include 'on:FAILED'
       The stdout should include 'expectation'
     End
@@ -875,8 +864,7 @@ Describe "core/dsl.sh"
       BeforeRun prepare mock
       When run shellspec_the
       The stdout should include 'output:SYNTAX_ERROR_EXPECTATION'
-      The stdout should include 'off:NOT_IMPLEMENTED'
-      The stdout should include 'on:EXPECTATION'
+      The stdout should include 'off:NOT_IMPLEMENTED NO_EXPECTATION'
       The stdout should include 'on:FAILED'
       The stdout should not include 'expectation'
     End
@@ -887,8 +875,8 @@ Describe "core/dsl.sh"
 
     mock() {
       shellspec_output() { echo "output:$1"; }
-      eval 'shellspec_on() { echo "on:$*"; }'
-      eval 'shellspec_off() { echo "off:$*"; }'
+      eval 'shellspec_on() { echo "on:$@"; }'
+      eval 'shellspec_off() { echo "off:$@"; }'
     }
 
     Context "when errexit on"
@@ -896,8 +884,7 @@ Describe "core/dsl.sh"
       It 'output unmatch when assertion succeeds'
         BeforeRun prepare mock
         When run shellspec_assert echo ok
-        The stdout should include 'off:NOT_IMPLEMENTED'
-        The stdout should include 'on:EXPECTATION'
+        The stdout should include 'off:NOT_IMPLEMENTED NO_EXPECTATION'
         The stdout should include 'output:MATCHED'
         The stdout should include 'ok'
       End
@@ -908,8 +895,7 @@ Describe "core/dsl.sh"
       It 'output unmatch when assertion succeeds'
         BeforeRun prepare mock
         When run shellspec_assert echo ok
-        The stdout should include 'off:NOT_IMPLEMENTED'
-        The stdout should include 'on:EXPECTATION'
+        The stdout should include 'off:NOT_IMPLEMENTED NO_EXPECTATION'
         The stdout should include 'output:MATCHED'
         The stdout should include 'ok'
       End
@@ -918,8 +904,7 @@ Describe "core/dsl.sh"
     It 'output unmatch when assertion fails'
       BeforeRun prepare mock
       When run shellspec_assert false
-      The stdout should include 'off:NOT_IMPLEMENTED'
-      The stdout should include 'on:EXPECTATION'
+      The stdout should include 'off:NOT_IMPLEMENTED NO_EXPECTATION'
       The stdout should include 'on:FAILED'
       The stdout should include 'output:ASSERT_ERROR'
     End
@@ -928,8 +913,7 @@ Describe "core/dsl.sh"
       warn() { echo warn >&2; return 0; }
       BeforeRun prepare mock
       When run shellspec_assert warn
-      The stdout should include 'off:NOT_IMPLEMENTED'
-      The stdout should include 'on:EXPECTATION'
+      The stdout should include 'off:NOT_IMPLEMENTED NO_EXPECTATION'
       The stdout should include 'on:WARNED'
       The stdout should include 'output:ASSERT_WARN'
     End
@@ -938,8 +922,7 @@ Describe "core/dsl.sh"
       BeforeRun prepare mock
       When run shellspec_assert
       The stdout should include 'output:SYNTAX_ERROR_EXPECTATION'
-      The stdout should include 'off:NOT_IMPLEMENTED'
-      The stdout should include 'on:EXPECTATION'
+      The stdout should include 'off:NOT_IMPLEMENTED NO_EXPECTATION'
       The stdout should include 'on:FAILED'
       The stdout should not include 'ok'
     End

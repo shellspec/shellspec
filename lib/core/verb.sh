@@ -25,8 +25,7 @@ shellspec_verb_should() {
   shellspec_output_if MATCHED && return 0
 
   shellspec_on FAILED
-  shellspec_output UNMATCHED
-  shellspec_output_failure_message
+  shellspec_output UNMATCHED "$(shellspec_get_failure_message positive)"
 }
 
 shellspec_verb_should_not() {
@@ -46,6 +45,5 @@ shellspec_verb_should_not() {
   shellspec_output_unless MATCHED && return 0
 
   shellspec_on FAILED
-  shellspec_output UNMATCHED
-  shellspec_output_failure_message_when_negated
+  shellspec_output UNMATCHED "$(shellspec_get_failure_message negative)"
 }

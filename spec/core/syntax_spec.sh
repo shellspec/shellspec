@@ -172,4 +172,45 @@ Describe "core/syntax.sh"
       The status should be failure
     End
   End
+
+  Describe "shellspec_syntax_following_words()"
+    set_syntaxes() {
+      SHELLSPEC_SYNTAXES=':'
+      for i in \
+        shellspec_evaluation_call \
+        shellspec_matcher_m1 \
+        shellspec_matcher_m2 \
+        shellspec_matcher_m3 \
+        shellspec_matcher_m4 \
+        shellspec_matcher_m5 \
+        shellspec_matcher_m6 \
+        shellspec_matcher_m7 \
+        shellspec_matcher_m8 \
+        shellspec_matcher_m9 \
+        shellspec_modifier
+      do
+        SHELLSPEC_SYNTAXES="${SHELLSPEC_SYNTAXES}${i}:"
+      done
+    }
+    It "outputs following_words"
+      BeforeRun set_syntaxes
+      When run shellspec_syntax_following_words shellspec_matcher
+      The line 1 of stdout should equal "  m1, m2, m3, m4, m5, m6, m7, m8, "
+      The line 2 of stdout should equal "  m9"
+    End
+  End
+
+  Describe "shellspec_syntax_name()"
+    mock() {
+      shellspec_syntax shellspec_syntaxtype_foo_bar_baz
+      shellspec_syntaxtype_foo_bar_baz() { :; }
+      shellspec_syntax_dispatch syntaxtype foo_bar_baz
+    }
+
+    It "outputs syntax name"
+      BeforeRun mock
+      When run shellspec_syntax_name
+      The stdout should equal 'foo bar baz syntaxtype'
+    End
+  End
 End

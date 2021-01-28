@@ -196,16 +196,19 @@ tssv_parse() {
   tssv_buf=''
   while IFS= read -r tssv_line || [ "$tssv_line" ]; do
     case $tssv_line in
-      $RS*)
+      $RS*) tssv_buf=${tssv_line#?} ;;
+      *)
         if [ "$tssv_buf" ]; then
-          tssv_fields "$@" "$tssv_buf" || return $?
+          tssv_buf="${tssv_buf}${LF}${tssv_line}"
+        else
+          puts "$tssv_line"
         fi
-        tssv_buf=${tssv_line#?}
-        ;;
-      *) tssv_buf="$tssv_buf${tssv_buf:+$LF}${tssv_line}"
+    esac
+    case $tssv_line in (*$ETB)
+      tssv_fields "$@" "${tssv_buf%?}" || return $?
+      tssv_buf=''
     esac
   done
-  [ ! "$tssv_buf" ] || tssv_fields "$@" "$tssv_buf"
 }
 
 tssv_fields() {

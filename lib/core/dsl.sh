@@ -39,17 +39,11 @@ shellspec_example_id() {
 }
 
 shellspec_metadata() {
-  if [ "${1:-}" ]; then
-    shellspec_output METADATA
-  fi
+  shellspec_output METADATA
 }
 
 shellspec_finished() {
-  if [ "${1:-}" ]; then
-    shellspec_output FINISHED
-  else
-    shellspec_output_to_fd shellspec_putsn
-  fi
+  shellspec_output FINISHED
 }
 
 shellspec_yield() {
@@ -213,6 +207,7 @@ shellspec_example() {
     [ -s "$2" ] || set -- "$1" "$SHELLSPEC_STDERR_FILE"
     shellspec_output ABORTED "$@"
     shellspec_output FAILED
+    [ "$1" -ne "$SHELLSPEC_ERROR_EXIT_CODE" ] || exit "$1"
   fi
   shellspec_profile_end
 }
@@ -220,8 +215,8 @@ shellspec_example() {
 shellspec_invoke_example() {
   shellspec_output EXAMPLE
 
-  shellspec_on NOT_IMPLEMENTED
-  shellspec_off FAILED WARNED EXPECTATION LEAK
+  shellspec_on NOT_IMPLEMENTED NO_EXPECTATION
+  shellspec_off FAILED WARNED LEAK
   shellspec_off UNHANDLED_STATUS UNHANDLED_STDOUT UNHANDLED_STDERR
 
   # Output SKIP message if skipped in outer group.
@@ -259,7 +254,7 @@ shellspec_invoke_example() {
     return 0
   }
 
-  shellspec_output_unless EXPECTATION && shellspec_on WARNED
+  shellspec_output_if NO_EXPECTATION && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STATUS && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STDOUT && shellspec_on WARNED
   shellspec_output_if UNHANDLED_STDERR && shellspec_on WARNED
@@ -301,7 +296,7 @@ shellspec_when() {
   }
   shellspec_on EVALUATION
 
-  shellspec_if EXPECTATION && {
+  shellspec_if NO_EXPECTATION || {
     set -- "Expectation has already been executed."
     shellspec_output SYNTAX_ERROR_EVALUATION "$1"
     shellspec_on FAILED
@@ -342,8 +337,7 @@ shellspec_around_run() {
 
 shellspec_the() {
   eval shellspec_join SHELLSPEC_EXPECTATION '" "' The ${1+'"$@"'}
-  shellspec_off NOT_IMPLEMENTED
-  shellspec_on EXPECTATION
+  shellspec_off NOT_IMPLEMENTED NO_EXPECTATION
   [ "$SHELLSPEC_XTRACE_ONLY" ] && return 0
 
   if [ $# -eq 0 ]; then
@@ -357,8 +351,7 @@ shellspec_the() {
 
 shellspec_assert() {
   eval shellspec_join SHELLSPEC_EXPECTATION '" "' Assert ${1+'"$@"'}
-  shellspec_off NOT_IMPLEMENTED
-  shellspec_on EXPECTATION
+  shellspec_off NOT_IMPLEMENTED NO_EXPECTATION
   [ "$SHELLSPEC_XTRACE_ONLY" ] && return 0
 
   if [ $# -eq 0 ]; then
@@ -377,12 +370,9 @@ shellspec_assert() {
   ( set -e; shift; "$@" </dev/null 2>"$SHELLSPEC_ASSERT_STDERR_FILE" )
   set "$1" -- $?
 
-  shellspec_readfile SHELLSPEC_ASSERT_STDERR "$SHELLSPEC_ASSERT_STDERR_FILE"
-
   if [ "$1" -eq 0 ]; then
-    if [ "$SHELLSPEC_ASSERT_STDERR" ]; then
-      shellspec_output ASSERT_WARN "$1"
-      shellspec_output_assert_message "$SHELLSPEC_ASSERT_STDERR"
+    if [ -s "$SHELLSPEC_ASSERT_STDERR_FILE" ]; then
+      shellspec_output ASSERT_WARN "$1" "$SHELLSPEC_ASSERT_STDERR_FILE"
       shellspec_on WARNED
       return 0
     fi
@@ -390,8 +380,7 @@ shellspec_assert() {
     return 0
   fi
 
-  shellspec_output ASSERT_ERROR "$1"
-  shellspec_output_assert_message "$SHELLSPEC_ASSERT_STDERR"
+  shellspec_output ASSERT_ERROR "$1" "$SHELLSPEC_ASSERT_STDERR_FILE"
   shellspec_on FAILED
 }
 

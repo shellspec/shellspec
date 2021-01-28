@@ -425,13 +425,13 @@ Describe "libexec/reporter.sh"
 
   Describe "tssv_parse()"
     # shellcheck disable=SC2034
-    RS=$SHELLSPEC_RS US=$SHELLSPEC_US
+    RS=$SHELLSPEC_RS US=$SHELLSPEC_US ETB=$SHELLSPEC_ETB
 
     Data:expand
-      #|${RS}field1:a${US}field2:b${US}field3:c
+      #|${RS}field1:a${US}field2:b${US}field3:c${ETB}
       #|${RS}field1:A${US}field2:B${US}field3:C
-      #|C'
-      #|${RS}field1:1${US}field2:2${US}field3:3
+      #|C'${ETB}
+      #|${RS}field1:1${US}field2:2${US}field3:3${ETB}
     End
 
     init() {
