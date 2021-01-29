@@ -5,6 +5,7 @@
 
 shellspec_import "core/clone"
 shellspec_import "core/utils"
+shellspec_import "core/file_descriptor"
 shellspec_import "core/switch"
 shellspec_import "core/output"
 shellspec_import "core/outputs"

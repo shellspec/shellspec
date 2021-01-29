@@ -46,6 +46,7 @@ color_schema() {
         todo     ) field_color=${BOLD}${YELLOW} ;;
         fixed    ) field_color=${BOLD}${GREEN} ;;
         skipped  ) field_color=${BOLD}${MAGENTA} ;;
+        error    ) field_color=${BOLD}${RED} ;;
       esac ;;
     error        )
       # shellcheck disable=SC2034

@@ -27,6 +27,7 @@ SHELLSPEC_SKIP_REASON=''
 SHELLSPEC_PENDING_REASON=''
 SHELLSPEC_SHELL_OPTIONS=''
 SHELLSPEC_HOOK_ERROR=''
+SHELLSPEC_USE_FDS=''
 
 shellspec_group_id() {
   # shellcheck disable=SC2034
@@ -194,6 +195,7 @@ shellspec_example() {
     *e*) eval "set -- -e ${1+\"\$@\"}" ;;
     *) eval "set -- +e ${1+\"\$@\"}" ;;
   esac
+  shellspec_open_file_descriptors "$SHELLSPEC_USE_FDS"
   set +e
   ( set -e
     shift
@@ -203,6 +205,7 @@ shellspec_example() {
     esac
   )
   set "$1" -- $? "$SHELLSPEC_LEAK_FILE"
+  shellspec_close_file_descriptors "$SHELLSPEC_USE_FDS"
   if [ "$1" -ne 0 ]; then
     [ -s "$2" ] || set -- "$1" "$SHELLSPEC_STDERR_FILE"
     shellspec_output ABORTED "$@"
@@ -224,6 +227,10 @@ shellspec_invoke_example() {
     if [ "$SHELLSPEC_HOOK_ERROR" ]; then
       shellspec_output HOOK_ERROR "$SHELLSPEC_HOOK_ERROR"
       shellspec_output FAILED
+      return 0
+    fi
+    if ! shellspec_dsl_check; then
+      shellspec_output ERROR
       return 0
     fi
     if ! shellspec_call_before_hooks EACH; then
@@ -271,6 +278,28 @@ shellspec_invoke_example() {
   shellspec_output_if LEAK "$SHELLSPEC_LEAK_FILE" && shellspec_on FAILED
   shellspec_output_if FAILED && return 0
   shellspec_output_if WARNED || shellspec_output SUCCEEDED
+}
+
+shellspec_dsl_check() {
+  shellspec_fds_check
+}
+
+shellspec_fds_check() {
+  set -- "$SHELLSPEC_USE_FDS:"
+  while [ "${1%%:*}" ]; do
+    set -- "${1#*:}" "${1%%:*}"
+    case $2 in ([0-9]) continue; esac
+    if shellspec_is_identifier "$2"; then
+      [ "$SHELLSPEC_FDVAR_AVAILABLE" ] && continue
+      set -- "Assigning file descriptors to variables is not supported" \
+        "in the current shell"
+    else
+      set -- "Invalid file descriptor:" "$2"
+    fi
+    shellspec_output DSL_ERROR "UseFD: $1 $2"
+    return 1
+  done
+  return 0
 }
 
 shellspec_statement() {
@@ -566,4 +595,8 @@ shellspec_unmock() {
   if [ "$2" -gt 0 ]; then
     shellspec_mv "$1#$2" "$1"
   fi
+}
+
+shellspec_usefd() {
+  SHELLSPEC_USE_FDS="${SHELLSPEC_USE_FDS}${SHELLSPEC_USE_FDS:+:}$1"
 }

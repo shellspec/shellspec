@@ -89,6 +89,15 @@ spec_helper_configure() {
     fi
   }
 
+  set_fd() {
+    SHELLSPEC_STDIO_FILE_BASE=$SHELLSPEC_WORKDIR
+    if "fd$1" > /dev/null; then
+      "fd$1" > "$SHELLSPEC_STDIO_FILE_BASE.fd-$1"
+    else
+      @rm -f "$SHELLSPEC_STDIO_FILE_BASE.fd-$1"
+    fi
+  }
+
   # modifier for test
   shellspec_syntax shellspec_modifier__modifier_
   shellspec_modifier__modifier_() {

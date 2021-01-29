@@ -13,6 +13,7 @@ progress_each() {
       warned   ) _mark="W" ;;
       skipped  ) [ "$field_temporary" ] && _mark="S" || _mark="s" ;;
       failed   ) _mark="F" ;;
+      error    ) _mark="E" ;;
       todo     ) [ "$field_temporary" ] && _mark="P" || _mark="p" ;;
       fixed    ) [ "$field_temporary" ] && _mark="=" || _mark="-" ;;
     esac
