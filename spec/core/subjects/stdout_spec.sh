@@ -13,12 +13,8 @@ Describe "core/subjects/stdout.sh"
 
     It "uses stdout as subject when stdout is defined"
       stdout() { echo "test"; }
-      preserve() { %preserve SHELLSPEC_META:META; }
-      AfterRun preserve
-
       When run shellspec_subject_stdout _modifier_
       The entire stdout should equal 'test'
-      The variable META should eq 'text'
     End
 
     It "uses undefined as subject when stdout is undefined"
@@ -27,7 +23,16 @@ Describe "core/subjects/stdout.sh"
       The status should be failure
     End
 
-    It 'outputs error if next word is missing'
+    It "sets SHELLSPEC_META to text"
+      stdout() { :; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
+      When run shellspec_subject_stdout _modifier_
+      The variable META should eq 'text'
+    End
+
+    It 'outputs an error if the next word is missing'
       stdout() { echo "test"; }
       When run shellspec_subject_stdout
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
@@ -38,18 +43,14 @@ Describe "core/subjects/stdout.sh"
     Example 'example'
       foo() { echo "foo"; }
       When call foo
-      The entire stdout should equal "foo${IFS%?}"
-      The entire output should equal "foo${IFS%?}"
+      The entire stdout should equal "foo${SHELLSPEC_LF}"
+      The entire output should equal "foo${SHELLSPEC_LF}"
     End
 
     It "uses stdout including last LF as subject when stdout is defined"
       stdout() { echo "test"; }
-      preserve() { %preserve SHELLSPEC_META:META; }
-      AfterRun preserve
-
       When run shellspec_subject_entire_stdout _modifier_
-      The entire stdout should equal "test${IFS%?}"
-      The variable META should eq 'text'
+      The entire stdout should equal "test${SHELLSPEC_LF}"
     End
 
     It "uses undefined as subject when stdout is undefined"
@@ -58,7 +59,16 @@ Describe "core/subjects/stdout.sh"
       The status should be failure
     End
 
-    It 'output error if next word is missing'
+    It "sets SHELLSPEC_META to text"
+      stdout() { :; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
+      When run shellspec_subject_entire_stdout _modifier_
+      The variable META should eq 'text'
+    End
+
+    It 'outputs an error if the next word is missing'
       stdout() { echo "test"; }
       When run shellspec_subject_entire_stdout
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED

@@ -12,12 +12,8 @@ Describe "core/subjects/status.sh"
 
     It 'uses status as subject when status is defined'
       status() { %- 123; }
-      preserve() { %preserve SHELLSPEC_META:META; }
-      AfterRun preserve
-
       When run shellspec_subject_status _modifier_
       The stdout should equal 123
-      The variable META should eq 'status'
     End
 
     It 'uses undefined as subject when status is undefind'
@@ -26,7 +22,7 @@ Describe "core/subjects/status.sh"
       The status should be failure
     End
 
-    It 'outputs error if next word is missing'
+    It 'outputs an error if the next word is missing'
       status() { %- 123; }
       When run shellspec_subject_status
       The stderr should equal SYNTAX_ERROR_DISPATCH_FAILED

@@ -218,6 +218,18 @@ Describe "core/dsl.sh"
     End
   End
 
+  Describe "shellspec_after_block()"
+    mock() {
+      shellspec_call_after_hooks() { echo "$@"; }
+    }
+    BeforeRun mock
+
+    It 'calls after mock hooks'
+      When run shellspec_after_block
+      The stdout should eq "MOCK"
+    End
+  End
+
   Describe "shellspec_end()"
     mock() { shellspec_output() { echo "$1"; }; }
     echo_example_count() { echo "$SHELLSPEC_EXAMPLE_COUNT"; }
@@ -459,8 +471,10 @@ Describe "core/dsl.sh"
   Describe "shellspec_invoke_example()"
     expectation() { shellspec_off NOT_IMPLEMENTED NO_EXPECTATION; }
     mock() {
+      dsl_check=1
       shellspec_output() { echo "$1"; }
       shellspec_yield0() { echo "yield $#"; block; }
+      shellspec_dsl_check() { [ "$dsl_check" ]; }
     }
     BeforeRun SHELLSPEC_BLOCK_NO=0 mock
 
@@ -480,6 +494,14 @@ Describe "core/dsl.sh"
       The stdout line 2 should equal 'HOOK_ERROR'
       The stdout line 3 should equal 'FAILED'
     End
+
+    It 'fails if dsl_check error occurred'
+      BeforeRun dsl_check=''
+      When run shellspec_invoke_example
+      The stdout line 1 should equal 'EXAMPLE'
+      The stdout line 2 should equal 'ERROR'
+    End
+
 
     It 'skipps the rest if skipped inside of example'
       block() { shellspec_skip 1; }
@@ -622,6 +644,55 @@ Describe "core/dsl.sh"
       The stdout line 2 should equal 'yield 0'
       The stdout line 3 should equal 'LEAK'
       The stdout line 4 should equal 'FAILED'
+    End
+  End
+
+  Describe "shellspec_dsl_check()"
+    mock() {
+      shellspec_fds_check() { echo "fds_check"; }
+    }
+    BeforeRun mock
+
+    It 'calls shellspec_fds_check'
+      When run shellspec_dsl_check
+      The line 1 of stdout should eq "fds_check"
+    End
+  End
+
+  Describe "shellspec_fds_check()"
+    mock() {
+      shellspec_output() { echo "$@"; }
+    }
+    BeforeRun mock
+    BeforeRun SHELLSPEC_FDVAR_AVAILABLE=''
+
+    It 'passes the check when give the correct fd'
+      BeforeRun SHELLSPEC_USE_FDS=3:4
+      When run shellspec_fds_check
+      The status should be success
+    End
+
+    It 'not passes the check when give the incorrect fd'
+      BeforeRun SHELLSPEC_USE_FDS=@
+      When run shellspec_fds_check
+      The output should eq "DSL_ERROR UseFD: Invalid file descriptor: @"
+      The status should be failure
+    End
+
+    It 'not passes the check when give the fd variable name'
+      BeforeRun SHELLSPEC_USE_FDS=FD
+      When run shellspec_fds_check
+      The output should eq "DSL_ERROR UseFD: Assigning file descriptors to variables is not supported in the current shell"
+      The status should be failure
+    End
+
+    Context "For shells that can assign file descriptors to variables"
+      BeforeRun SHELLSPEC_FDVAR_AVAILABLE=1
+      It 'passes the check when give the fd variable name'
+        BeforeRun SHELLSPEC_USE_FDS=FD
+        When run shellspec_fds_check
+        The status should be success
+      End
     End
   End
 
@@ -1067,6 +1138,12 @@ Describe "core/dsl.sh"
       BeforeCall SHELLSPEC_LOGFILE=/dev/null
       When call shellspec_logger "logger test"
       The stdout should eq "sleep"
+    End
+
+    It 'outputs to stdout when SHELLSPEC_LOGFILE not specified'
+      BeforeCall SHELLSPEC_LOGFILE=''
+      When call shellspec_logger "logger test"
+      The stdout should eq "logger test"
     End
   End
 
@@ -1520,6 +1597,17 @@ Describe "core/dsl.sh"
       When run shellspec_unmock fourth-mock
       The line 1 should eq "rm $MOCKDIR/fourth-mock"
       The line 2 should eq "mv $MOCKDIR/fourth-mock#2 $MOCKDIR/fourth-mock"
+    End
+  End
+
+  Describe "shellspec_usefd()"
+    preserve() { %preserve SHELLSPEC_USE_FDS:USE_FDS; }
+    BeforeRun SHELLSPEC_USE_FDS=1
+    AfterRun preserve
+
+    It 'appends to the SHELLSPEC_USE_FDS variable'
+      When run shellspec_usefd 2
+      The variable USE_FDS should eq "1:2"
     End
   End
 End

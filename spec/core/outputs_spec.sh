@@ -41,11 +41,11 @@ Describe "core/outputs.sh"
   End
 
   Describe "shellspec_output_EXAMPLE"
-    BeforeRun SHELLSPEC_EXAMPLE_ID=id SHELLSPEC_BLOCK_NO=1 \
-      SHELLSPEC_EXAMPLE_NO=2 SHELLSPEC_EXAMPLE_NO=3 \
-      SHELLSPEC_FOCUSED=1 SHELLSPEC_DESCRIPTION=desc \
-      SHELLSPEC_STDOUT_FILE=stdout SHELLSPEC_STDERR_FILE=stderr \
-      SHELLSPEC_LINENO_BEGIN=10 SHELLSPEC_LINENO_END=20
+    BeforeRun SHELLSPEC_EXAMPLE_ID=id SHELLSPEC_BLOCK_NO=1
+    BeforeRun SHELLSPEC_EXAMPLE_NO=2 SHELLSPEC_EXAMPLE_NO=3
+    BeforeRun SHELLSPEC_FOCUSED=1 SHELLSPEC_DESCRIPTION=desc
+    BeforeRun SHELLSPEC_STDOUT_FILE=stdout SHELLSPEC_STDERR_FILE=stderr
+    BeforeRun SHELLSPEC_LINENO_BEGIN=10 SHELLSPEC_LINENO_END=20
     It "outputs EXAMPLE"
       When run shellspec_output_EXAMPLE
       The output should eq "${RS}type:example${US}id:id${US}block_no:1${US}example_no:3${US}focused:1${US}description:desc${US}stdout:stdout${US}stderr:stderr${US}lineno_range:10-20${ETB}"

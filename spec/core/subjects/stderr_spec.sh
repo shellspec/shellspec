@@ -13,12 +13,8 @@ Describe "core/subjects/stderr.sh"
 
     It 'uses stderr as subject when stderr is defined'
       stderr() { echo "test"; }
-      preserve() { %preserve SHELLSPEC_META:META; }
-      AfterRun preserve
-
       When run shellspec_subject_stderr _modifier_
       The entire stdout should equal 'test'
-      The variable META should eq 'text'
     End
 
     It 'uses undefined as subject when stderr is undefined'
@@ -27,7 +23,16 @@ Describe "core/subjects/stderr.sh"
       The status should be failure
     End
 
-    It 'outputs error if next word is missing'
+    It "sets SHELLSPEC_META to text"
+      stderr() { :; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
+      When run shellspec_subject_stderr _modifier_
+      The variable META should eq 'text'
+    End
+
+    It 'outputs an error if the next word is missing'
       stderr() { echo "test"; }
       When run shellspec_subject_stderr
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED
@@ -38,18 +43,14 @@ Describe "core/subjects/stderr.sh"
     Example 'example'
       foo() { echo "foo" >&2; }
       When call foo
-      The entire stderr should equal "foo${IFS%?}"
-      The entire error should equal "foo${IFS%?}"
+      The entire stderr should equal "foo${SHELLSPEC_LF}"
+      The entire error should equal "foo${SHELLSPEC_LF}"
     End
 
     It 'uses stderr including last LF as subject when stderr is defined'
       stderr() { echo "test"; }
-      preserve() { %preserve SHELLSPEC_META:META; }
-      AfterRun preserve
-
       When run shellspec_subject_entire_stderr _modifier_
-      The entire stdout should equal "test${IFS%?}"
-      The variable META should eq 'text'
+      The entire stdout should equal "test${SHELLSPEC_LF}"
     End
 
     It 'uses undefined as subject when stderr is undefined'
@@ -58,7 +59,16 @@ Describe "core/subjects/stderr.sh"
       The status should be failure
     End
 
-    It 'outputs error if next word is missing'
+    It "sets SHELLSPEC_META to text"
+      stderr() { :; }
+      preserve() { %preserve SHELLSPEC_META:META; }
+      AfterRun preserve
+
+      When run shellspec_subject_entire_stderr _modifier_
+      The variable META should eq 'text'
+    End
+
+    It 'outputs an error if the next word is missing'
       stderr() { echo "test"; }
       When run shellspec_subject_entire_stderr
       The entire stderr should equal SYNTAX_ERROR_DISPATCH_FAILED

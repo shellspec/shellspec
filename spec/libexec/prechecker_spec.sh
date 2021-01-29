@@ -4,29 +4,25 @@ Describe "libexec/prechecker.sh"
   Include "$SHELLSPEC_LIB/libexec/prechecker.sh"
 
   Describe "error()"
-    _error() { { error "$@" >/dev/null; } 2>&1; }
-
     It 'outputs to stderr'
-      When call _error "foo" "bar"
-      The output should eq "[error] foo bar"
+      When call error "foo" "bar"
+      The error should eq "[error] foo bar"
     End
   End
 
   Describe "warn()"
-    _warn() { warn "$@" 3>&1 >/dev/null; }
-
+    UseFD 3
     It 'outputs to fd3'
-      When call _warn "foo" "bar"
-      The output should eq "[warn] foo bar"
+      When call warn "foo" "bar"
+      The fd 3 should eq "[warn] foo bar"
     End
   End
 
   Describe "info()"
-    _info() { info "$@" 4>&1 >/dev/null; }
-
+    UseFD 4
     It 'outputs to fd4'
-      When call _info "foo" "bar"
-      The output should eq "[info] foo bar"
+      When call info "foo" "bar"
+      The fd 4 should eq "[info] foo bar"
     End
   End
 

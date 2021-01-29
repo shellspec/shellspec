@@ -265,6 +265,10 @@ shellspec_output_FAILED() {
   shellspec_output_result tag:failed note:FAILED fail:y quick:y
 }
 
+shellspec_output_ERROR() {
+  shellspec_output_result tag:error note:ERROR fail:y quick:y
+}
+
 shellspec_output_WARNED() {
   shellspec_output_result tag:warned note:WARNED \
     fail:${SHELLSPEC_WARNING_AS_FAILURE:+y} \
@@ -293,4 +297,9 @@ shellspec_output_SKIPPED() {
   else
     shellspec_output_result tag:skipped note:SKIPPED fail: quick: temporary:
   fi
+}
+
+shellspec_output_DSL_ERROR() {
+  shellspec_output_statement "tag:bad" "note:ERROR" "fail:y" "failure_message:" \
+    "message:$1"
 }
