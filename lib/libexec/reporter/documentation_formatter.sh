@@ -35,7 +35,11 @@ documentation_each() {
       fi
 
       set -- "${_indent}${field_color}${_description}"
-      [ "$example_index" ] && set -- "$@" "($field_note - $example_index)"
+      case "${field_note:+x}:${example_index:+x}" in
+        x:x) set -- "$@" "($field_note - $example_index)" ;;
+        x:) set -- "$@" "($field_note)" ;;
+        :x) set -- "$@" "($example_index)" ;;
+      esac
       documentation '+=' "${*:-}${RESET}${LF}"
   esac
 
