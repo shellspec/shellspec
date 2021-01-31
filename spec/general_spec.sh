@@ -654,9 +654,16 @@ Describe "general.sh"
   End
 
   Describe 'shellspec_readfile()'
+    Before var=dummy
+
     It 'reads the file as is'
       When call shellspec_readfile var "$FIXTURE/end-with-multiple-lf.txt"
-      The variable var should equal "a${IFS%?}${IFS%?}"
+      The variable var should equal "a${SHELLSPEC_LF}${SHELLSPEC_LF}"
+    End
+
+    It 'unsets the variable when the file does not exist'
+      When call shellspec_readfile var "$FIXTURE/no-such-a-file.txt"
+      The variable var should be undefined
     End
   End
 

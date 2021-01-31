@@ -325,7 +325,8 @@ shellspec_wrap() {
 
 shellspec_readfile() {
   set -- "$1" "$2" ""
-  eval "$1="
+  eval "unset $1 ||:"
+  [ -e "$2" ] || return 0
   while IFS= read -r "$1"; do
     eval "set -- \"\$1\" \"\$2\" \"\$3\${$1}\$SHELLSPEC_LF\""
   done < "$2" &&:
