@@ -1,6 +1,17 @@
 #shellcheck shell=sh disable=SC2004,SC2016
 
 Describe "core/file_descriptor.sh"
+  Describe "shellspec_enum_file_descriptors()"
+    callback() { echo "$@"; }
+    BeforeRun SHELLSPEC_STDIO_FILE_BASE=base
+
+    It 'opens file descriptors'
+      When run shellspec_enum_file_descriptors callback 1:A
+      The line 1 should eq "1 base.fd-1"
+      The line 2 should eq "A base.fd-A"
+    End
+  End
+
   Describe "shellspec_open_file_descriptors()"
     mock() {
       shellspec_open_file_descriptor() { echo "$@"; }

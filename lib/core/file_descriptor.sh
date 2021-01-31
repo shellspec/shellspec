@@ -1,5 +1,13 @@
 #shellcheck shell=sh
 
+shellspec_enum_file_descriptors() {
+  set -- "$1" "$2:"
+  while [ "${2%%:*}" ]; do
+    set -- "$1" "${2#*:}" "${2%%:*}"
+    "$1" "$3" "$SHELLSPEC_STDIO_FILE_BASE.fd-$3"
+  done
+}
+
 shellspec_open_file_descriptors() {
   set -- "$1:"
   while [ "${1%%:*}" ]; do
