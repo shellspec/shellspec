@@ -1483,33 +1483,51 @@ Describe "core/dsl.sh"
   End
 
   Describe "shellspec_dump()"
-    BeforeRun SHELLSPEC_STDOUT=stdout
-    BeforeRun SHELLSPEC_STDERR=stderr
+    BeforeRun SHELLSPEC_STDOUT=stdout SHELLSPEC_STDERR=stderr
     BeforeRun SHELLSPEC_STATUS=123
+    BeforeRun SHELLSPEC_SPECFILE=specfile SHELLSPEC_AUX_LINENO=10
+    BeforeRun SHELLSPEC_FD_3=fd3 SHELLSPEC_FD_AA=fdaa
+    BeforeRun SHELLSPEC_USE_FDS=3:AA:
 
     It 'dumps stdout/stderr/status'
       When run shellspec_dump
-      The line 2 of stdout should eq "[stdout]"
-      The line 3 of stdout should eq "stdout"
-      The line 4 of stdout should eq "[stderr]"
-      The line 5 of stdout should eq "stderr"
-      The line 6 of stdout should eq "[status] 123"
+      The line 1 should eq ""
+      The line 2 should eq "[Dump] specfile:10 (exit status: 123)"
+      The line 3 should eq "- stdout:"
+      The line 4 should eq "stdout"
+      The line 5 should eq "- stderr:"
+      The line 6 should eq "stderr"
+      The line 7 should eq "- fd 3:"
+      The line 8 should eq "fd3"
+      The line 9 should eq "- fd AA:"
+      The line 10 should eq "fdaa"
+      The lines of stdout should eq 10
+    End
+  End
+
+  Describe "shellspec_dump_file()"
+    BeforeRun mock
+
+    It 'dumps <unset> when the file not exist'
+      mock() { shellspec_readfile_once() { unset "$1" ||:; }; }
+      When run shellspec_dump_file var VAR varfile
+      The line 1 should eq ""
+      The line 2 should eq "- var: <unset>"
     End
 
-    Context "when unset"
-      setup() {
-        unset SHELLSPEC_STDOUT ||:
-        unset SHELLSPEC_STDERR ||:
-        unset SHELLSPEC_STATUS ||:
-      }
-      BeforeRun setup
+    It 'dumps <empty> when the file is empty'
+      mock() { shellspec_readfile_once() { eval "$1=''"; }; }
+      When run shellspec_dump_file var VAR varfile
+      The line 1 should eq ""
+      The line 2 should eq "- var: <empty>"
+    End
 
-      It 'dumps stdout/stderr/status'
-        When run shellspec_dump
-        The line 2 of stdout should eq "[stdout] <unset>"
-        The line 3 of stdout should eq "[stderr] <unset>"
-        The line 4 of stdout should eq "[status] <unset>"
-      End
+    It 'dumps data when the file is not empty'
+      mock() { shellspec_readfile_once() { eval "$1='data'"; }; }
+      When run shellspec_dump_file var VAR varfile
+      The line 1 should eq ""
+      The line 2 should eq "- var:"
+      The line 3 should eq "data"
     End
   End
 

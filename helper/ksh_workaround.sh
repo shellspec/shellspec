@@ -41,9 +41,9 @@ ksh_workaround_loaded() {
   shellspec_redefinable shellspec_is_temporary_skip
   shellspec_redefinable shellspec_is_temporary_pending
   shellspec_redefinable shellspec_call_after_hooks
-  shellspec_redefinable shellspec_call_after_hooks
   shellspec_redefinable shellspec_dsl_check
   shellspec_redefinable shellspec_fds_check
+  shellspec_redefinable shellspec_readfile_once
 
   # for ksh88 and busybox-1.1.3
   # These shells do not allow built-in commands cannot be redefined

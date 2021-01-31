@@ -534,21 +534,30 @@ shellspec_filter() {
 }
 
 shellspec_dump() {
-  set -- ""
-  if [ "${SHELLSPEC_STDOUT+x}" ]; then
-    set -- "$@" "[stdout]${SHELLSPEC_LF}${SHELLSPEC_STDOUT}"
+  shellspec_putsn
+  shellspec_puts "[Dump] $SHELLSPEC_SPECFILE:$SHELLSPEC_AUX_LINENO "
+  shellspec_puts "(exit status: ${SHELLSPEC_STATUS-<unset>})"
+
+  shellspec_dump_file stdout SHELLSPEC_STDOUT "$SHELLSPEC_STDOUT_FILE"
+  shellspec_dump_file stderr SHELLSPEC_STDERR "$SHELLSPEC_STDERR_FILE"
+
+  shellspec_dump_callback() {
+    shellspec_dump_file "fd $1" "SHELLSPEC_FD_$1" "$2"
+  }
+
+  shellspec_enum_file_descriptors shellspec_dump_callback "$SHELLSPEC_USE_FDS"
+}
+
+shellspec_dump_file() {
+  shellspec_readfile_once "$2" "$3"
+  shellspec_putsn
+  if eval "[ \"\${$2:-}\" ] &&:"; then
+    eval "shellspec_puts \"- $1:\${SHELLSPEC_LF}\${$2}\""
+  elif eval "[ \${$2+x} ] &&:"; then
+    shellspec_puts "- $1: <empty>"
   else
-    set -- "$@" "[stdout] <unset>"
+    shellspec_puts "- $1: <unset>"
   fi
-  if [ "${SHELLSPEC_STDERR+x}" ]; then
-    set -- "$@" "[stderr]${SHELLSPEC_LF}${SHELLSPEC_STDERR}"
-  else
-    set -- "$@" "[stderr] <unset>"
-  fi
-  set -- "$@" "[status] ${SHELLSPEC_STATUS-<unset>}" ""
-  IFS="${SHELLSPEC_LF}${IFS}"
-  shellspec_putsn "$*"
-  IFS=${IFS#?}
 }
 
 shellspec_preserve() {
