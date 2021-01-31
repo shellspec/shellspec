@@ -667,6 +667,29 @@ Describe "general.sh"
     End
   End
 
+  Describe 'shellspec_readfile_once()'
+    mock() {
+      shellspec_readfile() { echo "readfile" "$@"; }
+    }
+    BeforeRun mock
+
+    Context "when the variable is undefined"
+      Before "unset var ||:"
+      It 'reads the file'
+        When run shellspec_readfile_once var "file"
+        The output should eq "readfile var file"
+      End
+    End
+
+    Context "when the variable is defined"
+      Before "var=''"
+      It 'does not read the file'
+        When run shellspec_readfile_once var "file"
+        The output should be blank
+      End
+    End
+  End
+
   Describe 'shellspec_capturefile()'
     It 'reads the file without trailing LF'
       When call shellspec_capturefile var "$FIXTURE/end-with-multiple-lf.txt"

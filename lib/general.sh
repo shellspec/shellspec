@@ -333,6 +333,11 @@ shellspec_readfile() {
   eval "$1=\"\$3\${$1}\""
 }
 
+shellspec_readfile_once() {
+  eval "[ \${$1+x} ] &&:" && return 0
+  shellspec_readfile "$@"
+}
+
 shellspec_capturefile() {
   shellspec_readfile "$@"
   shellspec_chomp "$@"
