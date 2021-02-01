@@ -697,6 +697,28 @@ Describe "general.sh"
     End
   End
 
+  Describe 'shellspec_head()'
+    Data
+      #|line1
+      #|line2
+      #|line3
+      #|line4
+      #|line5
+    End
+
+    Parameters
+      4 4 "line4" 5 eq "..."
+      5 5 "line5" 6 be undefined
+      6 5 "line5" 6 be undefined
+    End
+
+    It 'reads the specified number of lines'
+      When call shellspec_head var "$1"
+      The line "$2" of variable var should eq "$3"
+      The line "$4" of variable var should "$5" "$6"
+    End
+  End
+
   Describe "shellspec_trim()"
     It 'trims white space'
       When call shellspec_trim value " $IFS abc $IFS "

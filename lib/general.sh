@@ -343,6 +343,19 @@ shellspec_capturefile() {
   shellspec_chomp "$@"
 }
 
+shellspec_head() {
+  set -- "$1" "${2:-3}" ""
+  eval "$1=''"
+  while IFS= read -r "$1" && [ "$2" -gt 0 ]; do
+    eval "set -- \"\$1\" \$((\$2 - 1)) \"\$3\${$1}\$SHELLSPEC_LF\""
+  done &&:
+  if eval "[ \"\${$1}\" ] &&:" && [ "$2" -eq 0 ]; then
+    eval "$1=\"\$3...\""
+  else
+    eval "$1=\"\$3\${$1}\""
+  fi
+}
+
 shellspec_trim() {
   SHELLSPEC_EVAL="
     $1=\${2:-}; [ \"\$$1\" ] || return 0; \
