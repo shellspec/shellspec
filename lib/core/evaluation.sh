@@ -262,11 +262,10 @@ shellspec_interceptor() {
 }
 
 shellspec_evaluation_cleanup() {
-  SHELLSPEC_STATUS=$1 SHELLSPEC_STDOUT='' SHELLSPEC_STDERR=''
+  SHELLSPEC_STATUS=$1
+  unset SHELLSPEC_STDOUT SHELLSPEC_STDERR ||:
   [ "$SHELLSPEC_XTRACE" ] && [ "$SHELLSPEC_XTRACEFD" = 2 ] && return 0
-  shellspec_readfile SHELLSPEC_STDOUT "$SHELLSPEC_STDOUT_FILE"
-  shellspec_readfile SHELLSPEC_STDERR "$SHELLSPEC_STDERR_FILE"
   shellspec_toggle UNHANDLED_STATUS [ "$SHELLSPEC_STATUS" -ne 0 ]
-  shellspec_toggle UNHANDLED_STDOUT [ "$SHELLSPEC_STDOUT" ]
-  shellspec_toggle UNHANDLED_STDERR [ "$SHELLSPEC_STDERR" ]
+  shellspec_toggle UNHANDLED_STDOUT [ -s "$SHELLSPEC_STDOUT_FILE" ]
+  shellspec_toggle UNHANDLED_STDERR [ -s "$SHELLSPEC_STDERR_FILE" ]
 }

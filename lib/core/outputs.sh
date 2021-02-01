@@ -74,20 +74,26 @@ shellspec_output_UNHANDLED_STATUS() {
 
 shellspec_output_UNHANDLED_STDOUT() {
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
-  shellspec_chomp SHELLSPEC_STDOUT
+  unset UNHANDLED_STDOUT || :
+  if [ -e "$SHELLSPEC_STDOUT_FILE" ]; then
+    shellspec_head UNHANDLED_STDOUT < "$SHELLSPEC_STDOUT_FILE"
+  fi
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:There was output to stdout but not found expectation" \
-    "failure_message:stdout:${SHELLSPEC_STDOUT}${SHELLSPEC_LF}"
+    "failure_message:stdout:${UNHANDLED_STDOUT- <none>}${SHELLSPEC_LF}"
 }
 
 shellspec_output_UNHANDLED_STDERR() {
   SHELLSPEC_LINENO=$SHELLSPEC_LINENO_BEGIN-$SHELLSPEC_LINENO_END
-  shellspec_chomp SHELLSPEC_STDERR
+  unset UNHANDLED_STDERR || :
+  if [ -e "$SHELLSPEC_STDERR_FILE" ]; then
+    shellspec_head UNHANDLED_STDERR < "$SHELLSPEC_STDERR_FILE"
+  fi
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \
     "message:There was output to stderr but not found expectation" \
-    "failure_message:stderr:${SHELLSPEC_STDERR}${SHELLSPEC_LF}"
+    "failure_message:stderr:${UNHANDLED_STDERR- <none>}${SHELLSPEC_LF}"
 }
 
 shellspec_output_ASSERT_WARN() {

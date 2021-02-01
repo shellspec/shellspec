@@ -8,6 +8,7 @@ shellspec_subject_word() {
 
   # shellcheck disable=SC2034
   SHELLSPEC_META="text"
+  shellspec_readfile_once SHELLSPEC_STDOUT "$SHELLSPEC_STDOUT_FILE"
   if [ ${SHELLSPEC_STDOUT+x} ]; then
     # shellcheck disable=SC2034
     SHELLSPEC_SUBJECT=$SHELLSPEC_STDOUT

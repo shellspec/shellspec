@@ -28,6 +28,8 @@ shellspec_modifier_result() {
 }
 
 shellspec_modifier_result_invoke() {
+  shellspec_readfile_once SHELLSPEC_STDOUT "$SHELLSPEC_STDOUT_FILE"
+  shellspec_readfile_once SHELLSPEC_STDERR "$SHELLSPEC_STDERR_FILE"
   set -- "${SHELLSPEC_STDOUT:-}" "${SHELLSPEC_STDERR:-}" "${SHELLSPEC_STATUS:-}"
   if [ -e "$SHELLSPEC_STDOUT_FILE" ]; then
     ( "$SHELLSPEC_SUBJECT" "$@" < "$SHELLSPEC_STDOUT_FILE" )
