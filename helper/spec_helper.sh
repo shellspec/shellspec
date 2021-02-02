@@ -80,15 +80,6 @@ spec_helper_configure() {
     fi
   }
 
-  set_stderr() {
-    if stderr > /dev/null; then
-      SHELLSPEC_STDERR=$(stderr; echo _)
-      SHELLSPEC_STDERR=${SHELLSPEC_STDERR%_}
-    else
-      unset SHELLSPEC_STDERR ||:
-    fi
-  }
-
   set_fd() {
     SHELLSPEC_STDIO_FILE_BASE=$SHELLSPEC_WORKDIR
     if "fd$1" > /dev/null; then
@@ -104,6 +95,9 @@ spec_helper_configure() {
     [ "${SHELLSPEC_SUBJECT+x}" ] || return 1
     shellspec_puts "$SHELLSPEC_SUBJECT"
   }
+
+  shellspec_syntax shellspec_modifier__null_modifier_
+  shellspec_modifier__null_modifier_() { :; }
 
   subject_mock() {
     shellspec_output() { shellspec_puts "$1" >&2; }

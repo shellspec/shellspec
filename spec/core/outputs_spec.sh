@@ -179,7 +179,8 @@ Describe "core/outputs.sh"
   End
 
   Describe "shellspec_output_UNHANDLED_STDOUT"
-    BeforeRun SHELLSPEC_LINENO_BEGIN=100 SHELLSPEC_LINENO_END=200 SHELLSPEC_STDOUT=stdout
+    mock() { shellspec_head() { eval "$1=stdout"; }; }
+    BeforeRun mock SHELLSPEC_LINENO_BEGIN=100 SHELLSPEC_LINENO_END=200
 
     Context 'when not specified waring as failure'
       BeforeRun SHELLSPEC_WARNING_AS_FAILURE=''
@@ -199,7 +200,8 @@ Describe "core/outputs.sh"
   End
 
   Describe "shellspec_output_UNHANDLED_STDERR"
-    BeforeRun SHELLSPEC_LINENO_BEGIN=100 SHELLSPEC_LINENO_END=200 SHELLSPEC_STDERR=stderr
+    mock() { shellspec_head() { eval "$1=stderr"; }; }
+    BeforeRun mock SHELLSPEC_LINENO_BEGIN=100 SHELLSPEC_LINENO_END=200
 
     Context 'when not specified waring as failure'
       BeforeRun SHELLSPEC_WARNING_AS_FAILURE=''
