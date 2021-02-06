@@ -692,6 +692,11 @@ Describe "general.sh"
       The variable var should equal "a${SHELLSPEC_LF}${SHELLSPEC_LF}"
     End
 
+    It 'reads the file as is'
+      When call shellspec_readfile var "$FIXTURE/end-without-lf.txt"
+      The variable var should equal "foo\\${SHELLSPEC_LF}bar"
+    End
+
     It 'unsets the variable when the file does not exist'
       When call shellspec_readfile var "$FIXTURE/no-such-a-file.txt"
       The variable var should be undefined
@@ -725,6 +730,11 @@ Describe "general.sh"
     It 'reads the file without trailing LF'
       When call shellspec_capturefile var "$FIXTURE/end-with-multiple-lf.txt"
       The variable var should equal "a"
+    End
+
+    It 'reads the file as is'
+      When call shellspec_capturefile var "$FIXTURE/end-without-lf.txt"
+      The variable var should equal "foo\\${SHELLSPEC_LF}bar"
     End
   End
 

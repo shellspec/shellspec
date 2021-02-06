@@ -179,7 +179,7 @@ if setopt NO_NOMATCH >/dev/null 2>&1; then
 fi
 
 #shellcheck disable=SC2034,SC2039
-if ( set_path ""; exec {fd}>/dev/null ) 2>/dev/null; then
+if ( exec {fd}>/dev/null ) 2>/dev/null; then
   echo "SHELLSPEC_FDVAR_AVAILABLE=1"
 fi
 
