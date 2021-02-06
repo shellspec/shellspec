@@ -383,9 +383,13 @@ shellspec_replace_all_posix() {
   else
     set -- "$1" "$2" "$3" "$4" ""
   fi
-  until [ _"$2" = _"${2#*"$3"}" ] && eval "$1=\$5\$2"; do
-    set -- "$1" "${2#*"$3"}" "$3" "$4" "$5${2%%"$3"*}$4"
+  while :; do
+    case $2 in
+      *"$3"*) set -- "$1" "${2#*"$3"}" "$3" "$4" "$5${2%%"$3"*}$4" ;;
+      *) break ;;
+    esac
   done
+  eval "$1=\$5\$2"
 }
 
 # $1: ret, $2: from, $3: to
@@ -397,6 +401,22 @@ shellspec_replace_all_fallback() {
   until eval "[ _\"\$2\" = _\"\${2#*$3}\" ] && $1=\$5\$2"; do
     eval "set -- \"\$1\" \"\${2#*$3}\" \"\$3\" \"\$4\" \"\$5\${2%%$3*}\$4\""
   done
+}
+
+shellspec_replace_all_multiline_() {
+  [ $# -lt 5 ] && eval "set -- \"\$1\" \"\$2\" \"\${$2}\" \"\$3\" \"\$4\""
+  eval "$2=\$(shellspec_replace_all_multiline_lines \"\$@\"); $2=\${$2%_}"
+}
+
+shellspec_replace_all_multiline_lines() {
+  shellspec_puts "$3" | {
+    while IFS= read -r line; do
+      "$1" line "$line" "$4" "$5"
+      shellspec_putsn "$line"
+    done
+    "$1" line "$line" "$4" "$5"
+    shellspec_puts "${line}_"
+  }
 }
 
 shellspec_includes_posix() {
@@ -473,6 +493,9 @@ case $? in
     shellspec_includes() { shellspec_includes_posix "$@"; }
     shellspec_starts_with() { shellspec_starts_with_posix "$@"; }
     shellspec_ends_with() { shellspec_ends_with_posix "$@"; }
+    shellspec_replace_all_multiline() {
+      shellspec_replace_all_multiline_ shellspec_replace_all_fast "$@"
+    }
     ;;
   1)
     # POSIX version (POSIX compliant)
@@ -482,6 +505,9 @@ case $? in
     shellspec_includes() { shellspec_includes_posix "$@"; }
     shellspec_starts_with() { shellspec_starts_with_posix "$@"; }
     shellspec_ends_with() { shellspec_ends_with_posix "$@"; }
+    shellspec_replace_all_multiline() {
+      shellspec_replace_all_multiline_ shellspec_replace_all_posix "$@"
+    }
     ;;
   2)
     # Fallback version
@@ -489,6 +515,9 @@ case $? in
     shellspec_includes() { shellspec_includes_fallback "$@"; }
     shellspec_starts_with() { shellspec_starts_with_fallback "$@"; }
     shellspec_ends_with() { shellspec_ends_with_fallback "$@"; }
+    shellspec_replace_all_multiline() {
+      shellspec_replace_all_multiline_ shellspec_replace_all_fallback "$@"
+    }
 esac
 
 # $2: pattern should be escaped

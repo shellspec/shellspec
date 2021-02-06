@@ -484,6 +484,37 @@ Describe "general.sh"
     End
   End
 
+  Describe "shellspec_replace_all_multiline()"
+    Before setup
+    Context "when does not end a with newline"
+      setup() {
+        # shellcheck disable=SC2034
+        text=$(printf '%s@\n' foo bar baz)
+      }
+      It "replaces multiple lines"
+        When call shellspec_replace_all_multiline text "@" "%"
+        The line 1 of variable text should eq "foo%"
+        The line 2 of variable text should eq "bar%"
+        The line 3 of variable text should eq "baz%"
+        The line 4 of variable text should be undefined
+      End
+    End
+
+    Context "when end with a newline"
+      setup() {
+        # shellcheck disable=SC2034
+        text="$(printf '%s@\n' foo bar baz)${SHELLSPEC_LF}${SHELLSPEC_LF}"
+      }
+      It "replaces multiple lines"
+        When call shellspec_replace_all_multiline text "@" "%"
+        The line 1 of variable text should eq "foo%"
+        The line 2 of variable text should eq "bar%"
+        The line 3 of variable text should eq "baz%"
+        The line 4 of variable text should eq ""
+      End
+    End
+  End
+
   Describe "shellspec_includes()"
     lf=$SHELLSPEC_LF tab=$SHELLSPEC_TAB vt=$SHELLSPEC_VT cr=$SHELLSPEC_CR
 

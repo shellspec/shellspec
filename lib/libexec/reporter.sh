@@ -2,8 +2,8 @@
 
 # shellcheck source=lib/libexec.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec.sh"
-use import constants sequence replace_all each padding trim wrap
-use is_empty_file pluralize exists_file readfile
+use import constants sequence replace_all replace_all_multiline each
+use padding trim wrap is_empty_file pluralize exists_file readfile
 
 notice() { warn "$@" 2>&1; }
 
@@ -84,7 +84,7 @@ xmlattrs() {
 xmlcdata() {
   eval "$1=\$2"
   if [ "$2" ]; then
-    replace_all "$1" ']]>' ']]]]><![CDATA[>'
+    replace_all_multiline "$1" ']]>' ']]]]><![CDATA[>'
     eval "$1=\"<![CDATA[\${$1}]]>\""
   fi
 }
