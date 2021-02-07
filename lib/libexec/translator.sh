@@ -505,10 +505,12 @@ remove_from_ranges() {
 translate() {
   work=''
   while read_specfile line; do
-    while ends_with "$line" "\\"; do
-      read_specfile work ||:
-      line="${line}${LF}${work}"
-    done
+    if [ ! "$inside_of_text" ]; then
+      while ends_with "$line" "\\"; do
+        read_specfile work ||:
+        line="${line}${LF}${work}"
+      done
+    fi
     trim work "$line"
     dsl=${work%% *} rest=''
 
