@@ -85,7 +85,11 @@ if typeset >/dev/null 2>&1; then
   # shellcheck disable=SC2034
   set -- "$(var=data; typeset -p var 2>/dev/null ||:)" ||:
   if [ ! "${1#*data}" = "$1" ]; then
-    [ "${BASH_VERSION:-}" ] && SHELLSPEC_CLONE_TYPE=bash
+    if [ "${BASH_VERSION:-}" ]; then
+      SHELLSPEC_CLONE_TYPE=bash OLDIFS=$IFS
+      eval "$(typeset -p IFS)"
+      [ "$OLDIFS" = "$IFS" ] || SHELLSPEC_CLONE_TYPE=old_bash IFS=$OLDIFS
+    fi
     [ "${ZSH_VERSION:-}" ] && SHELLSPEC_CLONE_TYPE=zsh
     [ "${YASH_VERSION:-}" ] && SHELLSPEC_CLONE_TYPE=yash
     [ "${KSH_VERSION:-}" ] && SHELLSPEC_CLONE_TYPE=ksh

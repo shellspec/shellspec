@@ -38,6 +38,24 @@ Describe "core/clone.sh"
   End
 
   Describe "shellspec_clone()"
+    Describe "clone check"
+      clone_check() {
+        var=$1
+        eval "$(shellspec_clone var:VAR)"
+        [ "$var" = "$VAR" ]
+      }
+
+      Parameters
+        "test"
+        "test$SHELLSPEC_LF"
+      End
+
+      It "clones variables"
+        When call clone_check "$1"
+        The status should be success
+      End
+    End
+
     shellspec_clone_dummy() { echo "clone $1 => $2"; }
     Before "SHELLSPEC_CLONE_TYPE=dummy" foo=1 bar=2
 
@@ -416,6 +434,56 @@ Describe "core/clone.sh"
         #|typeset -r var2
       }
       When call shellspec_clone_yash var var2
+      The output should eq "$(var2)"
+    End
+  End
+
+  Describe 'shellspec_clone_old_bash()'
+    Specify 'var=123'
+      var1() { %text
+        #|declare -- var="123"
+      }
+      var2() { %text
+        #|declare -- var2="123"
+      }
+      When call shellspec_clone_old_bash var var2
+      The output should eq "$(var2)"
+    End
+
+    Specify 'var="foo\nbar"'
+      var1() { %text
+        #|declare -- var="foo\
+        #|bar"
+      }
+      var2() { %text
+        #|declare -- var2="foo
+        #|bar"
+      }
+      When call shellspec_clone_old_bash var var2
+      The output should eq "$(var2)"
+    End
+
+    Specify 'var=(1 2 3)'
+      var1() { %text
+        #|declare -a var=([0]="1" [1]="2" [2]="3")
+      }
+      var2() { %text
+        #|declare -a var2=([0]="1" [1]="2" [2]="3")
+      }
+      When call shellspec_clone_old_bash var var2
+      The output should eq "$(var2)"
+    End
+
+    Specify 'typeset -A var=([a]=1 [b]=2 [c]="foo\nbar")' # bash >= 4.x
+      var1() { %text
+        #|declare -A var='([a]="1" [b]="2" [c]="foo
+        #|bar" )'
+      }
+      var2() { %text
+        #|declare -A var2='([a]="1" [b]="2" [c]="foo
+        #|bar" )'
+      }
+      When call shellspec_clone_old_bash var var2
       The output should eq "$(var2)"
     End
   End
