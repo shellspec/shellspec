@@ -23,7 +23,7 @@ multiple() {
   eval "export $1=\"\${$1}\${$1:+$2}\$OPTARG\""
 }
 
-array() {
+path_list() {
   set -- "$1" "$OPTARG'" ""
   while [ "$2" ]; do
     set -- "$1" "${2#*\'}" "$3${2%%\'*}'\''"

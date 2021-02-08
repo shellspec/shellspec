@@ -29,19 +29,19 @@ Describe "libexec/optparser/optparser.sh"
     End
   End
 
-  Describe "array()"
-    _array() {
+  Describe "path_list()"
+    _path_list() {
       # shellcheck disable=SC2034
       VAR=''
-      OPTARG="foo" && array "$1"
-      OPTARG="b a r" && array "$1"
-      OPTARG="b'a'z" && array "$1"
+      OPTARG="foo" && path_list "$1"
+      OPTARG="b a r" && path_list "$1"
+      OPTARG="b'a'z" && path_list "$1"
       eval "eval set -- \${$1}"
       printf '%s\n' "$@"
     }
 
     It "stores the escaped values into a variable"
-      When call _array VAR
+      When call _path_list VAR
       The line 1 should eq "foo"
       The line 2 should eq "b a r"
       The line 3 should eq "b'a'z"

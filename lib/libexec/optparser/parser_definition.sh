@@ -29,7 +29,7 @@ parser_definition() {
   param OPTIONS -O --options var:PATH -- \
     'Specify the path to an additional options file'
 
-  array LOAD_PATH -I --load-path var:PATH -- \
+  path_list LOAD_PATH -I --load-path var:PATH -- \
     'Specify PATH to add to $SHELLSPEC_LOAD_PATH (may be used more than once)'
 
   param HELPERDIR --helperdir init:="spec" var:DIRECTORY -- \
@@ -303,10 +303,10 @@ extension() {
     shift 2
     param ":multiple $name '$separator'" "init:export $name=''" "$@"
   }
-  array() {
+  path_list() {
     name=${prefix}_$1
     shift
-    param ":array $name" "init:export $name=''" "$@"
+    param ":path_list $name" "init:export $name=''" "$@"
   }
   prehook() {
     helper=$1 name=$2

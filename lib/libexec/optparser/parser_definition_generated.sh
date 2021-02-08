@@ -406,7 +406,7 @@ optparser_parse() {
       '-I'|'--load-path')
         [ $# -le 1 ] && set "required" "$1" && break
         OPTARG=$2
-        array SHELLSPEC_LOAD_PATH SHELLSPEC
+        path_list SHELLSPEC_LOAD_PATH SHELLSPEC
         shift ;;
       '--helperdir')
         [ $# -le 1 ] && set "required" "$1" && break
