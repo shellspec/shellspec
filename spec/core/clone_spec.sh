@@ -9,10 +9,10 @@ Describe "core/clone.sh"
       eval 'typeset() { typeset_mock "$@"; }' 2>/dev/null ||:
       alias typeset='typeset_mock' 2>/dev/null ||:
     }
-    Before mock
+    BeforeRun mock
 
     It "calls typeset"
-      When call shellspec_clone_typeset 1 2 3
+      When run shellspec_clone_typeset 1 2 3
       The output should eq "typeset 1 2 3"
     End
   End
