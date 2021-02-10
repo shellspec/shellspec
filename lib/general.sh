@@ -799,12 +799,10 @@ shellspec_list_envkeys() {
   eval "$2_callback() { $1 \"\$@\"; }; $(shellspec_exportp | "$2_rework")" &&:
 }
 shellspec_list_envkeys_rework() {
-  set -- printf '%s\n'
   while IFS= read -r line; do
     shellspec_list_envkeys_sanitize line "$line"
-    set -- "$@" "shellspec_list_envkeys_parse $line || return \$?"
+    shellspec_putsn "shellspec_list_envkeys_parse $line || return \$?"
   done
-  "$@"
 }
 shellspec_list_envkeys_parse() {
   while [ $# -gt 2 ]; do
