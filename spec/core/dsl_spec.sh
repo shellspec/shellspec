@@ -714,7 +714,7 @@ Describe "core/dsl.sh"
       The line 3 of stdout should eq "after CALL"
     End
 
-    Context "when error occured in before evaluation"
+    Context "when error occurred in before evaluation"
       _around_call() {
         # shellcheck disable=SC2034
         SHELLSPEC_HOOK="hook name"
@@ -736,7 +736,7 @@ Describe "core/dsl.sh"
       End
     End
 
-    Context "when error occured in after evaluation"
+    Context "when error occurred in after evaluation"
       _around_call() {
         # shellcheck disable=SC2034
         SHELLSPEC_HOOK="hook name"
@@ -777,7 +777,7 @@ Describe "core/dsl.sh"
       The line 3 of stdout should eq "after RUN"
     End
 
-    Context "when error occured in before evaluation"
+    Context "when error occurred in before evaluation"
       _around_run() {
         # shellcheck disable=SC2034
         SHELLSPEC_HOOK="hook name"
@@ -799,7 +799,7 @@ Describe "core/dsl.sh"
       End
     End
 
-    Context "when error occured in after evaluation"
+    Context "when error occurred in after evaluation"
       _around_run() {
         # shellcheck disable=SC2034
         SHELLSPEC_HOOK="hook name"
