@@ -513,6 +513,16 @@ Describe "general.sh"
         The line 4 of variable text should eq ""
       End
     End
+
+    Context "when the replacement string contains a newline"
+      # shellcheck disable=SC2034
+      setup() { text="@"; }
+      It "raises error"
+        When run shellspec_replace_all_multiline text "@$SHELLSPEC_LF" "%"
+        The status should be failure
+        The error should eq "shellspec_replace_all_multiline: newline replacement is not supported"
+      End
+    End
   End
 
   Describe "shellspec_includes()"

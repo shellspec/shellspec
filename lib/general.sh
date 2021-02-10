@@ -484,7 +484,15 @@ shellspec_replace_all_fallback() {
 
 shellspec_replace_all_multiline_() {
   [ $# -lt 5 ] && eval "set -- \"\$1\" \"\$2\" \"\${$2}\" \"\$3\" \"\$4\""
+  shellspec_replace_all_multiline_check "$4"
   eval "$2=\$(shellspec_replace_all_multiline_lines \"\$@\"); $2=\${$2%_}"
+}
+
+shellspec_replace_all_multiline_check() {
+  case $1 in (*$SHELLSPEC_LF*)
+    echo "shellspec_replace_all_multiline: newline replacement is not supported" >&2
+    exit 1
+  esac
 }
 
 shellspec_replace_all_multiline_lines() {
@@ -573,7 +581,9 @@ case $? in
     shellspec_starts_with() { shellspec_starts_with_posix "$@"; }
     shellspec_ends_with() { shellspec_ends_with_posix "$@"; }
     shellspec_replace_all_multiline() {
-      shellspec_replace_all_multiline_ shellspec_replace_all_fast "$@"
+      [ $# -lt 4 ] && eval "set -- \"\$1\" \"\${$1}\" \"\$2\" \"\$3\""
+      shellspec_replace_all_multiline_check "$3"
+      shellspec_replace_all_fast "$@"
     }
     ;;
   1)
