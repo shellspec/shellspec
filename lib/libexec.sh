@@ -1,6 +1,9 @@
 #shellcheck shell=sh disable=SC2004
 
-[ "${ZSH_VERSION:-}" ] && setopt shwordsplit
+if [ "${ZSH_VERSION:-}" ]; then
+  setopt shwordsplit
+  zmodload zsh/mapfile 2>/dev/null ||:
+fi
 
 # shellcheck source=lib/general.sh
 . "${SHELLSPEC_LIB:-./lib}/general.sh"

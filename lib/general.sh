@@ -324,93 +324,123 @@ shellspec_wrap() {
 }
 
 if [ "$SHELLSPEC_BUILTIN_READARRAY" ]; then
-  # shellcheck disable=SC2039
-  shellspec_readfile() {
-    [ -e "$2" ] || { unset "$1" ||:; return 0; }
-    [ -s "$2" ] || { eval "$1=''"; return 0; }
-    local IFS=""
-    readarray "$1" < "$2"
-    eval "$1=\"\${$1[*]}\""
-  }
+  shellspec_readfile() { shellspec_readfile_bash_readarray "$@"; }
 elif [ "$SHELLSPEC_SEEKABLE" ]; then
-  shellspec_readfile() {
-    [ -e "$2" ] || { unset "$1" ||:; return 0; }
-    [ -s "$2" ] || { eval "$1=''"; return 0; }
-    set -- "$1" "$2" "${LC_ALL:-}" "${LC_ALL+x}"
-    LC_ALL=C
-    eval '{ read -N "$(<#((EOF)))" "$1" <#((0)); } < "$2"'
-    unset LC_ALL
-    [ "$4" ] && LC_ALL="$3"
-    return 0
-  }
-elif [ "$SHELLSPEC_READ_DELIM" ]; then
-  # shellcheck disable=SC2039
-  shellspec_readfile() {
-    [ -e "$2" ] || { unset "$1" ||:; return 0; }
-    [ -s "$2" ] || { eval "$1=''"; return 0; }
-    IFS= read -r -d "" "$1" < "$2" ||:
-  }
-elif [ "${YASH_VERSION:-}" ]; then
-  # shellcheck disable=SC2039
-  shellspec_readfile() {
-    [ -e "$2" ] || { unset "$1" ||:; return 0; }
-    [ -s "$2" ] || { eval "$1=''"; return 0; }
-    typeset IFS="" shellspec_readfile_line=""
-    array -- "$1"
-    while read -r shellspec_readfile_line; do
-      array -i -- "$1" -1 "${shellspec_readfile_line}${SHELLSPEC_LF}"
-    done < "$2"
-    array -i -- "$1" -1 "$shellspec_readfile_line"
-    eval "$1=\"\${$1[*]}\""
-  }
-elif [ "${ZSH_VERSION:-}" ] && [ "$SHELLSPEC_STRING_CONCAT" ]; then
-  # shellcheck disable=SC2039
-  shellspec_readfile() {
-    [ -e "$2" ] || { unset "$1" ||:; return 0; }
-    [ -s "$2" ] || { eval "$1=''"; return 0; }
-    local shellspec_readfile_line='' shellspec_readfile_data=''
-    while IFS= read -r shellspec_readfile_line; do
-      shellspec_readfile_data+="${shellspec_readfile_line}${SHELLSPEC_LF}"
-    done < "$2"
-    shellspec_readfile_data+="$shellspec_readfile_line"
-    eval "$1=\"\$shellspec_readfile_data\""
-  }
+  shellspec_readfile() { shellspec_readfile_ksh_readall "$@"; }
 elif [ "${ZSH_VERSION:-}" ]; then
   # shellcheck disable=SC2039
   shellspec_readfile() {
-    [ -e "$2" ] || { unset "$1" ||:; return 0; }
-    [ -s "$2" ] || { eval "$1=''"; return 0; }
-    local shellspec_readfile_i=1 IFS="$SHELLSPEC_LF"
-    local -a shellspec_readfile_line
-    while IFS= read -r "shellspec_readfile_line[$shellspec_readfile_i]"; do
-      shellspec_readfile_i=$(($shellspec_readfile_i+1))
-    done < "$2"
-    eval "$1=\"\${shellspec_readfile_line[*]}\""
+    if zmodload -e zsh/mapfile; then
+      shellspec_readfile_zsh_mapfile "$@"
+    elif [ "$SHELLSPEC_READ_DELIM" ]; then
+      shellspec_readfile_read_delim "$@"
+    elif [ "$SHELLSPEC_STRING_CONCAT" ]; then
+      shellspec_readfile_zsh_concat "$@"
+    else
+      shellspec_readfile_zsh_array "$@"
+    fi
   }
+elif [ "$SHELLSPEC_READ_DELIM" ]; then
+  shellspec_readfile() { shellspec_readfile_read_delim "$@"; }
+elif [ "${YASH_VERSION:-}" ]; then
+  shellspec_readfile() { shellspec_readfile_yash_array "$@"; }
 else
-  shellspec_readfile() {
-    [ -e "$2" ] || { unset "$1" ||:; return 0; }
-    [ -s "$2" ] || { eval "$1=''"; return 0; }
-    shellspec_readfile_var=$1 shellspec_readfile_data='' shellspec_readfile_i=1
-    while IFS= read -r "shellspec_readfile_line_$shellspec_readfile_i"; do
-      shellspec_readfile_data="$shellspec_readfile_data\$1_$shellspec_readfile_i\$2"
-      shellspec_readfile_i=$(($shellspec_readfile_i+1))
-    done < "$2"
-    shellspec_readfile_data="$shellspec_readfile_data\$1_$shellspec_readfile_i"
-    set -- '$shellspec_readfile_line' "$SHELLSPEC_LF" "$IFS"
-    eval "shellspec_readfile_data=\"$shellspec_readfile_data\""
-
-    IFS="\$$SHELLSPEC_LF "
-    set -- "$3" $shellspec_readfile_data
-    IFS="$1"
-    shift 2
-
-    eval "$shellspec_readfile_var=\"$shellspec_readfile_data\""
-    IFS=" $IFS"
-    eval "unset $* shellspec_readfile_var shellspec_readfile_data shellspec_readfile_i"
-    IFS=${IFS#?}
-  }
+  shellspec_readfile() { shellspec_readfile_posix "$@"; }
 fi
+
+# shellcheck disable=SC2039
+shellspec_readfile_bash_readarray() {
+  [ -e "$2" ] || { unset "$1" ||:; return 0; }
+  [ -s "$2" ] || { eval "$1=''"; return 0; }
+  local IFS=""
+  readarray "$1" < "$2"
+  eval "$1=\"\${$1[*]}\""
+}
+
+# shellcheck disable=SC2039
+shellspec_readfile_ksh_readall() {
+  [ -e "$2" ] || { unset "$1" ||:; return 0; }
+  [ -s "$2" ] || { eval "$1=''"; return 0; }
+  set -- "$1" "$2" "${LC_ALL:-}" "${LC_ALL+x}"
+  LC_ALL=C
+  eval '{ read -N "$(<#((EOF)))" "$1" <#((0)); } < "$2"'
+  unset LC_ALL
+  [ "$4" ] && LC_ALL="$3"
+  return 0
+}
+
+# shellcheck disable=SC2039
+shellspec_readfile_read_delim() {
+  [ -e "$2" ] || { unset "$1" ||:; return 0; }
+  [ -s "$2" ] || { eval "$1=''"; return 0; }
+  IFS= read -r -d "" "$1" < "$2" ||:
+}
+
+# shellcheck disable=SC2039
+shellspec_readfile_yash_array() {
+  [ -e "$2" ] || { unset "$1" ||:; return 0; }
+  [ -s "$2" ] || { eval "$1=''"; return 0; }
+  typeset IFS="" shellspec_readfile_line=""
+  array -- "$1"
+  while read -r shellspec_readfile_line; do
+    array -i -- "$1" -1 "${shellspec_readfile_line}${SHELLSPEC_LF}"
+  done < "$2"
+  array -i -- "$1" -1 "$shellspec_readfile_line"
+  eval "$1=\"\${$1[*]}\""
+}
+
+shellspec_readfile_zsh_mapfile() {
+  [ -e "$2" ] || { unset "$1" ||:; return 0; }
+  [ -s "$2" ] || { eval "$1=''"; return 0; }
+  eval "$1=\"\${mapfile[\$2]}\""
+}
+
+# shellcheck disable=SC2039
+shellspec_readfile_zsh_concat() {
+  [ -e "$2" ] || { unset "$1" ||:; return 0; }
+  [ -s "$2" ] || { eval "$1=''"; return 0; }
+  local shellspec_readfile_line='' shellspec_readfile_data=''
+  while IFS= read -r shellspec_readfile_line; do
+    shellspec_readfile_data+="${shellspec_readfile_line}${SHELLSPEC_LF}"
+  done < "$2"
+  shellspec_readfile_data+="$shellspec_readfile_line"
+  eval "$1=\"\$shellspec_readfile_data\""
+}
+
+# shellcheck disable=SC2039
+shellspec_readfile_zsh_array() {
+  [ -e "$2" ] || { unset "$1" ||:; return 0; }
+  [ -s "$2" ] || { eval "$1=''"; return 0; }
+  local shellspec_readfile_i=1 IFS="$SHELLSPEC_LF"
+  local -a shellspec_readfile_line
+  while IFS= read -r "shellspec_readfile_line[$shellspec_readfile_i]"; do
+    shellspec_readfile_i=$(($shellspec_readfile_i+1))
+  done < "$2"
+  eval "$1=\"\${shellspec_readfile_line[*]}\""
+}
+
+shellspec_readfile_posix() {
+  [ -e "$2" ] || { unset "$1" ||:; return 0; }
+  [ -s "$2" ] || { eval "$1=''"; return 0; }
+  shellspec_readfile_var=$1 shellspec_readfile_data='' shellspec_readfile_i=1
+  while IFS= read -r "shellspec_readfile_line_$shellspec_readfile_i"; do
+    shellspec_readfile_data="$shellspec_readfile_data\$1_$shellspec_readfile_i\$2"
+    shellspec_readfile_i=$(($shellspec_readfile_i+1))
+  done < "$2"
+  shellspec_readfile_data="$shellspec_readfile_data\$1_$shellspec_readfile_i"
+  set -- '$shellspec_readfile_line' "$SHELLSPEC_LF" "$IFS"
+  eval "shellspec_readfile_data=\"$shellspec_readfile_data\""
+
+  IFS="\$$SHELLSPEC_LF "
+  set -- "$3" $shellspec_readfile_data
+  IFS="$1"
+  shift 2
+
+  eval "$shellspec_readfile_var=\"$shellspec_readfile_data\""
+  IFS=" $IFS"
+  eval "unset $* shellspec_readfile_var shellspec_readfile_data shellspec_readfile_i"
+  IFS=${IFS#?}
+}
 
 shellspec_readfile_once() {
   eval "[ \${$1+x} ] &&:" && return 0
