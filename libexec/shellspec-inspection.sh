@@ -198,17 +198,13 @@ if ( eval '{ : <#((0)); } <<<:' ) 2>/dev/null; then
   echo "SHELLSPEC_SEEKABLE=1"
 fi
 
-if [ "${CIRRUS_CI:-}" ] && [ "${ZSH_VERSION:-}" ]; then
-  : # I don't know why, but zsh stalls on FreeBSD on CirrusCI
-else
-  line=''
-  # shellcheck disable=SC2039
-  read -r -d "" line <<'HERE' 2>/dev/null ||:
+line=''
+# shellcheck disable=SC2039
+read -r -d "" line <<'HERE' 2>/dev/null ||:
 a\b
 HERE
-  if [ "$line" = 'a\b' ]; then
-    echo "SHELLSPEC_READ_DELIM=1"
-  fi
+if [ "$line" = 'a\b' ]; then
+  echo "SHELLSPEC_READ_DELIM=1"
 fi
 
 #shellcheck disable=SC2034
