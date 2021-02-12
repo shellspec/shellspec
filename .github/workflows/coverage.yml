@@ -1,0 +1,39 @@
+name: Coverage
+
+on: [push, pull_request]
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  ubuntu-focal:
+    runs-on: ubuntu-20.04
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: sudo apt-get install -y bash kcov
+      - name: Install cc-test-reporter
+        env:
+          CC_TEST_REPORTER_URL: https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+        run: |
+          curl -sSL "$CC_TEST_REPORTER_URL" > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
+      - name: Run shellspec and upload coverage (Coveralls)
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: |
+          sudo ./shellspec --task fixture:stat:prepare
+          ./shellspec --shell bash --kcov --kcov-options "--coveralls-id=${COVERALLS_REPO_TOKEN}"
+      - name: Upload coverage (Codecov)
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          bash <(curl -s https://codecov.io/bash) -s coverage
+      - name: Upload coverage (Code Climate)
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        run: |
+          ./cc-test-reporter format-coverage coverage/cobertura.xml -t cobertura
+          ./cc-test-reporter upload-coverage

@@ -3,5 +3,6 @@
 .shellspec-quick.log
 /*.tar.gz
 report
-coverage*
+coverage-*
+coverage
 ttyrecord
