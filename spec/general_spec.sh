@@ -894,7 +894,7 @@ Describe "general.sh"
   End
 
   Describe 'shellspec_get_nth()'
-    It 'fetch nth value seperate by IFS'
+    It 'fetch nth value separate by IFS'
       When call shellspec_get_nth var "  a   b c  " 3
       The variable var should equal c
     End
