@@ -1,4 +1,17 @@
-version: 2
+version: 2.1
+
+# Define the executor type
+executors:
+  macos1013:
+    macos:
+      xcode: 10.1.0 # 10.13.6
+  macos1014:
+    macos:
+      xcode: 11.1.0 # 10.14.4
+  macos1015:
+    macos:
+      xcode: 12.4.0 # 10.15.5
+
 jobs:
   lint:
     docker:
@@ -6,7 +19,7 @@ jobs:
     steps:
       - checkout
       - run: shellcheck shellspec $(find lib libexec spec examples -name '*.sh')
-  test:
+  report:
     working_directory: ~/shellspec
     docker:
       - image: alpine
@@ -34,16 +47,26 @@ jobs:
       - run: ./shellspec --kcov
       - store_artifacts:
           path: coverage
+  test:
+    # Using parameters
+    parameters:
+      os:
+        type: executor
+    executor: << parameters.os >>
+    steps:
+      - checkout
+      - run: ./shellspec --shell sh --task fixture:stat:prepare
+      - run: contrib/all.sh contrib/various_test.sh
+
 workflows:
-  version: 2
-  lint_test_and_coverage:
+  lint_report_coverage:
     jobs:
       - lint
-      - test
+      - report
       - coverage:
           requires:
             - lint
-            - test
+            - report
   daily_update_schedule:
     jobs:
       - lint
@@ -57,3 +80,9 @@ workflows:
             branches:
               only:
                 - master
+  all-tests:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              os: [macos1013, macos1014, macos1015]
