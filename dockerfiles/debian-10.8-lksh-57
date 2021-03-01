@@ -1,5 +1,5 @@
-FROM debian:10.7-slim
+FROM debian:10.8-slim
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
  && apt-get update && apt-get -y install mksh
-ENV SH=/bin/mksh
+ENV SH=/bin/lksh
