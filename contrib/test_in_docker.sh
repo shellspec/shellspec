@@ -104,7 +104,10 @@ run() {
   base_image=$(cat "$iidfile")
 
   info "Create image from base image: $base_image"
-  docker build --iidfile "$iidfile" -t "$image" --build-arg "IMAGE=$base_image" . -f "dockerfiles/.shellspec" | grayout
+  # Disable BuildKit to avoid fail to build from local SHA-ID
+  #   https://github.com/moby/moby/issues/39769
+  #   https://github.com/moby/buildkit/issues/1105
+  DOCKER_BUILDKIT=0 docker build --iidfile "$iidfile" -t "$image" --build-arg "IMAGE=$base_image" . -f "dockerfiles/.shellspec" | grayout
   new_image=$(cat "$iidfile")
 
   if [ "$old_image" ] && [ "$old_image" != "$new_image" ]; then
