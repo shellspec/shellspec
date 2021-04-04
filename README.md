@@ -1293,7 +1293,7 @@ End
 #### `BeforeRun`, `AfterRun` - run evaluation hook
 
 You can specify commands to be executed before / after run evaluation
-(`run`, `run command`, `run script` and `run source`) by `BeforeRun` and `AfterRun`.
+(`run`, `run command`, `run script`, and `run source`) by `BeforeRun` and `AfterRun`.
 
 These hooks are executed in the same subshell as the "run evaluation".
 Therefore, you can access the variables after executing the evaluation.
