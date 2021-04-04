@@ -118,9 +118,9 @@ NOTE: This documentation contains unreleased features. Check them in the changel
     - [`BeforeCall`, `AfterCall` - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
     - [`BeforeRun`, `AfterRun` - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
   - [Helpers](#helpers)
-    - [`Dump` - dump stdout, stderr and status for debugging](#dump---dump-stdout-stderr-and-status-for-debugging)
+    - [`Dump` - dump stdout, stderr, and status for debugging](#dump---dump-stdout-stderr-and-status-for-debugging)
     - [`Include` - include a script file](#include---include-a-script-file)
-    - [`Set` - set shell option](#set---set-shell-option)
+    - [`Set` - set shell options](#set---set-shell-options)
     - [`Path`, `File`, `Dir` - path alias](#path-file-dir---path-alias)
     - [`Data` - pass data as stdin to evaluation](#data---pass-data-as-stdin-to-evaluation)
     - [`Parameters` - parameterized example](#parameters---parameterized-example)
@@ -788,7 +788,7 @@ End
 ```
 
 **The best place to learn how to write a specfile is the
-[examples/spec](examples/spec) directory. You should take a look at it !**
+[examples/spec](examples/spec) directory. You should take a look at it!**
 *(Those examples include failure examples on purpose.)*
 
 ### About DSL
@@ -803,32 +803,33 @@ shell-independent line numbers, and workarounds for bugs in some shells.
 
 ### Execution directory
 
-Since version 0.28.0, the current directory when run a specfile is the project root directory by default. Even if you run a specfile from a any subdirectory in the project directory,
-It is the project root directory.
-Before 0.27.x, it was the current directory when the `shellspec` is executed.
+Since version 0.28.0, the working directory when running a specfile is the project root directory by default.
+Even if you run a specfile from a subdirectory in the project directory,
+it is the project root directory.
+Before 0.27.x, it was the current directory when the `shellspec` command was executed.
 
 You can change this directory (location) by using the `--execdir @LOCATION[/DIR]` option.
 You can choose from the following locations and specify a path relative to the location if necessary.
 However, you cannot specify a directory outside the project directory.
 
-- @project   Where the ".shellspec" file is located (project root) [default]
-- @basedir   Where the ".shellspec" or ".shellspec-basedir" file is located
-- @specfile  Where the specfile is located
+- `@project`   Where the `.shellspec` file is located (project root) [default]
+- `@basedir`   Where the `.shellspec` or `.shellspec-basedir` file is located
+- `@specfile`  Where the specfile is located
 
-If basedir is specified, the parent directory is searched from the directory containing the specfile
+If `@basedir` is specified, the parent directory is searched from the directory containing the specfile
 to be run, and the first directory where `.shellspec-basedir` or `.shellspec` is found is used as
 the execution directory. This is useful if you want to have a separate directory for each
-utilities (command) you want to test.
+utility (command) you want to test.
 
 NOTE: You will need to change under the project directory or use the `-c` (`--chdir`) or
-`-C` (`--directory`) option before running specfile.
+`-C` (`--directory`) option before running the specfile.
 
 ### Embedded shell scripts
 
-You can embed shell function (or shell script code) in the specfile.
+You can embed shell functions (or shell script code) in the specfile.
 This shell function can be used for test preparation and complex testing.
 
-Note that the specfile implements the scope using subshell.
+Note that the specfile implements scope using subshells.
 Shell functions defined in the specfile can only be used within blocks (e.g. `Describe`, `It`, etc).
 
 If you want to use a global function, you can define it in `spec_helper.sh`.
@@ -853,8 +854,8 @@ If you want to format the specfile, use [altshfmt](https://github.com/shellspec/
 #### `Describe`, `Context`, `ExampleGroup` - example group block
 
 `ExampleGroup` is a block for grouping example groups or examples.
-`Describe` and `Context` are alias for `ExampleGroup`.
-It can be nested and they can contain example groups or examples.
+`Describe` and `Context` are aliases for `ExampleGroup`.
+They can be nested, and may contain example groups or examples.
 
 ```sh
 Describe 'is example group'
@@ -876,8 +877,8 @@ Describe 'is example group' tag1:value1 tag2:value2 ...
 
 #### `It`, `Specify`, `Example` - example block
 
-`Example` is a block for writing evaluation and expectations.
-`It` and `Specify` are alias for `Example`.
+`Example` is a block for writing an evaluation and expectations.
+`It` and `Specify` are aliases for `Example`.
 
 An example is composed by up to one evaluation and multiple expectations.
 
@@ -899,7 +900,7 @@ It 'performs addition' tag1:value1 tag2:value2 ...
 
 #### `Todo` - one liner empty example
 
-`Todo` is the same as the empty example and is treated as [pending](#pending---pending-example) example.
+`Todo` is the same as the empty example and is treated as a [pending](#pending---pending-example) example.
 
 ```sh
 Todo 'will be used later when we write a test'
@@ -910,7 +911,7 @@ End
 
 #### `When` - evaluation
 
-Evaluation executes shell function or command for verification.
+Evaluation executes a shell function or command for verification.
 Only one evaluation can be defined for each example and also can be omitted.
 
 See more details of [Evaluation](docs/references.md#evaluation)
@@ -931,7 +932,7 @@ When call add 1 2 # call `add` shell function with two arguments.
 It runs a command within subshell. Practically, it can also call a shell function.
 The command does not have to be a shell script.
 
-NOTE: This is not supporting coverage measurement.
+NOTE: This does not support coverage measurement.
 
 ```sh
 When run touch /tmp/foo # run `touch` command.
@@ -942,9 +943,9 @@ Some commands below are specially handled by ShellSpec.
 ###### `command` - runs an external command
 
 It runs a command, respecting shebang.
-It can not call shell function. The command does not have to be a shell script.
+It can not call a shell function. The command does not have to be a shell script.
 
-NOTE: This is not supporting coverage measurement.
+NOTE: This does not support coverage measurement.
 
 ```sh
 When run command touch /tmp/foo # run `touch` command.
@@ -963,7 +964,7 @@ When run script my.sh # run `my.sh` script.
 
 It sources a shell script, ignoring its shebang. The script has to be a shell script.
 It is similar to `run script`, but with some differences.
-Unlike `run script`, function-based mock is available.
+Unlike `run script`, function-based mocking is available.
 
 ```sh
 When run source my.sh # source `my.sh` script.
@@ -1052,7 +1053,7 @@ The output should equal 4
 ```
 
 There are many matchers such as string matcher, status matcher, variable matchers and stat matchers.
-The `satisfy` matcher is useful for verification with user-defined function.
+The `satisfy` matcher is useful for verification with user-defined functions.
 
 Please refer to the [Matchers](docs/references.md#matchers) for more details.
 
@@ -1193,12 +1194,12 @@ End
 
 #### About temporary pending and skip
 
-The pending and skip without message is "temporary pending" and "temporary skip".
-"x"-prefixed example groups and examples are treated as a temporary skip.
+Using `Pending` or `Skip` without a message is a "temporary pending" or "temporary skip".
+"x"-prefixed example groups and examples are also treated as temporary skips.
 
-The non-temporary pending and skip (with message) is used when it takes a long time to resolve.
-It may be committed to a version control system. The temporary pending and skip is used during the current work.
-We do not recommend committing it to a version control system.
+The non-temporary `Pending` and `Skip` (with a message) are used when the case will take a long time to resolve.
+It may be committed to a version control system. Temporary pending and skip are used during current work.
+We do not recommend committing them to a version control system.
 
 These two types differ in the display of the report. Refer to `--skip-message` and `--pending-message` options.
 
@@ -1249,7 +1250,7 @@ End
 
 #### `BeforeAll`, `AfterAll` - example group hook
 
-You can specify commands to be executed before / after all examples by `BeforeAll` and `AfterAll`
+You can specify commands to be executed before / after all examples by `BeforeAll` and `AfterAll`.
 
 ```sh
 Describe 'example all hook'
@@ -1270,7 +1271,7 @@ End
 
 #### `BeforeCall`, `AfterCall` - call evaluation hook
 
-You can specify commands to be executed before / after call evaluation by `BeforeCall` and `AfterCall`
+You can specify commands to be executed before / after call evaluation by `BeforeCall` and `AfterCall`.
 
 NOTE: These hooks were originally created to test ShellSpec itself.
 Please use the `BeforeEach` / `AfterEach` hooks whenever possible.
@@ -1292,7 +1293,7 @@ End
 #### `BeforeRun`, `AfterRun` - run evaluation hook
 
 You can specify commands to be executed before / after run evaluation
-(`run`, `run command`, `run script` and `run source`) by `BeforeRun` and `AfterRun`
+(`run`, `run command`, `run script` and `run source`) by `BeforeRun` and `AfterRun`.
 
 These hooks are executed in the same subshell as the "run evaluation".
 Therefore, you can access the variables after executing the evaluation.
@@ -1316,9 +1317,9 @@ End
 
 ### Helpers
 
-#### `Dump` - dump stdout, stderr and status for debugging
+#### `Dump` - dump stdout, stderr, and status for debugging
 
-Dump stdout, stderr and status of the evaluation. It is useful for debugging.
+Dump stdout, stderr, and status of the evaluation. It is useful for debugging.
 
 ```sh
 When call echo hello world
@@ -1342,9 +1343,9 @@ Describe 'lib.sh'
 End
 ```
 
-#### `Set` - set shell option
+#### `Set` - set shell options
 
-Set shell option before executing each example.
+Set shell options before executing each example.
 The shell option name is the long name of `set` or the name of `shopt`:
 
 NOTE: Use `Set` instead of the `set` command because the `set` command
@@ -1396,12 +1397,13 @@ End
 
 You can also use a file, function or string as data sources.
 
-See more details of [Data](docs/references.md##data)
+See more details of [Data](docs/references.md#data)
 
 #### `Parameters` - parameterized example
 
-Parameterized test (aka Data Driven Test) is used to run the same test with
-different parameters. `Parameters` defines its parameters.
+Parameterized tests (aka [Data-driven testing](https://en.wikipedia.org/wiki/Data-driven_testing))
+are used to run the same test once for each set of parameters.
+`Parameters` defines a block of parameters.
 
 ```sh
 Describe 'example'
@@ -1417,12 +1419,12 @@ Describe 'example'
 End
 ```
 
-In addition to the default `Parameters`, three styles are supported:
+In addition to the default `Parameters` block, three additional styles are supported:
 `Parameters:value`, `Parameters:matrix` and `Parameters:dynamic`.
 
 See more details of [Parameters](docs/references.md#parameters)
 
-NOTE: You can also cooperate the `Parameters` and `Data:expand` helpers.
+NOTE: You can also combine the `Parameters` and `Data:expand` helpers.
 
 #### `Mock` - create a command-based mock
 
@@ -1517,7 +1519,7 @@ This is the same as `sleep`, but it can be used in the sandbox mode because the 
 
 ### `%preserve` - preserve variables
 
-Use `%preserve` directive to preserve the variables in subshells and external shell script.
+Use the `%preserve` directive to preserve the variables in subshells and external shell scripts.
 
 In the following cases, `%preserve` is required because variables are not preserved.
 
@@ -1546,7 +1548,7 @@ Output log messages to the log file (default: `/dev/tty`) for debugging.
 
 ### `%data` - define parameter
 
-See `Parameters`.
+See [Parameters:dynamic](docs/references.md#parametersdynamic).
 
 ## Mocking
 
@@ -1556,7 +1558,7 @@ Both can be overwritten with an internal block and will be restored when the blo
 
 ### Function-based mock
 
-The (shell) function-based mock is simply (re)defined with shell function.
+The (shell) function-based mock is simply (re)defined with a shell function.
 
 ```sh
 Describe 'function-based mock'
@@ -1579,7 +1581,7 @@ The (external) command-based mock creates a temporary mock shell script and runs
 This is slow, but there are some advantages over the function-based mock.
 
 - Can be use invalid characters as the shell function name.
-  - e.g `docker-compose` (`-` cannot be used as a function name in POSIX)
+  - e.g. `docker-compose` (`-` cannot be used as a function name in POSIX)
 - Can be invoke a mocked command from an external command (not limited to shell script).
 
 A command-based mock creates an external shell script with the contents of a `Mock` block,
