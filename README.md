@@ -1320,7 +1320,7 @@ End
 The hooks may fail in subtle ways if there is output to stderr, even if the 
 return code / exit code is `0`.  
 
-Commands like `git checkout` routinely write to stdout, even if there was no actual 
+Commands like `git checkout` routinely write to stderr, even if there was no actual 
 failure, so be aware that your hooks may fail because of this. 
 
 ### Helpers
