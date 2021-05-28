@@ -291,7 +291,7 @@ The word 1 should equal foo # stdout omitted
 
 ```sh
 Path data-file=/tmp/data.txt
-The path data-file should be exist
+The path data-file should be existent
 ```
 
 #### `function` subject
@@ -419,7 +419,7 @@ the subject expected file path
 
 | Matcher             | Description                                 |
 | :------------------ | :------------------------------------------ |
-| be exist            | The file should exist.                      |
+| be existent         | The file should exist.                      |
 | be file             | The file should be a file.                  |
 | be directory        | The file should be a directory.             |
 | be empty file       | The file should be an empty file.           |
@@ -435,7 +435,13 @@ the subject expected file path
 | has setgid          | The file should have the setgid flag set.   |
 | has setuid          | The file should have the setuid flag set.   |
 
-##### `be exist` matcher
+##### `be existent` matcher
+
+```sh
+The path /target/path should be existent
+```
+
+or 
 
 ```sh
 The path /target/path should be exist
