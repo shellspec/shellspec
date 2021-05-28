@@ -4,7 +4,7 @@
 
 Use `contrib/all.sh` to test on all installed shells.
 
-Usage: `contrib/all.sh [COMMNAD (shellspec and etc)]`
+Usage: `contrib/all.sh [COMMAND (shellspec and etc)]`
 
 ## contrib/test_in_docker.sh
 
