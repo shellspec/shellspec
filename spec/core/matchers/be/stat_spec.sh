@@ -8,6 +8,31 @@ Describe "core/matchers/be/stat.sh"
   not_exist() { [ ! -e "$FIXTURE/$1" ]; }
   check_root() { [ "$(@id -u)" = 0 ]; }
 
+  Describe 'be existent matcher'
+    Example 'example'
+      Path exist-file="$FIXTURE/exist"
+      The path exist-file should be existent
+    End
+
+    It 'matches when path exists'
+      subject() { %- "$FIXTURE/exist"; }
+      When run shellspec_matcher_be_existent
+      The status should be success
+    End
+
+    It 'does not match when path does not exist'
+      subject() { %- "$FIXTURE/exist.not-exists"; }
+      When run shellspec_matcher_be_existent
+      The status should be failure
+    End
+
+    It 'outputs error if parameters count is invalid'
+      subject() { %- "$FIXTURE/exist"; }
+      When run shellspec_matcher_be_existent foo
+      The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
+    End
+  End
+
   Describe 'be exist matcher'
     Example 'example'
       Path exist-file="$FIXTURE/exist"
