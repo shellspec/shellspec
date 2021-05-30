@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export LANG=C
+
 version() {
   ./shellspec --version
 }
