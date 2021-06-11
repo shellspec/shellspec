@@ -16,7 +16,7 @@ RUN chmod ug+s /usr/local/bin/su-exec \
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "shellspec", "--fail-low-coverage" ]
 
-COPY ./dockerfiles/.shellspec-entrypoint.sh /entrypoint.sh
+COPY --chown=user:user ./dockerfiles/.shellspec-entrypoint.sh /entrypoint.sh
 COPY --chown=user:user ./ /shellspec
 RUN chmod 777 /shellspec
 USER user
