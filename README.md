@@ -1379,7 +1379,7 @@ Describe 'Path helper'
   Path hosts-file="/etc/hosts"
 
   It 'defines short alias for long path'
-    The path hosts-file should be exists
+    The path hosts-file should be exist
   End
 End
 ```
