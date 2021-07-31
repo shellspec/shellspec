@@ -58,7 +58,7 @@ Describe "libexec/runner.sh"
       Path tempdir="$dir"
       When call rmtempdir "$dir"
       The status should be success
-      The path tempdir should not be existent
+      The path tempdir should not exist
     End
   End
 

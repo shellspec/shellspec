@@ -36,7 +36,7 @@ Describe "run shellspec-gen-bin.sh"
     It 'raises error'
       When run source ./libexec/shellspec-gen-bin.sh "@dummy"
       The error should eq "shellspec helper directory not found: $HELPERDIR"
-      The file dummy-bin should not be existent
+      The file dummy-bin should not exist
       The status should be failure
     End
   End
@@ -52,7 +52,7 @@ Describe "run shellspec-gen-bin.sh"
     It 'skips generate support bin'
       When run source ./libexec/shellspec-gen-bin.sh "@dummy"
       The error should start with "Skip, @dummy already exist"
-      The file dummy-bin should be existent
+      The file dummy-bin should exist
     End
   End
 End
