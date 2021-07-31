@@ -1,7 +1,6 @@
 #shellcheck shell=sh disable=SC2016
 
 shellspec_syntax 'shellspec_matcher_be_exist'
-shellspec_syntax 'shellspec_matcher_be_existent'
 shellspec_syntax 'shellspec_matcher_be_file'
 shellspec_syntax 'shellspec_matcher_be_directory'
 
@@ -37,8 +36,8 @@ shellspec_make_file_matcher() {
   eval "$SHELLSPEC_EVAL"
 }
 
+# deprecated, should use "file should exist" instead
 shellspec_make_file_matcher exist            "-e" "exists" "does not exist"
-shellspec_make_file_matcher existent         "-e" "exists" "does not exist"
 shellspec_make_file_matcher file             "-f" "is a regular file"
 shellspec_make_file_matcher directory        "-d" "is a directory"
 
