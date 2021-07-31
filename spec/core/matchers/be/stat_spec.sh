@@ -28,7 +28,7 @@ Describe "core/matchers/be/stat.sh"
 
     It 'outputs error if parameters count is invalid'
       subject() { %- "$FIXTURE/exist"; }
-      When run shellspec_matcher_be_existent foo
+      When run shellspec_matcher_exist foo
       The stderr should equal SYNTAX_ERROR_WRONG_PARAMETER_COUNT
     End
   End
