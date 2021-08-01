@@ -3,7 +3,6 @@ shellspec_syntax 'shellspec_matcher_exist'
 shellspec_matcher_exist() {
   shellspec_matcher__match() {
     [ -e "${SHELLSPEC_SUBJECT:-}" ]
-    return 0
   }
 
   shellspec_syntax_failure_message + \
