@@ -24,6 +24,7 @@
     "lib/core/matchers/be/variable.sh",
     "lib/core/matchers/end_with.sh",
     "lib/core/matchers/equal.sh",
+    "lib/core/matchers/exist.sh",
     "lib/core/matchers/has.sh",
     "lib/core/matchers/has/stat.sh",
     "lib/core/matchers/include.sh",

@@ -64,6 +64,7 @@ shellspec_get_failure_message() {
 shellspec_import 'core/matchers/be'
 shellspec_import 'core/matchers/end_with'
 shellspec_import 'core/matchers/equal'
+shellspec_import 'core/matchers/exist'
 shellspec_import 'core/matchers/has'
 shellspec_import 'core/matchers/include'
 shellspec_import 'core/matchers/match'

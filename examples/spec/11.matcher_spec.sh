@@ -20,9 +20,9 @@ Describe 'matcher example'
   End
 
   Describe 'stat matchers'
-    Describe 'be exist'
-      It 'checks if path is exist'
-        The path 'data.txt' should be exist
+    Describe 'exists'
+      It 'checks if path exists'
+        The path 'data.txt' should exist
       End
 
       It 'checks if path is file'

@@ -36,6 +36,7 @@ shellspec_make_file_matcher() {
   eval "$SHELLSPEC_EVAL"
 }
 
+# deprecated, should use "file should exist" instead
 shellspec_make_file_matcher exist            "-e" "exists" "does not exist"
 shellspec_make_file_matcher file             "-f" "is a regular file"
 shellspec_make_file_matcher directory        "-d" "is a directory"

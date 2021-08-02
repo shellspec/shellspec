@@ -1379,7 +1379,7 @@ Describe 'Path helper'
   Path hosts-file="/etc/hosts"
 
   It 'defines short alias for long path'
-    The path hosts-file should be exists
+    The path hosts-file should exist
   End
 End
 ```
@@ -1636,7 +1636,7 @@ Describe "Support commands example"
   It "touch a file"
     When run touch "file"
     The output should eq "file was touched"
-    The file "file" should be exist
+    The file "file" should exist
   End
 End
 ```
