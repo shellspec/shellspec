@@ -420,6 +420,7 @@ the subject expected file path
 | Matcher             | Description                                 |
 | :------------------ | :------------------------------------------ |
 | exist               | The file should exist.                      |
+| ~~be exist~~        | The file should exist. (deprecated)         |
 | be file             | The file should be a file.                  |
 | be directory        | The file should be a directory.             |
 | be empty file       | The file should be an empty file.           |
