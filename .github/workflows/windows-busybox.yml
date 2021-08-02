@@ -23,6 +23,6 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
-      - run: choco install -y --no-progress busybox
+      - run: choco install -y --no-progress busybox --version=3902.0
       - run: busybox ${{ matrix.shells.shell }} ./shellspec --task fixture:stat:prepare
       - run: busybox ${{ matrix.shells.shell }} ./shellspec
