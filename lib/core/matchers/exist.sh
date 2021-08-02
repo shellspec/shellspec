@@ -1,3 +1,5 @@
+#shellcheck shell=sh disable=SC2016
+
 shellspec_syntax 'shellspec_matcher_exist'
 
 shellspec_matcher_exist() {
