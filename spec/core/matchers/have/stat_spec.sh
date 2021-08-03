@@ -2,7 +2,7 @@
 
 % FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
 
-Describe "core/matchers/has/stat.sh"
+Describe "core/matchers/have/stat.sh"
   BeforeRun set_subject matcher_mock
 
   not_exist() { [ ! -e "$FIXTURE/$1" ]; }
