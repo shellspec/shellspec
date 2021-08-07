@@ -396,6 +396,7 @@ Describe "core/evaluation.sh"
 
       Describe 'shebang arguments'
         set_fake_shell() { export SHELLSPEC_SHELL="$SHELLSPEC_PRINTF '%s\n'"; }
+        #shellcheck shell=sh disable=SC2276
         shellspec_shebang_arguments() { %= "-u -u -u -u"; }
         Before set_fake_shell
 
