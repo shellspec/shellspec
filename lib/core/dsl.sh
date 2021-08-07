@@ -313,7 +313,7 @@ shellspec_statement() {
 
 shellspec_when() {
   # Allow "When I"
-  if (( $# > 0 )) && [[ "$1" == "I" ]]; then
+  if [ "$#" -gt "0" ] && [ "$1" = "I" ]; then
     shift
   fi
   eval shellspec_join SHELLSPEC_EVALUATION '" "' When ${1+'"$@"'}
