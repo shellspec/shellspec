@@ -312,12 +312,16 @@ shellspec_statement() {
 }
 
 shellspec_when() {
+  # Allow "When I"
+  if [ "$#" -gt "0" ] && [ "$1" = "I" ]; then
+    shift
+  fi
   eval shellspec_join SHELLSPEC_EVALUATION '" "' When ${1+'"$@"'}
   shellspec_off NOT_IMPLEMENTED
 
   shellspec_if EVALUATION && {
     set -- "Evaluation has already been executed." \
-      "Only one Evaluation allow per Example." \
+      "Only one Evaluation is allowed per Example." \
       "(Use 'parameterized example' if you want a loop)"
     shellspec_output SYNTAX_ERROR_EVALUATION "$1 $2${SHELLSPEC_LF}$3"
     shellspec_on FAILED

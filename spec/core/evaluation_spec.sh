@@ -17,6 +17,15 @@ Describe "core/evaluation.sh"
     End
   End
 
+  Describe "shellspec_evaluation_from_tty() with 'When I' statement"
+    prepare() { echo "tty data" > "$SHELLSPEC_STDIN_DEV"; }
+    BeforeRun 'SHELLSPEC_STDIN_DEV="$TMPBASE/tty"' prepare
+    It "reads from tty"
+        When I run shellspec_evaluation_from_tty cat
+        The stdout should equal "tty data"
+    End
+  End
+
   Describe 'shellspec_evaluation_from_stdin()'
     prepare() { echo "stdin data" > "$SHELLSPEC_STDIN_FILE"; }
     BeforeRun 'SHELLSPEC_STDIN_FILE="$TMPBASE/stdin"' prepare
@@ -387,6 +396,7 @@ Describe "core/evaluation.sh"
 
       Describe 'shebang arguments'
         set_fake_shell() { export SHELLSPEC_SHELL="$SHELLSPEC_PRINTF '%s\n'"; }
+        #shellcheck shell=sh disable=SC2276
         shellspec_shebang_arguments() { %= "-u -u -u -u"; }
         Before set_fake_shell
 
