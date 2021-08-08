@@ -49,8 +49,8 @@
       - [`be executable` matcher](#be-executable-matcher)
       - [`be block_device` matcher](#be-block_device-matcher)
       - [`be character_device` matcher](#be-character_device-matcher)
-      - [`has setgid` matcher](#has-setgid-matcher)
-      - [`has setuid` matcher](#has-setuid-matcher)
+      - [`have setgid` matcher](#have-setgid-matcher)
+      - [`have setuid` matcher](#have-setuid-matcher)
     - [status matchers](#status-matchers)
       - [`be success` matcher](#be-success-matcher)
       - [`be failure` matcher](#be-failure-matcher)
@@ -417,24 +417,26 @@ The output should satisfy formula "10 <= value && value <= 100"
 
 the subject expected file path
 
-| Matcher             | Description                                 |
-| :------------------ | :------------------------------------------ |
-| exist               | The file should exist.                      |
-| ~~be exist~~        | The file should exist. (deprecated)         |
-| be file             | The file should be a file.                  |
-| be directory        | The file should be a directory.             |
-| be empty file       | The file should be an empty file.           |
-| be empty directory  | The directory should be an empty directory. |
-| be symlink          | The file should be a symlink.               |
-| be pipe             | The file should be a pipe.                  |
-| be socket           | The file should be a socket.                |
-| be readable         | The file should be readable.                |
-| be writable         | The file should be writable.                |
-| be executable       | The file should be executable.              |
-| be block_device     | The file should be a block device.          |
-| be character_device | The file should be a character device.      |
-| has setgid          | The file should have the setgid flag set.   |
-| has setuid          | The file should have the setuid flag set.   |
+| Matcher             | Description                                            |
+| :------------------ | :----------------------------------------------------- |
+| exist               | The file should exist.                                 |
+| ~~be exist~~        | The file should exist. (deprecated)                    |
+| be file             | The file should be a file.                             |
+| be directory        | The file should be a directory.                        |
+| be empty file       | The file should be an empty file.                      |
+| be empty directory  | The directory should be an empty directory.            |
+| be symlink          | The file should be a symlink.                          |
+| be pipe             | The file should be a pipe.                             |
+| be socket           | The file should be a socket.                           |
+| be readable         | The file should be readable.                           |
+| be writable         | The file should be writable.                           |
+| be executable       | The file should be executable.                         |
+| be block_device     | The file should be a block device.                     |
+| be character_device | The file should be a character device.                 |
+| ~~has setgid~~      | The file should have the setgid flag set. (deprecated) |
+| have setgid         | The file should have the setgid flag set.              |
+| ~~has setuid~~      | The file should have the setuid flag set. (deprecated) |
+| have setuid         | The file should have the setuid flag set.              |
 
 ##### `exist` matcher
 
@@ -522,16 +524,16 @@ The path /target/path should be block_device
 The path /target/path should be character_device
 ```
 
-##### `has setgid` matcher
+##### `have setgid` matcher
 
 ```sh
-The path /target/path should has setgid
+The path /target/path should have setgid
 ```
 
-##### `has setuid` matcher
+##### `have setuid` matcher
 
 ```sh
-The path /target/path should has setuid
+The path /target/path should have setuid
 ```
 
 #### status matchers
