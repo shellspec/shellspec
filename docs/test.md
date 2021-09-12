@@ -21,9 +21,9 @@ Use `contrib/check.sh` to check syntax on the whole project (requires docker).
 
 Usage: `contrib/check.sh`
 
-## contrib/installr_test.sh
+## contrib/installer_test.sh
 
-`contrib/installr_test.sh` is useful for creating a test environment for the
+`contrib/installer_test.sh` is useful for creating a test environment for the
 installer (requires docker).
 
-Usage: `contrib/installr_test.sh`
+Usage: `contrib/installer_test.sh`
