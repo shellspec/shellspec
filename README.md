@@ -1175,7 +1175,7 @@ Only the examples included in these will be executed when the `--focus` option i
 
 ```sh
 Describe 'is example group'
-  fDescribe 'is focues example group'
+  fDescribe 'is focus example group'
     ...
   End
 End
@@ -1363,7 +1363,7 @@ may not work as expected in some shells.
 Describe 'Set helper'
   Set 'errexit:off' 'noglob:on'
 
-  It 'sets shell options before executiong the example'
+  It 'sets shell options before executing the example'
     When call foo
   End
 End
@@ -2006,7 +2006,7 @@ It is a variable set by the system, and which unrelated to ShellSpec.
 ### `<module>_loaded`
 
 It is called after loading the shellspec's general internal functions,
-but before loading the core modules (subject, modifire, matcher, etc).
+but before loading the core modules (subject, modifier, matcher, etc).
 If parallel execution is enabled, it may be called multiple times in isolated processes.
 Internal functions starting with `shellspec_` can also be used, but be aware that they may change.
 
@@ -2016,7 +2016,7 @@ absolutely necessary, but if you have one, please let me know.
 
 ### `<module>_configure`
 
-This callback function will be called after core modules (subject, modifire, matcher, etc) has been loaded.
+This callback function will be called after core modules (subject, modifier, matcher, etc) has been loaded.
 If parallel execution is enabled, it may be called multiple times in isolated processes.
 Internal functions starting with `shellspec_` can also be used, but be aware that they may change.
 It can be used to set global hooks, load custom matchers, etc., and override core module functions.
