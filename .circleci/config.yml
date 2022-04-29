@@ -2,15 +2,18 @@ version: 2.1
 
 # Define the executor type
 executors:
-  macos1013:
+  xcode10:
     macos:
-      xcode: 10.1.0 # 10.13.6
-  macos1014:
+      xcode: 10.3.0 # Mojave 10.14.4
+  xcode11:
     macos:
-      xcode: 11.1.0 # 10.14.4
-  macos1015:
+      xcode: 11.7.0 # Catalina 10.15.5
+  xcode12:
     macos:
-      xcode: 12.4.0 # 10.15.5
+      xcode: 12.5.1 # Big Sur 11.6.2
+  xcode13:
+    macos:
+      xcode: 13.3.1 # Monterey 12.3.1
 
 jobs:
   lint:
@@ -85,4 +88,4 @@ workflows:
       - test:
           matrix:
             parameters:
-              os: [macos1013, macos1014, macos1015]
+              os: [xcode10, xcode11, xcode12, xcode13]
