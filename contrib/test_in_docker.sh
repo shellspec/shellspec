@@ -96,28 +96,32 @@ run() {
   os="${dockerfile##*/}"
   os="${os#.}"
   os="${os%-!}"
-  image="shellspec:$os"
-  old_image=$(docker images -q --no-trunc "$image")
+  (
+    image="shellspec:$os"
+    old_image=$(docker images -q --no-trunc "$image")
 
-  # shellcheck disable=SC2086
-  docker build --iidfile "$iidfile" $options - < "$dockerfile" | grayout
-  base_image=$(cat "$iidfile")
+    # shellcheck disable=SC2086
+    docker build --iidfile "$iidfile" $options - < "$dockerfile" | grayout
+    [ -e "$iidfile" ] || exit 1
+    base_image=$(cat "$iidfile")
 
-  info "Create image from base image: $base_image"
-  # Disable BuildKit to avoid fail to build from local SHA-ID
-  #   https://github.com/moby/moby/issues/39769
-  #   https://github.com/moby/buildkit/issues/1105
-  DOCKER_BUILDKIT=0 docker build --iidfile "$iidfile" -t "$image" --build-arg "IMAGE=$base_image" . -f "dockerfiles/.shellspec" | grayout
-  new_image=$(cat "$iidfile")
+    info "Create image from base image: $base_image"
+    # Disable BuildKit to avoid fail to build from local SHA-ID
+    #   https://github.com/moby/moby/issues/39769
+    #   https://github.com/moby/buildkit/issues/1105
+    DOCKER_BUILDKIT=0 docker build --iidfile "$iidfile" -t "$image" --build-arg "IMAGE=$base_image" . -f "dockerfiles/.shellspec" | grayout
+    [ -e "$iidfile" ] || exit 1
+    new_image=$(cat "$iidfile")
 
-  if [ "$old_image" ] && [ "$old_image" != "$new_image" ]; then
-    info "Delete old image $old_image"
-    docker rmi "$old_image" >/dev/null ||:
-  fi
-  info
-  info "Starting $dockerfile:" "$@"
-  info
-  docker run -it --rm "$image" "$@" &&:
+    if [ "$old_image" ] && [ "$old_image" != "$new_image" ]; then
+      info "Delete old image $old_image"
+      docker rmi "$old_image" >/dev/null ||:
+    fi
+    info
+    info "Starting $dockerfile:" "$@"
+    info
+    docker run -it --rm "$image" "$@"
+  ) &&:
   xs=$?
   info
   if [ "$xs" -ne 0 ]; then
