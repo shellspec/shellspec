@@ -1,5 +1,6 @@
 FROM ubuntu:12.04
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN useradd -m user \
+ && sed -i -e 's|//.*ubuntu.com/|//old-releases.ubuntu.com/|' /etc/apt/sources.list \
  && apt-get update && apt-get -y install ksh
 ENV SH=/bin/ksh
