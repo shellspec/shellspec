@@ -1,4 +1,0 @@
-FROM shellspec/schilytools:2020-11-04
-RUN apt-get update && apt-get install -y procps
-RUN useradd -m user
-ENV SH=/usr/local/bin/bosh

@@ -1,3 +1,0 @@
-FROM shellspec/gwsh:20190627
-RUN useradd -m user
-ENV SH=/usr/local/bin/gwsh

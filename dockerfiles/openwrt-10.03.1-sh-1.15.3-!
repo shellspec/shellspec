@@ -1,4 +1,14 @@
-FROM shellspec/openwrt:10.03.1
+FROM alpine as builder
+ENV base=https://archive.openwrt.org/backfire/10.03.1/x86_generic/
+ENV file=openwrt-x86-generic-rootfs.tar.gz
+RUN wget -q "${base}${file}"
+RUN mkdir /rootfs && tar xf "$file" -C /rootfs
+
+FROM scratch as base
+COPY --from=builder /rootfs/ /
+CMD ["/bin/sh"]
+
+FROM base
 RUN mkdir /var/lock /home \
  && opkg update && opkg install shadow-groupadd shadow-useradd \
  && groupadd user && useradd -m user -g user

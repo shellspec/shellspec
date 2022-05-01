@@ -1,4 +1,14 @@
-FROM shellspec/lede:17.01.7
+FROM alpine as builder
+ENV base=https://downloads.openwrt.org/releases/17.01.7/targets/x86/64/
+ENV file=lede-17.01.7-x86-64-generic-rootfs.tar.gz
+RUN wget -q "${base}${file}"
+RUN mkdir /rootfs && tar xf "$file" -C /rootfs
+
+FROM scratch as base
+COPY --from=builder /rootfs/ /
+CMD ["/bin/sh"]
+
+FROM base
 RUN mkdir /var/lock /home \
  && opkg update && opkg install shadow-useradd \
  && useradd -m user

@@ -1,3 +1,0 @@
-FROM fedora:32
-RUN useradd -m user
-ENV SH=/bin/sh

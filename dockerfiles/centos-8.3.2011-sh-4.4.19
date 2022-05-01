@@ -1,3 +1,0 @@
-FROM centos:8.3.2011
-RUN useradd -m user
-ENV SH=/bin/sh

@@ -1,0 +1,7 @@
+FROM centos:8.4.2105
+RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+RUN useradd -m user \
+ && sed -i -e 's|^mirrorlist|#mirrorlist|g' /etc/yum.repos.d/CentOS-*repo \
+ && sed -i -e 's|^#baseurl=http://mirror|baseurl=http://vault|g' /etc/yum.repos.d/CentOS-*repo \
+ && yum -y install zsh
+ENV SH=/usr/bin/zsh

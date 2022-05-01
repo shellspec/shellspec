@@ -1,4 +1,0 @@
-FROM debian:bullseye-slim
-ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN useradd -m user
-ENV SH=/bin/bash

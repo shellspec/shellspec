@@ -1,6 +1,6 @@
 FROM alpine as builder
-ENV base=https://archive.openwrt.org/barrier_breaker/14.07/x86/generic/
-ENV file=openwrt-x86-generic-Generic-rootfs.tar.gz
+ENV base=https://downloads.openwrt.org/releases/22.03.0-rc1/targets/x86/64/
+ENV file=openwrt-22.03.0-rc1-x86-64-rootfs.tar.gz
 RUN wget -q "${base}${file}"
 RUN mkdir /rootfs && tar xf "$file" -C /rootfs
 

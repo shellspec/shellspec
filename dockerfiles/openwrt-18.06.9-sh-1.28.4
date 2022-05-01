@@ -1,4 +1,14 @@
-FROM shellspec/openwrt:18.06.9
+FROM alpine as builder
+ENV base=https://downloads.openwrt.org/releases/18.06.9/targets/x86/64/
+ENV file=openwrt-18.06.9-x86-64-generic-rootfs.tar.gz
+RUN wget -q "${base}${file}"
+RUN mkdir /rootfs && tar xf "$file" -C /rootfs
+
+FROM scratch as base
+COPY --from=builder /rootfs/ /
+CMD ["/bin/sh"]
+
+FROM base
 RUN mkdir /var/lock /home \
  && opkg update && opkg install shadow-useradd \
  && useradd -m user
