@@ -11,7 +11,14 @@
 
 set -eu
 
-[ "${1:-}" = "--pull" ] && PULL=1 || PULL=""
+PULL=""
+for i; do
+  case $i in
+    --pull) PULL=1 ;;
+    *) set -- "$@" "$i"
+  esac
+  shift
+done
 
 sources() {
   echo shellspec
@@ -70,13 +77,16 @@ tag="shellspec:shellcheck"
 trap 'exit 1' INT
 trap 'docker rmi "$tag" >/dev/null 2>&1' EXIT
 
+docker_build_shellcheck() {
+  set -- -t "$1" --build-arg "VERSION=$2"
+  [ "$PULL" ] && set -- "$@" --pull
+  docker build "$@" -f dockerfiles/.shellcheck .
+}
 # Do not use volume because can not be used on VolFs(lxfs) of WSL.
 shellcheck_version=$(cat .shellcheck-version)
-set -- -t "$tag" --build-arg "VERSION=$shellcheck_version"
-[ "$PULL" ] && set -- "$@" --pull
-docker build "$@" -f dockerfiles/.shellcheck .
+docker_build_shellcheck "$tag" "$shellcheck_version"
 docker run -i --rm "$tag" shellcheck --version
-docker run -i --rm "$tag" shellcheck -C $(sources; helpers; specs; examples)
+docker run -i --rm "$tag" shellcheck "$@" -C $(sources; helpers; specs; examples)
 
 [ "$package_json_status" -ne 0 ] && exit "$package_json_status"
 
