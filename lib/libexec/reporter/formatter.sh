@@ -15,7 +15,7 @@ load_formatter() {
   import_formatter "$1"
 
   # move main formatter to first
-  #shellcheck disable=SC2086
+  #shellcheck disable=SC2086,SC2295
   set -- "$1" ${formatters%$1*} ${formatters#*$1}
   formatters="$*"
 }

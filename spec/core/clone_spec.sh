@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004,SC2016
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 Describe "core/clone.sh"
   Include "$SHELLSPEC_LIB/core/clone.sh"
@@ -96,7 +96,7 @@ Describe "core/clone.sh"
   End
 
   BeforeCall 'var=$(var1)'
-  shellspec_clone_typeset() { %= "$var"; }
+  shellspec_clone_typeset() { %putsn "$var"; }
   [ "$SHELLSPEC_BUILTIN_PRINT" ] || eval 'print() { printf "%s\n" "$3"; }'
 
   Describe "shellspec_clone_posix()"
@@ -494,9 +494,9 @@ Describe "core/clone.sh"
     shellspec_clone_typeset() {
       # shellcheck disable=SC2154
       if [ "$1" = "+" ]; then
-        %= "$vars"
+        %putsn "$vars"
       elif [ "$1" = "-g" ]; then
-        %= "$var"
+        %putsn "$var"
       fi
     }
 
@@ -752,10 +752,10 @@ Describe "core/clone.sh"
     BeforeCall 'vars=$(vars)'
 
     shellspec_clone_typeset() {
-      %= "$vars"
+      %putsn "$vars"
     }
     shellspec_clone_set() {
-      %= "$var"
+      %putsn "$var"
     }
 
     Specify 'var=123'
@@ -832,10 +832,10 @@ Describe "core/clone.sh"
     BeforeCall 'vars=$(vars)'
 
     shellspec_clone_typeset() {
-      %= "$vars"
+      %putsn "$vars"
     }
     shellspec_clone_set() {
-      %= "$var"
+      %putsn "$var"
     }
 
     Specify 'var=123'

@@ -7,6 +7,7 @@ create_buffers documentation
 require_formatters methods conclusion finished summary references profiler
 [ "$SHELLSPEC_KCOV" ] && require_formatters kcov
 
+# shellcheck disable=SC2295
 documentation_each() {
   _id='' _current_id='' _description='' _indent=''
   _last_id=$documentation_last_id

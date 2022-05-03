@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 % MARK_FILE: "$SHELLSPEC_TMPBASE/before_after_each_hook"
 

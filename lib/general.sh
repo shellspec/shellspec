@@ -96,6 +96,7 @@ shellspec_resolve_module_path() {
   shellspec_find_module "$SHELLSPEC_LOAD_PATH" "$2" "$1"
 }
 
+# shellcheck disable=SC2295
 shellspec_module_exists() {
   set -- "$1" "${2:-$SHELLSPEC_LOAD_PATH}"
   [ -e "${2%%$SHELLSPEC_PATHSEP*}/$1.sh" ] && return 0
@@ -107,6 +108,7 @@ shellspec_module_exists() {
   return 1
 }
 
+# shellcheck disable=SC2295
 shellspec_find_module() {
   if [ -e "${1%%$SHELLSPEC_PATHSEP*}/$2.sh" ]; then
     eval "$3=\${1%%\$SHELLSPEC_PATHSEP*}/\$2.sh"
@@ -275,6 +277,7 @@ shellspec_loop() {
   shellspec_loop "$1" $(($2 - 1))
 }
 
+# shellcheck disable=SC2295
 shellspec_get_line() {
   [ "$2" -le 0 ] && set -- "$1" "$2" ""
   while [ "$2" -gt 1 ]; do
@@ -287,6 +290,7 @@ shellspec_get_line() {
   unset "$1" ||:
 }
 
+# shellcheck disable=SC2295
 shellspec_count_lines() {
   set -- "$1" "$2" 0
   while [ "$2" ]; do
@@ -309,6 +313,7 @@ shellspec_padding_() {
   shellspec_padding_ "$1" "$2" $(($3 - 1))
 }
 
+# shellcheck disable=SC2295
 shellspec_wrap() {
   [ ! "$2" ] && eval "$1=" && return 0
   case $2 in
@@ -348,7 +353,7 @@ else
   shellspec_readfile() { shellspec_readfile_posix "$@"; }
 fi
 
-# shellcheck disable=SC2039
+# shellcheck disable=SC3043,SC3044
 shellspec_readfile_bash_readarray() {
   [ -e "$2" ] || { unset "$1" ||:; return 0; }
   [ -s "$2" ] || { eval "$1=''"; return 0; }
@@ -369,14 +374,14 @@ shellspec_readfile_ksh_readall() {
   return 0
 }
 
-# shellcheck disable=SC2039
+# shellcheck disable=SC3045
 shellspec_readfile_read_delim() {
   [ -e "$2" ] || { unset "$1" ||:; return 0; }
   [ -s "$2" ] || { eval "$1=''"; return 0; }
   IFS= read -r -d "" "$1" < "$2" ||:
 }
 
-# shellcheck disable=SC2039
+# shellcheck disable=SC3044
 shellspec_readfile_yash_array() {
   [ -e "$2" ] || { unset "$1" ||:; return 0; }
   [ -s "$2" ] || { eval "$1=''"; return 0; }
@@ -395,19 +400,21 @@ shellspec_readfile_zsh_mapfile() {
   eval "$1=\"\${mapfile[\$2]}\""
 }
 
-# shellcheck disable=SC2039
 shellspec_readfile_zsh_concat() {
   [ -e "$2" ] || { unset "$1" ||:; return 0; }
   [ -s "$2" ] || { eval "$1=''"; return 0; }
+  # shellcheck disable=SC3043
   local shellspec_readfile_line='' shellspec_readfile_data=''
   while IFS= read -r shellspec_readfile_line; do
+    # shellcheck disable=SC3024
     shellspec_readfile_data+="${shellspec_readfile_line}${SHELLSPEC_LF}"
   done < "$2"
+  # shellcheck disable=SC3024
   shellspec_readfile_data+="$shellspec_readfile_line"
   eval "$1=\"\$shellspec_readfile_data\""
 }
 
-# shellcheck disable=SC2039
+# shellcheck disable=SC3043
 shellspec_readfile_zsh_array() {
   [ -e "$2" ] || { unset "$1" ||:; return 0; }
   [ -s "$2" ] || { eval "$1=''"; return 0; }
@@ -758,6 +765,7 @@ else
   }
 fi
 
+# shellcheck disable=SC2295
 shellspec_which() {
   set -- "$1" "${PATH%$SHELLSPEC_PATHSEP}${SHELLSPEC_PATHSEP}"
   while [ "${2%$SHELLSPEC_PATHSEP}" ]; do
@@ -784,7 +792,7 @@ shellspec_is_empty_directory() {
 
     # workaround for posh 0.10.2: glob does not expand when set -u
     set +o noglob +u
-    # shellcheck disable=SC2039
+    # shellcheck disable=SC3044
     [ "${SHELLSPEC_FAILGLOB_AVAILABLE:-}" ] && shopt -u failglob
     [ "${SHELLSPEC_NOMATCH_AVAILABLE:-}" ] && setopt NO_NOMATCH
 
@@ -819,7 +827,7 @@ shellspec_unsetf() {
     return 0
   fi
   if [ "$SHELLSPEC_BUILTIN_TYPESETF" ]; then
-    # shellcheck disable=SC2039
+    # shellcheck disable=SC3044
     typeset -f "$1" >/dev/null 2>&1 || return 0
   elif [ "${POSH_VERSION:-}" ]; then
     ( unset -f "$1" 2>/dev/null ) || return 0

@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016,SC2004
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 % FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
 % INFILE: "$SHELLSPEC_HELPERDIR/fixture/infile"

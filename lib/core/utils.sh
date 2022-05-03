@@ -55,7 +55,7 @@ shellspec_set_option() {
 }
 
 shellspec_shopt() {
-  #shellcheck disable=SC2039
+  #shellcheck disable=SC3044
   case $1 in
     -o) shopt -s "$2" 2>/dev/null || set -o "$2" ;;
     +o) shopt -u "$2" 2>/dev/null || set +o "$2" ;;

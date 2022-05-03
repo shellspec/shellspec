@@ -255,6 +255,7 @@ shellspec_interceptor() {
   done
   shift 2
   case $SHELLSPEC_INTERCEPTOR in (*\|$1:*)
+    # shellcheck disable=SC2295
     eval "shift; set -- \"${SHELLSPEC_INTERCEPTOR##*\|$1:}\" ${2:+\"\$@\"}"
     eval "shift; set -- \"${1%%\|*}\" ${2:+\"\$@\"}"
     "$@"

@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 Describe "core/matchers/eq.sh"
   BeforeRun set_subject matcher_mock

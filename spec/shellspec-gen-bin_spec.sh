@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 % GENBIN: "$SHELLSPEC_TMPBASE/gen-bin"
 % HELPERDIR: "$SHELLSPEC_TMPBASE/gen-bin/spec"

@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 Skip if "tmp directory is not executable" noexec_tmpdir
 
@@ -51,7 +51,7 @@ Describe 'Mock helper'
   End
 
   Mock mocked-command
-    %= foo
+    %putsn foo
     # shellcheck disable=SC2034
     var=123
     %preserve var

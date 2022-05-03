@@ -22,11 +22,11 @@ Describe 'sourced return example'
   Example 'test cpunum.sh with stubbed cat /cpu/info'
     Data data
     data() {
-      %= "line1"
-      %= "line2"
-      %= "line3"
-      %= "line4"
-      %- "line5 (without newline)"
+      %putsn "line1"
+      %putsn "line2"
+      %putsn "line3"
+      %putsn "line4"
+      %puts "line5 (without newline)"
     }
 
     When call count_lines

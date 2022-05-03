@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004,SC2016
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 % FILE: "$SHELLSPEC_HELPERDIR/fixture/time_log.txt"
 % PROFILER_LOG: "$SHELLSPEC_HELPERDIR/fixture/profiler/profiler.log"
@@ -441,6 +441,7 @@ Describe "libexec/reporter.sh"
 
     callback() {
       echo "$prefix_field1 $prefix_field2 $prefix_field3" ":" "$@"
+      # shellcheck disable=SC2004
       count=$(($count + 1))
     }
 

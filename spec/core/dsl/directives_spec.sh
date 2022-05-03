@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 Describe 'Directives'
   Describe '%puts'
@@ -19,6 +19,7 @@ Describe 'Directives'
   End
 
   Describe '%putsn'
+    # shellcheck disable=SC2276
     _putsn() { %= "$@"; }
     _putsn_long() {
       %putsn "$@"

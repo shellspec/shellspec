@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 Describe "core/utils.sh"
   Include "$SHELLSPEC_LIB/core/utils.sh"
@@ -96,7 +96,7 @@ Describe "core/utils.sh"
 
   Describe 'shellspec_set_option()'
     BeforeRun 'SHELLSPEC_SHELL_OPTIONS="set -o foo;set +o bar;"'
-    shellspec_set_long() { %= "$@"; }
+    shellspec_set_long() { %putsn "$@"; }
 
     It 'sets long options'
       When run shellspec_set_option

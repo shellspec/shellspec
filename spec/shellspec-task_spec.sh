@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2016
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 Describe "shellspec-task.sh"
   It "lists tasks"

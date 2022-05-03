@@ -10,7 +10,7 @@ if [ "${SHELLSPEC_PATH_IS_READONLY:-}" ]; then
     # shellcheck disable=SC2086
     exec $SHELLSPEC_SHELL "$0" "$@"
   fi
-  # shellcheck disable=SC2039
+  # shellcheck disable=SC3044
   typeset +x PATH
   exec "$SHELLSPEC_ENV" PATH="$PATH" SHELLSPEC_PATH_IS_READONLY="" "$0" "$@"
 fi

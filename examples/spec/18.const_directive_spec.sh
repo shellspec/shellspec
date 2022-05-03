@@ -1,6 +1,7 @@
 #shellcheck shell=sh
 
 %const NAME: value
+# shellcheck disable=SC2288
 % MAJOR_VERSION: "${SHELLSPEC_VERSION%%.*}"
 # % OK: "$(echo_ok)" # echo_ok not found
 

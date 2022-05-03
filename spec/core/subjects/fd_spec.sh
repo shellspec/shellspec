@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 Describe "core/subjects/fd.sh"
   BeforeRun 'set_fd 5' subject_mock
@@ -16,7 +16,7 @@ Describe "core/subjects/fd.sh"
 
       UseFD FD
       Example 'example'
-        # shellcheck disable=SC2039
+        # shellcheck disable=SC3021
         foo() { echo "foo" >&"$FD"; }
         When call foo
         The fd FD should equal "foo"

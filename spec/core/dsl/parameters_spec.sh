@@ -1,8 +1,8 @@
-#shellcheck shell=sh disable=SC2016
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 Describe 'Parameters helper'
   desc() {
-    echo "${SHELLSPEC_DESCRIPTION##*$SHELLSPEC_VT}"
+    echo "${SHELLSPEC_DESCRIPTION##*"$SHELLSPEC_VT"}"
   }
 
   Describe 'block style'

@@ -39,7 +39,7 @@ error_handler() {
           detect_unexpected_error "$specfile" "$lineno" "$errors"
           errors=''
         fi
-        line=${line#${SYN}shellspec_marker:}
+        line=${line#"$SYN"shellspec_marker:}
         specfile=${line% *} lineno=${line##* }
         ;;
       Syntax\ error:*) putsn "${LF}${line}"; error_handler_status=1 ;;

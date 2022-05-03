@@ -5,7 +5,7 @@
 
 set -e -u -f
 
-#shellcheck disable=SC2039
+#shellcheck disable=SC3044
 [ "${OIL_VERSION:-}" ] && shopt -s compat_array
 
 if [ "${1:-}" = "-" ]; then
@@ -22,7 +22,7 @@ if [ "${1:-}" = "-" ]; then
 fi
 
 export SHELLSPEC_VERSION='0.29.0-dev'
-export SHELLSPEC_CWD=$PWD
+export SHELLSPEC_CWD="$PWD"
 export SHELLSPEC_PATH=''
 export SHELLSPEC_GRAMMAR_DSLS=''
 export SHELLSPEC_GRAMMAR_DIRECTIVES=''
@@ -89,7 +89,7 @@ export SHELLSPEC_SORT="sort"
 export SHELLSPEC_FIND="find"
 
 #shellcheck disable=SC2039,SC3028
-export SHELLSPEC_HOSTNAME=${HOSTNAME:-localhost}
+export SHELLSPEC_HOSTNAME="${HOSTNAME:-localhost}"
 
 export SHELLSPEC_COLOR=''
 if [ ! "${NO_COLOR:-}" ] && { [ -t 1 ] || [ "${FORCE_COLOR:-}" ]; } then

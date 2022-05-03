@@ -115,9 +115,11 @@ current_shell() {
   cmdline=$(read_cmdline "/proc/$2/cmdline")
   [ "$cmdline" ] || cmdline=$(read_ps "$2")
 
+  # shellcheck disable=SC2295
   echo "${cmdline%% $self*}"
 }
 
+# shellcheck disable=SC2295
 command_path() {
   if [ $# -lt 2 ]; then
     set -- "" "$1" "${PATH}${SHELLSPEC_PATHSEP}"
@@ -148,7 +150,7 @@ setup_load_path() {
     SHELLSPEC_LOAD_PATH="${1}${SHELLSPEC_PATHSEP}${SHELLSPEC_LOAD_PATH}"
     shift
   done
-  SHELLSPEC_LOAD_PATH=${SHELLSPEC_LOAD_PATH%$SHELLSPEC_PATHSEP}
+  SHELLSPEC_LOAD_PATH=${SHELLSPEC_LOAD_PATH%"$SHELLSPEC_PATHSEP"}
 }
 
 finddirs() {

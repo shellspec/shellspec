@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 Describe "libexec/kcov-executor.sh"
   Include "$SHELLSPEC_LIB/libexec/kcov-executor.sh"

@@ -1,8 +1,7 @@
 #!/bin/sh
-#shellcheck disable=SC2004
 
 set -eu
-# shellcheck disable=SC2039
+# shellcheck disable=SC3044
 shopt -u verbose_errexit 2>/dev/null ||:
 
 # shellcheck source=lib/libexec/runner.sh
@@ -79,6 +78,7 @@ error_handler() {
   error_count=0
 
   while IFS= read -r line; do
+    # shellcheck disable=SC2004
     error_count=$(($error_count + 1))
     error "$line"
   done
@@ -180,7 +180,7 @@ if [ "$SHELLSPEC_BANNER" ]; then
 fi
 
 if [ "${SHELLSPEC_RANDOM:-}" ]; then
-  export SHELLSPEC_LIST=$SHELLSPEC_RANDOM
+  export SHELLSPEC_LIST="$SHELLSPEC_RANDOM"
   exec="$SHELLSPEC_LIBEXEC/shellspec-list.sh"
   eval "$SHELLSPEC_SHELL" "\"$exec\"" ${1+'"$@"'} >"$SHELLSPEC_INFILE"
   set -- -
@@ -216,7 +216,7 @@ set +e
           0) continue ;;
           "$SHELLSPEC_FAILURE_EXIT_CODE") [ "$xs" ] || xs=$i ;;
           "$SHELLSPEC_ERROR_EXIT_CODE") xs=$i error=1 && break ;;
-          *) [ "${xs#$SHELLSPEC_FAILURE_EXIT_CODE}" ] || xs=$i; error=1
+          *) [ "${xs#"$SHELLSPEC_FAILURE_EXIT_CODE"}" ] || xs=$i; error=1
         esac
       done
       if [ "$error" ]; then

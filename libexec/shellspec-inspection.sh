@@ -80,9 +80,8 @@ fi
 set -e
 
 SHELLSPEC_CLONE_TYPE="posix"
-# shellcheck disable=SC2039
+# shellcheck disable=SC3044
 if typeset >/dev/null 2>&1; then
-  # shellcheck disable=SC2034
   set -- "$(var=data; typeset -p var 2>/dev/null ||:)" ||:
   if [ ! "${1#*data}" = "$1" ]; then
     if [ "${BASH_VERSION:-}" ]; then
@@ -116,16 +115,19 @@ if "${0%/*}/shellspec-shebang" 2>/dev/null; then
 fi
 
 set +e
-# shellcheck disable=SC2034,SC2039
 (
+  # shellcheck disable=SC3045
   ulimit -t unlimited || exit 1
 
+  # shellcheck disable=SC3047
   trap '' DEBUG || exit 1
   echo "SHELLSPEC_DEBUG_TRAP=1"
   echo "SHELLSPEC_KCOV_COMPATIBLE_SHELL=1"
 
   # Workaround for ksh93u+ and ksh2020 (fixed in ksh93u+m)
+  # shellcheck disable=SC3047
   trap ':' DEBUG
+  # shellcheck disable=SC2034
   r=$(exit 123)
   if [ $? -ne 123 ]; then
     echo "SHELLSPEC_DEFECT_DEBUGXS=1"
@@ -161,14 +163,14 @@ if print -nr -- '' 2>/dev/null; then
 fi
 
 typesetf_check() { :; }
-# shellcheck disable=SC2034,SC2039
+# shellcheck disable=SC3044
 if typeset -f typesetf_check >/dev/null 2>&1; then
   echo "SHELLSPEC_BUILTIN_TYPESETF=1"
 fi
 
 if type shopt >/dev/null 2>&1; then
   echo "SHELLSPEC_SHOPT_AVAILABLE=1"
-  # shellcheck disable=SC2039
+  # shellcheck disable=SC3044
   if shopt -s failglob 2>/dev/null; then
     echo "SHELLSPEC_FAILGLOB_AVAILABLE=1"
   fi
@@ -178,18 +180,18 @@ if setopt NO_NOMATCH >/dev/null 2>&1; then
   echo "SHELLSPEC_NOMATCH_AVAILABLE=1"
 fi
 
-#shellcheck disable=SC2034,SC2039
+# shellcheck disable=SC2034,SC3022
 if ( exec {fd}>/dev/null ) 2>/dev/null; then
   echo "SHELLSPEC_FDVAR_AVAILABLE=1"
 fi
 
-# shellcheck disable=SC2039
+# shellcheck disable=SC3044
 if readarray </dev/null 2>/dev/null; then
   echo "SHELLSPEC_BUILTIN_READARRAY=1"
 fi
 
 string=''
-# shellcheck disable=SC2039
+# shellcheck disable=SC3024
 if string+="concat" 2>/dev/null; then
   echo "SHELLSPEC_STRING_CONCAT=1"
 fi
@@ -199,7 +201,7 @@ if ( eval '{ : <#((0)); } <<<:' ) 2>/dev/null; then
 fi
 
 line=''
-# shellcheck disable=SC2039
+# shellcheck disable=SC3045
 read -r -d "" line <<'HERE' 2>/dev/null ||:
 a\b
 HERE

@@ -15,6 +15,7 @@ count_examples() {
 }
 
 # $1: prefix, $2: filename
+# shellcheck disable=SC2295
 read_time_log() {
   eval "$1_real='' $1_user='' $1_sys=''"
   [ -r "$2" ] || return 1
@@ -89,6 +90,7 @@ xmlcdata() {
   fi
 }
 
+# shellcheck disable=SC2295
 remove_escape_sequence() {
   while IFS= read -r line || [ "$line" ]; do
     text=''

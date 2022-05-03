@@ -10,6 +10,7 @@ End
 
 Describe '%= directive'
   Example 'is alias for %putsn'
+    # shellcheck disable=SC2276
     foo() { %= value; }
     When call foo
     The entire output should eq "value${SHELLSPEC_LF}"

@@ -3,6 +3,7 @@
 
 set -e
 
+# shellcheck source=lib/libexec/prechecker.sh
 . "${SHELLSPEC_LIB:-./lib}/libexec/prechecker.sh"
 
 warn_fd=2 status_file="" xs=''

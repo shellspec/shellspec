@@ -1,4 +1,4 @@
-#shellcheck shell=sh
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 Describe "libexec/optparser/parser_definition.sh"
   Include "$SHELLSPEC_LIB/getoptions.sh"

@@ -1,4 +1,4 @@
-#shellcheck shell=sh disable=SC2004,SC2016
+# shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
 % BIN: "$SHELLSPEC_HELPERDIR/fixture/bin"
 % FIXTURE: "$SHELLSPEC_HELPERDIR/fixture/"
@@ -437,6 +437,7 @@ Describe "libexec/shellspec.sh"
       callback() {
         if [ ! "$2" ] || [ -e "$1" ]; then
           echo "$1 ($2)"
+          # shellcheck disable=SC2004
           count=$(($count+1))
         fi
       }

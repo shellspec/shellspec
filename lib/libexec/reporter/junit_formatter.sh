@@ -82,7 +82,7 @@ junit_each() {
       inc _errors _errors_total
       _message="${field_note}${field_note:+: }${field_message}"
       _failure=$field_failure_message _address="$field_specfile:$field_lineno"
-      wrap _failure "${_failure%${LF}}${LF}" "  "
+      wrap _failure "${_failure%"$LF"}${LF}" "  "
       _system_error="${_system_error}${_message}${LF}${_failure}"
       _system_error="${_system_error}# ${_address}${LF}${LF}"
       ;;
