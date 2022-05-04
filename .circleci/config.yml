@@ -18,7 +18,7 @@ executors:
 jobs:
   lint:
     docker:
-      - image: koalaman/shellcheck-alpine:v0.7.1
+      - image: koalaman/shellcheck-alpine:v0.8.0
     steps:
       - checkout
       - run: shellcheck shellspec $(find lib libexec spec examples -name '*.sh')
