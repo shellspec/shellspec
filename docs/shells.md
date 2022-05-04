@@ -139,14 +139,16 @@ Default shell: `bash`
 
 Default shell: `bash`
 
-| Platform                              | bash   | busybox         | dash     | mksh | posh   | zsh |
-| ------------------------------------- | ------ | --------------- | -------- | ---- | ------ | --- |
-| **Windows Server 2019 (Git Bash)**    | 4.4.23 | -               | unknown  | -    | -      | -   |
-| **Windows Server 2019 (msys)**        | 5.1.16 | 1.31.1          | 0.5.11.5 | R59  | -      | 5.8 |
-| **Windows Server 2019 (cygwin)**      | 4.4.12 | 1.23.2          | 0.5.11.5 | R56c | 0.13.2 | 5.8 |
-| **Windows Server 2019 (busybox-w32)** | -      | 1.35.0 (4621.0) | -        | -    | -      | -   |
+| Platform                              | bash   | busybox       | dash     | mksh | posh   | zsh |
+| ------------------------------------- | ------ | ------------- | -------- | ---- | ------ | --- |
+| **Windows Server 2019 (Git Bash)**    | 4.4.23 | -             | unknown  | -    | -      | -   |
+| **Windows Server 2019 (msys)**        | 5.1.16 | 1.31.1        | 0.5.11.5 | R59  | -      | 5.8 |
+| **Windows Server 2019 (cygwin)**      | 4.4.12 | 1.23.2        | 0.5.11.5 | R56c | 0.13.2 | 5.8 |
+| **Windows Server 2019 (busybox-w32)** | -      | 1.35.0 (4487) | -        | -    | -      | -   |
 
 - busybox-w32: [https://frippery.org/busybox/](https://frippery.org/busybox/)
+  - Versions that do not work properly
+    - 4264, 4621
 
 ### Manual test
 
