@@ -67,7 +67,7 @@ Describe 'before / after hook example'
 
   Describe '5: after hook'
     cleanup() { :; } # clean up something
-    Before 'cleanup'
+    After 'cleanup'
 
     It 'is called after execute example'
       When call echo ok
