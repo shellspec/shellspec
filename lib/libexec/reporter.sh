@@ -22,7 +22,7 @@ read_time_log() {
   # shellcheck disable=SC2034
   while IFS= read -r line; do
     case $line in (real[\ $TAB]*|user[\ $TAB]*|sys[\ $TAB]*)
-      case ${line##*[ $TAB]} in (*[!0-9.]*) continue; esac
+      case ${line##*[ $TAB]} in (*[!0-9.,]*) continue; esac
       eval "$1_${line%%[ $TAB]*}=\"\${line##*[ \$TAB]}\""
     esac
   done < "$2" &&:
