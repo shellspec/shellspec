@@ -135,6 +135,20 @@ $ docker build -t your-project-name .
 $ docker run -it your-project-name
 ```
 
+
+### 5. Invoke in gitlab job
+
+Example
+
+```yaml
+shellspec tests:
+  image:
+    name: shellspec/shellspec
+    entrypoint: [""]
+  script:
+    - shellspec
+```
+
 ## Appendix
 
 ### How to build official ShellSpec docker image yourself
