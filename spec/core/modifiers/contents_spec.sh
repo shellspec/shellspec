@@ -43,9 +43,9 @@ Describe "core/modifiers/contents.sh"
 
   Describe "entire contents modifier"
     Example 'example'
-      The entire contents of file "$FILE" should equal "a${IFS%?}${IFS%?}"
-      The entire contents of the file "$FILE" should equal "a${IFS%?}${IFS%?}"
-      The file "$FILE" entire contents should equal "a${IFS%?}${IFS%?}"
+      The entire contents of file "$FILE" should equal "a${SHELLSPEC_LF}${SHELLSPEC_LF}"
+      The entire contents of the file "$FILE" should equal "a${SHELLSPEC_LF}${SHELLSPEC_LF}"
+      The file "$FILE" entire contents should equal "a${SHELLSPEC_LF}${SHELLSPEC_LF}"
     End
 
     It 'reads the entire contents of the file when file exists'
@@ -54,7 +54,7 @@ Describe "core/modifiers/contents.sh"
       AfterRun preserve
 
       When run shellspec_modifier_entire_contents _modifier_
-      The entire stdout should equal "a${IFS%?}${IFS%?}"
+      The entire stdout should equal "a${SHELLSPEC_LF}${SHELLSPEC_LF}"
       The variable META should eq 'text'
     End
 

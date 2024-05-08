@@ -949,7 +949,7 @@ Describe "libexec/translator.sh"
 
   Describe "remove_from_ranges()"
     BeforeRun "ranges='1 2 3 1 2 3'"
-    AfterRun 'echo $ranges'
+    AfterRun 'echo "$ranges"'
 
     It "removes matched range"
       is_in_range() { [ "$1" = "2" ]; }

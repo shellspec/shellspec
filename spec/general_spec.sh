@@ -256,24 +256,26 @@ Describe "general.sh"
   End
 
   Describe 'shellspec_putsn()'
+    lf="$SHELLSPEC_LF"
+
     It 'does not output anything without arguments'
       When call shellspec_putsn
-      The entire stdout should equal "${IFS%?}"
+      The entire stdout should equal "${lf}"
     End
 
     It 'outputs append with LF'
       When call shellspec_putsn "a"
-      The entire stdout should equal "a${IFS%?}"
+      The entire stdout should equal "a${lf}"
     End
 
     It 'joins arguments with space and outputs append with LF'
       When call shellspec_putsn "a" "b"
-      The entire stdout should equal "a b${IFS%?}"
+      The entire stdout should equal "a b${lf}"
     End
 
     It 'outputs with raw string append with LF'
       When call shellspec_putsn 'a\b'
-      The entire stdout should equal "a\\b${IFS%?}"
+      The entire stdout should equal "a\\b${lf}"
       The length of entire stdout should equal 4
     End
 
@@ -281,7 +283,7 @@ Describe "general.sh"
       It 'joins arguments with spaces'
         BeforeRun 'IFS=@'
         When run shellspec_putsn a b c
-        The entire stdout should equal "a b c${IFS%?}"
+        The entire stdout should equal "a b c${lf}"
       End
     End
   End
@@ -886,7 +888,7 @@ Describe "general.sh"
   End
 
   Describe "shellspec_chomp()"
-    Before "var='string${IFS%?}${IFS%?}${IFS%?}'"
+    Before "var='string${SHELLSPEC_LF}${SHELLSPEC_LF}${SHELLSPEC_LF}'"
     It "removes trailing LF"
       When call shellspec_chomp var
       The variable var should eq "string"
