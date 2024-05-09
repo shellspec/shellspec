@@ -19,5 +19,8 @@ shellspec_subject_path() {
 
   shift
 
-  eval shellspec_syntax_dispatch modifier ${1+'"$@"'}
+  case $# in
+    0) shellspec_syntax_dispatch modifier ;;
+    *) shellspec_syntax_dispatch modifier "$@" ;;
+  esac
 }

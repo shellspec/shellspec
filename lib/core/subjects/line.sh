@@ -18,5 +18,8 @@ shellspec_subject_line() {
   fi
   shellspec_off UNHANDLED_STDOUT
 
-  eval shellspec_syntax_dispatch modifier line ${1+'"$@"'}
+  case $# in
+    0) shellspec_syntax_dispatch modifier line ;;
+    *) shellspec_syntax_dispatch modifier line "$@" ;;
+  esac
 }

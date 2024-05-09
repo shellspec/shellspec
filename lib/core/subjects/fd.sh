@@ -17,7 +17,10 @@ shellspec_subject_fd() {
   fi
   shift
 
-  eval shellspec_syntax_dispatch modifier ${1+'"$@"'}
+  case $# in
+    0) shellspec_syntax_dispatch modifier ;;
+    *) shellspec_syntax_dispatch modifier "$@" ;;
+  esac
 }
 
 shellspec_subject_entire_fd() {
@@ -34,5 +37,8 @@ shellspec_subject_entire_fd() {
   fi
   shift
 
-  eval shellspec_syntax_dispatch modifier ${1+'"$@"'}
+  case $# in
+    0) shellspec_syntax_dispatch modifier ;;
+    *) shellspec_syntax_dispatch modifier "$@" ;;
+  esac
 }

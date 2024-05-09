@@ -19,7 +19,10 @@ shellspec_subject_stdout() {
 
   shellspec_off UNHANDLED_STDOUT
 
-  eval shellspec_syntax_dispatch modifier ${1+'"$@"'}
+  case $# in
+    0) shellspec_syntax_dispatch modifier ;;
+    *) shellspec_syntax_dispatch modifier "$@" ;;
+  esac
 }
 
 shellspec_subject_entire_stdout() {
@@ -35,5 +38,8 @@ shellspec_subject_entire_stdout() {
 
   shellspec_off UNHANDLED_STDOUT
 
-  eval shellspec_syntax_dispatch modifier ${1+'"$@"'}
+  case $# in
+    0) shellspec_syntax_dispatch modifier ;;
+    *) shellspec_syntax_dispatch modifier "$@" ;;
+  esac
 }

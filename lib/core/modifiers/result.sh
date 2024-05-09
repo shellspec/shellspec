@@ -24,7 +24,10 @@ shellspec_modifier_result() {
     unset SHELLSPEC_SUBJECT ||:
   fi
 
-  eval shellspec_syntax_dispatch modifier ${1+'"$@"'}
+  case $# in
+    0) shellspec_syntax_dispatch modifier ;;
+    *) shellspec_syntax_dispatch modifier "$@" ;;
+  esac
 }
 
 shellspec_modifier_result_invoke() {

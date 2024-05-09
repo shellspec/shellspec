@@ -17,7 +17,10 @@ shellspec_matcher() {
 
   unset SHELLSPEC_EXPECT ||:
 
-  eval shellspec_syntax_dispatch matcher ${1+'"$@"'}
+  case $# in
+    0) shellspec_syntax_dispatch matcher ;;
+    *) shellspec_syntax_dispatch matcher "$@" ;;
+  esac
 }
 
 shellspec_matcher_do_match_positive() {

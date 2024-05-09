@@ -14,5 +14,8 @@ shellspec_subject_status() {
 
   shellspec_off UNHANDLED_STATUS
 
-  eval shellspec_syntax_dispatch modifier ${1+'"$@"'}
+  case $# in
+    0) shellspec_syntax_dispatch modifier ;;
+    *) shellspec_syntax_dispatch modifier "$@" ;;
+  esac
 }
