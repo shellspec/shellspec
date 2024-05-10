@@ -1,4 +1,4 @@
-name: macOS Catalina
+name: macOS Ventura
 
 on: [push, pull_request]
 
@@ -7,7 +7,7 @@ env:
 
 jobs:
   macos-catalina:
-    runs-on: macos-10.15
+    runs-on: macos-13
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       matrix:

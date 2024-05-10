@@ -1,4 +1,4 @@
-name: Ubuntu Bionic Beaver
+name: Ubuntu Jammy Jellyfish
 
 on: [push, pull_request]
 
@@ -6,8 +6,8 @@ env:
   FORCE_COLOR: 1
 
 jobs:
-  ubuntu-bionic:
-    runs-on: ubuntu-18.04
+  ubuntu-jammy:
+    runs-on: ubuntu-22.04
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       matrix:

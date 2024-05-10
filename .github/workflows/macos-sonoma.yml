@@ -1,0 +1,24 @@
+name: macOS Sonoma
+
+on: [push, pull_request]
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  macos-catalina:
+    runs-on: macos-14
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    strategy:
+      matrix:
+        shells:
+          - {shell: sh}
+          - {shell: dash}
+          - {shell: bash}
+          - {shell: ksh}
+          - {shell: zsh}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - run: ${{ matrix.shells.shell }} ./shellspec --shell "${{ matrix.shells.shell }}" --task fixture:stat:prepare
+      - run: SH="${{ matrix.shells.shell }}" contrib/various_test.sh
