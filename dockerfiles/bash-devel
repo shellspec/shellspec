@@ -1,0 +1,3 @@
+FROM bash:devel
+RUN adduser -D user
+ENV SH=/usr/local/bin/bash

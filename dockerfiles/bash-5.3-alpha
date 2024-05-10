@@ -1,0 +1,3 @@
+FROM bash:5.3-alpha
+RUN adduser -D user
+ENV SH=/usr/local/bin/bash

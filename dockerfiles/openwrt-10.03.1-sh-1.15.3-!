@@ -9,7 +9,7 @@ COPY --from=builder /rootfs/ /
 CMD ["/bin/sh"]
 
 FROM base
-RUN mkdir /var/lock /home \
- && opkg update && opkg install shadow-groupadd shadow-useradd \
- && groupadd user && useradd -m user -g user
+RUN mkdir -p /home/user \
+ && echo 'user:!:1000:' >> /etc/group \
+ && echo 'user:x:1000:1000::/home/user:' >> /etc/passwd
 ENV SH=/bin/sh

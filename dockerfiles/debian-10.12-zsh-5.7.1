@@ -1,5 +1,0 @@
-FROM debian:10.12-slim
-ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
-RUN useradd -m user \
- && apt-get update && apt-get -y install zsh
-ENV SH=/usr/bin/zsh

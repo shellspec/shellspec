@@ -1,0 +1,4 @@
+FROM chimeralinux/chimera
+RUN apk update && apk add shadow bsdtar
+RUN useradd -m user
+ENV SH=/bin/sh

@@ -1,3 +1,0 @@
-FROM almalinux:8.5-20220306
-RUN useradd -m user
-ENV SH=/bin/sh

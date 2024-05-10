@@ -1,3 +1,0 @@
-FROM alpine:3.15.4
-RUN adduser -D user && apk add --no-cache loksh
-ENV SH=/bin/ksh

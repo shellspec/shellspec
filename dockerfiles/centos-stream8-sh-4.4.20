@@ -1,0 +1,3 @@
+FROM quay.io/centos/centos:stream8
+RUN useradd -m user
+ENV SH=/bin/sh
