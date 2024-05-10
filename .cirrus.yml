@@ -1,11 +1,13 @@
 env:
   FORCE_COLOR: 1
 
+# https://cirrus-ci.org/guide/FreeBSD/
 freebsd_task:
   freebsd_instance:
     matrix:
-      - image_family: freebsd-12-3
-      - image_family: freebsd-13-0
+      - image_family: freebsd-13-2
+      - image_family: freebsd-14-0
+      - image_family: freebsd-15-0-snap
   install_script: pkg install -y dash bash zsh ksh93 mksh oksh
   prepare_script:
     - ./shellspec --task fixture:stat:prepare
