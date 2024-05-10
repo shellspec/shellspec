@@ -116,7 +116,10 @@ current_shell() {
   [ "$cmdline" ] || cmdline=$(read_ps "$2")
 
   # shellcheck disable=SC2295
-  echo "${cmdline%% $self*}"
+  cmdline=${cmdline%% $self*}
+  # workaround for OpenBSD >= 7.2 (ps -f)
+  case $cmdline in ([\`\|]--\ * | -\ *) cmdline=${cmdline##*\ }; esac
+  echo "$cmdline"
 }
 
 # shellcheck disable=SC2295
