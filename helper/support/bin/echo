@@ -1,0 +1,4 @@
+#!/bin/false
+# Workaround for yash 2.54.
+# Shell builtin commands for commands that are not in the PATH can no longer
+# be invoked. This file is intended to circumvent this behaviour of yash.

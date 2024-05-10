@@ -147,36 +147,49 @@ set_path() {
   PATH="$1"
 }
 
+run_with_path() {
+  current_path=$PATH xs=0
+  set_path "$1"
+  shift
+  "$@" || xs=$?
+  PATH=$current_path
+  return $xs
+}
+
+run_builtin() {
+  run_with_path /dev/null "$@"
+}
+
 # shellcheck disable=SC2123
-set_path /
-if [ "$SHELLSPEC_SANDBOX" ] && ! $SHELLSPEC_SHELL -c ":" 2>/dev/null; then
-  # busybox ash on cygwin
-  echo "SHELLSPEC_DEFECT_SANDBOX=1"
+if [ "$SHELLSPEC_SANDBOX" ]; then
+  if ! run_with_path / $SHELLSPEC_SHELL -c ":" 2>/dev/null; then
+    # busybox ash on cygwin
+    echo "SHELLSPEC_DEFECT_SANDBOX=1"
+  fi
 fi
 
-set_path ""
-if printf '' 2>/dev/null; then
+if run_builtin printf '' 2>/dev/null; then
   echo "SHELLSPEC_BUILTIN_PRINTF=1"
 fi
-if print -nr -- '' 2>/dev/null; then
+if run_builtin print -nr -- '' 2>/dev/null; then
   echo "SHELLSPEC_BUILTIN_PRINT=1"
 fi
 
 typesetf_check() { :; }
 # shellcheck disable=SC3044
-if typeset -f typesetf_check >/dev/null 2>&1; then
+if run_builtin typeset -f typesetf_check >/dev/null 2>&1; then
   echo "SHELLSPEC_BUILTIN_TYPESETF=1"
 fi
 
 if type shopt >/dev/null 2>&1; then
   echo "SHELLSPEC_SHOPT_AVAILABLE=1"
   # shellcheck disable=SC3044
-  if shopt -s failglob 2>/dev/null; then
+  if run_builtin shopt -s failglob 2>/dev/null; then
     echo "SHELLSPEC_FAILGLOB_AVAILABLE=1"
   fi
 fi
 
-if setopt NO_NOMATCH >/dev/null 2>&1; then
+if run_builtin setopt NO_NOMATCH >/dev/null 2>&1; then
   echo "SHELLSPEC_NOMATCH_AVAILABLE=1"
 fi
 
@@ -186,7 +199,7 @@ if ( exec {fd}>/dev/null ) 2>/dev/null; then
 fi
 
 # shellcheck disable=SC3044
-if readarray </dev/null 2>/dev/null; then
+if run_builtin readarray </dev/null 2>/dev/null; then
   echo "SHELLSPEC_BUILTIN_READARRAY=1"
 fi
 
