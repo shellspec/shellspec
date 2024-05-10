@@ -1,19 +1,20 @@
 version: 2.1
 
 # Define the executor type
+# https://circleci.com/docs/using-macos/
 executors:
-  xcode10:
+  macos11: # macOS Version: 11.4.0
     macos:
-      xcode: 10.3.0 # Mojave 10.14.4
-  xcode11:
+      xcode: 12.5.1
+  macos12: # macOS Version: 12.6
     macos:
-      xcode: 11.7.0 # Catalina 10.15.5
-  xcode12:
+      xcode: 14.2.0
+  macos13: # macOS Version: 13.5.1
     macos:
-      xcode: 12.5.1 # Big Sur 11.6.2
-  xcode13:
+      xcode: 15.0.0
+  macos14: # macOS Version: 14.3.1
     macos:
-      xcode: 13.3.1 # Monterey 12.3.1
+      xcode: 15.3.0
 
 jobs:
   lint:
@@ -88,4 +89,4 @@ workflows:
       - test:
           matrix:
             parameters:
-              os: [xcode10, xcode11, xcode12, xcode13]
+              os: [macos11, macos12, macos13, macos14]
