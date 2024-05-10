@@ -1,14 +1,13 @@
-FROM buildpack-deps:bullseye as builder
+FROM buildpack-deps:bookworm as builder
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN apt-get update && apt-get -y install e2fslibs-dev
-ENV VERSION=schily-2021-09-18
-ENV URL=https://sourceforge.net/projects/schilytools/files/$VERSION.tar.bz2/download
-RUN wget -nv -O- --trust-server-names "$URL" | tar xfj -
-WORKDIR $VERSION
+ENV URL=https://codeberg.org/schilytools/schilytools/archive/2024-03-21.tar.gz
+RUN wget -nv -O- --trust-server-names "$URL" | tar xzf -
+WORKDIR schilytools
 RUN make install
 RUN /opt/schily/bin/bosh -c 'echo ${.sh.version}'
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 COPY --from=builder /opt/schily/bin/* /usr/local/bin/
 RUN useradd -m user
 ENV SH=/usr/local/bin/bosh

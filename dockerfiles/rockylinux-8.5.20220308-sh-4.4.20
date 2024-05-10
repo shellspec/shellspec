@@ -1,3 +1,0 @@
-FROM rockylinux:8.5.20220308
-RUN useradd -m user
-ENV SH=/bin/sh

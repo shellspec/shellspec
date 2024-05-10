@@ -1,0 +1,15 @@
+FROM buildpack-deps:bookworm as builder
+ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
+RUN apt-get update
+ENV URL=https://github.com/hvdijk/gwsh/archive/b577fdc.tar.gz
+RUN wget -nv -O- --trust-server-names "$URL" | tar xzf - --one-top-level=gwsh --strip-components=1 \
+ && ls -al \
+ && cd gwsh \
+ && ./autogen.sh \
+ && ./configure \
+ && make install
+
+FROM debian:bookworm-slim
+COPY --from=builder /usr/local/bin* /usr/local/bin/
+RUN useradd -m user
+ENV SH=/usr/local/bin/gwsh
