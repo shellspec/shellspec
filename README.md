@@ -3,7 +3,6 @@
 ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh, zsh and **all POSIX shells** that provides first-class features such as code coverage, mocking, parameterized test, parallel execution and more. It was developed as a dev/test tool for **cross-platform shell scripts and shell script libraries**. ShellSpec is a new modern testing framework released in 2019, but it's already stable enough. With lots of practical CLI features and simple yet powerful syntax, it provides you with a fun shell script test environment.
 
 [![GitHub Actions Status](https://img.shields.io/github/workflow/status/shellspec/shellspec/Release?label=GithubActions&style=flat-square)](https://github.com/shellspec/shellspec/actions)
-[![Travis CI](https://img.shields.io/travis/com/shellspec/shellspec/master.svg?label=TravisCI&style=flat-square)](https://travis-ci.com/shellspec/shellspec)
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI&style=flat-square)](https://cirrus-ci.com/github/shellspec/shellspec)
 [![Circle CI](https://img.shields.io/circleci/build/github/shellspec/shellspec.svg?label=CircleCI&style=flat-square)](https://circleci.com/gh/shellspec/shellspec)
 [![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/shellspec/shellspec?style=flat-square&label=DockerHub)![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/shellspec/shellspec?style=flat-square&label=builds)](https://hub.docker.com/r/shellspec/shellspec)<br>
@@ -215,13 +214,12 @@ NOTE: This documentation contains unreleased features. Check them in the changel
 | Platform                                                         | Test                                               |
 | ---------------------------------------------------------------- | -------------------------------------------------- |
 | Linux (Debian, Ubuntu, Fedora, CentOS, Alpine, Busybox, OpenWrt) | [GitHub Actions][Actions] or [Docker][Docker]      |
-| macOS (Default installed shells, Homebrew)                       | [GitHub Actions][Actions] or [Travis CI][TravisCI] |
+| macOS (Default installed shells, Homebrew)                       | [GitHub Actions][Actions]                          |
 | Windows (Git bash, msys2, cygwin, busybox-w32, WSL)              | [GitHub Actions][Actions]                          |
 | BSD (FreeBSD, OpenBSD, NetBSD)                                   | [Cirrus CI][CirrusCI] (FreeBSD) or Manual (Others) |
 | Unix (Solaris, AIX)                                              | Manual only                                        |
 
 [Actions]: https://github.com/shellspec/shellspec/actions
-[TravisCI]: https://travis-ci.com/shellspec/shellspec
 [CirrusCI]: https://cirrus-ci.com/github/shellspec/shellspec
 [Docker]: dockerfiles
 
