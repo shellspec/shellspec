@@ -3,6 +3,7 @@ name: Solaris 11.4
 on: [push, pull_request]
 
 env:
+  LANG: C
   FORCE_COLOR: 1
 
 jobs:
