@@ -313,8 +313,8 @@ Describe "core/dsl.sh"
       SHELLSPEC_STDIO_FILE_BASE=1-2-3
     }
     check() {
-      echo $SHELLSPEC_EXAMPLE_NO
-      echo $SHELLSPEC_STDIO_FILE_BASE
+      echo "$SHELLSPEC_EXAMPLE_NO"
+      echo "$SHELLSPEC_STDIO_FILE_BASE"
     }
     BeforeRun setup
     AfterRun check

@@ -17,3 +17,4 @@ helper/fixture/stat/*
 !Makefile
 !package.json
 !*.sh
+!.shellcheckrc

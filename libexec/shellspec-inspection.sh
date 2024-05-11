@@ -160,8 +160,8 @@ run_builtin() {
   run_with_path /dev/null "$@"
 }
 
-# shellcheck disable=SC2123
 if [ "$SHELLSPEC_SANDBOX" ]; then
+  # shellcheck disable=SC2086
   if ! run_with_path / $SHELLSPEC_SHELL -c ":" 2>/dev/null; then
     # busybox ash on cygwin
     echo "SHELLSPEC_DEFECT_SANDBOX=1"

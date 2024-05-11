@@ -12,7 +12,7 @@ shellspec_each shellspec_callback \
 #     C c1 c2 of B b1 b2 of A a1 a2 should equal abc
 #  => A a1 a2 B b1 b2 C c1 c2 should equal abc
 shellspec_statement_preposition() {
-  shellspec_work='' shellspec_i=0 shellspec_v=''
+  shellspec_work='' shellspec_i=0 shellspec_j=0 shellspec_k=0 shellspec_v=''
 
   until [ "$shellspec_v" = should ]; do
     shellspec_i=$(($shellspec_i + 1)) && shellspec_j=$shellspec_i
