@@ -1,0 +1,27 @@
+name: Solaris 11.4
+
+on: [push, pull_request]
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  solaris-11.4:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    strategy:
+      matrix:
+        shells:
+          - {shell: sh}
+          - {shell: ksh}
+          - {shell: bash}
+          - {shell: zsh}
+          - {shell: /usr/xpg4/bin/sh}
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v4
+    - uses: vmactions/solaris-vm@v1
+      with:
+        usesh: true
+        release: "11.4"
+        run: SH="${{ matrix.shells.shell }}" contrib/various_test.sh

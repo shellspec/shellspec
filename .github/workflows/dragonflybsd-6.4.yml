@@ -1,0 +1,23 @@
+name: DragonFlyBSD 6.4
+
+on: [push, pull_request]
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  dragonflybsd-6.4:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    strategy:
+      matrix:
+        shells:
+          - {shell: sh}
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v4
+    - uses: vmactions/dragonflybsd-vm@v1
+      with:
+        usesh: true
+        release: "6.4.0"
+        run: SH="${{ matrix.shells.shell }}" contrib/various_test.sh

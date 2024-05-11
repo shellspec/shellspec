@@ -1,0 +1,24 @@
+name: OpenBSD 7.3
+
+on: [push, pull_request]
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  openbsd-7.3:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    strategy:
+      matrix:
+        shells:
+          - {shell: sh}
+          - {shell: ksh}
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v4
+    - uses: vmactions/openbsd-vm@v1
+      with:
+        usesh: true
+        release: "7.3"
+        run: SH="${{ matrix.shells.shell }}" contrib/various_test.sh
