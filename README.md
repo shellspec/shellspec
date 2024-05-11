@@ -1,4 +1,4 @@
-# ShellSpec
+# ShellSpec: full-featured BDD unit testing framework
 
 ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh, zsh and **all POSIX shells** that provides first-class features such as code coverage, mocking, parameterized test, parallel execution and more. It was developed as a dev/test tool for **cross-platform shell scripts and shell script libraries**. ShellSpec is a new modern testing framework released in 2019, but it's already stable enough. With lots of practical CLI features and simple yet powerful syntax, it provides you with a fun shell script test environment.
 
@@ -12,7 +12,16 @@ ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh,
 [![gitbash](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/windows-gitbash.yml?label=Windows%20(gitbash)&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/windows-gitbash.yml)
 [![cygwin](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/windows-cygwin.yml?label=Windows%20(cygwin)&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/windows-cygwin.yml)
 [![msys](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/windows-msys.yml?label=Windows%20(msys)&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/windows-msys.yml)
-[![busybox](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/windows-busybox.yml?label=Windows%20(busybox)&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/windows-busybox.yml)
+[![busybox](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/windows-busybox.yml?label=Windows%20(busybox)&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/windows-busybox.yml)<br>
+[![bash](https://img.shields.io/badge/bash-&ge;2.03-lightgrey.svg?style=flat)](https://www.gnu.org/software/bash/)
+[![bosh](https://img.shields.io/badge/bosh-&ge;2018%2F10%2F07-lightgrey.svg?style=flat)](https://codeberg.org/schilytools/schilytools)
+[![busybox](https://img.shields.io/badge/busybox-&ge;1.20.0-lightgrey.svg?style=flat)](https://www.busybox.net/)
+[![dash](https://img.shields.io/badge/dash-&ge;0.5.4-lightgrey.svg?style=flat)](http://gondor.apana.org.au/~herbert/dash/)
+[![ksh](https://img.shields.io/badge/ksh-&ge;93s-lightgrey.svg?style=flat)](https://github.com/ksh93/ksh)
+[![mksh](https://img.shields.io/badge/mksh-&ge;R28-lightgrey.svg?style=flat)](http://www.mirbsd.org/mksh.htm)
+[![posh](https://img.shields.io/badge/posh-&ge;0.3.14-lightgrey.svg?style=flat)](https://salsa.debian.org/clint/posh)
+[![yash](https://img.shields.io/badge/yash-&ge;2.29-lightgrey.svg?style=flat)](https://magicant.github.io/yash/)
+[![zsh](https://img.shields.io/badge/zsh-&ge;3.1.9-lightgrey.svg?style=flat)](https://www.zsh.org/)
 
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI&style=flat-square)](https://cirrus-ci.com/github/shellspec/shellspec)
 [![Circle CI](https://img.shields.io/circleci/build/github/shellspec/shellspec.svg?label=CircleCI&style=flat-square)](https://circleci.com/gh/shellspec/shellspec)
@@ -25,16 +34,6 @@ ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh,
 [![GitHub top language](https://img.shields.io/github/languages/top/shellspec/shellspec.svg?style=flat-square)](https://github.com/shellspec/shellspec/search?l=Shell)
 [![GitHub release](https://img.shields.io/github/release/shellspec/shellspec.svg?style=flat-square)](https://github.com/shellspec/shellspec/releases/latest)
 [![License](https://img.shields.io/github/license/shellspec/shellspec.svg?style=flat-square)](https://github.com/shellspec/shellspec/blob/master/LICENSE)
-
-[![bash](https://img.shields.io/badge/bash-&ge;2.03-lightgrey.svg?style=flat)](https://www.gnu.org/software/bash/)
-[![bosh](https://img.shields.io/badge/bosh-&ge;2018%2F10%2F07-lightgrey.svg?style=flat)](http://schilytools.sourceforge.net/bosh.html)
-[![busybox](https://img.shields.io/badge/busybox-&ge;1.20.0-lightgrey.svg?style=flat)](https://www.busybox.net/)
-[![dash](https://img.shields.io/badge/dash-&ge;0.5.4-lightgrey.svg?style=flat)](http://gondor.apana.org.au/~herbert/dash/)
-[![ksh](https://img.shields.io/badge/ksh-&ge;93s-lightgrey.svg?style=flat)](http://kornshell.org)
-[![mksh](https://img.shields.io/badge/mksh-&ge;R28-lightgrey.svg?style=flat)](http://www.mirbsd.org/mksh.htm)
-[![posh](https://img.shields.io/badge/posh-&ge;0.3.14-lightgrey.svg?style=flat)](https://salsa.debian.org/clint/posh)
-[![yash](https://img.shields.io/badge/yash-&ge;2.29-lightgrey.svg?style=flat)](https://yash.osdn.jp/)
-[![zsh](https://img.shields.io/badge/zsh-&ge;3.1.9-lightgrey.svg?style=flat)](https://www.zsh.org/)
 
 ----
 
@@ -2215,3 +2214,7 @@ reliability and portability, and the external commands allowed to use are greatl
 We recommend that you create WIP PR early or offer suggestions in discussions to avoid ruining your work.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+---
+
+Author: Koichi Nakashima ([ko1nksm](https://github.com/ko1nksm))
