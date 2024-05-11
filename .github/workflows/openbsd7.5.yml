@@ -6,7 +6,7 @@ env:
   FORCE_COLOR: 1
 
 jobs:
-  openbsd-7.5:
+  openbsd-7_5:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
