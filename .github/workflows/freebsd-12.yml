@@ -1,4 +1,4 @@
-name: FreeBSD 14
+name: FreeBSD 12
 
 on: [push, pull_request]
 
@@ -6,7 +6,7 @@ env:
   FORCE_COLOR: 1
 
 jobs:
-  freebsd-14:
+  freebsd-12:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
@@ -19,5 +19,5 @@ jobs:
     - uses: vmactions/freebsd-vm@v1
       with:
         usesh: true
-        release: "14.0"
+        release: "12.4"
         run: SH="${{ matrix.shells.shell }}" contrib/various_test.sh
