@@ -359,6 +359,14 @@ if [ "$SHELLSPEC_DEFECT_SANDBOX" ]; then
   warn "Some features may fail due to incompatibilities with sandbox features."
 fi
 
+# Convert to absolute paths as needed for command-based mocks
+if [ "$SHELLSPEC_BUSYBOX_W32" ]; then
+  case $SHELLSPEC_SHELL in
+    */*) ;;
+    *) SHELLSPEC_SHELL="/bin/$SHELLSPEC_SHELL"
+  esac
+fi
+
 # shellcheck disable=SC2153
 if [ "$SHELLSPEC_XTRACE" ]; then
   if [ "$SHELLSPEC_XTRACE_ONLY" ]; then
