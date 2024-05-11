@@ -193,7 +193,7 @@ abspath SHELLSPEC_PROJECT_ROOT "$SHELLSPEC_PROJECT_ROOT"
   optparser parse_options error_message
 
   error_message() {
-    error "$1${options_file:+" [$options_file]"}"
+    error "$1${options_file:+ "[$options_file]"}"
   }
 
   options_file() {

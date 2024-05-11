@@ -107,13 +107,13 @@ junit_output() {
     while IFS= read -r _line; do
       case $_line in
         *\<testsuites\ *)
-          _before=${_line%%<testsuites\ *} _after=${_line#*<testsuites\ }
+          _before=${_line%%\<testsuites\ *} _after=${_line#*\<testsuites\ }
           xmlattrs _attrs "tests=$junit_tests_total" "time=$time_real" \
             "errors=$junit_errors_total" "failures=$junit_failures_total"
           putsn "$_before<testsuites $_attrs $_after"
           ;;
         *\<testsuite\ *)
-          _before=${_line%%<testsuite\ *} _after=${_line#*<testsuite\ }
+          _before=${_line%%\<testsuite\ *} _after=${_line#*\<testsuite\ }
           eval "xmlattrs _attrs id=$_id tests=\$junit_tests_${_id} \
             errors=\$junit_errors_${_id} failures=\$junit_failures_${_id} \
             skipped=\$junit_skipped_${_id}"
@@ -121,7 +121,7 @@ junit_output() {
           inc _id
           ;;
         *\<testcase\ *)
-          _before=${_line%%<testcase\ *} _after=${_line#*<testcase\ }
+          _before=${_line%%\<testcase\ *} _after=${_line#*\<testcase\ }
           _time=0
           [ "$SHELLSPEC_PROFILER" ] && eval "_time=\$profiler_time$_cid"
           xmlattrs _attrs "time=$_time"
