@@ -2,11 +2,22 @@
 
 ShellSpec is a **full-featured BDD unit testing framework** for dash, bash, ksh, zsh and **all POSIX shells** that provides first-class features such as code coverage, mocking, parameterized test, parallel execution and more. It was developed as a dev/test tool for **cross-platform shell scripts and shell script libraries**. ShellSpec is a new modern testing framework released in 2019, but it's already stable enough. With lots of practical CLI features and simple yet powerful syntax, it provides you with a fun shell script test environment.
 
-[![GitHub Actions Status](https://img.shields.io/github/workflow/status/shellspec/shellspec/Release?label=GithubActions&style=flat-square)](https://github.com/shellspec/shellspec/actions)
+[![Ubuntu](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/ubuntu-jammy.yml?label=Ubuntu&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/ubuntu-jammy.yml)
+[![macOS](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/macos-sonoma.yml?label=macOS&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/macos-sonoma.yml)
+[![FreeBSD](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/freebsd-14.yml?label=FreeBSD&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/freebsd-14.yml)
+[![NetBSD](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/netbsd-10.yml?label=NetBSD&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/netbsd-10.yml)
+[![OpenBSD](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/openbsd7.5.yml?label=OpenBSD&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/openbsd7.5.yml)
+[![DragonFlyBSD](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/dragonflybsd-6.4.yml?label=OpenBSD&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/dragonflybsd-6.4.yml)
+[![Solaris11](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/solaris-11.4.yml?label=Solaris11&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/solaris-11.4.yml)<br>
+[![gitbash](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/windows-gitbash.yml?label=Windows%20(gitbash)&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/windows-gitbash.yml)
+[![cygwin](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/windows-cygwin.yml?label=Windows%20(cygwin)&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/windows-cygwin.yml)
+[![msys](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/windows-msys.yml?label=Windows%20(msys)&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/windows-msys.yml)
+[![busybox](https://img.shields.io/github/actions/workflow/status/shellspec/shellspec/windows-busybox.yml?label=Windows%20(busybox)&style=flat-square)](https://github.com/shellspec/shellspec/actions/workflows/windows-busybox.yml)
+
 [![Cirrus CI](https://img.shields.io/cirrus/github/shellspec/shellspec.svg?label=CirrusCI&style=flat-square)](https://cirrus-ci.com/github/shellspec/shellspec)
 [![Circle CI](https://img.shields.io/circleci/build/github/shellspec/shellspec.svg?label=CircleCI&style=flat-square)](https://circleci.com/gh/shellspec/shellspec)
-[![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/shellspec/shellspec?style=flat-square&label=DockerHub)![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/shellspec/shellspec?style=flat-square&label=builds)](https://hub.docker.com/r/shellspec/shellspec)<br>
-[![Kcov](https://img.shields.io/badge/dynamic/json.svg?label=Kcov&query=percent_covered&suffix=%25&url=https%3A%2F%2Fcircleci.com%2Fapi%2Fv1.1%2Fproject%2Fgithub%2Fshellspec%2Fshellspec%2Flatest%2Fartifacts%2F0%2Fcoverage%2Fcoverage.json%3Fbranch%3Dmaster&style=flat-square)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html?branch=master)
+[![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/shellspec/shellspec?style=flat-square&label=DockerHub)![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/shellspec/shellspec?style=flat-square&label=builds)](https://hub.docker.com/r/shellspec/shellspec)
+[![Kcov](https://img.shields.io/badge/dynamic/json.svg?label=Kcov&query=percent_covered&suffix=%25&url=https%3A%2F%2Fcircleci.com%2Fapi%2Fv1.1%2Fproject%2Fgithub%2Fshellspec%2Fshellspec%2Flatest%2Fartifacts%2F0%2Fcoverage%2Fcoverage.json%3Fbranch%3Dmaster&style=flat-square)](https://circleci.com/api/v1.1/project/github/shellspec/shellspec/latest/artifacts/0/coverage/index.html?branch=master)<br>
 [![Coveralls](https://img.shields.io/coveralls/github/shellspec/shellspec.svg?label=Coveralls&style=flat-square)](https://coveralls.io/github/shellspec/shellspec?branch=master)
 [![Code Climate](https://img.shields.io/codeclimate/coverage/shellspec/shellspec?label=CodeClimate&style=flat-square)](https://codeclimate.com/github/shellspec/shellspec)
 [![Codecov](https://img.shields.io/codecov/c/github/shellspec/shellspec.svg?label=Codecov&style=flat-square)](https://codecov.io/gh/shellspec/shellspec)
@@ -116,6 +127,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
     - [`BeforeAll`, `AfterAll` - example group hook](#beforeall-afterall---example-group-hook)
     - [`BeforeCall`, `AfterCall` - call evaluation hook](#beforecall-aftercall---call-evaluation-hook)
     - [`BeforeRun`, `AfterRun` - run evaluation hook](#beforerun-afterrun---run-evaluation-hook)
+    - [Pitfalls](#pitfalls)
   - [Helpers](#helpers)
     - [`Dump` - dump stdout, stderr, and status for debugging](#dump---dump-stdout-stderr-and-status-for-debugging)
     - [`Include` - include a script file](#include---include-a-script-file)
@@ -152,7 +164,7 @@ NOTE: This documentation contains unreleased features. Check them in the changel
     - [`Intercept`](#intercept)
     - [`test || __() { :; }`](#test--__---)
     - [`__`](#__)
-- [spec_helper](#spec_helper)
+- [spec\_helper](#spec_helper)
   - [`<module>_precheck`](#module_precheck)
     - [`minimum_version`](#minimum_version)
     - [`error`, `warn`, `info`](#error-warn-info)
@@ -1313,13 +1325,13 @@ Describe 'run evaluation hook'
 End
 ```
 
-#### Pitfalls 
+#### Pitfalls
 
-The hooks may fail in subtle ways if there is output to stderr, even if the 
-return code / exit code is `0`.  
+The hooks may fail in subtle ways if there is output to stderr, even if the
+return code / exit code is `0`.
 
-Commands like `git checkout` routinely write to stderr, even if there was no actual 
-failure, so be aware that your hooks may fail because of this. 
+Commands like `git checkout` routinely write to stderr, even if there was no actual
+failure, so be aware that your hooks may fail because of this.
 
 ### Helpers
 
