@@ -181,10 +181,10 @@ if run_builtin typeset -f typesetf_check >/dev/null 2>&1; then
   echo "SHELLSPEC_BUILTIN_TYPESETF=1"
 fi
 
-if type shopt >/dev/null 2>&1; then
+if run_builtin shopt >/dev/null 2>&1; then
   echo "SHELLSPEC_SHOPT_AVAILABLE=1"
   # shellcheck disable=SC3044
-  if run_builtin shopt -s failglob 2>/dev/null; then
+  if shopt -s failglob 2>/dev/null; then
     echo "SHELLSPEC_FAILGLOB_AVAILABLE=1"
   fi
 fi
