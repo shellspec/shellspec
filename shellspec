@@ -24,6 +24,7 @@ fi
 export SHELLSPEC_VERSION='0.29.0-dev'
 export SHELLSPEC_CWD="$PWD"
 export SHELLSPEC_PATH=''
+export SHELLSPEC_POSIX_PATH=''
 export SHELLSPEC_GRAMMAR_DSLS=''
 export SHELLSPEC_GRAMMAR_DIRECTIVES=''
 export SHELLSPEC_GRAMMAR_BLOCKS=''
@@ -87,6 +88,10 @@ export SHELLSPEC_RM="rm"
 export SHELLSPEC_LS="ls"
 export SHELLSPEC_SORT="sort"
 export SHELLSPEC_FIND="find"
+export SHELLSPEC_OD="od"
+export SHELLSPEC_HEXDUMP="hexdump"
+
+SHELLSPEC_POSIX_PATH=$(getconf PATH 2>/dev/null) ||:
 
 #shellcheck disable=SC2039,SC3028
 export SHELLSPEC_HOSTNAME="${HOSTNAME:-localhost}"
@@ -229,6 +234,7 @@ abspath SHELLSPEC_PROJECT_ROOT "$SHELLSPEC_PROJECT_ROOT"
   eval "set -- $params"
 }
 
+# shellcheck disable=SC2153
 case $SHELLSPEC_MODE in (init)
   SHELLSPEC_PROJECT_ROOT=${SHELLSPEC_PROJECT_ROOT:-$SHELLSPEC_CWD}
   helperdir=$SHELLSPEC_HELPERDIR
@@ -402,6 +408,8 @@ fi
   command_path SHELLSPEC_LS "ls" ||:
   command_path SHELLSPEC_SORT "sort" ||:
   command_path SHELLSPEC_FIND "find" ||:
+  command_path SHELLSPEC_OD "od" ||:
+  command_path SHELLSPEC_HEXDUMP "hexdump" ||:
 
   if command_path "time" || [ "$SHELLSPEC_BUSYBOX_W32" ]; then
     SHELLSPEC_TIME="time -p"
