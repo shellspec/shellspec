@@ -3,9 +3,9 @@
 # busybox 1.1.3: `-A n`, `-t o1` not supported
 # busybox 1.10.2: `od -b` not working properly
 od_command() {
-  shellspec_od -t o1 -v 2>/dev/null && return 0
-  [ $? -eq 127 ] && shellspec_hexdump -b -v 2>/dev/null && return 0
-  shellspec_od -b -v
+  od -t o1 -v 2>/dev/null && return 0
+  [ $? -eq 127 ] && hexdump -b -v 2>/dev/null && return 0
+  od -b -v
 }
 
 octal_dump() {

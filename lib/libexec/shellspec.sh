@@ -124,11 +124,11 @@ current_shell() {
 
 # shellcheck disable=SC2295
 command_path() {
-  case $# in
-    0 | 1) set -- "" "$1" ;;
-    *) set -- "$1" "$2" ;;
-  esac
-  set -- "$@" "${SHELLSPEC_POSIX_PATH:-"$PATH"}${SHELLSPEC_PATHSEP}"
+  if [ $# -lt 2 ]; then
+    set -- "" "$1" "${PATH}${SHELLSPEC_PATHSEP}"
+  else
+    set -- "$1" "$2" "${PATH}${SHELLSPEC_PATHSEP}"
+  fi
 
   case $2 in (*/*)
     [ -x "$2" ] || return 1

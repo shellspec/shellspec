@@ -45,8 +45,6 @@ ksh_workaround_loaded() {
   shellspec_redefinable shellspec_fds_check
   shellspec_redefinable shellspec_readfile_once
   shellspec_redefinable shellspec_head
-  shellspec_redefinable shellspec_od
-  shellspec_redefinable shellspec_hexdump
 
   # for ksh88 and busybox-1.1.3
   # These shells do not allow built-in commands cannot be redefined
