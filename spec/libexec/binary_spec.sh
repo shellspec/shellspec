@@ -4,8 +4,8 @@ Describe "libexec/binary.sh"
   Include "$SHELLSPEC_LIB/libexec/binary.sh"
 
   Describe 'od_command()'
-    od() { echo "od"; }
-    hexdump() { echo "hexdump"; }
+    shellspec_od() { echo "od"; }
+    shellspec_hexdump() { echo "hexdump"; }
 
     Context "when od command available"
       It 'calls od command'
@@ -15,7 +15,7 @@ Describe "libexec/binary.sh"
     End
 
     Context "when od command not available"
-      od() { echo "od: command not found" >&2; return 127; }
+      shellspec_od() { echo "od: command not found" >&2; return 127; }
       It 'calls hexdump command'
         When call od_command
         The stdout should eq 'hexdump'
@@ -23,7 +23,7 @@ Describe "libexec/binary.sh"
     End
 
     Context "when tod command does not support -t option"
-      od() {
+      shellspec_od() {
         [ "$1" = "-t" ] && return 1
         echo "od" "$@"
       }
@@ -35,9 +35,6 @@ Describe "libexec/binary.sh"
   End
 
   Describe 'octal_dump()'
-    od() { @od "$@"; }
-    hexdump() { @hexdump "$@"; }
-
     It 'outputs as octal number'
       Data "abc"
       When call octal_dump
