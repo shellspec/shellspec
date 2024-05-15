@@ -1840,7 +1840,8 @@ __ end __
 
 ```sh
 Describe "today.sh"
-  Intercept begin
+  # Specify the names to intercept
+  Intercept begin end
   __begin__() {
     now() { echo "2021-01-01 01:02:03"; }
   }
