@@ -2,6 +2,8 @@
 
 set -eu
 
+locale
+
 : "${SH:=sh}"
 
 # Workaround for GitHub Actions (SIGPIPE)

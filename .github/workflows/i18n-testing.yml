@@ -1,4 +1,4 @@
-name: i18n test
+name: i18n
 
 on: [push, pull_request]
 
@@ -7,7 +7,7 @@ env:
   LC_ALL: de_DE.utf8
 
 jobs:
-  ubuntu-focal:
+  i18n:
     runs-on: ubuntu-24.04
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
@@ -25,5 +25,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: sudo apt-get install -y locales-all ${{ matrix.shells.package }}
+      - run: sudo rm -f /bin/time /usr/bin/time
       - run: sudo ${{ matrix.shells.shell }} ./shellspec --task fixture:stat:prepare
       - run: SH="${{ matrix.shells.shell }}" contrib/various_test.sh
