@@ -112,12 +112,18 @@ inc() {
 
 read_profiler() {
   time_real_nano=0
-  shellspec_shift10 time_real_nano "$3" 4
+  case $3 in
+    *,*) separator=',' ;;
+    *) separator='.' ;;
+  esac
+  shellspec_replace_all time_real_nano "$3" "$separator" '.'
+  shellspec_shift10 time_real_nano "$time_real_nano" 4
 
   profiler_count=0
   while IFS=" " read -r tick; do
     duration=$(($time_real_nano * $tick / $2))
     shellspec_shift10 duration "$duration" -4
+    shellspec_replace_all duration "$duration" '.' "$separator"
     set -- "$1" "$2" "$3" "$profiler_count" "$tick" "$duration"
     eval "profiler_tick$4=\$5 profiler_time$4=\$6"
     "$@"
