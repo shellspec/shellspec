@@ -9,6 +9,11 @@ use escape_quote
 
 delimiter="DELIMITER-$SHELLSPEC_UNIXTIME-$$"
 
+disable_virtual_subshell() {
+  [ "$SHELLSPEC_SHELL_TYPE" = ksh ] || return 0
+  putsn 'ulimit -t $(ulimit -t)'
+}
+
 trans() {
   # shellcheck disable=SC2145
   "trans_$@"
@@ -16,6 +21,7 @@ trans() {
 
 trans_block_example_group() {
   putsn "("
+  disable_virtual_subshell
   [ "$skipped" ] && trans_skip ""
   putsn "shellspec_group_id $block_id $block_no"
   putsn "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
@@ -28,6 +34,7 @@ trans_block_example_group() {
 
 trans_block_example() {
   putsn "("
+  disable_virtual_subshell
   [ "$skipped" ] && trans_skip ""
   putsn "shellspec_example_id $block_id $example_no $block_no"
   putsn "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
