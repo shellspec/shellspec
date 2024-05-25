@@ -1,5 +1,7 @@
 # shellcheck shell=sh disable=SC2016,SC2286,SC2287,SC2288
 
+% FIXTURE: "$SHELLSPEC_HELPERDIR/fixture"
+
 Describe "core/modifiers/result.sh"
   BeforeRun set_subject modifier_mock
 
@@ -38,7 +40,7 @@ Describe "core/modifiers/result.sh"
       subject() { %- "success_with_output"; }
       success_with_output() { echo stdout; true; }
       preserve() { %preserve SHELLSPEC_META:META; }
-      BeforeRun "SHELLSPEC_STDOUT_FILE=/dev/no-such-a-file"
+      BeforeRun 'SHELLSPEC_STDOUT_FILE=$FIXTURE/no-such-a-file'
       AfterRun preserve
 
       When run shellspec_modifier_result _modifier_
