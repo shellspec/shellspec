@@ -52,5 +52,5 @@ profiler_output() {
 
 profiler_reverse_sort() {
   # Retry if sort is Windows version
-  ( export LC_ALL=C; sort -k 1 -n -r 2>/dev/null || command -p sort -k 1 -n -r )
+  ( export LC_ALL=C; sort -nr 2>/dev/null || command -p sort -nr )
 }

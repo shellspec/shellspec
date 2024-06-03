@@ -28,10 +28,11 @@ Describe "libexec/reporter.sh"
   Describe "read_time_log()"
     Before "prefix_real=0 prefix_user=0 prefix_sys=0"
     It "does not read anything if file missing"
-      When call read_time_log prefix "$FILE.not-exits"
+      When call read_time_log prefix "$FILE.not-exists"
       The variable prefix_real should eq ''
       The variable prefix_user should eq ''
       The variable prefix_sys should eq ''
+      The variable prefix_type should eq ''
       The status should be failure
     End
 
@@ -40,6 +41,7 @@ Describe "libexec/reporter.sh"
       The variable prefix_real should equal 1.23
       The variable prefix_user should equal 0.11
       The variable prefix_sys should equal 12.45
+      The variable prefix_type should equal external
       The status should be success
     End
   End

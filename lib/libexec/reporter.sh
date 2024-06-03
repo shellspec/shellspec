@@ -17,16 +17,16 @@ count_examples() {
 # $1: prefix, $2: filename
 # shellcheck disable=SC2295
 read_time_log() {
-  eval "$1_real='' $1_user='' $1_sys=''"
-  [ -r "$2" ] || return 1
-  # shellcheck disable=SC2034
-  while IFS= read -r line; do
-    case $line in (real[\ $TAB]*|user[\ $TAB]*|sys[\ $TAB]*)
-      case ${line##*[ $TAB]} in (*[!0-9.,]*) continue; esac
-      eval "$1_${line%%[ $TAB]*}=\"\${line##*[ \$TAB]}\""
-    esac
-  done < "$2" &&:
-  eval "[ \"\$$1_real\" ] && [ \"\$$1_user\" ] && [ \"\$$1_sys\" ]"
+  eval "$1_real='' $1_user='' $1_sys='' $1_type=''"
+  [ -s "$2" ] || return 1
+  {
+    set -- "$1_real" "$1_user" "$1_sys" "$1_type"
+    IFS=" " read -r "$@" || return 1
+    while [ $# -gt 0 ]; do
+      eval "$1=\${$1#${1#*_}:}"
+      shift
+    done
+  } < "$2"
 }
 
 field_description() {
@@ -112,18 +112,12 @@ inc() {
 
 read_profiler() {
   time_real_nano=0
-  case $3 in
-    *,*) separator=',' ;;
-    *) separator='.' ;;
-  esac
-  shellspec_replace_all time_real_nano "$3" "$separator" '.'
-  shellspec_shift10 time_real_nano "$time_real_nano" 4
+  shellspec_shift10 time_real_nano "$3" 4
 
   profiler_count=0
   while IFS=" " read -r tick; do
     duration=$(($time_real_nano * $tick / $2))
     shellspec_shift10 duration "$duration" -4
-    shellspec_replace_all duration "$duration" '.' "$separator"
     set -- "$1" "$2" "$3" "$profiler_count" "$tick" "$duration"
     eval "profiler_tick$4=\$5 profiler_time$4=\$6"
     "$@"

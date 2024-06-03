@@ -38,7 +38,6 @@ export SHELLSPEC_BUILTIN_READARRAY=''
 export SHELLSPEC_SEEKABLE=''
 export SHELLSPEC_READ_DELIM=''
 export SHELLSPEC_STRING_CONCAT=''
-export SHELLSPEC_TIME=''
 export SHELLSPEC_LIST=''
 export SHELLSPEC_COUNT_FILE=''
 export SHELLSPEC_DEBUG_TRAP=''
@@ -130,6 +129,8 @@ export SHELLSPEC_REPORTERLIB="$SHELLSPEC_LIB/libexec/reporter"
 export SHELLSPEC_LIBEXEC="$SHELLSPEC_ROOT/libexec"
 export SHELLSPEC_INSPECTION="$SHELLSPEC_LIBEXEC/shellspec-inspection.sh"
 export SHELLSPEC_UNREADONLY_PATH="$SHELLSPEC_LIBEXEC/shellspec-unreadonly-path.sh"
+export SHELLSPEC_TIME_TYPE=auto
+export SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
 
 # shellcheck source=lib/libexec/shellspec.sh
 . "$SHELLSPEC_LIB/libexec/shellspec.sh"
@@ -410,17 +411,6 @@ fi
   command_path SHELLSPEC_FIND "find" ||:
   command_path SHELLSPEC_OD "od" ||:
   command_path SHELLSPEC_HEXDUMP "hexdump" ||:
-
-  if command_path "time" || [ "$SHELLSPEC_BUSYBOX_W32" ]; then
-    SHELLSPEC_TIME="time -p"
-  else
-    SHELLSPEC_TIME="$SHELLSPEC_LIBEXEC/shellspec-time.sh"
-    if command_path bash; then
-      SHELLSPEC_TIME="bash $SHELLSPEC_TIME"
-    elif command_path ksh; then
-      SHELLSPEC_TIME="ksh $SHELLSPEC_TIME"
-    fi
-  fi
 }
 
 if ! signal 0 $$ 2>/dev/null; then

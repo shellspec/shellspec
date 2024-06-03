@@ -4,7 +4,9 @@ create_buffers finished
 
 finished_end() {
   finished '=' "Finished in ${time_real:-?} seconds" \
-    "(user ${time_user:-?} seconds, sys ${time_sys:-?} seconds)${LF}"
+    "(user: ${time_user:-n/a}${time_user:+s}," \
+    "sys: ${time_sys:-n/a}${time_sys:+s})" \
+    "[time: ${time_type:-not-available}]${LF}"
 }
 
 finished_output() {
