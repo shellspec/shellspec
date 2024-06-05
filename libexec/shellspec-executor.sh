@@ -107,12 +107,21 @@ detect_range() {
 }
 
 set +e
-( ( ( ( (
-  ( set -e; exec 3>&- 4>&- 5>&-; executor "$@" ) ) 2>&1 >&4; echo $? >&5 ) \
-  | ( set -e; error_handler ) >&3; echo $? >&5 ) 5>&1) \
-  | (
-      read -r xs1 && [ "$xs1" -ne 0 ] && exit "$xs1"
-      read -r xs2 && [ "$xs2" -ne 0 ] && exit "$xs2"
-      exit 0
+(
+  (
+    (
+      ( set -e; executor "$@" ) 2>&1 >&4 3>&- 4>&- 5>&-
+      echo $? >&5
+    ) | (
+      ( set -e; error_handler ) >&3 3>&- 4>&- 5>&-
+      echo $? >&5
     )
-) 4>&1
+  ) 5>&1 | (
+    read -r xs1 && [ "$xs1" -ne 0 ] && exit "$xs1"
+    read -r xs2 && [ "$xs2" -ne 0 ] && exit "$xs2"
+    exit 0
+  ) 3>&- 4>&-
+) 4>&1 3>&2
+exit_status=$?
+wait
+exit "$exit_status"
