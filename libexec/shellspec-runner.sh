@@ -186,8 +186,9 @@ if [ "${SHELLSPEC_RANDOM:-}" ]; then
   set -- -
 fi
 
+xs=0
 {
-  env=$( ( ( ( ( _do() { set +e; (set -e; "$@" ) 8>&- 9>&-; echo "exit_status=$?" >&9; }
+  env=$( ( ( ( ( _do() { set +e; (set -e; "$@") 8>&- 9>&-; echo "xs=$?" >&9; }
     _do precheck "$SHELLSPEC_REQUIRES" >&8
     ) 2>&1 | while IFS= read -r line; do error "$line"; done >&2
     ) 3>&1 | while IFS= read -r line; do warn "$line"; done >&2
@@ -195,54 +196,52 @@ fi
   ) 9>&1 )
   eval "$env"
 } 8>&1
-if [ "$exit_status" -ne 0 ] || [ -s "$SHELLSPEC_PRECHECKER_STATUS" ]; then
-  exit "$exit_status"
+if [ "$xs" -ne 0 ] || [ -s "$SHELLSPEC_PRECHECKER_STATUS" ]; then
+  exit "$xs"
 fi
 
-# I want to process with non-blocking output
-# and the stdout of runner streams to the reporter
-# and capture stderr both of the runner and the reporter
-# and the stderr streams to error hander
-# and also handle both exit status. As a result of
+xs1='' xs2='' xs3=''
 set +e
-(
-  (
+{
+  xs=$(
     (
       (
-        ( set -e; executor "$@" ) 3>&- 4>&- 5>&-
-	echo $? >&5
-      ) | (
-        ( set -e; reporter "$@" ) >&3 3>&- 4>&- 5>&-
-        echo $? >&5
+        (
+          ( set -e; executor "$@" ) 3>&- 4>&- 5>&-
+	  echo "xs1=$?" >&5
+        ) | (
+          ( set -e; reporter "$@" ) >&3 3>&- 4>&- 5>&-
+          echo "xs2=$?" >&5
+        )
+      ) 2>&1 | (
+        ( set -e; error_handler ) >&4 3>&- 4>&- 5>&-
+        echo "xs3=$?" >&5
       )
-    ) 2>&1 | (
-      ( set -e; error_handler) >&4 3>&- 4>&- 5>&-
-      echo $? >&5
-    )
-  ) 5>&1 | (
-    read -r xs1; read -r xs2; read -r xs3
-    xs='' error='' msg="Aborted with status code"
-    for i in "$xs1" "$xs2" "$xs3"; do
-      case $i in
-        (0) continue ;;
-        ("$SHELLSPEC_FAILURE_EXIT_CODE") [ "$xs" ] || xs=$i ;;
-        ("$SHELLSPEC_ERROR_EXIT_CODE") xs=$i error=1 && break ;;
-        (*) [ "${xs#"$SHELLSPEC_FAILURE_EXIT_CODE"}" ] || xs=$i; error=1
-      esac
-    done
-    if [ "$error" ]; then
-      error "$msg [executor: $xs1] [reporter: $xs2] [error handler: $xs3]"
-    fi
-    set_exit_status "${xs:-0}"
-  ) 3>&- 4>&- 5>&-
-) 3>&1 4>&2
-exit_status=$?
-wait
+    ) 5>&1
+  )
+} 3>&1 4>&2
 
-case $exit_status in
+eval "$xs"
+xs='' error=''
+for i in "$xs1" "$xs2" "$xs3"; do
+  case $i in
+    0) continue ;;
+    "$SHELLSPEC_FAILURE_EXIT_CODE") [ "$xs" ] || xs=$i ;;
+    "$SHELLSPEC_ERROR_EXIT_CODE") xs=$i error=1 && break ;;
+    *) [ "${xs#"$SHELLSPEC_FAILURE_EXIT_CODE"}" ] || xs=$i; error=1
+  esac
+done
+xs=${xs:-0}
+
+if [ "$error" ]; then
+  msg="Aborted with status code"
+  error "$msg [executor: $xs1] [reporter: $xs2] [error handler: $xs3]"
+fi
+
+case $xs in
   0) ;; # Running specs exit with successfully.
   "$SHELLSPEC_FAILURE_EXIT_CODE") ;; # Running specs exit with failure.
-  *) error "Fatal error occurred, terminated with exit status $exit_status."
+  *) error "Fatal error occurred, terminated with exit status $xs."
 esac
 
-exit "$exit_status"
+exit "$xs"

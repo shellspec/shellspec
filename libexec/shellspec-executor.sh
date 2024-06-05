@@ -106,22 +106,22 @@ detect_range() {
   echo "${lineno_begin}-${lineno_end:-$lineno}"
 }
 
+xs1=0 xs2=0
 set +e
-(
-  (
+{
+  xs=$(
     (
-      ( set -e; executor "$@" ) 2>&1 >&4 3>&- 4>&- 5>&-
-      echo $? >&5
-    ) | (
-      ( set -e; error_handler ) >&3 3>&- 4>&- 5>&-
-      echo $? >&5
-    )
-  ) 5>&1 | (
-    read -r xs1 && [ "$xs1" -ne 0 ] && exit "$xs1"
-    read -r xs2 && [ "$xs2" -ne 0 ] && exit "$xs2"
-    exit 0
-  ) 3>&- 4>&-
-) 4>&1 3>&2
-exit_status=$?
-wait
-exit "$exit_status"
+      (
+        ( set -e; executor "$@" ) 2>&1 >&3 3>&- 4>&- 5>&-
+        echo "xs1=$?" >&5
+      ) | (
+        ( set -e; error_handler ) >&4 3>&- 4>&- 5>&-
+        echo "xs2=$?" >&5
+      )
+    ) 5>&1
+  )
+} 3>&1 4>&2
+eval "$xs"
+[ "$xs1" -ne 0 ] && exit "$xs1"
+[ "$xs2" -ne 0 ] && exit "$xs2"
+exit 0
