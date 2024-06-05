@@ -17,7 +17,7 @@ ShellSpec is a **full-featured [BDD](https://en.wikipedia.org/wiki/Behavior-driv
 [![bosh](https://img.shields.io/badge/bosh-&ge;2018%2F10%2F07-lightgrey.svg?style=flat)](https://codeberg.org/schilytools/schilytools)
 [![busybox](https://img.shields.io/badge/busybox-&ge;1.20.0-lightgrey.svg?style=flat)](https://www.busybox.net/)
 [![dash](https://img.shields.io/badge/dash-&ge;0.5.4-lightgrey.svg?style=flat)](http://gondor.apana.org.au/~herbert/dash/)
-[![ksh](https://img.shields.io/badge/ksh-&ge;93s-lightgrey.svg?style=flat)](https://github.com/ksh93/ksh)
+[![ksh](https://img.shields.io/badge/ksh-&ge;93r-lightgrey.svg?style=flat)](https://github.com/ksh93/ksh)
 [![mksh](https://img.shields.io/badge/mksh-&ge;R28-lightgrey.svg?style=flat)](http://www.mirbsd.org/mksh.htm)
 [![posh](https://img.shields.io/badge/posh-&ge;0.3.14-lightgrey.svg?style=flat)](https://salsa.debian.org/clint/posh)
 [![yash](https://img.shields.io/badge/yash-&ge;2.29-lightgrey.svg?style=flat)](https://magicant.github.io/yash/)
