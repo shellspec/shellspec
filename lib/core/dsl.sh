@@ -611,5 +611,14 @@ shellspec_unmock() {
 }
 
 shellspec_usefd() {
+  # Workaround for ksh93t on AIX 7.2
+  case ${KSH_VERSION:-} in (*93t*)
+    (
+      case $1 in
+        [0-9]) eval "exec $1>/dev/null" ;;
+        *) eval "exec {$1}>/dev/null" ;;
+      esac
+    )
+  esac
   SHELLSPEC_USE_FDS="${SHELLSPEC_USE_FDS}${SHELLSPEC_USE_FDS:+:}$1"
 }
