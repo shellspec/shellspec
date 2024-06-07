@@ -1,7 +1,7 @@
 FROM buildpack-deps:bookworm as builder
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NOWARNINGS=yes
 RUN apt-get update
-ENV URL=https://github.com/hvdijk/gwsh/archive/b577fdc.tar.gz
+ENV URL=https://github.com/hvdijk/gwsh/archive/main.tar.gz
 RUN wget -nv -O- --trust-server-names "$URL" | tar xzf - --one-top-level=gwsh --strip-components=1 \
  && ls -al \
  && cd gwsh \
