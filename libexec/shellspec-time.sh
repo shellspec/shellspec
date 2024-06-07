@@ -1,6 +1,12 @@
 #!/bin/sh
 # shellcheck disable=SC2004
-# Write it to work in a Bourne shell if possible.
+
+if [ -z "$PPID" ]; then
+  echo 'Bourne Shell is not supported.' \
+    'Run in a specific POSIX shell as follows.' >&2
+  echo '$ ksh shellspec-time sleep 1' >&2
+  exit 1
+fi
 
 set -f
 
@@ -38,8 +44,7 @@ detect_time_type() {
   fi
 
   if [ ! "${KSH_VERSION:-}" ]; then
-    # shellcheck disable=SC2006
-    KSH_VERSION=`eval 'echo ${.sh.version}'`
+    KSH_VERSION=$(eval 'echo ${.sh.version}')
   fi 2>/dev/null
 
   if [ "${BASH_VERSION:-}" ]; then
@@ -79,7 +84,7 @@ detect_time_type
       ?) set -- -s LC_ALL "$LC_ALL" "$@" ;;
       *) set -- -u LC_ALL "$@" ;;
     esac
-    LC_ALL=C && export LC_ALL
+    export LC_ALL=C
 
     # bash or ksh93
     case ${TIMEFORMAT+x} in
@@ -100,7 +105,7 @@ detect_time_type
       ?) set -- -s TIME "$TIME" "$@" ;;
       *) set -- -u TIME "$@" ;;
     esac
-    TIME="real %e${LF}user %U${LF}sys %S" && export TIME
+    export TIME="real %e${LF}user %U${LF}sys %S"
 
     # shellcheck disable=SC2016
     set -- sh -c '
@@ -142,9 +147,8 @@ detect_time_type
     "$SHELLSPEC_TRAP" '' INT
 
     real='' user='' sys='' type=$SHELLSPEC_TIME_TYPE ex=''
-    # shellcheck disable=SC2162
 
-    while read name time; do
+    while read -r name time; do
       # ksh88: 1m2.34s
       case $time in *m*s)
         type=ksh88-builtin
