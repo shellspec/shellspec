@@ -188,8 +188,9 @@ fi
 
 xs=0
 {
-  env=$( ( ( ( ( _do() { set +e; (set -e; "$@") 8>&- 9>&-; echo "xs=$?" >&9; }
-    _do precheck "$SHELLSPEC_REQUIRES" >&8
+  # precheck outputs code such as environment variable settings via FD9
+  env=$( ( ( ( ( set -- "$SHELLSPEC_REQUIRES"
+    set +e; (set -e; precheck "$@") >&8 8>&-; echo "xs=$?" >&9
     ) 2>&1 | while IFS= read -r line; do error "$line"; done >&2
     ) 3>&1 | while IFS= read -r line; do warn "$line"; done >&2
     ) 4>&1 | while IFS= read -r line; do info "$line"; done >&8

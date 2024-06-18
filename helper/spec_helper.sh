@@ -4,7 +4,11 @@ set -eu
 
 # shellcheck disable=SC2039
 spec_helper_precheck() {
+  info "shellspec minimum version: $SHELLSPEC_VERSION"
   minimum_version "$SHELLSPEC_VERSION"
+
+  setenv SHELLSPEC_PRECHECK_SETENV="dummy"
+  unsetenv SHELLSPEC_PRECHECK_SETENV
 
   if [ "${PIPEFAIL:-}" ]; then
     # TODO: set -o pipefail will be allowed in POSIX issue 8
