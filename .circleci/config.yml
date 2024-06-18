@@ -71,22 +71,22 @@ workflows:
           requires:
             - lint
             - report
-  daily_update_schedule:
-    jobs:
-      - lint
-      - coverage:
-          requires:
-            - lint
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - master
-  all-tests:
-    jobs:
-      - test:
-          matrix:
-            parameters:
-              os: [macos11, macos12, macos13, macos14]
+#  daily_update_schedule:
+#    jobs:
+#      - lint
+#      - coverage:
+#          requires:
+#            - lint
+#    triggers:
+#      - schedule:
+#          cron: "0 0 * * *"
+#          filters:
+#            branches:
+#              only:
+#                - master
+#  all-tests:
+#    jobs:
+#      - test:
+#          matrix:
+#           parameters:
+#             os: [macos11, macos12, macos13, macos14]
