@@ -1,6 +1,6 @@
 PREFIX ?= /usr/local
-BINDIR := $(PREFIX)/bin
-LIBDIR := $(PREFIX)/lib
+BINDIR := $(DESTDIR)$(PREFIX)/bin
+LIBDIR := $(DESTDIR)$(PREFIX)/lib
 
 GETOPTIONSCLI := getoptions-cli --indent=2 --shellcheck
 OPTPARSERDIR := lib/libexec/optparser
