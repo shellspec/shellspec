@@ -12,7 +12,7 @@ shellspec_open_file_descriptors() {
   set -- "$1:"
   while [ "${1%%:*}" ]; do
     set -- "${1#*:}" "${1%%:*}"
-    case $2 in ([0-9])
+    case $2 in ([0-9]*)
       shellspec_open_file_descriptor "$2" "$SHELLSPEC_STDIO_FILE_BASE.fd-$2"
       continue
     esac
@@ -31,7 +31,7 @@ shellspec_close_file_descriptors() {
   set -- "$1:"
   while [ "${1%%:*}" ]; do
     set -- "${1#*:}" "${1%%:*}"
-    case $2 in ([0-9])
+    case $2 in ([0-9]*)
       shellspec_close_file_descriptor "$2"
       continue
     esac
