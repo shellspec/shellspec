@@ -550,6 +550,7 @@ shellspec_dump() {
   }
 
   shellspec_enum_file_descriptors shellspec_dump_callback "$SHELLSPEC_USE_FDS"
+  shellspec_putsn
 }
 
 shellspec_dump_file() {
