@@ -2112,7 +2112,7 @@ NOTE: If you want to verify using shell function, you can use [result](docs/refe
 
 ## Code Coverage
 
-ShellSpec has integrated coverage feature. To use this feature [Kcov][] (v35 or later) is required.
+ShellSpec has integrated coverage feature. To use this feature [Kcov][] (v38 or later) is required.
 
 [Kcov]: https://github.com/SimonKagstrom/kcov
 

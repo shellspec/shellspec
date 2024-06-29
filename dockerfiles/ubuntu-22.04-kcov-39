@@ -1,0 +1,19 @@
+FROM buildpack-deps:22.04 AS builder
+RUN apt-get update && \
+    apt-get install -y cmake ninja-build libdw-dev libiberty-dev
+ENV URL="https://github.com/SimonKagstrom/kcov/archive/refs/tags/v39.tar.gz"
+WORKDIR /root/kcov
+RUN wget -O- "$URL" | tar xzv --transform 's|^[^/]*|src|'
+RUN mkdir src/build && \
+    cd src/build && \
+    cmake -G 'Ninja' .. && \
+    cmake --build . && \
+    cmake --build . --target install
+
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y binutils libcurl4 libdw1
+COPY --from=builder /usr/local/bin/kcov* /usr/local/bin/
+COPY --from=builder /usr/local/share/doc/kcov /usr/local/share/doc/kcov
+RUN useradd -m user \
+ && apt-get update && apt-get -y install kcov
+ENV SH=/bin/bash KCOV=1
