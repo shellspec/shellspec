@@ -1,5 +1,5 @@
 add() {
-  echo $(($1 * $2)) # bug: should be '+'
+  echo $(($1 + $2))
 }
 
 sub() {
