@@ -7,12 +7,14 @@
 # It may change without notice.
 
 set -eu
-
+export BUILDKIT_PROGRESS=plain
 image="shellspec:coverage"
 
 docker build -t "$image" -f "dockerfiles/.coverage" "$@" .
-command="./shellspec --task fixture:stat:prepare; ./shellspec --kcov"
-cid=$(docker create -it "$image" sh -c "$command")
+cmd="./shellspec --task fixture:stat:prepare; ./shellspec -s bash --kcov"
+cid=$(docker create -it "$image" sh -c "$cmd")
 docker start -ai "$cid"
+workdir=$(docker inspect --format='{{.Config.WorkingDir}}' "$cid")
 rm -rf coverage
-docker cp "$cid:/root/coverage" "coverage"
+docker cp "$cid:$workdir/coverage" "coverage"
+docker rm "$cid"
