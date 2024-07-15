@@ -222,6 +222,12 @@ if [ "$line" = 'a\b' ]; then
   echo "SHELLSPEC_READ_DELIM=1"
 fi
 
+if [ "${YASH_VERSION:-}" ]; then
+  if run_builtin array >/dev/null 2>&1; then
+    echo "SHELLSPEC_YASH_ARRAY=1"
+  fi
+fi
+
 #shellcheck disable=SC2034
 {
   if [ "$({ BASH_XTRACEFD=3; set -x; :; } 2>/dev/null 3>&1)" ]; then

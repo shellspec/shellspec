@@ -347,7 +347,7 @@ elif [ "${ZSH_VERSION:-}" ]; then
   }
 elif [ "$SHELLSPEC_READ_DELIM" ]; then
   shellspec_readfile() { shellspec_readfile_read_delim "$@"; }
-elif [ "${YASH_VERSION:-}" ]; then
+elif [ "$SHELLSPEC_YASH_ARRAY" ]; then
   shellspec_readfile() { shellspec_readfile_yash_array "$@"; }
 else
   shellspec_readfile() { shellspec_readfile_posix "$@"; }
