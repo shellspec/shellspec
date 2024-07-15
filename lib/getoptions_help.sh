@@ -30,7 +30,8 @@ getoptions_help() {
 		[ ${#label} -le "$len" ] && [ $# -gt 0 ] && label="$label$1" && shift
 		echo "$label"
 		pad label '' "$len"
-		for i; do echo "$label$i"; done
+		[ $# -gt 0 ] || return 0
+		for i in "$@"; do echo "$label$i"; done
 	}
 
 	for i in setup flag param option disp 'msg -' cmd; do

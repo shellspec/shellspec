@@ -1,4 +1,4 @@
-# shellcheck shell=sh disable=SC1083,SC2016,SC2286,SC2287,SC2288
+# shellcheck shell=sh disable=SC1083,SC2004,SC2016
 
 Describe "getoptions_help()"
 	Include ./lib/getoptions_help.sh
@@ -26,6 +26,7 @@ Describe "getoptions_help()"
 			flag FLAG_A -a +a --{no-}flag-a -- "flag a"
 			setup - width:25 hidden
 			param PARAM_P -p -- "param p"
+			option OPTION_W --with{out}-flag-w -- "option w"
 			option OPTION_O -o -- "option o"
 			msg -- "footer"
 		}
@@ -36,7 +37,9 @@ Describe "getoptions_help()"
 		The line 4 should eq "  -a, +a, --{no-}flag-a "
 		The line 5 should eq "                    flag a"
 		The line 6 should eq "  -p PARAM_P             param p"
-		The line 7 should eq "  -o[=OPTION_O]          option o"
-		The line 8 should eq "footer"
+		The line 7 should eq "          --with{out}-flag-w[=OPTION_W] "
+		The line 8 should eq "                         option w"
+		The line 9 should eq "  -o[=OPTION_O]          option o"
+		The line 10 should eq "footer"
 	End
 End

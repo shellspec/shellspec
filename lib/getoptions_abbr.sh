@@ -10,7 +10,8 @@ getoptions_abbr() {
 	args() {
 		abbr=1
 		shift
-		for i; do
+		[ $# -gt 0 ] || return 0
+		for i in "$@"; do
 			case $i in
 				--) break ;;
 				[!-+]*) eval "${i%%:*}=\${i#*:}"
@@ -18,7 +19,7 @@ getoptions_abbr() {
 		done
 		[ "$abbr" ] || return 0
 
-		for i; do
+		for i in "$@"; do
 			case $i in
 				--) break ;;
 				--\{no-\}*) abbr "--${i#--\{no-\}}"; abbr "--no-${i#--\{no-\}}" ;;

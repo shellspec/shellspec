@@ -1,7 +1,7 @@
-# shellcheck shell=sh disable=SC1083,SC2016,SC2286,SC2287,SC2288
+# shellcheck shell=sh disable=SC1083,SC2004,SC2016
 
 Describe "getoptions_abbr()"
-	Include ./lib/getoptions.sh
+	Include ./lib/getoptions_base.sh
 	Include ./lib/getoptions_abbr.sh
 
 	parse() {

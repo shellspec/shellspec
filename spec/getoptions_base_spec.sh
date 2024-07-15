@@ -1,7 +1,7 @@
-# shellcheck shell=sh disable=SC1083,SC2016,SC2286,SC2287,SC2288
+# shellcheck shell=sh disable=SC1083,SC2004,SC2016
 
 Describe "getoptions()"
-	Include ./lib/getoptions.sh
+	Include ./lib/getoptions_base.sh
 
 	parse() {
 		eval "$(getoptions parser_definition _parse)"
@@ -31,6 +31,18 @@ Describe "getoptions()"
 		getoptions_help() { echo 'getoptions_help called'; }
 		When call parse
 		The output should eq 'getoptions_help called'
+		The status should be success
+	End
+
+	It "parses options with default parser name"
+		parse() {
+			eval "$(getoptions parser_definition -)"
+			printf '%s ' "$@"
+		}
+		parser_definition() { setup ARGS; echo 'called' >&2; }
+		When call parse 1 2 3
+		The word 1 of stderr should eq "called"
+		The output should eq "1 2 3 "
 		The status should be success
 	End
 
@@ -65,41 +77,6 @@ Describe "getoptions()"
 			End
 		End
 
-		Context "when scanning mode is '#'"
-			parser_definition() {
-				setup ARGS mode:'#' plus:true
-				flag FLAG_A -a
-				flag FLAG_B +b off:1
-			}
-
-			Specify "treats rest following a non-option as arguments"
-				When call restargs -a 1 -a 2 -a 3 -- -a
-				The variable FLAG_A should eq 1
-				The output should eq "1 -a 2 -a 3 -- -a"
-			End
-
-			Specify "treats rest following a non-option or an unknown option as arguments"
-				When call restargs -a -a -aa +bb -x 2 -a 3 -- -a
-				The variable FLAG_A should eq 1
-				The variable FLAG_B should eq 1
-				The output should eq "-x 2 -a 3 -- -a"
-			End
-
-			Specify "treats -- as not arguments"
-				When call restargs -a -- -a
-				The variable FLAG_A should eq 1
-				The output should eq "-a"
-			End
-
-			Describe "leaves unknown options as is:"
-				Parameters:value -xx +xx
-				Specify "$1"
-					When call restargs "$1"
-					The output should eq "$1"
-				End
-			End
-		End
-
 		Context "when scanning mode is '@'"
 			parser_definition() {
 				setup ARGS mode:'@'
@@ -115,27 +92,6 @@ Describe "getoptions()"
 				When call restargs -a -- -a
 				The variable FLAG_A should eq 1
 				The output should eq "-- -a"
-			End
-		End
-
-		Context "when scanning mode is '='"
-			parser_definition() {
-				setup ARGS mode:'=' plus:true
-				flag FLAG -f
-				param PARAM -p
-			}
-			Specify "treats rest following an unknown option as arguments"
-				When call restargs -p 1 -f a -p 2 b -x -p 3
-				The variable PARAM should eq 2
-				The output should eq "a b -x -p 3"
-			End
-
-			Describe "leaves unknown options as is:"
-				Parameters:value -xx +xx
-				Specify "$1"
-					When call restargs "$1"
-					The output should eq "$1"
-				End
 			End
 		End
 
@@ -328,35 +284,41 @@ Describe "getoptions()"
 				flag FLAG_D --{no-}flag-d
 				flag FLAG_E --no-flag-e
 				flag FLAG_F --{no-}flag-f
+				flag FLAG_G --with{out}-flag-g
+				flag FLAG_H --without-flag-h
+				flag FLAG_I --with{out}-flag-i
 			}
-			When call parse -a +b --flag-c --flag-d --no-flag-e --no-flag-f
+			When call parse -a +b --flag-c --flag-d --no-flag-e --no-flag-f --with-flag-g --without-flag-h --without-flag-i
 			The variable FLAG_A should eq 1
 			The variable FLAG_B should eq ""
 			The variable FLAG_C should eq 1
 			The variable FLAG_D should eq 1
 			The variable FLAG_E should eq ""
 			The variable FLAG_F should eq ""
+			The variable FLAG_G should eq 1
+			The variable FLAG_H should eq ""
+			The variable FLAG_I should eq ""
 		End
 
 		It "can change the set value"
 			parser_definition() {
 				setup ARGS
-				flag FLAG_A -a on:ON off:OFF
-				flag FLAG_B +b on:ON off:OFF
+				flag FLAG_A -a on:ON no:NO
+				flag FLAG_B +b on:ON no:NO
 			}
 			When call parse -a +b
 			The variable FLAG_A should eq "ON"
-			The variable FLAG_B should eq "OFF"
+			The variable FLAG_B should eq "NO"
 		End
 
 		It "set initial value when not specified flag"
 			BeforeCall FLAG_N=none FLAG_E=""
 			parser_definition() {
 				setup ARGS
-				flag FLAG_A -a on:ON off:OFF init:@on
-				flag FLAG_B -b on:ON off:OFF init:@off
-				flag FLAG_C -c on:ON off:OFF init:'FLAG_C=func'
-				flag FLAG_D -d on:ON off:OFF
+				flag FLAG_A -a on:ON no:NO init:@on
+				flag FLAG_B -b on:ON no:NO init:@no
+				flag FLAG_C -c on:ON no:NO init:'FLAG_C=func'
+				flag FLAG_D -d on:ON no:NO
 				flag FLAG_Q -q on:"a'b\""
 				flag FLAG_U -u init:@unset
 				flag FLAG_N -n init:@none
@@ -364,7 +326,7 @@ Describe "getoptions()"
 			}
 			When call parse -q
 			The variable FLAG_A should eq "ON"
-			The variable FLAG_B should eq "OFF"
+			The variable FLAG_B should eq "NO"
 			The variable FLAG_C should eq "func"
 			The variable FLAG_D should eq ""
 			The variable FLAG_Q should eq "a'b\""
@@ -415,23 +377,23 @@ Describe "getoptions()"
 			valid() { echo "$OPTARG" "$@"; }
 			parser_definition() {
 				setup ARGS
-				flag FLAG -f +f on:ON off:OFF validate:'valid "$1"'
+				flag FLAG -f +f on:ON no:NO validate:'valid "$1"'
 			}
 			When call parse -f +f
 			The line 1 should eq "ON -f"
-			The line 2 should eq "OFF +f"
+			The line 2 should eq "NO +f"
 		End
 
 		Context 'when common flag value is specified'
 			parser_definition() {
-				setup ARGS on:ON off:OFF
+				setup ARGS on:ON no:NO
 				flag FLAG_A -a
 				flag FLAG_B +b
 			}
 			It "can change the set value"
 				When call parse -a +b
 				The variable FLAG_A should eq "ON"
-				The variable FLAG_B should eq "OFF"
+				The variable FLAG_B should eq "NO"
 			End
 		End
 	End
@@ -508,7 +470,7 @@ Describe "getoptions()"
 				option OPTION   --option
 				option OPTION_O -o on:"default"
 				option OPTION_P -p
-				option OPTION_N --no-option off:"omission"
+				option OPTION_N --no-option no:"omission"
 			}
 			When call parse  --option=value1 -o -pvalue2 --no-option
 			The variable OPTION should eq "value1"
@@ -525,6 +487,18 @@ Describe "getoptions()"
 			It "displays error"
 				When run parse --no-option=value
 				The stderr should eq "Does not allow an argument: --no-option"
+				The status should be failure
+			End
+		End
+
+		Context "when specified an argument to --without-option"
+		    parser_definition() {
+				setup ARGS
+				option OPTION --without-option
+		    }
+			It "displays error"
+			    When run parse --without-option=value
+				The stderr should eq "Does not allow an argument: --without-option"
 				The status should be failure
 			End
 		End

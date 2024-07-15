@@ -97,7 +97,7 @@ parser_definition() {
   param LOGFILE --log-file init:='/dev/tty' -- \
     'Log file for %logger directive and trace [default: "/dev/tty"]'
 
-  param TMPDIR --tmpdir init:"export $2_TMPDIR="'${TMPDIR:-${TMP:-/tmp}}' -- \
+  param TMPDIR --tmpdir init:"export $2_TMPDIR="'"${TMPDIR:-${TMP:-/tmp}}"' -- \
     'Specify temporary directory [default: $TMPDIR, $TMP or "/tmp"]'
 
   flag KEEP_TMPDIR --keep-tmpdir -- \

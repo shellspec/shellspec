@@ -2,7 +2,7 @@ PREFIX ?= /usr/local
 BINDIR := $(PREFIX)/bin
 LIBDIR := $(PREFIX)/lib
 
-GETOPTIONSCLI := getoptions-cli --indent=2 --shellcheck
+GENGETOPTIONS := gengetoptions
 OPTPARSERDIR := lib/libexec/optparser
 
 .PHONY: coverage test dist build release
@@ -25,11 +25,17 @@ uninstall:
 package:
 	contrib/make_package_json.sh > package.json
 
+# Retest getoptions in various shells with shellspec
+embed_getoptions:
+	cp ../getoptions/lib/getoptions_*.sh lib
+	cp ../getoptions/spec/getoptions_*_spec.sh spec
+
 optparser:
 	@printf "getoptions: "
-	@$(GETOPTIONSCLI) --version
-	$(GETOPTIONSCLI) $(OPTPARSERDIR)/parser_definition.sh \
-		optparser_parse SHELLSPEC optparser_error \
+	@$(GENGETOPTIONS) --version
+	$(GENGETOPTIONS) parser --indent=2 --shellcheck \
+		-f $(OPTPARSERDIR)/parser_definition.sh \
+	        parser_definition optparser_parse SHELLSPEC optparser_error \
 		> $(OPTPARSERDIR)/parser_definition_generated.sh
 
 demo:
