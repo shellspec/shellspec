@@ -103,7 +103,8 @@ Describe "Example specfile"
 End
 DATA
 
-for template; do
+[ $# -gt 0 ] || return 0
+for template in "$@"; do
   case $template in
     spec) generate "$specfile" "$example" ;;
     git ) generate ".gitignore" "$(ignore_file "/")" ;;

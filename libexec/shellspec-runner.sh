@@ -47,16 +47,18 @@ precheck() {
   [ $# -gt 0 ] || return 0
 
   status_file=$SHELLSPEC_PRECHECKER_STATUS
-  for module; do
-    import_path=''
-    resolve_module_path import_path "$module"
-    if [ ! -r "$import_path" ]; then
-      echo "Unable to load the required module '$module': $import_path" >&2
-      exit 1
-    fi
-    set -- "$@" "$import_path"
-    shift
-  done
+  if [ $# -gt 0 ]; then
+    for module in "$@"; do
+      import_path=''
+      resolve_module_path import_path "$module"
+      if [ ! -r "$import_path" ]; then
+        echo "Unable to load the required module '$module': $import_path" >&2
+        exit 1
+      fi
+      set -- "$@" "$import_path"
+      shift
+    done
+  fi
   prechecker="$SHELLSPEC_LIBEXEC/shellspec-prechecker.sh"
   # shellcheck disable=SC2086
   $SHELLSPEC_SHELL "$prechecker" --warn-fd=3 --status-file="$status_file" "$@"
@@ -92,18 +94,22 @@ trap 'cleanup' EXIT
 
 check_formatters() {
   eval "set -- $1"
-  for module; do
-    module_exists "${module}_formatter" && continue
-    abort "The specified formatter '$module' is not found."
-  done
+  if [ $# -gt 0 ]; then
+    for module in "$@"; do
+      module_exists "${module}_formatter" && continue
+      abort "The specified formatter '$module' is not found."
+    done
+  fi
 }
 check_formatters "$SHELLSPEC_FORMATTER $SHELLSPEC_GENERATORS"
 
-for p; do
-  [ -f "$p" ] || continue
-  is_specfile "$p" && continue
-  abort "File '$p' cannot be executed because it does not match the pattern '$SHELLSPEC_PATTERN'."
-done
+if [ $# -gt 0 ]; then
+  for p in "$@"; do
+    [ -f "$p" ] || continue
+    is_specfile "$p" && continue
+    abort "File '$p' cannot be executed because it does not match the pattern '$SHELLSPEC_PATTERN'."
+  done
+fi
 
 if [ "$SHELLSPEC_REPAIR" ]; then
   if [ -e "$SHELLSPEC_QUICK_FILE" ]; then

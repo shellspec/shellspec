@@ -22,7 +22,8 @@ fi
 
 mkdir -p "$SHELLSPEC_SUPPORT_BINDIR"
 
-for cmd; do
+[ $# -gt 0 ] || return 0
+for cmd in "$@"; do
   bin="$SHELLSPEC_SUPPORT_BINDIR/$cmd"
   if [ -e "$bin" ]; then
     warn "Skip, $cmd already exist (${SHELLSPEC_SUPPORT_BINDIR#"$PWD/"}/$cmd)"

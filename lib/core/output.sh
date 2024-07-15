@@ -7,7 +7,7 @@ shellspec_output() {
 
 shellspec_output_raw() {
   [ $# -gt 0 ] || return 0
-  for shellspec_output_raw; do
+  for shellspec_output_raw in "$@"; do
     case ${shellspec_output_raw%%:*} in
       message | description | evaluation | failure_message)
         shellspec_output_raw_sanitize "$shellspec_output_raw" ;;

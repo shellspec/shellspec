@@ -10,7 +10,7 @@ set -e -u -f
 
 if [ "${1:-}" = "-" ]; then
   if [ $# -gt 1 ]; then shift; set -- "$0" "$@"; else set -- "$0"; fi
-  for i; do i="$i'" j=''
+  for i in "$@"; do i="$i'" j=''
     while [ "$i" ]; do j="$j${i%%\'*}'\''" && i=${i#*\'}; done
     set -- "$@" "'${j%????}'" && shift
   done

@@ -18,11 +18,13 @@ done
 
 [ -s "$status_file" ] && : > "$status_file"
 
-for i; do
-  i=${i##*/} && i=${i%%.*}
-  set -- "$@" "$i" "$1" "$status_file" "$warn_fd"
-  shift
-done
+if [ $# -gt 0 ]; then
+  for i in "$@"; do
+    i=${i##*/} && i=${i%%.*}
+    set -- "$@" "$i" "$1" "$status_file" "$warn_fd"
+    shift
+  done
+fi
 unset i status_file warn_fd
 
 shellspec_precheck_loading_error() {

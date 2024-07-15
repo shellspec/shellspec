@@ -15,10 +15,12 @@ shellspec_clone_escape() {
 }
 
 shellspec_clone_unset() {
-  for shellspec_clone; do
-    set -- "$@" "${1#*:}"
-    shift
-  done
+  if [ $# -gt 0 ]; then
+    for shellspec_clone in "$@"; do
+      set -- "$@" "${1#*:}"
+      shift
+    done
+  fi
   echo unset "$@" "||:"
 }
 

@@ -183,8 +183,9 @@ finddirs_native() {
       cd "$pwd" || exit
       set -- *
       cd "$oldpwd" || exit
-      for i; do set -- "$@" "$pwd/$i"; shift; done
-      for i; do
+      [ $# -gt 0 ] || return 0
+      for i in "$@"; do set -- "$@" "$pwd/$i"; shift; done
+      for i in "$@"; do
         check "$i" && continue
         i=${i#"$PWD"}
         echo "$i"
@@ -285,32 +286,34 @@ expand_pathstar() {
 
 expand_pathstar_create_matcher() {
   echo "expand_pathstar_matcher() {"
-  for arg; do
-    pattern='' doublestar=''
-    while :; do
-      if starts_with "$arg" '**/'; then
-        arg=${arg#*/} doublestar=1
-      elif starts_with "$arg" '*/'; then
-        arg=${arg#*/} pattern="${pattern}*/"
-      else
-        break
-      fi
-    done
+  if [ $# -gt 0 ]; then
+    for arg in "$@"; do
+      pattern='' doublestar=''
+      while :; do
+        if starts_with "$arg" '**/'; then
+          arg=${arg#*/} doublestar=1
+        elif starts_with "$arg" '*/'; then
+          arg=${arg#*/} pattern="${pattern}*/"
+        else
+          break
+        fi
+      done
 
-    escape_quote arg "$arg"
-    if [ "$doublestar" ]; then
-      echo "  case \$1 in (${pattern}*)"
-      echo "    [ \"\${1##*/}\" = '$arg' ] && return 0"
-      echo "  esac"
-    elif [ "$pattern" ]; then
-      echo "  case \$1 in (${pattern}*)"
-      echo "    [ \"\${1#$pattern}\" = '$arg' ] && return 0"
-      echo "  esac"
-    else
-      echo "  [ \"\$1\" = '$arg' ] && return 0"
-    fi
-    echo ""
-  done
+      escape_quote arg "$arg"
+      if [ "$doublestar" ]; then
+        echo "  case \$1 in (${pattern}*)"
+        echo "    [ \"\${1##*/}\" = '$arg' ] && return 0"
+        echo "  esac"
+      elif [ "$pattern" ]; then
+        echo "  case \$1 in (${pattern}*)"
+        echo "    [ \"\${1#$pattern}\" = '$arg' ] && return 0"
+        echo "  esac"
+      else
+        echo "  [ \"\$1\" = '$arg' ] && return 0"
+      fi
+      echo ""
+    done
+  fi
   echo "  return 1"
   echo "}"
 }
@@ -320,25 +323,29 @@ expand_pathstar_retrive() {
     sep=$1 dir=${2%"${2##*[!/]}"}
     [ "$dir" = "." ] && dir="" || dir="$dir/"
     shift 2
-    for i; do
-      pattern=$i
-      if starts_with "$i" "*/" || starts_with "$i" "**/"; then
-        while i=${i#*/}; do
-          starts_with "$i" "*/" && continue
-          starts_with "$i" "**/" && continue
-          break
-        done
-        set -- "$@" "${i}${sep}${pattern}"
-      else
-        echo "${i}${sep}"
-      fi
-      shift
-    done
+    if [ $# -gt 0 ]; then
+      for i in "$@"; do
+        pattern=$i
+        if starts_with "$i" "*/" || starts_with "$i" "**/"; then
+          while i=${i#*/}; do
+            starts_with "$i" "*/" && continue
+            starts_with "$i" "**/" && continue
+            break
+          done
+          set -- "$@" "${i}${sep}${pattern}"
+        else
+          echo "${i}${sep}"
+        fi
+        shift
+      done
+    fi
     while IFS= read -r line; do
       [ "$line" = "." ] && line="$dir" || line="${dir}${line#./}/"
-      for i; do
-        echo "${line}${i}"
-      done
+      if [ $# -gt 0 ]; then
+        for i in "$@"; do
+          echo "${line}${i}"
+        done
+      fi
     done
   ) | "$SHELLSPEC_SORT"
 }

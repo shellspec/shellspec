@@ -12,7 +12,7 @@ Describe "libexec/shellspec.sh"
   Describe "pack()"
     _packs() {
       var=''
-      for i; do pack var "$i"; done
+      [ $# -gt 0 ] && for i in "$@"; do pack var "$i"; done
       eval "set -- $var"
       %printf '%s\n' "$@"
     }

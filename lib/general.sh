@@ -659,11 +659,13 @@ shellspec_escape_quote() {
 shellspec_pack() {
   SHELLSPEC_EVAL="
     $1=''; shift; \
-    for $1; do \
-      shellspec_escape_quote $1 \"\${$1}\"; \
-      set -- \"\$@\" \"'\${$1}'\"; \
-      shift; \
-    done; \
+    if [ \$# -gt 0 ]; then \
+      for $1 in \"\$@\"; do \
+        shellspec_escape_quote $1 \"\${$1}\"; \
+        set -- \"\$@\" \"'\${$1}'\"; \
+        shift; \
+      done; \
+    fi; \
     IFS=\" \$IFS\"; set -- \"\${*:-}\"; IFS=\${IFS#?}; unset $1; $1=\$1
   "
   eval "$SHELLSPEC_EVAL"

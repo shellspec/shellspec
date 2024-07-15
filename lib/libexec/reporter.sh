@@ -217,7 +217,7 @@ tssv_fields() {
   tssv_prefix=$1 tssv_callback=$2
   tssv_oldifs=$IFS && IFS=$3 && eval "set -- \$4" && IFS=$tssv_oldifs
 
-  for tssv_field; do
+  for tssv_field in "$@"; do
     eval "${tssv_prefix}_${tssv_field%%:*}=\${tssv_field#*:}"
     set -- "$@" "${tssv_field%%:*}"
     shift
