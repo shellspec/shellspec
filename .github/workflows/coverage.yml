@@ -12,7 +12,7 @@ jobs:
       github.ref == 'refs/heads/master' &&
       !contains(github.event.head_commit.message, 'ci skip')
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install packages
         run: sudo apt-get install -y bash kcov
       - name: Install cc-test-reporter

@@ -19,6 +19,6 @@ jobs:
           - {shell: zsh}
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: ${{ matrix.shells.shell }} ./shellspec --shell "${{ matrix.shells.shell }}" --task fixture:stat:prepare
       - run: SH="${{ matrix.shells.shell }}" contrib/various_test.sh

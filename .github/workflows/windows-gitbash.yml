@@ -22,6 +22,6 @@ jobs:
           - {shell: bash}
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: ${{ matrix.shells.shell }} ./shellspec --task fixture:stat:prepare
       - run: ${{ matrix.shells.shell }} ./shellspec
