@@ -20,7 +20,7 @@ jobs:
           - {shell: zsh,  package: zsh}
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: brew upgrade
       - run: brew install ${{ matrix.shells.package }}
       - run: ${{ matrix.shells.shell }} ./shellspec --shell "${{ matrix.shells.shell }}" --task fixture:stat:prepare
