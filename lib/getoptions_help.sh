@@ -1,4 +1,4 @@
-# shellcheck shell=sh
+# shellcheck shell=sh disable=SC2016,SC2317
 # [getoptions_help] License: Creative Commons Zero v1.0 Universal
 getoptions_help() {
 	_width='30,12' _plus='' _leading='  '

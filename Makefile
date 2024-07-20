@@ -25,8 +25,8 @@ uninstall:
 package:
 	contrib/make_package_json.sh > package.json
 
-# Retest getoptions in various shells with shellspec
-embed_getoptions:
+# Take in to retest getoptions in various shells
+takein_getoptions:
 	cp ../getoptions/lib/getoptions_*.sh lib
 	cp ../getoptions/spec/getoptions_*_spec.sh spec
 
