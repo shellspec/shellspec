@@ -403,6 +403,26 @@ $ bpkg install shellspec/shellspec@0.19.1
 
 </details>
 
+<details>
+<summary>Gentoo</summary>
+
+Installation from [the Beatussum's Gentoo overlay](https://github.com/beatussum/beatussum-overlay/) using [`app-eselect/eselect-repository`](https://github.com/projg2/eselect-repository/).
+
+```console
+# Install app-eselect/eselect-repository
+$ emerge app-eselect/eselect-repository
+
+# Enable beatussum-overlay
+$ eselect repository list
+$ eselect repository enable beatussum-overlay
+$ emaint -r beatussum-overlay sync
+
+# Install ShellSpec
+$ emerge dev-util/shellspec::beatussum-overlay
+```
+
+</details>
+
 ### Manual installation
 
 <details>
