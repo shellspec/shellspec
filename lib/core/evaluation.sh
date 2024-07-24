@@ -139,12 +139,20 @@ shellspec_evaluation_run_instruction() {
 
 shellspec_shebang_arguments() {
   read -r line
+  # Trim spaces between `#!` and the command.
+  case $line in (\#!\ *)
+    shellspec_trim line "${line#* }"
+    line="#!$line"
+  esac
+  # Trim `env` call.
   case $line in (\#!/usr/bin/env\ * | \#!/bin/env\ *)
     shellspec_trim line "${line#* }"
     line="#!$line"
   esac
+  # Trim line if shebang.
   case $line in (\#!*)
     shellspec_trim line "$line"
+    # Get shebang arguments.
     case $line in (*\ *)
       shellspec_trim line "${line#* }"
       shellspec_putsn "$line"

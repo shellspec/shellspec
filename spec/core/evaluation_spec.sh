@@ -365,6 +365,14 @@ Describe "core/evaluation.sh"
           "/bin/sh -u"              ""
           "#!/usr/bin/env bash"     ""
           "#!/bin/env bash"         ""
+
+          "#! /usr/bin/env bash"    ""
+          "#! /bin/env bash"        ""
+          "#! /bin/sh -u"           "-u"
+          "#! /bin/sh   -u -u  "    "-u -u"
+          "#! /bin/sh          "    ""
+          "#! /usr/bin/env bash"    ""
+          "#! /bin/env bash"        ""
         End
 
         shebang_arguments() {
