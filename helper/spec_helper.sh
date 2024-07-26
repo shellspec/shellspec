@@ -6,6 +6,7 @@ set -eu
 spec_helper_precheck() {
   info "shellspec minimum version: $SHELLSPEC_VERSION"
   minimum_version "$SHELLSPEC_VERSION"
+  info "shell mode: $(shell_mode)"
 
   setenv SHELLSPEC_PRECHECK_SETENV="dummy"
   unsetenv SHELLSPEC_PRECHECK_SETENV

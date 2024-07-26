@@ -75,6 +75,26 @@ unsetenv() {
   done
 }
 
+shell_mode() {
+  if [ "${ZSH_VERSION:-}" ]; then
+    echo "$(emulate) emulation"
+  else
+    COLUMNS=10 set -o | {
+      mode='standard'
+      while read -r name value; do
+        case $name in
+          posix) name="POSIX" ;;
+          posixlycorrect) name="POSIXly-correct" ;;
+          *) continue ;;
+        esac
+        mode="$name mode ($value)"
+        break
+      done
+      echo "$mode"
+    }
+  fi
+}
+
 shellspec_precheck_run() {
   unset "$1" ||:
   set +e -- "$1" "$2" "$SHELLSPEC_TMPBASE/.shellspec-prechecker-exit-status"
