@@ -49,7 +49,7 @@ shellspec_call_hook() {
 shellspec_call_before_hooks() {
   [ $# -lt 2 ] && set -- "$1" 1
   eval "[ \"\$2\" -gt \"\$SHELLSPEC_BEFORE_$1_INDEX\" ] &&:" && return 0
-  shellspec_call_hook "BEFORE_$1" "$2" 2>"$SHELLSPEC_ERROR_FILE" || return 1
+  shellspec_call_hook "BEFORE_$1" "$2" 2>|"$SHELLSPEC_ERROR_FILE" || return 1
   [ -s "$SHELLSPEC_ERROR_FILE" ] && return 1
   shellspec_call_before_hooks "$1" "$(($2 + 1))"
 }
@@ -57,7 +57,7 @@ shellspec_call_before_hooks() {
 shellspec_call_after_hooks() {
   [ $# -lt 2 ] && eval "set -- \"\$1\" \"\$SHELLSPEC_AFTER_$1_INDEX\""
   [ "$2" -lt 1 ] && return 0
-  shellspec_call_hook "AFTER_$1" "$2" 2>"$SHELLSPEC_ERROR_FILE" || return 1
+  shellspec_call_hook "AFTER_$1" "$2" 2>|"$SHELLSPEC_ERROR_FILE" || return 1
   [ -s "$SHELLSPEC_ERROR_FILE" ] && return 1
   shellspec_call_after_hooks "$1" $(($2 - 1))
 }
