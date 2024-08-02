@@ -10,6 +10,7 @@
       - [.shellspec-docker/post-test](#shellspec-dockerpost-test)
   - [3. Using ShellSpec image as parent image](#3-using-shellspec-image-as-parent-image)
   - [4. Include ShellSpec into another image](#4-include-shellspec-into-another-image)
+  - [5. Invoke in gitlab job](5-invoke-in-gitlab-job)
 - [Appendix](#appendix)
   - [How to build official ShellSpec docker image yourself](#how-to-build-official-shellspec-docker-image-yourself)
 
@@ -133,6 +134,20 @@ COPY ./ /src
 # Build and run at your project root
 $ docker build -t your-project-name .
 $ docker run -it your-project-name
+```
+
+
+### 5. Invoke in gitlab job
+
+Example
+
+```yaml
+shellspec tests:
+  image:
+    name: shellspec/shellspec
+    entrypoint: [""]
+  script:
+    - shellspec
 ```
 
 ## Appendix
