@@ -25,6 +25,8 @@ executor() {
 
   #shellcheck disable=SC2039,SC2086
   (
+    shellspec_execdir "${SHELLSPEC_EXECDIR}"
+
     "$SHELLSPEC_KCOV_PATH" \
     $SHELLSPEC_KCOV_COMMON_OPTS \
     $SHELLSPEC_KCOV_OPTS \
