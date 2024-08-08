@@ -50,7 +50,7 @@ params=''
 # shellcheck disable=SC2004,SC2034,SC2145,SC2194
 optparser_parse() {
   OPTIND=$(($#+1))
-  while OPTARG= && [ $# -gt 0 ]; do
+  while OPTARG= && [ "${params}" != x ] && [ $# -gt 0 ]; do
     set -- "${1%%\=*}" "${1#*\=}" "$@"
     while [ ${#1} -gt 2 ]; do
       case $1 in (*[!a-zA-Z0-9_-]*) break; esac
@@ -380,7 +380,7 @@ optparser_parse() {
         ;;
       -[wpcqrnxXFLvh]?*) OPTARG=$1; shift
         eval 'set -- "${OPTARG%"${OPTARG#??}"}" -"${OPTARG#??}"' ${1+'"$@"'}
-        OPTARG= ;;
+        [ "$2" = -- ] && set -- "$1" unknown -- && params=x; OPTARG= ;;
       +[wpq]?*) OPTARG=$1; shift
         eval 'set -- "${OPTARG%"${OPTARG#??}"}" +"${OPTARG#??}"' ${1+'"$@"'}
         unset OPTARG ;;

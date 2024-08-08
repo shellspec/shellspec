@@ -69,7 +69,7 @@ getoptions() {
 
 	_0 "${_def:-$2}() {"
 	_1 'OPTIND=$(($#+1))'
-	_1 'while OPTARG= && [ $# -gt 0 ]; do'
+	_1 "while OPTARG= && [ \"\${$_rest}\" != x ] && [ \$# -gt 0 ]; do"
 	[ "$_abbr" ] && getoptions_abbr "$@"
 
 	args() {
@@ -138,7 +138,7 @@ getoptions() {
 	_op() {
 		_3 "$1) OPTARG=\$1; shift"
 		_wa '"${OPTARG%"${OPTARG#??}"}" '"$2"'"${OPTARG#??}"'
-		_4 "$3"
+		_4 "${4:-}$3"
 	}
 	_3 '--?*=*) OPTARG=$1; shift'
 	_wa '"${OPTARG%%\=*}" "${OPTARG#*\=}"'
@@ -146,7 +146,8 @@ getoptions() {
 	_3 "--no-*|--without-*) unset OPTARG ;;"
 	[ "$_alt" ] || {
 		[ "$_opts" ] && _op "-[$_opts]?*" "" ";;"
-		[ ! "$_flags" ] || _op "-[$_flags]?*" - "OPTARG= ;;"
+		[ ! "$_flags" ] || _op "-[$_flags]?*" - "OPTARG= ;;" \
+			'[ "$2" = -- ] && set -- "$1" unknown -- && '"$_rest=x; "
 	}
 	[ "$_plus" ] && {
 		[ "$_nflags" ] && _op "+[$_nflags]?*" + "unset OPTARG ;;"
