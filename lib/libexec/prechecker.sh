@@ -77,11 +77,12 @@ unsetenv() {
 
 shell_mode() {
   if [ "${ZSH_VERSION:-}" ]; then
-    echo "$(emulate) emulation"
+    echo "$(emulate 2>/dev/null || echo '(unknown)') emulation"
   else
     COLUMNS=10 set -o | {
       mode='standard'
       while read -r name value; do
+        value=${value##*[!a-zA-Z]}
         case $name in
           posix) name="POSIX" ;;
           posixlycorrect) name="POSIXly-correct" ;;
