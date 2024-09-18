@@ -64,28 +64,6 @@ shellspec_begin() {
   shellspec_output BEGIN
 }
 
-shellspec_execdir() {
-  case $1 in
-    @project | @project/*) set -- "${1#@project}" ;;
-    @basedir | @basedir/*)
-      set -- "$1" "/${SHELLSPEC_SPECFILE%/*}"
-      while [ "$2" ]; do
-        [ -e "${SHELLSPEC_PROJECT_ROOT%/}/$2/.shellspec" ] && break
-        [ -e "${SHELLSPEC_PROJECT_ROOT%/}/$2/.shellspec-basedir" ] && break
-        set -- "$1" "${2%/*}"
-      done
-      set -- "${2#/}${1#@basedir}"
-      ;;
-    @specfile | @specfile/*) set -- "${SHELLSPEC_SPECFILE%/*}${1#@specfile}" ;;
-    *) set -- ""
-  esac
-  case $1 in
-    /*) set -- "$1" ;;
-    ?*) set -- "/$1" ;;
-  esac
-  cd "${SHELLSPEC_PROJECT_ROOT%/}$1"
-}
-
 shellspec_perform() {
   SHELLSPEC_ENABLED=$1 SHELLSPEC_FILTER=$2
 }
