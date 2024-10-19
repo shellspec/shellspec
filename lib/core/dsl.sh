@@ -288,7 +288,7 @@ shellspec_fds_check() {
   set -- "$SHELLSPEC_USE_FDS:"
   while [ "${1%%:*}" ]; do
     set -- "${1#*:}" "${1%%:*}"
-    case $2 in ([0-9]) continue; esac
+    case $2 in ([0-9]*) continue; esac
     if shellspec_is_identifier "$2"; then
       [ "$SHELLSPEC_FDVAR_AVAILABLE" ] && continue
       set -- "Assigning file descriptors to variables is not supported" \
