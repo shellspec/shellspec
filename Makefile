@@ -1,6 +1,6 @@
 PREFIX ?= /usr/local
-BINDIR := $(PREFIX)/bin
-LIBDIR := $(PREFIX)/lib
+BINDIR := $(DESTDIR)$(PREFIX)/bin
+LIBDIR := $(DESTDIR)$(PREFIX)/lib
 
 GENGETOPTIONS := gengetoptions
 OPTPARSERDIR := lib/libexec/optparser
