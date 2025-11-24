@@ -22,7 +22,7 @@ jobs:
           - {shell: zsh,         package: zsh}
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: sudo apt-get update
       - run: sudo apt-get install -y ${{ matrix.shells.package }}
       - run: sudo ${{ matrix.shells.shell }} ./shellspec --task fixture:stat:prepare
