@@ -34,6 +34,11 @@ trans_block_example() {
   esac
   [ "$skipped" ] && trans_skip ""
   putsn "shellspec_example_id $block_id $example_no $block_no"
+  if [ "${shellspec_timeout_override:-}" ]; then
+    putsn "SHELLSPEC_EXAMPLE_TIMEOUT='$shellspec_timeout_override'"
+  else
+    putsn "SHELLSPEC_EXAMPLE_TIMEOUT=''"
+  fi
   putsn "SHELLSPEC_LINENO_BEGIN=$lineno_begin"
   putsn "shellspec_marker \"$specfile\" $lineno"
   putsn "shellspec_block${block_no}() { "

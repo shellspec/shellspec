@@ -8,3 +8,4 @@
 %text        => text_begin raw
 %text:raw    => text_begin raw
 %text:expand => text_begin expand
+%timeout     => timeout_metadata

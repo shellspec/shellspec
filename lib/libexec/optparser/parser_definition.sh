@@ -94,6 +94,14 @@ parser_definition() {
     '  Equivalent of --profile --profile-limit 0' \
     "  (Don't worry, this is not overclocking. This is joke option but works.)"
 
+  param TIMEOUT --timeout validate:check_timeout_format init:=60 var:SECONDS -- \
+    'Specify the default timeout for each test [default: 60]' \
+    '  Format: NUMBER[s|m] (e.g., 30, 30s, 1m, 90s)' \
+    '  Set to 0 to disable timeout'
+
+  flag TIMEOUT --no-timeout on:0 -- \
+    'Disable timeout for all tests'
+
   param LOGFILE --log-file init:='/dev/tty' -- \
     'Log file for %logger directive and trace [default: "/dev/tty"]'
 

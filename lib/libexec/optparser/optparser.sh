@@ -135,6 +135,15 @@ check_number() {
   return 0
 }
 
+check_timeout_format() {
+  case $OPTARG in
+    0) return 0 ;;
+    *[!0-9smSM]*) return 1 ;;
+    *[0-9]|*[sSmM]) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 check_formatter() {
   case $OPTARG in (*[!a-z0-9_]*) return 1; esac
   set -- progress documentation tap junit failures
@@ -166,6 +175,7 @@ error_handler() {
     directory_not_available:*)
       set -- "$1" "The $4 option must be specified before other options and cannot be specified in an options file" ;;
     check_number:*) set -- "$1" "Not a number: $4" ;;
+    check_timeout_format:*) set -- "$1" "Invalid timeout format (use NUMBER[s|m], e.g., 30, 30s, 1m): $4" ;;
     check_module_name:*) set -- "$1" "Invalid module name: $4" ;;
     check_formatter:*) set -- "$1" "Invalid formatter name: $4" ;;
     check_env_name:*) set -- "$1" "Invalid environment name: $4" ;;
