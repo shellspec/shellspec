@@ -101,8 +101,9 @@
   - [`%const` (`%`)](#const-)
   - [`%text`](#text)
   - [`%puts` (`%-`) / `%putsn` (`%=`)](#puts----putsn-)
-  - [%preserve](#preserve)
+  - [`%preserve`](#preserve)
   - [`%logger`](#logger)
+  - [`%timeout`](#timeout)
 - [Special environment Variables](#special-environment-variables)
 
 ## Basic structure
@@ -113,7 +114,7 @@ You can write a structured *Example* by using the DSL shown below:
 
 | DSL                  | Description                 |
 | :------------------- | :-------------------------- |
-| ExampleGroup ... End | Define an example group.     |
+| ExampleGroup ... End | Define an example group.    |
 | Describe ... End     | Synonym for `ExampleGroup`. |
 | Context ... End      | Synonym for `ExampleGroup`. |
 
@@ -125,7 +126,7 @@ Example groups are nestable.
 
 | DSL             | Description            |
 | :-------------- | :--------------------- |
-| Example ... End | Define an example.      |
+| Example ... End | Define an example.     |
 | It ... End      | Synonym for `Example`. |
 | Specify ... End | Synonym for `Example`. |
 
@@ -861,6 +862,25 @@ You can refer to variables defined with `%const`.
 Use this with the `When run` evaluation.
 
 ### `%logger`
+
+### `%timeout`
+
+```sh
+%timeout <SECONDS>
+```
+
+You can specify the timeout per example. The timeout value can be specified in seconds or with a suffix (`s` or `m`).
+If the timeout value is 0, the timeout is disabled.
+
+```sh
+Describe 'example'
+  # Timeout 5 seconds
+  It 'should be success' % timeout:5
+    When call commands
+    The status should be success
+  End
+End
+```
 
 ## Special environment Variables
 

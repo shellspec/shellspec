@@ -18,6 +18,7 @@ export SHELLSPEC_FAILURE_EXIT_CODE='101'
 export SHELLSPEC_ERROR_EXIT_CODE='102'
 export SHELLSPEC_PROFILER=''
 export SHELLSPEC_PROFILER_LIMIT='10'
+export SHELLSPEC_TIMEOUT='60'
 export SHELLSPEC_LOGFILE='/dev/tty'
 export SHELLSPEC_TMPDIR="${TMPDIR:-${TMP:-/tmp}}"
 export SHELLSPEC_KEEP_TMPDIR=''
@@ -161,6 +162,14 @@ optparser_parse() {
       case '--no-boost' in
         "$1") OPTARG=; break ;;
         $1*) OPTARG="$OPTARG --no-boost"
+      esac
+      case '--timeout' in
+        "$1") OPTARG=; break ;;
+        $1*) OPTARG="$OPTARG --timeout"
+      esac
+      case '--no-timeout' in
+        "$1") OPTARG=; break ;;
+        $1*) OPTARG="$OPTARG --no-timeout"
       esac
       case '--log-file' in
         "$1") OPTARG=; break ;;
@@ -501,6 +510,17 @@ optparser_parse() {
         eval '[ ${OPTARG+x} ] &&:' && OPTARG='1' || OPTARG=''
         boost SHELLSPEC
         ;;
+      '--timeout')
+        [ $# -le 1 ] && set "required" "$1" && break
+        OPTARG=$2
+        check_timeout_format || { set -- check_timeout_format:$? "$1" check_timeout_format; break; }
+        export SHELLSPEC_TIMEOUT="$OPTARG"
+        shift ;;
+      '--no-timeout')
+        [ "${OPTARG:-}" ] && OPTARG=${OPTARG#*\=} && set "noarg" "$1" && break
+        eval '[ ${OPTARG+x} ] &&:' && OPTARG='0' || OPTARG=''
+        export SHELLSPEC_TIMEOUT="$OPTARG"
+        ;;
       '--log-file')
         [ $# -le 1 ] && set "required" "$1" && break
         OPTARG=$2
@@ -814,6 +834,10 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
         --{no-}boost                Increase the CPU frequency to boost up testing speed [default: disabled]
                                       Equivalent of --profile --profile-limit 0
                                       (Don't worry, this is not overclocking. This is joke option but works.)
+        --timeout SECONDS           Specify the default timeout for each test [default: 60]
+                                      Format: NUMBER[s|m] (e.g., 30, 30s, 1m, 90s)
+                                      Set to 0 to disable timeout
+        --no-timeout                Disable timeout for all tests
         --log-file LOGFILE          Log file for %logger directive and trace [default: "/dev/tty"]
         --tmpdir TMPDIR             Specify temporary directory [default: $TMPDIR, $TMP or "/tmp"]
         --keep-tmpdir               Do not cleanup temporary directory [default: disabled]

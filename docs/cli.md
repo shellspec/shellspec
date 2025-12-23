@@ -11,6 +11,7 @@
 - [Ranges (`:LINENO`, `:@ID`) / Filters (`--example`) / Focus (`--focus`)](#ranges-lineno-id--filters---example--focus---focus)
 - [Reporter (`--format`) / Generator (`--output`)](#reporter---format--generator---output)
 - [Profiler (`--profile`)](#profiler---profile)
+- [Timeout (`--timeout`)](#timeout---timeout)
 - [Run tests in Docker container (`--docker`)](#run-tests-in-docker-container---docker)
 - [Task runner (`--task`)](#task-runner---task)
 
@@ -103,6 +104,20 @@ NOTE: Custom formatter is supported (but not documented yet, sorry).
 ## Profiler (`--profile`)
 
 When the `--profile` option is specified, the profiler is enabled and lists the slow examples.
+
+## Timeout (`--timeout`)
+
+You can specify the default timeout for each test with `--timeout` option.
+The default timeout is 60 seconds. You can disable timeout by specifying `--no-timeout` option.
+Also you can specify timeout per example by using `%timeout` directive.
+
+```sh
+shellspec --timeout 5         # 5 seconds
+shellspec --timeout 5s        # 5 seconds
+shellspec --timeout 2m        # 2 minutes
+shellspec --timeout 1m30s     # 1 minute 30 seconds
+shellspec --no-timeout        # Disable timeout
+```
 
 ## Run tests in Docker container (`--docker`)
 

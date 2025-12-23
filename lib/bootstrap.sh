@@ -9,6 +9,14 @@ shopt -u verbose_errexit 2>/dev/null ||:
 # shellcheck source=lib/general.sh
 . "$SHELLSPEC_LIB/general.sh"
 
+# Load timeout parser
+if [ -f "$SHELLSPEC_LIB/libexec/timeout-parser.sh" ]; then
+  # shellcheck source=lib/libexec/timeout-parser.sh
+  . "$SHELLSPEC_LIB/libexec/timeout-parser.sh"
+else
+  shellspec_parse_timeout() { echo "${1:-${SHELLSPEC_TIMEOUT:-60}}"; }
+fi
+
 # Workaround for ksh #40 in contrib/bugs.sh
 if [ "$SHELLSPEC_DEFECT_REDEFINE" ]; then
   shellspec_redefinable() { eval "alias $1='shellspec_redefinable_ $1'"; }

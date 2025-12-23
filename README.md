@@ -576,6 +576,8 @@ Usage: shellspec [ -c ] [-C <directory>] [options...] [files or directories...]
     -p, --{no-}profile              Enable profiling and list the slowest examples [default: disabled]
         --profile-limit N           List the top N slowest examples [default: 10]
         --{no-}boost                Increase the CPU frequency to boost up testing speed [default: disabled]
+        --timeout SECONDS           Specify the default timeout for each test [default: 60]
+        --no-timeout                Disable timeout for all tests
         --log-file LOGFILE          Log file for %logger directive and trace [default: "/dev/tty"]
         --tmpdir TMPDIR             Specify temporary directory [default: $TMPDIR, $TMP or "/tmp"]
         --keep-tmpdir               Do not cleanup temporary directory [default: disabled]

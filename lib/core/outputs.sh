@@ -58,6 +58,13 @@ shellspec_output_NOT_IMPLEMENTED() {
     "temporary:" "message:$SHELLSPEC_PENDING_REASON"
 }
 
+shellspec_output_TIMEOUT() {
+  shellspec_output_statement "tag:timeout" "note:TIMEOUT" "fail:y" \
+    "timeout:$1" \
+    "failure_message:${SHELLSPEC_LINENO:+<$SHELLSPEC_LINENO>}Test exceeded timeout" \
+    "message:Test exceeded timeout of $1 seconds"
+}
+
 shellspec_output_NO_EXPECTATION() {
   shellspec_output_statement "tag:warn" "note:WARNING" \
     "fail:${SHELLSPEC_WARNING_AS_FAILURE:+y}" \

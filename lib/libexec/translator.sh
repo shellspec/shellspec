@@ -35,6 +35,7 @@ one_line_syntax_check() { :; }
 
 check_filter() {
   check_filter="$1"
+  shellspec_timeout_override=""
   replace_all check_filter '$' "$DC1"
   replace_all check_filter '`' "$DC2"
   eval "set -- $check_filter"
@@ -46,6 +47,15 @@ check_filter() {
     shift
   fi
   [ $# -gt 0 ] || return 1
+
+  # Extract timeout metadata
+  while [ $# -gt 0 ]; do
+    case $1 in
+      timeout:*) shellspec_timeout_override="${1#timeout:}" ;;
+    esac
+    shift
+  done
+
   check_tag_filter "$@"
 }
 
@@ -450,6 +460,13 @@ constant() {
   else
     syntax_error "Constant name should match pattern [A-Z_][A-Z0-9_]*"
   fi
+}
+
+timeout_metadata() {
+  # Timeout metadata is extracted in check_filter()
+  # This function is called when %timeout directive is encountered
+  # but the actual handling is done during metadata parsing
+  :
 }
 
 include() {

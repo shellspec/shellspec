@@ -190,6 +190,17 @@ shellspec_example() {
     return 0
   fi
 
+  # Timeout setup
+  SHELLSPEC_TIMEOUT_SIGNAL_FILE="$SHELLSPEC_STDIO_FILE_BASE.timeout_signal"
+  SHELLSPEC_TIMEOUT_RESULT_FILE="$SHELLSPEC_STDIO_FILE_BASE.timeout_result"
+  shellspec_effective_timeout="${SHELLSPEC_EXAMPLE_TIMEOUT:-${SHELLSPEC_TIMEOUT:-60}}"
+  shellspec_timeout_seconds=$(shellspec_parse_timeout "$shellspec_effective_timeout")
+
+  if [ "$shellspec_timeout_seconds" -gt 0 ]; then
+    : > "$SHELLSPEC_TIMEOUT_SIGNAL_FILE"
+    : > "$SHELLSPEC_TIMEOUT_RESULT_FILE"
+  fi
+
   shellspec_profile_start
   case $- in
     *e*) eval "set -- -e ${1+\"\$@\"}" ;;
@@ -197,15 +208,63 @@ shellspec_example() {
   esac
   shellspec_open_file_descriptors "$SHELLSPEC_USE_FDS"
   set +e
-  ( set -e
-    shift
-    case $# in
-      0) shellspec_invoke_example ;;
-      *) shellspec_invoke_example "$@" ;;
-    esac
-  )
-  set "$1" -- $? "$SHELLSPEC_LEAK_FILE"
+
+  # Execute test with timeout watchdog
+  if [ "$shellspec_timeout_seconds" -gt 0 ]; then
+    ( set -e
+      shift
+      case $# in
+        0) shellspec_invoke_example ;;
+        *) shellspec_invoke_example "$@" ;;
+      esac
+    ) &
+    shellspec_test_pid=$!
+
+    # Start watchdog in background
+    ( "$SHELLSPEC_SHELL" "$SHELLSPEC_LIBEXEC/shellspec-timeout-watchdog.sh" \
+      "$shellspec_timeout_seconds" "$shellspec_test_pid" \
+      "$SHELLSPEC_TIMEOUT_SIGNAL_FILE" "$SHELLSPEC_TIMEOUT_RESULT_FILE" \
+    ) &
+
+    # Wait for test to complete
+    wait "$shellspec_test_pid"
+    shellspec_exit_status=$?
+
+    # Signal watchdog to stop
+    rm -f "$SHELLSPEC_TIMEOUT_SIGNAL_FILE"
+
+    # Check for timeout
+    if [ -s "$SHELLSPEC_TIMEOUT_RESULT_FILE" ]; then
+      shellspec_exit_status=124
+      shellspec_timeout_occurred=1
+    else
+      shellspec_timeout_occurred=0
+    fi
+    rm -f "$SHELLSPEC_TIMEOUT_RESULT_FILE"
+  else
+    # No timeout - execute normally
+    ( set -e
+      shift
+      case $# in
+        0) shellspec_invoke_example ;;
+        *) shellspec_invoke_example "$@" ;;
+      esac
+    )
+    shellspec_exit_status=$?
+    shellspec_timeout_occurred=0
+  fi
+
+  set "$1" -- $shellspec_exit_status "$SHELLSPEC_LEAK_FILE"
   shellspec_close_file_descriptors "$SHELLSPEC_USE_FDS"
+
+  # Handle timeout
+  if [ "$shellspec_timeout_occurred" -eq 1 ]; then
+    shellspec_output TIMEOUT "$shellspec_timeout_seconds"
+    shellspec_output FAILED
+    shellspec_profile_end
+    return 0
+  fi
+
   if [ "$1" -ne 0 ]; then
     [ -s "$2" ] || set -- "$1" "$SHELLSPEC_STDERR_FILE"
     shellspec_output ABORTED "$@"

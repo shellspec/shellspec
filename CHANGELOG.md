@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.29.0] - 2025-12-23
+
+### Added
+
+- Support per-test timeout. (#176)
+
 ## [0.28.1] - 2021-01-11
 
 ### Changed
@@ -535,7 +541,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release.
 
-[Unreleased]: https://github.com/shellspec/shellspec/compare/0.28.1...HEAD
+[Unreleased]: https://github.com/shellspec/shellspec/compare/0.29.0...HEAD
+[0.29.0]: https://github.com/shellspec/shellspec/compare/0.28.1...0.29.0
 [0.28.1]: https://github.com/shellspec/shellspec/compare/0.28.0...0.28.1
 [0.28.0]: https://github.com/shellspec/shellspec/compare/0.27.2...0.28.0
 [0.27.2]: https://github.com/shellspec/shellspec/compare/0.27.1...0.27.2
