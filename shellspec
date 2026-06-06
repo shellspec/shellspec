@@ -42,7 +42,7 @@ export SHELLSPEC_STRING_CONCAT=''
 export SHELLSPEC_LIST=''
 export SHELLSPEC_COUNT_FILE=''
 export SHELLSPEC_DEBUG_TRAP=''
-export SHELLSPEC_INFILE=file
+export SHELLSPEC_INFILE=''
 export SHELLSPEC_COVERAGE_SETUP=''
 export SHELLSPEC_COVERAGE_SHELL_OPTIONS=''
 export SHELLSPEC_KCOV_COMPATIBLE_SHELL=''
@@ -292,6 +292,7 @@ if [ ! -d "$SHELLSPEC_TMPDIR" ]; then
   abort "Temporary directory '$SHELLSPEC_TMPDIR' does not exist or is not a directory."
 fi
 export SHELLSPEC_TMPBASE="$SHELLSPEC_TMPDIR/shellspec.$SHELLSPEC_UNIXTIME.$$"
+export SHELLSPEC_INFILE="$SHELLSPEC_TMPBASE/.shellspec-infile"
 export SHELLSPEC_TIME_LOG="$SHELLSPEC_TMPBASE/.shellspec-time.log"
 export SHELLSPEC_PROFILER_LOG="$SHELLSPEC_TMPBASE/.shellspec-profiler.log"
 export SHELLSPEC_DEPRECATION_LOGFILE="$SHELLSPEC_TMPBASE/.shellspec-deprecation.log"
