@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `--random` no longer leaves a stray `file` in the working directory and no
+  longer clobbers an existing `./file`. `SHELLSPEC_INFILE` now lives under
+  `$SHELLSPEC_TMPBASE` like the other internal temporary files, so it is also
+  removed on exit.
+
 ## [0.28.1] - 2021-01-11
 
 ### Changed
