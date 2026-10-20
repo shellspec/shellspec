@@ -813,6 +813,10 @@ Even if you run a specfile from a subdirectory in the project directory,
 it is the project root directory.
 Before 0.27.x, it was the current directory when the `shellspec` command was executed.
 
+When no specfile paths are given, the default path (`spec`, or the value of
+`--default-path`) is resolved relative to the project root. Explicit specfile
+paths are resolved relative to the directory where `shellspec` was invoked.
+
 You can change this directory (location) by using the `--execdir @LOCATION[/DIR]` option.
 You can choose from the following locations and specify a path relative to the location if necessary.
 However, you cannot specify a directory outside the project directory.

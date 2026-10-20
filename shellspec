@@ -442,14 +442,18 @@ if [ "$SHELLSPEC_PROFILER" ] && [ "$SHELLSPEC_WORKERS" -gt 0 ]; then
 fi
 
 case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
-  [ $# -eq 0 ] && set -- "$SHELLSPEC_DEFAULT_PATH"
+  path_root=$SHELLSPEC_CWD
+  if [ $# -eq 0 ]; then
+    set -- "$SHELLSPEC_DEFAULT_PATH"
+    path_root=$SHELLSPEC_PROJECT_ROOT
+  fi
   if includes_pathstar "$@"; then
     for p in "$@"; do
       includes_pathstar "$p" || continue
       check_pathstar "$p" || abort "The path pattern is invalid: $p."
     done
     args=''
-    cd "$SHELLSPEC_CWD"
+    cd "$path_root"
     callback() { if [ ! "$2" ] || [ -e "${1%%:*}" ]; then pack args "$1"; fi; }
     expand_pathstar callback "." "$@"
     cd "$SHELLSPEC_PROJECT_ROOT"
@@ -458,7 +462,7 @@ case $SHELLSPEC_MODE in (runner | list | translate | syntax-check)
   fi
   for p in "$@"; do
     abspath='' range=''
-    abspath abspath "$p" "$SHELLSPEC_CWD"
+    abspath abspath "$p" "$path_root"
     separate_abspath_and_range abspath range "$abspath"
     [ -e "$abspath" ] || abort "Not found a path: ${p%%:*}."
     if [ -d "$abspath" ] && [ "$range" ]; then
