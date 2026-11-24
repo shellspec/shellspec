@@ -42,7 +42,10 @@ kcov_preprocess() {
   [ -d "$SHELLSPEC_COVERAGEDIR" ] || return 0
 
   # Cleanup previous coverage data
-  rm -rf "${SHELLSPEC_COVERAGEDIR:?}/${SHELLSPEC_KCOV_FILENAME:?}"*
+  (
+    [ "${SHELLSPEC_NOMATCH_AVAILABLE:-}" ] && setopt NO_NOMATCH
+    rm -rf "${SHELLSPEC_COVERAGEDIR:?}/${SHELLSPEC_KCOV_FILENAME:?}"*
+  )
 }
 
 kcov_postprocess() {
