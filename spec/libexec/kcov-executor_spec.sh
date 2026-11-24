@@ -3,6 +3,41 @@
 Describe "libexec/kcov-executor.sh"
   Include "$SHELLSPEC_LIB/libexec/kcov-executor.sh"
 
+  Describe 'kcov_preprocess()'
+    rm() { @rm "$@"; }
+    prepare_coverage() {
+      SHELLSPEC_COVERAGEDIR="$SHELLSPEC_TMPBASE/kcov_preprocess"
+      SHELLSPEC_KCOV_FILENAME='shellspec [specfiles]'
+      @mkdir -p "$SHELLSPEC_COVERAGEDIR"
+    }
+    clean_coverage() { @rm -rf "${SHELLSPEC_COVERAGEDIR:?}"; }
+    run_preprocess() {
+      [ "${SHELLSPEC_NOMATCH_AVAILABLE:-}" ] && setopt NOMATCH
+      kcov_preprocess
+    }
+    Before prepare_coverage
+    After clean_coverage
+
+    It 'accepts an existing empty coverage directory'
+      When run run_preprocess
+      The status should be success
+      The stderr should be blank
+    End
+
+    It 'cleans previous reports without removing unrelated files'
+      old_report="$SHELLSPEC_COVERAGEDIR/$SHELLSPEC_KCOV_FILENAME.old"
+      unrelated="$SHELLSPEC_COVERAGEDIR/keep"
+      Path old_report="$old_report"
+      Path unrelated="$unrelated"
+      @mkdir "$old_report"
+      : > "$unrelated"
+      When run run_preprocess
+      The status should be success
+      The path old_report should not exist
+      The path unrelated should be file
+    End
+  End
+
   Describe 'kcov_fix_index()'
     Data
       #|var data = {files:[
